@@ -3,13 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "react-native start",
     "test": "jest",
-    "eslint": "./node_modules/.bin/eslint app --fix"
+    "eslint": "./node_modules/.bin/eslint app --fix",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
+    "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
-    "react-native": "0.47.2"
+    "react-native": "0.47.2",
+    "react-native-config": "^0.6.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
