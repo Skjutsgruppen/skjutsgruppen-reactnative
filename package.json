@@ -12,7 +12,7 @@
   "dependencies": {
     "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
-    "react-native": "0.47.2",
+    "react-native": "0.48.1",
     "react-native-config": "^0.6.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
