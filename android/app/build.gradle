@@ -7,6 +7,13 @@ project.ext.envConfigFiles = [
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
+
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf', 'Ionicons.ttf', 'FontAwesome.ttf' ] 
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -110,6 +117,16 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('SKJUTS_RELEASE_STORE_FILE')) {
+                storeFile file(SKJUTS_RELEASE_STORE_FILE)
+                storePassword SKJUTS_RELEASE_STORE_PASSWORD
+                keyAlias SKJUTS_RELEASE_KEY_ALIAS
+                keyPassword SKJUTS_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
     splits {
         abi {
             reset()
@@ -122,6 +139,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -140,6 +158,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-contacts')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-image-picker')
     compile project(':react-native-config')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
