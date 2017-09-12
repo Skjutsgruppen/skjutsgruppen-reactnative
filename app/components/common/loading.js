@@ -1,19 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import propTypes from 'prop-types';
+import { ActivityIndicator as Loader } from 'react-native';
 
-const Loading = ({ text }) => (
-  <View>
-    <Text>{text}</Text>
-  </View>
-);
-
-Loading.propTypes = {
-  text: propTypes.string,
-};
-
-Loading.defaultProps = {
-  text: 'Loading...',
-};
+const Loading = () => <Loader />;
 
 export default Loading;
