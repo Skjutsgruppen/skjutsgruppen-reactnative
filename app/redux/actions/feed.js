@@ -1,9 +1,9 @@
-import { FEED_FETCHING, FEED_FETCHED, FEED_ERROR } from '@redux/types/feed';
+import { FETCHING, FETCHED, ERROR } from '@redux/types/feed';
 
 const feedActions = {
-  fetching: () => ({ type: FEED_FETCHING }),
-  fetched: payload => ({ type: FEED_FETCHED, payload }),
-  error: payload => ({ type: FEED_ERROR, payload }),
+  fetching: () => ({ type: FETCHING }),
+  fetched: payload => ({ type: FETCHED, payload }),
+  error: payload => ({ type: ERROR, payload }),
 };
 
 export default feedActions;

@@ -1,5 +1,5 @@
-const FEED = 'FEED';
+const TYPE = 'FEED';
 
-export const FEED_FETCHING = `${FEED}_FETCHING`;
-export const FEED_FETCHED = `${FEED}_FETCHED`;
-export const FEED_ERROR = `${FEED}_ERROR`;
+export const FETCHING = `${TYPE}_FETCHING`;
+export const FETCHED = `${TYPE}_FETCHED`;
+export const ERROR = `${TYPE}_ERROR`;
