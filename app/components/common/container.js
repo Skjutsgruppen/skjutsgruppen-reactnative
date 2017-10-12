@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
 
 
 const Container = ({ children, bgColor }) => (
-  <ScrollView style={[styles.wrapper, { backgroundColor: bgColor }]}>
+  <ScrollView keyboardShouldPersistTaps="handled" style={[styles.wrapper, { backgroundColor: bgColor }]}>
     {children}
   </ScrollView>
 );
