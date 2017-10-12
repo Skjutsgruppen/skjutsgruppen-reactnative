@@ -3,6 +3,8 @@ import Splash from '@screens/Splash';
 import Offer from '@screens/Offer';
 import Group from '@screens/Group';
 import GroupDetail from '@screens/GroupDetail';
+import ExploreGroup from '@screens/ExploreGroup';
+import SearchGroup from '@screens/SearchGroup';
 import OfferDetail from '@screens/OfferDetail';
 import Tab from '@screens/tab/main';
 
@@ -35,9 +37,12 @@ export const Routes = {
 
   Tab: { screen: Tab },
   Offer: { screen: Offer },
+  OfferDetail: { screen: OfferDetail, path: 'offer/:id' },
+
   Group: { screen: Group },
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
-  OfferDetail: { screen: OfferDetail, path: 'offer/:id' },
+  SearchGroup: { screen: SearchGroup, path: 'search/:query' },
+  ExploreGroup: { screen: ExploreGroup },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

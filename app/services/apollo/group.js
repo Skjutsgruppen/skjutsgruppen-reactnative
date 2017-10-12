@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const group = gql`
+const SUBMIT_GROUP = gql`
 mutation group
 (
     $outreach: String!
@@ -60,8 +60,103 @@ mutation group
     }
 }
 `;
+const EXPLORE_GROUPS = gql`
+query exploreGroups($offset: Int, $limit: Int){
+  exploreGroups(offset: $offset, limit: $limit){
+  Group {
+    id
+    outreach
+    name
+    description
+    type
+    photo
+    User {
+      id
+      email
+      firstName
+      lastName
+      photo
+      relation {
+        id,
+        email,
+        firstName
+        photo
+      }
+    }
+    TripStart {
+      name
+      coordinates
+    }
+    TripEnd {
+      name
+      coordinates
+    }
+    Stops {
+      name
+      coordinates
+    }
+    countryId
+    countyId
+    municipalityId
+    localityId
+    GroupMembers{
+      id
+    } 
+  }
+  total
+  }
+}
+`;
 
-export const submitGroup = graphql(group, {
+export const SEARCH_GROUPS = gql`
+query searchGroup($keyword: String!, $offset: Int, $limit: Int){
+  searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
+   Group {
+    id
+    outreach
+    name
+    description
+    type
+    photo
+    User {
+      id
+      email
+      firstName
+      lastName
+      photo
+      relation {
+        id,
+        email,
+        firstName
+        photo
+      }
+    }
+    TripStart {
+      name
+      coordinates
+    }
+    TripEnd {
+      name
+      coordinates
+    }
+    Stops {
+      name
+      coordinates
+    }
+    countryId
+    countyId
+    municipalityId
+    localityId
+    GroupMembers{
+      id
+    }
+   }
+   total
+  }
+}
+`;
+
+export const submitGroup = graphql(SUBMIT_GROUP, {
   props: ({ mutate }) => (
     {
       submit: (
@@ -96,4 +191,23 @@ export const submitGroup = graphql(group, {
         },
       }),
     }),
+});
+
+export const withExploreGroup = graphql(EXPLORE_GROUPS, {
+  name: 'exploreGroups',
+  options: {
+    notifyOnNetworkStatusChange: true,
+    variables: { offset: 0, limit: 5 },
+  },
+  props: ({ exploreGroups }) => ({ exploreGroups }),
+});
+
+
+export const withSearchGroup = graphql(SEARCH_GROUPS, {
+  name: 'searchGroups',
+  options: ({ keyword }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { keyword, offset: 0, limit: 5 },
+  }),
+  props: ({ searchGroups }) => ({ searchGroups }),
 });
