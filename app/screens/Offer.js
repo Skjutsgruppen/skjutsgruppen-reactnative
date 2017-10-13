@@ -70,9 +70,9 @@ class Offer extends Component {
   };
 
   onTripNext = (trip) => {
-    if (trip.start === '') {
+    if (typeof trip.start.name === 'undefined') {
       Alert.alert('Error!!', 'From is required');
-    } else if (trip.end === '') {
+    } else if (typeof trip.end.name === 'undefined') {
       Alert.alert('Error!!', 'To is required');
     } else {
       const { completedTabs, disabledTabs } = this.state;
@@ -115,7 +115,7 @@ class Offer extends Component {
 
   onButtonPress = () => {
     const { navigate } = this.props.navigation;
-    navigate('Feed');
+    navigate('Feed', { refetch: true });
   };
 
   createTrip() {
@@ -133,12 +133,12 @@ class Offer extends Component {
         seat,
         date.flexsible,
         share,
-      ).then((data) => {
+      ).then((res) => {
         if (share.general.indexOf('copy_to_clip') > -1) {
-          Clipboard.setString(data.data.createTrip.url);
+          Clipboard.setString(res.data.createTrip.url);
         }
 
-        this.setState({ loading: false, offer: data.data.createTrip });
+        this.setState({ loading: false, offer: res.data.createTrip });
       })
         .catch(e => console.log(e));
     } catch (error) {
@@ -147,12 +147,12 @@ class Offer extends Component {
   }
 
   renderFinish() {
-    const { loading, offer } = this.state;
+    const { loading, offer, share } = this.state;
     if (loading) {
       return (<Loading />);
     }
 
-    return (<Completed offer={offer} onButtonPress={this.onButtonPress} />);
+    return (<Completed offer={offer} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
   }
 
   render() {
