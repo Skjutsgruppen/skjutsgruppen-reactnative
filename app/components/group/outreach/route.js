@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Button } from 'react-native';
+import GooglePlace from '@components/googlePlace';
 
 const styles = StyleSheet.create({
   title: {
@@ -54,18 +55,64 @@ class Route extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      start: '',
-      end: '',
-      countryCode: 'NP',
-      stops: '',
+      start: {},
+      end: {},
+      stops: [],
+      stopsCount: 1,
     };
   }
 
   onNext = () => {
     const { onNext } = this.props;
-    console.log(this.state);
-    onNext(this.state);
+    const state = this.state;
+    const stops = [];
+    state.stops.forEach(k => stops.push(k));
+    state.stops = stops;
+    onNext(state);
   };
+
+  setStops = (count, stop) => {
+    const { stops } = this.state;
+    stops[count] = { name: stop.name, countryCode: stop.countryCode, coordinates: [stop.lat, stop.lng] };
+    this.setState({ stops }, () => {
+      console.log(this.state.stops);
+    });
+  };
+
+  removeStop = (count) => {
+    const { stops } = this.state;
+
+    delete stops[count];
+
+    this.setState({ stops, stopsCount: this.state.stopsCount - 1 }, () => {
+      console.log(this.state);
+    });
+  }
+
+  addStops = () => {
+    this.setState({ stopsCount: this.state.stopsCount + 1 }, () => {
+      this.setStops(this.state.stopsCount, {});
+    });
+  };
+
+  renderStops() {
+    let { stops } = this.state;
+    stops = stops.length > 0 ? stops : [{}];
+
+    return stops.map((s, i) => (
+      <View
+        key={i}
+      >
+        <GooglePlace
+          placeholder="Place"
+          onChangeText={stop => this.setStops(i, stop)}
+        />
+        {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
+          <View><Text>-</Text></View>
+        </TouchableWithoutFeedback>) : null}
+      </View>
+    ));
+  }
 
   render() {
     return (
@@ -73,36 +120,30 @@ class Route extends Component {
         <Text style={styles.title}>Specific stretch</Text>
         <View>
           <Text style={styles.label}>From</Text>
-          <TextInput
-            style={styles.input}
+          <GooglePlace
             placeholder="Start here"
-            underlineColorAndroid="transparent"
-            onChangeText={start => this.setState({ start: { name: start, coordinates: [0.862323, 27.2323] } })}
+            onChangeText={start => this.setState({ start: { name: start.name, countryCode: start.countryCode, coordinates: [start.lat, start.lng] } })}
           />
         </View>
 
         <View>
           <Text style={styles.label}>To</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Destination"
-            underlineColorAndroid="transparent"
-            onChangeText={end => this.setState({ end: { name: end, coordinates: [0.862323, 27.2323] } })}
+          <GooglePlace
+            placeholder="Start here"
+            onChangeText={end => this.setState({ end: { name: end.name, countryCode: end.countryCode, coordinates: [end.lat, end.lng] } })}
           />
         </View>
         <View style={styles.stops}>
           <View>
-            <Text style={styles.stopsLabel}>Stops along the way:</Text>
+            <TouchableWithoutFeedback onPress={this.addStops}>
+              <View><Text>+</Text></View>
+            </TouchableWithoutFeedback>
+            <Text style={styles.stopsLabel}>
+              Stops along the way:
+            </Text>
           </View>
           <View>
-            <View>
-              <TextInput
-                style={styles.input}
-                placeholder="Place"
-                underlineColorAndroid="transparent"
-                onChangeText={stops => this.setState({ stops: { name: stops, coordinates: [0.862323, 27.2323] } })}
-              />
-            </View>
+            {this.renderStops()}
             <Text style={styles.stopsInfo}>
               You can add as many stops as you want as long as you would like to pick up people there.
             </Text>
