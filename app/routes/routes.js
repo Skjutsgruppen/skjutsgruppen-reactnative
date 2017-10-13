@@ -1,17 +1,53 @@
-import React from 'react';
-import { addNavigationHelpers } from 'react-navigation';
+import React, { Component } from 'react';
+import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { BackHandler } from 'react-native';
 import { AppNavigator } from './routeProvider';
 
-const Router = props => (
-  <AppNavigator
-    navigation={addNavigationHelpers({
-      dispatch: props.dispatch,
-      state: props.nav,
-    })}
-  />
-);
+class Router extends Component {
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  shouldCloseApp = (nav) => {
+    if (nav.index > 0) return false;
+
+    if (nav.routes) {
+      return nav.routes.every(this.shouldCloseApp);
+    }
+
+    return true;
+  };
+
+  goBack = () => this.props.dispatch(NavigationActions.back());
+
+
+  handleBackPress = () => {
+    if (this.shouldCloseApp(this.props.nav)) {
+      return false;
+    }
+
+    this.goBack();
+
+    return true;
+  }
+
+
+  render() {
+    const { dispatch, nav } = this.props;
+    const navigation = addNavigationHelpers({
+      dispatch,
+      state: nav,
+    });
+
+    return (<AppNavigator navigation={navigation} />);
+  }
+}
 
 Router.propTypes = {
   dispatch: PropTypes.func.isRequired,

@@ -1,28 +1,22 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-/* 
- $countryCode: String
- $county: String
- $municipality: String
- $locality: String
-
-countryCode : $countryCode
-county : $county
-municipality : $municipality
-locality : $locality */
-
 const group = gql`
 mutation group
 (
     $outreach: String!
-    $tripStart: PlaceInput!
-    $tripEnd: PlaceInput!
+    $tripStart: PlaceInput
+    $tripEnd: PlaceInput
     $stops: [PlaceInput]
     $name: String
     $description: String
     $photo: String
+    $country: String
+    $county: String
+    $municipality: String
+    $locality: String
     $type: String!
+    $share: String
 ) 
   {
     group(input : {
@@ -33,7 +27,12 @@ mutation group
         name : $name
         description : $description
         photo : $photo
+        country : $country
+        county : $county
+        municipality : $municipality
+        locality : $locality
         type : $type
+        share : $share
       }) 
     {
       outreach,
@@ -41,6 +40,10 @@ mutation group
       name,
       description,
       photo,
+      countryId,
+      countyId,
+      municipalityId,
+      localityId,
       TripStart {
         name
         coordinates
@@ -69,7 +72,12 @@ export const submitGroup = graphql(group, {
         name,
         description,
         photo,
+        country,
+        county,
+        municipality,
+        locality,
         type,
+        share,
       ) => mutate({
         variables: {
           outreach,
@@ -79,7 +87,12 @@ export const submitGroup = graphql(group, {
           name,
           description,
           photo,
+          country,
+          county,
+          municipality,
+          locality,
           type,
+          share,
         },
       }),
     }),

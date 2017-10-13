@@ -47,16 +47,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const Completed = ({ offer, onButtonPress }) => (
+const Completed = ({ offer, isCliped, onButtonPress }) => (
   <View style={styles.wrapper}>
     <Text style={styles.title}>Your ride is published.</Text>
     <Image source={require('@assets/celebration.png')} style={styles.image} />
     <Text style={[styles.text, styles.bold]}>Its now searchable, well done.!</Text>
     <Text style={styles.text}>This is the unique address to your ride:</Text>
-    <Text style={styles.uniqueAddress}>{offer.url}</Text>
-    <Text style={[styles.text, styles.italic]}>
+    <Text selectable style={styles.uniqueAddress}>{offer.url}</Text>
+    {isCliped && <Text style={[styles.text, styles.italic]}>
       (Its copied to your clipboard so you can paste it wherever you want)
-    </Text>
+    </Text>}
     <View style={styles.buttonWrapper}>
       <Button
         onPress={onButtonPress}
@@ -69,6 +69,7 @@ const Completed = ({ offer, onButtonPress }) => (
 
 Completed.propTypes = {
   onButtonPress: PropTypes.func.isRequired,
+  isCliped: PropTypes.bool.isRequired,
   offer: PropTypes.shape({
     url: PropTypes.string.isRequired,
   }).isRequired,

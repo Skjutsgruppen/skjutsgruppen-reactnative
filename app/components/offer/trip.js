@@ -103,7 +103,7 @@ class Trip extends Component {
     this.state = {
       start: {},
       end: {},
-      stops: [{}],
+      stops: [],
       stopsCount: 1,
       isReturning: false,
     };
@@ -147,7 +147,10 @@ class Trip extends Component {
   };
 
   renderStops() {
-    return this.state.stops.map((s, i) => (
+    let { stops } = this.state;
+    stops = stops.length > 0 ? stops : [{}];
+
+    return stops.map((s, i) => (
       <View
         key={i}
       >
