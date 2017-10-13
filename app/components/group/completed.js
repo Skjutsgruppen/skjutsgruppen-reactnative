@@ -47,16 +47,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const Completed = ({ group, onButtonPress }) => (
+const Completed = ({ group, isCliped, onButtonPress }) => (
   <View style={styles.wrapper}>
     <Text style={styles.title}>Your Group is published.</Text>
     <Image source={require('@assets/celebration.png')} style={styles.image} />
     <Text style={[styles.text, styles.bold]}>Its now searchable, well done.!</Text>
     <Text style={styles.text}>This is the unique address to your group:</Text>
-    <Text style={styles.uniqueAddress}>{group.url}</Text>
-    <Text style={[styles.text, styles.italic]}>
+    <Text selectable style={styles.uniqueAddress}>{group.url}</Text>
+    {isCliped && <Text style={[styles.text, styles.italic]}>
       (Its copied to your clipboard so you can paste it wherever you want)
-    </Text>
+    </Text>}
     <View style={styles.buttonWrapper}>
       <Button
         onPress={onButtonPress}
@@ -69,6 +69,7 @@ const Completed = ({ group, onButtonPress }) => (
 
 Completed.propTypes = {
   onButtonPress: PropTypes.func.isRequired,
+  isCliped: PropTypes.bool.isRequired,
   group: PropTypes.shape({
     url: PropTypes.string.isRequired,
   }).isRequired,
