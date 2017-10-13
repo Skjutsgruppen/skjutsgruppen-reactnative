@@ -51,7 +51,7 @@ class Different extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      countryCode: '',
+      country: '',
       county: '',
       municipality: '',
       locality: '',
@@ -72,9 +72,9 @@ class Different extends Component {
           <Text style={styles.label}>Country</Text>
           <TextInput
             style={styles.input}
-            placeholder="Sweden"
+            placeholder=""
             underlineColorAndroid="transparent"
-            onChangeText={countryCode => this.setState({ countryCode })}
+            onChangeText={country => this.setState({ country })}
           />
         </View>
         <View>

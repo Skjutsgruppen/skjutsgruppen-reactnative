@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
 import Tab from '@components/tab';
 import Stretch from '@components/group/stretch';
 import OutReach from '@components/group/outreach';
@@ -75,15 +75,19 @@ class Group extends Component {
       if (trip.country === '') {
         Alert.alert('Error!!', 'Country is required');
         error += 1;
+      } else if (trip.municipality === '') {
+        Alert.alert('Error!!', 'Municipality is required');
+        error += 1;
       }
+
       area = trip;
     }
 
     if (outreach === 'route') {
-      if (trip.start === '') {
+      if (typeof trip.start.name === 'undefined') {
         Alert.alert('Error!!', 'From is required');
         error += 1;
-      } else if (trip.end === '') {
+      } else if (typeof trip.end.name === 'undefined') {
         Alert.alert('Error!!', 'To is required');
         error += 1;
       }
@@ -142,10 +146,19 @@ class Group extends Component {
         about.name,
         about.description,
         about.photo,
+        area.country,
+        area.county,
+        area.municipality,
+        area.locality,
         type,
+        share,
       )
         .then((res) => {
-          this.setState({ loading: false, offer: res.data.group });
+          if (share.general.indexOf('copy_to_clip') > -1) {
+            Clipboard.setString(res.data.group.url);
+          }
+
+          this.setState({ loading: false, group: res.data.group });
         })
         .catch(error => this.setState({ loading: false, error: error.message }));
     } catch (error) {
@@ -154,7 +167,8 @@ class Group extends Component {
   }
 
   renderFinish() {
-    const { loading, error, group } = this.state;
+    const { loading, error, group, share } = this.state;
+
     if (loading) {
       return (<Loading />);
     }
@@ -165,7 +179,7 @@ class Group extends Component {
       </View>);
     }
 
-    return (<Completed group={group} onButtonPress={this.onButtonPress} />);
+    return (<Completed group={group} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
   }
 
   render() {
