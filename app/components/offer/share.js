@@ -90,16 +90,6 @@ class Share extends Component {
   constructor(props) {
     super(props);
     this.state = { general: [], friends: [], groups: [], bestFriends: [] };
-    this.friends = [
-      {
-        id: 1,
-        name: 'lovisa',
-      },
-      {
-        id: 2,
-        name: 'Malmo-commuters',
-      },
-    ];
   }
 
   onNext = () => {
@@ -122,12 +112,20 @@ class Share extends Component {
     this.setState(obj);
   }
 
-
   hasOption(type, key) {
     const data = this.state[type];
 
     return data.indexOf(key) > -1;
   }
+
+  isModal() {
+    return this.props.modal;
+  }
+
+  buttonText() {
+    return this.isModal() ? 'Share' : 'Next';
+  }
+
   renderBestFriends() {
     const { friendLoading, friends } = this.props;
 
@@ -142,7 +140,7 @@ class Share extends Component {
 
     return (
       <View>
-        <Text style={styles.shareCategoryTitle}>Friends</Text>
+        <Text style={styles.shareCategoryTitle}>Best Friends</Text>
         {
           friends.map(friend => (
             <View key={friend.id} style={styles.borderedRow}>
@@ -150,11 +148,8 @@ class Share extends Component {
                 onPress={() => this.setOption('bestFriends', friend.id)}
               >
                 <View style={styles.shareItem}>
-                  <Image
-                    source={require('@assets/profilePic.jpg')}
-                    style={styles.profilePic}
-                  />
-                  <Text>{friend.email}</Text>
+                  {this.renderPic(friend.photo)}
+                  <Text>{friend.firstName || friend.email}</Text>
                   <View
                     style={[styles.shareToggle, { backgroundColor: this.hasOption('bestFriends', friend.id) ? '#a27ba8' : 'transparent' }]}
                   />
@@ -167,6 +162,16 @@ class Share extends Component {
     );
   }
 
+  renderPic = (photo) => {
+    let profileImage = null;
+
+    if (photo) {
+      profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+    }
+
+    return profileImage;
+  }
+
   renderFriends() {
     const { friendLoading, friends } = this.props;
 
@@ -174,11 +179,9 @@ class Share extends Component {
       return (<View><Text>Loading</Text></View>);
     }
 
-
     if (friends.length === 0) {
       return null;
     }
-
 
     return (
       <View>
@@ -190,11 +193,8 @@ class Share extends Component {
                 onPress={() => this.setOption('friends', friend.id)}
               >
                 <View style={styles.shareItem}>
-                  <Image
-                    source={require('@assets/profilePic.jpg')}
-                    style={styles.profilePic}
-                  />
-                  <Text>{friend.email}</Text>
+                  {this.renderPic(friend.photo)}
+                  <Text>{friend.firstName || friend.email}</Text>
                   <View
                     style={[styles.shareToggle, { backgroundColor: this.hasOption('friends', friend.id) ? '#a27ba8' : 'transparent' }]}
                   />
@@ -228,10 +228,7 @@ class Share extends Component {
                 onPress={() => this.setOption('groups', group.id)}
               >
                 <View style={styles.shareItem}>
-                  <Image
-                    source={require('@assets/profilePic.jpg')}
-                    style={styles.profilePic}
-                  />
+                  {this.renderPic(group.photo)}
                   <Text>{group.name}</Text>
                   <View
                     style={[styles.shareToggle, { backgroundColor: this.hasOption('groups', group.id) ? '#a27ba8' : 'transparent' }]}
@@ -249,7 +246,7 @@ class Share extends Component {
     return (
       <View>
         <View style={styles.listWrapper}>
-          <Text style={styles.title}> Share & Publish</Text>
+          {!this.isModal() && <Text style={styles.title}> Share & Publish</Text>}
           <View style={styles.searchWrapper}>
             <Text>Icon</Text>
             <TextInput
@@ -258,16 +255,18 @@ class Share extends Component {
             />
           </View>
           <View style={styles.shareCategory}>
-            <TouchableOpacity
-              onPress={() => this.setOption('general', 'whole_movement')}
-            >
-              <View style={styles.shareItem}>
-                <Text>Publish to the whole movement</Text>
-                <View
-                  style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'whole_movement') ? '#a27ba8' : 'transparent' }]}
-                />
-              </View>
-            </TouchableOpacity>
+            {!this.isModal() &&
+              <TouchableOpacity
+                onPress={() => this.setOption('general', 'whole_movement')}
+              >
+                <View style={styles.shareItem}>
+                  <Text>Publish to the whole movement</Text>
+                  <View
+                    style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'whole_movement') ? '#a27ba8' : 'transparent' }]}
+                  />
+                </View>
+              </TouchableOpacity>
+            }
             <TouchableOpacity
               onPress={() => this.setOption('general', 'copy_to_clip')}
             >
@@ -308,9 +307,8 @@ class Share extends Component {
         <View style={styles.buttonWrapper}>
           <Button
             onPress={this.onNext}
-            title="Next"
+            title={this.buttonText()}
             color="#38ad9e"
-            accessibilityLabel="Go to next form"
           />
         </View>
       </View>
@@ -324,11 +322,13 @@ Share.propTypes = {
   friendLoading: PropTypes.bool.isRequired,
   groups: PropTypes.arrayOf(PropTypes.object),
   groupLoading: PropTypes.bool.isRequired,
+  modal: PropTypes.bool,
 };
 
 Share.defaultProps = {
   friends: [],
   groups: [],
+  modal: false,
 };
 
 export default compose(withMyGroups, withMyFriends)(Share);
