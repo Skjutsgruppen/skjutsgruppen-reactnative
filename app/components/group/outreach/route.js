@@ -73,10 +73,13 @@ class Route extends Component {
 
   setStops = (count, stop) => {
     const { stops } = this.state;
-    stops[count] = { name: stop.name, countryCode: stop.countryCode, coordinates: [stop.lat, stop.lng] };
-    this.setState({ stops }, () => {
-      console.log(this.state.stops);
-    });
+    stops[count] = {
+      name: stop.name,
+      countryCode: stop.countryCode,
+      coordinates: [stop.lat, stop.lng],
+    };
+
+    this.setState({ stops });
   };
 
   removeStop = (count) => {
@@ -84,9 +87,7 @@ class Route extends Component {
 
     delete stops[count];
 
-    this.setState({ stops, stopsCount: this.state.stopsCount - 1 }, () => {
-      console.log(this.state);
-    });
+    this.setState({ stops, stopsCount: this.state.stopsCount - 1 });
   }
 
   addStops = () => {
@@ -100,9 +101,7 @@ class Route extends Component {
     stops = stops.length > 0 ? stops : [{}];
 
     return stops.map((s, i) => (
-      <View
-        key={i}
-      >
+      <View key={i}>
         <GooglePlace
           placeholder="Place"
           onChangeText={stop => this.setStops(i, stop)}
@@ -122,7 +121,15 @@ class Route extends Component {
           <Text style={styles.label}>From</Text>
           <GooglePlace
             placeholder="Start here"
-            onChangeText={start => this.setState({ start: { name: start.name, countryCode: start.countryCode, coordinates: [start.lat, start.lng] } })}
+            onChangeText={
+              start => this.setState({
+                start: {
+                  name: start.name,
+                  countryCode: start.countryCode,
+                  coordinates: [start.lat, start.lng],
+                },
+              })
+            }
           />
         </View>
 
@@ -130,7 +137,15 @@ class Route extends Component {
           <Text style={styles.label}>To</Text>
           <GooglePlace
             placeholder="Start here"
-            onChangeText={end => this.setState({ end: { name: end.name, countryCode: end.countryCode, coordinates: [end.lat, end.lng] } })}
+            onChangeText={
+              end => this.setState({
+                end: {
+                  name: end.name,
+                  countryCode: end.countryCode,
+                  coordinates: [end.lat, end.lng],
+                },
+              })
+            }
           />
         </View>
         <View style={styles.stops}>
@@ -145,7 +160,8 @@ class Route extends Component {
           <View>
             {this.renderStops()}
             <Text style={styles.stopsInfo}>
-              You can add as many stops as you want as long as you would like to pick up people there.
+              You can add as many stops as you want as long as
+              you would like to pick up people there.
             </Text>
           </View>
         </View>
@@ -154,7 +170,6 @@ class Route extends Component {
             onPress={this.onNext}
             title="Next"
             color="#38ad9e"
-            accessibilityLabel="Go to next form"
           />
         </View>
       </View>

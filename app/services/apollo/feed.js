@@ -12,6 +12,7 @@ query getFeed($offset: Int, $limit: Int) {
     ... on GroupFeed {
       Group {
         id
+        outreach
         name
         description
         type
@@ -41,6 +42,10 @@ query getFeed($offset: Int, $limit: Int) {
           name
           coordinates
         }
+        countryId
+        countyId
+        municipalityId
+        localityId
         GroupMembers{
           id
         }
