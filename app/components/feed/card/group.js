@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Group = ({ group, onPress }) => {
+const Group = ({ group, onPress, onSharePress }) => {
   let image = null;
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
@@ -161,7 +161,7 @@ const Group = ({ group, onPress }) => {
         <Relation users={group.User.relation} />
         <View style={styles.verticalDevider} />
         <View style={{ width: '33.33%', alignItems: 'center' }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onSharePress('group', group)}>
             <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={styles.tabLabel}>Share</Text>
             </View>

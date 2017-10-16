@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, ScrollView } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import { Loading, Container } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import Header from '@components/feed/header';
 import TabIcon from '@components/tabIcon';
 import PropTypes from 'prop-types';
+import Modal from 'react-native-modalbox';
+import Share from '@components/offer/share';
 
 class Feed extends Component {
   static navigationOptions = {
@@ -23,7 +25,7 @@ class Feed extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ refreshing: false });
+    this.state = ({ refreshing: false, isOpen: false });
   }
 
   componentWillMount() {
@@ -44,6 +46,26 @@ class Feed extends Component {
     if (type === 'offer') {
       navigation.navigate('OfferDetail', { offer: datail });
     }
+  }
+
+  onSharePress = (type, info) => {
+    console.log(type, info);
+    this.setState({ isOpen: true });
+  };
+
+  onShare = (share) => {
+    this.setState({ isOpen: false });
+    console.log(share);
+  }
+
+  renderModal() {
+    return (
+      <Modal position={'bottom'} swipeArea={50} isOpen={this.state.isOpen} onClosed={() => this.setState({ isOpen: false })}>
+        <ScrollView>
+          <Share modal onNext={this.onShare} />
+        </ScrollView>
+      </Modal>
+    );
   }
 
   renderFooter = () => {
@@ -80,11 +102,18 @@ class Feed extends Component {
     return (
       <FlatList
         data={data.getFeed}
-        renderItem={({ item }) => <FeedItem onPress={this.onPress} key={item.id} feed={item} />}
+        renderItem={
+          ({ item }) => (<FeedItem
+            onSharePress={this.onSharePress}
+            onPress={this.onPress}
+            key={item.id}
+            feed={item}
+          />)
+        }
         keyExtractor={(item, index) => index}
         refreshing={data.networkStatus === 4}
         onRefresh={() => data.refetch()}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={2}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
           if (data.loading) return;
@@ -102,7 +131,8 @@ class Feed extends Component {
             },
           });
         }}
-      />);
+      />
+    );
   }
 
   render() {
@@ -112,6 +142,7 @@ class Feed extends Component {
           <Header />
           {this.renderFeed()}
         </Container>
+        {this.renderModal()}
       </View>
     );
   }

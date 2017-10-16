@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-const Feed = ({ offer, onPress }) => {
+const Feed = ({ offer, onPress, onSharePress }) => {
   let image = null;
   if (offer.photo) {
     image = (<Image source={{ uri: offer.photo }} style={{ width: '100%', height: 200 }} />);
@@ -122,7 +122,7 @@ const Feed = ({ offer, onPress }) => {
         <Relation users={offer.User.relation} />
         <View style={styles.verticalDevider} />
         <View style={{ width: '33.33%', alignItems: 'center' }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onSharePress('offer', offer)}>
             <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={styles.tabLabel}>Share</Text>
             </View>
