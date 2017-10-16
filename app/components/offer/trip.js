@@ -120,10 +120,13 @@ class Trip extends Component {
 
   setStops = (count, stop) => {
     const { stops } = this.state;
-    stops[count] = { name: stop.name, countryCode: stop.countryCode, coordinates: [stop.lat, stop.lng] };
-    this.setState({ stops }, () => {
-      console.log(this.state.stops);
-    });
+    stops[count] = {
+      name: stop.name,
+      countryCode: stop.countryCode,
+      coordinates: [stop.lat, stop.lng],
+    };
+
+    this.setState({ stops });
   };
 
   removeStop = (count) => {
@@ -131,9 +134,7 @@ class Trip extends Component {
 
     delete stops[count];
 
-    this.setState({ stops, stopsCount: this.state.stopsCount - 1 }, () => {
-      console.log(this.state);
-    });
+    this.setState({ stops, stopsCount: this.state.stopsCount - 1 });
   }
 
   addStops = () => {
@@ -151,9 +152,7 @@ class Trip extends Component {
     stops = stops.length > 0 ? stops : [{}];
 
     return stops.map((s, i) => (
-      <View
-        key={i}
-      >
+      <View key={i}>
         <GooglePlace
           placeholder="Place"
           onChangeText={stop => this.setStops(i, stop)}
@@ -173,14 +172,30 @@ class Trip extends Component {
           <Text style={styles.label}>From</Text>
           <GooglePlace
             placeholder="Start here"
-            onChangeText={start => this.setState({ start: { name: start.name, countryCode: start.countryCode, coordinates: [start.lat, start.lng] } })}
+            onChangeText={
+              start => this.setState({
+                start: {
+                  name: start.name,
+                  countryCode: start.countryCode,
+                  coordinates: [start.lat, start.lng],
+                },
+              })
+            }
           />
         </View>
         <View>
           <Text style={styles.label}>To</Text>
           <GooglePlace
             placeholder="Destination"
-            onChangeText={end => this.setState({ end: { name: end.name, countryCode: end.countryCode, coordinates: [end.lat, end.lng] } })}
+            onChangeText={
+              end => this.setState({
+                end: {
+                  name: end.name,
+                  countryCode: end.countryCode,
+                  coordinates: [end.lat, end.lng],
+                },
+              })
+            }
           />
           <View style={styles.destinations}>
             <TouchableOpacity>
@@ -212,13 +227,19 @@ class Trip extends Component {
           <View>
             {this.renderStops()}
             <Text style={styles.stopsInfo}>
-              You can add as many stops as you want as long as you would like to pick up people there.
+              You can add as many stops as you want as long as you would like to
+              pick up people there.
             </Text>
           </View>
         </View>
         <View>
           <Text style={styles.title}>Are You making a return ride?</Text>
-          <Text style={styles.returnInfo}>If select <Text style={styles.bold}>yes</Text> you will get to do a new card for your return ride after you are done filling in this card. The cards will be connected to each other.</Text>
+          <Text style={styles.returnInfo}>
+            If select
+            <Text style={styles.bold}>yes</Text>
+            you will get to do a new card for your return ride after you are done
+            filling in this card. The cards will be connected to each other.
+          </Text>
           <View style={styles.radioRow}>
             <View style={styles.radioWrapper}>
               <TouchableWithoutFeedback
@@ -243,7 +264,6 @@ class Trip extends Component {
             onPress={this.onNext}
             title="Next"
             corlor="#38ad9e"
-            accessibilityLabel="Go to next form"
           />
         </View>
       </View>

@@ -126,7 +126,12 @@ class Group extends Component {
     const { completedTabs, disabledTabs } = this.state;
     completedTabs.push(5);
     delete disabledTabs[disabledTabs.indexOf(5)];
-    this.setState({ share, completedTabs, disabledTabs, activeTab: 6, loading: true }, this.createGroup);
+    this.setState(
+      {
+        share, completedTabs, disabledTabs, activeTab: 6, loading: true,
+      },
+      this.createGroup,
+    );
   };
 
   onButtonPress = () => {
@@ -228,7 +233,11 @@ class Group extends Component {
             />
           </View>
           {(activeTab === 1) && <Stretch onNext={this.onStrechNext} />}
-          {(activeTab === 2) && <OutReach onNext={this.onOutReachNext} outreach={this.state.outreach} />}
+          {(activeTab === 2) &&
+            <OutReach
+              onNext={this.onOutReachNext}
+              outreach={this.state.outreach}
+            />}
           {(activeTab === 3) && <About onNext={this.onAboutNext} />}
           {(activeTab === 4) && <OpenClosed onNext={this.onTypeNext} />}
           {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
