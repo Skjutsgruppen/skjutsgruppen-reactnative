@@ -44,18 +44,27 @@ const styles = StyleSheet.create({
   profilePic: {
     height: 55,
     width: 55,
-    borderRadius: 36,
+    borderRadius: 27,
     marginRight: 12,
   },
   name: {
     color: '#1db0ed',
     fontWeight: 'bold',
   },
+  fromTo: {
+    fontWeight: 'bold',
+  },
   info: {
     padding: 12,
   },
+  stopIcon: {
+    width: 12,
+    resizeMode: 'contain',
+    marginRight: 6,
+  },
   stopText: {
-    color: '#00000077',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 8,
     marginBottom: 12,
   },
@@ -101,7 +110,7 @@ const Feed = ({ offer, onPress, onSharePress }) => {
               </Text>
               <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
             </Text>
-            <Text>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
+            <Text style={styles.fromTo}>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
             <Text style={styles.lightText}>{offer.date}</Text>
           </View>
         </View>
@@ -109,10 +118,10 @@ const Feed = ({ offer, onPress, onSharePress }) => {
           <View>
             {image}
             <View style={styles.info}>
-              <Text style={styles.stopText}>
-                Stops in
-                <Text> {offer.Stops.map(place => place.name).join(', ')}</Text>
-              </Text>
+              <View style={styles.stopText}>
+                <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
+                <Text style={styles.lightText}>Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
+              </View>
               <Text style={styles.messageText}>{offer.comment}</Text>
             </View>
           </View>
@@ -149,6 +158,7 @@ Feed.propTypes = {
     user: PropTypes.object,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  onSharePress: PropTypes.func.isRequired,
 };
 
 export default Feed;

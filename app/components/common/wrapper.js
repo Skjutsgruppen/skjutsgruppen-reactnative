@@ -1,17 +1,18 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
+    paddingTop: 20,
   },
 });
 
 const Wrapper = ({ children, bgColor }) => (
-  <ScrollView keyboardShouldPersistTaps="handled" style={[styles.mainView, { backgroundColor: bgColor }]}>
+  <View keyboardShouldPersistTaps="handled" style={[styles.mainView, { backgroundColor: bgColor }]}>
     {children}
-  </ScrollView>
+  </View>
 );
 
 Wrapper.propTypes = {

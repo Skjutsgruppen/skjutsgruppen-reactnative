@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import Colors from '@theme/colors';
 import Radio from '@components/common/radio';
+import CustomButton from '@components/common/customButton';
 
 const styles = StyleSheet.create({
   title: {
@@ -27,9 +29,8 @@ const styles = StyleSheet.create({
     marginHorizontal: '20%',
   },
   buttonWrapper: {
-    padding: 8,
-    marginBottom: 32,
-    marginHorizontal: 24,
+    marginTop: 32,
+    marginHorizontal: 20,
   },
 });
 
@@ -56,13 +57,11 @@ class Stretch extends Component {
         <View style={styles.radioWrapper}>
           <Radio onPress={() => this.setStretchType('route')} label="Specific stretch" checked={outreach === 'route'} />
           <Radio onPress={() => this.setStretchType('area')} label="Different stretches" checked={outreach === 'area'} />
-        </View><View style={styles.buttonWrapper}>
-          <Button
-            onPress={() => onNext(outreach)}
-            title="Next"
-            accessibilityLabel="Go to next form"
-            color="#38ad9e"
-          />
+        </View>
+        <View style={styles.buttonWrapper}>
+          <CustomButton onPress={() => onNext(outreach)} bgColor={Colors.background.darkCyan}>
+            Next
+          </CustomButton>
         </View>
       </View>
     );

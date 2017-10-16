@@ -150,18 +150,22 @@ class Trip extends Component {
   renderStops() {
     let { stops } = this.state;
     stops = stops.length > 0 ? stops : [{}];
+    let j = 1;
 
-    return stops.map((s, i) => (
-      <View key={i}>
-        <GooglePlace
-          placeholder="Place"
-          onChangeText={stop => this.setStops(i, stop)}
-        />
-        {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
-          <View><Text>-</Text></View>
-        </TouchableWithoutFeedback>) : null}
-      </View>
-    ));
+    return stops.map((s, i) => {
+      j += 1;
+      return (
+        <View key={j}>
+          <GooglePlace
+            placeholder="Place"
+            onChangeText={stop => this.setStops(i, stop)}
+          />
+          {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
+            <View><Text>-</Text></View>
+          </TouchableWithoutFeedback>) : null}
+        </View>
+      );
+    });
   }
 
   render() {

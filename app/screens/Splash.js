@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import { Loading } from '@components/common';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
+import Onboarding from '@components/auth/onboarding';
 
 import { createSelector } from 'reselect';
 
@@ -20,17 +20,22 @@ class Splash extends Component {
   }
 
   async componentWillMount() {
-    const { setLogin, auth } = this.props;
-
-    const isLoggedin = await AuthService.isLoggedIn();
+    const { setLogin, setRegister, auth } = this.props;
+    const user = await AuthService.get();
+    const isLoggedIn = await AuthService.isLoggedIn();
     if (auth.login) {
       this.navigateTo('Tab');
-    } else if (isLoggedin) {
-      const user = await AuthService.get();
+    } else if (isLoggedIn) {
       await setLogin(user);
       this.navigateTo('Tab');
+    } else if (user !== null && user.token !== '' && user.user.emailVerified && user.user.firstName === null) {
+      await setRegister(user);
+      this.navigateTo('EmailVerified');
+    } else if (user !== null && user.token !== '' && !user.user.emailVerified) {
+      await setRegister(user);
+      this.navigateTo('CheckMail');
     } else {
-      this.navigateTo('Login');
+      this.setState({ loading: false });
     }
   }
 
@@ -44,7 +49,15 @@ class Splash extends Component {
   }
 
   render() {
-    return (<Loading />);
+    const { navigation } = this.props;
+
+    return (
+      <Onboarding
+        handleLogin={() => navigation.navigate('LoginMethod')}
+        handleRegister={() => navigation.navigate('RegisterMethod')}
+        loading={this.state.loading}
+      />
+    );
   }
 }
 
@@ -59,6 +72,9 @@ const mapStateToProps = state => ({ auth: authSelector(state) });
 const mapDispatchToProps = dispatch => ({
   setLogin: (user) => {
     dispatch(AuthAction.login(user));
+  },
+  setRegister: (user) => {
+    dispatch(AuthAction.register(user));
   },
 });
 
