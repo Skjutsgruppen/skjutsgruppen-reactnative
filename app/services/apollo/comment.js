@@ -68,7 +68,6 @@ mutation createComment(
 export const submitComment = graphql(createCommentQuery, {
   options: (props) => {
     const { group, offer } = props.navigation.state.params;
-    console.log(props);
     if (offer) {
       return ({ refetchQueries: [{ query: getTripCommentQuery, variables: { id: offer.id } }] });
     }

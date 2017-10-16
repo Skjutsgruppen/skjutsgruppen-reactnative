@@ -148,10 +148,9 @@ class Offer extends Component {
         }
 
         this.setState({ loading: false, offer: res.data.createTrip });
-      })
-        .catch(e => console.log(e));
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

@@ -1,7 +1,8 @@
-import { LOGIN, USER, LOGOUT } from '@redux/types/auth';
+import { LOGIN, USER, LOGOUT, REGISTER } from '@redux/types/auth';
 
 const authAction = {
   login: payload => ({ type: LOGIN, payload }),
+  register: payload => ({ type: REGISTER, payload }),
   user: payload => ({ type: USER, payload }),
   logout: () => ({ type: LOGOUT }),
 };
