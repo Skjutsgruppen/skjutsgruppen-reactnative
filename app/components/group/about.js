@@ -94,7 +94,10 @@ class About extends Component {
               underlineColorAndroid="transparent"
             />
           </View>
-          <Text style={styles.text}>Examples: “The soccer group” or “We who commute together” or what ever you like :)</Text>
+          <Text style={styles.text}>
+            Examples: “The soccer group” or “We who commute together”
+            or what ever you like :)
+          </Text>
         </View>
         <View>
           <Text style={styles.label}>Description</Text>
@@ -113,7 +116,6 @@ class About extends Component {
           <Button
             onPress={this.onNext}
             title="Next"
-            accessibilityLabel="Go to next form"
             color="#38ad9e"
           />
         </View>

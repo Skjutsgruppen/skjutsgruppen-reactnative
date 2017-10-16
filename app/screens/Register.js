@@ -99,11 +99,15 @@ class Register extends Component {
     const { syncContacts } = this.props;
     Contacts.getAll((err, contacts) => {
       if (err === 'denied') {
-        console.log(err);
+        console.error(err);
       } else {
         const mobiles = [];
-        contacts.forEach(contact => contact.phoneNumbers.forEach(book => mobiles.push(book.number)));
-        syncContacts(mobiles).then(res => console.log(res)).catch(error => console.log(error));
+        contacts.forEach(
+          contact => contact.phoneNumbers.forEach(book => mobiles.push(book.number)),
+        );
+        syncContacts(mobiles)
+          .then(res => console.log(res))
+          .catch(error => console.error(error));
       }
     });
   }

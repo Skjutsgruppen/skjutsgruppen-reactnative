@@ -110,14 +110,12 @@ class Date extends Component {
       m = input;
     }
 
-    this.setState({ time: `${h}:${m}` }, () => {
-      console.log(this.state);
-    });
+    this.setState({ time: `${h}:${m}` });
   };
 
   renderHoursOptions = () => {
     const options = [];
-    for (let i = 1; i < 24; i++) {
+    for (let i = 1; i < 24; i + 1) {
       options.push(<Picker.Item
         key={`hour-${i}`}
         label={pad(i)}
@@ -130,7 +128,7 @@ class Date extends Component {
 
   renderMinutesOptions = () => {
     const options = [];
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 60; i + 1) {
       if (i === 0 || i % 15 === 0) {
         options.push(<Picker.Item
           key={`minute-${i}`}
@@ -145,7 +143,7 @@ class Date extends Component {
 
   renderFlexibleOptions = () => {
     const options = [];
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 60; i + 1) {
       if (i === 0 || i % 5 === 0) {
         options.push(<Picker.Item
           key={`minute-${i}`}
@@ -183,8 +181,9 @@ class Date extends Component {
         </View>
         <View style={styles.recurringRide}>
           <Text style={styles.recurringTitle}>Recurring ride?</Text>
-          <Text style={styles.text}>Place more blue balls in the calendar the dates you are doing this trip
-                        again (click on balls to remove).</Text>
+          <Text style={styles.text}>
+            Place more blue balls in the calendar the dates you are doing this trip
+            again (click on balls to remove).</Text>
         </View>
 
         <Text style={styles.title}>Time</Text>

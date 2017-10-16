@@ -5,6 +5,7 @@ import { Loading, Container } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import Header from '@components/feed/header';
 import TabIcon from '@components/tabIcon';
+import PropTypes from 'prop-types';
 
 class Feed extends Component {
   static navigationOptions = {
@@ -115,5 +116,21 @@ class Feed extends Component {
     );
   }
 }
+
+Feed.propTypes = {
+  data: PropTypes.shape({
+    getFeed: PropTypes.arrayOf(PropTypes.object),
+    fetchMore: PropTypes.func.isRequired,
+    refetch: PropTypes.func.isRequired,
+  }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        refetch: PropTypes.string,
+      }),
+    }).isRequired,
+  }).isRequired,
+};
 
 export default withFeed(Feed);

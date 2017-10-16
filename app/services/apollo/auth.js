@@ -48,7 +48,11 @@ mutation register($firstName:String!, $lastName:String!, $email: String!, $passw
 
 export const userRegister = graphql(register, {
   props: ({ mutate }) => ({
-    submit: (firstName, lastName, email, password, phoneNumber) => mutate({ variables: { firstName, lastName, email, password, phoneNumber } }),
+    submit: (firstName, lastName, email, password, phoneNumber) => mutate({
+      variables: {
+        firstName, lastName, email, password, phoneNumber,
+      },
+    }),
   }),
 });
 

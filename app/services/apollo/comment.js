@@ -3,9 +3,7 @@ import gql from 'graphql-tag';
 
 const getGroupCommentQuery = gql`
 query getGroupCommentQuery($id: Int!) {
-  findGroup(id:$id) {
-   id
-   Comments {
+  comments(input : {groupId:$id}) {
     id
     text
     date
@@ -16,58 +14,36 @@ query getGroupCommentQuery($id: Int!) {
       lastName
       photo
     }
-   }
   }
 }
 `;
 
 export const withGroupComment = graphql(getGroupCommentQuery, {
   options: ({ id }) => ({ variables: { id } }),
-  props: ({ data: { findGroup, loading, error, refetch } }) => {
-    let comments = [];
-
-    if (findGroup) {
-      comments = findGroup.Comments;
-    }
-
-    return ({ comments, loading, error, refetch });
-  },
+  props: ({ data: { comments, loading, error } }) => ({ comments, loading, error }),
 });
 
 const getTripCommentQuery = gql`
 query getTripCommentQuery($id: Int!) {
-  findTripById(id:$id) {
-   id
-   Comments {
-     id
-     text
-     date
-     User {
-       id
-       email
-       firstName
-       lastName
-       photo
-     }
-   }
+  comments(input : {tripId:$id}) {
+    id
+    text
+    date
+    User {
+      id
+      email
+      firstName
+      lastName
+      photo
+    }
   }
 }
 `;
 
-export const withOfferComment = graphql(getTripCommentQuery,
-  {
-    options: ({ id }) => ({ variables: { id } }),
-    props: ({ data: { findTripById, loading, error, refetch } }) => {
-      let comments = [];
-
-      if (findTripById) {
-        comments = findTripById.Comments;
-      }
-
-      return ({ comments, loading, error, refetch });
-    },
-  });
-
+export const withTripComment = graphql(getTripCommentQuery, {
+  options: ({ id }) => ({ variables: { id } }),
+  props: ({ data: { comments, loading, error } }) => ({ comments, loading, error }),
+});
 
 const createCommentQuery = gql`
 mutation createComment(
