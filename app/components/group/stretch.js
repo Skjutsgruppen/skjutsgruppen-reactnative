@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
 class Stretch extends Component {
   constructor(props) {
     super(props);
-
     this.state = { outreach: 'route' };
   }
 
@@ -50,7 +49,10 @@ class Stretch extends Component {
     return (
       <View>
         <Text style={styles.title}>Stretch</Text>
-        <Text style={styles.text}>Do your group have a specific stretch, good for commuting from point A to point B, or are you going different stretches? </Text>
+        <Text style={styles.text}>
+          Do your group have a specific stretch, good for commuting from point A to point B, or are
+          you going different stretches?
+        </Text>
         <View style={styles.radioWrapper}>
           <Radio onPress={() => this.setStretchType('route')} label="Specific stretch" checked={outreach === 'route'} />
           <Radio onPress={() => this.setStretchType('area')} label="Different stretches" checked={outreach === 'area'} />

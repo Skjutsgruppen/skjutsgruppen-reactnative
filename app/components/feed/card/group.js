@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import PropTypes from 'prop-types';
 import Relation from '@components/relation';
 
 const styles = StyleSheet.create({
@@ -123,7 +124,10 @@ const Group = ({ group, onPress }) => {
         <View style={styles.feedTitle}>
           {profileImage}
           <Text style={styles.lightText}>
-            <Text style={styles.name}>{group.User.firstName || group.User.email}</Text> created a group
+            <Text style={styles.name}>
+              {group.User.firstName || group.User.email}
+            </Text>
+            <Text> created a group</Text>
           </Text>
         </View>
         <TouchableWithoutFeedback onPress={() => onPress('group', group)}>
@@ -133,8 +137,22 @@ const Group = ({ group, onPress }) => {
               <View style={styles.newGroupNameWrapper}>
                 <Text style={styles.newGroupName}>{group.name}</Text>
               </View>
-              <Text style={styles.newGroupPlace}>{group.TripStart.name} - {group.TripEnd.name}</Text>
-              <Text style={styles.newGroupInfo}>{group.type} group, {group.GroupMembers.length} participants</Text>
+              {
+                group.outreacg === 'area' &&
+                <Text style={styles.newGroupPlace}>
+                  {[group.country, group.county, group.municipality, group.locality].join(', ')}
+                </Text>
+              }
+
+              {
+                group.outreacg === 'route' &&
+                <Text style={styles.newGroupPlace}>
+                  {group.TripStart.name} - {group.TripEnd.name}
+                </Text>
+              }
+              <Text style={styles.newGroupInfo}>
+                {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
+              </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -160,6 +178,16 @@ const Group = ({ group, onPress }) => {
       </View>
     </View>
   );
+};
+
+Group.propTypes = {
+  group: PropTypes.shape({
+    photo: PropTypes.string,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    user: PropTypes.object,
+  }).isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 export default Group;

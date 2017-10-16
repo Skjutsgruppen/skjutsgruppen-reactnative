@@ -110,14 +110,14 @@ class Comment extends Component {
         <Text style={styles.infoText}>
           This is the most important part of our movement!
           <Text style={styles.bold}> We love to talk to each other! </Text>
-          Write about who you are and where are you going. You can also include what vehicle you have, if you
-                    offer your seats for free or if you want to share the costs equally.
+          Write about who you are and where are you going. You can also include what
+          vehicle you have, if you offer your seats for free or if you want to share the
+          costs equally.
         </Text>
         <View style={styles.buttonWrapper}>
           <Button
             onPress={this.onNext}
             title="Next"
-            accessibilityLabel="Go to next form"
             color="#38ad9e"
           />
         </View>
@@ -127,6 +127,9 @@ class Comment extends Component {
 }
 
 Comment.propTypes = {
+  user: PropTypes.shape({
+    photo: PropTypes.string,
+  }).isRequired,
   onNext: PropTypes.func.isRequired,
 };
 
