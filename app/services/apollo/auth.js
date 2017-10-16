@@ -78,7 +78,14 @@ export const UpdateProfile = graphql(updateUserQuery, {
 const myFiendsQuery = gql`
 query
   { 
-    friends { id email phoneNumber } 
+    friends { 
+      id 
+      email 
+      firstName
+      lastName
+      phoneNumber
+      photo
+     } 
   }
 `;
 
@@ -93,6 +100,7 @@ query {
   myGroups {
       id  
       name
+      photo
       }
     }
 `;
