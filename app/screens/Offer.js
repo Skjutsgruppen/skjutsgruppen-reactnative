@@ -110,7 +110,16 @@ class Offer extends Component {
     const { completedTabs, disabledTabs } = this.state;
     completedTabs.push(5);
     delete disabledTabs[disabledTabs.indexOf(5)];
-    this.setState({ share, completedTabs, disabledTabs, activeTab: 6, loading: true }, this.createTrip);
+    this.setState(
+      {
+        share,
+        completedTabs,
+        disabledTabs,
+        activeTab: 6,
+        loading: true,
+      },
+      this.createTrip,
+    );
   };
 
   onButtonPress = () => {

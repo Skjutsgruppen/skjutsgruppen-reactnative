@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
-import { submitComment, withOfferComment } from '@services/apollo/comment';
+import { submitComment, withTripComment } from '@services/apollo/comment';
 import { Loading, Wrapper } from '@components/common';
 import Comment from '@components/comment';
 import Relation from '@components/relation';
+import PropTypes from 'prop-types';
 
-const OfferComment = withOfferComment(Comment);
+const OfferComment = withTripComment(Comment);
 
 const styles = StyleSheet.create({
   lightText: {
@@ -202,7 +203,6 @@ class OfferDetail extends Component {
               placeholderTextColor="#666"
               underlineColorAndroid="transparent"
             />
-
             <View style={styles.send}>
               {this.renderButton()}
             </View>
@@ -237,17 +237,25 @@ class OfferDetail extends Component {
               <View style={styles.feedTitle}>
                 {profileImage}
                 <View>
-                  <Text style={styles.lightText}><Text style={styles.name}>{offer.User.firstName || offer.User.email}</Text> offers {offer.seats} seats</Text>
+                  <Text style={styles.lightText}>
+                    <Text style={styles.name}>
+                      {offer.User.firstName || offer.User.email}
+                    </Text>
+                    <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
+                  </Text>
                   <Text>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
-                  <Text style={styles.lightText}>{offer.date} {offer.time}</Text>
+                  <Text style={styles.lightText}>{offer.date}</Text>
                 </View>
               </View>
-              {image}
-              <View style={styles.info}>
-                <Text style={styles.stopText}>Stops in {
-                  offer.Stops.map(place => place.name).join(', ')
-                }</Text>
-                <Text style={styles.messageText}>{offer.comment}</Text>
+              <View>
+                {image}
+                <View style={styles.info}>
+                  <Text style={styles.stopText}>
+                    Stops in
+                    <Text> {offer.Stops.map(place => place.name).join(', ')}</Text>
+                  </Text>
+                  <Text style={styles.messageText}>{offer.comment}</Text>
+                </View>
               </View>
             </View>
             <View style={styles.feedAction}>
@@ -264,5 +272,12 @@ class OfferDetail extends Component {
     );
   }
 }
+
+OfferDetail.propTypes = {
+  submit: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
 
 export default submitComment(OfferDetail);

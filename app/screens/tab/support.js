@@ -219,6 +219,11 @@ Support.propTypes = {
   logout: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    photo: PropTypes.string.isRequired,
+  }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
@@ -229,10 +234,10 @@ const mapStateToProps = state => ({ user: state.auth.user });
 const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.log(error)),
+    .catch(error => console.error(error)),
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user)))
-    .catch(error => console.log(error)),
+    .catch(error => console.error(error)),
 });
 
 export default compose(UpdateProfile, connect(mapStateToProps, mapDispatchToProps))(Support);

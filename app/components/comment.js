@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { Loading } from '@components/common';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -110,66 +111,66 @@ const styles = StyleSheet.create({
   },
 });
 
-class Comment extends Component {
-  componentWillMount() {
-    console.log('here');
+const Comment = ({ comments, loading, error }) => {
+  if (loading) {
+    return <Loading />;
   }
 
-  componentWillReceiveProps() {
-    console.log('update');
-  }
-
-  render() {
-    const { comments, loading, error } = this.props;
-
-    if (loading) {
-      return <Loading />;
-    }
-
-    if (error) {
-      return (
-        <View>
-          <Text>{error}</Text>
-        </View>
-      );
-    }
-
-    if (comments && comments.length < 1) {
-      return (
-        <View>
-          <Text>No Comment</Text>
-        </View>
-      );
-    }
-
-    let image = '';
-
+  if (error) {
     return (
       <View>
-        {comments.map((comment) => {
-          if (comment.User.photo) {
-            image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
-          } else {
-            image = (<View style={styles.imgIcon} />);
-          }
-          return (
-            <View key={comment.id} style={styles.commentWrapper}>
-              {image}
-              <View>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
-                  <Text style={styles.time}>{comment.date}</Text>
-                </View>
-                <View>
-                  <Text style={styles.commentText}>{comment.text}</Text>
-                </View>
-              </View>
-            </View>
-          );
-        })}
+        <Text>{error}</Text>
       </View>
     );
   }
-}
+
+  if (comments && comments.length < 1) {
+    return (
+      <View>
+        <Text>No Comment</Text>
+      </View>
+    );
+  }
+
+  let image = '';
+
+  return (
+    <View>
+      {comments.map((comment) => {
+        if (comment.User.photo) {
+          image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
+        } else {
+          image = (<View style={styles.imgIcon} />);
+        }
+        return (
+          <View key={comment.id} style={styles.commentWrapper}>
+            {image}
+            <View>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
+                <Text style={styles.time}>{comment.date}</Text>
+              </View>
+              <View>
+                <Text style={styles.commentText}>{comment.text}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+Comment.propTypes = {
+  comments: PropTypes.arrayOf(PropTypes.object),
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+};
+
+Comment.defaultProps = {
+  comments: [],
+  error: '',
+  loading: false,
+};
 
 export default Comment;
