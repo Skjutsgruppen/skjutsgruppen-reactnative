@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
@@ -9,7 +9,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
-    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 12,
   },
   rowWrapper: {
     backgroundColor: '#ffffff',
@@ -22,7 +24,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   touchable: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 30,
@@ -32,11 +33,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  groupIcon: {
+    height: 24,
+    resizeMode: 'contain',
+    marginBottom: 8,
+  },
+  telescope: {
+    height: 40,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginTop: 24,
+  },
   explore: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 32,
+    paddingVertical: 24,
     paddingHorizontal: 12,
 
   },
@@ -109,6 +121,7 @@ class Add extends Component {
               onPress={() => this.redirect('Group')}
               style={styles.touchable}
             >
+              <Image source={require('@icons/icon_group.png')} style={styles.groupIcon} />
               <Text
                 accessibilityLabel="Go to next form"
                 style={styles.actionLabel}
@@ -118,15 +131,14 @@ class Add extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        <Image source={require('@icons/icon_telescope.png')} style={styles.telescope} />
         <View style={styles.explore}>
-          <View>
-            <Text style={styles.exploreText}>
-              Want to explore existing groups?
-            </Text>
-            <TouchableOpacity style={styles.exploreButton}>
-              <Text style={styles.exploreButtonText}>Click here</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.exploreText}>
+            Want to explore existing groups?
+          </Text>
+          <TouchableOpacity style={styles.exploreButton}>
+            <Text style={styles.exploreButtonText}>Click here</Text>
+          </TouchableOpacity>
         </View>
       </Wrapper>
     );

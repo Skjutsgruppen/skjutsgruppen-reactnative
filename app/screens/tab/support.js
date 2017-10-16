@@ -8,7 +8,7 @@ import { NavigationActions } from 'react-navigation';
 import TabIcon from '@components/tabIcon';
 import { Loading, Wrapper } from '@components/common';
 import { compose } from 'react-apollo';
-import { UpdateProfile } from '@services/apollo/auth';
+import { withUpdateProfile } from '@services/apollo/auth';
 import Camera from '@components/camera';
 
 const styles = StyleSheet.create({
@@ -83,13 +83,13 @@ class Support extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { submit, setUser } = this.props;
+    const { updateProfile, setUser } = this.props;
     const { firstName, lastName, photo } = this.state;
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        submit(firstName, lastName, photo).then((res) => {
+        updateProfile(firstName, lastName, photo).then((res) => {
           setUser(res.data.updateUser);
           this.setState({ loading: false, error: '' });
           Toast.show('Profile successfully updated.', Toast.LONG);
@@ -126,7 +126,7 @@ class Support extends Component {
   logout = () => {
     const { logout } = this.props;
     logout().then(() => {
-      this.navigateTo('Login');
+      this.navigateTo('Splash');
     });
   }
 
@@ -218,11 +218,11 @@ class Support extends Component {
 Support.propTypes = {
   logout: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
-  submit: PropTypes.func.isRequired,
+  updateProfile: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    firstName: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
-    photo: PropTypes.string.isRequired,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    photo: PropTypes.string,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -240,4 +240,4 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.error(error)),
 });
 
-export default compose(UpdateProfile, connect(mapStateToProps, mapDispatchToProps))(Support);
+export default compose(withUpdateProfile, connect(mapStateToProps, mapDispatchToProps))(Support);

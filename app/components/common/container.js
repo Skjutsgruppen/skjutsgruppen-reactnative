@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -8,15 +8,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     paddingTop: 12,
-    marginTop: 24,
+    marginTop: 12,
   },
 });
 
 
 const Container = ({ children, bgColor }) => (
-  <View style={[styles.wrapper, { backgroundColor: bgColor }]}>
+  <ScrollView style={[styles.wrapper, { backgroundColor: bgColor }]}>
     {children}
-  </View>
+  </ScrollView>
 );
 
 Container.propTypes = {
