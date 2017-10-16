@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   participantWrapper: {
@@ -24,7 +25,10 @@ const Relation = ({ users }) => (
       if (user.photo) {
         return (
           <View key={user.id} style={styles.participant}>
-            <Image source={{ uri: user.photo }} style={{ width: 20, height: 20, borderRadius: 20 }} />
+            <Image
+              source={{ uri: user.photo }}
+              style={{ width: 20, height: 20, borderRadius: 20 }}
+            />
           </View>
         );
       }
@@ -33,5 +37,9 @@ const Relation = ({ users }) => (
     })}
   </View>
 );
+
+Relation.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default Relation;
