@@ -25,14 +25,8 @@ class Auth {
   }
 
   async token() {
-    const isLoggedIn = await this.isLoggedIn();
-
-    if (isLoggedIn) {
-      const auth = await this.get();
-      return auth.token;
-    }
-
-    return '';
+    const auth = await this.get();
+    return auth !== null ? auth.token : '';
   }
 
   async user() {
@@ -48,7 +42,12 @@ class Auth {
 
   async isLoggedIn() {
     const session = await this.session.get(this.key);
-    return (session && session.token !== '');
+
+    if (session) {
+      return (session.user.emailVerified && session.token !== '');
+    }
+
+    return false;
   }
 }
 

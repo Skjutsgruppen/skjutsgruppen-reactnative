@@ -21,6 +21,15 @@
       {
         "props": false
       }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
     ]
   }
 }

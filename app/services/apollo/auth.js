@@ -12,7 +12,9 @@ mutation login($username: String!, $password:String!) {
       id
       firstName
       lastName
+      emailVerified
       email
+      phoneVerified
       phoneNumber
       photo
     }
@@ -26,10 +28,9 @@ export const userLogin = graphql(login, {
   }),
 });
 
-
 const register = gql`
-mutation register($firstName:String!, $lastName:String!, $email: String!, $password:String!,  $phoneNumber:String!) {
-  register(firstName:$firstName, lastName: $lastName, email: $email,  password: $password, phoneNumber:$phoneNumber) {
+mutation register($email: String!) {
+  register(email: $email) {
     token,
     status,
     error,
@@ -38,7 +39,10 @@ mutation register($firstName:String!, $lastName:String!, $email: String!, $passw
       id
       firstName
       lastName
+      emailVerified
       email
+      verificationCode
+      phoneVerified
       phoneNumber
       photo
     }  
@@ -48,30 +52,51 @@ mutation register($firstName:String!, $lastName:String!, $email: String!, $passw
 
 export const userRegister = graphql(register, {
   props: ({ mutate }) => ({
-    submit: (firstName, lastName, email, password, phoneNumber) => mutate({
-      variables: {
-        firstName, lastName, email, password, phoneNumber,
-      },
-    }),
+    register: email => mutate({ variables: { email } }),
   }),
 });
 
-const updateUserQuery = gql`
-mutation updateUser($firstName:String!, $lastName:String!, $photo:String) {
-  updateUser(firstName:$firstName, lastName: $lastName, photo: $photo) {
-      id
-      firstName
-      lastName
-      email
-      phoneNumber
-      photo
+
+const verifyCodeQuery = gql`
+mutation verifyCode($code:String!) {
+  verifyCode(code:$code) {
+      status
+      message
   }
 }
 `;
 
-export const UpdateProfile = graphql(updateUserQuery, {
+export const withVerifyCode = graphql(verifyCodeQuery, {
   props: ({ mutate }) => ({
-    submit: (firstName, lastName, photo) => mutate({ variables: { firstName, lastName, photo } }),
+    verifyCode: code => mutate({ variables: { code } }),
+  }),
+});
+
+const updateUserQuery = gql`
+mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNumber:String,  $password:String) {
+  updateUser(input:{
+    firstName:$firstName, lastName: $lastName,  photo: $photo, phoneNumber:$phoneNumber, password: $password
+  }) {
+    token,
+    User {
+      id
+      firstName
+      lastName
+      emailVerified
+      email
+      phoneVerified
+      phoneNumber
+      photo
+    }
+  }
+}
+`;
+
+export const withUpdateProfile = graphql(updateUserQuery, {
+  props: ({ mutate }) => ({
+    updateProfile: (firstName, lastName, photo, phoneNumber, password) => mutate({
+      variables: { firstName, lastName, photo, phoneNumber, password },
+    }),
   }),
 });
 
