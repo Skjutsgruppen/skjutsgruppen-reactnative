@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   profilePic: {
     height: 55,
     width: 55,
-    borderRadius: 36,
+    borderRadius: 27,
     marginRight: 12,
   },
 });
@@ -188,6 +188,7 @@ Group.propTypes = {
     user: PropTypes.object,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  onSharePress: PropTypes.func.isRequired,
 };
 
 export default Group;

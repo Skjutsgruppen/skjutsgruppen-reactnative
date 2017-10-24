@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, Text,
+  View,
+  Text,
   StyleSheet,
-  Button,
   TextInput,
   ToastAndroid as Toast,
+  Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -13,31 +14,33 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
-import { Loading, Wrapper } from '@components/common';
+import { Loading } from '@components/common';
+import Colors from '@theme/colors';
+import Container from '@components/auth/container';
+import CustomButton from '@components/common/customButton';
+import { ColoredText, GreetText } from '@components/auth/texts';
+import BackButton from '@components/auth/backButton';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  input: {
-    backgroundColor: '#ddd',
-    height: 40,
-    marginHorizontal: 20,
-    paddingLeft: 45,
-    borderRadius: 20,
-    color: '#222',
+  garderIcon: {
+    marginBottom: 24,
+    resizeMode: 'cover',
   },
   inputWrapper: {
-    height: 70,
+    width: '100%',
   },
-  title: {
-    marginTop: 100,
-    marginBottom: 20,
-    alignItems: 'center',
+  input: {
+    width: '100%',
+    padding: 16,
+    fontSize: 14,
+    textAlign: 'center',
+    backgroundColor: Colors.background.fullWhite,
+    marginBottom: 32,
+  },
+  userNameInput: {
+    marginBottom: 12,
   },
 });
-
 
 class Login extends Component {
   static navigationOptions = {
@@ -82,6 +85,10 @@ class Login extends Component {
     }
   }
 
+  onPressBack = () => {
+    this.props.navigation.goBack();
+  };
+
   navigateTo = (routeName) => {
     const { navigation } = this.props;
 
@@ -95,7 +102,6 @@ class Login extends Component {
   checkValidation() {
     const errors = [];
     const { username, password } = this.state;
-
 
     if (username === '') {
       errors.push('Username is required.');
@@ -118,60 +124,50 @@ class Login extends Component {
       return <Loading />;
     }
 
-    return (<Button
-      onPress={this.onSubmit}
-      title="Login"
-    />);
+    return (
+      <CustomButton
+        bgColor={Colors.background.green}
+        onPress={this.onSubmit}
+      >
+        Next
+      </CustomButton>
+    );
   }
 
   render() {
     const { error } = this.state;
-    const { navigation } = this.props;
 
     return (
-      <Wrapper>
-        <Text style={styles.title} >Login</Text>
-        {(error !== '') && (<View style={styles.inputWrapper}><Text>{error}</Text></View>)}
+      <Container>
+        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
+        <GreetText>Sign in</GreetText>
+
+        <ColoredText color={Colors.text.purple}>
+          You can use your cellphone number or e-mail to sign in
+        </ColoredText>
+
+        {(error !== '') ? (<View style={styles.inputWrapper}><Text>{error}</Text></View>) : null}
 
         <View style={styles.inputWrapper}>
           <TextInput
             onChangeText={username => this.setState({ username })}
-            value={this.state.username}
-            style={styles.input}
-            placeholder={'Email or Phone number'}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            returnKeyType={'done'}
-            placeholderTextColor="#666"
+            style={[styles.input, styles.userNameInput]}
+            placeholder="Your cellphone number or e-mail"
             underlineColorAndroid="transparent"
           />
         </View>
-
         <View style={styles.inputWrapper}>
           <TextInput
             onChangeText={password => this.setState({ password })}
             style={styles.input}
-            value={this.state.password}
-            secureTextEntry={this.secureText}
-            placeholder="Password"
-            returnKeyType={'done'}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            placeholderTextColor="#666"
+            secureTextEntry
+            placeholder="Your Password"
             underlineColorAndroid="transparent"
           />
         </View>
-        <View style={styles.inputWrapper}>
-          {this.renderButton()}
-        </View>
-
-        <Button
-          onPress={() => {
-            navigation.navigate('Register');
-          }}
-          title="Register"
-        />
-      </Wrapper>
+        {this.renderButton()}
+        <BackButton onPress={this.onPressBack} />
+      </Container>
     );
   }
 }
@@ -185,6 +181,7 @@ Login.propTypes = {
   setLogin: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    goBack: PropTypes.func,
   }).isRequired,
 };
 
@@ -192,7 +189,7 @@ const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
   setLogin: user => AuthService.set(user)
     .then(() => dispatch(AuthAction.login(user)))
-    .catch(error => console.log(error)),
+    .catch(error => console.error(error)),
 });
 
 export default compose(userLogin, connect(mapStateToProps, mapDispatchToProps))(Login);
