@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TouchableWithoutFeedback, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Image } from 'react-native';
 import GooglePlace from '@components/googlePlace';
+import Colors from '@theme/colors';
+import CustomButton from '@components/common/customButton';
 
 const styles = StyleSheet.create({
   title: {
@@ -17,6 +19,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#999999',
     marginBottom: 6,
+    marginTop: 12,
     marginHorizontal: 24,
     fontWeight: 'bold',
   },
@@ -35,10 +38,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     marginBottom: 24,
   },
+  addStop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  addStopIcon: {
+    width: 16,
+    resizeMode: 'contain',
+    marginRight: 10,
+  },
+  place: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  stopIcon: {
+    width: 16,
+    resizeMode: 'contain',
+    marginRight: 10,
+  },
   stopsLabel: {
-    marginBottom: 8,
-    marginTop: 24,
     color: '#777777',
+    lineHeight: 18,
   },
   stopsInfo: {
     marginBottom: 8,
@@ -99,26 +123,31 @@ class Route extends Component {
   renderStops() {
     let { stops } = this.state;
     stops = stops.length > 0 ? stops : [{}];
+    let j = 1;
 
-    return stops.map((s, i) => (
-      <View key={i}>
-        <GooglePlace
-          placeholder="Place"
-          onChangeText={stop => this.setStops(i, stop)}
-        />
-        {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
-          <View><Text>-</Text></View>
-        </TouchableWithoutFeedback>) : null}
-      </View>
-    ));
+    return stops.map((s, i) => {
+      j += 1;
+      return (
+        <View key={j} style={styles.place}>
+          <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
+          <GooglePlace
+            placeholder="Place"
+            onChangeText={stop => this.setStops(i, stop)}
+          />
+          {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
+            <View><Text>-</Text></View>
+          </TouchableWithoutFeedback>) : null}
+        </View>
+      );
+    });
   }
 
   render() {
     return (
       <View>
         <Text style={styles.title}>Specific stretch</Text>
+        <Text style={styles.label}>From</Text>
         <View>
-          <Text style={styles.label}>From</Text>
           <GooglePlace
             placeholder="Start here"
             onChangeText={
@@ -130,11 +159,11 @@ class Route extends Component {
                 },
               })
             }
+            style={{ marginBottom: 32 }}
           />
         </View>
-
+        <Text style={styles.label}>To</Text>
         <View>
-          <Text style={styles.label}>To</Text>
           <GooglePlace
             placeholder="Start here"
             onChangeText={
@@ -149,9 +178,9 @@ class Route extends Component {
           />
         </View>
         <View style={styles.stops}>
-          <View>
+          <View style={styles.addStop}>
             <TouchableWithoutFeedback onPress={this.addStops}>
-              <View><Text>+</Text></View>
+              <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
             </TouchableWithoutFeedback>
             <Text style={styles.stopsLabel}>
               Stops along the way:
@@ -166,11 +195,12 @@ class Route extends Component {
           </View>
         </View>
         <View style={styles.buttonWrapper}>
-          <Button
+          <CustomButton
             onPress={this.onNext}
-            title="Next"
-            color="#38ad9e"
-          />
+            bgColor={Colors.background.darkCyan}
+          >
+            Next
+          </CustomButton>
         </View>
       </View>
     );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
+import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } from 'react-native';
 import Tab from '@components/tab';
 import Stretch from '@components/group/stretch';
 import OutReach from '@components/group/outreach';
@@ -14,6 +14,25 @@ import Completed from '@components/group/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 
 const styles = StyleSheet.create({
+  backButtonWrapper: {
+    marginTop: 10,
+    marginHorizontal: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 60,
+  },
+  backIcon: {
+    height: 13,
+    resizeMode: 'contain',
+    marginRight: 6,
+  },
+  backText: {
+    color: '#999',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
   mainTitle: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -193,11 +212,12 @@ class Group extends Component {
 
     return (
       <Wrapper bgColor="#eded18">
-
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.title}>Back</Text>
-        </TouchableOpacity>
-
+        <View style={styles.backButtonWrapper}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
+            <Text style={styles.backText}>Back</Text>
+          </TouchableOpacity>
+        </View>
         <Container bgColor="#f3f3ed">
           <Text style={styles.mainTitle}>Add a new group</Text>
           <View style={styles.tabContainer}>

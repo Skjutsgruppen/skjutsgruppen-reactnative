@@ -1,4 +1,4 @@
-import { LOGIN, USER, LOGOUT } from '@redux/types/auth';
+import { LOGIN, USER, LOGOUT, REGISTER } from '@redux/types/auth';
 
 const initialState = {
   login: false,
@@ -14,6 +14,9 @@ const feed = (state = initialState, { type = '', payload = {} }) => {
       break;
     case USER:
       newState = { ...state, ...{ user: payload } };
+      break;
+    case REGISTER:
+      newState = { ...state, ...{ login: false, token: payload.token, user: payload.user } };
       break;
     case LOGOUT:
       newState = { ...state, ...{ login: false, token: '', user: {} } };

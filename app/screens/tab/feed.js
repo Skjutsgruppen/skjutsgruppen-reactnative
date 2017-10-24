@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, ScrollView } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
-import { Loading, Container } from '@components/common';
+import { Loading, Wrapper, FeedContainer } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import Header from '@components/feed/header';
 import TabIcon from '@components/tabIcon';
@@ -48,14 +48,12 @@ class Feed extends Component {
     }
   }
 
-  onSharePress = (type, info) => {
-    console.log(type, info);
+  onSharePress = () => {
     this.setState({ isOpen: true });
   };
 
-  onShare = (share) => {
+  onShare = () => {
     this.setState({ isOpen: false });
-    console.log(share);
   }
 
   renderModal() {
@@ -120,12 +118,10 @@ class Feed extends Component {
           data.fetchMore({
             variables: { offset: data.getFeed.length + 1, limit: 5 },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              // Don't do anything if there weren't any new items
               if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
                 return previousResult;
               }
               return {
-                // Append the new getFeed results to the old one
                 getFeed: previousResult.getFeed.concat(fetchMoreResult.getFeed),
               };
             },
@@ -137,13 +133,13 @@ class Feed extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: '#00aeef', flex: 1 }}>
-        <Container bgColor="#dddee3">
+      <Wrapper bgColor="#00aeef" >
+        <FeedContainer bgColor="#dddee3">
           <Header />
           {this.renderFeed()}
-        </Container>
+        </FeedContainer>
         {this.renderModal()}
-      </View>
+      </Wrapper>
     );
   }
 }

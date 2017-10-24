@@ -29,7 +29,32 @@ const GooglePlacesInput = ({ placeholder, onChangeText }) => (
     }}
     styles={{
       textInputContainer: {
-        width: '100%',
+        height: 48,
+        backgroundColor: '#fff',
+        borderTopWidth: 0,
+        borderBottomWidth: 0,
+        paddingHorizontal: 14,
+      },
+      listView: {
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderColor: '#bbb',
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+      },
+      textInput: {
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        height: 48,
+        color: '#000',
+        fontSize: 16,
       },
       description: {
         fontWeight: 'bold',
