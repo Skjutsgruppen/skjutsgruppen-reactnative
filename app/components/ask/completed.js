@@ -1,11 +1,10 @@
 import React from 'react';
-import { Text, View, Button, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import CustomButton from '@components/common/customButton';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 24,
-  },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -16,6 +15,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
+    width: 70,
+    height: 70,
+    resizeMode: 'contain',
     alignSelf: 'center',
     marginBottom: 24,
   },
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     color: '#777777',
     textAlign: 'center',
     marginBottom: 24,
-
+    marginHorizontal: 24,
   },
   bold: {
     fontWeight: 'bold',
@@ -32,18 +34,14 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   uniqueAddress: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#1ca9e5',
     marginBottom: 24,
+    marginHorizontal: 24,
     textAlign: 'center',
   },
-  buttonWrapper: {
-    padding: 8,
-    marginBottom: 32,
-    marginVertical: 24,
-  },
   button: {
-    fontWeight: 'bold',
+    margin: 24,
   },
 });
 
@@ -57,13 +55,13 @@ const Completed = ({ ask, isCliped, onButtonPress }) => (
     {isCliped && <Text style={[styles.text, styles.italic]}>
       (Its copied to your clipboard so you can paste it wherever you want)
     </Text>}
-    <View style={styles.buttonWrapper}>
-      <Button
-        onPress={onButtonPress}
-        title="See your ride"
-        corlor="#38ad9e"
-      />
-    </View>
+    <CustomButton
+      onPress={onButtonPress}
+      bgColor={Colors.background.darkCyan}
+      style={styles.button}
+    >
+      Next
+    </CustomButton>
   </View>
 );
 

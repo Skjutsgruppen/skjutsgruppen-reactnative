@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { submitGroup } from '@services/apollo/group';
-import Share from '@components/offer/share';
+import Share from '@components/common/share';
 import Completed from '@components/group/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 
@@ -260,7 +260,7 @@ class Group extends Component {
             />}
           {(activeTab === 3) && <About onNext={this.onAboutNext} />}
           {(activeTab === 4) && <OpenClosed onNext={this.onTypeNext} />}
-          {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
+          {(activeTab === 5) && <Share showGroup={false} onNext={this.onShareAndPublishNext} />}
           {(activeTab === 6) && this.renderFinish()}
         </Container>
       </Wrapper>

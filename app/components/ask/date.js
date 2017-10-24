@@ -60,9 +60,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   button: {
-    marginTop: 12,
-    marginBottom: 24,
-    marginHorizontal: 24,
+    margin: 24,
   },
 });
 
@@ -168,9 +166,10 @@ class Date extends Component {
   render() {
     const { time } = this.state;
     const [h, m] = time.split(':');
+
     return (
       <View>
-        <Text style={styles.title}> Date</Text>
+        <Text style={styles.title}>Date</Text>
         <View style={{
           backgroundColor: '#fff',
           borderBottomColor: '#ccc',
@@ -225,9 +224,7 @@ class Date extends Component {
 
         <Text style={styles.title}>How Flexible are you?</Text>
         <View style={styles.inputContainer}>
-
           <View style={styles.inputWrapper}>
-
             <Picker
               onValueChange={flexsible => this.setState({ flexsible })}
               selectedValue={this.state.flexsible}
