@@ -214,6 +214,10 @@ class Share extends Component {
     return this.props.modal;
   }
 
+  showGroup() {
+    return this.props.showGroup;
+  }
+
   buttonText() {
     return this.isModal() ? 'Share' : 'Next';
   }
@@ -354,11 +358,11 @@ class Share extends Component {
       <Wrapper bgColor={Colors.background.cream}>
         {
           this.isModal() &&
-            <View style={styles.navBar}>
-              <CloseButton onPress={this.onClose} />
-              <Text style={styles.pageTitle} >Share with</Text>
-              <View style={styles.map} />
-            </View>
+          <View style={styles.navBar}>
+            <CloseButton onPress={this.onClose} />
+            <Text style={styles.pageTitle} >Share with</Text>
+            <View style={styles.map} />
+          </View>
         }
         <View style={styles.listWrapper}>
           {!this.isModal() &&
@@ -452,8 +456,8 @@ class Share extends Component {
               </TouchableWithoutFeedback>
             </View>
             {this.renderBestFriends()}
-            {this.renderGroups()}
             {this.renderFriends()}
+            {this.showGroup() && this.renderGroups()}
           </View>
         </View>
         <CustomButton
@@ -469,19 +473,22 @@ class Share extends Component {
 }
 
 Share.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   onNext: PropTypes.func.isRequired,
   friends: PropTypes.arrayOf(PropTypes.object),
   friendLoading: PropTypes.bool.isRequired,
   groups: PropTypes.arrayOf(PropTypes.object),
   groupLoading: PropTypes.bool.isRequired,
   modal: PropTypes.bool,
+  showGroup: PropTypes.bool,
 };
 
 Share.defaultProps = {
+  onClose: () => { },
   friends: [],
   groups: [],
   modal: false,
+  showGroup: true,
 };
 
 export default compose(withMyGroups, withMyFriends)(Share);
