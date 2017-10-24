@@ -117,12 +117,13 @@ class Add extends Component {
           </View>
           <View style={styles.row}>
             <TouchableOpacity
+              onPress={() => this.redirect('Ask')}
               style={styles.touchable}
             >
               <Text
                 style={styles.actionLabel}
               >
-                Ask for a ride again
+                Ask for a ride
               </Text>
             </TouchableOpacity>
           </View>
