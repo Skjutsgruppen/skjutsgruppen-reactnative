@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: (Platform.OS === 'ios') ? 20 : 0,
   },
 });
 
 const Wrapper = ({ children, bgColor }) => (
-  <View keyboardShouldPersistTaps="handled" style={[styles.mainView, { backgroundColor: bgColor }]}>
+  <View style={[styles.mainView, { backgroundColor: bgColor }]}>
     {children}
   </View>
 );

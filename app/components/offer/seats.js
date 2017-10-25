@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
+import CustomButton from '@components/common/customButton';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   title: {
@@ -18,8 +20,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginBottom: 24,
   },
-  buttonWrapper: {
-    padding: 8,
+  button: {
+    marginTop: 12,
     marginBottom: 32,
     marginHorizontal: 24,
   },
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 32,
   },
 });
 
@@ -66,14 +68,13 @@ class Seats extends Component {
             onChangeText={seat => this.setState({ seat })}
           />
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            color="#38ad9e"
-            accessibilityLabel="Go to next form"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.button}
+        >
+          Next
+        </CustomButton>
       </View>
     );
   }

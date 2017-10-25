@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   button: {
-    width: '100%',
     borderRadius: 12,
     padding: 10,
     marginBottom: 24,
