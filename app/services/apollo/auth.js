@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 
 const login = gql`
 mutation login($username: String!, $password:String!) {
-  login(username: $username, password: $password) {
+  login(input : {username: $username, password: $password}) {
     token,
     status,
     error,

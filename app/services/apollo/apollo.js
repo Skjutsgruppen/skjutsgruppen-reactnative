@@ -1,6 +1,11 @@
 import ApolloClient, { createNetworkInterface, IntrospectionFragmentMatcher } from 'apollo-client';
-import { API_URL } from '@config';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+import { API_URL, WS_API_URL } from '@config';
 import Auth from '@services/auth';
+
+const wsClient = new SubscriptionClient(WS_API_URL, {
+  reconnect: true,
+});
 
 const networkInterface = createNetworkInterface({ uri: API_URL });
 
@@ -16,6 +21,10 @@ networkInterface.use([{
   },
 }]);
 
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
+  networkInterface,
+  wsClient,
+);
 
 const feedFragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {
@@ -39,4 +48,7 @@ const feedFragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 
-export default new ApolloClient({ networkInterface, fragmentMatcher: feedFragmentMatcher });
+export default new ApolloClient({
+  networkInterface: networkInterfaceWithSubscriptions,
+  fragmentMatcher: feedFragmentMatcher,
+});

@@ -1,9 +1,26 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const getGroupCommentQuery = gql`
-query getGroupCommentQuery($id: Int!) {
-  comments(input : {groupId:$id}) {
+const COMMENTS_SUBSCRIPTION = gql`
+  subscription commentAdded($id:Int!) {
+    commentAdded (channelId : $id){
+      id
+      text
+      date
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+      }
+    }
+  }
+`;
+
+const GET_GROUP_COMMENTS = gql`
+query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
+  comments(input : {groupId:$id, offset:$offset, limit:$limit}) {
     id
     text
     date
@@ -18,34 +35,7 @@ query getGroupCommentQuery($id: Int!) {
 }
 `;
 
-export const withGroupComment = graphql(getGroupCommentQuery, {
-  options: ({ id }) => ({ variables: { id } }),
-  props: ({ data: { comments, loading, error } }) => ({ comments, loading, error }),
-});
-
-const getTripCommentQuery = gql`
-query getTripCommentQuery($id: Int!) {
-  comments(input : {tripId:$id}) {
-    id
-    text
-    date
-    User {
-      id
-      email
-      firstName
-      lastName
-      photo
-    }
-  }
-}
-`;
-
-export const withTripComment = graphql(getTripCommentQuery, {
-  options: ({ id }) => ({ variables: { id } }),
-  props: ({ data: { comments, loading, error } }) => ({ comments, loading, error }),
-});
-
-const createCommentQuery = gql`
+const CREATE_COMMENT = gql`
 mutation createComment(
     $tripId: Int
     $groupId: Int
@@ -58,26 +48,73 @@ mutation createComment(
       text: $text
   )
   {
-        tripId
-        groupId
-        text
+      tripId
+      groupId
+      text
   }
 }
 `;
 
-export const submitComment = graphql(createCommentQuery, {
-  options: (props) => {
-    const { group, offer } = props.navigation.state.params;
-    if (offer) {
-      return ({ refetchQueries: [{ query: getTripCommentQuery, variables: { id: offer.id } }] });
+const GET_TRIP_COMMENTS = gql`
+query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
+  comments(input : {tripId:$id, offset:$offset, limit:$limit}) {
+    id
+    text
+    date
+    User {
+      id
+      email
+      firstName
+      lastName
+      photo
     }
+  }
+}
+`;
 
-    if (group) {
-      return ({ refetchQueries: [{ query: getGroupCommentQuery, variables: { id: group.id } }] });
-    }
+export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
+  name: 'comments',
+  options: ({ id, offset, limit }) => ({ variables: { id, offset, limit } }),
+  props: props => ({
+    comments: props.comments,
+    subscribeToNewComments: param => props.comments.subscribeToMore({
+      document: COMMENTS_SUBSCRIPTION,
+      variables: { id: param.id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
 
-    return {};
-  },
+        const newFeedItem = subscriptionData.data.commentAdded;
+
+        return { comments: [newFeedItem].concat(prev.comments) };
+      },
+    }),
+  }),
+});
+
+export const withTripComment = graphql(GET_TRIP_COMMENTS, {
+  name: 'comments',
+  options: ({ id, offset, limit }) => ({ variables: { id, offset, limit } }),
+  props: props => ({
+    comments: props.comments,
+    subscribeToNewComments: param => props.comments.subscribeToMore({
+      document: COMMENTS_SUBSCRIPTION,
+      variables: { id: param.id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+
+        const newFeedItem = subscriptionData.data.commentAdded;
+
+        return { comments: [newFeedItem].concat(prev.comments) };
+      },
+    }),
+  }),
+});
+
+export const submitComment = graphql(CREATE_COMMENT, {
   props: ({ mutate }) => (
     {
       submit: (

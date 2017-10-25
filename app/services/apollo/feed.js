@@ -1,7 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const PAGE_SIZE = 5;
+const PAGE_OFFSET = 0;
+const PAGE_LIMIT = 5;
 
 const feedQuery = gql`
 query getFeed($offset: Int, $limit: Int) {
@@ -95,7 +96,7 @@ query getFeed($offset: Int, $limit: Int) {
 export const withFeed = graphql(feedQuery, {
   options: {
     notifyOnNetworkStatusChange: true,
-    variables: { offset: 0, limit: PAGE_SIZE },
+    variables: { offset: PAGE_OFFSET, limit: PAGE_LIMIT },
   },
   props: ({ data }) => ({ data }),
 });
