@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, Wrapper } from '@components/common';
-import Comment from '@components/comment';
+import { Loading } from '@components/common';
+import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 
@@ -231,7 +231,7 @@ class OfferDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <Wrapper>
+        <ScrollView>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
               <View style={styles.feedTitle}>
@@ -261,12 +261,10 @@ class OfferDetail extends Component {
             <View style={styles.feedAction}>
               <Relation users={offer.User.relation} />
             </View>
-            <View style={{ paddingTop: 20, paddingBottom: 70, backgroundColor: '#fff' }}>
-              <OfferComment id={offer.id} />
-            </View>
+            <OfferComment id={offer.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
           </View>
-        </Wrapper>
+        </ScrollView>
         {this.renderCommentForm()}
       </View>
     );

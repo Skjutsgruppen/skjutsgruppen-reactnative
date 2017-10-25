@@ -138,14 +138,14 @@ const Group = ({ group, onPress, onSharePress }) => {
                 <Text style={styles.newGroupName}>{group.name}</Text>
               </View>
               {
-                group.outreacg === 'area' &&
+                group.outreach === 'area' &&
                 <Text style={styles.newGroupPlace}>
-                  {[group.country, group.county, group.municipality, group.locality].join(', ')}
+                  {[group.country, group.county, group.municipality, group.locality].filter(s => typeof s !== 'undefined').join(', ')}
                 </Text>
               }
 
               {
-                group.outreacg === 'route' &&
+                group.outreach === 'route' &&
                 <Text style={styles.newGroupPlace}>
                   {group.TripStart.name} - {group.TripEnd.name}
                 </Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import { Loading, Wrapper, FeedContainer } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
@@ -56,6 +56,10 @@ class Feed extends Component {
     this.setState({ isOpen: false });
   }
 
+  onRefreshClicked = () => {
+    this.props.data.refetch();
+  }
+
   renderModal() {
     return (
       <Modal position={'bottom'} swipeArea={50} isOpen={this.state.isOpen} onClosed={() => this.setState({ isOpen: false })}>
@@ -85,16 +89,33 @@ class Feed extends Component {
 
   renderFeed() {
     const { data } = this.props;
-    if (data.networkStatus === 1) {
+
+    if (data.networkStatus === 1 || data.loading) {
       return <Loading />;
     }
 
+    const refetch = (
+      <TouchableOpacity onPress={this.onRefreshClicked}>
+        <Text>Reload</Text>
+      </TouchableOpacity>
+    );
+
     if (data.error) {
-      return <Text>Error: {data.error.message}</Text>;
+      return (
+        <View>
+          <Text>Error: {data.error.message}</Text>
+          {refetch}
+        </View>
+      );
     }
 
     if (!data.getFeed || data.getFeed.length < 1) {
-      return <View><Text>No Feeds.</Text></View>;
+      return (
+        <View>
+          <Text>No Feeds.</Text>
+          {refetch}
+        </View>
+      );
     }
 
     return (
@@ -111,7 +132,7 @@ class Feed extends Component {
         keyExtractor={(item, index) => index}
         refreshing={data.networkStatus === 4}
         onRefresh={() => data.refetch()}
-        onEndReachedThreshold={2}
+        onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
           if (data.loading) return;

@@ -23,6 +23,7 @@ class Splash extends Component {
     const { setLogin, setRegister, auth } = this.props;
     const user = await AuthService.get();
     const isLoggedIn = await AuthService.isLoggedIn();
+
     if (auth.login) {
       this.navigateTo('Tab');
     } else if (isLoggedIn) {
