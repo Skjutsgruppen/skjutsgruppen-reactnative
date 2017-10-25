@@ -10,6 +10,8 @@ import { Loading, Wrapper } from '@components/common';
 import { compose } from 'react-apollo';
 import { withUpdateProfile } from '@services/apollo/auth';
 import Camera from '@components/camera';
+import { withContacts } from '@services/apollo/contact';
+import Contacts from 'react-native-contacts';
 
 const styles = StyleSheet.create({
   container: {
@@ -139,6 +141,23 @@ class Support extends Component {
     navigation.dispatch(resetAction);
   }
 
+  sync = () => {
+    const { syncContacts } = this.props;
+    Contacts.getAll((err, contacts) => {
+      if (err === 'denied') {
+        console.error(err);
+      } else {
+        const mobiles = [];
+        contacts.forEach(
+          contact => contact.phoneNumbers.forEach(book => mobiles.push(book.number)),
+        );
+        syncContacts(mobiles)
+          .then(() => { })
+          .catch(error => console.error(error));
+      }
+    });
+  }
+
   renderButton = () => {
     const { loading } = this.state;
     if (loading) {
@@ -210,6 +229,11 @@ class Support extends Component {
           title="logout"
           onPress={this.logout}
         />
+
+        <Button
+          title="Sync Contacts"
+          onPress={this.sync}
+        />
       </Wrapper>
     );
   }
@@ -227,6 +251,7 @@ Support.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  syncContacts: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -240,4 +265,5 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.error(error)),
 });
 
-export default compose(withUpdateProfile, connect(mapStateToProps, mapDispatchToProps))(Support);
+export default compose(withUpdateProfile, withContacts,
+  connect(mapStateToProps, mapDispatchToProps))(Support);

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import { submitComment, withGroupComment } from '@services/apollo/comment';
-import { Loading, Wrapper } from '@components/common';
-import Comment from '@components/comment';
+import { Loading } from '@components/common';
+import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 
@@ -238,6 +238,7 @@ class GroupDetail extends Component {
     const { navigation } = this.props;
     const { group } = navigation.state.params;
     const { error } = this.state;
+
     let image = '';
     if (group.photo) {
       image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
@@ -254,7 +255,7 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <Wrapper>
+        <ScrollView>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
               <View style={styles.feedTitle}>
@@ -273,14 +274,14 @@ class GroupDetail extends Component {
                     <Text style={styles.newGroupName}>{group.name}</Text>
                   </View>
                   {
-                    group.outreacg === 'area' &&
+                    group.outreach === 'area' &&
                     <Text style={styles.newGroupPlace}>
-                      {[group.country, group.county, group.municipality, group.locality].join(', ')}
+                      {[group.country, group.county, group.municipality, group.locality].filter(s => typeof s !== 'undefined').join(', ')}
                     </Text>
                   }
 
                   {
-                    group.outreacg === 'route' &&
+                    group.outreach === 'route' &&
                     <Text style={styles.newGroupPlace}>
                       {group.TripStart.name} - {group.TripEnd.name}
                     </Text>
@@ -294,12 +295,10 @@ class GroupDetail extends Component {
             <View style={styles.feedAction}>
               <Relation users={group.User.relation} />
             </View>
-            <View style={{ paddingTop: 20, paddingBottom: 70, backgroundColor: '#fff' }}>
-              <GroupComment id={group.id} />
-            </View>
+            <GroupComment id={group.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
           </View>
-        </Wrapper>
+        </ScrollView>
         {this.renderCommentForm()}
       </View>
     );

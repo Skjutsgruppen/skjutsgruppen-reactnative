@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
-import { Loading } from '@components/common';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -111,66 +110,40 @@ const styles = StyleSheet.create({
   },
 });
 
-const Comment = ({ comments, loading, error }) => {
-  if (loading) {
-    return <Loading />;
+const Item = ({ comment }) => {
+  let image = null;
+  if (comment.User.photo) {
+    image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
+  } else {
+    image = (<View style={styles.imgIcon} />);
   }
-
-  if (error) {
-    return (
-      <View>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
-
-  if (comments && comments.length < 1) {
-    return (
-      <View>
-        <Text>No Comment</Text>
-      </View>
-    );
-  }
-
-  let image = '';
 
   return (
-    <View>
-      {comments.map((comment) => {
-        if (comment.User.photo) {
-          image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
-        } else {
-          image = (<View style={styles.imgIcon} />);
-        }
-        return (
-          <View key={comment.id} style={styles.commentWrapper}>
-            {image}
-            <View>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
-                <Text style={styles.time}>{comment.date}</Text>
-              </View>
-              <View>
-                <Text style={styles.commentText}>{comment.text}</Text>
-              </View>
-            </View>
-          </View>
-        );
-      })}
+    <View style={styles.commentWrapper}>
+      {image}
+      <View>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
+          <Text style={styles.time}>{comment.date}</Text>
+        </View>
+        <View>
+          <Text style={styles.commentText}>{comment.text}</Text>
+        </View>
+      </View>
     </View>
   );
 };
 
-Comment.propTypes = {
-  comments: PropTypes.arrayOf(PropTypes.object),
-  loading: PropTypes.bool,
-  error: PropTypes.string,
+Item.propTypes = {
+  comment: PropTypes.shape({
+    User: PropTypes.shape({
+      firstName: PropTypes.string,
+      email: PropTypes.string,
+      date: PropTypes.string,
+    }),
+    date: PropTypes.string,
+    text: PropTypes.string,
+  }).isRequired,
 };
 
-Comment.defaultProps = {
-  comments: [],
-  error: '',
-  loading: false,
-};
-
-export default Comment;
+export default Item;
