@@ -166,7 +166,6 @@ class Offer extends Component {
   render() {
     const { activeTab, completedTabs, disabledTabs } = this.state;
     const { navigation } = this.props;
-
     return (
       <Wrapper bgColor="#eded18">
         <TouchableOpacity onPress={() => navigation.goBack()}>

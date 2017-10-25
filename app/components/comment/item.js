@@ -3,110 +3,36 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
-  lightText: {
-    color: '#777777',
-  },
-  tab: {
-    flexDirection: 'row',
+  commentWrapper: {
     width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-  },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
-  },
-  feed: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginRight: 6,
-    marginLeft: 6,
-    marginBottom: 16,
-    borderColor: '#cccccc',
-    borderBottomWidth: 4,
-  },
-  feedContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  feedTitle: {
     flexDirection: 'row',
-    alignItems: 'center',
     padding: 12,
-  },
-  feedImg: {
-    width: '100%',
+    backgroundColor: '#fff',
   },
   profilePic: {
     height: 55,
     width: 55,
-    borderRadius: 36,
+    borderRadius: 28,
     marginRight: 12,
+  },
+  nameWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
   },
   name: {
     color: '#1db0ed',
     fontWeight: 'bold',
-    paddingRight: 8,
+    paddingRight: 4,
   },
   time: {
     color: '#777777',
-  },
-  commentWrapper: {
-    width: '100%',
-    flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    backgroundColor: '#fff',
-  },
-  commentText: {
     marginTop: 2,
-    lineHeight: 20,
-    color: '#000',
   },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  newGroupInfoWrapper: {
-    position: 'absolute',
-    flex: 1,
-    backgroundColor: '#00000011',
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  newGroupNameWrapper: {
-    borderColor: '#ffffff',
-    borderBottomWidth: 2,
-    marginBottom: 16,
-    paddingBottom: 16,
-  },
-  newGroupName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  newGroupPlace: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 10,
-  },
-  newGroupInfo: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 16,
+  filler: {
+    padding: 12,
+    color: '#999',
   },
 });
 
@@ -121,8 +47,8 @@ const Item = ({ comment }) => {
   return (
     <View style={styles.commentWrapper}>
       {image}
-      <View>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
           <Text style={styles.time}>{comment.date}</Text>
         </View>
