@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
+import Colors from '@theme/colors';
+import CustomButton from '@components/common/customButton';
 
 const styles = StyleSheet.create({
   title: {
@@ -104,14 +106,13 @@ class Different extends Component {
             onChangeText={locality => this.setState({ locality })}
           />
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            color="#38ad9e"
-            accessibilityLabel="Go to next form"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.buttonWrapper}
+        >
+          Next
+        </CustomButton>
       </View>
     );
   }

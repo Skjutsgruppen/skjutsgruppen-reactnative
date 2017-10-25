@@ -60,25 +60,44 @@ class Feed extends Component {
     this.props.data.refetch();
   };
 
-  redirectToGroup = () => {
-    this.props.navigation.navigateWithDebounce('ExploreGroup');
+  onClose = () => {
+    this.setState({ isOpen: false });
   }
 
   redirectToMap = () => { };
+
+  redirectToGroup = () => {
+    this.props.navigation.navigateWithDebounce('ExploreGroup');
+  }
 
   renderModal() {
     return (
       <Modal position={'bottom'} swipeArea={50} isOpen={this.state.isOpen} onClosed={() => this.setState({ isOpen: false })}>
         <ScrollView>
-          <Share modal onNext={this.onShare} />
+          <Share modal onNext={this.onShare} onClose={this.onClose} />
         </ScrollView>
       </Modal>
     );
   }
 
   renderFooter = () => {
-    const { data } = this.props;
-    if (!data.loading) return null;
+    const { loading, getFeed, total } = this.props.data;
+
+    if (getFeed.length >= total) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20,
+            borderTopWidth: 1,
+            borderColor: '#CED0CE',
+          }}
+        >
+          <Text>No more feed</Text>
+        </View>
+      );
+    }
+
+    if (!loading) return null;
 
     return (
       <View
@@ -143,13 +162,18 @@ class Feed extends Component {
         onEndReached={() => {
           if (data.loading) return;
           data.fetchMore({
-            variables: { offset: data.getFeed.length + 1, limit: 5 },
+            variables: { offset: data.getFeed.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
               if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
                 return previousResult;
               }
+
+              const prevFeed = previousResult.getFeed;
+
+              const Feeds = previousResult.getFeed.Feed.concat(fetchMoreResult.getFeed.Feed);
+
               return {
-                getFeed: previousResult.getFeed.concat(fetchMoreResult.getFeed),
+                getFeed: { ...prevFeed, ...{ Feed: Feeds } },
               };
             },
           });
@@ -176,6 +200,8 @@ Feed.propTypes = {
     getFeed: PropTypes.arrayOf(PropTypes.object),
     fetchMore: PropTypes.func.isRequired,
     refetch: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    total: PropTypes.numeric,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

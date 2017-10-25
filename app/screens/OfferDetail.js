@@ -9,34 +9,20 @@ import PropTypes from 'prop-types';
 const OfferComment = withTripComment(Comment);
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    backgroundColor: '#fff',
+  },
   lightText: {
     color: '#777777',
   },
-  tab: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-  },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
-  },
   feed: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginRight: 6,
-    marginLeft: 6,
-    marginBottom: 16,
-    borderColor: '#cccccc',
-    borderBottomWidth: 4,
+    backgroundColor: '#fff',
+    marginBottom: 64,
   },
   feedContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#dddee3',
   },
   feedTitle: {
     flexDirection: 'row',
@@ -50,7 +36,7 @@ const styles = StyleSheet.create({
     height: 55,
     width: 55,
     backgroundColor: '#ddd',
-    borderRadius: 36,
+    borderRadius: 28,
     marginRight: 12,
   },
   name: {
@@ -58,21 +44,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   info: {
-    padding: 12,
+    paddingHorizontal: 12,
+  },
+  stopsWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   stopText: {
     color: '#00000077',
-    marginTop: 16,
-    marginBottom: 12,
+  },
+  stopsIcon: {
+    width: 12,
+    resizeMode: 'contain',
+    marginRight: 4,
   },
   messageText: {
+    marginTop: 12,
     marginBottom: 16,
   },
   feedAction: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
   },
   participantWrapper: {
     flexDirection: 'row',
@@ -119,7 +111,7 @@ const styles = StyleSheet.create({
   profilePic: {
     height: 55,
     width: 55,
-    borderRadius: 36,
+    borderRadius: 28,
     marginRight: 12,
   },
   sendText: {
@@ -219,7 +211,7 @@ class OfferDetail extends Component {
 
     let image = null;
     if (offer.photo) {
-      image = (<Image source={{ uri: offer.photo }} style={{ width: '100%', height: 200 }} />);
+      image = (<Image source={{ uri: offer.photo }} style={{ width: '100%', height: 200, marginBottom: 16 }} />);
     }
 
     let profileImage = null;
@@ -231,7 +223,7 @@ class OfferDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView>
+        <ScrollView style={styles.contentWrapper}>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
               <View style={styles.feedTitle}>
@@ -250,17 +242,15 @@ class OfferDetail extends Component {
               <View>
                 {image}
                 <View style={styles.info}>
-                  <Text style={styles.stopText}>
-                    Stops in
-                    <Text> {offer.Stops.map(place => place.name).join(', ')}</Text>
-                  </Text>
+                  <View style={styles.stopsWrapper}>
+                    <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
+                    <Text style={styles.stopText}> Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
+                  </View>
                   <Text style={styles.messageText}>{offer.comment}</Text>
                 </View>
               </View>
             </View>
-            <View style={styles.feedAction}>
-              <Relation users={offer.User.relation} />
-            </View>
+            <Relation users={offer.User.relation} />
             <OfferComment id={offer.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
           </View>

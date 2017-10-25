@@ -1,73 +1,141 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import GooglePlace from '@components/googlePlace';
+import CustomButton from '@components/common/customButton';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1ca9e5',
+    color: Colors.text.blue,
     marginHorizontal: 24,
     marginTop: 24,
     marginBottom: 12,
     textAlign: 'center',
-
   },
   label: {
-    color: '#999999',
+    color: Colors.text.gray,
     marginBottom: 6,
     marginHorizontal: 24,
+    marginTop: 12,
     fontWeight: 'bold',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.background.fullWhite,
+    paddingRight: 24,
+  },
+  inputIconWrapper: {
+    height: 48,
+    width: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputIcon: {
+    width: 18,
+    height: 18,
+    resizeMode: 'contain',
   },
   input: {
     marginBottom: 12,
     paddingHorizontal: 24,
     paddingVertical: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.background.fullWhite,
   },
   destinations: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    marginBottom: 24,
+    paddingVertical: 12,
   },
   option: {
-    paddingHorizontal: 6,
+    paddingHorizontal: 10,
     fontSize: 11,
     lineHeight: 20,
     fontWeight: 'bold',
-    backgroundColor: '#38ad9e',
-    color: '#ffffff',
+    backgroundColor: Colors.background.darkCyan,
+    color: Colors.text.white,
   },
-  buttonWrapper: {
-    padding: 8,
+  button: {
     marginBottom: 32,
     marginHorizontal: 24,
   },
   stops: {
     paddingHorizontal: 24,
-    borderBottomWidth: 2,
-    borderColor: '#dddddd',
     marginBottom: 24,
   },
+  addStop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  addStopIcon: {
+    width: 24,
+    resizeMode: 'contain',
+    marginRight: 10,
+  },
+  place: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  stopIcon: {
+    width: 16,
+    height: 48,
+    resizeMode: 'contain',
+    marginRight: 10,
+  },
+  removeStopIcon: {
+    height: 24,
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.blue,
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginLeft: 12,
+    marginTop: 12,
+  },
+  minusText: {
+    color: Colors.text.white,
+    fontSize: 28,
+    lineHeight: 28,
+  },
   stopsLabel: {
-    marginBottom: 8,
-    color: '#777777',
+    color: Colors.text.darkGray,
+    lineHeight: 18,
   },
   stopsInfo: {
-    marginBottom: 8,
+    marginTop: 4,
+    marginLeft: 26,
     fontSize: 12,
     lineHeight: 18,
-    color: '#777777',
+    color: Colors.text.darkGray,
+  },
+  verticalDivider: {
+    borderBottomColor: Colors.border.lightGray,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  returnIcon: {
+    width: 60,
+    height: 48,
+    resizeMode: 'contain',
+    marginHorizontal: 24,
+    marginTop: 24,
+    alignSelf: 'center',
   },
   returnInfo: {
     marginBottom: 8,
     marginHorizontal: 36,
     fontSize: 12,
     lineHeight: 18,
-    color: '#777777',
+    color: Colors.text.gray,
     textAlign: 'center',
   },
   bold: {
@@ -86,14 +154,14 @@ const styles = StyleSheet.create({
   radio: {
     height: 40,
     width: 40,
-    borderRadius: 24,
+    borderRadius: 20,
     borderWidth: 8,
-    borderColor: '#ffffff',
+    borderColor: Colors.border.white,
   },
   radioLabel: {
     fontWeight: 'bold',
-    color: '#777777',
-    marginTop: 4,
+    color: Colors.text.gray,
+    marginTop: 6,
   },
 });
 
@@ -103,7 +171,7 @@ class Trip extends Component {
     this.state = {
       start: {},
       end: {},
-      stops: [],
+      stops: [{}],
       stopsCount: 1,
       isReturning: false,
     };
@@ -150,18 +218,19 @@ class Trip extends Component {
   renderStops() {
     let { stops } = this.state;
     stops = stops.length > 0 ? stops : [{}];
-    let j = 1;
+    let j = 0;
 
     return stops.map((s, i) => {
       j += 1;
       return (
-        <View key={j}>
+        <View key={j} style={styles.place}>
+          <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
             onChangeText={stop => this.setStops(i, stop)}
           />
-          {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
-            <View><Text>-</Text></View>
+          {i > 1 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
+            <View style={styles.removeStopIcon}><Text style={styles.minusText}>-</Text></View>
           </TouchableWithoutFeedback>) : null}
         </View>
       );
@@ -172,8 +241,8 @@ class Trip extends Component {
     return (
       <View>
         <Text style={styles.title}> Trip</Text>
-        <View>
-          <Text style={styles.label}>From</Text>
+        <Text style={styles.label}>From</Text>
+        <View style={styles.inputWrapper}>
           <GooglePlace
             placeholder="Start here"
             onChangeText={
@@ -186,9 +255,12 @@ class Trip extends Component {
               })
             }
           />
+          <TouchableOpacity style={styles.inputIconWrapper}>
+            <Image source={require('@icons/icon_location.png')} style={styles.inputIcon} />
+          </TouchableOpacity>
         </View>
-        <View>
-          <Text style={styles.label}>To</Text>
+        <Text style={styles.label}>To</Text>
+        <View style={styles.inputWrapper}>
           <GooglePlace
             placeholder="Destination"
             onChangeText={
@@ -201,29 +273,32 @@ class Trip extends Component {
               })
             }
           />
-          <View style={styles.destinations}>
-            <TouchableOpacity>
-              <Text style={styles.option}>Anywhere</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.option}>South</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.option}>North</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.option}>West</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.option}>East</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.inputIconWrapper}>
+            <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.destinations}>
+          <TouchableOpacity>
+            <Text style={styles.option}>Anywhere</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>South</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>North</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>West</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>East</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.stops}>
-          <View>
-            <TouchableWithoutFeedback onPress={this.addStops}>
-              <View><Text>+</Text></View>
-            </TouchableWithoutFeedback>
+          <View style={styles.addStop}>
+            <TouchableOpacity onPress={this.addStops}>
+              <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
+            </TouchableOpacity>
             <Text style={styles.stopsLabel}>
               Stops along the way:
             </Text>
@@ -236,40 +311,40 @@ class Trip extends Component {
             </Text>
           </View>
         </View>
-        <View>
-          <Text style={styles.title}>Are You making a return ride?</Text>
-          <Text style={styles.returnInfo}>
-            If select
-            <Text style={styles.bold}>yes</Text>
-            you will get to do a new card for your return ride after you are done
+        <View style={styles.verticalDivider} />
+        <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+        <Text style={styles.title}>Are You making a return ride?</Text>
+        <Text style={styles.returnInfo}>
+          If select
+          <Text style={styles.bold}> yes </Text>
+          you will get to do a new card for your return ride after you are done
             filling in this card. The cards will be connected to each other.
-          </Text>
-          <View style={styles.radioRow}>
-            <View style={styles.radioWrapper}>
-              <TouchableWithoutFeedback
-                onPress={() => this.handleReturnChange(true)}
-              >
-                <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#1db0ed' : '#ffffff' }]} />
-              </TouchableWithoutFeedback>
-              <Text style={styles.radioLabel}>Yes!</Text>
-            </View>
-            <View style={styles.radioWrapper}>
-              <TouchableWithoutFeedback
-                onPress={() => this.handleReturnChange(false)}
-              >
-                <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#ffffff' : '#1db0ed' }]} />
-              </TouchableWithoutFeedback>
-              <Text style={styles.radioLabel}>Not this time</Text>
-            </View>
+        </Text>
+        <View style={styles.radioRow}>
+          <View style={styles.radioWrapper}>
+            <TouchableWithoutFeedback
+              onPress={() => this.handleReturnChange(true)}
+            >
+              <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#1db0ed' : '#ffffff' }]} />
+            </TouchableWithoutFeedback>
+            <Text style={styles.radioLabel}>Yes!</Text>
+          </View>
+          <View style={styles.radioWrapper}>
+            <TouchableWithoutFeedback
+              onPress={() => this.handleReturnChange(false)}
+            >
+              <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#ffffff' : '#1db0ed' }]} />
+            </TouchableWithoutFeedback>
+            <Text style={styles.radioLabel}>Not this time</Text>
           </View>
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            corlor="#38ad9e"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.button}
+        >
+          Next
+        </CustomButton>
       </View>
     );
   }

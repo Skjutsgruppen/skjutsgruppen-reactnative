@@ -9,34 +9,20 @@ import PropTypes from 'prop-types';
 const GroupComment = withGroupComment(Comment);
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    backgroundColor: '#fff',
+  },
   lightText: {
     color: '#777777',
   },
-  tab: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-  },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
-  },
   feed: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginRight: 6,
-    marginLeft: 6,
-    marginBottom: 16,
-    borderColor: '#cccccc',
-    borderBottomWidth: 4,
+    backgroundColor: '#fff',
+    marginBottom: 64,
   },
   feedContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#dddee3',
   },
   feedTitle: {
     flexDirection: 'row',
@@ -137,7 +123,7 @@ const styles = StyleSheet.create({
   profilePic: {
     height: 55,
     width: 55,
-    borderRadius: 36,
+    borderRadius: 28,
     marginRight: 12,
   },
   participantWrapper: {
@@ -255,7 +241,7 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView>
+        <ScrollView style={styles.contentWrapper}>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
               <View style={styles.feedTitle}>
@@ -292,9 +278,7 @@ class GroupDetail extends Component {
                 </View>
               </View>
             </View>
-            <View style={styles.feedAction}>
-              <Relation users={group.User.relation} />
-            </View>
+            <Relation users={group.User.relation} />
             <GroupComment id={group.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
           </View>

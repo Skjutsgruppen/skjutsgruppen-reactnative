@@ -89,6 +89,7 @@ class Verified extends Component {
     navigation.navigate(routeName);
     const resetAction = NavigationActions.reset({
       index: 0,
+      key: null,
       actions: [NavigationActions.navigate({ routeName })],
     });
     navigation.dispatch(resetAction);

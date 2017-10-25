@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import CheckIcon from '@icons/icon_check.png';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -10,8 +11,8 @@ const styles = StyleSheet.create({
   round: {
     width: 38,
     height: 38,
-    borderRadius: 50,
-    borderWidth: 10,
+    borderRadius: 19,
+    borderWidth: 8,
     borderColor: '#ffffff',
     justifyContent: 'center',
     marginBottom: 6,
@@ -23,7 +24,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   complete: {
-    backgroundColor: '#00ab4a',
+    backgroundColor: '#fff',
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   activeText: {
     fontWeight: 'bold',
@@ -45,7 +51,12 @@ const Tab = ({ label, active, disabled, complete }) => (
       complete && styles.complete,
       active && styles.active,
     ]}
-    />
+    >
+      {
+        complete &&
+          <Image source={CheckIcon} style={styles.icon} />
+      }
+    </View>
     <Text style={
       [
         styles.text,
