@@ -19,7 +19,12 @@ const styles = StyleSheet.create({
 
 const Container = ({ children, style }) => (
   <View style={styles.wrapper}>
-    <ScrollView contentContainerStyle={[styles.container, style]}>{children}</ScrollView>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={[styles.container, style]}
+    >
+      {children}
+    </ScrollView>
   </View>
 );
 

@@ -38,9 +38,31 @@ class Router extends Component {
   }
 
 
+  addNavigationHelpers = (navigation) => {
+    const original = addNavigationHelpers(navigation);
+    let debounce;
+    return {
+      ...original,
+      navigateWithDebounce: (routeName, params, action) => {
+        const func = () => {
+          clearTimeout(debounce);
+          debounce = setTimeout(() => {
+            navigation.dispatch(NavigationActions.navigate({
+              routeName,
+              params,
+              action,
+            }));
+          }, 100);
+        };
+        return func();
+      },
+    };
+  };
+
+
   render() {
     const { dispatch, nav } = this.props;
-    const navigation = addNavigationHelpers({
+    const navigation = this.addNavigationHelpers({
       dispatch,
       state: nav,
     });
