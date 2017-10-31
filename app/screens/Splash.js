@@ -24,17 +24,17 @@ class Splash extends Component {
     const user = await AuthService.get();
     const isLoggedIn = await AuthService.isLoggedIn();
 
-    if (auth.login) {
+    if (user !== null && user.token !== '' && user.user.emailVerified && user.user.firstName === null) {
+      await setRegister({ user: user.user, token: user.token });
+      this.navigateTo('EmailVerified');
+    } else if (user !== null && user.token !== '' && !user.user.emailVerified) {
+      await setRegister({ user: user.user, token: user.token });
+      this.navigateTo('CheckMail');
+    } else if (auth.login) {
       this.navigateTo('Tab');
     } else if (isLoggedIn) {
       await setLogin(user);
       this.navigateTo('Tab');
-    } else if (user !== null && user.token !== '' && user.user.emailVerified && user.user.firstName === null) {
-      await setRegister(user);
-      this.navigateTo('EmailVerified');
-    } else if (user !== null && user.token !== '' && !user.user.emailVerified) {
-      await setRegister(user);
-      this.navigateTo('CheckMail');
     } else {
       this.setState({ loading: false });
     }

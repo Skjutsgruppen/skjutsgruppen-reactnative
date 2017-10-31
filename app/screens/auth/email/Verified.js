@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text, Picker } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
@@ -12,6 +12,7 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
+import telephoneCode from '@config/telephoneCode';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -47,7 +48,7 @@ class Verified extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', phone: '', password: '', loading: false, error: '' });
+    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '' });
   }
 
   componentWillMount() {
@@ -60,13 +61,13 @@ class Verified extends Component {
   onSubmit = () => {
     this.setState({ loading: true });
     const { updateProfile, setLogin } = this.props;
-    const { firstName, lastName, phone, password } = this.state;
+    const { firstName, lastName, countryCode, phone, password } = this.state;
 
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        updateProfile(firstName, lastName, '', phone, password).then(({ data }) => {
+        updateProfile(firstName, lastName, '', countryCode + phone, password).then(({ data }) => {
           const { token, User } = data.updateUser;
           setLogin({ token, user: User }).then(() => {
             this.navigateTo('Tab');
@@ -136,6 +137,14 @@ class Verified extends Component {
     );
   }
 
+  renderCountryCode = () => telephoneCode.map(phone => (
+    <Picker.Item
+      key={phone.code}
+      label={`${phone.dial_code} - ${phone.name}`}
+      value={phone.dial_code}
+    />
+  ));
+
   render() {
     const message = 'Great job! \n Now fill in your name';
     const { error } = this.state;
@@ -164,8 +173,19 @@ class Verified extends Component {
             onChangeText={lastName => this.setState({ lastName })}
           />
         </View>
+
+        <View style={styles.inputWrapper}>
+          <Picker
+            selectedValue={this.state.countryCode}
+            onValueChange={countryCode => this.setState({ countryCode })}
+          >
+            {this.renderCountryCode()}
+          </Picker>
+        </View>
+
         <View style={styles.inputWrapper}>
           <TextInput
+            keyboardType="phone-pad"
             style={[styles.input, styles.firstNameInput]}
             placeholder="Your Mobile number"
             underlineColorAndroid="transparent"

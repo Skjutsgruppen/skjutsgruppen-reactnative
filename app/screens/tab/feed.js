@@ -37,16 +37,16 @@ class Feed extends Component {
     }
   }
 
-  onPress = (type, datail) => {
+  onPress = (type, detail) => {
     const { navigation } = this.props;
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: datail });
+      navigation.navigate('GroupDetail', { group: detail });
     }
 
     if (type === 'offer') {
-      navigation.navigate('OfferDetail', { offer: datail });
+      navigation.navigate('OfferDetail', { offer: detail });
     }
-  }
+  };
 
   onSharePress = () => {
     this.setState({ isOpen: true });
@@ -54,11 +54,17 @@ class Feed extends Component {
 
   onShare = () => {
     this.setState({ isOpen: false });
-  }
+  };
 
   onRefreshClicked = () => {
     this.props.data.refetch();
+  };
+
+  redirectToGroup = () => {
+    this.props.navigation.navigateWithDebounce('ExploreGroup');
   }
+
+  redirectToMap = () => { };
 
   renderModal() {
     return (
@@ -85,12 +91,12 @@ class Feed extends Component {
         <Loading />
       </View>
     );
-  }
+  };
 
   renderFeed() {
     const { data } = this.props;
 
-    if (data.networkStatus === 1 || data.loading) {
+    if (data.networkStatus === 1) {
       return <Loading />;
     }
 
@@ -156,7 +162,7 @@ class Feed extends Component {
     return (
       <Wrapper bgColor="#00aeef" >
         <FeedContainer bgColor="#dddee3">
-          <Header />
+          <Header onPressGroup={this.redirectToGroup} onPressMap={this.redirectToMap} />
           {this.renderFeed()}
         </FeedContainer>
         {this.renderModal()}
@@ -173,6 +179,7 @@ Feed.propTypes = {
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    navigateWithDebounce: PropTypes.func,
     state: PropTypes.shape({
       params: PropTypes.shape({
         refetch: PropTypes.string,

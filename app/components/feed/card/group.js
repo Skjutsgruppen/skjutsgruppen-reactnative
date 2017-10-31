@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   feedImg: {
     width: '100%',
-    height: 200,
+    height: 160,
   },
   imgIcon: {
     height: 55,
@@ -77,23 +77,21 @@ const styles = StyleSheet.create({
   newGroupNameWrapper: {
     borderColor: '#ffffff',
     borderBottomWidth: 2,
-    marginBottom: 16,
-    paddingBottom: 16,
+    marginBottom: 12,
+    paddingBottom: 8,
   },
   newGroupName: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
   },
   newGroupPlace: {
     fontSize: 16,
     color: '#ffffff',
-    marginBottom: 10,
+    marginBottom: 6,
   },
   newGroupInfo: {
-    fontSize: 16,
     color: '#ffffff',
-    marginBottom: 16,
   },
   profilePic: {
     height: 55,
@@ -103,7 +101,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Group = ({ group, onPress, onSharePress }) => {
+const Group = ({ group, onPress, min, onSharePress }) => {
   let image = null;
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
@@ -112,24 +110,29 @@ const Group = ({ group, onPress, onSharePress }) => {
   }
 
   let profileImage = null;
-  if (group.User.photo) {
-    profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
-  } else {
-    profileImage = (<View style={styles.imgIcon} />);
+
+  if (!min) {
+    if (group.User.photo) {
+      profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
+    } else {
+      profileImage = (<View style={styles.imgIcon} />);
+    }
   }
 
   return (
     <View style={styles.feed}>
       <View style={styles.feedContent}>
-        <View style={styles.feedTitle}>
-          {profileImage}
-          <Text style={styles.lightText}>
-            <Text style={styles.name}>
-              {group.User.firstName || group.User.email}
+        {!min &&
+          <View style={styles.feedTitle}>
+            {profileImage}
+            <Text style={styles.lightText}>
+              <Text style={styles.name}>
+                {group.User.firstName || group.User.email}
+              </Text>
+              <Text> created a group</Text>
             </Text>
-            <Text> created a group</Text>
-          </Text>
-        </View>
+          </View>
+        }
         <TouchableWithoutFeedback onPress={() => onPress('group', group)}>
           <View>
             {image}
@@ -157,25 +160,27 @@ const Group = ({ group, onPress, onSharePress }) => {
           </View>
         </TouchableWithoutFeedback>
       </View>
-      <View style={styles.feedAction}>
-        <Relation users={group.User.relation} />
-        <View style={styles.verticalDevider} />
-        <View style={{ width: '33.33%', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => onSharePress('group', group)}>
-            <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.tabLabel}>Share</Text>
-            </View>
-          </TouchableOpacity>
+      {!min &&
+        <View style={styles.feedAction}>
+          <Relation users={group.User.relation} />
+          <View style={styles.verticalDevider} />
+          <View style={{ width: '33.33%', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => onSharePress('group', group)}>
+              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.tabLabel}>Share</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.verticalDevider} />
+          <View style={{ width: '33.33%', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => onPress('group', group)}>
+              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.tabLabel}>Comment</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.verticalDevider} />
-        <View style={{ width: '33.33%', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => onPress('group', group)}>
-            <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.tabLabel}>Comment</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      }
     </View>
   );
 };
@@ -188,7 +193,13 @@ Group.propTypes = {
     user: PropTypes.object,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onSharePress: PropTypes.func.isRequired,
+  onSharePress: PropTypes.func,
+  min: PropTypes.bool,
+};
+
+Group.defaultProps = {
+  onSharePress: () => { },
+  min: false,
 };
 
 export default Group;
