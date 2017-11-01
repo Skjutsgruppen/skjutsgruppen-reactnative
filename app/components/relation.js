@@ -7,8 +7,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '33.33%',
     height: 48,
+    borderBottomWidth: 1,
+    borderColor: '#dddee3',
+    marginBottom: 10,
   },
   participant: {
     height: 20,
@@ -32,7 +34,6 @@ const Relation = ({ users }) => (
           </View>
         );
       }
-
       return <View key={user.id} style={styles.participant} />;
     })}
   </View>

@@ -86,6 +86,18 @@ class Add extends Component {
     navigation.navigate(page);
   };
 
+  redirectToOffer = () => {
+    this.redirect('Offer');
+  }
+
+  redirectToGroup = () => {
+    this.redirect('Group');
+  }
+
+  redirectToExploreGroup = () => {
+    this.redirect('ExploreGroup');
+  }
+
   render() {
     return (
       <Wrapper bgColor="#edec38">
@@ -93,11 +105,10 @@ class Add extends Component {
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
             <TouchableOpacity
-              onPress={() => this.redirect('Offer')}
+              onPress={this.redirectToOffer}
               style={styles.touchable}
             >
               <Text
-                accessibilityLabel="Go to next form"
                 style={styles.actionLabel}
               >
                 Offer a ride
@@ -109,7 +120,6 @@ class Add extends Component {
               style={styles.touchable}
             >
               <Text
-                accessibilityLabel="Go to next form"
                 style={styles.actionLabel}
               >
                 Ask for a ride again
@@ -118,7 +128,7 @@ class Add extends Component {
           </View>
           <View style={styles.row}>
             <TouchableOpacity
-              onPress={() => this.redirect('Group')}
+              onPress={this.redirectToGroup}
               style={styles.touchable}
             >
               <Image source={require('@icons/icon_group.png')} style={styles.groupIcon} />
@@ -136,7 +146,7 @@ class Add extends Component {
           <Text style={styles.exploreText}>
             Want to explore existing groups?
           </Text>
-          <TouchableOpacity style={styles.exploreButton}>
+          <TouchableOpacity onPress={this.redirectToExploreGroup} style={styles.exploreButton}>
             <Text style={styles.exploreButtonText}>Click here</Text>
           </TouchableOpacity>
         </View>

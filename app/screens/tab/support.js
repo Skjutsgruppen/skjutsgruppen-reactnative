@@ -92,7 +92,7 @@ class Support extends Component {
     if (validation.pass()) {
       try {
         updateProfile(firstName, lastName, photo).then((res) => {
-          setUser(res.data.updateUser);
+          setUser(res.data.updateUser.User);
           this.setState({ loading: false, error: '' });
           Toast.show('Profile successfully updated.', Toast.LONG);
         }).catch((err) => {
@@ -136,6 +136,7 @@ class Support extends Component {
     const { navigation } = this.props;
     const resetAction = NavigationActions.reset({
       index: 0,
+      key: null,
       actions: [NavigationActions.navigate({ routeName })],
     });
     navigation.dispatch(resetAction);

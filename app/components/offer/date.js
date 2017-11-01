@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, Picker } from 'react-native';
+import { StyleSheet, Text, View, Picker } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
+import CustomButton from '@components/common/customButton';
+import Colors from '@theme/colors';
 
 function pad(n, width = 2, padString = '0') {
   const num = String(n);
@@ -16,6 +18,7 @@ const styles = StyleSheet.create({
     color: '#1ca9e5',
     marginHorizontal: 12,
     marginBottom: 16,
+    marginTop: 12,
     textAlign: 'center',
   },
   recurringRide: {
@@ -56,9 +59,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingHorizontal: 12,
   },
-  buttonWrapper: {
-    padding: 8,
-    marginBottom: 32,
+  button: {
+    marginTop: 12,
+    marginBottom: 24,
     marginHorizontal: 24,
   },
 });
@@ -115,20 +118,24 @@ class Date extends Component {
 
   renderHoursOptions = () => {
     const options = [];
-    for (let i = 1; i < 24; i + 1) {
+    let i = 0;
+    do {
+      i += 1;
       options.push(<Picker.Item
-        key={`hour-${i}`}
+        key={`minute-${i}`}
         label={pad(i)}
         value={pad(i)}
       />);
-    }
+    } while (i < 24);
 
     return options;
   };
 
   renderMinutesOptions = () => {
     const options = [];
-    for (let i = 0; i < 60; i + 1) {
+    let i = 0;
+    do {
+      i += 1;
       if (i === 0 || i % 15 === 0) {
         options.push(<Picker.Item
           key={`minute-${i}`}
@@ -136,14 +143,16 @@ class Date extends Component {
           value={pad(i)}
         />);
       }
-    }
+    } while (i < 60);
 
     return options;
   };
 
   renderFlexibleOptions = () => {
     const options = [];
-    for (let i = 0; i < 60; i + 1) {
+    let i = 0;
+    do {
+      i += 1;
       if (i === 0 || i % 5 === 0) {
         options.push(<Picker.Item
           key={`minute-${i}`}
@@ -151,7 +160,7 @@ class Date extends Component {
           value={pad(i)}
         />);
       }
-    }
+    } while (i < 60);
 
     return options;
   };
@@ -233,14 +242,13 @@ class Date extends Component {
             <Text style={styles.flexibleInput}>Later</Text>
           </View>
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            color="#38ad9e"
-            accessibilityLabel="Go to next form"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.button}
+        >
+          Next
+        </CustomButton>
       </View>
     );
   }
