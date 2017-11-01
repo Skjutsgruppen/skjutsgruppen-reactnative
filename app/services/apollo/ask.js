@@ -59,32 +59,30 @@ mutation createTrip(
 }
 `;
 
-export const submitOffer = graphql(createTrip, {
+export const submitAsk = graphql(createTrip, {
   props: ({ mutate }) => ({
     submit: (
       comment,
       tripStart,
       tripEnd,
       photo,
-      stops,
       returnTrip,
       dates,
       time,
-      seats,
       flexibility,
       share,
     ) => mutate({
       variables: {
         comment,
-        type: 'offered',
+        type: 'wanted',
         tripStart,
         tripEnd,
         photo,
-        stops,
+        stops: null,
         returnTrip,
         dates,
         time,
-        seats,
+        seats: 0,
         flexibility,
         share,
       },

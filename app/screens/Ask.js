@@ -1,21 +1,39 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
+import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } from 'react-native';
+import Tab from '@components/tab';
+import PropTypes from 'prop-types';
+import Comment from '@components/ask/comment';
+import Trip from '@components/ask/trip';
+import Date from '@components/ask/date';
+import Photo from '@components/ask/photo';
+import Share from '@components/common/share';
+import Completed from '@components/ask/completed';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import PropTypes from 'prop-types';
-
-import Tab from '@components/tab';
-import Comment from '@components/offer/comment';
-import Trip from '@components/offer/trip';
-import Date from '@components/offer/date';
-import Seats from '@components/offer/seats';
-import Share from '@components/common/share';
-import Completed from '@components/offer/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 
-import { submitOffer } from '@services/apollo/offer';
+import { submitAsk } from '@services/apollo/ask';
 
 const styles = StyleSheet.create({
+  backButtonWrapper: {
+    marginTop: 10,
+    marginHorizontal: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 60,
+  },
+  backIcon: {
+    height: 13,
+    resizeMode: 'contain',
+    marginRight: 6,
+  },
+  backText: {
+    color: '#999',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
   mainTitle: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -37,24 +55,25 @@ const styles = StyleSheet.create({
   },
 });
 
-class Offer extends Component {
+class Ask extends Component {
   static navigationOptions = {
     header: null,
   };
 
   constructor(props) {
     super(props);
+
     this.state = {
       comment: {},
+      photo: {},
       trip: {},
       dates: [],
-      seat: 1,
       share: {},
       activeTab: 1,
       disabledTabs: [2, 3, 4, 5],
       completedTabs: [],
       loading: false,
-      offer: {},
+      ask: {},
     };
   }
 
@@ -67,20 +86,33 @@ class Offer extends Component {
       delete disabledTabs[disabledTabs.indexOf(1)];
       this.setState({ comment, completedTabs, disabledTabs, activeTab: 2 });
     }
-  };
+  }
+
+  onPhotoNext = (photo) => {
+    const { completedTabs, disabledTabs } = this.state;
+    completedTabs.push(2);
+    delete disabledTabs[disabledTabs.indexOf(2)];
+    this.setState({ photo, completedTabs, disabledTabs, activeTab: 3 });
+  }
 
   onTripNext = (trip) => {
+    let error = 0;
+
     if (typeof trip.start.name === 'undefined') {
-      Alert.alert('Error!!', 'From is required');
+      Alert.alert('Error!!', 'From is required.');
+      error += 1;
     } else if (typeof trip.end.name === 'undefined') {
-      Alert.alert('Error!!', 'To is required');
-    } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(2);
-      delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ trip, completedTabs, disabledTabs, activeTab: 3 });
+      Alert.alert('Error!!', 'Destination is required');
+      error += 1;
     }
-  };
+
+    if (error === 0) {
+      const { completedTabs, disabledTabs } = this.state;
+      completedTabs.push(3);
+      delete disabledTabs[disabledTabs.indexOf(3)];
+      this.setState({ trip, completedTabs, disabledTabs, activeTab: 4 });
+    }
+  }
 
   onDateNext = (date) => {
     if (date.dates.length < 1) {
@@ -89,22 +121,11 @@ class Offer extends Component {
       Alert.alert('Error!!', 'Time is required');
     } else {
       const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(3);
-      delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ date, completedTabs, disabledTabs, activeTab: 4 });
-    }
-  }
-
-  onSeatNext = (seat) => {
-    if (seat === '' || parseInt(seat, 10) < 1) {
-      Alert.alert('Error!!', 'No. of seat must be atleast one');
-    } else {
-      const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(4);
       delete disabledTabs[disabledTabs.indexOf(4)];
-      this.setState({ seat, completedTabs, disabledTabs, activeTab: 5 });
+      this.setState({ date, completedTabs, disabledTabs, activeTab: 5 });
     }
-  };
+  }
 
   onShareAndPublishNext = (share) => {
     const { completedTabs, disabledTabs } = this.state;
@@ -128,18 +149,16 @@ class Offer extends Component {
   };
 
   createTrip() {
-    const { comment, trip, date, seat, share } = this.state;
+    const { comment, photo, trip, date, share } = this.state;
     try {
       this.props.submit(
         comment.text,
         trip.start,
         trip.end,
-        comment.photo,
-        trip.stops,
+        photo.photo,
         trip.isReturning,
         date.dates,
         date.time,
-        seat,
         date.flexsible,
         share,
       ).then((res) => {
@@ -147,7 +166,7 @@ class Offer extends Component {
           Clipboard.setString(res.data.createTrip.url);
         }
 
-        this.setState({ loading: false, offer: res.data.createTrip });
+        this.setState({ loading: false, ask: res.data.createTrip });
       });
     } catch (error) {
       console.error(error);
@@ -155,24 +174,28 @@ class Offer extends Component {
   }
 
   renderFinish() {
-    const { loading, offer, share } = this.state;
+    const { loading, ask, share } = this.state;
     if (loading) {
       return (<Loading />);
     }
 
-    return (<Completed offer={offer} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
+    return (<Completed ask={ask} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
   }
 
   render() {
     const { activeTab, completedTabs, disabledTabs } = this.state;
     const { navigation } = this.props;
+
     return (
       <Wrapper bgColor="#eded18">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.title}>Back</Text>
-        </TouchableOpacity>
+        <View style={styles.backButtonWrapper}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
+            <Text style={styles.backText}>Back</Text>
+          </TouchableOpacity>
+        </View>
         <Container bgColor="#f3f3ed">
-          <Text style={styles.mainTitle}>Offer a ride</Text>
+          <Text style={styles.mainTitle}>Ask for a ride</Text>
           <View style={styles.tabContainer}>
             <Tab
               label="Comment"
@@ -181,19 +204,19 @@ class Offer extends Component {
               active={activeTab === 1}
             />
             <Tab
-              label="Trip"
+              label="Photo"
               disabled={disabledTabs.indexOf(2) > -1}
               complete={completedTabs.indexOf(2) > -1}
               active={activeTab === 2}
             />
             <Tab
-              label="Date"
+              label="Trip"
               disabled={disabledTabs.indexOf(3) > -1}
               complete={completedTabs.indexOf(3) > -1}
               active={activeTab === 3}
             />
             <Tab
-              label="Seats"
+              label="Date"
               disabled={disabledTabs.indexOf(4) > -1}
               complete={completedTabs.indexOf(4) > -1}
               active={activeTab === 4}
@@ -205,21 +228,19 @@ class Offer extends Component {
               active={activeTab === 5}
             />
           </View>
-          <View>
-            {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
-            {(activeTab === 2) && <Trip onNext={this.onTripNext} />}
-            {(activeTab === 3) && <Date onNext={this.onDateNext} />}
-            {(activeTab === 4) && <Seats onNext={this.onSeatNext} />}
-            {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
-            {(activeTab === 6) && this.renderFinish()}
-          </View>
+          {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
+          {(activeTab === 2) && <Photo onNext={this.onPhotoNext} />}
+          {(activeTab === 3) && <Trip onNext={this.onTripNext} />}
+          {(activeTab === 4) && <Date onNext={this.onDateNext} />}
+          {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
+          {(activeTab === 6) && this.renderFinish()}
         </Container>
       </Wrapper>
     );
   }
 }
 
-Offer.propTypes = {
+Ask.propTypes = {
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -229,4 +250,4 @@ Offer.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default compose(submitOffer, connect(mapStateToProps))(Offer);
+export default compose(submitAsk, connect(mapStateToProps))(Ask);
