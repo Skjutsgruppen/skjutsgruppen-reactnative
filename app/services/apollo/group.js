@@ -12,9 +12,9 @@ mutation group
     $description: String
     $photo: String
     $country: String
-    $county: String
-    $municipality: String
-    $locality: String
+    $countyId: Int
+    $municipalityId: Int
+    $localityId: Int
     $type: String!
     $share: String
 ) 
@@ -28,9 +28,9 @@ mutation group
         description : $description
         photo : $photo
         country : $country
-        county : $county
-        municipality : $municipality
-        locality : $locality
+        countyId : $countyId
+        municipalityId : $municipalityId
+        localityId : $localityId
         type : $type
         share : $share
       }) 
@@ -168,9 +168,9 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
         description,
         photo,
         country,
-        county,
-        municipality,
-        locality,
+        countyId,
+        municipalityId,
+        localityId,
         type,
         share,
       ) => mutate({
@@ -183,9 +183,9 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
           description,
           photo,
           country,
-          county,
-          municipality,
-          locality,
+          countyId,
+          municipalityId,
+          localityId,
           type,
           share,
         },

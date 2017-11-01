@@ -1,24 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import Camera from '../camera';
+import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import Colors from '@theme/colors';
+import CustomButton from '@components/common/customButton';
+import Camera from '@components/camera';
 
 const styles = StyleSheet.create({
-  addPhoto: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 24,
+  addPhotoWrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 2,
     borderTopWidth: 2,
     borderColor: '#dddddd',
     marginBottom: 24,
+  },
+  addPhoto: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addPhotoIcon: {
+    width: 90,
+    height: 60,
+    resizeMode: 'contain',
+    marginRight: 12,
   },
   addPhotoLabel: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1ca9e5',
     marginHorizontal: 12,
-    marginVertical: 4,
   },
   title: {
     fontSize: 16,
@@ -56,7 +66,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     padding: 8,
-    marginBottom: 24,
+    marginBottom: 48,
     marginTop: 12,
     marginHorizontal: 24,
   },
@@ -78,9 +88,10 @@ class About extends Component {
     return (
       <View>
         <Text style={styles.title}>About</Text>
-        <View style={styles.addPhoto}>
+        <View style={styles.addPhotoWrapper}>
           <Camera onSelect={res => this.setState({ photo: res.data })}>
-            <View>
+            <View style={styles.addPhoto}>
+              <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
               <Text style={styles.addPhotoLabel}>Add a group photo</Text>
             </View>
           </Camera>
@@ -112,13 +123,13 @@ class About extends Component {
           </View>
         </View>
         <Text style={styles.text}>Describe the purpose of the group.</Text>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            color="#38ad9e"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.buttonWrapper}
+        >
+          Next
+        </CustomButton>
       </View>
     );
   }

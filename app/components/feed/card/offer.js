@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
   },
   feedImg: {
     width: '100%',
+    height: 200,
+    marginBottom: 16,
   },
   profilePic: {
     height: 55,
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   info: {
-    padding: 12,
+    paddingHorizontal: 12,
   },
   stopIcon: {
     width: 12,
@@ -65,10 +67,9 @@ const styles = StyleSheet.create({
   stopText: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 12,
   },
   messageText: {
+    marginTop: 12,
     marginBottom: 16,
   },
   feedAction: {
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
 const Feed = ({ offer, onPress, onSharePress }) => {
   let image = null;
   if (offer.photo) {
-    image = (<Image source={{ uri: offer.photo }} style={{ width: '100%', height: 200 }} />);
+    image = (<Image source={{ uri: offer.photo }} style={styles.feedImg} />);
   }
 
 

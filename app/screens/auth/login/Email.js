@@ -50,7 +50,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ username: '', password: '', loading: false, error: '' });
+    this.state = ({ username: 'manish.singh+23@yipl.com.np', password: 'asdfasdf', loading: false, error: '' });
   }
 
   componentWillMount() {
@@ -154,6 +154,7 @@ class Login extends Component {
             style={[styles.input, styles.userNameInput]}
             placeholder="Your cellphone number or e-mail"
             underlineColorAndroid="transparent"
+            value={this.state.username}
           />
         </View>
         <View style={styles.inputWrapper}>
@@ -163,6 +164,7 @@ class Login extends Component {
             secureTextEntry
             placeholder="Your Password"
             underlineColorAndroid="transparent"
+            value={this.state.password}
           />
         </View>
         {this.renderButton()}

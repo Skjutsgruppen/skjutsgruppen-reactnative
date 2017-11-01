@@ -1,15 +1,39 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { withMyGroups, withMyFriends } from '@services/apollo/auth';
 import { compose } from 'react-apollo';
+import { Wrapper } from '@components/common';
+import CloseButton from '@components/common/closeButton';
+import CustomButton from '@components/common/customButton';
+import CheckIcon from '@icons/icon_check_white.png';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
+  navBar: {
+    flexDirection: 'row',
+    height: 40,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pageTitle: {
+    fontWeight: 'bold',
+    color: Colors.text.purple,
+  },
+  map: {
+    width: 54,
+  },
   listWrapper: {
     paddingBottom: 64,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderColor: '#e0e0e0',
     borderBottomWidth: 2,
+  },
+  infoTextWrapper: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    backgroundColor: Colors.background.cream,
   },
   title: {
     fontSize: 16,
@@ -17,8 +41,15 @@ const styles = StyleSheet.create({
     color: '#1ca9e5',
     marginHorizontal: 12,
     marginBottom: 24,
-    marginTop: 12,
     textAlign: 'center',
+  },
+  text: {
+    width: 300,
+    textAlign: 'center',
+    lineHeight: 18,
+    fontWeight: 'bold',
+    color: Colors.text.gray,
+    alignSelf: 'center',
   },
   searchWrapper: {
     flexDirection: 'row',
@@ -29,22 +60,33 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#e0e0e0',
   },
+  searchIcon: {
+    width: 20,
+    resizeMode: 'contain',
+  },
   searchField: {
     height: 45,
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 10,
+    fontSize: 16,
   },
   generalWrapper: {
-    paddingVertical: 12,
+    paddingVertical: 10,
+  },
+  copyIcon: {
+    resizeMode: 'contain',
+    height: 30,
+    width: 30,
+    marginRight: 10,
   },
   socialWrapper: {
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   shareCategory: {
     borderBottomWidth: 1,
     borderColor: '#e0e0e0',
     backgroundColor: '#ffffff',
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   shareCategoryTitle: {
     fontSize: 16,
@@ -60,22 +102,69 @@ const styles = StyleSheet.create({
   shareItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    justifyContent: 'center',
+    paddingVertical: 10,
     paddingHorizontal: 24,
     backgroundColor: '#ffffff',
   },
+  defaultSelectedIcon: {
+    width: 28,
+    height: 28,
+    backgroundColor: '#00aeef',
+    marginRight: 10,
+    borderRadius: 15,
+  },
+  shareItemIconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 28,
+    height: 28,
+    backgroundColor: '#00aeef',
+    marginRight: 10,
+    borderRadius: 15,
+  },
+  shareItemIcon: {
+    height: 16,
+    resizeMode: 'contain',
+  },
+  smallText: {
+    fontSize: 11,
+    opacity: 0.7,
+  },
   shareToggle: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#a27ba8',
+    borderColor: '#999',
     marginLeft: 'auto',
   },
-  buttonWrapper: {
+  shareToggleGray: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: Colors.border.gray,
+    backgroundColor: Colors.border.gray,
+    marginLeft: 'auto',
+  },
+  shareToggleActive: {
+    backgroundColor: '#a27ba8',
+    borderColor: '#a27ba8',
+  },
+  checkIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+  },
+  button: {
     padding: 8,
-    marginBottom: 32,
-    margin: 24,
+    marginVertical: 32,
+    marginHorizontal: 24,
   },
   profilePic: {
     width: 34,
@@ -83,7 +172,6 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     marginRight: 12,
   },
-
 });
 
 class Share extends Component {
@@ -95,6 +183,10 @@ class Share extends Component {
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
+  }
+
+  onClose = () => {
+    this.props.onClose();
   }
 
   setOption(type, value) {
@@ -144,17 +236,22 @@ class Share extends Component {
         {
           friends.map(friend => (
             <View key={friend.id} style={styles.borderedRow}>
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={() => this.setOption('bestFriends', friend.id)}
               >
                 <View style={styles.shareItem}>
                   {this.renderPic(friend.photo)}
                   <Text>{friend.firstName || friend.email}</Text>
                   <View
-                    style={[styles.shareToggle, { backgroundColor: this.hasOption('bestFriends', friend.id) ? '#a27ba8' : 'transparent' }]}
-                  />
+                    style={[styles.shareToggle, this.hasOption('bestFriends', friend.id) ? styles.shareToggleActive : {}]}
+                  >
+                    {
+                      this.hasOption('bestFriends', friend.id) &&
+                      <Image source={CheckIcon} style={styles.checkIcon} />
+                    }
+                  </View>
                 </View>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           ))
         }
@@ -189,17 +286,22 @@ class Share extends Component {
         {
           friends.map(friend => (
             <View key={friend.id} style={styles.borderedRow}>
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={() => this.setOption('friends', friend.id)}
               >
                 <View style={styles.shareItem}>
                   {this.renderPic(friend.photo)}
                   <Text>{friend.firstName || friend.email}</Text>
                   <View
-                    style={[styles.shareToggle, { backgroundColor: this.hasOption('friends', friend.id) ? '#a27ba8' : 'transparent' }]}
-                  />
+                    style={[styles.shareToggle, this.hasOption('friends', friend.id) ? styles.shareToggleActive : {}]}
+                  >
+                    {
+                      this.hasOption('friends', friend.id) &&
+                      <Image source={CheckIcon} style={styles.checkIcon} />
+                    }
+                  </View>
                 </View>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           ))
         }
@@ -224,17 +326,22 @@ class Share extends Component {
         {
           groups.map(group => (
             <View key={group.id} style={styles.borderedRow}>
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={() => this.setOption('groups', group.id)}
               >
                 <View style={styles.shareItem}>
                   {this.renderPic(group.photo)}
                   <Text>{group.name}</Text>
                   <View
-                    style={[styles.shareToggle, { backgroundColor: this.hasOption('groups', group.id) ? '#a27ba8' : 'transparent' }]}
-                  />
+                    style={[styles.shareToggle, this.hasOption('groups', group.id) ? styles.shareToggleActive : {}]}
+                  >
+                    {
+                      this.hasOption('groups', group.id) &&
+                      <Image source={CheckIcon} style={styles.checkIcon} />
+                    }
+                  </View>
                 </View>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           ))
         }
@@ -244,11 +351,28 @@ class Share extends Component {
 
   render() {
     return (
-      <View>
+      <Wrapper bgColor={Colors.background.cream}>
+        {
+          this.isModal() &&
+            <View style={styles.navBar}>
+              <CloseButton onPress={this.onClose} />
+              <Text style={styles.pageTitle} >Share with</Text>
+              <View style={styles.map} />
+            </View>
+        }
         <View style={styles.listWrapper}>
-          {!this.isModal() && <Text style={styles.title}> Share & Publish</Text>}
+          {!this.isModal() &&
+            <View style={styles.infoTextWrapper}>
+              <Text style={styles.title}> Invite & Publish</Text>
+              <Text style={styles.text}>
+                Participants who are part of the movement will
+                be automatically added to the group when yo invite them.
+                Others who are not participants yet will get a link.
+              </Text>
+            </View>
+          }
           <View style={styles.searchWrapper}>
-            <Text>Icon</Text>
+            <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
             <TextInput
               style={styles.searchField}
               placeholder="Search"
@@ -256,67 +380,96 @@ class Share extends Component {
           </View>
           <View style={styles.shareCategory}>
             {!this.isModal() &&
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={() => this.setOption('general', 'whole_movement')}
               >
                 <View style={styles.shareItem}>
-                  <Text>Publish to the whole movement</Text>
+                  <View style={styles.defaultSelectedIcon} />
+                  <Text style={styles.shareLabel}>Publish to the whole movement</Text>
                   <View
-                    style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'whole_movement') ? '#a27ba8' : 'transparent' }]}
-                  />
+                    style={styles.shareToggleGray}
+                  >
+                    <Image source={CheckIcon} style={styles.checkIcon} />
+                  </View>
                 </View>
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             }
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               onPress={() => this.setOption('general', 'copy_to_clip')}
             >
               <View style={styles.shareItem}>
-                <Text>Copy to clipboard</Text>
+                <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
+                <View style={styles.shareLabel}>
+                  <Text>Copy to clipboard</Text>
+                  <Text style={styles.smallText}>Paste whereever you want</Text>
+                </View>
                 <View
-                  style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'copy_to_clip') ? '#a27ba8' : 'transparent' }]}
-                />
+                  style={[styles.shareToggle, this.hasOption('general', 'copy_to_clip') ? styles.shareToggleActive : {}]}
+                >
+                  {
+                    this.hasOption('general', 'copy_to_clip') &&
+                    <Image source={CheckIcon} style={styles.checkIcon} />
+                  }
+                </View>
               </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
+            <View style={styles.shareCategory}>
+              <TouchableWithoutFeedback
+                onPress={() => this.setOption('general', 'facebook')}
+              >
+                <View style={styles.shareItem}>
+                  <View style={styles.shareItemIconWrapper}>
+                    <Image source={require('@icons/icon_facebook.png')} style={styles.shareItemIcon} />
+                  </View>
+                  <Text>Your Facebook Timeline</Text>
+                  <View
+                    style={[styles.shareToggle, this.hasOption('general', 'facebook') ? styles.shareToggleActive : {}]}
+                  >
+                    {
+                      this.hasOption('general', 'facebook') &&
+                      <Image source={CheckIcon} style={styles.checkIcon} />
+                    }
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => this.setOption('general', 'tweet')}
+              >
+                <View style={styles.shareItem}>
+                  <View style={styles.shareItemIconWrapper}>
+                    <Image source={require('@icons/icon_twitter.png')} style={styles.shareItemIcon} />
+                  </View>
+                  <Text>Tweet</Text>
+                  <View
+                    style={[styles.shareToggle, this.hasOption('general', 'tweet') ? styles.shareToggleActive : {}]}
+                  >
+                    {
+                      this.hasOption('general', 'tweet') &&
+                      <Image source={CheckIcon} style={styles.checkIcon} />
+                    }
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            {this.renderBestFriends()}
+            {this.renderGroups()}
+            {this.renderFriends()}
           </View>
-          <View style={styles.shareCategory}>
-            <TouchableOpacity
-              onPress={() => this.setOption('general', 'facebook')}
-            >
-              <View style={styles.shareItem}>
-                <Text>Your Facebook Timeline</Text>
-                <View
-                  style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'facebook') ? '#a27ba8' : 'transparent' }]}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.setOption('general', 'tweet')}
-            >
-              <View style={styles.shareItem}>
-                <Text>Tweet</Text>
-                <View
-                  style={[styles.shareToggle, { backgroundColor: this.hasOption('general', 'tweet') ? '#a27ba8' : 'transparent' }]}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          {this.renderBestFriends()}
-          {this.renderGroups()}
-          {this.renderFriends()}
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title={this.buttonText()}
-            color="#38ad9e"
-          />
-        </View>
-      </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor="#38ad9e"
+          style={styles.button}
+        >
+          Share
+        </CustomButton>
+      </Wrapper>
     );
   }
 }
 
 Share.propTypes = {
+  onClose: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   friends: PropTypes.arrayOf(PropTypes.object),
   friendLoading: PropTypes.bool.isRequired,
