@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Radio from '@components/common/radio';
+import Colors from '@theme/colors';
+import CustomButton from '@components/common/customButton';
 
 const styles = StyleSheet.create({
   title: {
@@ -10,12 +12,12 @@ const styles = StyleSheet.create({
     color: '#1ca9e5',
     marginHorizontal: 24,
     marginBottom: 24,
+    marginTop: 12,
     textAlign: 'center',
   },
   text: {
-    fontSize: 11,
     color: '#777',
-    lineHeight: 16,
+    lineHeight: 20,
     textAlign: 'center',
     marginHorizontal: '20%',
     marginBottom: 32,
@@ -31,7 +33,8 @@ const styles = StyleSheet.create({
     margin: 24,
   },
   note: {
-    fontWeight: '500',
+    fontSize: 12,
+    lineHeight: 16,
   },
 });
 
@@ -47,6 +50,10 @@ class OpenClosed extends Component {
     const { type } = this.state;
     onNext(type);
   }
+
+  onPressOpen = () => this.setType('open')
+
+  onPressClosed = () => this.setType('closed')
 
   setType = (type) => {
     this.setState({ type });
@@ -64,17 +71,16 @@ class OpenClosed extends Component {
           them to the group).
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={() => this.setType('open')} label="Open" checked={type === 'open'} />
-          <Radio onPress={() => this.setType('closed')} label="Closed*" checked={type === 'closed'} />
+          <Radio onPress={this.onPressOpen} label="Open" checked={type === 'open'} />
+          <Radio onPress={this.onPressClosed} label="Closed*" checked={type === 'closed'} />
         </View>
-        <View style={styles.buttonWrapper}>
-          <Button
-            onPress={this.onNext}
-            title="Next"
-            accessibilityLabel="Go to next form"
-            color="#38ad9e"
-          />
-        </View>
+        <CustomButton
+          onPress={this.onNext}
+          bgColor={Colors.background.darkCyan}
+          style={styles.buttonWrapper}
+        >
+          Next
+        </CustomButton>
         <Text style={[styles.text, styles.note]}>
           * Please note that rides published in a closed group still will be
           searchable and joinable for everyone in the movement.

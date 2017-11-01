@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import GooglePlace from '@components/googlePlace';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
@@ -22,6 +22,23 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginHorizontal: 24,
     fontWeight: 'bold',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    paddingRight: 24,
+  },
+  inputIconWrapper: {
+    height: 48,
+    width: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputIcon: {
+    width: 18,
+    height: 18,
+    resizeMode: 'contain',
   },
   input: {
     marginBottom: 12,
@@ -45,27 +62,45 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   addStopIcon: {
-    width: 16,
+    width: 24,
     resizeMode: 'contain',
     marginRight: 10,
   },
   place: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 6,
     marginTop: 12,
   },
   stopIcon: {
     width: 16,
+    height: 48,
     resizeMode: 'contain',
     marginRight: 10,
+  },
+  removeStopIcon: {
+    height: 24,
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.blue,
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginLeft: 12,
+    marginTop: 12,
+  },
+  minusText: {
+    color: Colors.text.white,
+    fontSize: 28,
+    lineHeight: 28,
   },
   stopsLabel: {
     color: '#777777',
     lineHeight: 18,
   },
   stopsInfo: {
-    marginBottom: 8,
+    marginTop: 4,
+    marginLeft: 26,
     fontSize: 12,
     lineHeight: 18,
     color: '#777777',
@@ -81,7 +116,7 @@ class Route extends Component {
     this.state = {
       start: {},
       end: {},
-      stops: [],
+      stops: [{}],
       stopsCount: 1,
     };
   }
@@ -95,7 +130,11 @@ class Route extends Component {
     onNext(state);
   };
 
-  setStops = (count, stop) => {
+  onChangeText = (i, stop) => {
+    this.setStops(i, stop, this.state.stopsCount);
+  };
+
+  setStops = (count, stop, stopsCount) => {
     const { stops } = this.state;
     stops[count] = {
       name: stop.name,
@@ -103,7 +142,7 @@ class Route extends Component {
       coordinates: [stop.lat, stop.lng],
     };
 
-    this.setState({ stops });
+    this.setState({ stops, stopsCount });
   };
 
   removeStop = (count) => {
@@ -115,15 +154,12 @@ class Route extends Component {
   }
 
   addStops = () => {
-    this.setState({ stopsCount: this.state.stopsCount + 1 }, () => {
-      this.setStops(this.state.stopsCount, {});
-    });
+    this.setStops(this.state.stopsCount, {}, this.state.stopsCount + 1);
   };
 
   renderStops() {
-    let { stops } = this.state;
-    stops = stops.length > 0 ? stops : [{}];
-    let j = 1;
+    const { stops } = this.state;
+    let j = 0;
 
     return stops.map((s, i) => {
       j += 1;
@@ -132,11 +168,11 @@ class Route extends Component {
           <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
-            onChangeText={stop => this.setStops(i, stop)}
+            onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
-          {i > 0 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
-            <View><Text>-</Text></View>
-          </TouchableWithoutFeedback>) : null}
+          {j > 1 ? (<TouchableOpacity onPress={() => this.removeStop(i)}>
+            <View style={styles.removeStopIcon}><Text style={styles.minusText}>-</Text></View>
+          </TouchableOpacity>) : null}
         </View>
       );
     });
@@ -147,7 +183,7 @@ class Route extends Component {
       <View>
         <Text style={styles.title}>Specific stretch</Text>
         <Text style={styles.label}>From</Text>
-        <View>
+        <View style={[styles.inputWrapper, { zIndex: 10 }]}>
           <GooglePlace
             placeholder="Start here"
             onChangeText={
@@ -161,11 +197,14 @@ class Route extends Component {
             }
             style={{ marginBottom: 32 }}
           />
+          <TouchableOpacity style={styles.inputIconWrapper}>
+            <Image source={require('@icons/icon_location.png')} style={styles.inputIcon} />
+          </TouchableOpacity>
         </View>
         <Text style={styles.label}>To</Text>
-        <View>
+        <View style={[styles.inputWrapper, { zIndex: 8 }]}>
           <GooglePlace
-            placeholder="Start here"
+            placeholder="Destination"
             onChangeText={
               end => this.setState({
                 end: {
@@ -176,12 +215,15 @@ class Route extends Component {
               })
             }
           />
+          <TouchableOpacity style={styles.inputIconWrapper}>
+            <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
+          </TouchableOpacity>
         </View>
         <View style={styles.stops}>
           <View style={styles.addStop}>
-            <TouchableWithoutFeedback onPress={this.addStops}>
+            <TouchableOpacity onPress={this.addStops}>
               <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
             <Text style={styles.stopsLabel}>
               Stops along the way:
             </Text>

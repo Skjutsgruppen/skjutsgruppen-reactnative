@@ -32,6 +32,7 @@ const Colors = {
     darkGray: '#585756',
     gray: '#9b9b9b',
     lightGray: '#dddee3',
+    white: '#ffffff',
   },
 };
 
