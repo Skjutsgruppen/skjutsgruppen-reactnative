@@ -7,7 +7,7 @@ import Header from '@components/feed/header';
 import TabIcon from '@components/tabIcon';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modalbox';
-import Share from '@components/offer/share';
+import Share from '@components/common/share';
 
 class Feed extends Component {
   static navigationOptions = {
@@ -25,7 +25,7 @@ class Feed extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ refreshing: false, isOpen: false });
+    this.state = ({ refreshing: false, isGroup: true, isOpen: false });
   }
 
   componentWillMount() {
@@ -46,10 +46,14 @@ class Feed extends Component {
     if (type === 'offer') {
       navigation.navigate('OfferDetail', { offer: detail });
     }
+
+    if (type === 'ask') {
+      navigation.navigate('AskDetail', { ask: detail });
+    }
   };
 
-  onSharePress = () => {
-    this.setState({ isOpen: true });
+  onSharePress = (isGroup) => {
+    this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
   };
 
   onShare = () => {
@@ -74,7 +78,12 @@ class Feed extends Component {
     return (
       <Modal position={'bottom'} swipeArea={50} isOpen={this.state.isOpen} onClosed={() => this.setState({ isOpen: false })}>
         <ScrollView>
-          <Share modal onNext={this.onShare} onClose={this.onClose} />
+          <Share
+            modal
+            showGroup={this.state.isGroup}
+            onNext={this.onShare}
+            onClose={this.onClose}
+          />
         </ScrollView>
       </Modal>
     );
