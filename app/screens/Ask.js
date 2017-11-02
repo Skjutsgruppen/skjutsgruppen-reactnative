@@ -3,11 +3,11 @@ import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } fro
 import Tab from '@components/tab';
 import PropTypes from 'prop-types';
 import Comment from '@components/ask/comment';
-import Trip from '@components/ask/trip';
+import Trip from '@components/offer/trip';
 import Date from '@components/ask/date';
 import Photo from '@components/ask/photo';
 import Share from '@components/common/share';
-import Completed from '@components/ask/completed';
+import Completed from '@components/common/completed';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { Loading, Wrapper, Container } from '@components/common';
@@ -18,6 +18,23 @@ const styles = StyleSheet.create({
   backButtonWrapper: {
     marginTop: 10,
     marginHorizontal: 20,
+  },
+  returnHeader: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  returnIcon: {
+    width: 50,
+    height: 36,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 6,
+  },
+  returnText: {
+    width: 210,
+    alignSelf: 'center',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   backButton: {
     flexDirection: 'row',
@@ -64,6 +81,8 @@ class Ask extends Component {
     super(props);
 
     this.state = {
+      isReturnedTrip: false,
+      defaultTrip: { start: {}, end: {} },
       comment: {},
       photo: {},
       trip: {},
@@ -75,6 +94,16 @@ class Ask extends Component {
       loading: false,
       ask: {},
     };
+  }
+
+  componentWillMount() {
+    const { params } = this.props.navigation.state;
+    if (params && typeof params.isReturnedTrip !== 'undefined') {
+      this.setState({
+        isReturnedTrip: true,
+        defaultTrip: { start: params.defaultTrip.start, end: params.defaultTrip.end },
+      });
+    }
   }
 
   onCommentNext = (comment) => {
@@ -148,20 +177,34 @@ class Ask extends Component {
     navigate('Feed', { refetch: true });
   };
 
+  onMakeReturnRide = () => {
+    const { navigate } = this.props.navigation;
+    if (this.state.trip.isReturning) {
+      navigate('Ask', {
+        isReturnedTrip: true,
+        defaultTrip: { end: this.state.trip.start, start: this.state.trip.end },
+      });
+    } else {
+      navigate('Feed', { refetch: true });
+    }
+  }
+
   createTrip() {
     const { comment, photo, trip, date, share } = this.state;
+    const rideData = {
+      comment: comment.text,
+      photo: photo.photo,
+      tripStart: trip.start,
+      tripEnd: trip.end,
+      returnTrip: trip.isReturning,
+      dates: date.dates,
+      time: date.time,
+      flexibility: date.flexsible,
+      share,
+    };
+
     try {
-      this.props.submit(
-        comment.text,
-        trip.start,
-        trip.end,
-        photo.photo,
-        trip.isReturning,
-        date.dates,
-        date.time,
-        date.flexsible,
-        share,
-      ).then((res) => {
+      this.props.submit(rideData).then((res) => {
         if (share.general.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
@@ -173,21 +216,45 @@ class Ask extends Component {
     }
   }
 
+  header() {
+    const { isReturnedTrip } = this.state;
+    if (isReturnedTrip) {
+      return (
+        <View style={styles.returnHeader}>
+          <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+          <Text style={styles.mainTitle}>Return ride</Text>
+          <Text style={styles.returnText}>
+            Return ride of your offered ride to Stockholm on December 20th
+          </Text>
+        </View>
+      );
+    }
+
+    return (<Text style={styles.mainTitle}>Ask for a ride</Text>);
+  }
+
   renderFinish() {
     const { loading, ask, share } = this.state;
     if (loading) {
       return (<Loading />);
     }
 
-    return (<Completed ask={ask} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
+    return (<Completed
+      url={ask.url}
+      text="ride"
+      isCliped={share.general.indexOf('copy_to_clip') > -1}
+      onButtonPress={this.onButtonPress}
+      isReturnedTrip={this.state.trip.isReturning}
+      onMakeReturnRide={this.onMakeReturnRide}
+    />);
   }
 
   render() {
-    const { activeTab, completedTabs, disabledTabs } = this.state;
+    const { activeTab, completedTabs, disabledTabs, isReturnedTrip, defaultTrip } = this.state;
     const { navigation } = this.props;
 
     return (
-      <Wrapper bgColor="#eded18">
+      <Wrapper bgColor="#eded18" >
         <View style={styles.backButtonWrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
@@ -195,7 +262,7 @@ class Ask extends Component {
           </TouchableOpacity>
         </View>
         <Container bgColor="#f3f3ed">
-          <Text style={styles.mainTitle}>Ask for a ride</Text>
+          {this.header()}
           <View style={styles.tabContainer}>
             <Tab
               label="Comment"
@@ -230,7 +297,12 @@ class Ask extends Component {
           </View>
           {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
           {(activeTab === 2) && <Photo onNext={this.onPhotoNext} />}
-          {(activeTab === 3) && <Trip onNext={this.onTripNext} />}
+          {(activeTab === 3) && <Trip
+            isReturnTrip={isReturnedTrip}
+            start={defaultTrip.start}
+            end={defaultTrip.end}
+            onNext={this.onTripNext}
+          />}
           {(activeTab === 4) && <Date onNext={this.onDateNext} />}
           {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
           {(activeTab === 6) && this.renderFinish()}
@@ -243,6 +315,7 @@ class Ask extends Component {
 Ask.propTypes = {
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
+    state: PropTypes.object,
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,

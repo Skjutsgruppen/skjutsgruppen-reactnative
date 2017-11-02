@@ -143,7 +143,7 @@ const Group = ({ group, onPress, min, onSharePress }) => {
               {
                 group.outreach === 'area' &&
                 <Text style={styles.newGroupPlace}>
-                  {[group.country, group.county, group.municipality, group.locality].filter(s => typeof s !== 'undefined').join(', ')}
+                  {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
                 </Text>
               }
 

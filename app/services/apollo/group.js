@@ -27,7 +27,7 @@ mutation group
         name : $name
         description : $description
         photo : $photo
-        country : $country
+        countryCode : $country
         countyId : $countyId
         municipalityId : $municipalityId
         localityId : $localityId
@@ -40,10 +40,10 @@ mutation group
       name,
       description,
       photo,
-      countryId,
-      countyId,
-      municipalityId,
-      localityId,
+      country,
+      county,
+      municipality,
+      locality,
       TripStart {
         name
         coordinates
@@ -95,10 +95,10 @@ query exploreGroups($offset: Int, $limit: Int){
       name
       coordinates
     }
-    countryId
-    countyId
-    municipalityId
-    localityId
+    country
+    county
+    municipality
+    locality
     GroupMembers{
       id
     } 
@@ -143,10 +143,10 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
       name
       coordinates
     }
-    countryId
-    countyId
-    municipalityId
-    localityId
+    country
+    county
+    municipality
+    locality
     GroupMembers{
       id
     }
@@ -167,7 +167,7 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
         name,
         description,
         photo,
-        country,
+        countryCode,
         countyId,
         municipalityId,
         localityId,
@@ -182,7 +182,7 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
           name,
           description,
           photo,
-          country,
+          countryCode,
           countyId,
           municipalityId,
           localityId,
