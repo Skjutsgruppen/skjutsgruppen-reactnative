@@ -242,10 +242,13 @@ class OfferDetail extends Component {
               <View>
                 {image}
                 <View style={styles.info}>
-                  <View style={styles.stopsWrapper}>
-                    <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
-                    <Text style={styles.stopText}> Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
-                  </View>
+                  {
+                    offer.Stops.length > 0 &&
+                    <View style={styles.stopText}>
+                      <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
+                      <Text style={styles.lightText}>Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
+                    </View>
+                  }
                   <Text style={styles.messageText}>{offer.comment}</Text>
                 </View>
               </View>

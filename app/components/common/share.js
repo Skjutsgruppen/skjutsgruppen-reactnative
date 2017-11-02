@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Image } fr
 import PropTypes from 'prop-types';
 import { withMyGroups, withMyFriends } from '@services/apollo/auth';
 import { compose } from 'react-apollo';
-import { Wrapper } from '@components/common';
+import { Wrapper, Loading } from '@components/common';
 import CloseButton from '@components/common/closeButton';
 import CustomButton from '@components/common/customButton';
 import CheckIcon from '@icons/icon_check_white.png';
@@ -226,7 +226,7 @@ class Share extends Component {
     const { friendLoading, friends } = this.props;
 
     if (friendLoading) {
-      return (<View><Text>Loading</Text></View>);
+      return (<Loading />);
     }
 
 
@@ -277,7 +277,7 @@ class Share extends Component {
     const { friendLoading, friends } = this.props;
 
     if (friendLoading) {
-      return (<View><Text>Loading</Text></View>);
+      return (<Loading />);
     }
 
     if (friends.length === 0) {
@@ -317,7 +317,7 @@ class Share extends Component {
     const { groupLoading, groups } = this.props;
 
     if (groupLoading) {
-      return (<View><Text>Loading</Text></View>);
+      return (<Loading />);
     }
 
     if (groups.length === 0) {
@@ -382,83 +382,79 @@ class Share extends Component {
               placeholder="Search"
             />
           </View>
-          <View style={styles.shareCategory}>
-            {!this.isModal() &&
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('general', 'whole_movement')}
-              >
-                <View style={styles.shareItem}>
-                  <View style={styles.defaultSelectedIcon} />
-                  <Text style={styles.shareLabel}>Publish to the whole movement</Text>
-                  <View
-                    style={styles.shareToggleGray}
-                  >
-                    <Image source={CheckIcon} style={styles.checkIcon} />
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            }
+          {!this.isModal() &&
             <TouchableWithoutFeedback
-              onPress={() => this.setOption('general', 'copy_to_clip')}
+              onPress={() => this.setOption('general', 'whole_movement')}
             >
               <View style={styles.shareItem}>
-                <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
-                <View style={styles.shareLabel}>
-                  <Text>Copy to clipboard</Text>
-                  <Text style={styles.smallText}>Paste whereever you want</Text>
-                </View>
+                <View style={styles.defaultSelectedIcon} />
+                <Text style={styles.shareLabel}>Publish to the whole movement</Text>
                 <View
-                  style={[styles.shareToggle, this.hasOption('general', 'copy_to_clip') ? styles.shareToggleActive : {}]}
+                  style={styles.shareToggleGray}
                 >
-                  {
-                    this.hasOption('general', 'copy_to_clip') &&
-                    <Image source={CheckIcon} style={styles.checkIcon} />
-                  }
+                  <Image source={CheckIcon} style={styles.checkIcon} />
                 </View>
               </View>
             </TouchableWithoutFeedback>
-            <View style={styles.shareCategory}>
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('general', 'facebook')}
+          }
+          <TouchableWithoutFeedback
+            onPress={() => this.setOption('general', 'copy_to_clip')}
+          >
+            <View style={styles.shareItem}>
+              <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
+              <View style={styles.shareLabel}>
+                <Text>Copy to clipboard</Text>
+                <Text style={styles.smallText}>Paste whereever you want</Text>
+              </View>
+              <View
+                style={[styles.shareToggle, this.hasOption('general', 'copy_to_clip') ? styles.shareToggleActive : {}]}
               >
-                <View style={styles.shareItem}>
-                  <View style={styles.shareItemIconWrapper}>
-                    <Image source={require('@icons/icon_facebook.png')} style={styles.shareItemIcon} />
-                  </View>
-                  <Text>Your Facebook Timeline</Text>
-                  <View
-                    style={[styles.shareToggle, this.hasOption('general', 'facebook') ? styles.shareToggleActive : {}]}
-                  >
-                    {
-                      this.hasOption('general', 'facebook') &&
-                      <Image source={CheckIcon} style={styles.checkIcon} />
-                    }
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('general', 'tweet')}
-              >
-                <View style={styles.shareItem}>
-                  <View style={styles.shareItemIconWrapper}>
-                    <Image source={require('@icons/icon_twitter.png')} style={styles.shareItemIcon} />
-                  </View>
-                  <Text>Tweet</Text>
-                  <View
-                    style={[styles.shareToggle, this.hasOption('general', 'tweet') ? styles.shareToggleActive : {}]}
-                  >
-                    {
-                      this.hasOption('general', 'tweet') &&
-                      <Image source={CheckIcon} style={styles.checkIcon} />
-                    }
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
+                {
+                  this.hasOption('general', 'copy_to_clip') &&
+                  <Image source={CheckIcon} style={styles.checkIcon} />
+                }
+              </View>
             </View>
-            {this.renderBestFriends()}
-            {this.renderFriends()}
-            {this.showGroup() && this.renderGroups()}
-          </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => this.setOption('general', 'facebook')}
+          >
+            <View style={styles.shareItem}>
+              <View style={styles.shareItemIconWrapper}>
+                <Image source={require('@icons/icon_facebook.png')} style={styles.shareItemIcon} />
+              </View>
+              <Text>Your Facebook Timeline</Text>
+              <View
+                style={[styles.shareToggle, this.hasOption('general', 'facebook') ? styles.shareToggleActive : {}]}
+              >
+                {
+                  this.hasOption('general', 'facebook') &&
+                  <Image source={CheckIcon} style={styles.checkIcon} />
+                }
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => this.setOption('general', 'tweet')}
+          >
+            <View style={styles.shareItem}>
+              <View style={styles.shareItemIconWrapper}>
+                <Image source={require('@icons/icon_twitter.png')} style={styles.shareItemIcon} />
+              </View>
+              <Text>Tweet</Text>
+              <View
+                style={[styles.shareToggle, this.hasOption('general', 'tweet') ? styles.shareToggleActive : {}]}
+              >
+                {
+                  this.hasOption('general', 'tweet') &&
+                  <Image source={CheckIcon} style={styles.checkIcon} />
+                }
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+          {this.renderBestFriends()}
+          {this.renderFriends()}
+          {this.showGroup() && this.renderGroups()}
         </View>
         <CustomButton
           onPress={this.onNext}

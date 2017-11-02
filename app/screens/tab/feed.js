@@ -217,7 +217,7 @@ Feed.propTypes = {
     navigateWithDebounce: PropTypes.func,
     state: PropTypes.shape({
       params: PropTypes.shape({
-        refetch: PropTypes.string,
+        refetch: PropTypes.bool,
       }),
     }).isRequired,
   }).isRequired,
