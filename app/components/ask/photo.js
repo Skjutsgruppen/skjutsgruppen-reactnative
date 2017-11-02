@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 });
 
 
-class Photo extends Component {
+class Photo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { photo: '' };
