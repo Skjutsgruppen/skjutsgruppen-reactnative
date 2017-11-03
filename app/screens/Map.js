@@ -1,15 +1,14 @@
 /* global navigator */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
 import TripMarker from '@components/map/tripMarker';
 import PropTypes from 'prop-types';
-import { withFeed } from '@services/apollo/feed';
 
 const TripMap = withMapTrips(TripMarker);
 
-class Map extends Component {
+class Map extends PureComponent {
   static navigationOptions = {
     header: null,
   };
@@ -83,4 +82,4 @@ Map.propTypes = {
 };
 
 
-export default withFeed(Map);
+export default Map;

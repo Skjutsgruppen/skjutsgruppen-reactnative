@@ -4,9 +4,9 @@ import MapView from 'react-native-maps';
 import Marker from '@components/map/marker';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Loading } from '@components/common';
 
 const { width, height } = Dimensions.get('window');
-
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -22,22 +22,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const TripMarker = ({ lat, lng, trips, user, onMarkerPress }) => {
-  const renderMarkers = trips.map(trip => (
-    <Marker
-      key={trip.id}
-      onPress={(e) => {
-        e.stopPropagation();
-        onMarkerPress(trip);
-      }}
-      coordinate={{
-        latitude: trip.TripStart.coordinates[0],
-        longitude: trip.TripStart.coordinates[1],
-      }}
-      image={trip.User.photo}
-      count={trip.seats}
-    />
-  ));
+const TripMarker = ({ lat, lng, loading, trips, user, onMarkerPress }) => {
+  if (loading) return <Loading />;
+  let coordinate = {};
+  const renderMarkers = trips.map((row) => {
+    coordinate = {
+      latitude: row.coordinate.lat,
+      longitude: row.coordinate.lng,
+    };
+    return (
+      <Marker
+        key={row.trip.id}
+        onPress={(e) => {
+          e.stopPropagation();
+          onMarkerPress(row.trip);
+        }}
+        coordinate={coordinate}
+        image={row.trip.User.photo}
+        count={row.trip.seats}
+      />
+    );
+  });
 
   return (
     <View style={styles.container}>
@@ -63,8 +68,8 @@ const TripMarker = ({ lat, lng, trips, user, onMarkerPress }) => {
           image={user.photo}
           count={0}
         />
+        {renderMarkers}
       </MapView>
-      {renderMarkers}
     </View>
   );
 };
@@ -77,6 +82,7 @@ TripMarker.propTypes = {
   user: PropTypes.shape({
     photo: PropTypes.string.isRequired,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

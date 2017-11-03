@@ -3,11 +3,13 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native
 import FeedItem from '@components/feed/feedItem';
 import { Loading, Wrapper, FeedContainer } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
+import { withShare } from '@services/apollo/auth';
 import Header from '@components/feed/header';
 import TabIcon from '@components/tabIcon';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modalbox';
 import Share from '@components/common/share';
+import { compose } from 'react-apollo';
 
 class Feed extends Component {
   static navigationOptions = {
@@ -25,7 +27,7 @@ class Feed extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ refreshing: false, isGroup: true, isOpen: false });
+    this.state = ({ refreshing: false, modalDetail: {}, modalType: '', isOpen: false });
   }
 
   componentWillMount() {
@@ -56,13 +58,14 @@ class Feed extends Component {
     }
   };
 
-  onSharePress = (isGroup) => {
-    this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
+  onSharePress = (modalType, modalDetail) => {
+    this.setState({ isOpen: true, modalType, modalDetail });
   };
 
-
-  onShare = () => {
-    this.setState({ isOpen: false });
+  onShare = (share) => {
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+      .then(() => this.setState({ isOpen: false }))
+      .catch(console.error);
   };
 
   onRefreshClicked = () => {
@@ -87,7 +90,7 @@ class Feed extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.isGroup}
+            showGroup={this.state.modalType !== 'group'}
             onNext={this.onShare}
             onClose={this.onClose}
           />
@@ -97,9 +100,9 @@ class Feed extends Component {
   }
 
   renderFooter = () => {
-    const { loading, rows, total } = this.props.feeds;
+    const { loading, rows, count } = this.props.feeds;
 
-    if (rows.length >= total) {
+    if (rows.length >= count) {
       return (
         <View
           style={{
@@ -116,7 +119,7 @@ class Feed extends Component {
     return (
       <View
         style={{
-          paddingVertical: 20,
+          paddingVertical: 60,
           borderTopWidth: 1,
           borderColor: '#CED0CE',
         }}
@@ -182,9 +185,9 @@ class Feed extends Component {
                 return previousResult;
               }
 
-              const rows = previousResult.feeds.rows.concat(fetchMoreResult.getFeed.rows);
+              const rows = previousResult.getFeed.rows.concat(fetchMoreResult.getFeed.rows);
 
-              return { feeds: { rows, total: previousResult.count } };
+              return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
             },
           });
         }}
@@ -206,12 +209,13 @@ class Feed extends Component {
 }
 
 Feed.propTypes = {
+  share: PropTypes.func.isRequired,
   feeds: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object),
     fetchMore: PropTypes.func.isRequired,
     refetch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    total: PropTypes.numeric,
+    count: PropTypes.numeric,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -224,4 +228,4 @@ Feed.propTypes = {
   }).isRequired,
 };
 
-export default withFeed(Feed);
+export default compose(withShare, withFeed)(Feed);

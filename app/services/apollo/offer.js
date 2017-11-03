@@ -1,10 +1,10 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const createTrip = gql`
+const CREATE_TRIP = gql`
 mutation createTrip(
   $description:String, 
-  $type:String!,
+  $type:TripTypeEnum!,
   $tripStart:PlaceInput!,
   $tripEnd:PlaceInput!,
   $photo:String,
@@ -59,7 +59,7 @@ mutation createTrip(
 }
 `;
 
-export const submitOffer = graphql(createTrip, {
+export const submitOffer = graphql(CREATE_TRIP, {
   props: ({ mutate }) => ({
     submit: ({
       description,

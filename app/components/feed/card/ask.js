@@ -90,7 +90,6 @@ const Ask = ({ ask, onPress, onSharePress }) => {
     image = (<Image source={{ uri: ask.photo }} style={{ width: '100%', height: 200 }} />);
   }
 
-
   let profileImage = null;
   if (ask.User.photo) {
     profileImage = (<Image source={{ uri: ask.User.photo }} style={styles.profilePic} />);

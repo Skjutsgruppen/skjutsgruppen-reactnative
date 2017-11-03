@@ -2,8 +2,8 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const NOTIFICATION_QUERY = gql`
-query  {
-  notifications {
+query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
+  notifications (filters:$filters, offset:$offset, limit:$limit) {
     rows {
       id
       type
@@ -151,16 +151,16 @@ query  {
         }
       }
     }
+    count
   }
 }
 `;
 
-
 export const withNotification = graphql(NOTIFICATION_QUERY, {
-  options: {
+  options: ({ filters, limit = 5 }) => ({
     notifyOnNetworkStatusChange: true,
-    variables: { offset: 0, limit: 10 },
-  },
+    variables: { filters, offset: 0, limit },
+  }),
   props: ({ data: { loading, notifications, fetchMore, refetch, networkStatus, error } }) => {
     let rows = [];
     let count = 0;
@@ -174,35 +174,67 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
   },
 });
 
+
 const READ_NOTIFICATION_QUERY = gql`
-query notifications($id:Int!) {
-  notifications(id:$id)
+mutation readNotification($id:Int!) {
+  readNotification(id:$id)
 }
 `;
 
 export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
-  options: ({ id }) => ({ variables: { id } }),
-  props: ({ data }) => ({ data }),
+  props: ({ mutate }) => ({
+    markRead: id => mutate({ variables: { id } }),
+  }),
 });
 
-const REJECT_GROUP_NOTIFICATION_QUERY = gql`
-query rejectGroupInvitation($id:Int!) {
+
+const REJECT_GROUP_INVITATION_QUERY = gql`
+mutation rejectGroupInvitation($id:Int!) {
   rejectGroupInvitation(id:$id)
 }
 `;
 
-export const withRejectGroupNotification = graphql(REJECT_GROUP_NOTIFICATION_QUERY, {
-  options: ({ id }) => ({ variables: { id } }),
-  props: ({ data }) => ({ data }),
+export const withRejectGroupInvitation = graphql(REJECT_GROUP_INVITATION_QUERY, {
+  props: ({ mutate }) => ({
+    rejectGroupInvitation: id => mutate({ variables: { id } }),
+  }),
 });
 
+
 const ACCEPT_GROUP_REQUEST_QUERY = gql`
-query acceptGroupRequest($id:Int!) {
+mutation acceptGroupRequest($id:Int!) {
   acceptGroupRequest(id:$id)
 }
 `;
 
 export const withAcceptGroupRequest = graphql(ACCEPT_GROUP_REQUEST_QUERY, {
-  options: ({ id }) => ({ variables: { id } }),
-  props: ({ data }) => ({ data }),
+  props: ({ mutate }) => ({
+    acceptGroupRequest: id => mutate({ variables: { id } }),
+  }),
+});
+
+
+const ACCEPT_GROUP_INVITATION_QUERY = gql`
+mutation acceptGroupInvitation($id:Int!) {
+  acceptGroupInvitation(id:$id)
+}
+`;
+
+export const withAcceptGroupInvitation = graphql(ACCEPT_GROUP_INVITATION_QUERY, {
+  props: ({ mutate }) => ({
+    acceptGroupInvitation: id => mutate({ variables: { id } }),
+  }),
+});
+
+
+const LEAVE_GROUP_QUERY = gql`
+mutation leaveGroup($id:Int!) {
+  leaveGroup(id:$id)
+}
+`;
+
+export const withLeaveGroup = graphql(LEAVE_GROUP_QUERY, {
+  props: ({ mutate }) => ({
+    leaveGroup: id => mutate({ variables: { id } }),
+  }),
 });
