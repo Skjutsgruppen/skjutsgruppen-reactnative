@@ -30,10 +30,10 @@ class Feed extends Component {
 
   componentWillMount() {
     const { params } = this.props.navigation.state;
-    const { data } = this.props;
+    const { feeds } = this.props;
 
     if (params && typeof params.refetch !== 'undefined') {
-      data.refetch();
+      feeds.refetch();
     }
   }
 
@@ -61,7 +61,7 @@ class Feed extends Component {
   };
 
   onRefreshClicked = () => {
-    this.props.data.refetch();
+    this.props.feeds.refetch();
   };
 
   onClose = () => {
@@ -90,19 +90,17 @@ class Feed extends Component {
   }
 
   renderFooter = () => {
-    const { loading, getFeed, total } = this.props.data;
+    const { loading, rows, total } = this.props.feeds;
 
-    if (getFeed.length >= total) {
+    if (rows.length >= total) {
       return (
         <View
           style={{
-            paddingVertical: 20,
+            paddingVertical: 60,
             borderTopWidth: 1,
             borderColor: '#CED0CE',
           }}
-        >
-          <Text>No more feed</Text>
-        </View>
+        />
       );
     }
 
@@ -122,9 +120,9 @@ class Feed extends Component {
   };
 
   renderFeed() {
-    const { data } = this.props;
+    const { feeds } = this.props;
 
-    if (data.networkStatus === 1) {
+    if (feeds.networkStatus === 1) {
       return <Loading />;
     }
 
@@ -134,16 +132,16 @@ class Feed extends Component {
       </TouchableOpacity>
     );
 
-    if (data.error) {
+    if (feeds.error) {
       return (
         <View>
-          <Text>Error: {data.error.message}</Text>
+          <Text>Error: {feeds.error.message}</Text>
           {refetch}
         </View>
       );
     }
 
-    if (!data.getFeed || data.getFeed.length < 1) {
+    if (!feeds.rows || feeds.rows.length < 1) {
       return (
         <View>
           <Text>No Feeds.</Text>
@@ -154,7 +152,7 @@ class Feed extends Component {
 
     return (
       <FlatList
-        data={data.getFeed}
+        data={feeds.rows}
         renderItem={
           ({ item }) => (<FeedItem
             onSharePress={this.onSharePress}
@@ -164,26 +162,22 @@ class Feed extends Component {
           />)
         }
         keyExtractor={(item, index) => index}
-        refreshing={data.networkStatus === 4}
-        onRefresh={() => data.refetch()}
+        refreshing={feeds.networkStatus === 4}
+        onRefresh={() => feeds.refetch()}
         onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          if (data.loading) return;
-          data.fetchMore({
-            variables: { offset: data.getFeed.length },
+          if (feeds.loading) return;
+          feeds.fetchMore({
+            variables: { offset: feeds.rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
+              if (!fetchMoreResult || fetchMoreResult.getFeed.rows.length === 0) {
                 return previousResult;
               }
 
-              const prevFeed = previousResult.getFeed;
+              const rows = previousResult.feeds.rows.concat(fetchMoreResult.getFeed.rows);
 
-              const Feeds = previousResult.getFeed.Feed.concat(fetchMoreResult.getFeed.Feed);
-
-              return {
-                getFeed: { ...prevFeed, ...{ Feed: Feeds } },
-              };
+              return { feeds: { rows, total: previousResult.count } };
             },
           });
         }}
@@ -205,8 +199,8 @@ class Feed extends Component {
 }
 
 Feed.propTypes = {
-  data: PropTypes.shape({
-    getFeed: PropTypes.arrayOf(PropTypes.object),
+  feeds: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.object),
     fetchMore: PropTypes.func.isRequired,
     refetch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,

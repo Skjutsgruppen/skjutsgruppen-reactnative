@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 const SUBMIT_GROUP = gql`
 mutation group
 (
-    $outreach: String!
+    $outreach: GroupOutreachEnum!
     $tripStart: PlaceInput
     $tripEnd: PlaceInput
     $stops: [PlaceInput]
@@ -15,8 +15,8 @@ mutation group
     $countyId: Int
     $municipalityId: Int
     $localityId: Int
-    $type: String!
-    $share: String
+    $type: GroupTypeEnum!
+    $share: ShareInput
 ) 
   {
     group(input : {

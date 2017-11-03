@@ -178,7 +178,7 @@ class Group extends Component {
         share,
       )
         .then((res) => {
-          if (share.general.indexOf('copy_to_clip') > -1) {
+          if (share.social.indexOf('copy_to_clip') > -1) {
             Clipboard.setString(res.data.group.url);
           }
 
@@ -203,7 +203,7 @@ class Group extends Component {
       </View>);
     }
 
-    return (<Completed url={group.url} text="group" isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
+    return (<Completed url={group.url} text="group" isCliped={share.social.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
   }
 
   render() {

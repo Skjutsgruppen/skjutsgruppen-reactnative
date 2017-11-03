@@ -76,7 +76,7 @@ class Login extends Component {
     if (validation.pass()) {
       try {
         submit(username, password).then(({ data }) => {
-          const { token, User } = data.login;
+          const { User, token } = data.login;
           setLogin({ token, user: User }).then(() => {
             this.navigateTo('Tab');
           });
@@ -198,8 +198,8 @@ Login.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
-  setLogin: user => AuthService.set(user)
-    .then(() => dispatch(AuthAction.login(user)))
+  setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.login({ user, token })))
     .catch(error => console.error(error)),
 });
 

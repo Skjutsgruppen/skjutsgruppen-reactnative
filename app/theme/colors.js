@@ -23,6 +23,7 @@ const Colors = {
     gray: '#9b9b9b',
     lightGray: '#dddee3',
     red: '#e00',
+    darkCyan: '#2fad9e',
   },
   border: {
     blue: '#00aeef',
