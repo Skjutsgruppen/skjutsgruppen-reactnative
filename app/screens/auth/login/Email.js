@@ -57,7 +57,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ username: 'manish.singh+23@yipl.com.np', password: 'asdfasdf', loading: false, error: '' });
+    this.state = ({ username: '', password: '', loading: false, error: '' });
   }
 
   componentWillMount() {

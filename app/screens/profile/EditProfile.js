@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, TextInput, Image, ToastAndroid as Toast } from 'react-native';
-import { Wrapper, Loading } from '@components/common';
+import { Wrapper, Loading, NavBar } from '@components/common';
 import Camera from '@components/camera';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
 });
 
 class EditProfile extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = ({ firstName: '', lastName: '', photo: '', profileImage: null, loading: false, error: '' });
@@ -99,6 +103,11 @@ class EditProfile extends Component {
     };
   }
 
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
   renderUpdateButton = () => {
     const { loading } = this.state;
     if (loading) {
@@ -116,11 +125,13 @@ class EditProfile extends Component {
     );
   }
 
+
   render() {
     const { profileImage } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
+        <NavBar handleBack={this.goBack} />
         <ScrollView>
           <Camera onSelect={res => this.setState({ photo: res.data })}>
             <View>
@@ -158,6 +169,10 @@ class EditProfile extends Component {
 }
 
 EditProfile.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }).isRequired,
   setUser: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
   user: PropTypes.shape({

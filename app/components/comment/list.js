@@ -42,7 +42,7 @@ class List extends Component {
     const { comments: { comments, fetchMore }, id } = this.props;
     this.setState({ loading: true }, () => {
       fetchMore({
-        variables: { id, offset: comments.Comment.length },
+        variables: { id, offset: comments.rows.length },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           this.setState({ loading: false });
           if (!fetchMoreResult || fetchMoreResult.comments.length === 0) {
@@ -51,10 +51,10 @@ class List extends Component {
 
           const prevComments = previousResult.comments;
 
-          const Comment = previousResult.comments.Comment.concat(fetchMoreResult.comments.Comment);
+          const rows = previousResult.comments.rows.concat(fetchMoreResult.comments.rows);
 
           return {
-            comments: { ...prevComments, ...{ Comment } },
+            comments: { ...prevComments, ...{ rows } },
           };
         },
       });
@@ -77,9 +77,9 @@ class List extends Component {
     }
 
     const { comments } = this.props.comments;
-    const { Comment, total } = comments;
+    const { rows, count } = comments;
 
-    if (Comment.length >= total) {
+    if (rows.length >= count) {
       return null;
     }
 
@@ -103,9 +103,9 @@ class List extends Component {
       );
     }
 
-    const { Comment, total } = comments;
+    const { rows, count } = comments;
 
-    if (Comment && Comment.length < 1) {
+    if (rows && rows.length < 1) {
       return (
         <Text style={styles.infoText}>No Comment</Text>
       );
@@ -113,9 +113,9 @@ class List extends Component {
 
     return (
       <View style={{ paddingBottom: 50 }}>
-        <Text style={styles.infoText}>{total} {total > 1 ? 'comments' : 'comment'}</Text>
+        <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>
         <FlatList
-          data={Comment}
+          data={rows}
           renderItem={({ item }) => (<Item onPress={this.props.onCommentPress} comment={item} />)}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0}
@@ -130,8 +130,8 @@ List.propTypes = {
   comments: PropTypes.shape({
     loading: PropTypes.boolean,
     comments: PropTypes.shape({
-      Comment: PropTypes.array,
-      total: PropTypes.number,
+      rows: PropTypes.array,
+      count: PropTypes.number,
     }),
     fetchMore: PropTypes.func.isRequired,
     error: PropTypes.object,

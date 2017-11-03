@@ -21,7 +21,7 @@ const COMMENTS_SUBSCRIPTION = gql`
 const GET_GROUP_COMMENTS = gql`
 query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
   comments(input : {groupId:$id, offset:$offset, limit:$limit}) {
-    Comment {
+    rows {
       id
       text
       date
@@ -33,7 +33,7 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         photo
       }
     }
-    total
+    count
   }
 }
 `;
@@ -41,7 +41,7 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 const GET_TRIP_COMMENTS = gql`
 query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
   comments(input : {tripId:$id, offset:$offset, limit:$limit}) {
-    Comment {
+    rows {
       id
       text
       date
@@ -53,7 +53,7 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         photo
       }
     }
-    total
+    count
   }
 }
 `;
@@ -93,10 +93,10 @@ export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
 
         const newFeedItem = subscriptionData.data.commentAdded;
 
-        const Comment = [newFeedItem].concat(prev.comments.Comment);
+        const rows = [newFeedItem].concat(prev.comments.rows);
 
         return {
-          comments: { ...prev.comments, ...{ Comment, total: prev.comments.total + 1 } },
+          comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
         };
       },
     }),
@@ -118,10 +118,10 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS, {
 
         const newFeedItem = subscriptionData.data.commentAdded;
 
-        const Comment = [newFeedItem].concat(prev.comments.Comment);
+        const rows = [newFeedItem].concat(prev.comments.rows);
 
         return {
-          comments: { ...prev.comments, ...{ Comment, total: prev.comments.total + 1 } },
+          comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
         };
       },
     }),
