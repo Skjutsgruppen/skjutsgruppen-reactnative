@@ -54,3 +54,5 @@ fastlane/screenshots
 
 .env
 .env.production
+*.swp
+*.swo

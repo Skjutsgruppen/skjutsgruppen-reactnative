@@ -21,6 +21,7 @@ import LoginViaEmail from '@screens/auth/login/Email';
 import AddPhoto from '@screens/auth/AddPhoto';
 import SendText from '@screens/auth/sms/SendText';
 import MobileVerified from '@screens/auth/sms/MobileVerified';
+import SearchResult from '@screens/Search';
 
 import { StackNavigator } from 'react-navigation';
 
@@ -46,6 +47,7 @@ export const Routes = {
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
   SearchGroup: { screen: SearchGroup, path: 'search/:query' },
   ExploreGroup: { screen: ExploreGroup },
+  SearchResult: { screen: SearchResult },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

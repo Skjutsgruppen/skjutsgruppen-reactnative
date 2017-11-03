@@ -175,8 +175,8 @@ Email.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
-  setRegister: user => AuthService.set(user)
-    .then(() => dispatch(AuthAction.register(user))),
+  setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.register({ user, token }))),
 });
 
 export default compose(userRegister, connect(mapStateToProps, mapDispatchToProps))(Email);

@@ -170,7 +170,7 @@ class GooglePlacesInput extends PureComponent {
               marginBottom: 0,
               height: 48,
               color: '#000',
-              fontSize: 16,
+              fontSize: 14,
             },
             description: {
               fontWeight: 'bold',

@@ -3,48 +3,49 @@ import Session from '@services/storage/session';
 class Auth {
   constructor() {
     this.session = Session;
-    this.key = 'auth_skjuts_token';
+    this.userKey = 'auth_skjuts_user';
+    this.tokenKey = 'auth_skjuts_token';
   }
 
-  logout() {
-    return this.session.remove(this.key);
+  async logout() {
+    await this.session.remove(this.userKey);
+    return this.session.remove(this.tokenKey);
   }
 
-  set(user) {
-    return this.session.set(this.key, user);
+  async setAuth({ user, token }) {
+    await this.setUser(user);
+    return this.setToken(token);
   }
 
-  get() {
-    return this.session.get(this.key);
+  setToken(user) {
+    return this.session.set(this.tokenKey, user);
   }
 
-  async setUser(user) {
-    const auth = await this.get();
-    auth.user = user;
-    return this.set(auth);
+  getToken() {
+    return this.session.get(this.tokenKey);
   }
 
-  async token() {
-    const auth = await this.get();
-    return auth !== null ? auth.token : '';
+  setUser(user) {
+    return this.session.set(this.userKey, user);
   }
 
-  async user() {
-    const isLoggedIn = await this.isLoggedIn();
+  getUser() {
+    return this.session.get(this.userKey);
+  }
 
-    if (isLoggedIn) {
-      const auth = await this.get();
-      return auth.user;
-    }
+  async hasUser() {
+    const user = await this.getUser();
+    const token = await this.getToken();
 
-    return '';
+    return (token !== null && !user !== null);
   }
 
   async isLoggedIn() {
-    const session = await this.session.get(this.key);
+    const token = await this.session.get(this.tokenKey);
+    const user = await this.session.get(this.userKey);
 
-    if (session) {
-      return (session.user.emailVerified && session.token !== '');
+    if (token) {
+      return (user.emailVerified && token !== '');
     }
 
     return false;

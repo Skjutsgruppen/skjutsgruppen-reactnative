@@ -102,6 +102,8 @@ const styles = StyleSheet.create({
 });
 
 const Group = ({ group, onPress, min, onSharePress }) => {
+  console.log(group);
+
   let image = null;
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
