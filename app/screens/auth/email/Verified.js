@@ -13,6 +13,7 @@ import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
 import countries from '@config/countries';
+import { Icons } from '@icons';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -152,7 +153,7 @@ class Verified extends Component {
 
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
+        <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Your e-mail is confirmed!</GreetText>
         <ColoredText color={Colors.text.purple}>{message}</ColoredText>
 

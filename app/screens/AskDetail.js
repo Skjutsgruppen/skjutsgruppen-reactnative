@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading } from '@components/common';
+import { Loading, NavBar } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
 
 class AskDetail extends Component {
   static navigationOptions = {
-    title: 'back',
+    header: null,
   };
 
   constructor(props) {
@@ -162,6 +162,11 @@ class AskDetail extends Component {
     }
   }
 
+  onCommentPress = (id) => {
+    const { navigation } = this.props;
+    navigation.navigate('UserProfile', { profileId: id });
+  }
+
   checkValidation() {
     const errors = [];
     const { comment } = this.state;
@@ -174,6 +179,11 @@ class AskDetail extends Component {
       pass: () => (errors.length === 0),
       errors,
     };
+  }
+
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   renderButton = () => {
@@ -231,6 +241,7 @@ class AskDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+        <NavBar handleBack={this.goBack} />
         <ScrollView>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
@@ -254,11 +265,9 @@ class AskDetail extends Component {
                 </View>
               </View>
             </View>
-            <View style={styles.feedAction}>
-              <Relation users={ask.User.relation} />
-            </View>
-            {<AskComment id={ask.id} />}
+            <Relation users={ask.User.relation} />
             {error !== '' && <View><Text>{error}</Text></View>}
+            <AskComment onCommentPress={this.onCommentPress} id={ask.id} />
           </View>
         </ScrollView>
         {this.renderCommentForm()}

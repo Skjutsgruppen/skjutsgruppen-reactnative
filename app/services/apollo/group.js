@@ -11,7 +11,7 @@ mutation group
     $name: String
     $description: String
     $photo: String
-    $country: String
+    $countryCode: String
     $countyId: Int
     $municipalityId: Int
     $localityId: Int
@@ -27,7 +27,7 @@ mutation group
         name : $name
         description : $description
         photo : $photo
-        countryCode : $country
+        countryCode : $countryCode
         countyId : $countyId
         municipalityId : $municipalityId
         localityId : $localityId
@@ -58,163 +58,6 @@ mutation group
       }
       type
     }
-}
-`;
-const EXPLORE_GROUPS = gql`
-query exploreGroups($from: [Float], $filters: ExploreGroupFilterEnum, $offset: Int, $limit: Int){
-  exploreGroups(
-    input: {
-      from: $from
-      filters: $filters
-      offset: $offset
-      limit: $limit
-    }
-  )
-  {
-    rows {
-      id 
-      name 
-      photo 
-      description 
-      User {
-        id 
-        email 
-        photo 
-        phoneNumber 
-        firstName 
-        lastName
-        relation {
-          id
-          email
-          photo
-          firstName
-          lastName
-        }
-      } 
-      country 
-      county 
-      municipality 
-      locality 
-      stopsIds 
-      TripStart {
-        name 
-        countryCode 
-        coordinates
-      } 
-      TripEnd {
-        name 
-        countryCode 
-        coordinates
-      } 
-      Stops {
-        name 
-        countryCode 
-        coordinates
-      } 
-      type 
-      outreach 
-      GroupMembers {
-        id 
-        email 
-        photo 
-        phoneNumber 
-        firstName 
-        lastName
-      } 
-      url 
-      Comments {
-        id 
-        tripId 
-        groupId 
-        text 
-        date 
-        User {
-          id 
-          email 
-          photo 
-          phoneNumber 
-          firstName 
-          lastName
-        }
-      }
-    } 
-    count
-  }
-}
-`;
-
-export const SEARCH_GROUPS = gql`
-query searchGroup($keyword: String!, $offset: Int, $limit: Int){
-  searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
-    rows {
-      id
-      name
-      photo
-      description
-      User {
-        id
-        email
-        photo
-        phoneNumber
-        firstName
-        lastName
-        relation {
-          id
-          email
-          photo
-          firstName
-          lastName
-        }
-      }
-      country
-      county 
-      municipality
-      locality
-      stopsIds
-      TripStart {
-        name
-        countryCode
-        coordinates
-      } 
-      TripEnd {
-        name
-        countryCode
-        coordinates
-      }
-      Stops {
-        name
-        countryCode
-        coordinates
-      } 
-      type 
-      outreach 
-      GroupMembers {
-        id 
-        email 
-        photo 
-        phoneNumber 
-        firstName 
-        lastName
-      } 
-      url 
-      Comments {
-        id 
-        tripId 
-        groupId 
-        text 
-        date 
-        User {
-          id 
-          email 
-          photo 
-          phoneNumber 
-          firstName 
-          lastName
-        }
-      }
-    }
-    count
-  }
 }
 `;
 
@@ -255,13 +98,88 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
     }),
 });
 
+const JOIN_GROUP = gql`
+mutation joinGroup($id: Int!) {
+    joinGroup(id:$id)
+}
+`;
+
+export const withJoinGroup = graphql(JOIN_GROUP, {
+  props: ({ mutate }) => ({ submit: id => mutate({ variables: { id } }) }),
+});
+
+const EXPLORE_GROUPS = gql`
+query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:String, $offset: Int, $limit: Int){
+  exploreGroups(
+    input: {
+      from: $from
+      filter: $filter
+      order: $order
+      offset: $offset
+      limit: $limit
+    }
+  )
+  {
+    rows {
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+        relation {
+          id,
+          email,
+          firstName
+          photo
+        }
+      }
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      country
+      county
+      municipality
+      locality
+      GroupMembers{
+        id
+      }
+      GroupMembershipRequests{
+        id
+        status
+        Member {
+          id
+          email
+          firstName
+        }
+      }
+    } 
+    count
+  }
+}
+`;
+
 export const withExploreGroup = graphql(EXPLORE_GROUPS, {
   name: 'exploreGroups',
-  options: ({ from, filters }) => ({
-    notifyOnNetworkStatusChange: true,
+  options: ({ from, filter }) => ({
     variables: {
       from,
-      filters,
+      filter,
       offset: 0,
       limit: 5,
     },
@@ -269,7 +187,62 @@ export const withExploreGroup = graphql(EXPLORE_GROUPS, {
   props: ({ exploreGroups }) => ({ exploreGroups }),
 });
 
-
+export const SEARCH_GROUPS = gql`
+query searchGroup($keyword: String!, $offset: Int, $limit: Int){
+  searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
+    rows {
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+        relation {
+          id,
+          email,
+          firstName
+          photo
+        }
+      }
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      country
+      county
+      municipality
+      locality
+      GroupMembers{
+        id
+      }
+      GroupMembershipRequests{
+        id
+        status
+        Member {
+          id
+          email
+          firstName
+        }
+      }
+    }
+    count
+  }
+}
+`;
 export const withSearchGroup = graphql(SEARCH_GROUPS, {
   name: 'searchGroups',
   options: ({ keyword }) => ({
@@ -277,4 +250,74 @@ export const withSearchGroup = graphql(SEARCH_GROUPS, {
     variables: { keyword, offset: 0, limit: 5 },
   }),
   props: ({ searchGroups }) => ({ searchGroups }),
+});
+
+export const FIND_GROUP = gql`
+query findGroup($id: Int!){
+  findGroup(id: $id){
+    id
+    outreach
+    name
+    description
+    type
+    photo
+    User {
+      id
+      email
+      firstName
+      lastName
+      photo
+      relation {
+        id,
+        email,
+        firstName
+        photo
+      }
+    }
+    TripStart {
+      name
+      coordinates
+    }
+    TripEnd {
+      name
+      coordinates
+    }
+    Stops {
+      name
+      coordinates
+    }
+    country
+    county
+    municipality
+    locality
+    GroupMembers{
+      id
+    }
+    GroupMembershipRequests{
+      id
+      status
+      Member {
+        id
+        email
+        firstName
+      }
+    }
+    }
+}
+`;
+
+export const withFindGroup = graphql(FIND_GROUP, {
+  options: ({ id }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { id },
+  }),
+  props: ({ data: { loading, findGroup, refetch, networkStatus, error } }) => {
+    let group = {};
+
+    if (findGroup) {
+      group = findGroup;
+    }
+
+    return { loading, group, refetch, networkStatus, error };
+  },
 });

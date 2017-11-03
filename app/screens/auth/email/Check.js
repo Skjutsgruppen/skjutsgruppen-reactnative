@@ -1,42 +1,42 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, TextInput, ToastAndroid as Toast } from 'react-native';
+import { Text, StyleSheet, View, Image, ToastAndroid as Toast } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
-import { Loading } from '@components/common';
+import { Loading, Input, CustomButton } from '@components/common';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withVerifyCode } from '@services/apollo/auth';
+import { Icons } from '@icons';
 
 const styles = StyleSheet.create({
+  envelopIcon: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 24,
+  },
   divider: {
     width: '80%',
     height: 1,
     marginVertical: 32,
     backgroundColor: Colors.background.lightGray,
   },
-  inputWrapper: {
-    width: '100%',
-  },
-  input: {
-    width: '100%',
-    padding: 16,
-    fontSize: 14,
-    textAlign: 'center',
-    backgroundColor: Colors.background.fullWhite,
-    marginBottom: 32,
-  },
   grayText: {
+    alignSelf: 'center',
     opacity: 0.7,
     lineHeight: 20,
     textAlign: 'center',
     width: '70%',
     marginBottom: 12,
+  },
+  button: {
+    marginHorizontal: 24,
   },
 });
 
@@ -122,6 +122,7 @@ class Check extends Component {
 
     return (
       <CustomButton
+        style={styles.button}
         bgColor={Colors.background.green}
         onPress={this.onSubmit}
       >
@@ -135,21 +136,17 @@ class Check extends Component {
     const message = `Go to your e-mail ${this.props.auth.user.email} and enter confirmation code below`;
     return (
       <Container>
+        <Image source={Icons.EnvelopOpen} style={styles.envelopIcon} resizeMethod="resize" />
         <GreetText>Check your e-mail</GreetText>
         <ColoredText color={Colors.text.purple}>
           {message}
         </ColoredText>
 
         {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
-
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            onChangeText={code => this.setState({ code })}
-            placeholder="Verification code"
-            underlineColorAndroid="transparent"
-          />
-        </View>
+        <Input
+          onChangeText={code => this.setState({ code })}
+          placeholder="Verification code"
+        />
         {this.renderButton()}
         <Text style={styles.grayText}>You can not proceed without confirming your e-mail</Text>
         <BackButton onPress={this.reset} />

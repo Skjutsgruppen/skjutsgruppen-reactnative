@@ -300,6 +300,7 @@ class Offer extends Component {
               start={defaultTrip.start}
               end={defaultTrip.end}
               onNext={this.onTripNext}
+              isOffer
             />}
             {(activeTab === 3) && <Date onNext={this.onDateNext} />}
             {(activeTab === 4) && <Seats onNext={this.onSeatNext} />}

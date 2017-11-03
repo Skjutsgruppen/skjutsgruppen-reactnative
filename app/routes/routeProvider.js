@@ -1,11 +1,12 @@
-
 import Splash from '@screens/Splash';
 import Offer from '@screens/Offer';
 import Ask from '@screens/Ask';
-import Group from '@screens/Group';
-import GroupDetail from '@screens/GroupDetail';
-import ExploreGroup from '@screens/ExploreGroup';
-import SearchGroup from '@screens/SearchGroup';
+
+import Group from '@screens/group/Group';
+import GroupDetail from '@screens/group/GroupDetail';
+import ExploreGroup from '@screens/group/ExploreGroup';
+import SearchGroup from '@screens/group/SearchGroup';
+
 import OfferDetail from '@screens/OfferDetail';
 import AskDetail from '@screens/AskDetail';
 import Tab from '@screens/tab/main';
@@ -53,11 +54,14 @@ export const Routes = {
   OfferDetail: { screen: OfferDetail, path: 'offer/:id' },
   Ask: { screen: Ask },
   AskDetail: { screen: AskDetail, path: 'ask/:id' },
+
   Group: { screen: Group },
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
   SearchGroup: { screen: SearchGroup, path: 'search/:query' },
   ExploreGroup: { screen: ExploreGroup },
+
   SearchResult: { screen: SearchResult },
+
   UserProfile: { screen: UserProfile },
   EditProfile: { screen: EditProfile },
   UserGroups: { screen: UserGroups },

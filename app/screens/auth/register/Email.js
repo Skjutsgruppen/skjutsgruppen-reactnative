@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ToastAndroid as Toast } from 'react-native';
+import { View, Text, StyleSheet, Image, ToastAndroid as Toast } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import PropTypes from 'prop-types';
-import { Loading } from '@components/common';
+import { Loading, Input, CustomButton } from '@components/common';
 import { userRegister } from '@services/apollo/auth';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
@@ -16,8 +15,11 @@ import { NavigationActions } from 'react-navigation';
 
 const styles = StyleSheet.create({
   garderIcon: {
-    marginBottom: 50,
-    resizeMode: 'cover',
+    width: 100,
+    height: 100,
+    marginBottom: 16,
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
   inputWrapper: {
     width: '100%',
@@ -31,10 +33,14 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   divider: {
+    alignSelf: 'center',
     width: '80%',
     height: 1,
     marginVertical: 32,
     backgroundColor: Colors.background.lightGray,
+  },
+  button: {
+    marginHorizontal: 24,
   },
 });
 
@@ -121,6 +127,7 @@ class Email extends Component {
 
     return (
       <CustomButton
+        style={styles.button}
         bgColor={Colors.background.green}
         onPress={this.onSubmit}
       >
@@ -134,26 +141,34 @@ class Email extends Component {
 
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
+        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Become a participant</GreetText>
         <ColoredText color={Colors.text.purple}>Confirm your e-mail</ColoredText>
         {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            defaultValue={this.state.email}
-            onChangeText={email => this.setState({ email })}
-            placeholder="Fill in your e-mail"
-            underlineColorAndroid="transparent"
-          />
-        </View>
+        <Input
+          defaultValue={this.state.email}
+          onChangeText={email => this.setState({ email })}
+          placeholder="Fill in your e-mail"
+        />
         {this.renderButton()}
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>
           Or sign up with Facebook or Twitter instead
         </ColoredText>
-        <CustomButton onPress={() => { }} bgColor="#3b5998">Sign Up with Facebook</CustomButton>
-        <CustomButton onPress={() => { }} bgColor="#1da1f2">Sign Up with Twitter</CustomButton>
+        <CustomButton
+          style={styles.button}
+          onPress={() => { }}
+          bgColor="#3b5998"
+        >
+          Sign Up with Facebook
+        </CustomButton>
+        <CustomButton
+          style={styles.button}
+          onPress={() => { }}
+          bgColor="#1da1f2"
+        >
+          Sign Up with Twitter
+        </CustomButton>
         <BackButton onPress={this.onPressBack} />
       </Container>
     );
