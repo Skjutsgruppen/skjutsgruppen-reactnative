@@ -7,7 +7,7 @@ const PAGE_LIMIT = 5;
 const feedQuery = gql`
 query getFeed($offset: Int, $limit: Int) {
   getFeed (offset:$offset, limit:$limit){
-   Feed {
+   rows {
     id
     feedable
     updatedAt
@@ -91,7 +91,7 @@ query getFeed($offset: Int, $limit: Int) {
       }
     }
    }
-   total
+   count
   } 
 }
 `;
@@ -101,16 +101,16 @@ export const withFeed = graphql(feedQuery, {
     notifyOnNetworkStatusChange: true,
     variables: { offset: PAGE_OFFSET, limit: PAGE_LIMIT },
   },
-  props: ({ data }) => {
-    let Feed = [];
-    let total = 0;
 
-    if (data.getFeed) {
-      Feed = data.getFeed.Feed;
-      total = data.getFeed.total;
+  props: ({ data: { loading, getFeed, fetchMore, refetch, networkStatus, error } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (getFeed) {
+      rows = getFeed.rows;
+      count = getFeed.count;
     }
 
-    return { data: { ...data, ...{ getFeed: Feed, total } } };
+    return { feeds: { loading, rows, total: count, fetchMore, refetch, networkStatus, error } };
   },
 });
-

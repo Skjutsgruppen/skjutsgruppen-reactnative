@@ -1,5 +1,4 @@
 import { TabNavigator, StackNavigator } from 'react-navigation';
-import SearchDetail from '@screens/SearchDetail';
 import Add from './add';
 import Feed from './feed';
 import Message from './message';
@@ -10,9 +9,6 @@ export const SearchRoute = StackNavigator(
   {
     Search: {
       screen: Search,
-    },
-    Detail: {
-      screen: SearchDetail,
     },
   },
 );
@@ -29,7 +25,7 @@ const Tab = TabNavigator(
       screen: Message,
     },
     Search: {
-      screen: SearchRoute,
+      screen: Search,
     },
     Support: {
       screen: Support,

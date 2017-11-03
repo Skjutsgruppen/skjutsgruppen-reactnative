@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
 const Feed = ({ ask, onPress, onSharePress }) => {
   let image = null;
   if (ask.photo) {
