@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const login = gql`
+const LOGIN_QUERY = gql`
 mutation login($username: String!, $password:String!) {
   login(input : {username: $username, password: $password}) {
     token,
@@ -22,13 +22,13 @@ mutation login($username: String!, $password:String!) {
 }
 `;
 
-export const userLogin = graphql(login, {
+export const userLogin = graphql(LOGIN_QUERY, {
   props: ({ mutate }) => ({
     submit: (username, password) => mutate({ variables: { username, password } }),
   }),
 });
 
-const register = gql`
+const REGISTER_QUERY = gql`
 mutation register($email: String!) {
   register(email: $email) {
     token,
@@ -50,14 +50,14 @@ mutation register($email: String!) {
 }
 `;
 
-export const userRegister = graphql(register, {
+export const userRegister = graphql(REGISTER_QUERY, {
   props: ({ mutate }) => ({
     register: email => mutate({ variables: { email } }),
   }),
 });
 
 
-const verifyCodeQuery = gql`
+const VERIFICATION_CODE_QUERY = gql`
 mutation verifyCode($code:String!) {
   verifyCode(code:$code) {
       status
@@ -66,13 +66,13 @@ mutation verifyCode($code:String!) {
 }
 `;
 
-export const withVerifyCode = graphql(verifyCodeQuery, {
+export const withVerifyCode = graphql(VERIFICATION_CODE_QUERY, {
   props: ({ mutate }) => ({
     verifyCode: code => mutate({ variables: { code } }),
   }),
 });
 
-const updateUserQuery = gql`
+const UPDATE_USER_QUERY = gql`
 mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNumber:String,  $password:String) {
   updateUser(input:{
     firstName:$firstName, lastName: $lastName,  photo: $photo, phoneNumber:$phoneNumber, password: $password
@@ -92,7 +92,7 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
 }
 `;
 
-export const withUpdateProfile = graphql(updateUserQuery, {
+export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   props: ({ mutate }) => ({
     updateProfile: (firstName, lastName, photo, phoneNumber, password) => mutate({
       variables: { firstName, lastName, photo, phoneNumber, password },
@@ -100,7 +100,7 @@ export const withUpdateProfile = graphql(updateUserQuery, {
   }),
 });
 
-const myFiendsQuery = gql`
+const MY_FRIEND_QUERY = gql`
 query
   { 
     friends { 
@@ -114,13 +114,13 @@ query
   }
 `;
 
-export const withMyFriends = graphql(myFiendsQuery, {
+export const withMyFriends = graphql(MY_FRIEND_QUERY, {
   props: ({ data: { loading, friends } }) => ({
     friendLoading: loading, friends,
   }),
 });
 
-const myGroupQuery = gql`
+const MY_GROUP_QUERY = gql`
 query {
   myGroups {
       id  
@@ -130,8 +130,57 @@ query {
     }
 `;
 
-export const withMyGroups = graphql(myGroupQuery, {
+export const withMyGroups = graphql(MY_GROUP_QUERY, {
   props: ({ data: { loading, myGroups } }) => ({
     groupLoading: loading, groups: myGroups,
   }),
 });
+
+
+const COUNTY_QUERY = gql`
+query {
+  counties {
+    id
+    name
+    }
+  }
+`;
+
+export const withCounties = graphql(COUNTY_QUERY, {
+  props: ({ data: { loading, counties } }) => ({
+    countyLoading: loading, counties: counties || [],
+  }),
+});
+
+const MUNICIPALITY_QUERY = gql`
+query municipalities($countyId:Int) {
+  municipalities (countyId:$countyId) {
+    id
+    name
+    }
+  }
+`;
+
+export const withMunicipalities = graphql(MUNICIPALITY_QUERY, {
+  options: ({ countyId }) => ({ variables: { countyId } }),
+  props: ({ data: { loading, municipalities } }) => ({
+    loading, list: municipalities || [],
+  }),
+});
+
+const LOCALITY_QUERY = gql`
+query localities($municipalityId:Int) {
+  localities (municipalityId:$municipalityId) {
+    id
+    name
+    }
+  }
+`;
+
+export const withLocalities = graphql(LOCALITY_QUERY, {
+  options: ({ municipalityId }) => ({ variables: { municipalityId } }),
+  props: ({ data: { loading, localities } }) => ({
+    loading, list: localities || [],
+  }),
+});
+

@@ -61,17 +61,17 @@ mutation createTrip(
 
 export const submitAsk = graphql(createTrip, {
   props: ({ mutate }) => ({
-    submit: (
+    submit: ({
       comment,
+      photo,
       tripStart,
       tripEnd,
-      photo,
       returnTrip,
       dates,
       time,
       flexibility,
       share,
-    ) => mutate({
+    }) => mutate({
       variables: {
         comment,
         type: 'wanted',

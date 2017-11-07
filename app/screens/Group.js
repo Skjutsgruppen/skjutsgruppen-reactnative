@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { submitGroup } from '@services/apollo/group';
 import Share from '@components/common/share';
-import Completed from '@components/group/completed';
+import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 
 const styles = StyleSheet.create({
@@ -94,7 +94,7 @@ class Group extends Component {
       if (trip.country === '') {
         Alert.alert('Error!!', 'Country is required');
         error += 1;
-      } else if (trip.municipality === '') {
+      } else if (trip.country === 'SE' && trip.municipality === '') {
         Alert.alert('Error!!', 'Municipality is required');
         error += 1;
       }
@@ -203,7 +203,7 @@ class Group extends Component {
       </View>);
     }
 
-    return (<Completed group={group} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
+    return (<Completed url={group.url} text="group" isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
   }
 
   render() {

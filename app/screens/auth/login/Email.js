@@ -150,6 +150,7 @@ class Login extends Component {
 
         <View style={styles.inputWrapper}>
           <TextInput
+            autoCapitalize="none"
             onChangeText={username => this.setState({ username })}
             style={[styles.input, styles.userNameInput]}
             placeholder="Your cellphone number or e-mail"
