@@ -26,11 +26,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     backgroundColor: Colors.background.fullWhite,
-    paddingRight: 24,
+    paddingRight: 0,
   },
   inputIconWrapper: {
-    height: 48,
-    width: 18,
+    height: 50,
+    width: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -170,6 +170,7 @@ class Trip extends Component {
     super(props);
     this.state = {
       start: {},
+      isReturnTrip: false,
       end: {},
       stops: [{}],
       stopsCount: 1,
@@ -177,16 +178,32 @@ class Trip extends Component {
     };
   }
 
+  componentWillMount() {
+    const { start, end, isReturnTrip } = this.props;
+    this.setState({ start, end, isReturnTrip });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     const state = this.state;
     const stops = [];
-    state.stops.forEach(k => stops.push(k));
+
+    state.stops.forEach((k) => {
+      if (typeof k.name !== 'undefined') {
+        stops.push(k);
+      }
+    });
+
     state.stops = stops;
+
     onNext(state);
   };
 
-  setStops = (count, stop) => {
+  onChangeText = (i, stop) => {
+    this.setStops(i, stop, this.state.stopsCount);
+  };
+
+  setStops = (count, stop, stopsCount) => {
     const { stops } = this.state;
     stops[count] = {
       name: stop.name,
@@ -194,7 +211,11 @@ class Trip extends Component {
       coordinates: [stop.lat, stop.lng],
     };
 
-    this.setState({ stops });
+    this.setState({ stops, stopsCount });
+  };
+
+  handleReturnChange = (isReturning) => {
+    this.setState({ isReturning });
   };
 
   removeStop = (count) => {
@@ -206,18 +227,16 @@ class Trip extends Component {
   }
 
   addStops = () => {
-    this.setState({ stopsCount: this.state.stopsCount + 1 }, () => {
-      this.setStops(this.state.stopsCount, {});
-    });
+    this.setStops(this.state.stopsCount, {}, this.state.stopsCount + 1);
   };
 
-  handleReturnChange = (isReturning) => {
-    this.setState({ isReturning });
+  switchLocation = () => {
+    const { start, end } = this.state;
+    this.setState({ start: end, end: start });
   };
 
   renderStops() {
-    let { stops } = this.state;
-    stops = stops.length > 0 ? stops : [{}];
+    const { stops } = this.state;
     let j = 0;
 
     return stops.map((s, i) => {
@@ -227,56 +246,53 @@ class Trip extends Component {
           <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
-            onChangeText={stop => this.setStops(i, stop)}
+            defaultValue={this.state.stops[i].name || ''}
+            onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
-          {i > 1 ? (<TouchableWithoutFeedback onPress={() => this.removeStop(i)}>
+          {j > 1 ? (<TouchableOpacity onPress={() => this.removeStop(i)}>
             <View style={styles.removeStopIcon}><Text style={styles.minusText}>-</Text></View>
-          </TouchableWithoutFeedback>) : null}
+          </TouchableOpacity>) : null}
         </View>
       );
     });
   }
-
   render() {
     return (
       <View>
         <Text style={styles.title}> Trip</Text>
         <Text style={styles.label}>From</Text>
-        <View style={styles.inputWrapper}>
-          <GooglePlace
-            placeholder="Start here"
-            onChangeText={
-              start => this.setState({
-                start: {
-                  name: start.name,
-                  countryCode: start.countryCode,
-                  coordinates: [start.lat, start.lng],
-                },
-              })
-            }
-          />
-          <TouchableOpacity style={styles.inputIconWrapper}>
-            <Image source={require('@icons/icon_location.png')} style={styles.inputIcon} />
-          </TouchableOpacity>
-        </View>
+        <GooglePlace
+          placeholder="Start here"
+          currentLocation={!this.state.isReturnTrip}
+          defaultValue={this.state.start.name || ''}
+          onChangeText={
+            start => this.setState({
+              start: {
+                name: start.name,
+                countryCode: start.countryCode,
+                coordinates: [start.lat, start.lng],
+              },
+            })
+          }
+        />
         <Text style={styles.label}>To</Text>
-        <View style={styles.inputWrapper}>
-          <GooglePlace
-            placeholder="Destination"
-            onChangeText={
-              end => this.setState({
-                end: {
-                  name: end.name,
-                  countryCode: end.countryCode,
-                  coordinates: [end.lat, end.lng],
-                },
-              })
-            }
-          />
-          <TouchableOpacity style={styles.inputIconWrapper}>
+        <GooglePlace
+          placeholder="Destination"
+          defaultValue={this.state.end.name || ''}
+          onChangeText={
+            end => this.setState({
+              end: {
+                name: end.name,
+                countryCode: end.countryCode,
+                coordinates: [end.lat, end.lng],
+              },
+            })
+          }
+        >
+          <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
             <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
           </TouchableOpacity>
-        </View>
+        </GooglePlace>
         <View style={styles.destinations}>
           <TouchableOpacity>
             <Text style={styles.option}>Anywhere</Text>
@@ -311,33 +327,38 @@ class Trip extends Component {
             </Text>
           </View>
         </View>
-        <View style={styles.verticalDivider} />
-        <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
-        <Text style={styles.title}>Are You making a return ride?</Text>
-        <Text style={styles.returnInfo}>
-          If select
-          <Text style={styles.bold}> yes </Text>
-          you will get to do a new card for your return ride after you are done
-            filling in this card. The cards will be connected to each other.
-        </Text>
-        <View style={styles.radioRow}>
-          <View style={styles.radioWrapper}>
-            <TouchableWithoutFeedback
-              onPress={() => this.handleReturnChange(true)}
-            >
-              <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#1db0ed' : '#ffffff' }]} />
-            </TouchableWithoutFeedback>
-            <Text style={styles.radioLabel}>Yes!</Text>
+
+        {!this.state.isReturnTrip &&
+          <View style={styles.verticalDivider} >
+            <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+            <Text style={styles.title}>Are You making a return ride?</Text>
+            <Text style={styles.returnInfo}>
+              If select
+              <Text style={styles.bold}> yes </Text>
+              you will get to do a new card for your return ride after you are done
+                filling in this card. The cards will be connected to each other.
+            </Text>
+            <View style={styles.radioRow}>
+              <View style={styles.radioWrapper}>
+                <TouchableWithoutFeedback
+                  onPress={() => this.handleReturnChange(true)}
+                >
+                  <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#1db0ed' : '#ffffff' }]} />
+                </TouchableWithoutFeedback>
+                <Text style={styles.radioLabel}>Yes!</Text>
+              </View>
+              <View style={styles.radioWrapper}>
+                <TouchableWithoutFeedback
+                  onPress={() => this.handleReturnChange(false)}
+                >
+                  <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#ffffff' : '#1db0ed' }]} />
+                </TouchableWithoutFeedback>
+                <Text style={styles.radioLabel}>Not this time</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.radioWrapper}>
-            <TouchableWithoutFeedback
-              onPress={() => this.handleReturnChange(false)}
-            >
-              <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#ffffff' : '#1db0ed' }]} />
-            </TouchableWithoutFeedback>
-            <Text style={styles.radioLabel}>Not this time</Text>
-          </View>
-        </View>
+        }
+
         <CustomButton
           onPress={this.onNext}
           bgColor={Colors.background.darkCyan}
@@ -352,6 +373,15 @@ class Trip extends Component {
 
 Trip.propTypes = {
   onNext: PropTypes.func.isRequired,
+  start: PropTypes.shape({}),
+  end: PropTypes.shape({}),
+  isReturnTrip: PropTypes.bool,
+};
+
+Trip.defaultProps = {
+  start: {},
+  end: {},
+  isReturnTrip: {},
 };
 
 export default Trip;

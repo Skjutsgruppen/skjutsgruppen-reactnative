@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
+import { Text, View, Image, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import Trip from '@components/offer/trip';
 import Date from '@components/offer/date';
 import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
-import Completed from '@components/offer/completed';
+import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 
 import { submitOffer } from '@services/apollo/offer';
@@ -22,6 +22,23 @@ const styles = StyleSheet.create({
     color: '#1ca9e5',
     margin: 12,
     textAlign: 'center',
+  },
+  returnHeader: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  returnIcon: {
+    width: 50,
+    height: 36,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 6,
+  },
+  returnText: {
+    width: 210,
+    alignSelf: 'center',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -45,6 +62,8 @@ class Offer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isReturnedTrip: false,
+      defaultTrip: { start: {}, end: {}, dates: [] },
       comment: {},
       trip: {},
       dates: [],
@@ -56,6 +75,20 @@ class Offer extends Component {
       loading: false,
       offer: {},
     };
+  }
+
+  componentWillMount() {
+    const { params } = this.props.navigation.state;
+    if (params && typeof params.isReturnedTrip !== 'undefined') {
+      this.setState({
+        isReturnedTrip: true,
+        defaultTrip: {
+          start: params.defaultTrip.start,
+          end: params.defaultTrip.end,
+          dates: params.defaultTrip.dates,
+        },
+      });
+    }
   }
 
   onCommentNext = (comment) => {
@@ -127,22 +160,41 @@ class Offer extends Component {
     navigate('Feed', { refetch: true });
   };
 
+  onMakeReturnRide = () => {
+    const { navigate } = this.props.navigation;
+    if (this.state.trip.isReturning) {
+      navigate('Offer', {
+        isReturnedTrip: true,
+        defaultTrip: {
+          end: this.state.trip.start,
+          start: this.state.trip.end,
+          dates: this.state.date.dates,
+        },
+      });
+    } else {
+      navigate('Feed', { refetch: true });
+    }
+  }
+
   createTrip() {
     const { comment, trip, date, seat, share } = this.state;
+
+    const rideData = {
+      comment: comment.text,
+      tripStart: trip.start,
+      tripEnd: trip.end,
+      photo: comment.photo,
+      stops: trip.stops,
+      returnTrip: trip.isReturning,
+      dates: date.dates,
+      time: date.time,
+      seats: seat,
+      flexibility: date.flexsible,
+      share,
+    };
+
     try {
-      this.props.submit(
-        comment.text,
-        trip.start,
-        trip.end,
-        comment.photo,
-        trip.stops,
-        trip.isReturning,
-        date.dates,
-        date.time,
-        seat,
-        date.flexsible,
-        share,
-      ).then((res) => {
+      this.props.submit(rideData).then((res) => {
         if (share.general.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
@@ -154,17 +206,41 @@ class Offer extends Component {
     }
   }
 
+  header() {
+    const { isReturnedTrip } = this.state;
+    if (isReturnedTrip) {
+      return (
+        <View style={styles.returnHeader}>
+          <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+          <Text style={styles.mainTitle}>Return ride</Text>
+          <Text style={styles.returnText}>
+            Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
+          </Text>
+        </View>
+      );
+    }
+
+    return (<Text style={styles.mainTitle}>Offer a ride</Text>);
+  }
+
   renderFinish() {
     const { loading, offer, share } = this.state;
     if (loading) {
       return (<Loading />);
     }
 
-    return (<Completed offer={offer} isCliped={share.general.indexOf('copy_to_clip') > -1} onButtonPress={this.onButtonPress} />);
+    return (<Completed
+      url={offer.url}
+      text="ride"
+      isCliped={share.general.indexOf('copy_to_clip') > -1}
+      onButtonPress={this.onButtonPress}
+      isReturnedTrip={this.state.trip.isReturning}
+      onMakeReturnRide={this.onMakeReturnRide}
+    />);
   }
 
   render() {
-    const { activeTab, completedTabs, disabledTabs } = this.state;
+    const { activeTab, completedTabs, disabledTabs, isReturnedTrip, defaultTrip } = this.state;
     const { navigation } = this.props;
     return (
       <Wrapper bgColor="#eded18">
@@ -172,7 +248,7 @@ class Offer extends Component {
           <Text style={styles.title}>Back</Text>
         </TouchableOpacity>
         <Container bgColor="#f3f3ed">
-          <Text style={styles.mainTitle}>Offer a ride</Text>
+          {this.header()}
           <View style={styles.tabContainer}>
             <Tab
               label="Comment"
@@ -207,7 +283,12 @@ class Offer extends Component {
           </View>
           <View>
             {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
-            {(activeTab === 2) && <Trip onNext={this.onTripNext} />}
+            {(activeTab === 2) && <Trip
+              isReturnTrip={isReturnedTrip}
+              start={defaultTrip.start}
+              end={defaultTrip.end}
+              onNext={this.onTripNext}
+            />}
             {(activeTab === 3) && <Date onNext={this.onDateNext} />}
             {(activeTab === 4) && <Seats onNext={this.onSeatNext} />}
             {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
@@ -222,6 +303,7 @@ class Offer extends Component {
 Offer.propTypes = {
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
+    state: PropTypes.object,
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
