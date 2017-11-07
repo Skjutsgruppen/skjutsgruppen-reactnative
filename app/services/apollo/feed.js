@@ -44,10 +44,10 @@ query getFeed($offset: Int, $limit: Int) {
           name
           coordinates
         }
-        countryId
-        countyId
-        municipalityId
-        localityId
+        country
+        county
+        municipality
+        locality
         GroupMembers{
           id
         }

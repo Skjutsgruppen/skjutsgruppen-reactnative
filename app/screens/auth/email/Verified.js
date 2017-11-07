@@ -12,7 +12,7 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
-import telephoneCode from '@config/telephoneCode';
+import { countries } from '@config/countries';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -138,11 +138,11 @@ class Verified extends Component {
     );
   }
 
-  renderCountryCode = () => telephoneCode.map(phone => (
+  renderCountryCode = () => countries.map(country => (
     <Picker.Item
-      key={phone.code}
-      label={`${phone.dial_code} - ${phone.name}`}
-      value={phone.dial_code}
+      key={country.code}
+      label={`${country.dial_code} - ${country.name}`}
+      value={country.dial_code}
     />
   ));
 
