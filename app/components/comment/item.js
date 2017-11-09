@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Item = ({ comment }) => {
+const Item = ({ comment, onPress }) => {
   let image = null;
   if (comment.User.photo) {
     image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
@@ -46,7 +46,7 @@ const Item = ({ comment }) => {
 
   return (
     <View style={styles.commentWrapper}>
-      {image}
+      <TouchableOpacity onPress={() => onPress(comment.User.id)}>{image}</TouchableOpacity>
       <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
@@ -70,6 +70,7 @@ Item.propTypes = {
     date: PropTypes.string,
     text: PropTypes.string,
   }).isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 export default Item;
