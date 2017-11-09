@@ -1,58 +1,36 @@
 import React, { Component } from 'react';
-import { Image, View, TextInput, Text, StyleSheet, Button, ToastAndroid as Toast } from 'react-native';
+import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
+import Icon from 'react-native-vector-icons/Ionicons';
 import TabIcon from '@components/tabIcon';
-import { Loading, Wrapper } from '@components/common';
+import { Wrapper } from '@components/common';
 import { compose } from 'react-apollo';
-import { withUpdateProfile } from '@services/apollo/auth';
-import Camera from '@components/camera';
 import { withContacts } from '@services/apollo/contact';
 import Contacts from 'react-native-contacts';
+import Colors from '@theme/colors';
+import BackButton from '@components/common/backButton';
+import ProfileDetail from '@components/profile/profile';
+import { withProfile } from '@services/apollo/profile';
+import CustomButton from '@components/common/customButton';
+
+const Profile = withProfile(ProfileDetail);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  input: {
-    backgroundColor: '#ddd',
-    width: 300,
-    height: 40,
-    marginHorizontal: 20,
-    paddingLeft: 45,
-    borderRadius: 20,
-    color: '#222',
-  },
-  inputWrapper: {
-    height: 70,
-  },
-  title: {
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  addPhoto: {
+  navbar: {
+    height: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 24,
-    borderBottomWidth: 2,
-    borderTopWidth: 2,
-    borderColor: '#dddddd',
-    marginBottom: 24,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
   },
-  addPhotoLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 12,
-    marginVertical: 4,
-  },
-  image: {
-    width: '100%',
-    height: 100,
+  button: {
+    marginHorizontal: 24,
+    marginTop: 8,
+    marginBottom: 8,
   },
 });
 
@@ -74,62 +52,12 @@ class Support extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ firstName: '', lastName: '', photo: '', profileImage: null, loading: false, error: '' });
+    this.state = ({ error: '' });
   }
 
-  componentWillMount() {
-    const { firstName, lastName, photo } = this.props.user;
-
-    this.setState({ firstName, lastName, profileImage: photo });
-  }
-
-  onSubmit = () => {
-    this.setState({ loading: true });
-    const { updateProfile, setUser } = this.props;
-    const { firstName, lastName, photo } = this.state;
-    const validation = this.checkValidation();
-
-    if (validation.pass()) {
-      try {
-        updateProfile(firstName, lastName, photo).then((res) => {
-          setUser(res.data.updateUser.User);
-          this.setState({ loading: false, error: '' });
-          Toast.show('Profile successfully updated.', Toast.LONG);
-        }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
-        });
-      } catch (err) {
-        this.setState({ loading: false, error: err.message });
-      }
-    } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
-      this.setState({ loading: false });
-    }
-  }
-
-  checkValidation() {
-    const errors = [];
-    const { firstName, lastName } = this.state;
-
-    if (firstName === '') {
-      errors.push('First Name is required.');
-    }
-
-    if (lastName === '') {
-      errors.push('Last Name is required.');
-    }
-
-    return {
-      pass: () => (errors.length === 0),
-      errors,
-    };
-  }
-
-  logout = () => {
-    const { logout } = this.props;
-    logout().then(() => {
-      this.navigateTo('Splash');
-    });
+  onEdit = () => {
+    const { navigation } = this.props;
+    navigation.navigate('EditProfile');
   }
 
   navigateTo = (routeName) => {
@@ -140,6 +68,18 @@ class Support extends Component {
       actions: [NavigationActions.navigate({ routeName })],
     });
     navigation.dispatch(resetAction);
+  }
+
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
+  logout = () => {
+    const { logout } = this.props;
+    logout().then(() => {
+      this.navigateTo('Splash');
+    });
   }
 
   sync = () => {
@@ -159,82 +99,44 @@ class Support extends Component {
     });
   }
 
-  renderButton = () => {
-    const { loading } = this.state;
-    if (loading) {
-      return <Loading />;
-    }
-
-    return (<Button
-      onPress={this.onSubmit}
-      title="Update"
-    />);
-  }
-
   render() {
-    const { error, profileImage } = this.state;
-
-    let profile = null;
-    if (profileImage) {
-      profile = (<Image source={{ uri: profileImage }} style={styles.image} />);
-    }
+    const { navigation } = this.props;
 
     return (
-      <Wrapper>
-        <View style={styles.container}>
-          <Text style={styles.title} >Update Profile</Text>
-          {(error !== '') && (<View style={styles.inputWrapper}><Text>{error}</Text></View>)}
-
-          <View style={styles.addPhoto}>
-            <Camera onSelect={res => this.setState({ photo: res.data })}>
-              <View>
-                {profile}
-                <Text style={styles.addPhotoLabel}>update Profile Picture</Text>
-              </View>
-            </Camera>
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <TextInput
-              onChangeText={firstName => this.setState({ firstName })}
-              style={styles.input}
-              value={this.state.firstName}
-              placeholder={'First Name'}
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              returnKeyType={'done'}
-              placeholderTextColor="#666"
-              underlineColorAndroid="transparent"
+      <Wrapper bgColor={Colors.background.cream}>
+        <View style={styles.navbar}>
+          <BackButton onPress={this.goBack} >Back</BackButton>
+          <TouchableOpacity
+            navigation={navigation}
+            onPress={this.onEdit}
+          >
+            <Icon
+              name="ios-options"
+              size={18}
+              color="#777"
             />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <TextInput
-              onChangeText={lastName => this.setState({ lastName })}
-              value={this.state.lastName}
-              style={styles.input}
-              placeholder={'Last Name'}
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              returnKeyType={'done'}
-              placeholderTextColor="#666"
-              underlineColorAndroid="transparent"
-            />
-          </View>
+          </TouchableOpacity>
         </View>
-        <View style={styles.inputWrapper}>
-          {this.renderButton()}
-        </View>
-
-        <Button
-          title="logout"
-          onPress={this.logout}
-        />
-
-        <Button
-          title="Sync Contacts"
-          onPress={this.sync}
-        />
+        <ScrollView>
+          <Profile
+            navigation={navigation}
+            id={this.props.user.id}
+          />
+          <CustomButton
+            bgColor={Colors.background.darkCyan}
+            style={styles.button}
+            onPress={this.logout}
+          >
+            Logout
+          </CustomButton>
+          <CustomButton
+            bgColor={Colors.background.darkCyan}
+            style={styles.button}
+            onPress={this.sync}
+          >
+            Sync Contacts
+          </CustomButton>
+        </ScrollView>
       </Wrapper>
     );
   }
@@ -242,9 +144,8 @@ class Support extends Component {
 
 Support.propTypes = {
   logout: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
-  updateProfile: PropTypes.func.isRequired,
   user: PropTypes.shape({
+    id: PropTypes.number,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     photo: PropTypes.string,
@@ -261,10 +162,7 @@ const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.error(error)),
-  setUser: user => AuthService.setUser(user)
-    .then(() => dispatch(AuthAction.user(user)))
-    .catch(error => console.error(error)),
 });
 
-export default compose(withUpdateProfile, withContacts,
+export default compose(withContacts,
   connect(mapStateToProps, mapDispatchToProps))(Support);

@@ -50,11 +50,16 @@ class Feed extends Component {
     if (type === 'ask') {
       navigation.navigate('AskDetail', { ask: detail });
     }
+
+    if (type === 'profile') {
+      navigation.navigate('UserProfile', { profileId: detail });
+    }
   };
 
   onSharePress = (isGroup) => {
     this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
   };
+
 
   onShare = () => {
     this.setState({ isOpen: false });
