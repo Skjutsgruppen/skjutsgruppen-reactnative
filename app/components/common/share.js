@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { withMyGroups, withMyFriends } from '@services/apollo/auth';
+import { withGroups, withFriends, withBestFriends } from '@services/apollo/auth';
 import { compose } from 'react-apollo';
 import { Wrapper, Loading } from '@components/common';
 import CloseButton from '@components/common/closeButton';
 import CustomButton from '@components/common/customButton';
 import CheckIcon from '@icons/icon_check_white.png';
 import Colors from '@theme/colors';
+import FriendList from '@components/friendList';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
-  socialWrapper: {
+  generalWrapper: {
     paddingVertical: 10,
   },
   copyIcon: {
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
 class Share extends Component {
   constructor(props) {
     super(props);
-    this.state = { social: [], friends: [], groups: [] };
+    this.state = { general: [], friends: [], groups: [] };
   }
 
   onNext = () => {
@@ -189,7 +190,7 @@ class Share extends Component {
     this.props.onClose();
   }
 
-  setOption(type, value) {
+  setOption = (type, value) => {
     const data = this.state[type];
 
     if (data.indexOf(value) > -1) {
@@ -200,11 +201,10 @@ class Share extends Component {
 
     const obj = {};
     obj[type] = data;
-
     this.setState(obj);
   }
 
-  hasOption(type, key) {
+  hasOption = (type, key) => {
     const data = this.state[type];
 
     return data.indexOf(key) > -1;
@@ -222,47 +222,6 @@ class Share extends Component {
     return this.isModal() ? 'Share' : 'Next';
   }
 
-  renderBestFriends() {
-    const { friendLoading, friends } = this.props;
-
-    if (friendLoading) {
-      return (<Loading />);
-    }
-
-
-    if (friends.length === 0) {
-      return null;
-    }
-
-    return (
-      <View>
-        <Text style={styles.shareCategoryTitle}>Best Friends</Text>
-        {
-          friends.map(friend => (
-            <View key={friend.id} style={styles.borderedRow}>
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('friends', friend.id)}
-              >
-                <View style={styles.shareItem}>
-                  {this.renderPic(friend.photo)}
-                  <Text>{friend.firstName || friend.email}</Text>
-                  <View
-                    style={[styles.shareToggle, this.hasOption('friends', friend.id) ? styles.shareToggleActive : {}]}
-                  >
-                    {
-                      this.hasOption('friends', friend.id) &&
-                      <Image source={CheckIcon} style={styles.checkIcon} />
-                    }
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          ))
-        }
-      </View>
-    );
-  }
-
   renderPic = (photo) => {
     let profileImage = null;
 
@@ -273,54 +232,14 @@ class Share extends Component {
     return profileImage;
   }
 
-  renderFriends() {
-    const { friendLoading, friends } = this.props;
-
-    if (friendLoading) {
-      return (<Loading />);
-    }
-
-    if (friends.length === 0) {
-      return null;
-    }
-
-    return (
-      <View>
-        <Text style={styles.shareCategoryTitle}>Friends</Text>
-        {
-          friends.map(friend => (
-            <View key={friend.id} style={styles.borderedRow}>
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('friends', friend.id)}
-              >
-                <View style={styles.shareItem}>
-                  {this.renderPic(friend.photo)}
-                  <Text>{friend.firstName || friend.email}</Text>
-                  <View
-                    style={[styles.shareToggle, this.hasOption('friends', friend.id) ? styles.shareToggleActive : {}]}
-                  >
-                    {
-                      this.hasOption('friends', friend.id) &&
-                      <Image source={CheckIcon} style={styles.checkIcon} />
-                    }
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          ))
-        }
-      </View>
-    );
-  }
-
   renderGroups() {
-    const { groupLoading, groups } = this.props;
+    const { groups } = this.props;
 
-    if (groupLoading) {
+    if (groups.loading) {
       return (<Loading />);
     }
 
-    if (groups.length === 0) {
+    if (groups.rows.length === 0) {
       return null;
     }
 
@@ -328,7 +247,7 @@ class Share extends Component {
       <View>
         <Text style={styles.shareCategoryTitle}>Groups</Text>
         {
-          groups.map(group => (
+          groups.rows.map(group => (
             <View key={group.id} style={styles.borderedRow}>
               <TouchableWithoutFeedback
                 onPress={() => this.setOption('groups', group.id)}
@@ -354,6 +273,8 @@ class Share extends Component {
   }
 
   render() {
+    const { friends, bestFriends } = this.props;
+
     return (
       <Wrapper bgColor={Colors.background.cream}>
         {
@@ -384,7 +305,7 @@ class Share extends Component {
           </View>
           {!this.isModal() &&
             <TouchableWithoutFeedback
-              onPress={() => this.setOption('social', 'whole_movement')}
+              onPress={() => this.setOption('general', 'whole_movement')}
             >
               <View style={styles.shareItem}>
                 <View style={styles.defaultSelectedIcon} />
@@ -398,7 +319,7 @@ class Share extends Component {
             </TouchableWithoutFeedback>
           }
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('social', 'copy_to_clip')}
+            onPress={() => this.setOption('general', 'copy_to_clip')}
           >
             <View style={styles.shareItem}>
               <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
@@ -407,17 +328,17 @@ class Share extends Component {
                 <Text style={styles.smallText}>Paste whereever you want</Text>
               </View>
               <View
-                style={[styles.shareToggle, this.hasOption('social', 'copy_to_clip') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('general', 'copy_to_clip') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('social', 'copy_to_clip') &&
+                  this.hasOption('general', 'copy_to_clip') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('social', 'facebook')}
+            onPress={() => this.setOption('general', 'facebook')}
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
@@ -425,17 +346,17 @@ class Share extends Component {
               </View>
               <Text>Your Facebook Timeline</Text>
               <View
-                style={[styles.shareToggle, this.hasOption('social', 'facebook') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('general', 'facebook') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('social', 'facebook') &&
+                  this.hasOption('general', 'facebook') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('social', 'tweet')}
+            onPress={() => this.setOption('general', 'tweet')}
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
@@ -443,17 +364,17 @@ class Share extends Component {
               </View>
               <Text>Tweet</Text>
               <View
-                style={[styles.shareToggle, this.hasOption('social', 'tweet') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('general', 'tweet') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('social', 'tweet') &&
+                  this.hasOption('general', 'tweet') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>
             </View>
           </TouchableWithoutFeedback>
-          {this.renderBestFriends()}
-          {this.renderFriends()}
+          <FriendList loading={friends.loading} friends={friends.rows} total={friends.total} title="Friends" setOption={this.setOption} selected={this.state.friends} />
+          <FriendList loading={bestFriends.loading} friends={bestFriends.rows} total={bestFriends.total} title="Best Friends" setOption={this.setOption} selected={this.state.friends} />
           {this.showGroup() && this.renderGroups()}
         </View>
         <CustomButton
@@ -471,20 +392,26 @@ class Share extends Component {
 Share.propTypes = {
   onClose: PropTypes.func,
   onNext: PropTypes.func.isRequired,
-  friends: PropTypes.arrayOf(PropTypes.object),
-  friendLoading: PropTypes.bool.isRequired,
-  groups: PropTypes.arrayOf(PropTypes.object),
-  groupLoading: PropTypes.bool.isRequired,
+  groups: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
   modal: PropTypes.bool,
   showGroup: PropTypes.bool,
+  friends: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
+  bestFriends: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 Share.defaultProps = {
   onClose: () => { },
-  friends: [],
-  groups: [],
   modal: false,
   showGroup: true,
 };
 
-export default compose(withMyGroups, withMyFriends)(Share);
+export default compose(withGroups, withBestFriends, withFriends)(Share);
