@@ -174,8 +174,17 @@ class Search extends Component {
     super(props);
     this.state = {
       direction: null,
-      from: {},
-      to: {},
+      from: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+      to: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+
       filters: [],
       markedDates: {},
       dates: [],
@@ -279,7 +288,7 @@ class Search extends Component {
           <View style={styles.locationWrapper}>
             <View style={styles.inputWrapper}>
               <GooglePlace
-                defaultValue={this.state.from.name || ''}
+                defaultValue={this.state.from}
                 currentLocation
                 placeholder="From where I am now"
                 onChangeText={
@@ -304,7 +313,7 @@ class Search extends Component {
             <View style={styles.inputWrapper}>
               <GooglePlace
                 placeholder="Destination"
-                defaultValue={this.state.to.name || ''}
+                defaultValue={this.state.to}
                 onChangeText={
                   to => this.setState({
                     to: {

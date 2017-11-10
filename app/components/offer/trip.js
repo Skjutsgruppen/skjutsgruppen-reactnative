@@ -169,10 +169,22 @@ class Trip extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      start: {},
+      start: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
       isReturnTrip: false,
-      end: {},
-      stops: [{}],
+      end: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+      stops: [{
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      }],
       stopsCount: 1,
       isReturning: false,
     };
@@ -189,7 +201,7 @@ class Trip extends Component {
     const stops = [];
 
     state.stops.forEach((k) => {
-      if (typeof k.name !== 'undefined') {
+      if (k.name !== '') {
         stops.push(k);
       }
     });
@@ -205,12 +217,7 @@ class Trip extends Component {
 
   setStops = (count, stop, stopsCount) => {
     const { stops } = this.state;
-    stops[count] = {
-      name: stop.name,
-      countryCode: stop.countryCode,
-      coordinates: [stop.lat, stop.lng],
-    };
-
+    stops[count] = stop;
     this.setState({ stops, stopsCount });
   };
 
@@ -246,7 +253,7 @@ class Trip extends Component {
           <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
-            defaultValue={this.state.stops[i].name || ''}
+            defaultValue={this.state.stops[i]}
             onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
           {j > 1 ? (<TouchableOpacity onPress={() => this.removeStop(i)}>
@@ -264,30 +271,14 @@ class Trip extends Component {
         <GooglePlace
           placeholder="Start here"
           currentLocation={!this.state.isReturnTrip}
-          defaultValue={this.state.start.name || ''}
-          onChangeText={
-            start => this.setState({
-              start: {
-                name: start.name,
-                countryCode: start.countryCode,
-                coordinates: [start.lat, start.lng],
-              },
-            })
-          }
+          defaultValue={this.state.start}
+          onChangeText={start => this.setState({ start })}
         />
         <Text style={styles.label}>To</Text>
         <GooglePlace
           placeholder="Destination"
-          defaultValue={this.state.end.name || ''}
-          onChangeText={
-            end => this.setState({
-              end: {
-                name: end.name,
-                countryCode: end.countryCode,
-                coordinates: [end.lat, end.lng],
-              },
-            })
-          }
+          defaultValue={this.state.end}
+          onChangeText={end => this.setState({ end })}
         >
           <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
             <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
@@ -373,15 +364,17 @@ class Trip extends Component {
 
 Trip.propTypes = {
   onNext: PropTypes.func.isRequired,
-  start: PropTypes.shape({}),
-  end: PropTypes.shape({}),
-  isReturnTrip: PropTypes.bool,
-};
-
-Trip.defaultProps = {
-  start: {},
-  end: {},
-  isReturnTrip: {},
+  start: PropTypes.shape({
+    name: PropTypes.string,
+    countryCode: PropTypes.string,
+    coordinates: PropTypes.array,
+  }).isRequired,
+  end: PropTypes.shape({
+    name: PropTypes.string,
+    countryCode: PropTypes.string,
+    coordinates: PropTypes.array,
+  }).isRequired,
+  isReturnTrip: PropTypes.bool.isRequired,
 };
 
 export default Trip;

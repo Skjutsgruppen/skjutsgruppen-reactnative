@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stopText: {
-    color: '#00000077',
   },
   stopsIcon: {
     width: 12,
