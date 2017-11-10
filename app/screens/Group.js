@@ -103,10 +103,10 @@ class Group extends Component {
     }
 
     if (outreach === 'route') {
-      if (typeof trip.start.name === 'undefined') {
+      if (trip.start.coordinates.length === 0) {
         Alert.alert('Error!!', 'From is required');
         error += 1;
-      } else if (typeof trip.end.name === 'undefined') {
+      } else if (trip.end.coordinates.length === 0) {
         Alert.alert('Error!!', 'To is required');
         error += 1;
       }

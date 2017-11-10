@@ -115,9 +115,21 @@ class Route extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      start: {},
-      end: {},
-      stops: [{}],
+      start: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+      end: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+      stops: [{
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      }],
       stopsCount: 1,
     };
   }
@@ -128,7 +140,7 @@ class Route extends Component {
     const stops = [];
 
     state.stops.forEach((k) => {
-      if (typeof k.name !== 'undefined') {
+      if (k.name !== '') {
         stops.push(k);
       }
     });
@@ -144,11 +156,7 @@ class Route extends Component {
 
   setStops = (count, stop, stopsCount) => {
     const { stops } = this.state;
-    stops[count] = {
-      name: stop.name,
-      countryCode: stop.countryCode,
-      coordinates: [stop.lat, stop.lng],
-    };
+    stops[count] = stop;
 
     this.setState({ stops, stopsCount });
   };
@@ -181,7 +189,7 @@ class Route extends Component {
           <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
-            defaultValue={this.state.stops[i].name || ''}
+            defaultValue={this.state.stops[i]}
             onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
           {j > 1 ? (<TouchableOpacity onPress={() => this.removeStop(i)}>
@@ -200,32 +208,16 @@ class Route extends Component {
         <GooglePlace
           placeholder="Start here"
           currentLocation
-          defaultValue={this.state.start.name || ''}
-          onChangeText={
-            start => this.setState({
-              start: {
-                name: start.name,
-                countryCode: start.countryCode,
-                coordinates: [start.lat, start.lng],
-              },
-            })
-          }
+          defaultValue={this.state.start}
+          onChangeText={start => this.setState({ start })}
           style={{ marginBottom: 32 }}
         />
         <Text style={styles.label}>To</Text>
         <View style={[styles.inputWrapper, { zIndex: 8 }]}>
           <GooglePlace
             placeholder="Destination"
-            defaultValue={this.state.end.name || ''}
-            onChangeText={
-              end => this.setState({
-                end: {
-                  name: end.name,
-                  countryCode: end.countryCode,
-                  coordinates: [end.lat, end.lng],
-                },
-              })
-            }
+            defaultValue={this.state.end}
+            onChangeText={end => this.setState({ end })}
           >
             <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
               <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
