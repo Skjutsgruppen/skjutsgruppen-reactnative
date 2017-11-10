@@ -4331,6 +4331,10 @@ react-native-keyboard-spacer@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.3.1.tgz#9580297ebfd078202dc4c65303d29cda35de67f1"
 
+react-native-maps@^0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.17.1.tgz#ab2236341fd984dac8864202ae55331bc262f60c"
+
 react-native-modalbox@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/react-native-modalbox/-/react-native-modalbox-1.4.2.tgz#818c9354c9b13327ec807c6436e8516b3b419478"

@@ -63,7 +63,19 @@ class Offer extends Component {
     super(props);
     this.state = {
       isReturnedTrip: false,
-      defaultTrip: { start: {}, end: {}, dates: [] },
+      defaultTrip: {
+        start: {
+          name: '',
+          countryCode: '',
+          coordinates: [],
+        },
+        end: {
+          name: '',
+          countryCode: '',
+          coordinates: [],
+        },
+        dates: [],
+      },
       comment: {},
       trip: {},
       dates: [],
@@ -103,9 +115,9 @@ class Offer extends Component {
   };
 
   onTripNext = (trip) => {
-    if (typeof trip.start.name === 'undefined') {
+    if (trip.start.coordinates.length === 0) {
       Alert.alert('Error!!', 'From is required');
-    } else if (typeof trip.end.name === 'undefined') {
+    } else if (trip.end.coordinates.length === 0) {
       Alert.alert('Error!!', 'To is required');
     } else {
       const { completedTabs, disabledTabs } = this.state;
