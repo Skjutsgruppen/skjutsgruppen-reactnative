@@ -5,12 +5,14 @@ import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   greetText: {
+    alignSelf: 'center',
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.text.green,
     marginBottom: 32,
   },
   coloredText: {
+    alignSelf: 'center',
     width: 250,
     textAlign: 'center',
     fontWeight: 'bold',
