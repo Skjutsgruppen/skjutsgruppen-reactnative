@@ -2,25 +2,17 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import CustomButton from '@components/common/customButton';
+import CustomButtom from '@components/common/customButton';
 import Colors from '@theme/colors';
-import Camera from '@components/camera';
 
 const styles = StyleSheet.create({
   addPhoto: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    padding: 24,
     borderBottomWidth: 2,
     borderTopWidth: 2,
     borderColor: '#dddddd',
-  },
-  addPhotoIcon: {
-    width: 100,
-    height: 64,
-    resizeMode: 'contain',
-    marginRight: 12,
   },
   addPhotoLabel: {
     fontSize: 16,
@@ -66,16 +58,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    marginBottom: 32,
+    marginVertical: 24,
     marginHorizontal: 24,
   },
 });
 
 
-class Comment extends Component {
+class Description extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '', photo: '' };
+    this.state = { text: '' };
   }
 
   onNext = () => {
@@ -93,17 +85,10 @@ class Comment extends Component {
 
     return (
       <View>
-        <Camera onSelect={res => this.setState({ photo: res.data })}>
-          <View style={styles.addPhoto}>
-            <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
-            <View>
-              <Text style={styles.addPhotoLabel}>Add a photo to your ride</Text>
-              <Text style={styles.addPhotoLabelSmall}>Make your ride more visible</Text>
-            </View>
-          </View>
-        </Camera>
+
         {profile}
-        <Text style={styles.title}> Comment</Text>
+
+        <Text style={styles.title}> Description</Text>
         <View>
           <TextInput
             style={styles.textarea}
@@ -121,19 +106,19 @@ class Comment extends Component {
           vehicle you have, if you offer your seats for free or if you want to share the
           costs equally.
         </Text>
-        <CustomButton
+        <CustomButtom
           onPress={this.onNext}
           bgColor={Colors.background.darkCyan}
           style={styles.button}
         >
           Next
-        </CustomButton>
+        </CustomButtom>
       </View>
     );
   }
 }
 
-Comment.propTypes = {
+Description.propTypes = {
   user: PropTypes.shape({
     photo: PropTypes.string,
   }).isRequired,
@@ -142,4 +127,4 @@ Comment.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default connect(mapStateToProps)(Comment);
+export default connect(mapStateToProps)(Description);

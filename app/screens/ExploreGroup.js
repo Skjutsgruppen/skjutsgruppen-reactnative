@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, Image, TouchableOpacity } from 'react-native';
-import GroupItem from '@components/feed/card/group';
-import { Loading } from '@components/common';
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { compose } from 'react-apollo';
 import { withExploreGroup } from '@services/apollo/group';
 import Colors from '@theme/colors';
+import ExploreGroupResult from '@components/group/exploreGroupList';
+
+const ExploreGroupList = withExploreGroup(ExploreGroupResult);
 
 const styles = StyleSheet.create({
   content: {
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     lineHeight: 36,
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 12,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -41,16 +41,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginHorizontal: 12,
   },
-  listLabel: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
-    marginHorizontal: 20,
-    marginVertical: 16,
-  },
-  listWrapper: {
-    flex: 1,
-  },
 });
 
 class ExploreGroup extends PureComponent {
@@ -64,90 +54,6 @@ class ExploreGroup extends PureComponent {
     this.state = ({ searchQuery: '' });
   }
 
-  redirect = (type, detail) => {
-    const { navigation } = this.props;
-
-    navigation.navigate('GroupDetail', { group: detail });
-  }
-
-  renderFooter = () => {
-    const { loading, exploreGroups: { Group, total } } = this.props.exploreGroups;
-
-    if (!loading) return null;
-
-    if (Group.length >= total) {
-      return (
-        <View
-          style={{
-            paddingVertical: 20,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        >
-          <Text>No more group</Text>
-        </View>
-      );
-    }
-
-    return (
-      <View
-        style={{
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
-      >
-        <Loading />
-      </View>
-    );
-  }
-
-  renderAllGroups() {
-    const { exploreGroups } = this.props;
-
-    if (exploreGroups.networkStatus === 1) {
-      return <Loading />;
-    }
-
-    if (exploreGroups.error) {
-      return <Text>Error: {exploreGroups.error.message}</Text>;
-    }
-
-    const { exploreGroups: { Group, total } } = exploreGroups;
-
-
-    return (
-      <FlatList
-        data={Group}
-        renderItem={({ item }) => <GroupItem min onPress={this.redirect} group={item} />}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        refreshing={exploreGroups.networkStatus === 4}
-        onRefresh={() => exploreGroups.refetch()}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (exploreGroups.loading || Group.length >= total) return;
-
-          exploreGroups.fetchMore({
-            variables: { offset: Group.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.exploreGroups.length === 0) {
-                return previousResult;
-              }
-
-              const prevExploreGroups = previousResult.exploreGroups;
-              const updatedGroup = previousResult.exploreGroups.Group.concat(
-                fetchMoreResult.exploreGroups.Group,
-              );
-
-              return { exploreGroups: { ...prevExploreGroups, ...{ Group: updatedGroup } } };
-            },
-          });
-        }}
-      />
-    );
-  }
-
   renderSearchGroup = () => {
     const { navigation } = this.props;
     const { searchQuery } = this.state;
@@ -158,6 +64,8 @@ class ExploreGroup extends PureComponent {
   }
 
   render() {
+    const { navigation } = this.props;
+
     return (
       <View style={styles.content}>
         <Text style={styles.header}>EXPLORE GROUPS</Text>
@@ -178,10 +86,7 @@ class ExploreGroup extends PureComponent {
             <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.listLabel}>Popular Group</Text>
-        <View style={styles.listWrapper}>
-          {this.renderAllGroups()}
-        </View>
+        <ExploreGroupList from={null} filters={null} navigation={navigation} />
       </View>
     );
   }
@@ -191,15 +96,6 @@ ExploreGroup.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  exploreGroups: PropTypes.shape({
-    loading: PropTypes.bool.isRequired,
-    total: PropTypes.numeric,
-    networkStatus: PropTypes.number,
-    exploreGroups: PropTypes.shape({
-      Groups: PropTypes.arrayOf(PropTypes.object),
-      total: PropTypes.number,
-    }),
-  }).isRequired,
 };
 
-export default compose(withExploreGroup)(ExploreGroup);
+export default ExploreGroup;

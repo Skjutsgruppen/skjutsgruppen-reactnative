@@ -241,7 +241,7 @@ query trips (
   {
     rows {
       id 
-      comment 
+      description 
       type 
       TripStart {
         name 
