@@ -250,7 +250,7 @@ class AskDetail extends Component {
               <View>
                 {image}
                 <View style={styles.info}>
-                  <Text style={styles.messageText}>{ask.comment}</Text>
+                  <Text style={styles.messageText}>{ask.description}</Text>
                 </View>
               </View>
             </View>
