@@ -8,10 +8,14 @@ import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   garderIcon: {
-    marginBottom: 24,
-    resizeMode: 'cover',
+    height: 100,
+    width: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 16,
   },
   divider: {
+    alignSelf: 'center',
     width: '70%',
     height: 1,
     marginVertical: 32,
@@ -27,6 +31,9 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     textDecorationColor: '#333',
     color: '#333',
+  },
+  button: {
+    marginHorizontal: 24,
   },
 });
 
@@ -56,11 +63,27 @@ class Method extends Component {
       <Container>
         <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Welcome back!</GreetText>
-        <CustomButton onPress={this.onPressFacebook} bgColor="#3b5998">Sign in with Facebook</CustomButton>
-        <CustomButton onPress={this.onPressTwitter} bgColor="#1da1f2">Sign in with Twitter</CustomButton>
+        <CustomButton
+          onPress={this.onPressFacebook}
+          bgColor="#3b5998"
+          style={styles.button}
+        >
+          Sign in with Facebook
+        </CustomButton>
+        <CustomButton
+          onPress={this.onPressTwitter}
+          bgColor="#1da1f2"
+          style={styles.button}
+        >
+          Sign in with Twitter
+        </CustomButton>
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>Or</ColoredText>
-        <CustomButton bgColor={Colors.background.gray} onPress={this.onPressEmail}>
+        <CustomButton
+          bgColor={Colors.background.gray}
+          onPress={this.onPressEmail}
+          style={styles.button}
+        >
           Sign in with number or name
         </CustomButton>
         <TouchableOpacity style={styles.notParticipantWrapper} onPress={this.onPressBack}>
