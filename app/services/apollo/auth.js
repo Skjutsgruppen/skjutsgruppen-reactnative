@@ -226,7 +226,7 @@ query trips($id:Int, $type:String){
         rows{
           id
           type
-          comment
+          description
           seats
           User {
             id

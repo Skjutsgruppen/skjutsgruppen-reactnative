@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
-  generalWrapper: {
+  socialWrapper: {
     paddingVertical: 10,
   },
   copyIcon: {
@@ -79,9 +79,6 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     marginRight: 10,
-  },
-  socialWrapper: {
-    paddingVertical: 10,
   },
   shareCategory: {
     borderBottomWidth: 1,
@@ -178,7 +175,7 @@ const styles = StyleSheet.create({
 class Share extends Component {
   constructor(props) {
     super(props);
-    this.state = { general: [], friends: [], groups: [] };
+    this.state = { social: [], friends: [], groups: [] };
   }
 
   onNext = () => {
@@ -305,7 +302,7 @@ class Share extends Component {
           </View>
           {!this.isModal() &&
             <TouchableWithoutFeedback
-              onPress={() => this.setOption('general', 'whole_movement')}
+              onPress={() => this.setOption('social', 'whole_movement')}
             >
               <View style={styles.shareItem}>
                 <View style={styles.defaultSelectedIcon} />
@@ -319,7 +316,7 @@ class Share extends Component {
             </TouchableWithoutFeedback>
           }
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('general', 'copy_to_clip')}
+            onPress={() => this.setOption('social', 'copy_to_clip')}
           >
             <View style={styles.shareItem}>
               <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
@@ -328,17 +325,17 @@ class Share extends Component {
                 <Text style={styles.smallText}>Paste whereever you want</Text>
               </View>
               <View
-                style={[styles.shareToggle, this.hasOption('general', 'copy_to_clip') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('social', 'copy_to_clip') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('general', 'copy_to_clip') &&
+                  this.hasOption('social', 'copy_to_clip') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('general', 'facebook')}
+            onPress={() => this.setOption('social', 'facebook')}
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
@@ -346,17 +343,17 @@ class Share extends Component {
               </View>
               <Text>Your Facebook Timeline</Text>
               <View
-                style={[styles.shareToggle, this.hasOption('general', 'facebook') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('social', 'facebook') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('general', 'facebook') &&
+                  this.hasOption('social', 'facebook') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
-            onPress={() => this.setOption('general', 'tweet')}
+            onPress={() => this.setOption('social', 'tweet')}
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
@@ -364,10 +361,10 @@ class Share extends Component {
               </View>
               <Text>Tweet</Text>
               <View
-                style={[styles.shareToggle, this.hasOption('general', 'tweet') ? styles.shareToggleActive : {}]}
+                style={[styles.shareToggle, this.hasOption('social', 'tweet') ? styles.shareToggleActive : {}]}
               >
                 {
-                  this.hasOption('general', 'tweet') &&
+                  this.hasOption('social', 'tweet') &&
                   <Image source={CheckIcon} style={styles.checkIcon} />
                 }
               </View>

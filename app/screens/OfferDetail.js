@@ -259,7 +259,7 @@ class OfferDetail extends Component {
                       <Text style={styles.lightText}>Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
                     </View>
                   }
-                  <Text style={styles.messageText}>{offer.comment}</Text>
+                  <Text style={styles.messageText}>{offer.description}</Text>
                 </View>
               </View>
             </View>
