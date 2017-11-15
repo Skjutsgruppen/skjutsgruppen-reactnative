@@ -22,6 +22,7 @@ const Colors = {
     darkGray: '#585756',
     gray: '#9b9b9b',
     lightGray: '#dddee3',
+    red: '#e00',
   },
   border: {
     blue: '#00aeef',

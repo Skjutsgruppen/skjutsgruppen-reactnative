@@ -23,22 +23,29 @@ import BackButton from '@components/auth/backButton';
 
 const styles = StyleSheet.create({
   garderIcon: {
-    marginBottom: 24,
-    resizeMode: 'cover',
+    height: 100,
+    width: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 16,
   },
   inputWrapper: {
     width: '100%',
   },
   input: {
     width: '100%',
-    padding: 16,
+    height: 54,
+    paddingHorizontal: 16,
     fontSize: 14,
     textAlign: 'center',
     backgroundColor: Colors.background.fullWhite,
     marginBottom: 32,
   },
   userNameInput: {
-    marginBottom: 12,
+    marginBottom: 16,
+  },
+  button: {
+    marginHorizontal: 24,
   },
 });
 
@@ -128,6 +135,7 @@ class Login extends Component {
       <CustomButton
         bgColor={Colors.background.green}
         onPress={this.onSubmit}
+        style={styles.button}
       >
         Next
       </CustomButton>
