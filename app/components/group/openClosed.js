@@ -42,7 +42,7 @@ class OpenClosed extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { type: 'open' };
+    this.state = { type: 'OpenGroup' };
   }
 
   onNext = () => {
@@ -51,9 +51,9 @@ class OpenClosed extends Component {
     onNext(type);
   }
 
-  onPressOpen = () => this.setType('open')
+  onPressOpen = () => this.setType('OpenGroup')
 
-  onPressClosed = () => this.setType('closed')
+  onPressClosed = () => this.setType('ClosedGroup')
 
   setType = (type) => {
     this.setState({ type });
@@ -71,8 +71,8 @@ class OpenClosed extends Component {
           them to the group).
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={this.onPressOpen} label="Open" checked={type === 'open'} />
-          <Radio onPress={this.onPressClosed} label="Closed*" checked={type === 'closed'} />
+          <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === 'OpenGroup'} />
+          <Radio onPress={this.onPressClosed} label="ClosedGroup*" checked={type === 'ClosedGroup'} />
         </View>
         <CustomButton
           onPress={this.onNext}

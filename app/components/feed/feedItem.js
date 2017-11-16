@@ -5,7 +5,7 @@ import Offer from './card/offer';
 import Ask from './card/ask';
 
 const feedItem = ({ feed, onPress, onSharePress }) => {
-  if (feed.feedable === 'trip') {
+  if (feed.feedable === 'Trip') {
     if (feed.Trip.type === 'offered') {
       return (<Offer onPress={onPress} onSharePress={onSharePress} offer={feed.Trip} />);
     } else if (feed.Trip.type === 'wanted') {

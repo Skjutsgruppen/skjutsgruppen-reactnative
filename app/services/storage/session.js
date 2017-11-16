@@ -21,7 +21,6 @@ class Session {
     try {
       return JSON.parse(value);
     } catch (error) {
-      console.error(key, value, error);
       return value;
     }
   }

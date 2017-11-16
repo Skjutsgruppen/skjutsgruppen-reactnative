@@ -15,7 +15,7 @@ networkInterface.use([{
       req.options.headers = {};
     }
 
-    const token = await Auth.token();
+    const token = await Auth.getToken();
     req.options.headers.authorization = token;
     next();
   },
