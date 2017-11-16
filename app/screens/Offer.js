@@ -195,7 +195,7 @@ class Offer extends Component {
 
     try {
       this.props.submit(rideData).then((res) => {
-        if (share.general.indexOf('copy_to_clip') > -1) {
+        if (share.social.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
 
@@ -232,7 +232,7 @@ class Offer extends Component {
     return (<Completed
       url={offer.url}
       text="ride"
-      isCliped={share.general.indexOf('copy_to_clip') > -1}
+      isCliped={share.social.indexOf('copy_to_clip') > -1}
       onButtonPress={this.onButtonPress}
       isReturnedTrip={this.state.trip.isReturning}
       onMakeReturnRide={this.onMakeReturnRide}

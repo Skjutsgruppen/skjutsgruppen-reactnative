@@ -21,19 +21,22 @@ class Splash extends Component {
 
   async componentWillMount() {
     const { setLogin, setRegister, auth } = this.props;
-    const user = await AuthService.get();
+    const user = await AuthService.getUser();
+    const token = await AuthService.getToken();
+    const hasUser = await AuthService.hasUser();
+
     const isLoggedIn = await AuthService.isLoggedIn();
 
-    if (user !== null && user.token !== '' && user.user.emailVerified && user.user.firstName === null) {
-      await setRegister({ user: user.user, token: user.token });
+    if (hasUser && user.emailVerified && user.firstName === null) {
+      await setRegister({ user, token });
       this.navigateTo('EmailVerified');
-    } else if (user !== null && user.token !== '' && !user.user.emailVerified) {
-      await setRegister({ user: user.user, token: user.token });
+    } else if (hasUser && !user.emailVerified) {
+      await setRegister({ user, token });
       this.navigateTo('CheckMail');
     } else if (auth.login) {
       this.navigateTo('Tab');
     } else if (isLoggedIn) {
-      await setLogin(user);
+      await setLogin({ user, token });
       this.navigateTo('Tab');
     } else {
       this.setState({ loading: false });
@@ -71,11 +74,11 @@ Splash.propTypes = {
 
 const mapStateToProps = state => ({ auth: authSelector(state) });
 const mapDispatchToProps = dispatch => ({
-  setLogin: (user) => {
-    dispatch(AuthAction.login(user));
+  setLogin: ({ user, token }) => {
+    dispatch(AuthAction.login({ user, token }));
   },
-  setRegister: (user) => {
-    dispatch(AuthAction.register(user));
+  setRegister: ({ user, token }) => {
+    dispatch(AuthAction.register({ user, token }));
   },
 });
 
