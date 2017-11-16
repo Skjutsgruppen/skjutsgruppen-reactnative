@@ -14,7 +14,7 @@ mutation createTrip(
   $time:String,
   $seats:Int,
   $flexibility:String,
-  $share:[String],
+  $share:ShareInput,
 ) {
   createTrip( input :{
     comment : $comment

@@ -12,7 +12,7 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
-import { countries } from '@config/countries';
+import countries from '@config/countries';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -60,7 +60,7 @@ class Verified extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { updateProfile, setLogin } = this.props;
+    const { updateProfile, updateUser } = this.props;
     const { firstName, lastName, countryCode, phone, password } = this.state;
 
     const validation = this.checkValidation();
@@ -69,7 +69,7 @@ class Verified extends Component {
       try {
         updateProfile(firstName, lastName, '', countryCode + phone, password).then(({ data }) => {
           const { token, User } = data.updateUser;
-          setLogin({ token, user: User }).then(() => {
+          updateUser({ token, user: User }).then(() => {
             this.navigateTo('Tab');
           });
         }).catch((err) => {
@@ -208,7 +208,6 @@ class Verified extends Component {
   }
 }
 
-
 Verified.propTypes = {
   updateProfile: PropTypes.func.isRequired,
   auth: PropTypes.shape({
@@ -218,13 +217,13 @@ Verified.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  setLogin: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
-  setLogin: user => AuthService.setUser(user)
-    .then(() => dispatch(AuthAction.login(user))),
+  updateUser: ({ user, token }) => AuthService.setUser(user)
+    .then(() => dispatch(AuthAction.login({ user, token }))),
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.error(error)),
