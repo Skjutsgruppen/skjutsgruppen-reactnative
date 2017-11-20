@@ -68,7 +68,9 @@ class Feed extends Component {
     this.setState({ isOpen: false });
   }
 
-  redirectToMap = () => { };
+  redirectToMap = () => {
+    this.props.navigation.navigateWithDebounce('Map');
+  };
 
   redirectToGroup = () => {
     this.props.navigation.navigateWithDebounce('ExploreGroup');
