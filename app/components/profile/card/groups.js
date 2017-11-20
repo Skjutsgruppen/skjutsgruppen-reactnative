@@ -1,23 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import Relation from '@components/relation';
+import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 
 const styles = StyleSheet.create({
   lightText: {
     color: '#777777',
-  },
-  tab: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-  },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
   },
   feed: {
     backgroundColor: '#f9f9f9',
@@ -52,18 +39,6 @@ const styles = StyleSheet.create({
   name: {
     color: '#1db0ed',
     fontWeight: 'bold',
-  },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
-    alignSelf: 'center',
   },
   newGroupInfoWrapper: {
     position: 'absolute',
@@ -101,8 +76,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Group = ({ group, onPress, min, onSharePress }) => {
+const Groups = ({ group, onPress }) => {
   let image = null;
+
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
   } else {
@@ -111,28 +87,25 @@ const Group = ({ group, onPress, min, onSharePress }) => {
 
   let profileImage = null;
 
-  if (!min) {
-    if (group.User.photo) {
-      profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
-    } else {
-      profileImage = (<View style={styles.imgIcon} />);
-    }
+  if (group.User.photo) {
+    profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
+  } else {
+    profileImage = (<View style={styles.imgIcon} />);
   }
 
   return (
     <View style={styles.feed}>
       <View style={styles.feedContent}>
-        {!min &&
-          <View style={styles.feedTitle}>
-            <TouchableOpacity onPress={() => onPress('profile', group.User.id)}>{profileImage}</TouchableOpacity>
-            <Text style={styles.lightText}>
-              <Text style={styles.name}>
-                {group.User.firstName || group.User.email}
-              </Text>
-              <Text> created a group</Text>
+        <View style={styles.feedTitle}>
+          <TouchableOpacity onPress={() => onPress('profile', group.User.id)}>{profileImage}</TouchableOpacity>
+          <Text style={styles.lightText}>
+            <Text style={styles.name}>
+              {group.User.firstName || group.User.email}
             </Text>
-          </View>
-        }
+            <Text> created a group</Text>
+          </Text>
+        </View>
+
         <TouchableWithoutFeedback onPress={() => onPress('group', group)}>
           <View>
             {image}
@@ -160,46 +133,16 @@ const Group = ({ group, onPress, min, onSharePress }) => {
           </View>
         </TouchableWithoutFeedback>
       </View>
-      {!min &&
-        <View style={styles.feedAction}>
-          <Relation users={group.User.relation} />
-          <View style={styles.verticalDevider} />
-          <View style={{ width: '33.33%', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => onSharePress('group', group)}>
-              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.tabLabel}>Share</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.verticalDevider} />
-          <View style={{ width: '33.33%', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => onPress('group', group)}>
-              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.tabLabel}>Comment</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      }
     </View>
   );
 };
 
-Group.propTypes = {
+Groups.propTypes = {
   group: PropTypes.shape({
-    photo: PropTypes.string,
-    name: PropTypes.string,
-    type: PropTypes.string,
-    user: PropTypes.object,
+    rows: PropTypes.array,
+    count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onSharePress: PropTypes.func,
-  min: PropTypes.bool,
 };
 
-Group.defaultProps = {
-  onSharePress: () => { },
-  min: false,
-};
-
-export default Group;
+export default Groups;
