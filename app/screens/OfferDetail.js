@@ -153,6 +153,17 @@ class OfferDetail extends Component {
     }
   }
 
+  onCommentPress = (id) => {
+    const { navigation } = this.props;
+    navigation.navigate('UserProfile', { profileId: id });
+  }
+
+  onPress = () => {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+    navigation.navigate('UserProfile', { profileId: offer.User.id });
+  }
+
   checkValidation() {
     const errors = [];
     const { comment } = this.state;
@@ -226,7 +237,7 @@ class OfferDetail extends Component {
           <View style={styles.feed}>
             <View style={styles.feedContent}>
               <View style={styles.feedTitle}>
-                {profileImage}
+                <TouchableOpacity onPress={this.onPress}>{profileImage}</TouchableOpacity>
                 <View>
                   <Text style={styles.lightText}>
                     <Text style={styles.name}>
@@ -253,7 +264,7 @@ class OfferDetail extends Component {
               </View>
             </View>
             <Relation users={offer.User.relation} />
-            <OfferComment id={offer.id} />
+            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
           </View>
         </ScrollView>

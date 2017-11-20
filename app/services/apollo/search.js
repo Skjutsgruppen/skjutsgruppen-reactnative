@@ -176,11 +176,11 @@ query search
 
 export const withSearch = graphql(SEARCH, {
   name: 'search',
-  options: ({ fromCoords, toCoords, direction, filters, dates }) => ({
+  options: ({ from, to, direction, filters, dates }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
-      from: fromCoords,
-      to: toCoords,
+      from,
+      to: to.length > 0 ? to : null,
       direction,
       dates,
       filters,

@@ -116,7 +116,7 @@ class List extends Component {
         <Text style={styles.infoText}>{total} {total > 1 ? 'comments' : 'comment'}</Text>
         <FlatList
           data={Comment}
-          renderItem={({ item }) => (<Item comment={item} />)}
+          renderItem={({ item }) => (<Item onPress={this.props.onCommentPress} comment={item} />)}
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0}
           ListFooterComponent={() => this.renderFooter(this.state.loading)}
@@ -138,6 +138,7 @@ List.propTypes = {
   }).isRequired,
   subscribeToNewComments: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
+  onCommentPress: PropTypes.func.isRequired,
 };
 
 export default List;

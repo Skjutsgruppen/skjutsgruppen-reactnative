@@ -11,11 +11,11 @@ const Search = ({ navigation }) => {
   return (
     <SearchResult
       navigation={navigation}
-      from={from}
-      to={to}
+      from={from.coordinates}
+      to={to.coordinates}
       direction={direction}
-      fromCoords={from.coordinates}
-      toCoords={to.coordinates}
+      fromObj={from}
+      toObj={to}
       filters={filters}
       dates={dates}
     />
