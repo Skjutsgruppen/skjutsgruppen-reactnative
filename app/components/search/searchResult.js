@@ -101,6 +101,10 @@ class SearchResult extends Component {
     if (type === 'ask') {
       navigation.navigate('AskDetail', { ask: detail });
     }
+
+    if (type === 'profile') {
+      navigation.navigate('UserProfile', { profileId: detail });
+    }
   };
 
   onSharePress = (isGroup) => {
@@ -146,6 +150,8 @@ class SearchResult extends Component {
 
     return newDate;
   }
+
+  prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
 
   renderHeader = () => (
     <View style={styles.switchViewWrapper}>
@@ -248,7 +254,7 @@ class SearchResult extends Component {
   };
 
   render() {
-    const { from, to, filters, navigation, search } = this.props;
+    const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
 
     if (search.networkStatus === 1) {
       return <Loading />;
@@ -262,7 +268,7 @@ class SearchResult extends Component {
           <BackButton onPress={() => navigation.goBack()} />
         </View>
         <View style={styles.searchContent}>
-          <Text style={styles.bold}>{from.name} - {to.name}</Text>
+          <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
           <Text style={styles.time}>{prettyDate.join(', ')}</Text>
           <View style={styles.suggestionsContainer}>
             <TouchableOpacity onPress={() => this.onFilterSelect('offered')} style={[styles.suggestion, filters.indexOf('offered') > -1 ? styles.selected : {}]}>
@@ -296,16 +302,19 @@ SearchResult.propTypes = {
   }).isRequired,
   dates: PropTypes.arrayOf(PropTypes.string),
   filters: PropTypes.arrayOf(PropTypes.string),
-  from: PropTypes.shape({
+  from: PropTypes.arrayOf(PropTypes.number).isRequired,
+  to: PropTypes.arrayOf(PropTypes.number).isRequired,
+  fromObj: PropTypes.shape({
     coordinates: PropTypes.array,
     name: PropTypes.string,
     countryCode: PropTypes.string,
   }).isRequired,
-  to: PropTypes.shape({
+  toObj: PropTypes.shape({
     coordinates: PropTypes.array,
     name: PropTypes.string,
     countryCode: PropTypes.string,
   }).isRequired,
+  direction: PropTypes.string,
   search: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     networkStatus: PropTypes.number,
@@ -319,6 +328,7 @@ SearchResult.propTypes = {
 SearchResult.defaultProps = {
   dates: [],
   filters: [],
+  direction: '',
 };
 
 export default SearchResult;

@@ -22,6 +22,11 @@ import AddPhoto from '@screens/auth/AddPhoto';
 import SendText from '@screens/auth/sms/SendText';
 import MobileVerified from '@screens/auth/sms/MobileVerified';
 import SearchResult from '@screens/Search';
+import UserProfile from '@screens/profile/UserProfile';
+import EditProfile from '@screens/profile/EditProfile';
+import UserGroups from '@screens/profile/UserGroups';
+import UserFriends from '@screens/profile/UserFriends';
+import UserTrips from '@screens/profile/UserTrips';
 
 import Map from '@screens/Map';
 
@@ -53,6 +58,11 @@ export const Routes = {
   SearchGroup: { screen: SearchGroup, path: 'search/:query' },
   ExploreGroup: { screen: ExploreGroup },
   SearchResult: { screen: SearchResult },
+  UserProfile: { screen: UserProfile },
+  EditProfile: { screen: EditProfile },
+  UserGroups: { screen: UserGroups },
+  UserFriends: { screen: UserFriends },
+  UserTrips: { screen: UserTrips },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

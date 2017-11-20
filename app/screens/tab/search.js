@@ -173,7 +173,6 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      direction: null,
       from: {
         name: '',
         countryCode: '',
@@ -184,8 +183,8 @@ class Search extends Component {
         countryCode: '',
         coordinates: [],
       },
-
-      filters: [],
+      direction: 'anywhere',
+      filters: ['offered', 'wanted', 'public', 'group'],
       markedDates: {},
       dates: [],
       modalVisible: false,
@@ -207,7 +206,7 @@ class Search extends Component {
   onDirectionSelect = (param) => {
     const { direction } = this.state;
     if (direction === param) {
-      this.setState({ direction: null });
+      this.setState({ direction: 'anywhere' });
     } else {
       this.setState({ direction: param });
     }
@@ -264,11 +263,8 @@ class Search extends Component {
     const { navigation } = this.props;
     const { from, to, direction, filters, dates } = this.state;
 
-    if (typeof from.name === 'undefined') {
+    if (from.coordinates.length === 0) {
       Alert.alert('Error!!', 'From is required.');
-      error += 1;
-    } else if (typeof to.name === 'undefined' && direction === '') {
-      Alert.alert('Error!!', 'Destination or direction is required');
       error += 1;
     }
 
@@ -291,15 +287,7 @@ class Search extends Component {
                 defaultValue={this.state.from}
                 currentLocation
                 placeholder="From where I am now"
-                onChangeText={
-                  from => this.setState({
-                    from: {
-                      name: from.name,
-                      countryCode: from.countryCode,
-                      coordinates: [from.lat, from.lng],
-                    },
-                  })
-                }
+                onChangeText={from => this.setState({ from })}
                 style={styles.input}
               />
               <Text style={styles.inputLabel}>From</Text>
@@ -314,15 +302,7 @@ class Search extends Component {
               <GooglePlace
                 placeholder="Destination"
                 defaultValue={this.state.to}
-                onChangeText={
-                  to => this.setState({
-                    to: {
-                      name: to.name,
-                      countryCode: to.countryCode,
-                      coordinates: [to.lat, to.lng],
-                    },
-                  })
-                }
+                onChangeText={to => this.setState({ to })}
                 style={styles.input}
               />
               <Text style={styles.inputLabel}>To</Text>
