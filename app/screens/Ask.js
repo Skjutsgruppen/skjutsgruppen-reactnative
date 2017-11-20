@@ -82,7 +82,19 @@ class Ask extends Component {
 
     this.state = {
       isReturnedTrip: false,
-      defaultTrip: { start: {}, end: {} },
+      defaultTrip: {
+        start: {
+          name: '',
+          countryCode: '',
+          coordinates: [],
+        },
+        end: {
+          name: '',
+          countryCode: '',
+          coordinates: [],
+        },
+        dates: [],
+      },
       comment: {},
       photo: {},
       trip: {},

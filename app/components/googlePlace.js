@@ -1,5 +1,4 @@
 /* global fetch, navigator */
-
 import React, { PureComponent } from 'react';
 import { Alert, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -35,16 +34,26 @@ const styles = StyleSheet.create({
 class GooglePlacesInput extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ listViewDisplayed: 'auto', value: {}, defaultValue: '', currentLocationLoading: false });
+    this.state = ({
+      listViewDisplayed: 'auto',
+      value: {
+        name: '',
+        countryCode: '',
+        coordinates: [],
+      },
+      defaultValue: '',
+      currentLocationLoading: false,
+      currentLocation: {},
+    });
   }
 
   componentWillMount() {
     const { defaultValue } = this.props;
-    this.setState({ defaultValue });
+    this.setState({ value: defaultValue, defaultValue: defaultValue.name });
   }
 
   componentWillReceiveProps({ defaultValue }) {
-    this.setState({ defaultValue });
+    this.setState({ value: defaultValue, defaultValue: defaultValue.name });
   }
 
   onFocus = () => {
@@ -53,7 +62,7 @@ class GooglePlacesInput extends PureComponent {
 
   onBlur = () => {
     this.setState({ listViewDisplayed: false }, () => {
-      if (!this.state.value.name) {
+      if (this.state.value.coordinates.length === 0) {
         this.setState({ defaultValue: '' });
       }
     });
@@ -63,8 +72,7 @@ class GooglePlacesInput extends PureComponent {
     const value = {
       name: details.name,
       countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-      lat: details.geometry.location.lat,
-      lng: details.geometry.location.lng,
+      coordinates: [details.geometry.location.lat, details.geometry.location.lng],
     };
 
     this.setState({ value, defaultValue: value.name }, () => {
@@ -72,7 +80,11 @@ class GooglePlacesInput extends PureComponent {
     });
   }
 
-  onChangeText = text => this.setState({ defaultValue: text })
+  onChangeText = (text) => {
+    this.setState({ value: { name: text, countryCode: '', coordinates: [] }, defaultValue: text }, () => {
+      this.props.onChangeText(this.state.value);
+    });
+  }
 
   currentLocationIcon = () => {
     if (this.state.currentLocationLoading) {
@@ -90,6 +102,19 @@ class GooglePlacesInput extends PureComponent {
 
   currentLocation = () => {
     this.setState({ currentLocationLoading: true });
+    const { currentLocation } = this.state;
+
+    if (typeof currentLocation.name !== 'undefined') {
+      this.setState({
+        value: currentLocation,
+        defaultValue: currentLocation.name,
+        currentLocationLoading: false,
+      },
+      () => this.props.onChangeText(currentLocation),
+      );
+
+      return;
+    }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -102,8 +127,13 @@ class GooglePlacesInput extends PureComponent {
               coordinates: [position.coords.latitude, position.coords.longitude],
             };
 
-            this.setState({ value, defaultValue: value.name, currentLocationLoading: false },
-              () => this.props.onChangeText(value),
+            this.setState({
+              value,
+              currentLocation: value,
+              defaultValue: value.name,
+              currentLocationLoading: false,
+            },
+            () => this.props.onChangeText(value),
             );
           })
           .catch((error) => {
@@ -201,13 +231,17 @@ GooglePlacesInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
   currentLocation: PropTypes.bool,
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.shape(({
+    name: PropTypes.string,
+    countryCode: PropTypes.string,
+    coordinates: PropTypes.array,
+  })).isRequired,
   children: PropTypes.node,
 };
 
 GooglePlacesInput.defaultProps = {
   currentLocation: false,
-  defaultValue: '',
+  defaultValue: { name: '', countryCode: '', coordinates: [] },
   children: null,
 };
 
