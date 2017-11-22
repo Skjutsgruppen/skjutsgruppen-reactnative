@@ -61,49 +61,84 @@ mutation group
 }
 `;
 const EXPLORE_GROUPS = gql`
-query exploreGroups($offset: Int, $limit: Int){
-  exploreGroups(offset: $offset, limit: $limit){
-  Group {
-    id
-    outreach
-    name
-    description
-    type
-    photo
-    User {
-      id
-      email
-      firstName
-      lastName
-      photo
-      relation {
-        id,
-        email,
-        firstName
-        photo
+query exploreGroups($from: [Float], $filters: ExploreGroupFilterEnum, $offset: Int, $limit: Int){
+  exploreGroups(
+    input: {
+      from: $from
+      filters: $filters
+      offset: $offset
+      limit: $limit
+    }
+  )
+  {
+    rows {
+      id 
+      name 
+      photo 
+      description 
+      User {
+        id 
+        email 
+        photo 
+        phoneNumber 
+        firstName 
+        lastName
+        relation {
+          id
+          email
+          photo
+          firstName
+          lastName
+        }
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      stopsIds 
+      TripStart {
+        name 
+        countryCode 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        countryCode 
+        coordinates
+      } 
+      Stops {
+        name 
+        countryCode 
+        coordinates
+      } 
+      type 
+      outreach 
+      GroupMembers {
+        id 
+        email 
+        photo 
+        phoneNumber 
+        firstName 
+        lastName
+      } 
+      url 
+      Comments {
+        id 
+        tripId 
+        groupId 
+        text 
+        date 
+        User {
+          id 
+          email 
+          photo 
+          phoneNumber 
+          firstName 
+          lastName
+        }
       }
-    }
-    TripStart {
-      name
-      coordinates
-    }
-    TripEnd {
-      name
-      coordinates
-    }
-    Stops {
-      name
-      coordinates
-    }
-    country
-    county
-    municipality
-    locality
-    GroupMembers{
-      id
     } 
-  }
-  total
+    count
   }
 }
 `;
@@ -111,47 +146,74 @@ query exploreGroups($offset: Int, $limit: Int){
 export const SEARCH_GROUPS = gql`
 query searchGroup($keyword: String!, $offset: Int, $limit: Int){
   searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
-   Group {
-    id
-    outreach
-    name
-    description
-    type
-    photo
-    User {
+    rows {
       id
-      email
-      firstName
-      lastName
+      name
       photo
-      relation {
-        id,
-        email,
-        firstName
+      description
+      User {
+        id
+        email
         photo
+        phoneNumber
+        firstName
+        lastName
+        relation {
+          id
+          email
+          photo
+          firstName
+          lastName
+        }
+      }
+      country
+      county 
+      municipality
+      locality
+      stopsIds
+      TripStart {
+        name
+        countryCode
+        coordinates
+      } 
+      TripEnd {
+        name
+        countryCode
+        coordinates
+      }
+      Stops {
+        name
+        countryCode
+        coordinates
+      } 
+      type 
+      outreach 
+      GroupMembers {
+        id 
+        email 
+        photo 
+        phoneNumber 
+        firstName 
+        lastName
+      } 
+      url 
+      Comments {
+        id 
+        tripId 
+        groupId 
+        text 
+        date 
+        User {
+          id 
+          email 
+          photo 
+          phoneNumber 
+          firstName 
+          lastName
+        }
       }
     }
-    TripStart {
-      name
-      coordinates
-    }
-    TripEnd {
-      name
-      coordinates
-    }
-    Stops {
-      name
-      coordinates
-    }
-    country
-    county
-    municipality
-    locality
-    GroupMembers{
-      id
-    }
-   }
-   total
+    count
   }
 }
 `;
@@ -195,10 +257,15 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
 
 export const withExploreGroup = graphql(EXPLORE_GROUPS, {
   name: 'exploreGroups',
-  options: {
+  options: ({ from, filters }) => ({
     notifyOnNetworkStatusChange: true,
-    variables: { offset: 0, limit: 5 },
-  },
+    variables: {
+      from,
+      filters,
+      offset: 0,
+      limit: 5,
+    },
+  }),
   props: ({ exploreGroups }) => ({ exploreGroups }),
 });
 

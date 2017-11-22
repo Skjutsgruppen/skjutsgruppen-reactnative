@@ -54,7 +54,7 @@ class SearchGroupResult extends PureComponent {
       return <Text>Error: {searchGroups.error.message}</Text>;
     }
 
-    const { searchGroup: { Group, total } } = searchGroups;
+    const { searchGroup: { rows: Group, count } } = searchGroups;
 
 
     return (
@@ -72,7 +72,7 @@ class SearchGroupResult extends PureComponent {
         onEndReachedThreshold={0.5}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          if (searchGroups.loading || Group.length >= total) return;
+          if (searchGroups.loading || Group.length >= count) return;
 
           searchGroups.fetchMore({
             variables: { keyword, offset: Group.length },
@@ -81,11 +81,11 @@ class SearchGroupResult extends PureComponent {
                 return previousResult;
               }
               const prevExploreGroups = previousResult.searchGroup;
-              const updatedGroup = previousResult.searchGroup.Group.concat(
-                fetchMoreResult.searchGroup.Group,
+              const updatedGroup = previousResult.searchGroup.rows.concat(
+                fetchMoreResult.searchGroup.rows,
               );
 
-              return { searchGroup: { ...prevExploreGroups, ...{ Group: updatedGroup } } };
+              return { searchGroup: { ...prevExploreGroups, ...{ rows: updatedGroup } } };
             },
           });
         }}
@@ -111,8 +111,8 @@ SearchGroupResult.propTypes = {
     total: PropTypes.numeric,
     networkStatus: PropTypes.number,
     searchGroup: PropTypes.shape({
-      Groups: PropTypes.arrayOf(PropTypes.object),
-      total: PropTypes.number,
+      rows: PropTypes.arrayOf(PropTypes.object),
+      count: PropTypes.number,
     }),
   }).isRequired,
   keyword: PropTypes.string.isRequired,

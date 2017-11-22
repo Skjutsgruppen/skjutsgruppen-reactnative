@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 
 const createTrip = gql`
 mutation createTrip(
-  $comment:String, 
+  $description:String, 
   $type:String!,
   $tripStart:PlaceInput!,
   $tripEnd:PlaceInput!,
@@ -17,7 +17,7 @@ mutation createTrip(
   $share:ShareInput,
 ) {
   createTrip( input :{
-    comment : $comment
+    description : $description
     type : $type
     TripStart : $tripStart
     TripEnd : $tripEnd
@@ -30,7 +30,7 @@ mutation createTrip(
     flexibility : $flexibility
     share : $share
   }) {
-    comment 
+    description 
     type 
     TripStart {
       name
@@ -62,7 +62,7 @@ mutation createTrip(
 export const submitOffer = graphql(createTrip, {
   props: ({ mutate }) => ({
     submit: ({
-      comment,
+      description,
       tripStart,
       tripEnd,
       photo,
@@ -75,7 +75,7 @@ export const submitOffer = graphql(createTrip, {
       share,
     }) => mutate({
       variables: {
-        comment,
+        description,
         type: 'offered',
         tripStart,
         tripEnd,

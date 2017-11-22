@@ -117,7 +117,7 @@ const Ask = ({ ask, onPress, onSharePress }) => {
         <TouchableWithoutFeedback onPress={() => onPress('ask', ask)}>
           <View>
             <View style={styles.info}>
-              <Text style={styles.messageText}>{ask.comment}</Text>
+              <Text style={styles.messageText}>{ask.description}</Text>
             </View>
             {image}
           </View>
