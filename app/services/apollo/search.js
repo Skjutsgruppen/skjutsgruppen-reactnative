@@ -111,7 +111,7 @@ query search
       } 
       ...on Trip {
         id 
-        comment 
+        description 
         type 
         TripStart { 
           name 

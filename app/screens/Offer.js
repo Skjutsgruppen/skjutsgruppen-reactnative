@@ -5,7 +5,7 @@ import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 
 import Tab from '@components/tab';
-import Comment from '@components/offer/comment';
+import Description from '@components/offer/description';
 import Trip from '@components/offer/trip';
 import Date from '@components/offer/date';
 import Seats from '@components/offer/seats';
@@ -76,7 +76,7 @@ class Offer extends Component {
         },
         dates: [],
       },
-      comment: {},
+      description: {},
       trip: {},
       dates: [],
       seat: 1,
@@ -103,14 +103,14 @@ class Offer extends Component {
     }
   }
 
-  onCommentNext = (comment) => {
-    if (comment.text === '') {
-      Alert.alert('Error!!', 'Comment is required');
+  onDescriptionNext = (description) => {
+    if (description.text === '') {
+      Alert.alert('Error!!', 'Description is required');
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(1);
       delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ comment, completedTabs, disabledTabs, activeTab: 2 });
+      this.setState({ description, completedTabs, disabledTabs, activeTab: 2 });
     }
   };
 
@@ -189,13 +189,13 @@ class Offer extends Component {
   }
 
   createTrip() {
-    const { comment, trip, date, seat, share } = this.state;
+    const { description, trip, date, seat, share } = this.state;
 
     const rideData = {
-      comment: comment.text,
+      description: description.text,
       tripStart: trip.start,
       tripEnd: trip.end,
-      photo: comment.photo,
+      photo: description.photo,
       stops: trip.stops,
       returnTrip: trip.isReturning,
       dates: date.dates,
@@ -263,7 +263,7 @@ class Offer extends Component {
           {this.header()}
           <View style={styles.tabContainer}>
             <Tab
-              label="Comment"
+              label="Description"
               disabled={disabledTabs.indexOf(1) > -1}
               complete={completedTabs.indexOf(1) > -1}
               active={activeTab === 1}
@@ -294,7 +294,7 @@ class Offer extends Component {
             />
           </View>
           <View>
-            {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
+            {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
             {(activeTab === 2) && <Trip
               isReturnTrip={isReturnedTrip}
               start={defaultTrip.start}
