@@ -5,6 +5,7 @@ import { Loading } from '@components/common';
 import GroupItem from '@components/feed/card/group';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -112,7 +113,7 @@ class ExploreGroupsResult extends Component {
           from: [region.latitude, region.longitude],
           filter,
         });
-        this.setState({ filterTitle: 'Groups Near You', filterType: 'nearby' });
+        this.setState({ filterTitle: trans('group.groups_near_you'), filterType: 'nearby' });
       }
     }
 
@@ -122,7 +123,7 @@ class ExploreGroupsResult extends Component {
         filter,
         order: 'asc',
       });
-      this.setState({ filterTitle: 'A to Z', filterType: 'name' });
+      this.setState({ filterTitle: trans('group.a_to_z'), filterType: 'name' });
     }
 
     if (filter === 'popular') {
@@ -130,7 +131,7 @@ class ExploreGroupsResult extends Component {
         from: null,
         filter: 'popular',
       });
-      this.setState({ filterTitle: 'Popular Groups', filterType: 'popular' });
+      this.setState({ filterTitle: trans('group.popular_groups'), filterType: 'popular' });
     }
   }
 
@@ -272,7 +273,7 @@ class ExploreGroupsResult extends Component {
                 style={[styles.filterLabelWrapper, this.state.filterType === 'nearby' ? styles.activeFilterLabelWrapper : []]}
               >
                 <Image source={require('@icons/icon_location_purple.png')} style={styles.icon} />
-                <Text style={styles.filterLabel}>Near You</Text>
+                <Text style={styles.filterLabel}>{trans('group.near_you')}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -282,7 +283,7 @@ class ExploreGroupsResult extends Component {
               <View
                 style={[styles.filterLabelWrapper, this.state.filterType === 'popular' ? styles.activeFilterLabelWrapper : []]}
               >
-                <Text style={styles.filterLabel}>Popular</Text>
+                <Text style={styles.filterLabel}>{trans('group.popular')}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -292,7 +293,7 @@ class ExploreGroupsResult extends Component {
               <View
                 style={[styles.filterLabelWrapper, this.state.filterType === 'name' ? styles.activeFilterLabelWrapper : []]}
               >
-                <Text style={styles.filterLabel}>A to Z</Text>
+                <Text style={styles.filterLabel}>{trans('group.a_to_z')}</Text>
               </View>
             </TouchableOpacity>
           </View>

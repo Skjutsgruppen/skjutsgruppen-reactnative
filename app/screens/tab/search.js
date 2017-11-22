@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import SearchIcon from '@icons/ic_search.png';
 import SearchIconActive from '@icons/ic_search_active.png';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   container: {
@@ -274,18 +275,18 @@ class Search extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Search</Text>
+        <Text style={styles.title}>{trans('global.search')}</Text>
         <ScrollView keyboardShouldPersistTaps="handled" style={styles.scrollArea}>
           <View style={styles.locationWrapper}>
             <View style={styles.inputWrapper}>
               <GooglePlace
                 defaultValue={this.state.from}
                 currentLocation
-                placeholder="From where I am now"
+                placeholder={trans('search.from_where_i_am_now')}
                 onChangeText={from => this.setState({ from })}
                 style={styles.input}
               />
-              <Text style={styles.inputLabel}>From</Text>
+              <Text style={styles.inputLabel}>{trans('global.from')}</Text>
             </View>
             <View style={styles.inputWrapper}>
               <View style={styles.divider} />
@@ -295,36 +296,36 @@ class Search extends Component {
             </View>
             <View style={styles.inputWrapper}>
               <GooglePlace
-                placeholder="Destination"
+                placeholder={trans('global.destination')}
                 defaultValue={this.state.to}
                 onChangeText={to => this.setState({ to })}
                 style={styles.input}
               />
-              <Text style={styles.inputLabel}>To</Text>
+              <Text style={styles.inputLabel}>{trans('global.to')}</Text>
             </View>
           </View>
-          <Text style={styles.label}>Or choose:</Text>
+          <Text style={styles.label}>{trans('search.or_choose')}:</Text>
           <View style={styles.locationSuggestions}>
             <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>Anywhere</Text>
+              <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>North</Text>
+              <Text style={styles.suggestionText}>{trans('global.north')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>South</Text>
+              <Text style={styles.suggestionText}>{trans('global.south')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>East</Text>
+              <Text style={styles.suggestionText}>{trans('global.east')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>West</Text>
+              <Text style={styles.suggestionText}>{trans('global.west')}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.dateRow}>
-            <Text style={styles.dateLabel}>{dates.length === 0 ? 'All dates and times' : (prettyDate).join(', ')}</Text>
+            <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
             <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-              <Text style={styles.changeButton}>Change</Text>
+              <Text style={styles.changeButton}>{trans('search.change')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -359,7 +360,7 @@ class Search extends Component {
               }}
             />
           </Modal>
-          <Text style={styles.label}>Show results from</Text>
+          <Text style={styles.label}>{trans('search.show_results_from')}</Text>
           <View style={styles.resultsFrom}>
             <TouchableOpacity
               onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
@@ -397,12 +398,12 @@ class Search extends Component {
             style={styles.searchBtn}
             onPress={this.renderSearch}
           >
-            Search
+            {trans('search.search')}
           </CustomButton>
           <View style={styles.exploreGroupWrapper}>
             <TouchableOpacity style={styles.exploreGroup}>
               <Image source={require('@icons/icon_telescope.png')} style={styles.telescope} />
-              <Text style={styles.exploreGroupTitle}>Explore existing groups</Text>
+              <Text style={styles.exploreGroupTitle}>{trans('search.explore_existing_groups')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

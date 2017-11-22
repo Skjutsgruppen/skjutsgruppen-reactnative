@@ -8,6 +8,7 @@ import {
   NOTIFICATION_TYPE_JOINED_GROUP,
   NOTIFICATION_TYPE_COMMENT,
 } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   Wrapper: {

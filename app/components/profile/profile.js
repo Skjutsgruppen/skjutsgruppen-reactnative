@@ -13,6 +13,7 @@ import {
   RELATIONSHIP_TYPE_INCOMING,
   RELATIONSHIP_TYPE_OUTGOING,
 } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -178,7 +179,7 @@ class Profile extends Component {
   getPrefix = () => {
     const { data: { profile } } = this.props;
 
-    return this.isCurrentUser() ? 'My' : `${profile.firstName}'s`;
+    return this.isCurrentUser() ? trans('profile.my') : `${profile.firstName}'s`;
   }
 
   redirect = (type) => {
@@ -265,7 +266,7 @@ class Profile extends Component {
         bgColor={Colors.background.green}
         onPress={this.sendRequest}
       >
-        {`Ask to be ${profile.firstName}'s friend`}
+        {trans('profile.ask_to_be')} {` ${profile.firstName}`} {trans('profile.s_friend')}
       </CustomButton>
     );
   }
@@ -353,34 +354,34 @@ class Profile extends Component {
             <View style={styles.hexagon}>
               <Text style={styles.experienceCount}>-</Text>
             </View>
-            <Text style={styles.activityLabel}>Experiences</Text>
+            <Text style={styles.activityLabel}>{trans('profile.Experiences')}</Text>
           </View>
           <View>
             <Image
               source={require('@assets/icons/icon_garden_line.png')}
               style={[styles.hexagon, styles.garden]}
             />
-            <Text style={styles.activityLabel}>Supporter</Text>
+            <Text style={styles.activityLabel}>{trans('profile.supporter')}</Text>
           </View>
         </View>
         <View style={styles.activityWrapper}>
           <View style={styles.activity}>
             <Text style={styles.count}>{profile.totalOffered}</Text>
-            <Text style={styles.activityLabel}>Offered {'\n'} rides</Text>
+            <Text style={styles.activityLabel}>{trans('profile.offered')} {'\n'} {trans('profile.rides')}</Text>
           </View>
           <View style={styles.activity}>
             <Text style={styles.count}>{profile.totalAsked}</Text>
-            <Text style={styles.activityLabel}>Asked {'\n'} for rides</Text>
+            <Text style={styles.activityLabel}>{trans('profile.asked')} {'\n'} {trans('profile.for_rides')}</Text>
           </View>
           <View style={styles.activity}>
             <Text style={styles.count}>-</Text>
-            <Text style={styles.activityLabel}>Talked {'\n'} about</Text>
+            <Text style={styles.activityLabel}>{trans('profile.talked')} {'\n'} {trans('profile.about')}</Text>
           </View>
         </View>
         {!this.isCurrentUser() && this.hasRelation() &&
           <View>
             <View style={styles.connectionLabel}>
-              <Text style={styles.lightText}>This is how you know {profile.firstName}</Text>
+              <Text style={styles.lightText}>{trans('profile.this_is_how_you_know')} {profile.firstName}</Text>
               <TouchableOpacity>
                 <Image source={require('@assets/icons/icon_chevron_down.png')} style={styles.chevronDown} />
               </TouchableOpacity>
@@ -393,25 +394,25 @@ class Profile extends Component {
         {this.friendRelationButtion()}
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('experiences')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} experiences</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} {trans('profile.experiences')}</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('ride')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} ride</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} {trans('profile.ride')}</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('groups')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} groups</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} {trans('profile.groups')}</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={[styles.listWrapper, styles.lastListWrapper]}>
           <TouchableOpacity onPress={() => this.redirect('friends')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} friends</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} {trans('profile.friends')}</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>

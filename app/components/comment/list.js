@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Item from '@components/comment/item';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -86,7 +87,7 @@ class List extends Component {
 
     return (
       <TouchableOpacity onPress={this.loadMore} style={styles.loadMoreBtn}>
-        <Text style={styles.loadMoreText}>Load More...</Text>
+        <Text style={styles.loadMoreText}>{trans('global.load_more')}</Text>
       </TouchableOpacity>
     );
   };
@@ -108,7 +109,7 @@ class List extends Component {
 
     if (rows && rows.length < 1) {
       return (
-        <Text style={styles.infoText}>No Comment</Text>
+        <Text style={styles.infoText}>{trans('global.no_comment')}</Text>
       );
     }
 

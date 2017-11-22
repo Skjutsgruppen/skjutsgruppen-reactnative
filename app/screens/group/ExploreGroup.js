@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { withExploreGroup } from '@services/apollo/group';
 import Colors from '@theme/colors';
 import ExploreGroupResult from '@components/group/exploreGroupList';
+import { trans } from '@lang/i18n';
 
 const ExploreGroupList = withExploreGroup(ExploreGroupResult);
 
@@ -81,7 +82,7 @@ class ExploreGroup extends PureComponent {
             <TextInput
               onChangeText={searchQuery => this.setState({ searchQuery })}
               keyboardType="web-search"
-              placeholder="Search for groups"
+              placeholder={trans('group.search_for_groups')}
               style={styles.searcchField}
               underlineColorAndroid="transparent"
               returnKeyType="search"

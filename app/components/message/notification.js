@@ -8,6 +8,7 @@ import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
 import { connect } from 'react-redux';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   section: {
@@ -75,7 +76,7 @@ class NewNotification extends PureComponent {
   renderNotification = () => {
     const { notifications, navigation, filters } = this.props;
 
-    let render = (<Text style={styles.emptyMessage}>No Messages</Text>);
+    let render = (<Text style={styles.emptyMessage}>{trans('message.no_message')}</Text>);
 
     if (notifications.count > 0) {
       render = notifications.rows.map(message => (
@@ -104,7 +105,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} MESSAGES
+          {filters.toUpperCase()} {trans('message.messages')}
         </Text>
         {this.renderNotification()}
         {this.loadMore()}

@@ -157,8 +157,6 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
     profileImage = (<View style={styles.imgIcon} />);
   }
 
-  console.log(ask);
-
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableWithoutFeedback

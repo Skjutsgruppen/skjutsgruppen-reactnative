@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   button: {
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
 const CloseButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
     <Image source={require('@icons/icon_chevron_down.png')} style={styles.icon} />
-    <Text style={styles.text}>Close</Text>
+    <Text style={styles.text}>{trans('global.close')}</Text>
   </TouchableOpacity>
 );
 

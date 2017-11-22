@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import Radio from '@components/common/radio';
 import CustomButton from '@components/common/customButton';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -59,18 +60,17 @@ class Stretch extends Component {
     const { outreach } = this.state;
     return (
       <View>
-        <Text style={styles.title}>Stretch</Text>
+        <Text style={styles.title}>{trans('addGroup.stretch')}</Text>
         <Text style={styles.text}>
-          Do your group have a specific stretch, good for commuting from point A to point B, or are
-          you going different stretches?
+          {trans('addGroup.have_specific_stretch')}
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={this.setRouteType} label="Specific stretch" checked={outreach === STRETCH_TYPE_ROUTE} />
-          <Radio onPress={this.setAreaType} label="Different stretches" checked={outreach === STRETCH_TYPE_AREA} />
+          <Radio onPress={() => this.setStretchType('route')} label={trans('addGroup.specific_stretch')} checked={outreach === 'route'} />
+          <Radio onPress={() => this.setStretchType('area')} label={trans('addGroup.different_stretches')} checked={outreach === 'area'} />
         </View>
         <View style={styles.buttonWrapper}>
-          <CustomButton onPress={this.onPress} bgColor={Colors.background.darkCyan}>
-            Next
+          <CustomButton onPress={() => onNext(outreach)} bgColor={Colors.background.darkCyan}>
+            {trans('global.next')}
           </CustomButton>
         </View>
       </View>

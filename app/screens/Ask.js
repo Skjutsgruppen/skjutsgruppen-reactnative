@@ -14,6 +14,7 @@ import { Loading, Wrapper, Container } from '@components/common';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import CustomButton from '@components/common/customButton';
+import { trans } from '@lang/i18n';
 import { submitAsk } from '@services/apollo/ask';
 import Colors from '@theme/colors';
 
@@ -240,15 +241,15 @@ class Ask extends Component {
       return (
         <View style={styles.returnHeader}>
           <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
-          <Text style={styles.mainTitle}>Return ride</Text>
+          <Text style={styles.mainTitle}>{trans('trip.return_ride')}</Text>
           <Text style={styles.returnText}>
-            Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
+            {trans('trip.return_ride_of_your_offered_ride')} {this.state.defaultTrip.end.name} {trans('trip.on')} {this.state.defaultTrip.dates.join(', ')}
           </Text>
         </View>
       );
     }
 
-    return (<Text style={styles.mainTitle}>Ask for a ride</Text>);
+    return (<Text style={styles.mainTitle}>{trans('trip.ask_for_a_ride')}</Text>);
   }
 
   renderFinish() {
@@ -293,38 +294,38 @@ class Ask extends Component {
         <View style={styles.backButtonWrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
-            <Text style={styles.backText}>Back</Text>
+            <Text style={styles.backText}>{trans('global.back')}</Text>
           </TouchableOpacity>
         </View>
         <Container bgColor="#f3f3ed">
           {this.header()}
           <View style={styles.tabContainer}>
             <Tab
-              label="Description"
+              label={trans('trip.description')}
               disabled={disabledTabs.indexOf(1) > -1}
               complete={completedTabs.indexOf(1) > -1}
               active={activeTab === 1}
             />
             <Tab
-              label="Photo"
+              label={trans('trip.photo')}
               disabled={disabledTabs.indexOf(2) > -1}
               complete={completedTabs.indexOf(2) > -1}
               active={activeTab === 2}
             />
             <Tab
-              label="Trip"
+              label={trans('trip.trip')}
               disabled={disabledTabs.indexOf(3) > -1}
               complete={completedTabs.indexOf(3) > -1}
               active={activeTab === 3}
             />
             <Tab
-              label="Date"
+              label={trans('trip.date')}
               disabled={disabledTabs.indexOf(4) > -1}
               complete={completedTabs.indexOf(4) > -1}
               active={activeTab === 4}
             />
             <Tab
-              label="Share"
+              label={trans('trip.share')}
               disabled={disabledTabs.indexOf(5) > -1}
               complete={completedTabs.indexOf(5) > -1}
               active={activeTab === 5}

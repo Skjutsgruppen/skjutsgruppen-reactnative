@@ -4,6 +4,7 @@ import Colors from '@theme/colors';
 import { Wrapper, NavBar, Loading } from '@components/common';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
+import LangService from '@services/lang';
 import AuthAction from '@redux/actions/auth';
 import { withContacts } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
@@ -11,6 +12,8 @@ import { connect } from 'react-redux';
 import Contacts from 'react-native-contacts';
 import { FBLoginManager } from 'react-native-facebook-login';
 import LinkFacebook from '@components/facebook/link';
+import I18n from 'react-native-i18n';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -48,6 +51,13 @@ class Settings extends Component {
   onChangePassword = () => {
     const { navigation } = this.props;
     navigation.navigate('ChangePassword');
+  }
+
+  setLanguage = (language) => {
+    this.setState({ language });
+    LangService.setLanguage(language).then(() => {
+      I18n.locale = language;
+    });
   }
 
   goBack = () => {

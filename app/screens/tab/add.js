@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
-
 import AddIcon from '@icons/ic_add.png';
 import AddIconActive from '@icons/ic_add_active.png';
+import TabIcon from '@components/tabIcon';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -96,7 +97,7 @@ class Add extends Component {
   render() {
     return (
       <Wrapper bgColor="#edec38">
-        <Text style={styles.title}>Add</Text>
+        <Text style={styles.title}>{trans('add.add')}</Text>
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
             <TouchableOpacity
@@ -106,7 +107,7 @@ class Add extends Component {
               <Text
                 style={styles.actionLabel}
               >
-                Offer a ride
+                {trans('add.offer_a_ride')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -118,7 +119,7 @@ class Add extends Component {
               <Text
                 style={styles.actionLabel}
               >
-                Ask for a ride
+                {trans('add.ask_a_ride')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -132,7 +133,7 @@ class Add extends Component {
                 accessibilityLabel="Go to next form"
                 style={styles.actionLabel}
               >
-                Add a new group
+                {trans('add.add_a_group')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -140,10 +141,10 @@ class Add extends Component {
         <Image source={require('@icons/icon_telescope.png')} style={styles.telescope} />
         <View style={styles.explore}>
           <Text style={styles.exploreText}>
-            Want to explore existing groups?
+            {trans('add.want_to_explore_existing_group')}
           </Text>
           <TouchableOpacity onPress={this.redirectToExploreGroup} style={styles.exploreButton}>
-            <Text style={styles.exploreButtonText}>Click here</Text>
+            <Text style={styles.exploreButtonText}>{trans('add.click_here')}</Text>
           </TouchableOpacity>
         </View>
       </Wrapper>

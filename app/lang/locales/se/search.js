@@ -1,0 +1,16 @@
+export const search = {
+  from_where_i_am_now: 'Varifrån jag är nu',
+  or_choose: 'Eller välj',
+  all_dates_and_times: 'Alla datum och tider',
+  change: 'Byta',
+  show_results_from: 'Visa resultat från',
+  offered: 'Erbjuds',
+  asked_for: 'Bad om',
+  public_transport: 'Kollektivtrafik',
+  groups: 'Grupper',
+  search: 'Sök',
+  explore_existing_groups: 'Utforska befintliga grupper',
+  cards: 'Kort',
+  list: 'Lista',
+  found: 'hittades',
+};

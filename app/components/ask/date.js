@@ -5,6 +5,7 @@ import Moment from 'moment';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 function pad(n, width = 2, padString = '0') {
   const num = String(n);
@@ -188,13 +189,13 @@ class Date extends Component {
           />
         </View>
         <View style={styles.recurringRide}>
-          <Text style={styles.recurringTitle}>Recurring ride?</Text>
+          <Text style={styles.recurringTitle}>{trans('trip.recurring_ride')}</Text>
           <Text style={styles.text}>
-            Place more blue balls in the calendar the dates you are doing this trip
-            again (click on balls to remove).</Text>
+            {trans('trip.place_more_blue_balls_in_the_calendar')}
+          </Text>
         </View>
 
-        <Text style={styles.title}>Time</Text>
+        <Text style={styles.title}>{trans('trip.time')}</Text>
         <View style={styles.inputContainer}>
           <View style={styles.inputWrapper}>
             <Picker
@@ -202,7 +203,7 @@ class Date extends Component {
               selectedValue={h}
             >
               <Picker.Item
-                label={'Hour'}
+                label={trans('trip.hour')}
                 value={'00'}
               />
               {this.renderHoursOptions()}
@@ -214,7 +215,7 @@ class Date extends Component {
               selectedValue={m}
             >
               <Picker.Item
-                label={'Minute'}
+                label={trans('trip.minute')}
                 value={'00'}
               />
               {this.renderMinutesOptions()}
@@ -222,7 +223,7 @@ class Date extends Component {
           </View>
         </View>
 
-        <Text style={styles.title}>How Flexible are you?</Text>
+        <Text style={styles.title}>{trans('trip.how_flexible_are_you')}</Text>
         <View style={styles.inputContainer}>
           <View style={styles.inputWrapper}>
             <Picker
@@ -233,10 +234,10 @@ class Date extends Component {
             </Picker>
           </View>
           <View style={styles.inputWrapper}>
-            <Text style={styles.flexibleInput}>Minutes</Text>
+            <Text style={styles.flexibleInput}>{trans('trip.minutes')}</Text>
           </View>
           <View style={styles.inputWrapper}>
-            <Text style={styles.flexibleInput}>Later</Text>
+            <Text style={styles.flexibleInput}>{trans('trip.later')}</Text>
           </View>
         </View>
         <CustomButton
@@ -244,7 +245,7 @@ class Date extends Component {
           bgColor={Colors.background.darkCyan}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
       </View>
     );

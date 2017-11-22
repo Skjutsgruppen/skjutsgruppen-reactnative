@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
 import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 484;
 const profilePicSize = 60;

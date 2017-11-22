@@ -6,6 +6,7 @@ import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -106,7 +107,7 @@ const item = (trip, navigation) => (
 );
 
 const Ride = ({ trips, navigation }) => {
-  let render = (<Text style={styles.emptyMessage}>No Ride</Text>);
+  let render = (<Text style={styles.emptyMessage}>{trans('message.no_ride')}</Text>);
 
   if (trips.count > 0) {
     render = trips.rows.map(trip => item(trip, navigation));
@@ -123,7 +124,7 @@ const Ride = ({ trips, navigation }) => {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>
-        {('Your active rides'.toUpperCase())}
+        {trans('message.your_active_rides')}
       </Text>
       {render}
     </View>

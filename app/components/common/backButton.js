@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   button: {
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
 const BackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
     <Image source={require('@icons/icon_back.png')} style={styles.icon} />
-    <Text style={styles.text}>Back</Text>
+    <Text style={styles.text}>{trans('global.back')}</Text>
   </TouchableOpacity>
 );
 
