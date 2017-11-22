@@ -57,7 +57,7 @@ query getFeed($offset: Int, $limit: Int) {
       Trip {
         id
         type
-        comment
+        description
         seats
         User {
           id

@@ -6,7 +6,7 @@ query nearByTrips($from:[Float]!) {
   nearByTrips (input:{from:$from}){
     id
     type
-    comment
+    description
     seats
     User {
       id

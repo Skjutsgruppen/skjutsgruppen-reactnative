@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } from 'react-native';
 import Tab from '@components/tab';
 import PropTypes from 'prop-types';
-import Comment from '@components/ask/comment';
+import Description from '@components/ask/description';
 import Trip from '@components/offer/trip';
 import Date from '@components/ask/date';
 import Photo from '@components/ask/photo';
@@ -95,7 +95,7 @@ class Ask extends Component {
         },
         dates: [],
       },
-      comment: {},
+      description: {},
       photo: {},
       trip: {},
       dates: [],
@@ -118,14 +118,14 @@ class Ask extends Component {
     }
   }
 
-  onCommentNext = (comment) => {
-    if (comment.text === '') {
-      Alert.alert('Error!!', 'Comment is required');
+  onDescriptionNext = (description) => {
+    if (description.text === '') {
+      Alert.alert('Error!!', 'Description is required');
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(1);
       delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ comment, completedTabs, disabledTabs, activeTab: 2 });
+      this.setState({ description, completedTabs, disabledTabs, activeTab: 2 });
     }
   }
 
@@ -202,9 +202,9 @@ class Ask extends Component {
   }
 
   createTrip() {
-    const { comment, photo, trip, date, share } = this.state;
+    const { description, photo, trip, date, share } = this.state;
     const rideData = {
-      comment: comment.text,
+      description: description.text,
       photo: photo.photo,
       tripStart: trip.start,
       tripEnd: trip.end,
@@ -277,7 +277,7 @@ class Ask extends Component {
           {this.header()}
           <View style={styles.tabContainer}>
             <Tab
-              label="Comment"
+              label="Description"
               disabled={disabledTabs.indexOf(1) > -1}
               complete={completedTabs.indexOf(1) > -1}
               active={activeTab === 1}
@@ -307,7 +307,7 @@ class Ask extends Component {
               active={activeTab === 5}
             />
           </View>
-          {(activeTab === 1) && <Comment onNext={this.onCommentNext} />}
+          {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
           {(activeTab === 2) && <Photo onNext={this.onPhotoNext} />}
           {(activeTab === 3) && <Trip
             isReturnTrip={isReturnedTrip}
