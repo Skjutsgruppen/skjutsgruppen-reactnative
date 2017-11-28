@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
 import GooglePlace from '@components/googlePlace';
 import PropTypes from 'prop-types';
-import TabIcon from '@components/tabIcon';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import SearchIcon from '@icons/ic_search.png';
+import SearchIconActive from '@icons/ic_search_active.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -160,14 +162,7 @@ class Search extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Search',
-    tabBarIcon: ({ focused, tintColor }) => (
-      <TabIcon
-        iconDefault="ios-search-outline"
-        iconFocused="ios-search"
-        focused={focused}
-        tintColor={tintColor}
-      />
-    ),
+    tabBarIcon: ({ focused }) => <Image source={focused ? SearchIconActive : SearchIcon} />,
   };
 
   constructor(props) {

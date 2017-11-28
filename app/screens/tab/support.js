@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import TabIcon from '@components/tabIcon';
 import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import BackButton from '@components/common/backButton';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
+
+import SupportIcon from '@icons/ic_support.png';
+import SupportIconActive from '@icons/ic_support_active.png';
 
 const Profile = withProfile(ProfileDetail);
 
@@ -47,14 +49,7 @@ class Support extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Support',
-    tabBarIcon: ({ focused, tintColor }) => (
-      <TabIcon
-        iconDefault="ios-settings-outline"
-        iconFocused="ios-settings"
-        focused={focused}
-        tintColor={tintColor}
-      />
-    ),
+    tabBarIcon: ({ focused }) => <Image source={focused ? SupportIconActive : SupportIcon} />,
   };
 
   constructor(props) {
