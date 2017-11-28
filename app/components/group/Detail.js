@@ -9,9 +9,9 @@ import { withLeaveGroup } from '@services/apollo/notification';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import Relation from '@components/relation';
 import Colors from '@theme/colors';
-import FeedList from '@components/group/feed/list';
+import GroupFeed from '@components/group/feed/list';
 
-const GroupFeedList = withGroupFeed(FeedList);
+const GroupFeedList = withGroupFeed(GroupFeed);
 
 const styles = StyleSheet.create({
   contentWrapper: {

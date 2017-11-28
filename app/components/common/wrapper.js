@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    paddingTop: (Platform.OS === 'ios') ? 20 : 0,
   },
 });
 

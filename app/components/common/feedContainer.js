@@ -5,10 +5,6 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    paddingTop: 12,
-    marginTop: 12,
   },
 });
 

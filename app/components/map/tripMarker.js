@@ -47,6 +47,10 @@ const TripMarker = ({ lat, lng, loading, trips, user, onMarkerPress }) => {
   return (
     <View style={styles.container}>
       <MapView
+        cacheEnabled
+        loadingEnabled
+        loadingIndicatorColor="#666666"
+        loadingBackgroundColor="#eeeeee"
         style={styles.map}
         region={
           {
