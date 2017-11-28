@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Group from '@components/feed/card/group';
-import Offer from '@components/feed/card/offer';
-import Ask from '@components/feed/card/ask';
+import Group from '@components/new/feed/card/group';
+import Offer from '@components/new/feed/card/offer';
+import Ask from '@components/new/feed/card/ask';
 
 const feedItem = ({ feed, onPress, onSharePress }) => {
   if (feed.feedable === 'Trip') {
