@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text.green,
     marginBottom: 32,
+    marginHorizontal: 24,
   },
   coloredText: {
     alignSelf: 'center',
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 20,
     marginBottom: 24,
+    marginHorizontal: 24,
   },
 });
 

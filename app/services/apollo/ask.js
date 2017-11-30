@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const createTrip = gql`
+const CREATE_TRIP = gql`
 mutation createTrip(
   $description:String, 
   $type:String!,
@@ -59,7 +59,7 @@ mutation createTrip(
 }
 `;
 
-export const submitAsk = graphql(createTrip, {
+export const submitAsk = graphql(CREATE_TRIP, {
   props: ({ mutate }) => ({
     submit: ({
       description,

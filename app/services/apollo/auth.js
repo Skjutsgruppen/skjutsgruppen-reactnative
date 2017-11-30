@@ -127,7 +127,7 @@ export const withFriends = graphql(FRIEND_QUERY, {
       count = friends.count;
     }
 
-    return { friends: { loading, rows, total: count } };
+    return { friends: { loading, rows, count } };
   },
 });
 
@@ -157,7 +157,7 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
       rows = bestFriends.rows;
       count = bestFriends.count;
     }
-    return { bestFriends: { loading, rows, total: count } };
+    return { bestFriends: { loading, rows, count } };
   },
 });
 
@@ -214,7 +214,7 @@ export const withGroups = graphql(GROUPS_QUERY, {
       rows = groups.rows;
       count = groups.count;
     }
-    return { groups: { loading, rows, total: count } };
+    return { groups: { loading, rows, count } };
   },
 });
 
@@ -269,7 +269,7 @@ export const withTrips = graphql(TRIPS_QUERY, {
       rows = trips.rows;
       count = trips.count;
     }
-    return { trips: { loading, rows, total: count } };
+    return { trips: { loading, rows, count } };
   },
 });
 
@@ -318,5 +318,17 @@ export const withLocalities = graphql(LOCALITY_QUERY, {
   options: ({ municipalityId }) => ({ variables: { municipalityId } }),
   props: ({ data: { loading, localities } }) => ({
     loading, list: localities || [],
+  }),
+});
+
+const SHARE_QUERY = gql`
+mutation share($id: Int!, $type: InputShareTypeEnum!, $share: ShareInput!) {
+  share(id :$id, type :$type, share :$share)
+}
+`;
+
+export const withShare = graphql(SHARE_QUERY, {
+  props: ({ mutate }) => ({
+    share: ({ id, type, share }) => mutate({ variables: { id, type, share } }),
   }),
 });

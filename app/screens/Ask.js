@@ -113,7 +113,11 @@ class Ask extends Component {
     if (params && typeof params.isReturnedTrip !== 'undefined') {
       this.setState({
         isReturnedTrip: true,
-        defaultTrip: { start: params.defaultTrip.start, end: params.defaultTrip.end },
+        defaultTrip: {
+          start: params.defaultTrip.start,
+          end: params.defaultTrip.end,
+          dates: params.defaultTrip.dates,
+        },
       });
     }
   }
@@ -194,7 +198,11 @@ class Ask extends Component {
     if (this.state.trip.isReturning) {
       navigate('Ask', {
         isReturnedTrip: true,
-        defaultTrip: { end: this.state.trip.start, start: this.state.trip.end },
+        defaultTrip: {
+          end: this.state.trip.start,
+          start: this.state.trip.end,
+          dates: this.state.date.dates,
+        },
       });
     } else {
       navigate('Feed', { refetch: true });
@@ -236,7 +244,7 @@ class Ask extends Component {
           <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
-            Return ride of your offered ride to Stockholm on December 20th
+            Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
           </Text>
         </View>
       );

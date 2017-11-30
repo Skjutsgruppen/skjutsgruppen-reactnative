@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
+import PropTypes from 'prop-types';
+import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
 import { submitComment, withGroupComment } from '@services/apollo/comment';
-import { Loading } from '@components/common';
+import { withLeaveGroup } from '@services/apollo/notification';
+import { Loading, CustomButton, NavBar } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
-import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 
 const GroupComment = withGroupComment(Comment);
 
@@ -135,21 +139,16 @@ const styles = StyleSheet.create({
   },
 });
 
-class GroupDetail extends Component {
-  static navigationOptions = {
-    title: 'back',
-  };
-
+class Detail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, error: '', comment: '' });
+    this.state = ({ loading: false, leaveLoading: false, error: '', comment: '' });
   }
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { submit, navigation } = this.props;
+    const { submit, group } = this.props;
     const { comment } = this.state;
-    const { group } = navigation.state.params;
     const validation = this.checkValidation();
 
     if (validation.pass()) {
@@ -176,9 +175,16 @@ class GroupDetail extends Component {
   }
 
   onPress = () => {
-    const { navigation } = this.props;
-    const { group } = navigation.state.params;
+    const { group, navigation } = this.props;
     navigation.navigate('UserProfile', { profileId: group.User.id });
+  }
+
+  leaveGroup = () => {
+    const { group, leaveGroup, refresh } = this.props;
+    this.setState(
+      { leaveLoading: true },
+      () => leaveGroup(group.id).then(refresh).catch(console.error),
+    );
   }
 
   checkValidation() {
@@ -193,6 +199,29 @@ class GroupDetail extends Component {
       pass: () => (errors.length === 0),
       errors,
     };
+  }
+
+  isGroupJoined = () => {
+    const { group, user } = this.props;
+
+    if (user.id === group.User.id) {
+      return false;
+    }
+
+    let hasMember = false;
+
+    group.GroupMembers.forEach((member) => {
+      if (member.id === user.id) {
+        hasMember = true;
+      }
+    });
+
+    return hasMember;
+  }
+
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   renderButton = () => {
@@ -232,9 +261,26 @@ class GroupDetail extends Component {
     );
   }
 
+  renderLeaveButton = () => {
+    const { leaveLoading } = this.state;
+
+    if (leaveLoading) {
+      return (<Loading />);
+    }
+
+    return (
+      <CustomButton
+        bgColor={Colors.background.green}
+        style={styles.button}
+        onPress={this.leaveGroup}
+      >
+        Leave the group
+      </CustomButton>
+    );
+  }
+
   render() {
-    const { navigation } = this.props;
-    const { group } = navigation.state.params;
+    const { group } = this.props;
     const { error } = this.state;
 
     let image = '';
@@ -253,6 +299,7 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+        <NavBar handleBack={this.goBack} />
         <ScrollView style={styles.contentWrapper}>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
@@ -289,6 +336,7 @@ class GroupDetail extends Component {
                   </Text>
                 </View>
               </View>
+              {this.isGroupJoined() && this.renderLeaveButton()}
             </View>
             <Relation users={group.User.relation} />
             <GroupComment onCommentPress={this.onCommentPress} id={group.id} />
@@ -301,11 +349,24 @@ class GroupDetail extends Component {
   }
 }
 
-GroupDetail.propTypes = {
+Detail.propTypes = {
+  leaveGroup: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
+  group: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    photo: PropTypes.string.isRequired,
+    GroupMembers: PropTypes.array.isRequired,
+    User: PropTypes.object.isRequired,
+  }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  refresh: PropTypes.func.isRequired,
 };
 
-export default submitComment(GroupDetail);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withLeaveGroup, submitComment, connect(mapStateToProps))(Detail);
