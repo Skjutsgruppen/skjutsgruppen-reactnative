@@ -72,7 +72,7 @@ class OpenClosed extends Component {
         </Text>
         <View style={styles.radioWrapper}>
           <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === 'OpenGroup'} />
-          <Radio onPress={this.onPressClosed} label="ClosedGroup*" checked={type === 'ClosedGroup'} />
+          <Radio onPress={this.onPressClosed} label="ClosedGroup" checked={type === 'ClosedGroup'} />
         </View>
         <CustomButton
           onPress={this.onNext}

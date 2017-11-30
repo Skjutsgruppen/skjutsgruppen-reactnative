@@ -12,28 +12,26 @@ class SearchGroupResult extends PureComponent {
   }
 
   renderFooter = () => {
-    const { loading, searchGroup: { Group, total } } = this.props.searchGroups;
+    const { loading, searchGroup: { rows: Group, count } } = this.props.searchGroups;
 
     if (!loading) return null;
 
-    if (Group.length >= total) {
+    if (Group.length >= count) {
       return (
         <View
           style={{
-            paddingVertical: 20,
+            paddingVertical: 60,
             borderTopWidth: 1,
             borderColor: '#CED0CE',
           }}
-        >
-          <Text>No more group</Text>
-        </View>
+        />
       );
     }
 
     return (
       <View
         style={{
-          paddingVertical: 20,
+          paddingVertical: 60,
           borderTopWidth: 1,
           borderColor: '#CED0CE',
         }}
@@ -45,18 +43,7 @@ class SearchGroupResult extends PureComponent {
 
   renderSearchGroupList() {
     const { searchGroups, keyword } = this.props;
-
-    if (searchGroups.networkStatus === 1) {
-      return <Loading />;
-    }
-
-    if (searchGroups.error) {
-      return <Text>Error: {searchGroups.error.message}</Text>;
-    }
-
     const { searchGroup: { rows: Group, count } } = searchGroups;
-
-
     return (
       <FlatList
         data={Group}
@@ -69,7 +56,7 @@ class SearchGroupResult extends PureComponent {
         keyExtractor={(item, index) => index}
         refreshing={searchGroups.networkStatus === 4}
         onRefresh={() => searchGroups.refetch()}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
           if (searchGroups.loading || Group.length >= count) return;
@@ -94,11 +81,17 @@ class SearchGroupResult extends PureComponent {
   }
 
   render() {
-    return (
-      <View>
-        {this.renderSearchGroupList()}
-      </View>
-    );
+    const { searchGroups } = this.props;
+
+    if (searchGroups.networkStatus === 1) {
+      return <Loading />;
+    }
+
+    if (searchGroups.error) {
+      return <Text>Error: {searchGroups.error.message}</Text>;
+    }
+
+    return this.renderSearchGroupList();
   }
 }
 

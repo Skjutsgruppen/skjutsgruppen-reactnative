@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
   },
   loadingWrapper: {
     flex: 1,
+    paddingVertical: 60,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 16,
   },
 });
 
@@ -80,7 +80,7 @@ class ExploreGroupsResult extends Component {
         latitudeDelta: 0.015,
         longitudeDelta: 0.0121,
       },
-      filters: 'Popular Group',
+      filter: 'Popular Group',
     });
   }
 
@@ -88,11 +88,11 @@ class ExploreGroupsResult extends Component {
     this.currentLocation();
   }
 
-  onPressFilter = (filters) => {
+  onPressFilter = (filter) => {
     const { region } = this.state;
     const { exploreGroups } = this.props;
 
-    if (filters === 'nearby') {
+    if (filter === 'nearby') {
       let error = 0;
 
       if (region.latitude.length === 0 && region.longitude.length === 0) {
@@ -103,22 +103,27 @@ class ExploreGroupsResult extends Component {
       if (error === 0) {
         exploreGroups.refetch({
           from: [region.latitude, region.longitude],
-          filters,
+          filter,
         });
-        this.setState({ filters: 'Groups Near You' });
+        this.setState({ filter: 'Groups Near You' });
       }
-    } else if (filters === 'desc') {
+    }
+
+    if (filter === 'name') {
       exploreGroups.refetch({
         from: null,
-        filters,
+        filter,
+        order: 'asc',
       });
-      this.setState({ filters: 'A to O' });
-    } else {
+      this.setState({ filter: 'A to Z' });
+    }
+
+    if (filter === 'popular') {
       exploreGroups.refetch({
         from: null,
-        filters,
+        filter: 'popular',
       });
-      this.setState({ filters: 'Popular Group' });
+      this.setState({ filter: 'Popular Groups' });
     }
   }
 
@@ -136,7 +141,7 @@ class ExploreGroupsResult extends Component {
         Alert.alert(error.message);
         this.setState({ loading: false });
       },
-      { timeout: 20000, maximumAge: 1000 },
+      { timeout: 5000, maximumAge: 1000 },
     );
   };
 
@@ -146,7 +151,7 @@ class ExploreGroupsResult extends Component {
     navigation.navigate('GroupDetail', { group: detail });
   }
 
-  renderHeader = () => <Text style={styles.listLabel}>{this.state.filters}</Text>
+  renderHeader = () => <Text style={styles.listLabel}>{this.state.filter}</Text>
 
   renderFooter = () => {
     const { exploreGroups: { networkStatus, exploreGroups: { rows: Group, count } } } = this.props;
@@ -157,9 +162,13 @@ class ExploreGroupsResult extends Component {
 
     if (Group.length >= count) {
       return (
-        <View style={styles.messageWrapper}>
-          <Text>No more group</Text>
-        </View>
+        <View
+          style={{
+            paddingVertical: 60,
+            borderTopWidth: 1,
+            borderColor: '#CED0CE',
+          }}
+        />
       );
     }
 
@@ -242,7 +251,7 @@ class ExploreGroupsResult extends Component {
           </View>
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
-            <TouchableOpacity onPress={() => this.onPressFilter(null)}>
+            <TouchableOpacity onPress={() => this.onPressFilter('popular')}>
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={styles.filterLabel}>Popular</Text>
               </View>
@@ -250,9 +259,9 @@ class ExploreGroupsResult extends Component {
           </View>
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
-            <TouchableOpacity onPress={() => this.onPressFilter('desc')}>
+            <TouchableOpacity onPress={() => this.onPressFilter('name')}>
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.filterLabel}>A to O</Text>
+                <Text style={styles.filterLabel}>A to Z</Text>
               </View>
             </TouchableOpacity>
           </View>

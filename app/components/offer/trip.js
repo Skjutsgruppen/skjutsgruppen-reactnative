@@ -264,6 +264,8 @@ class Trip extends Component {
     });
   }
   render() {
+    const { isOffer } = this.props;
+    const { start: StateStart, end: StateEnd, isReturning, isReturnTrip } = this.state;
     return (
       <View>
         <Text style={styles.title}> Trip</Text>
@@ -271,13 +273,13 @@ class Trip extends Component {
         <GooglePlace
           placeholder="Start here"
           currentLocation={!this.state.isReturnTrip}
-          defaultValue={this.state.start}
+          defaultValue={StateStart}
           onChangeText={start => this.setState({ start })}
         />
         <Text style={styles.label}>To</Text>
         <GooglePlace
           placeholder="Destination"
-          defaultValue={this.state.end}
+          defaultValue={StateEnd}
           onChangeText={end => this.setState({ end })}
         >
           <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
@@ -301,25 +303,28 @@ class Trip extends Component {
             <Text style={styles.option}>East</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.stops}>
-          <View style={styles.addStop}>
-            <TouchableOpacity onPress={this.addStops}>
-              <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
-            </TouchableOpacity>
-            <Text style={styles.stopsLabel}>
-              Stops along the way:
-            </Text>
+        {
+          isOffer &&
+          <View style={styles.stops}>
+            <View style={styles.addStop}>
+              <TouchableOpacity onPress={this.addStops}>
+                <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
+              </TouchableOpacity>
+              <Text style={styles.stopsLabel}>
+                Stops along the way:
+              </Text>
+            </View>
+            <View>
+              {this.renderStops()}
+              <Text style={styles.stopsInfo}>
+                You can add as many stops as you want as long as you would like to
+                pick up people there.
+              </Text>
+            </View>
           </View>
-          <View>
-            {this.renderStops()}
-            <Text style={styles.stopsInfo}>
-              You can add as many stops as you want as long as you would like to
-              pick up people there.
-            </Text>
-          </View>
-        </View>
+        }
 
-        {!this.state.isReturnTrip &&
+        {!isReturnTrip &&
           <View style={styles.verticalDivider} >
             <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
             <Text style={styles.title}>Are You making a return ride?</Text>
@@ -334,7 +339,7 @@ class Trip extends Component {
                 <TouchableWithoutFeedback
                   onPress={() => this.handleReturnChange(true)}
                 >
-                  <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#1db0ed' : '#ffffff' }]} />
+                  <View style={[styles.radio, { backgroundColor: isReturning ? '#1db0ed' : '#ffffff' }]} />
                 </TouchableWithoutFeedback>
                 <Text style={styles.radioLabel}>Yes!</Text>
               </View>
@@ -342,7 +347,7 @@ class Trip extends Component {
                 <TouchableWithoutFeedback
                   onPress={() => this.handleReturnChange(false)}
                 >
-                  <View style={[styles.radio, { backgroundColor: this.state.isReturning ? '#ffffff' : '#1db0ed' }]} />
+                  <View style={[styles.radio, { backgroundColor: isReturning ? '#ffffff' : '#1db0ed' }]} />
                 </TouchableWithoutFeedback>
                 <Text style={styles.radioLabel}>Not this time</Text>
               </View>
@@ -375,6 +380,11 @@ Trip.propTypes = {
     coordinates: PropTypes.array,
   }).isRequired,
   isReturnTrip: PropTypes.bool.isRequired,
+  isOffer: PropTypes.bool,
+};
+
+Trip.defaultProps = {
+  isOffer: false,
 };
 
 export default Trip;

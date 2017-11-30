@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 const PAGE_OFFSET = 0;
 const PAGE_LIMIT = 5;
 
-const feedQuery = gql`
+const GET_FEED_QUERY = gql`
 query getFeed($offset: Int, $limit: Int) {
   getFeed (offset:$offset, limit:$limit){
    rows {
@@ -51,6 +51,15 @@ query getFeed($offset: Int, $limit: Int) {
         GroupMembers{
           id
         }
+        GroupMembershipRequests{
+          id
+          status
+          Member {
+            id
+            email
+            firstName
+          }
+        }
       }
     }
     ... on TripFeed {
@@ -96,12 +105,11 @@ query getFeed($offset: Int, $limit: Int) {
 }
 `;
 
-export const withFeed = graphql(feedQuery, {
+export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
     notifyOnNetworkStatusChange: true,
     variables: { offset: PAGE_OFFSET, limit: PAGE_LIMIT },
   },
-
   props: ({ data: { loading, getFeed, fetchMore, refetch, networkStatus, error } }) => {
     let rows = [];
     let count = 0;
@@ -111,6 +119,6 @@ export const withFeed = graphql(feedQuery, {
       count = getFeed.count;
     }
 
-    return { feeds: { loading, rows, total: count, fetchMore, refetch, networkStatus, error } };
+    return { feeds: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
   },
 });
