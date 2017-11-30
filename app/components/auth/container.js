@@ -9,6 +9,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.cream,
   },
   container: {
+    backgroundColor: Colors.background.cream,
+    justifyContent: 'center',
     paddingVertical: 50,
   },
 });

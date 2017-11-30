@@ -21,26 +21,36 @@ const styles = StyleSheet.create({
   },
 });
 
-const Relation = ({ users }) => (
-  <View style={styles.participantWrapper}>
-    {users.map((user) => {
-      if (user.photo) {
-        return (
-          <View key={user.id} style={styles.participant}>
-            <Image
-              source={{ uri: user.photo }}
-              style={{ width: 20, height: 20, borderRadius: 20 }}
-            />
-          </View>
-        );
-      }
-      return <View key={user.id} style={styles.participant} />;
-    })}
-  </View>
-);
+const Relation = ({ users }) => {
+  if (!users) {
+    return null;
+  }
+
+  return (
+    <View style={styles.participantWrapper}>
+      {users.map((user) => {
+        if (user.photo) {
+          return (
+            <View key={user.id} style={styles.participant}>
+              <Image
+                source={{ uri: user.photo }}
+                style={{ width: 20, height: 20, borderRadius: 20 }}
+              />
+            </View>
+          );
+        }
+        return <View key={user.id} style={styles.participant} />;
+      })}
+    </View>
+  );
+};
 
 Relation.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
+};
+
+Relation.defaultProps = {
+  users: null,
 };
 
 export default Relation;

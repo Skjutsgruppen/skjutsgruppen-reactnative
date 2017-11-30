@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { Wrapper, NavBar } from '@components/common';
 import PropTypes from 'prop-types';
 import { withExploreGroup } from '@services/apollo/group';
 import Colors from '@theme/colors';
@@ -9,8 +10,8 @@ const ExploreGroupList = withExploreGroup(ExploreGroupResult);
 
 const styles = StyleSheet.create({
   content: {
-    backgroundColor: Colors.background.fullWhite,
     flex: 1,
+    backgroundColor: Colors.background.fullWhite,
   },
   header: {
     fontSize: 40,
@@ -29,29 +30,34 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderTopWidth: 1,
     borderColor: Colors.border.lightGray,
-    paddingHorizontal: 10,
   },
   searcchField: {
     height: 40,
     flex: 1,
+    paddingLeft: 24,
   },
   searchIcon: {
     width: 24,
     height: 24,
     resizeMode: 'contain',
-    marginHorizontal: 12,
+    marginLeft: 12,
+    marginRight: 24,
   },
 });
 
 class ExploreGroup extends PureComponent {
   static navigationOptions = {
     header: null,
-    title: 'Back',
   };
 
   constructor(props) {
     super(props);
     this.state = ({ searchQuery: '' });
+  }
+
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   renderSearchGroup = () => {
@@ -67,27 +73,30 @@ class ExploreGroup extends PureComponent {
     const { navigation } = this.props;
 
     return (
-      <View style={styles.content}>
-        <Text style={styles.header}>EXPLORE GROUPS</Text>
-        <View style={styles.searchWrapper}>
-          <TextInput
-            onChangeText={searchQuery => this.setState({ searchQuery })}
-            keyboardType="web-search"
-            placeholder="Search for groups"
-            style={styles.searcchField}
-            underlineColorAndroid="transparent"
-            returnKeyType="search"
-            onSubmitEditing={this.renderSearchGroup}
-          />
-          <TouchableOpacity
-            onPress={this.renderSearchGroup}
-            disabled={this.state.searchQuery.length < 1}
-          >
-            <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
-          </TouchableOpacity>
+      <Wrapper bgColor={Colors.background.cream}>
+        <NavBar handleBack={this.goBack} />
+        <View style={styles.content}>
+          <Text style={styles.header}>EXPLORE GROUPS</Text>
+          <View style={styles.searchWrapper}>
+            <TextInput
+              onChangeText={searchQuery => this.setState({ searchQuery })}
+              keyboardType="web-search"
+              placeholder="Search for groups"
+              style={styles.searcchField}
+              underlineColorAndroid="transparent"
+              returnKeyType="search"
+              onSubmitEditing={this.renderSearchGroup}
+            />
+            <TouchableOpacity
+              onPress={this.renderSearchGroup}
+              disabled={this.state.searchQuery.length < 1}
+            >
+              <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
+            </TouchableOpacity>
+          </View>
+          <ExploreGroupList from={null} filter="popular" navigation={navigation} />
         </View>
-        <ExploreGroupList from={null} filters={null} navigation={navigation} />
-      </View>
+      </Wrapper>
     );
   }
 }
@@ -95,6 +104,7 @@ class ExploreGroup extends PureComponent {
 ExploreGroup.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    goBack: PropTypes.func,
   }).isRequired,
 };
 

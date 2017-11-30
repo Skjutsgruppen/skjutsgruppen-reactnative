@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
+import { CustomButton } from '@components/common';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
+  garderIcon: {
+    width: 100,
+    height: 100,
+    marginBottom: 16,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
   divider: {
+    alignSelf: 'center',
     width: '70%',
     height: 1,
-    marginVertical: 32,
+    marginVertical: 24,
     backgroundColor: Colors.background.lightGray,
   },
   backButton: {
@@ -20,6 +28,9 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     textDecorationColor: '#333',
     color: '#333',
+  },
+  button: {
+    marginHorizontal: 24,
   },
 });
 
@@ -47,6 +58,7 @@ class Method extends Component {
   render() {
     return (
       <Container>
+        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Thanks for agreeing!</GreetText>
         <ColoredText color={Colors.text.blue}>
           We recommend you sign in with Facebook or Twitter
@@ -54,13 +66,29 @@ class Method extends Component {
         <ColoredText color={Colors.text.purple}>
           We will not post anything to Facebook or Twitter without asking you.
         </ColoredText>
-        <CustomButton onPress={this.onPressFacebook} bgColor="#3b5998">Sign in with Facebook</CustomButton>
-        <CustomButton onPress={this.onPressTwitter} bgColor="#1da1f2">Sign in with Twitter</CustomButton>
+        <CustomButton
+          style={styles.button}
+          onPress={this.onPressFacebook}
+          bgColor="#3b5998"
+        >
+          Sign in with Facebook
+        </CustomButton>
+        <CustomButton
+          style={styles.button}
+          onPress={this.onPressTwitter}
+          bgColor="#1da1f2"
+        >
+          Sign in with Twitter
+        </CustomButton>
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>
           {'or do the old school and a bitter longer sign up process (that\'s ok as well)'}
         </ColoredText>
-        <CustomButton bgColor={Colors.background.gray} onPress={this.onPressEmail}>
+        <CustomButton
+          style={styles.button}
+          bgColor={Colors.background.gray}
+          onPress={this.onPressEmail}
+        >
           Sign up the long way
         </CustomButton>
         <BackButton onPress={this.onPressBack} />

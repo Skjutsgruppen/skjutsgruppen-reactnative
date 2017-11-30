@@ -1,9 +1,9 @@
 import { TabNavigator, StackNavigator } from 'react-navigation';
-import Add from './add';
-import Feed from './feed';
-import Message from './message';
-import Search from './search';
-import Support from './support';
+import Add from '@screens/tab/add';
+import Feed from '@screens/tab/feed';
+import Message from '@screens/tab/message';
+import Search from '@screens/tab/search';
+import Support from '@screens/tab/support';
 
 export const SearchRoute = StackNavigator(
   {
@@ -32,7 +32,7 @@ const Tab = TabNavigator(
     },
   },
   {
-    lazyLoad: true,
+    lazy: true,
     animationEnabled: false,
     tabBarPosition: 'bottom',
     tabBarOptions: {

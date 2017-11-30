@@ -370,8 +370,8 @@ class Share extends Component {
               </View>
             </View>
           </TouchableWithoutFeedback>
-          <FriendList loading={friends.loading} friends={friends.rows} total={friends.total} title="Friends" setOption={this.setOption} selected={this.state.friends} />
-          <FriendList loading={bestFriends.loading} friends={bestFriends.rows} total={bestFriends.total} title="Best Friends" setOption={this.setOption} selected={this.state.friends} />
+          <FriendList loading={friends.loading} friends={friends.rows} total={friends.count} title="Friends" setOption={this.setOption} selected={this.state.friends} />
+          <FriendList loading={bestFriends.loading} friends={bestFriends.rows} total={bestFriends.count} title="Best Friends" setOption={this.setOption} selected={this.state.friends} />
           {this.showGroup() && this.renderGroups()}
         </View>
         <CustomButton
@@ -391,17 +391,17 @@ Share.propTypes = {
   onNext: PropTypes.func.isRequired,
   groups: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    total: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
   }).isRequired,
   modal: PropTypes.bool,
   showGroup: PropTypes.bool,
   friends: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    total: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
   }).isRequired,
   bestFriends: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-    total: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
   }).isRequired,
 };
 

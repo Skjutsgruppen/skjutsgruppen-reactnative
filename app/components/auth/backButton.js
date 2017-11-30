@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   backButton: {
     textAlign: 'center',
-    margin: 32,
+    marginHorizontal: 24,
+    marginTop: 32,
     textDecorationLine: 'underline',
     textDecorationColor: '#333',
     color: '#333',

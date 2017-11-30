@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading } from '@components/common';
+import { Loading, NavBar } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stopText: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   stopsIcon: {
     width: 12,
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
 
 class OfferDetail extends Component {
   static navigationOptions = {
-    title: 'back',
+    header: null,
   };
 
   constructor(props) {
@@ -162,6 +164,11 @@ class OfferDetail extends Component {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
     navigation.navigate('UserProfile', { profileId: offer.User.id });
+  }
+
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
   checkValidation() {
@@ -233,6 +240,7 @@ class OfferDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+        <NavBar handleBack={this.goBack} />
         <ScrollView style={styles.contentWrapper}>
           <View style={styles.feed}>
             <View style={styles.feedContent}>
@@ -264,8 +272,8 @@ class OfferDetail extends Component {
               </View>
             </View>
             <Relation users={offer.User.relation} />
-            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
             {error !== '' && <View><Text>{error}</Text></View>}
+            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
           </View>
         </ScrollView>
         {this.renderCommentForm()}

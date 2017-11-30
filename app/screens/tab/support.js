@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, StyleSheet, ToastAndroid as Toast } from 'react-native';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import { connect } from 'react-redux';
@@ -93,7 +93,9 @@ class Support extends Component {
           contact => contact.phoneNumbers.forEach(book => mobiles.push(book.number)),
         );
         syncContacts(mobiles)
-          .then(() => { })
+          .then(() => {
+            Toast.show('Contact successully synced.', Toast.LONG);
+          })
           .catch(error => console.error(error));
       }
     });

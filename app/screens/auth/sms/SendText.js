@@ -2,32 +2,35 @@ import React, { Component } from 'react';
 import { Text, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
+import { CustomButton } from '@components/common';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
   profilePic: {
-    borderRadius: 65,
-    marginBottom: 32,
+    width: 80,
+    height: 80,
+    alignSelf: 'center',
+    borderRadius: 40,
+    marginBottom: 24,
   },
   code: {
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 24,
   },
   promise: {
-    width: 150,
+    alignSelf: 'center',
+    width: 180,
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: 24,
     opacity: 0.6,
+  },
+  button: {
+    margin: 24,
   },
 });
 
@@ -58,7 +61,13 @@ class SendText extends Component {
           The text message cost the same as an ordinary texgt message with
           you service provider.
         </ColoredText>
-        <CustomButton bgColor={Colors.background.green} onPress={() => navigation.navigate('MobileVerified')}>Send text meassage</CustomButton>
+        <CustomButton
+          style={styles.button}
+          bgColor={Colors.background.green}
+          onPress={() => navigation.navigate('MobileVerified')}
+        >
+          Send text meassage
+        </CustomButton>
         <Text style={styles.promise}>We will never give your number to any third parties.</Text>
       </Container>
     );
