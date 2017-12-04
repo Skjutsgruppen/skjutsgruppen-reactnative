@@ -1,6 +1,140 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
+const NOTIFICATION_SUBSCRIPTION = gql`
+subscription notification($userId: Int!) {
+  notification(userId: $userId ){
+    id
+    type
+    User {
+      id
+      firstName
+      lastName
+      email
+      photo
+    }
+    Receiver{
+      id
+      firstName
+    }
+    Trip {
+      id
+      type
+      description
+      seats
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+      }
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      date
+      time
+      photo
+      returnTrip
+    }
+    Group {
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+      }
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      country
+      county
+      municipality
+      locality
+      GroupMembers{
+        id
+      }
+    }
+    read
+    createdAt
+    GroupMembershipRequest {
+      id
+      status
+      Group {
+        id
+        name
+        description
+        type
+        photo
+        User {
+          id
+          email
+          firstName
+          lastName
+          photo
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        country
+        county
+        municipality
+        locality
+        GroupMembers{
+          id
+        }
+      }
+    }
+    FriendRequest {
+      id
+      status
+      User {
+        id
+        firstName
+      }
+      FutureFriend{
+        id
+        firstName
+      }
+    }
+  }
+}
+`;
+
 const NOTIFICATION_QUERY = gql`
 query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
   notifications (filters:$filters, offset:$offset, limit:$limit) {
@@ -29,12 +163,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           firstName
           lastName
           photo
-          relation {
-            id,
-            email,
-            firstName
-            photo
-          }
         }
         TripStart {
           name
@@ -66,12 +194,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           firstName
           lastName
           photo
-          relation {
-            id,
-            email,
-            firstName
-            photo
-          }
         }
         TripStart {
           name
@@ -110,12 +232,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             firstName
             lastName
             photo
-            relation {
-              id,
-              email,
-              firstName
-              photo
-            }
           }
           TripStart {
             name
@@ -157,11 +273,13 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
 `;
 
 export const withNotification = graphql(NOTIFICATION_QUERY, {
-  options: ({ filters, limit = 5 }) => ({
+  options: ({ filters, offset = 0, limit = 5 }) => ({
     notifyOnNetworkStatusChange: true,
-    variables: { filters, offset: 0, limit },
+    variables: { filters, offset, limit },
   }),
-  props: ({ data: { loading, notifications, fetchMore, refetch, networkStatus, error } }) => {
+  props: ({
+    data: { loading, notifications, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  }) => {
     let rows = [];
     let count = 0;
 
@@ -170,7 +288,28 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
       count = notifications.count;
     }
 
-    return { notification: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
+    return {
+      notifications: {
+        loading, rows, count, fetchMore, refetch, subscribeToMore, networkStatus, error,
+      },
+      subscribeToNotification: param => subscribeToMore({
+        document: NOTIFICATION_SUBSCRIPTION,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          const newNotification = subscriptionData.data.notification;
+          const newrows = [newNotification].concat(prev.notifications.rows);
+          return {
+            notifications: {
+              ...prev.notifications,
+              ...{ rows: newrows, count: prev.notifications.count + 1 },
+            },
+          };
+        },
+      }),
+    };
   },
 });
 

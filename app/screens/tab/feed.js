@@ -32,11 +32,13 @@ class Feed extends Component {
 
   componentWillMount() {
     const { params } = this.props.navigation.state;
-    const { feeds } = this.props;
+    const { feeds, subscribeToFeed } = this.props;
 
     if (params && typeof params.refetch !== 'undefined') {
       feeds.refetch();
     }
+
+    subscribeToFeed();
   }
 
   onPress = (type, detail) => {
@@ -226,6 +228,7 @@ Feed.propTypes = {
       }),
     }).isRequired,
   }).isRequired,
+  subscribeToFeed: PropTypes.func.isRequired,
 };
 
 export default compose(withShare, withFeed)(Feed);

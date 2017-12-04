@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View, Text, TouchableOpacity } from 'react-native';
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
 import TripMarker from '@components/map/tripMarker';
@@ -17,6 +17,7 @@ class Map extends PureComponent {
     super(props);
     this.state = ({
       loading: true,
+      locationError: false,
       region: {
         latitude: '',
         longitude: '',
@@ -54,15 +55,28 @@ class Map extends PureComponent {
       },
       (error) => {
         Alert.alert(error.message);
-        this.setState({ loading: false });
+        this.setState({ loading: false, locationError: true });
       },
       { timeout: 20000, maximumAge: 1000 },
     );
   };
 
   render() {
-    if (this.state.loading) {
+    const { loading, locationError } = this.state;
+    if (loading) {
       return (<Loading />);
+    }
+
+    if (locationError) {
+      return (
+        <View>
+          <TouchableOpacity onPress={this.currentLocation}>
+            <Text>
+              Try Again
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
     }
 
     return (
