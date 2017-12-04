@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Loading } from '@components/common';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   section: {
@@ -21,33 +22,49 @@ const styles = StyleSheet.create({
 });
 
 class NewNotification extends PureComponent {
-  loadMore = () => {
-    const { notification } = this.props;
-    if (notification.loading) return null;
+  componentWillMount() {
+    const { subscribeToNotification, user, filters } = this.props;
+    if (filters === 'new') {
+      subscribeToNotification({ userId: user.id });
+    }
+  }
 
-    const remaining = notification.count - 5;
+  loadMore = () => {
+    const { notifications } = this.props;
+    if (notifications.loading) return null;
+
+    const remaining = notifications.count - 5;
     if (remaining < 1) return null;
 
-    return (<Text>and {remaining} more</Text>);
+    return (
+      <TouchableOpacity onPress={this.moreNotification}>
+        <Text>and {remaining} more</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  moreNotification = () => {
+    const { navigation, filters } = this.props;
+    navigation.navigate('SingleNotification', { filters });
   }
 
   renderNotification = () => {
-    const { notification, navigation } = this.props;
+    const { notifications, navigation, filters } = this.props;
 
     let render = (<Text>No Message.</Text>);
 
-    if (notification.count > 0) {
-      render = notification.rows.map(message => (
+    if (notifications.count > 0) {
+      render = notifications.rows.map(message => (
         <MesssageItem
           key={message.id}
           navigation={navigation}
-          filters={this.props.filters}
+          filters={filters}
           notification={message}
         />
       ));
     }
 
-    if (notification.loading) {
+    if (notifications.loading) {
       render = (<Loading />);
     }
 
@@ -70,7 +87,7 @@ class NewNotification extends PureComponent {
 
 NewNotification.propTypes = {
   filters: PropTypes.string.isRequired,
-  notification: PropTypes.shape({
+  notifications: PropTypes.shape({
     refetch: PropTypes.func.isRequired,
     rows: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.numeric,
@@ -78,6 +95,12 @@ NewNotification.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  subscribeToNotification: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.numeric,
+  }).isRequired,
 };
 
-export default compose(withNotification)(NewNotification);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withNotification, connect(mapStateToProps))(NewNotification);

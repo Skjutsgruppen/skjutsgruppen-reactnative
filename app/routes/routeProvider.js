@@ -30,7 +30,7 @@ import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
 
 import Map from '@screens/Map';
-
+import SingleNotification from '@screens/SingleNotification';
 
 import { StackNavigator } from 'react-navigation';
 
@@ -67,6 +67,8 @@ export const Routes = {
   UserGroups: { screen: UserGroups },
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
+
+  SingleNotification: { screen: SingleNotification },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

@@ -13,7 +13,11 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
     }
   }
 
-  return (<Group onPress={onPress} onSharePress={onSharePress} group={feed.Group} />);
+  if (feed.feedable === 'Group') {
+    return (<Group onPress={onPress} onSharePress={onSharePress} group={feed.Group} />);
+  }
+
+  return null;
 };
 
 feedItem.propTypes = {
