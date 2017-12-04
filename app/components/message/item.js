@@ -5,6 +5,7 @@ import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Loading } from '@components/common';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -75,14 +76,27 @@ const styles = StyleSheet.create({
 });
 
 class Item extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { loading: false, action: 0 };
+  }
+
   rejectGroupRequest = (id) => {
     const { rejectGroupInvitation, notification } = this.props;
-    rejectGroupInvitation(id).then(notification.refetch).catch(console.error);
+    this.setState({ loading: true });
+    rejectGroupInvitation(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: 2 }))
+      .catch(() => this.setState({ loading: false }));
   }
 
   acceptGroupRequest = (id) => {
     const { acceptGroupRequest, notification } = this.props;
-    acceptGroupRequest(id).then(notification.refetch).catch(console.error);
+    this.setState({ loading: true });
+    acceptGroupRequest(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
   }
 
   redirect = (id, route, params) => {
@@ -115,27 +129,7 @@ class Item extends PureComponent {
           </Text>
         </Text>
       </View>
-      <View style={styles.actions}>
-        <TouchableOpacity
-          onPress={() => this.acceptGroupRequest(GroupMembershipRequest.id)}
-          style={styles.accept}
-        >
-          <Icon
-            name="ios-checkmark-circle-outline"
-            size={32}
-            color={Colors.text.blue}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.rejectGroupRequest(GroupMembershipRequest.id)}
-        >
-          <Icon
-            name="ios-close-circle-outline"
-            size={32}
-            color={Colors.text.red}
-          />
-        </TouchableOpacity>
-      </View>
+      {this.state.loading ? <Loading /> : this.renderAction(GroupMembershipRequest.id)}
     </View>
   );
 
@@ -254,6 +248,68 @@ class Item extends PureComponent {
       date,
       onPress: () => this.redirect(id, route, params),
     });
+  }
+
+  renderAction = (id) => {
+    const { action } = this.state;
+
+    if (action === 0) {
+      return (
+        <View style={styles.actions}>
+          <TouchableOpacity
+            onPress={() => this.acceptGroupRequest(id)}
+            style={styles.accept}
+          >
+            <Icon
+              name="ios-checkmark-circle-outline"
+              size={32}
+              color={Colors.text.blue}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.rejectGroupRequest(id)}
+          >
+            <Icon
+              name="ios-close-circle-outline"
+              size={32}
+              color={Colors.text.red}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (action === 1) {
+      return (
+        <View style={styles.actions}>
+          <Icon
+            name="ios-checkmark-circle-outline"
+            size={32}
+            color={Colors.text.blue}
+          />
+          <View>
+            <Text>Accepted</Text>
+          </View>
+        </View>
+      );
+    }
+
+    if (action === 2) {
+      return (
+        <View style={styles.actions}>
+          <Icon
+            name="ios-close-circle-outline"
+            size={32}
+            color={Colors.text.blue}
+          />
+          <View>
+            <Text>Rejected</Text>
+          </View>
+        </View>
+      );
+    }
+
+    return null;
   }
 
   renderPic = (photo) => {
