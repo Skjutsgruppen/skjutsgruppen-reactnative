@@ -1,8 +1,103 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const PAGE_OFFSET = 0;
-const PAGE_LIMIT = 5;
+const FEED_SUBSCRIPTION = gql`
+subscription{
+  feed {
+    id
+    feedable
+    updatedAt
+    ... on GroupFeed {
+      Group {
+        id
+        outreach
+        name
+        description
+        type
+        photo
+        User {
+          id
+          email
+          firstName
+          lastName
+          photo
+          relation {
+            id,
+            email,
+            firstName
+            photo
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        country
+        county
+        municipality
+        locality
+        GroupMembers{
+          id
+        }
+        GroupMembershipRequests{
+          id
+          status
+          Member {
+            id
+            email
+            firstName
+          }
+        }
+      }
+    }
+    ... on TripFeed {
+      Trip {
+        id
+        type
+        description
+        seats
+        User {
+          id
+          email
+          firstName
+          lastName
+          photo
+          relation {
+            id,
+            email,
+            firstName
+            photo
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
+        returnTrip
+      }
+    }
+  }
+}
+`;
 
 const GET_FEED_QUERY = gql`
 query getFeed($offset: Int, $limit: Int) {
@@ -108,9 +203,12 @@ query getFeed($offset: Int, $limit: Int) {
 export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
     notifyOnNetworkStatusChange: true,
-    variables: { offset: PAGE_OFFSET, limit: PAGE_LIMIT },
+    fetchPolicy: 'cache-and-network',
+    variables: { offset: 0, limit: 5 },
   },
-  props: ({ data: { loading, getFeed, fetchMore, refetch, networkStatus, error } }) => {
+  props: ({
+    data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  }) => {
     let rows = [];
     let count = 0;
 
@@ -119,6 +217,25 @@ export const withFeed = graphql(GET_FEED_QUERY, {
       count = getFeed.count;
     }
 
-    return { feeds: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
+    return {
+      feeds: { loading, rows, count, fetchMore, refetch, subscribeToMore, networkStatus, error },
+      subscribeToFeed: () => subscribeToMore({
+        document: FEED_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const newrows = [subscriptionData.data.feed].concat(prev.getFeed.rows);
+
+          return {
+            getFeed: {
+              ...prev.getFeed,
+              ...{ rows: newrows, count: prev.getFeed.count + 1 },
+            },
+          };
+        },
+      }),
+    };
   },
 });

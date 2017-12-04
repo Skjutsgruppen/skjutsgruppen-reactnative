@@ -141,7 +141,7 @@ class ExploreGroupsResult extends Component {
         Alert.alert(error.message);
         this.setState({ loading: false });
       },
-      { timeout: 5000, maximumAge: 1000 },
+      { timeout: 20000, maximumAge: 1000 },
     );
   };
 
