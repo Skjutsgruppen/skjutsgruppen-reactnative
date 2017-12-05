@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { withMyTrips } from '@services/apollo/profile';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
-import { NavBar } from '@components/common';
-import { View } from 'react-native';
+import { Wrapper, NavBar } from '@components/common';
+import Colors from '@theme/colors';
+
+const styles = StyleSheet.create({
+  listWrapper: {
+    flex: 1,
+    backgroundColor: Colors.background.lightGray,
+    paddingBottom: 12,
+  },
+});
 
 const Trips = withMyTrips(TripsList);
 
@@ -46,15 +55,17 @@ class UserTrips extends Component {
     const { userId, type } = this.props.navigation.state.params;
 
     return (
-      <View>
+      <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
-        <Trips
-          userId={userId}
-          type={type}
-          onPress={this.onPress}
-          onSharePress={this.onSharePress}
-        />
-      </View>
+        <View style={styles.listWrapper}>
+          <Trips
+            userId={userId}
+            type={type}
+            onPress={this.onPress}
+            onSharePress={this.onSharePress}
+          />
+        </View>
+      </Wrapper>
     );
   }
 }

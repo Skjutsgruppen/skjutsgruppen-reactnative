@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
-import { Loading, CustomButton, NavBar } from '@components/common';
+import { Wrapper, Loading, CustomButton, NavBar } from '@components/common';
 import Relation from '@components/relation';
 import Colors from '@theme/colors';
 import FeedList from '@components/group/feed/list';
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   feed: {
     backgroundColor: '#fff',
     marginBottom: 64,
+    flex: 1,
   },
   feedContent: {
     backgroundColor: '#fff',
@@ -326,16 +327,19 @@ class Detail extends Component {
 
   render() {
     const { group, navigation } = this.props;
+    const header = this.header(this.state.leaveLoading);
     return (
-      <View style={{ flex: 1 }}>
+      <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
-        <GroupFeedList
-          header={() => this.header(this.state.leaveLoading)}
-          navigation={navigation}
-          groupId={group.id}
-        />
+        <View style={styles.feed}>
+          <GroupFeedList
+            header={header}
+            navigation={navigation}
+            groupId={group.id}
+          />
+        </View>
         {this.renderCommentForm()}
-      </View>
+      </Wrapper>
     );
   }
 }

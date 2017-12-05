@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-const Ask = ({ ask, onPress, onSharePress }) => {
+const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
   if (ask.photo) {
     image = (<Image source={{ uri: ask.photo }} style={{ width: '100%', height: 200 }} />);
@@ -98,7 +98,7 @@ const Ask = ({ ask, onPress, onSharePress }) => {
   }
 
   return (
-    <View style={styles.feed}>
+    <View style={[styles.feed, wrapperStyle]}>
       <View style={styles.feedContent}>
         <View style={styles.feedTitle}>
           <TouchableOpacity onPress={() => onPress('profile', ask.User.id)}>{profileImage}</TouchableOpacity>
@@ -154,6 +154,11 @@ Ask.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
+  wrapperStyle: View.propTypes.style,
+};
+
+Ask.defaultProps = {
+  wrapperStyle: {},
 };
 
 export default Ask;

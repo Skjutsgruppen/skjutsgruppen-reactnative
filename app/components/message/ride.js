@@ -47,6 +47,15 @@ const styles = StyleSheet.create({
     height: 16,
     resizeMode: 'contain',
   },
+  emptyMessage: {
+    opacity: 0.5,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  spacedWrapper: {
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+  },
 });
 
 
@@ -95,14 +104,18 @@ const item = (trip, navigation) => (
 );
 
 const Ride = ({ trips, navigation }) => {
-  let render = (<Text>No Ride.</Text>);
+  let render = (<Text style={styles.emptyMessage}>No Ride</Text>);
 
   if (trips.count > 0) {
     render = trips.rows.map(trip => item(trip, navigation));
   }
 
   if (trips.loading) {
-    render = (<Loading />);
+    render = (
+      <View style={styles.spacedWrapper}>
+        <Loading />
+      </View>
+    );
   }
 
   return (

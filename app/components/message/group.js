@@ -47,6 +47,15 @@ const styles = StyleSheet.create({
     height: 16,
     resizeMode: 'contain',
   },
+  emptyMessage: {
+    opacity: 0.5,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  spacedWrapper: {
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+  },
 });
 
 const renderPic = (photo) => {
@@ -82,14 +91,18 @@ const item = (group, navigation) => (
 
 
 const Group = ({ groups, navigation }) => {
-  let render = (<Text>No Group.</Text>);
+  let render = (<Text style={styles.emptyMessage}>No Group</Text>);
 
   if (groups.count > 0) {
     render = groups.rows.map(group => item(group, navigation));
   }
 
   if (groups.loading) {
-    render = (<Loading />);
+    render = (
+      <View style={styles.spacedWrapper}>
+        <Loading />
+      </View>
+    );
   }
 
   return (

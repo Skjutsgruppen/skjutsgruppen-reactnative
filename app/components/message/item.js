@@ -69,6 +69,19 @@ const styles = StyleSheet.create({
   accept: {
     marginRight: 8,
   },
+  requestResult: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    opacity: 0.75,
+  },
+  requestResultLabel: {
+    marginLeft: 2,
+    color: Colors.text.gray,
+  },
+  requestResultIcon: {
+    marginTop: 3,
+  },
   chevron: {
     width: 16,
     height: 16,
@@ -82,21 +95,21 @@ class Item extends PureComponent {
     this.state = { loading: false, action: 0 };
   }
 
-  rejectGroupRequest = (id) => {
-    const { rejectGroupInvitation, notification } = this.props;
-    this.setState({ loading: true });
-    rejectGroupInvitation(id)
-      .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 2 }))
-      .catch(() => this.setState({ loading: false }));
-  }
-
   acceptGroupRequest = (id) => {
     const { acceptGroupRequest, notification } = this.props;
     this.setState({ loading: true });
     acceptGroupRequest(id)
       .then(notification.refetch)
       .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  rejectGroupRequest = (id) => {
+    const { rejectGroupInvitation, notification } = this.props;
+    this.setState({ loading: true });
+    rejectGroupInvitation(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: 2 }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -114,7 +127,7 @@ class Item extends PureComponent {
     this.setState({ loading: true });
     rejectFriendRequest(id)
       .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 1 }))
+      .then(() => this.setState({ loading: false, action: 2 }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -188,7 +201,7 @@ class Item extends PureComponent {
           <View style={styles.profilePicWrapper}>
             {this.renderPic(photo)}
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text>
               {
                 user &&
@@ -343,14 +356,15 @@ class Item extends PureComponent {
 
     if (action === 1) {
       return (
-        <View style={styles.actions}>
+        <View style={styles.requestResult}>
           <Icon
-            name="ios-checkmark-circle-outline"
-            size={32}
+            name="ios-checkmark"
+            size={24}
             color={Colors.text.blue}
+            style={styles.requestResultIcon}
           />
           <View>
-            <Text>Accepted</Text>
+            <Text style={styles.requestResultLabel}>Accepted</Text>
           </View>
         </View>
       );
@@ -358,14 +372,15 @@ class Item extends PureComponent {
 
     if (action === 2) {
       return (
-        <View style={styles.actions}>
+        <View style={styles.requestResult}>
           <Icon
-            name="ios-close-circle-outline"
-            size={32}
+            name="ios-close"
+            size={24}
             color={Colors.text.blue}
+            style={styles.requestResultIcon}
           />
           <View>
-            <Text>Rejected</Text>
+            <Text style={styles.requestResultLabel}>Rejected</Text>
           </View>
         </View>
       );
