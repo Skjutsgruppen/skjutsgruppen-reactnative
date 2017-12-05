@@ -204,7 +204,7 @@ export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'cache-and-network',
-    variables: { offset: 0, limit: 5 },
+    variables: { offset: 0, limit: 10 },
   },
   props: ({
     data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
