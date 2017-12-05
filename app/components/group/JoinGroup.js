@@ -24,6 +24,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginVertical: 12,
   },
+  herderStyles: { 
+    marginLeft: 0,
+    marginRight: 0,
+    borderBottomWidth: 0
+  }
 });
 
 class JoinGroup extends Component {
@@ -92,7 +97,12 @@ class JoinGroup extends Component {
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
-        <GroupItem min onPress={() => { }} group={group} />
+        <GroupItem
+          min
+          onPress={() => { }}
+          group={group}
+          wrapperStyle={styles.herderStyles}
+        />
         <Text style={styles.label}>About</Text>
         <Text style={styles.text}>
           {group.description}

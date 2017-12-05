@@ -101,6 +101,29 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 48,
   },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 32,
+    paddingHorizontal: 12,
+    marginHorizontal: 12,
+    backgroundColor: Colors.background.red,
+    borderRadius: 8,
+  },
+  actionButtonAccept: {
+    backgroundColor: Colors.background.green,
+  },
+  actionLable: {
+    marginLeft: 6,
+    color: Colors.text.white,
+  },
   listWrapper: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.gray,
@@ -116,6 +139,12 @@ const styles = StyleSheet.create({
   },
   listLabel: {
     color: Colors.text.darkGray,
+  },
+  loadingWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 400,
   },
 });
 
@@ -243,7 +272,7 @@ class Profile extends Component {
     this.setState({ loading: true });
     rejectFriendRequest(profile.FriendRequest.id)
       .then(refetch)
-      .then(() => this.setState({ loading: false, action: 1 }))
+      .then(() => this.setState({ loading: false, action: 2 }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -251,22 +280,23 @@ class Profile extends Component {
     <View style={styles.actions}>
       <TouchableOpacity
         onPress={this.acceptRequest}
-        style={styles.accept}
+        style={[styles.actionButton, styles.actionButtonAccept]}
       >
         <Icon
-          name="ios-checkmark-circle-outline"
-          size={32}
-          color={Colors.text.blue}
-        /><Text>Accept</Text>
+          name="ios-checkmark"
+          size={24}
+          color={Colors.text.white}
+        /><Text style={styles.actionLable}>Accept</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={this.rejectRequest}
+        style={styles.actionButton}
       >
         <Icon
-          name="ios-close-circle-outline"
-          size={32}
-          color={Colors.text.red}
-        /><Text>Reject</Text>
+          name="ios-close"
+          size={24}
+          color={Colors.text.white}
+        /><Text style={styles.actionLable}>Reject</Text>
       </TouchableOpacity>
     </View>
   )
@@ -289,7 +319,11 @@ class Profile extends Component {
     const { data: { networkStatus, profile } } = this.props;
 
     if (networkStatus === 1) {
-      return <Loading />;
+      return (
+        <View style={styles.loadingWrapper}>
+          <Loading />
+        </View>
+      );
     }
 
     return (

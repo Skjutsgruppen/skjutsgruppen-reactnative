@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Group = ({ group, onPress, min, onSharePress }) => {
+const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   let image = null;
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
@@ -120,7 +120,7 @@ const Group = ({ group, onPress, min, onSharePress }) => {
   }
 
   return (
-    <View style={styles.feed}>
+    <View style={[styles.feed, wrapperStyle]}>
       <View style={styles.feedContent}>
         {!min &&
           <View style={styles.feedTitle}>
@@ -195,11 +195,13 @@ Group.propTypes = {
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,
   min: PropTypes.bool,
+  wrapperStyle: View.propTypes.style,
 };
 
 Group.defaultProps = {
   onSharePress: () => { },
   min: false,
+  wrapperStyle: {},
 };
 
 export default Group;

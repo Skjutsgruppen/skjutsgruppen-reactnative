@@ -11,6 +11,7 @@ const Colors = {
     cream: '#f3f2ed',
     fullWhite: '#ffffff',
     darkCyan: '#2fad9e',
+    red: '#e00',
   },
   text: {
     blue: '#00aeef',

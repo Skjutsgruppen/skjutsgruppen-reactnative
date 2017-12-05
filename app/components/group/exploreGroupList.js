@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, FlatList, Alert } from
 import { Loading } from '@components/common';
 import GroupItem from '@components/feed/card/group';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -22,12 +23,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 8,
+    marginHorizontal: 8,
+  },
+  activeFilterLabelWrapper: {
+    backgroundColor: Colors.background.lightGray,
+    borderRadius: 4,
   },
   filterLabel: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#1db0ed',
-    paddingVertical: 12,
   },
   icon: {
     height: 16,
@@ -80,7 +86,8 @@ class ExploreGroupsResult extends Component {
         latitudeDelta: 0.015,
         longitudeDelta: 0.0121,
       },
-      filter: 'Popular Group',
+      filterTitle: 'Popular Groups',
+      filterType: 'popular',
     });
   }
 
@@ -105,7 +112,7 @@ class ExploreGroupsResult extends Component {
           from: [region.latitude, region.longitude],
           filter,
         });
-        this.setState({ filter: 'Groups Near You' });
+        this.setState({ filterTitle: 'Groups Near You', filterType: 'nearby' });
       }
     }
 
@@ -115,7 +122,7 @@ class ExploreGroupsResult extends Component {
         filter,
         order: 'asc',
       });
-      this.setState({ filter: 'A to Z' });
+      this.setState({ filterTitle: 'A to Z', filterType: 'name' });
     }
 
     if (filter === 'popular') {
@@ -123,7 +130,7 @@ class ExploreGroupsResult extends Component {
         from: null,
         filter: 'popular',
       });
-      this.setState({ filter: 'Popular Groups' });
+      this.setState({ filterTitle: 'Popular Groups', filterType: 'popular' });
     }
   }
 
@@ -151,7 +158,7 @@ class ExploreGroupsResult extends Component {
     navigation.navigate('GroupDetail', { group: detail });
   }
 
-  renderHeader = () => <Text style={styles.listLabel}>{this.state.filter}</Text>
+  renderHeader = () => <Text style={styles.listLabel}>{this.state.filterTitle}</Text>
 
   renderFooter = () => {
     const { exploreGroups: { networkStatus, exploreGroups: { rows: Group, count } } } = this.props;
@@ -243,7 +250,9 @@ class ExploreGroupsResult extends Component {
         <View style={styles.filterRow}>
           <View style={{ width: '33.33%' }}>
             <TouchableOpacity onPress={() => this.onPressFilter('nearby')}>
-              <View style={styles.filterLabelWrapper}>
+              <View
+                style={[styles.filterLabelWrapper, this.state.filterType === 'nearby' ? styles.activeFilterLabelWrapper : []]}
+              >
                 <Image source={require('@icons/icon_location_purple.png')} style={styles.icon} />
                 <Text style={styles.filterLabel}>Near You</Text>
               </View>
@@ -252,7 +261,9 @@ class ExploreGroupsResult extends Component {
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
             <TouchableOpacity onPress={() => this.onPressFilter('popular')}>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <View
+                style={[styles.filterLabelWrapper, this.state.filterType === 'popular' ? styles.activeFilterLabelWrapper : []]}
+              >
                 <Text style={styles.filterLabel}>Popular</Text>
               </View>
             </TouchableOpacity>
@@ -260,7 +271,9 @@ class ExploreGroupsResult extends Component {
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
             <TouchableOpacity onPress={() => this.onPressFilter('name')}>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <View
+                style={[styles.filterLabelWrapper, this.state.filterType === 'name' ? styles.activeFilterLabelWrapper : []]}
+              >
                 <Text style={styles.filterLabel}>A to Z</Text>
               </View>
             </TouchableOpacity>
