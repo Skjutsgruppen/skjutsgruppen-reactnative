@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-const Offer = ({ offer, onPress, onSharePress }) => {
+const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
   if (offer.photo) {
     image = (<Image source={{ uri: offer.photo }} style={styles.feedImg} />);
@@ -99,7 +99,7 @@ const Offer = ({ offer, onPress, onSharePress }) => {
   }
 
   return (
-    <View style={styles.feed}>
+    <View style={[styles.feed, wrapperStyle]}>
       <View style={styles.feedContent}>
         <View style={styles.feedTitle}>
           <TouchableOpacity onPress={() => onPress('profile', offer.User.id)}>{profileImage}</TouchableOpacity>
@@ -162,6 +162,11 @@ Offer.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
+  wrapperStyle: View.propTypes.style,
+};
+
+Offer.defaultProps = {
+  wrapperStyle: {},
 };
 
 export default Offer;

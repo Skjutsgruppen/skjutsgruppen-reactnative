@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 
 const UserTripsList = ({ userId, onPress, onSharePress, data, ...props }) => {
   if (data.networkStatus === 1) {
-    return <Loading />;
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Loading />
+      </View>
+    );
   }
 
   const { trips } = data;
@@ -31,7 +35,7 @@ const UserTripsList = ({ userId, onPress, onSharePress, data, ...props }) => {
   }
 
   return (
-    <View>
+    <View style={{ padding: 24 }}>
       <Text>No rides yet.</Text>
     </View>
   );

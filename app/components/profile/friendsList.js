@@ -1,12 +1,16 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Loading } from '@components/common';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
 
 const UsersGroupsList = ({ id, onPress, data, data: { friends }, ...props }) => {
   if (data.networkStatus === 1) {
-    return <Loading />;
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Loading />
+      </View>
+    );
   }
 
   return (

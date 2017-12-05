@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 24,
   },
+  section: {
+    paddingVertical: 32,
+  },
   button: {
     marginHorizontal: 24,
     marginTop: 8,
@@ -124,20 +127,22 @@ class Support extends Component {
             navigation={navigation}
             id={this.props.user.id}
           />
-          <CustomButton
-            bgColor={Colors.background.darkCyan}
-            style={styles.button}
-            onPress={this.logout}
-          >
-            Logout
-          </CustomButton>
-          <CustomButton
-            bgColor={Colors.background.darkCyan}
-            style={styles.button}
-            onPress={this.sync}
-          >
-            Sync Contacts
-          </CustomButton>
+          <View style={styles.section}>
+            <CustomButton
+              bgColor={Colors.background.darkCyan}
+              style={styles.button}
+              onPress={this.logout}
+            >
+              Logout
+            </CustomButton>
+            <CustomButton
+              bgColor={Colors.background.darkCyan}
+              style={styles.button}
+              onPress={this.sync}
+            >
+              Sync Contacts
+            </CustomButton>
+          </View>
         </ScrollView>
       </Wrapper>
     );

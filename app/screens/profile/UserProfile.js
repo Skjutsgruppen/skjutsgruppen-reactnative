@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
 import PropTypes from 'prop-types';
-import { NavBar } from '@components/common';
+import { Wrapper, NavBar } from '@components/common';
+import Colors from '@theme/colors';
 
 const Profile = withProfile(ProfileDetail);
 
@@ -11,7 +12,7 @@ const UserProfile = ({ navigation }) => {
   const { profileId } = navigation.state.params;
 
   return (
-    <View>
+    <Wrapper bgColor={Colors.background.cream}>
       <NavBar handleBack={() => navigation.goBack()} />
       <ScrollView>
         <Profile
@@ -19,7 +20,7 @@ const UserProfile = ({ navigation }) => {
           id={profileId}
         />
       </ScrollView>
-    </View>
+    </Wrapper>
   );
 };
 
