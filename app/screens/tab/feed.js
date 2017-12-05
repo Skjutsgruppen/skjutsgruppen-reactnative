@@ -179,7 +179,7 @@ class Feed extends Component {
         onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          if (feeds.loading) return;
+          if (feeds.loading || feeds.rows.length >= feeds.count) return;
           feeds.fetchMore({
             variables: { offset: feeds.rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {

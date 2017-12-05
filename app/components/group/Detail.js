@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
+import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
-import { submitComment, withGroupComment } from '@services/apollo/comment';
+import { submitComment } from '@services/apollo/comment';
+import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { Loading, CustomButton, NavBar } from '@components/common';
-import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import Colors from '@theme/colors';
+import FeedList from '@components/group/feed/list';
 
-const GroupComment = withGroupComment(Comment);
+const GroupFeedList = withGroupFeed(FeedList);
 
 const styles = StyleSheet.create({
   contentWrapper: {
@@ -183,7 +184,9 @@ class Detail extends Component {
     const { group, leaveGroup, refresh } = this.props;
     this.setState(
       { leaveLoading: true },
-      () => leaveGroup(group.id).then(refresh).catch(console.error),
+      () => leaveGroup(group.id)
+        .then(refresh)
+        .catch(console.error),
     );
   }
 
@@ -224,6 +227,50 @@ class Detail extends Component {
     navigation.goBack();
   }
 
+  header = (leaveLoading) => {
+    const { group } = this.props;
+    const { error } = this.state;
+
+    let image = '';
+    if (group.photo) {
+      image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
+    } else {
+      image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
+    }
+
+    return (<View>
+      <View style={styles.feedContent}>
+        <View>
+          {image}
+          <View style={styles.newGroupInfoWrapper}>
+            <View style={styles.newGroupNameWrapper}>
+              <Text style={styles.newGroupName}>{group.name}</Text>
+            </View>
+            {
+              group.outreach === 'area' &&
+              <Text style={styles.newGroupPlace}>
+                {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
+              </Text>
+            }
+
+            {
+              group.outreach === 'route' &&
+              <Text style={styles.newGroupPlace}>
+                {group.TripStart.name} - {group.TripEnd.name}
+              </Text>
+            }
+            <Text style={styles.newGroupInfo}>
+              {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
+            </Text>
+          </View>
+        </View>
+        {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
+      </View>
+      <Relation users={group.User.relation} />
+      {error !== '' && <View><Text>{error}</Text></View>}
+    </View>);
+  }
+
   renderButton = () => {
     const { loading } = this.state;
     if (loading) {
@@ -261,9 +308,7 @@ class Detail extends Component {
     );
   }
 
-  renderLeaveButton = () => {
-    const { leaveLoading } = this.state;
-
+  renderLeaveButton = (leaveLoading) => {
     if (leaveLoading) {
       return (<Loading />);
     }
@@ -280,69 +325,15 @@ class Detail extends Component {
   }
 
   render() {
-    const { group } = this.props;
-    const { error } = this.state;
-
-    let image = '';
-    if (group.photo) {
-      image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
-    } else {
-      image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
-    }
-
-    let profileImage = null;
-    if (group.User.photo) {
-      profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
-    } else {
-      profileImage = (<View style={styles.imgIcon} />);
-    }
-
+    const { group, navigation } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <NavBar handleBack={this.goBack} />
-        <ScrollView style={styles.contentWrapper}>
-          <View style={styles.feed}>
-            <View style={styles.feedContent}>
-              <View style={styles.feedTitle}>
-                <TouchableOpacity onPress={this.onPress}>{profileImage}</TouchableOpacity>
-                <Text style={styles.lightText}>
-                  <Text style={styles.name}>
-                    {group.User.firstName || group.User.email}
-                  </Text>
-                  <Text> created a group</Text>
-                </Text>
-              </View>
-              <View>
-                {image}
-                <View style={styles.newGroupInfoWrapper}>
-                  <View style={styles.newGroupNameWrapper}>
-                    <Text style={styles.newGroupName}>{group.name}</Text>
-                  </View>
-                  {
-                    group.outreach === 'area' &&
-                    <Text style={styles.newGroupPlace}>
-                      {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-                    </Text>
-                  }
-
-                  {
-                    group.outreach === 'route' &&
-                    <Text style={styles.newGroupPlace}>
-                      {group.TripStart.name} - {group.TripEnd.name}
-                    </Text>
-                  }
-                  <Text style={styles.newGroupInfo}>
-                    {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
-                  </Text>
-                </View>
-              </View>
-              {this.isGroupJoined() && this.renderLeaveButton()}
-            </View>
-            <Relation users={group.User.relation} />
-            <GroupComment onCommentPress={this.onCommentPress} id={group.id} />
-            {error !== '' && <View><Text>{error}</Text></View>}
-          </View>
-        </ScrollView>
+        <GroupFeedList
+          header={() => this.header(this.state.leaveLoading)}
+          navigation={navigation}
+          groupId={group.id}
+        />
         {this.renderCommentForm()}
       </View>
     );
