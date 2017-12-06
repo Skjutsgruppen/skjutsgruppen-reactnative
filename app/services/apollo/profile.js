@@ -23,6 +23,11 @@ query profile($id: Int){
     totalOffered
     totalAsked
     totalComments
+    relationshipType 
+    FriendRequest {
+      id
+      status
+    }
   }
 }`;
 
