@@ -332,3 +332,53 @@ export const withShare = graphql(SHARE_QUERY, {
     share: ({ id, type, share }) => mutate({ variables: { id, type, share } }),
   }),
 });
+
+
+const ADD_FRIEND_QUERY = gql`
+mutation addFriend($id: Int!) {
+  addFriend(id :$id)
+}
+`;
+
+export const withAddFriend = graphql(ADD_FRIEND_QUERY, {
+  props: ({ mutate }) => ({
+    addFriend: id => mutate({ variables: { id } }),
+  }),
+});
+
+
+const ACCEPT_FRIEND_REQUEST_QUERY = gql`
+mutation acceptFriendRequest($id: Int!) {
+  acceptFriendRequest(id :$id)
+}
+`;
+
+export const withAcceptFriendRequest = graphql(ACCEPT_FRIEND_REQUEST_QUERY, {
+  props: ({ mutate }) => ({
+    acceptFriendRequest: id => mutate({ variables: { id } }),
+  }),
+});
+
+const REJECT_FRIEND_REQUEST_QUERY = gql`
+mutation rejectFriendRequest($id: Int!) {
+  rejectFriendRequest(id :$id)
+}
+`;
+
+export const withRejectFriendRequest = graphql(REJECT_FRIEND_REQUEST_QUERY, {
+  props: ({ mutate }) => ({
+    rejectFriendRequest: id => mutate({ variables: { id } }),
+  }),
+});
+
+const CANCEL_FRIEND_REQUEST_QUERY = gql`
+mutation cancelFriendRequest($id: Int!) {
+  cancelFriendRequest(id :$id)
+}
+`;
+
+export const withCancelFriendRequest = graphql(CANCEL_FRIEND_REQUEST_QUERY, {
+  props: ({ mutate }) => ({
+    cancelFriendRequest: id => mutate({ variables: { id } }),
+  }),
+});

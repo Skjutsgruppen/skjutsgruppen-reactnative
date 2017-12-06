@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 const CREATE_TRIP = gql`
 mutation createTrip(
   $description:String, 
-  $type:String!,
+  $type:TripTypeEnum!,
   $tripStart:PlaceInput!,
   $tripEnd:PlaceInput!,
   $photo:String,

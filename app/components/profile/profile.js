@@ -6,6 +6,8 @@ import { Loading, Wrapper } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/auth';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -118,10 +120,21 @@ const styles = StyleSheet.create({
 });
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = ({ isRequestPending: false });
+  }
+
   onPressProfile = (id) => {
     const { navigation } = this.props;
 
     navigation.navigate('UserProfile', { profileId: id });
+  }
+
+  getPrefix = () => {
+    const { data: { profile } } = this.props;
+
+    return this.isCurrentUser() ? 'My' : `${profile.firstName}'s`;
   }
 
   redirect = (type) => {
@@ -140,6 +153,124 @@ class Profile extends Component {
     }
   }
 
+  sendRequest = () => {
+    const { id, data: { refetch } } = this.props;
+    this.setState({ loading: true }, () => {
+      this.props.addFriend(id)
+        .then(refetch)
+        .then(() => this.setState({ isRequestPending: true, loading: false }))
+        .catch(() => this.setState({ loading: false }));
+    });
+  }
+
+  cancelRequest = () => {
+    const { data: { profile, refetch } } = this.props;
+    this.setState({ loading: true }, () => {
+      this.props.cancelFriendRequest(profile.FriendRequest.id)
+        .then(refetch)
+        .then(() => this.setState({ isRequestPending: false, loading: false }))
+        .catch(() => this.setState({ loading: false }));
+    });
+  }
+
+  isCurrentUser = () => {
+    const { id, user } = this.props;
+
+    return user.id === id;
+  }
+
+  friendRelationButtion = () => {
+    const { data: { profile } } = this.props;
+    const { loading } = this.state;
+
+    if (this.isCurrentUser()) {
+      return null;
+    }
+
+    if (loading) {
+      return (<Loading />);
+    }
+
+    if (profile.relationshipType === 'friend') {
+      return <Text>You are friend.</Text>;
+    }
+
+    if (profile.relationshipType === 'incoming') {
+      return this.renderAction();
+    }
+
+    if (profile.relationshipType === 'outgoing') {
+      return (
+        <CustomButton
+          style={styles.button}
+          bgColor={Colors.background.red}
+          onPress={this.cancelRequest}
+        >
+          Cancel friend request
+        </CustomButton>
+      );
+    }
+
+    return (
+      <CustomButton
+        style={styles.button}
+        bgColor={Colors.background.green}
+        onPress={this.sendRequest}
+      >
+        {`Ask to be ${profile.firstName}'s friend`}
+      </CustomButton>
+    );
+  }
+
+  hasRelation = () => {
+    const { data: { profile } } = this.props;
+    return profile.relation.length > 0;
+  }
+
+  acceptRequest = () => {
+    const { acceptFriendRequest, data: { profile, refetch } } = this.props;
+
+    this.setState({ loading: true });
+    acceptFriendRequest(profile.FriendRequest.id)
+      .then(refetch)
+      .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  rejectRequest = () => {
+    const { rejectFriendRequest, data: { profile, refetch } } = this.props;
+
+    this.setState({ loading: true });
+    rejectFriendRequest(profile.FriendRequest.id)
+      .then(refetch)
+      .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  renderAction = () => (
+    <View style={styles.actions}>
+      <TouchableOpacity
+        onPress={this.acceptRequest}
+        style={styles.accept}
+      >
+        <Icon
+          name="ios-checkmark-circle-outline"
+          size={32}
+          color={Colors.text.blue}
+        /><Text>Accept</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={this.rejectRequest}
+      >
+        <Icon
+          name="ios-close-circle-outline"
+          size={32}
+          color={Colors.text.red}
+        /><Text>Reject</Text>
+      </TouchableOpacity>
+    </View>
+  )
+
   renderRelation = () => {
     const { data: { profile } } = this.props;
 
@@ -155,9 +286,9 @@ class Profile extends Component {
   }
 
   render() {
-    const { data, data: { profile }, id, user } = this.props;
+    const { data: { networkStatus, profile } } = this.props;
 
-    if (data.networkStatus === 1) {
+    if (networkStatus === 1) {
       return <Loading />;
     }
 
@@ -194,7 +325,7 @@ class Profile extends Component {
             <Text style={styles.activityLabel}>Talked {'\n'} about</Text>
           </View>
         </View>
-        {!(user.id === id) &&
+        {!this.isCurrentUser() && this.hasRelation() &&
           <View>
             <View style={styles.connectionLabel}>
               <Text style={styles.lightText}>This is how you know {profile.firstName}</Text>
@@ -207,36 +338,28 @@ class Profile extends Component {
             </View>
           </View>
         }
-        {!(user.id === id) &&
-          <CustomButton
-            style={styles.button}
-            bgColor={Colors.background.green}
-            onPress={() => { }}
-          >
-            {`Ask to be ${profile.firstName}'s friend`}
-          </CustomButton>
-        }
+        {this.friendRelationButtion()}
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('experiences')} style={styles.list}>
-            <Text style={styles.listLabel}>{!(user.id === id) ? `${profile.firstName}'s` : 'My'} experiences</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} experiences</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('ride')} style={styles.list}>
-            <Text style={styles.listLabel}>{!(user.id === id) ? `${profile.firstName}'s` : 'My'} ride</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} ride</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={styles.listWrapper}>
           <TouchableOpacity onPress={() => this.redirect('groups')} style={styles.list}>
-            <Text style={styles.listLabel}>{!(user.id === id) ? `${profile.firstName}'s` : 'My'} groups</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} groups</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
         <View style={[styles.listWrapper, styles.lastListWrapper]}>
           <TouchableOpacity onPress={() => this.redirect('friends')} style={styles.list}>
-            <Text style={styles.listLabel}>{!(user.id === id) ? `${profile.firstName}'s` : 'My'} friends</Text>
+            <Text style={styles.listLabel}>{this.getPrefix()} friends</Text>
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
@@ -255,9 +378,21 @@ Profile.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
-  user: PropTypes.shape().isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  addFriend: PropTypes.func.isRequired,
+  cancelFriendRequest: PropTypes.func.isRequired,
+  rejectFriendRequest: PropTypes.func.isRequired,
+  acceptFriendRequest: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(connect(mapStateToProps))(Profile);
+export default compose(
+  withAddFriend,
+  withCancelFriendRequest,
+  withAcceptFriendRequest,
+  withRejectFriendRequest,
+  connect(mapStateToProps),
+)(Profile);
