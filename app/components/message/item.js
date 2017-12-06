@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
+import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/auth';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -99,6 +100,24 @@ class Item extends PureComponent {
       .catch(() => this.setState({ loading: false }));
   }
 
+  acceptFriendRequest = (id) => {
+    const { acceptFriendRequest, notification } = this.props;
+    this.setState({ loading: true });
+    acceptFriendRequest(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  rejectFriendRequest = (id) => {
+    const { rejectFriendRequest, notification } = this.props;
+    this.setState({ loading: true });
+    rejectFriendRequest(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: 1 }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
   redirect = (id, route, params) => {
     const { navigation, filters, notification, markRead } = this.props;
 
@@ -108,6 +127,29 @@ class Item extends PureComponent {
 
     navigation.navigate(route, params);
   }
+
+  friendRequest = ({ User, FriendRequest }) => (
+    <View style={styles.list}>
+      <View style={styles.flexRow}>
+        <View style={styles.profilePicWrapper}>
+          {this.renderPic(User.photo)}
+        </View>
+        <Text style={styles.textWrap}>
+          <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+          <Text>
+            sent you friend request.
+          </Text>
+        </Text>
+      </View>
+      {this.state.loading ?
+        <Loading /> :
+        this.renderAction(
+          FriendRequest.id,
+          this.acceptFriendRequest,
+          this.rejectFriendRequest,
+        )}
+    </View>
+  );
 
   requestJoinGroup = ({ User, GroupMembershipRequest }) => (
     <View style={styles.list}>
@@ -129,7 +171,13 @@ class Item extends PureComponent {
           </Text>
         </Text>
       </View>
-      {this.state.loading ? <Loading /> : this.renderAction(GroupMembershipRequest.id)}
+      {this.state.loading ?
+        <Loading /> :
+        this.renderAction(
+          GroupMembershipRequest.id,
+          this.acceptGroupRequest,
+          this.rejectGroupRequest,
+        )}
     </View>
   );
 
@@ -182,6 +230,20 @@ class Item extends PureComponent {
         text: `accepted your request to join group "${Group.name}"`,
         date,
         onPress: () => this.redirect(id, 'GroupDetail', { group: Group }),
+      });
+    }
+
+    return null;
+  }
+
+  friendRequestAccepted = ({ FriendRequest, User, date, id }) => {
+    if (FriendRequest) {
+      return this.item({
+        user: User.firstName,
+        photo: User.photo,
+        text: 'accepted your friend request',
+        date,
+        onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
       });
     }
 
@@ -250,14 +312,14 @@ class Item extends PureComponent {
     });
   }
 
-  renderAction = (id) => {
+  renderAction = (id, accept, reject) => {
     const { action } = this.state;
 
     if (action === 0) {
       return (
         <View style={styles.actions}>
           <TouchableOpacity
-            onPress={() => this.acceptGroupRequest(id)}
+            onPress={() => accept(id)}
             style={styles.accept}
           >
             <Icon
@@ -267,7 +329,7 @@ class Item extends PureComponent {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.rejectGroupRequest(id)}
+            onPress={() => reject(id)}
           >
             <Icon
               name="ios-close-circle-outline"
@@ -341,6 +403,14 @@ class Item extends PureComponent {
       message = this.invitation(notification);
     }
 
+    if (notification.type === 'friend_request') {
+      message = this.friendRequest(notification);
+    }
+
+    if (notification.type === 'friend_request_accepted') {
+      message = this.friendRequestAccepted(notification);
+    }
+
     return (
       <View key={notification.id}>
         {message}
@@ -361,9 +431,14 @@ Item.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  rejectFriendRequest: PropTypes.func.isRequired,
+  acceptFriendRequest: PropTypes.func.isRequired,
 };
 
 export default compose(
   withReadNotification,
   withRejectGroupInvitation,
-  withAcceptGroupRequest)(Item);
+  withAcceptGroupRequest,
+  withAcceptFriendRequest,
+  withRejectFriendRequest,
+)(Item);
