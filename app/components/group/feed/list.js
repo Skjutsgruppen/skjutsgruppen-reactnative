@@ -148,7 +148,7 @@ GroupFeed.propTypes = {
     refetch: PropTypes.func,
     fetchMore: PropTypes.fetchMore,
   }).isRequired,
-  header: PropTypes.node.isRequired,
+  header: PropTypes.element.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
