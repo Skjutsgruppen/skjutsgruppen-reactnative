@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, NavBar } from '@components/common';
+import { Wrapper, Loading, NavBar } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 
 const AskComment = withTripComment(Comment);
 
@@ -240,7 +241,7 @@ class AskDetail extends Component {
     }
 
     return (
-      <View style={{ flex: 1 }}>
+      <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <ScrollView>
           <View style={styles.feed}>
@@ -271,7 +272,7 @@ class AskDetail extends Component {
           </View>
         </ScrollView>
         {this.renderCommentForm()}
-      </View>
+      </Wrapper>
     );
   }
 }

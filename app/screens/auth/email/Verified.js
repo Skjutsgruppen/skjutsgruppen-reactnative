@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text, Picker } from 'react-native';
+import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text, Picker, FlatList, Modal, TouchableOpacity } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
@@ -17,21 +17,34 @@ import { Icons } from '@icons';
 
 const styles = StyleSheet.create({
   garderIcon: {
-    marginBottom: 50,
-    resizeMode: 'cover',
+    height: 100,
+    width: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 24,
   },
   inputWrapper: {
     width: '100%',
+    marginBottom: 32,
+  },
+  countryCodeWrapper: {
+    flexDirection: 'row',
+    backgroundColor: Colors.background.fullWhite,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  countryCode: {
+    height: '100%',
+    paddingHorizontal: 12,
   },
   input: {
-    width: '100%',
     padding: 16,
     fontSize: 14,
     textAlign: 'center',
     backgroundColor: Colors.background.fullWhite,
-    marginBottom: 32,
+    marginBottom: 0,
   },
-  firstNameInput: {
+  firstInputWrapper: {
     marginBottom: 12,
   },
   divider: {
@@ -39,6 +52,31 @@ const styles = StyleSheet.create({
     height: 1,
     marginVertical: 32,
     backgroundColor: Colors.background.lightGray,
+  },
+  customPicker: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    paddingHorizontal: 12,
+    paddingVertical: 24,
+  },
+  pickerContent: {
+    flex: 1,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 2,
+    paddingVertical: 12,
+  },
+  pickerItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    fontSize: 16,
+    color: '#333',
+  },
+  selected: {
+    backgroundColor: '#eee',
+    color: Colors.text.gray,
+  },
+  buttonWrapper: {
+    marginHorizontal: 24,
   },
 });
 
@@ -49,7 +87,7 @@ class Verified extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '' });
+    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '', modalVisibility: false });
   }
 
   componentWillMount() {
@@ -83,6 +121,10 @@ class Verified extends Component {
       Toast.show(validation.errors.join('\n'), Toast.LONG);
       this.setState({ loading: false });
     }
+  }
+
+  setModalVisibility = (visibility) => {
+    this.setState({ modalVisibility: visibility });
   }
 
   navigateTo = (routeName) => {
@@ -122,6 +164,19 @@ class Verified extends Component {
     };
   }
 
+  changeCountryCode = (countryCode) => {
+    this.setState({ countryCode });
+    this.setModalVisibility(false);
+  }
+
+  renderCountryCode = () => countries.map(country => (
+    <Picker.Item
+      key={country.code}
+      label={`${country.dial_code} - ${country.name}`}
+      value={country.dial_code}
+    />
+  ));
+
   renderButton = () => {
     const { loading } = this.state;
 
@@ -133,24 +188,39 @@ class Verified extends Component {
       <CustomButton
         bgColor={Colors.background.green}
         onPress={this.onSubmit}
+        style={styles.buttonWrapper}
       >
         Next
       </CustomButton>
     );
   }
 
-  renderCountryCode = () => countries.map(country => (
-    <Picker.Item
-      key={country.code}
-      label={`${country.dial_code} - ${country.name}`}
-      value={country.dial_code}
+
+  renderPickerList = () => (
+    <FlatList
+      data={countries}
+      keyExtractor={(item, index) => index}
+      renderItem={({ item }, index) => this.renderPickerItem(item, index)}
+      onPressItem={this.changeCountryCode}
     />
-  ));
+  )
+
+  renderPickerItem = ({ dial_code, code, name }) => {
+    const selected = this.state.countryCode === dial_code ? styles.selected : [];
+    return (
+      <Text
+        key={code}
+        style={[styles.pickerItem, selected]}
+        onPress={() => this.changeCountryCode(dial_code)}
+      >
+        {`${dial_code} - ${name}`}
+      </Text>
+    );
+  }
 
   render() {
     const message = 'Great job! \n Now fill in your name';
     const { error } = this.state;
-
     return (
       <Container>
         <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
@@ -159,7 +229,7 @@ class Verified extends Component {
 
         {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
 
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
           <TextInput
             style={[styles.input, styles.firstNameInput]}
             placeholder="Your first name"
@@ -185,7 +255,10 @@ class Verified extends Component {
           </Picker>
         </View>
 
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
+          {/* <TouchableOpacity onPress={() => this.setModalVisibility(true)}>
+            <Text>{this.state.countryCode}</Text>
+          </TouchableOpacity> */}
           <TextInput
             keyboardType="phone-pad"
             style={[styles.input, styles.firstNameInput]}
@@ -203,6 +276,20 @@ class Verified extends Component {
             onChangeText={password => this.setState({ password })}
           />
         </View>
+        <Modal
+          transparent
+          visible={this.state.modalVisibility}
+        >
+          <View
+            style={styles.customPicker}
+          >
+            <View style={styles.pickerContent}>
+              {
+                this.renderPickerList()
+              }
+            </View>
+          </View>
+        </Modal>
         {this.renderButton()}
       </Container>
     );

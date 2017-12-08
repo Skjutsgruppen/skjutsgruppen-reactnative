@@ -5,10 +5,24 @@ import Offer from '@components/feed/card/offer';
 
 const TripsItem = ({ trip, onPress, onSharePress }) => {
   if (trip.type === 'offered') {
-    return (<Offer offer={trip} onPress={onPress} onSharePress={onSharePress} />);
+    return (
+      <Offer
+        offer={trip}
+        onPress={onPress}
+        onSharePress={onSharePress}
+        wrapperStyle={{ marginTop: 8 }}
+      />
+    );
   }
 
-  return (<Ask ask={trip} onPress={onPress} onSharePress={onSharePress} />);
+  return (
+    <Ask
+      ask={trip}
+      onPress={onPress}
+      onSharePress={onSharePress}
+      wrapperStyle={{ marginVertical: 8, height: 500 }}
+    />
+  );
 };
 
 TripsItem.propTypes = {
