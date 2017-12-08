@@ -321,3 +321,321 @@ export const withFindGroup = graphql(FIND_GROUP, {
     return { loading, group, refetch, networkStatus, error };
   },
 });
+
+export const GROUP_FEED = gql`
+query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
+  groupFeed(offset: $offset, limit: $limit, groupId: $groupId){
+    rows {
+      id
+      date
+      User {
+        id
+        email
+        photo
+        phoneNumber
+        firstName
+        lastName
+      }
+      rate
+      updatedAt
+      feedable
+      ActivityType {
+        type
+        rank
+      }
+      ... on GroupFeed {
+        Group {
+          id
+          outreach
+          name
+          description
+          type
+          photo
+          User {
+            id
+            email
+            firstName
+            lastName
+            photo
+            relation {
+              id
+              email
+              firstName
+              photo
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          country
+          county
+          municipality
+          locality
+          GroupMembers {
+            id
+          }
+          GroupMembershipRequests {
+            id
+            status
+            Member {
+              id
+              email
+              firstName
+            }
+          }
+        }
+      }
+      ... on TripFeed {
+        Trip {
+          id
+          type
+          description
+          seats 
+          User {
+            id
+            email
+            firstName
+            lastName
+            photo
+            relation {
+              id
+              email
+              firstName
+              photo
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          time
+          photo
+          returnTrip
+        }
+      }
+      ... on CommentFeed {
+        Comment {
+          id
+          groupId
+          text
+          date
+          User {
+            id
+            email
+            photo
+            firstName
+            lastName
+            relation {
+              id
+              email
+              firstName
+              photo
+            }
+          }
+        }
+      }
+    }
+    count
+  }
+}`;
+
+const GROUP_FEED_SUBSCRIPTION = gql`
+subscription groupFeed($groupId: Int!){
+  groupFeed(groupId: $groupId){
+    id
+    date
+    User {
+      id
+      email
+      photo
+      phoneNumber
+      firstName
+      lastName
+    }
+    rate
+    updatedAt
+    feedable
+    ActivityType {
+      type
+      rank
+    }
+    ... on GroupFeed {
+      Group {
+        id
+        outreach
+        name
+        description
+        type
+        photo
+        User {
+          id
+          email
+          firstName
+          lastName
+          photo
+          relation {
+            id
+            email
+            firstName
+            photo
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        country
+        county
+        municipality
+        locality
+        GroupMembers {
+          id
+        }
+        GroupMembershipRequests {
+          id
+          status
+          Member {
+            id
+            email
+            firstName
+          }
+        }
+      }
+    }
+    ... on TripFeed {
+      Trip {
+        id
+        type
+        description
+        seats 
+        User {
+          id
+          email
+          firstName
+          lastName
+          photo
+          relation {
+            id
+            email
+            firstName
+            photo
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
+        returnTrip
+      }
+    }
+    ... on CommentFeed {
+      Comment {
+        id
+        groupId
+        text
+        date
+        User {
+          id
+          email
+          photo
+          firstName
+          lastName
+          relation {
+            id
+            email
+            firstName
+            photo
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const withGroupFeed = graphql(GROUP_FEED, {
+  options: ({ groupId }) => ({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    variables: { offset: 0, limit: 10, groupId },
+  }),
+  props: ({
+    data: { loading, groupFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  }) => {
+    let rows = [];
+    let count = 0;
+
+    if (groupFeed) {
+      rows = groupFeed.rows;
+      count = groupFeed.count;
+    }
+
+    return {
+      groupFeed: {
+        loading,
+        rows,
+        count,
+        fetchMore,
+        refetch,
+        subscribeToMore,
+        networkStatus,
+        error,
+      },
+      subscribeToGroupFeed: ({ groupId }) => subscribeToMore({
+        document: GROUP_FEED_SUBSCRIPTION,
+        variables: { groupId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const newrows = [subscriptionData.data.groupFeed].concat(prev.groupFeed.rows);
+
+          return {
+            groupFeed: {
+              ...prev.groupFeed,
+              ...{ rows: newrows, count: prev.groupFeed.count + 1 },
+            },
+          };
+        },
+      }),
+    };
+  },
+});
