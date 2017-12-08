@@ -24,6 +24,7 @@ import SendText from '@screens/auth/sms/SendText';
 import MobileVerified from '@screens/auth/sms/MobileVerified';
 import SearchResult from '@screens/Search';
 import UserProfile from '@screens/profile/UserProfile';
+import ChangePassword from '@screens/profile/ChangePassword';
 import EditProfile from '@screens/profile/EditProfile';
 import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
@@ -64,6 +65,7 @@ export const Routes = {
 
   UserProfile: { screen: UserProfile },
   EditProfile: { screen: EditProfile },
+  ChangePassword: { screen: ChangePassword },
   UserGroups: { screen: UserGroups },
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
