@@ -133,13 +133,14 @@ class Check extends Component {
 
   render() {
     const { error } = this.state;
-    const message = `Go to your e-mail ${this.props.auth.user.email} and enter confirmation code below`;
     return (
       <Container>
         <Image source={Icons.EnvelopOpen} style={styles.envelopIcon} resizeMethod="resize" />
         <GreetText>Check your e-mail</GreetText>
         <ColoredText color={Colors.text.purple}>
-          {message}
+          Go to your e-mail
+          <Text style={{ color: '#663c6d' }}> {`'${this.props.auth.user.email}'`} </Text>
+          and enter confirmation code below
         </ColoredText>
 
         {(error !== '') ? (<View><Text>{error}</Text></View>) : null}

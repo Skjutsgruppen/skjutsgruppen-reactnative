@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
-import { Loading, NavBar } from '@components/common';
+import { Wrapper, Loading, NavBar } from '@components/common';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -10,14 +10,26 @@ import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   section: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
+    flex: 1,
   },
   sectionTitle: {
     fontSize: 12,
-    marginTop: 16,
+    paddingVertical: 12,
     color: Colors.text.blue,
     marginHorizontal: 24,
+  },
+  messages: {
+    flex: 1,
+    backgroundColor: Colors.background.fullWhite,
+  },
+  spacedWrapper: {
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  footer: {
+    marginVertical: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: '#CED0CE',
   },
 });
 
@@ -42,11 +54,7 @@ class NewNotification extends PureComponent {
     if (rows.length >= count) {
       return (
         <View
-          style={{
-            paddingVertical: 60,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
+          style={styles.footer}
         />
       );
     }
@@ -55,11 +63,7 @@ class NewNotification extends PureComponent {
 
     return (
       <View
-        style={{
-          paddingVertical: 60,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
+        style={styles.spacedWrapper}
       >
         <Loading />
       </View>
@@ -109,11 +113,23 @@ class NewNotification extends PureComponent {
     }
 
     if (notifications.loading) {
-      return (<Loading />);
+      return (
+        <View
+          style={styles.spacedWrapper}
+        >
+          <Loading />
+        </View>
+      );
     }
 
     if (!notifications.rows || notifications.rows.length < 1) {
-      return (<Text>No Message.</Text>);
+      return (
+        <View
+          style={styles.spacedWrapper}
+        >
+          <Text>No Message.</Text>
+        </View>
+      );
     }
 
     return null;
@@ -122,13 +138,15 @@ class NewNotification extends PureComponent {
   render() {
     const { filters } = this.props;
     return (
-      <View style={styles.section}>
+      <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
-        <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} Messages
-        </Text>
-        {this.renderNotification()}
-      </View>
+        <View style={styles.messages}>
+          <Text style={styles.sectionTitle}>
+            {filters.toUpperCase()} MESSAGES
+          </Text>
+          {this.renderNotification()}
+        </View>
+      </Wrapper>
     );
   }
 }

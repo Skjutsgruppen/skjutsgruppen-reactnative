@@ -19,6 +19,29 @@ const styles = StyleSheet.create({
     color: Colors.text.blue,
     marginHorizontal: 24,
   },
+  emptyMessage: {
+    opacity: 0.5,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  spacedWrapper: {
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+  },
+  more: {
+    height: 24,
+    alignSelf: 'center',
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 16,
+  },
+  moreText: {
+    fontSize: 12,
+    color: '#333',
+  },
 });
 
 class NewNotification extends PureComponent {
@@ -37,8 +60,8 @@ class NewNotification extends PureComponent {
     if (remaining < 1) return null;
 
     return (
-      <TouchableOpacity onPress={this.moreNotification}>
-        <Text>and {remaining} more</Text>
+      <TouchableOpacity onPress={this.moreNotification} style={styles.more}>
+        <Text style={styles.moreText}>and {remaining} more</Text>
       </TouchableOpacity>
     );
   }
@@ -51,7 +74,7 @@ class NewNotification extends PureComponent {
   renderNotification = () => {
     const { notifications, navigation, filters } = this.props;
 
-    let render = (<Text>No Message.</Text>);
+    let render = (<Text style={styles.emptyMessage}>No Messages</Text>);
 
     if (notifications.count > 0) {
       render = notifications.rows.map(message => (
@@ -65,7 +88,11 @@ class NewNotification extends PureComponent {
     }
 
     if (notifications.loading) {
-      render = (<Loading />);
+      render = (
+        <View style={styles.spacedWrapper}>
+          <Loading />
+        </View>
+      );
     }
 
     return render;
@@ -76,7 +103,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} Messages
+          {filters.toUpperCase()} MESSAGES
         </Text>
         {this.renderNotification()}
         {this.loadMore()}
