@@ -382,3 +382,29 @@ export const withCancelFriendRequest = graphql(CANCEL_FRIEND_REQUEST_QUERY, {
     cancelFriendRequest: id => mutate({ variables: { id } }),
   }),
 });
+
+const CHANGE_PASSWORD_QUERY = gql`
+mutation changePassword($oldPassword: String, $newPassword: String){
+  changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+    token,
+    User {
+      id
+      firstName
+      lastName
+      emailVerified
+      email
+      phoneVerified
+      phoneNumber
+      photo
+    }
+  }
+}
+`;
+
+export const withChangePassword = graphql(CHANGE_PASSWORD_QUERY, {
+  props: ({ mutate }) => ({
+    changePassword: (oldPassword, newPassword) => mutate({
+      variables: { oldPassword, newPassword },
+    }),
+  }),
+});
