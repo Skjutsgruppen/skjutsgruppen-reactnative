@@ -4,20 +4,35 @@ import PropTypes from 'prop-types';
 import Feed from '@components/group/feed/default';
 import Offer from '@components/feed/card/offer';
 import Ask from '@components/feed/card/ask';
-
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   Wrapper: {
-    width: '100%',
     flexDirection: 'row',
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     backgroundColor: '#fff',
+    marginRight: 6,
+    marginLeft: 6,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  singleCard: {
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  sharedCard: {
+    marginBottom: 12,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
   },
   profilePic: {
     height: 55,
     width: 55,
     borderRadius: 28,
-    marginRight: 12,
+    // marginRight: 12,
   },
   nameWrapper: {
     flexDirection: 'row',
@@ -42,9 +57,23 @@ const styles = StyleSheet.create({
 
 const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
   if (groupFeed.ActivityType.type === 'ask_ride') {
-    return (<Ask ask={groupFeed.Trip} onPress={onPress} onSharePress={onSharePress} />);
+    return (
+      <Ask
+        ask={groupFeed.Trip}
+        onPress={onPress}
+        onSharePress={onSharePress}
+        wrapperStyle={styles.card}
+      />
+    );
   } else if (groupFeed.ActivityType.type === 'offer_ride') {
-    return (<Offer offer={groupFeed.Trip} onPress={onPress} onSharePress={onSharePress} />);
+    return (
+      <Offer
+        offer={groupFeed.Trip}
+        onPress={onPress}
+        onSharePress={onSharePress}
+        wrapperStyle={styles.card}
+      />
+    );
   } else if (groupFeed.ActivityType.type === 'share') {
     if (groupFeed.feedable === 'Trip') {
       let image = null;
@@ -60,18 +89,26 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
           <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <Text style={styles.name}>{groupFeed.User.firstName || groupFeed.User.email}</Text>
-              <Text style={styles.time}>{groupFeed.date}</Text>
+              <Text>shared a trip</Text>
             </View>
-            <Text>Share Trip</Text>
+            <Text style={styles.time}>{groupFeed.date}</Text>
           </View>
         </View>
       );
 
       if (groupFeed.Trip.type === 'offered') {
         return (
-          <View>
+          <View style={{
+            marginTop: 12,
+          }}
+          >
             {user}
-            <Offer offer={groupFeed.Trip} onPress={onPress} onSharePress={onSharePress} />
+            <Offer
+              offer={groupFeed.Trip}
+              onPress={onPress}
+              onSharePress={onSharePress}
+              wrapperStyle={styles.sharedCard}
+            />
           </View>
         );
       }
@@ -79,7 +116,12 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
       return (
         <View>
           {user}
-          <Ask ask={groupFeed.Trip} onPress={onPress} onSharePress={onSharePress} />
+          <Ask
+            ask={groupFeed.Trip}
+            onPress={onPress}
+            onSharePress={onSharePress}
+            wrapperStyle={styles.sharedCard}
+          />
         </View>
       );
     }

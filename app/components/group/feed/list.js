@@ -16,6 +16,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+  loadingWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
 });
 
 class GroupFeed extends Component {
@@ -53,7 +59,6 @@ class GroupFeed extends Component {
     this.setState({ isOpen: true, modalType, modalDetail });
   };
 
-
   renderFooter = () => {
     const { loading, rows, count } = this.props.groupFeed;
 
@@ -79,12 +84,7 @@ class GroupFeed extends Component {
 
     return (
       <View
-        style={{
-          paddingTop: 60,
-          paddingBottom: 100,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
+        style={styles.loadingWrapper}
       >
         <Loading />
       </View>
@@ -95,7 +95,13 @@ class GroupFeed extends Component {
     const { rows, error, count, networkStatus, refetch, loading, fetchMore } = this.props.groupFeed;
 
     if (networkStatus === 1) {
-      return <Loading />;
+      return (
+        <View
+          style={styles.loadingWrapper}
+        >
+          <Loading />
+        </View>
+      );
     }
 
     if (error) {
@@ -118,6 +124,7 @@ class GroupFeed extends Component {
         onEndReachedThreshold={0.5}
         ListHeaderComponent={this.props.header}
         ListFooterComponent={this.renderFooter}
+        style={{ backgroundColor: Colors.background.lightGray }}
         onEndReached={() => {
           if (loading || rows.length >= count) return;
 

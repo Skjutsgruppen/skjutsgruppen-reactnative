@@ -175,6 +175,7 @@ class ChangePassword extends Component {
               style={styles.input}
               onChangeText={oldPassword => this.setState({ oldPassword })}
               placeholderTextColor="#ccc"
+              underlineColorAndroid="transparent"
             />
             <TouchableOpacity
               onPress={this.showCurrentPassword}
@@ -189,12 +190,12 @@ class ChangePassword extends Component {
                       style={this.state.oldPassword === '' ? styles.disabled : []}
                     />
                   ) : (
-                      <Icon
-                        name="ios-eye-off"
-                        size={32}
-                        style={styles.showIcon}
-                      />
-                    )
+                    <Icon
+                      name="ios-eye-off"
+                      size={32}
+                      style={styles.showIcon}
+                    />
+                  )
                 }
               </View>
             </TouchableOpacity>
@@ -207,6 +208,7 @@ class ChangePassword extends Component {
               style={styles.input}
               onChangeText={newPassword => this.setState({ newPassword })}
               placeholderTextColor="#ccc"
+              underlineColorAndroid="transparent"
             />
             <TouchableOpacity
               onPress={this.showNewPassword}
@@ -221,12 +223,12 @@ class ChangePassword extends Component {
                       style={this.state.newPassword === '' ? styles.disabled : []}
                     />
                   ) : (
-                      <Icon
-                        name="ios-eye-off"
-                        size={32}
-                        style={styles.showIcon}
-                      />
-                    )
+                    <Icon
+                      name="ios-eye-off"
+                      size={32}
+                      style={styles.showIcon}
+                    />
+                  )
                 }
               </View>
             </TouchableOpacity>
@@ -239,6 +241,7 @@ class ChangePassword extends Component {
               style={styles.input}
               onChangeText={confirmPassword => this.setState({ confirmPassword })}
               placeholderTextColor="#ccc"
+              underlineColorAndroid="transparent"
             />
           </View>
           {this.renderUpdateButton()}
