@@ -34,6 +34,7 @@ import Settings from '@screens/Settings';
 
 import Map from '@screens/Map';
 import SingleNotification from '@screens/SingleNotification';
+import Route from '@components/route';
 
 import Add from '@screens/tab/add';
 import Feed from '@screens/tab/feed';
@@ -86,7 +87,6 @@ const Tab = TabNavigator(TabRoutes,
     },
   },
 );
-
 export const Routes = {
   Splash: { screen: Splash },
 
@@ -100,6 +100,9 @@ export const Routes = {
 
   LoginMethod: { screen: LoginMethod },
   LoginViaEmail: { screen: LoginViaEmail },
+
+  Map: { screen: Map },
+  Route: { screen: Route },
 
   Tab: { screen: Tab },
   Offer: { screen: Offer },
@@ -122,7 +125,6 @@ export const Routes = {
   UserTrips: { screen: UserTrips },
 
   SingleNotification: { screen: SingleNotification },
-  Map: { screen: Map },
   Settings: { screen: Settings },
 };
 

@@ -38,16 +38,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const NavBar = ({ style, handleBack, title, map }) => (
+const NavBar = ({ style, handleBack, title, onMapPress }) => (
   <View style={[style, styles.wrapper]}>
     <BackButton onPress={handleBack} />
     {
       (title !== '') &&
-        <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{title}</Text>
     }
     {
-      map ?
-        <TouchableOpacity style={styles.mapWrapper}>
+      onMapPress ?
+        <TouchableOpacity style={styles.mapWrapper} onPress={onMapPress}>
           <Image source={Map} style={styles.map} />
           <Image source={ChevronRight} style={styles.chevron} />
         </TouchableOpacity>
@@ -61,12 +61,13 @@ NavBar.propTypes = {
   style: View.propTypes.style,
   handleBack: PropTypes.func,
   title: PropTypes.string,
-  map: PropTypes.bool,
+  onMapPress: PropTypes.func,
 };
 
 NavBar.defaultProps = {
   style: {},
-  handleBack: () => {},
+  handleBack: () => { },
+  onMapPress: null,
   title: '',
   map: false,
 };

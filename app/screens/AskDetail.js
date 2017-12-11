@@ -209,7 +209,7 @@ class AskDetail extends Component {
   onShare = (share) => {
     this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
-      .catch(console.error);
+      .catch(console.warn);
   };
 
   onClose = () => {
@@ -219,6 +219,18 @@ class AskDetail extends Component {
   onCommentPress = (id) => {
     const { navigation } = this.props;
     navigation.navigate('UserProfile', { profileId: id });
+  }
+
+  onMapPress = () => {
+    const { navigation } = this.props;
+    const { ask } = navigation.state.params;
+    const coordinates = {
+      start: ask.TripStart,
+      end: ask.TripEnd,
+      stops: ask.Stops,
+    };
+
+    navigation.navigate('Route', { coordinates });
   }
 
   checkValidation() {
@@ -234,6 +246,7 @@ class AskDetail extends Component {
       errors,
     };
   }
+
 
   goBack = () => {
     const { navigation } = this.props;
@@ -314,7 +327,7 @@ class AskDetail extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+        <NavBar handleBack={this.goBack} onMapPress={this.onMapPress} />
         <ScrollView>
           <View style={styles.feed}>
             <View style={styles.feedContent}>

@@ -15,6 +15,7 @@ subscription{
         description
         type
         photo
+        mapPhoto
         User {
           id
           email
@@ -117,6 +118,7 @@ query getFeed($offset: Int, $limit: Int) {
         description
         type
         photo
+        mapPhoto
         User {
           id
           email
@@ -194,6 +196,7 @@ query getFeed($offset: Int, $limit: Int) {
         date
         time
         photo
+        mapPhoto
         returnTrip
         Comments {
           id

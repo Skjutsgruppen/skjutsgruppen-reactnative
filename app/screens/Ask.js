@@ -232,7 +232,7 @@ class Ask extends Component {
         this.setState({ loading: false, ask: res.data.createTrip });
       });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 

@@ -12,11 +12,11 @@ class SearchGroupResult extends PureComponent {
   }
 
   renderFooter = () => {
-    const { loading, searchGroup: { rows: Group, count } } = this.props.searchGroups;
+    const { loading, rows, count } = this.props.searchGroup;
 
     if (!loading) return null;
 
-    if (Group.length >= count) {
+    if (rows.length >= count) {
       return (
         <View
           style={{
@@ -42,11 +42,12 @@ class SearchGroupResult extends PureComponent {
   }
 
   renderSearchGroupList() {
-    const { searchGroups, keyword } = this.props;
-    const { searchGroup: { rows: Group, count } } = searchGroups;
+    const { searchGroup, keyword } = this.props;
+    const { rows, count, networkStatus, refetch, loading, fetchMore } = searchGroup;
+
     return (
       <FlatList
-        data={Group}
+        data={rows}
         renderItem={({ item }) => (<GroupItem
           min
           onPress={this.redirect}
@@ -54,15 +55,15 @@ class SearchGroupResult extends PureComponent {
           group={item}
         />)}
         keyExtractor={(item, index) => index}
-        refreshing={searchGroups.networkStatus === 4}
-        onRefresh={() => searchGroups.refetch()}
+        refreshing={networkStatus === 4}
+        onRefresh={() => refetch()}
         onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          if (searchGroups.loading || Group.length >= count) return;
+          if (loading || rows.length >= count) return;
 
-          searchGroups.fetchMore({
-            variables: { keyword, offset: Group.length },
+          fetchMore({
+            variables: { keyword, offset: rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
               if (!fetchMoreResult || fetchMoreResult.searchGroup.length === 0) {
                 return previousResult;
@@ -81,14 +82,14 @@ class SearchGroupResult extends PureComponent {
   }
 
   render() {
-    const { searchGroups } = this.props;
+    const { error, networkStatus } = this.props.searchGroup;
 
-    if (searchGroups.networkStatus === 1) {
+    if (networkStatus === 1) {
       return <Loading />;
     }
 
-    if (searchGroups.error) {
-      return <Text>Error: {searchGroups.error.message}</Text>;
+    if (error) {
+      return <Text>Error: {error.message}</Text>;
     }
 
     return this.renderSearchGroupList();
@@ -99,14 +100,12 @@ SearchGroupResult.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  searchGroups: PropTypes.shape({
+  searchGroup: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
-    total: PropTypes.numeric,
     networkStatus: PropTypes.number,
-    searchGroup: PropTypes.shape({
-      rows: PropTypes.arrayOf(PropTypes.object),
-      count: PropTypes.number,
-    }),
+    rows: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.number,
+    error: PropTypes.object,
   }).isRequired,
   keyword: PropTypes.string.isRequired,
 };

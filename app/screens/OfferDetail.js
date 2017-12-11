@@ -198,7 +198,7 @@ class OfferDetail extends Component {
   onShare = (share) => {
     this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
-      .catch(console.error);
+      .catch(console.warn);
   };
 
   onClose = () => {
@@ -218,6 +218,18 @@ class OfferDetail extends Component {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
     navigation.navigate('UserProfile', { profileId: offer.User.id });
+  }
+
+  onMapPress = () => {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+    const coordinates = {
+      start: offer.TripStart,
+      end: offer.TripEnd,
+      stops: offer.Stops,
+    };
+
+    navigation.navigate('Route', { coordinates });
   }
 
   goBack = () => {
@@ -250,30 +262,28 @@ class OfferDetail extends Component {
       </TouchableOpacity>);
   }
 
-  renderCommentForm() {
-    return (
-      <View>
-        <View style={styles.footer}>
-          <View style={styles.footerContent}>
-            <TextInput
-              onChangeText={text => this.onCommentChange(text)}
-              value={this.state.comment}
-              style={styles.msgInput}
-              placeholder="Write something..."
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              returnKeyType={'done'}
-              placeholderTextColor="#666"
-              underlineColorAndroid="transparent"
-            />
-            <View style={styles.send}>
-              {this.renderButton()}
-            </View>
+  renderCommentForm = () => (
+    <View>
+      <View style={styles.footer}>
+        <View style={styles.footerContent}>
+          <TextInput
+            onChangeText={comment => this.setState({ comment })}
+            value={this.state.comment}
+            style={styles.msgInput}
+            placeholder="Write something..."
+            autoCorrect={false}
+            autoCapitalize={'none'}
+            returnKeyType={'done'}
+            placeholderTextColor="#666"
+            underlineColorAndroid="transparent"
+          />
+          <View style={styles.send}>
+            {this.renderButton()}
           </View>
         </View>
       </View>
-    );
-  }
+    </View>
+  )
 
   renderShareModal() {
     return (
@@ -313,7 +323,8 @@ class OfferDetail extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+        <NavBar handleBack={this.goBack} onMapPress={this.onMapPress} />
+
         <ScrollView style={styles.contentWrapper}>
           <View style={styles.feed}>
             <View style={styles.feedContent}>

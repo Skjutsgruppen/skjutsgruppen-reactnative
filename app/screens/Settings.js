@@ -5,7 +5,6 @@ import { Wrapper, NavBar, Loading } from '@components/common';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
-import { NavigationActions } from 'react-navigation';
 import { withContacts } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -57,29 +56,19 @@ class Settings extends Component {
   }
 
   logout = () => {
-    const { logout } = this.props;
+    const { logout, navigation } = this.props;
     this.setState({ loading: true }, () => {
       logout()
-        .then(() => this.navigateTo('Splash'))
+        .then(() => navigation.reset('Splash'))
         .then(() => FBLoginManager.logout(() => { }));
     });
-  }
-
-  navigateTo = (routeName) => {
-    const { navigation } = this.props;
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      key: null,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
   }
 
   sync = () => {
     const { syncContacts } = this.props;
     Contacts.getAll((err, contacts) => {
       if (err === 'denied') {
-        console.error(err);
+        console.warn(err);
       } else {
         const mobiles = [];
         contacts.forEach(
@@ -89,7 +78,7 @@ class Settings extends Component {
           .then(() => {
             Alert.alert('Success!', 'Contact successully synced.');
           })
-          .catch(error => console.error(error));
+          .catch(error => console.warn(error));
       }
     });
   }
@@ -164,7 +153,7 @@ const mapStateToProps = state => ({ user: state.auth.user });
 const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withContacts, connect(mapStateToProps, mapDispatchToProps))(Settings);

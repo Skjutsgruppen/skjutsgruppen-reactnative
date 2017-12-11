@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const SUBMIT_GROUP = gql`
+const SUBMIT_GROUP_QUERY = gql`
 mutation group
 (
     $outreach: GroupOutreachEnum!
@@ -61,7 +61,7 @@ mutation group
 }
 `;
 
-export const submitGroup = graphql(SUBMIT_GROUP, {
+export const submitGroup = graphql(SUBMIT_GROUP_QUERY, {
   props: ({ mutate }) => (
     {
       submit: (
@@ -98,17 +98,17 @@ export const submitGroup = graphql(SUBMIT_GROUP, {
     }),
 });
 
-const JOIN_GROUP = gql`
+const JOIN_GROUP_QUERY = gql`
 mutation joinGroup($id: Int!) {
     joinGroup(id:$id)
 }
 `;
 
-export const withJoinGroup = graphql(JOIN_GROUP, {
+export const withJoinGroup = graphql(JOIN_GROUP_QUERY, {
   props: ({ mutate }) => ({ submit: id => mutate({ variables: { id } }) }),
 });
 
-const EXPLORE_GROUPS = gql`
+const EXPLORE_GROUPS_QUERY = gql`
 query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:String, $offset: Int, $limit: Int){
   exploreGroups(
     input: {
@@ -174,8 +174,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
 }
 `;
 
-export const withExploreGroup = graphql(EXPLORE_GROUPS, {
-  name: 'exploreGroups',
+export const withExploreGroup = graphql(EXPLORE_GROUPS_QUERY, {
   options: ({ from, filter }) => ({
     variables: {
       from,
@@ -184,10 +183,20 @@ export const withExploreGroup = graphql(EXPLORE_GROUPS, {
       limit: 5,
     },
   }),
-  props: ({ exploreGroups }) => ({ exploreGroups }),
+  props: ({ data: { loading, exploreGroups, refetch, fetchMore, networkStatus, error } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (exploreGroups) {
+      rows = exploreGroups.rows;
+      count = exploreGroups.count;
+    }
+
+    return { exploreGroups: { loading, rows, count, refetch, fetchMore, networkStatus, error } };
+  },
 });
 
-export const SEARCH_GROUPS = gql`
+export const SEARCH_GROUPS_QUERY = gql`
 query searchGroup($keyword: String!, $offset: Int, $limit: Int){
   searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
     rows {
@@ -243,16 +252,25 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
   }
 }
 `;
-export const withSearchGroup = graphql(SEARCH_GROUPS, {
-  name: 'searchGroups',
+export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
   options: ({ keyword }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { keyword, offset: 0, limit: 5 },
   }),
-  props: ({ searchGroups }) => ({ searchGroups }),
+  props: ({ data: { loading, searchGroup, refetch, fetchMore, networkStatus, error } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (searchGroup) {
+      rows = searchGroup.rows;
+      count = searchGroup.count;
+    }
+
+    return { searchGroup: { loading, rows, count, refetch, fetchMore, networkStatus, error } };
+  },
+
 });
 
-export const FIND_GROUP = gql`
+export const FIND_GROUP_QUERY = gql`
 query findGroup($id: Int!){
   findGroup(id: $id){
     id
@@ -261,6 +279,7 @@ query findGroup($id: Int!){
     description
     type
     photo
+    mapPhoto
     User {
       id
       email
@@ -306,9 +325,8 @@ query findGroup($id: Int!){
 }
 `;
 
-export const withFindGroup = graphql(FIND_GROUP, {
+export const withFindGroup = graphql(FIND_GROUP_QUERY, {
   options: ({ id }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { id },
   }),
   props: ({ data: { loading, findGroup, refetch, networkStatus, error } }) => {
@@ -322,7 +340,7 @@ export const withFindGroup = graphql(FIND_GROUP, {
   },
 });
 
-export const GROUP_FEED = gql`
+export const GROUP_FEED_QUERY = gql`
 query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
   groupFeed(offset: $offset, limit: $limit, groupId: $groupId){
     rows {
@@ -351,6 +369,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           description
           type
           photo
+          mapPhoto
           User {
             id
             email
@@ -428,6 +447,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           date
           time
           photo
+          mapPhoto
           returnTrip
         }
       }
@@ -485,6 +505,7 @@ subscription groupFeed($groupId: Int!){
         description
         type
         photo
+        mapPhoto
         User {
           id
           email
@@ -562,6 +583,7 @@ subscription groupFeed($groupId: Int!){
         date
         time
         photo
+        mapPhoto
         returnTrip
       }
     }
@@ -590,10 +612,8 @@ subscription groupFeed($groupId: Int!){
 }
 `;
 
-export const withGroupFeed = graphql(GROUP_FEED, {
+export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
   options: ({ groupId }) => ({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network',
     variables: { offset: 0, limit: 10, groupId },
   }),
   props: ({

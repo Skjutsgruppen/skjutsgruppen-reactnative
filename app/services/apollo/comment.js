@@ -38,46 +38,6 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 }
 `;
 
-const GET_TRIP_COMMENTS = gql`
-query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
-  comments(input : {tripId:$id, offset:$offset, limit:$limit}) {
-    rows {
-      id
-      text
-      date
-      User {
-        id
-        email
-        firstName
-        lastName
-        photo
-      }
-    }
-    count
-  }
-}
-`;
-
-const CREATE_COMMENT = gql`
-mutation createComment(
-    $tripId: Int
-    $groupId: Int
-    $text: String!
-) 
-{
-  createComment( 
-      tripId: $tripId
-      groupId: $groupId
-      text: $text
-  )
-  {
-      tripId
-      groupId
-      text
-  }
-}
-`;
-
 export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
   name: 'comments',
   options: ({ id, offset, limit = 5 }) => ({ variables: { id, offset, limit } }),
@@ -103,7 +63,27 @@ export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
   }),
 });
 
-export const withTripComment = graphql(GET_TRIP_COMMENTS, {
+const GET_TRIP_COMMENTS_QUERY = gql`
+query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
+  comments(input : {tripId:$id, offset:$offset, limit:$limit}) {
+    rows {
+      id
+      text
+      date
+      User {
+        id
+        email
+        firstName
+        lastName
+        photo
+      }
+    }
+    count
+  }
+}
+`;
+
+export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   name: 'comments',
   options: ({ id, offset, limit = 5 }) => ({ variables: { id, offset, limit } }),
   props: props => ({
@@ -128,7 +108,27 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS, {
   }),
 });
 
-export const submitComment = graphql(CREATE_COMMENT, {
+const CREATE_COMMENT_QUERY = gql`
+mutation createComment(
+    $tripId: Int
+    $groupId: Int
+    $text: String!
+) 
+{
+  createComment( 
+      tripId: $tripId
+      groupId: $groupId
+      text: $text
+  )
+  {
+      tripId
+      groupId
+      text
+  }
+}
+`;
+
+export const submitComment = graphql(CREATE_COMMENT_QUERY, {
   props: ({ mutate }) => (
     {
       submit: (
