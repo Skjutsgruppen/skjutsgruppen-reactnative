@@ -78,7 +78,11 @@ class Login extends Component {
         submit(username, password).then(({ data }) => {
           const { User, token } = data.login;
           setLogin({ token, user: User }).then(() => {
-            this.navigateTo('Tab');
+            if (!User.phoneVerified) {
+              this.navigateTo('SendText');
+            } else {
+              this.navigateTo('Tab');
+            }
           });
         }).catch((err) => {
           this.setState({ loading: false, error: err.message });

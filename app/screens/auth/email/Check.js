@@ -138,9 +138,9 @@ class Check extends Component {
         <Image source={Icons.EnvelopOpen} style={styles.envelopIcon} resizeMethod="resize" />
         <GreetText>Check your e-mail</GreetText>
         <ColoredText color={Colors.text.purple}>
-          Go to your e-mail
+          <Text>Go to your e-mail</Text>
           <Text style={{ color: '#663c6d' }}> {`'${this.props.auth.user.email}'`} </Text>
-          and enter confirmation code below
+          <Text>and enter confirmation code below</Text>
         </ColoredText>
 
         {(error !== '') ? (<View><Text>{error}</Text></View>) : null}

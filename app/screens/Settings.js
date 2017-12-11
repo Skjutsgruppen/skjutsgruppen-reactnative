@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Picker } from 'react-native';
 import Colors from '@theme/colors';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper, NavBar, Loading } from '@components/common';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
@@ -37,6 +37,7 @@ class Settings extends Component {
     this.state = ({
       error: '',
       language: 'en',
+      loading: false,
     });
   }
 
@@ -57,9 +58,11 @@ class Settings extends Component {
 
   logout = () => {
     const { logout } = this.props;
-    logout()
-      .then(() => this.navigateTo('Splash'))
-      .then(() => FBLoginManager.logout(() => { }));
+    this.setState({ loading: true }, () => {
+      logout()
+        .then(() => this.navigateTo('Splash'))
+        .then(() => FBLoginManager.logout(() => { }));
+    });
   }
 
   navigateTo = (routeName) => {
@@ -93,6 +96,11 @@ class Settings extends Component {
 
   render() {
     const { user } = this.props;
+
+    if (this.state.loading) {
+      return (<Loading />);
+    }
+
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />

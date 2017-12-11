@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Alert, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { withFacebookConnect } from '@services/apollo/facebook';
 import { connect } from 'react-redux';
@@ -9,7 +10,7 @@ import Connect from '@components/facebook/connect';
 import { Loading } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
-import { StyleSheet } from 'react-native';
+import { FBLoginManager } from 'react-native-facebook-login';
 
 const styles = StyleSheet.create({
   button: {
@@ -28,7 +29,14 @@ class LinkFacebook extends PureComponent {
   }
 
   componentWillMount() {
-    this.setState({ linked: (this.props.user.fbId !== '') });
+    const { fbId } = this.props.user;
+    let linked = false;
+
+    if (fbId) {
+      linked = true;
+    }
+
+    this.setState({ linked });
   }
 
   async onLogin(fbUser, { user }) {
@@ -49,6 +57,9 @@ class LinkFacebook extends PureComponent {
       } catch (error) {
         this.setState({ loading: false });
       }
+    } else {
+      FBLoginManager.logout(() => { });
+      Alert.alert('Error', 'Facebook account is already linked with another account.');
     }
   }
 

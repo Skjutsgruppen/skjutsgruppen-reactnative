@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginVertical: 12,
   },
-  herderStyles: {
+  hearderStyles: {
     marginLeft: 0,
     marginRight: 0,
     marginBottom: 0,
@@ -139,7 +139,7 @@ class JoinGroup extends Component {
           min
           onPress={() => { }}
           group={group}
-          wrapperStyle={styles.herderStyles}
+          wrapperStyle={styles.hearderStyles}
         />
         {
           group.Stops.length > 0 &&

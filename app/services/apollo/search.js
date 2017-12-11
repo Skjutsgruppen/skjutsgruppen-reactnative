@@ -74,8 +74,6 @@ query search
           phoneNumber
           firstName
           lastName
-          emailVerified
-          phoneVerified
           relation {
             id
             email
@@ -97,8 +95,6 @@ query search
             phoneNumber 
             firstName 
             lastName 
-            emailVerified 
-            phoneVerified 
             relation { 
               id 
               email 
@@ -138,9 +134,6 @@ query search
           phoneNumber 
           firstName 
           lastName 
-          emailVerified 
-          phoneVerified 
-          verificationCode 
           relation { 
             id 
             email 
