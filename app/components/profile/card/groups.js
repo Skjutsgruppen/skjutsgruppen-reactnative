@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     color: '#777777',
   },
   feed: {
-    backgroundColor: '#f9f9f9',
     borderRadius: 8,
     marginRight: 6,
     marginLeft: 6,
@@ -17,8 +16,9 @@ const styles = StyleSheet.create({
   },
   feedContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+
   },
   feedTitle: {
     flexDirection: 'row',
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Groups = ({ group, onPress }) => {
+const Groups = ({ group, onPress, wrapperStyle }) => {
   let image = null;
 
   if (group.photo) {
@@ -94,7 +94,7 @@ const Groups = ({ group, onPress }) => {
   }
 
   return (
-    <View style={styles.feed}>
+    <View style={[styles.feed, wrapperStyle]}>
       <View style={styles.feedContent}>
         <View style={styles.feedTitle}>
           <TouchableOpacity onPress={() => onPress('profile', group.User.id)}>{profileImage}</TouchableOpacity>
@@ -143,6 +143,11 @@ Groups.propTypes = {
     count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  wrapperStyle: View.propTypes.style,
+};
+
+Groups.defaultProps = {
+  wrapperStyle: {},
 };
 
 export default Groups;
