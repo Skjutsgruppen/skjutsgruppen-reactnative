@@ -16,7 +16,14 @@ const UsersGroupsList = ({ userId, onPress, data, data: { groups }, ...props }) 
   return (
     <FlatList
       data={groups.rows}
-      renderItem={({ item }) => <GroupsItem key={item.id} group={item} onPress={onPress} />}
+      renderItem={({ item }) => (
+        <GroupsItem
+          key={item.id}
+          group={item}
+          onPress={onPress}
+          wrapperStyle={{ borderBottomWidth: 0, marginTop: 12, marginBottom: 0 }}
+        />)
+      }
       keyExtractor={(item, index) => index}
       {...props}
     />

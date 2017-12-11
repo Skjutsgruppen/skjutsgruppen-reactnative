@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
 import PropTypes from 'prop-types';
@@ -14,12 +14,14 @@ const UserProfile = ({ navigation }) => {
   return (
     <Wrapper bgColor={Colors.background.cream}>
       <NavBar handleBack={() => navigation.goBack()} />
-      <ScrollView>
-        <Profile
-          navigation={navigation}
-          id={profileId}
-        />
-      </ScrollView>
+      <View style={{ flex: 1, backgroundColor: Colors.background.fullWhite }}>
+        <ScrollView>
+          <Profile
+            navigation={navigation}
+            id={profileId}
+          />
+        </ScrollView>
+      </View>
     </Wrapper>
   );
 };

@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderColor: '#cccccc',
     borderBottomWidth: 4,
+    overflow: 'hidden',
   },
   feedContent: {
     backgroundColor: '#fff',
@@ -119,6 +120,13 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
     }
   }
 
+  let groupType = '';
+  if (group.type === 'OpenGroup') {
+    groupType = 'Open';
+  } else if (group.type === 'ClosedGroup') {
+    groupType = 'Closed';
+  }
+
   return (
     <View style={[styles.feed, wrapperStyle]}>
       <View style={styles.feedContent}>
@@ -154,7 +162,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 </Text>
               }
               <Text style={styles.newGroupInfo}>
-                {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
+                {groupType} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
               </Text>
             </View>
           </View>
