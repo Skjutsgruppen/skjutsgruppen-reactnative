@@ -187,10 +187,10 @@ const mapStateToProps = state => ({ user: state.auth.user });
 const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user)))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withUpdateProfile,

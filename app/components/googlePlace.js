@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Alert, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import PropTypes from 'prop-types';
-import { getGooglePlaceByLatlng, GOOGLE_PLACE_KEY } from '@config';
+import { getGooglePlaceByLatlng, GOOGLE_MAP_API_KEY } from '@config';
 import { Loading } from '@components/common';
 
 const styles = StyleSheet.create({
@@ -72,7 +72,7 @@ class GooglePlacesInput extends PureComponent {
     const value = {
       name: details.name,
       countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-      coordinates: [details.geometry.location.lat, details.geometry.location.lng],
+      coordinates: [details.geometry.location.lng, details.geometry.location.lat],
     };
 
     this.setState({ value, defaultValue: value.name }, () => {
@@ -109,8 +109,7 @@ class GooglePlacesInput extends PureComponent {
         value: currentLocation,
         defaultValue: currentLocation.name,
         currentLocationLoading: false,
-      },
-      () => this.props.onChangeText(currentLocation),
+      }, () => this.props.onChangeText(currentLocation),
       );
 
       return;
@@ -132,12 +131,11 @@ class GooglePlacesInput extends PureComponent {
               currentLocation: value,
               defaultValue: value.name,
               currentLocationLoading: false,
-            },
-            () => this.props.onChangeText(value),
+            }, () => this.props.onChangeText(value),
             );
           })
           .catch((error) => {
-            console.error(error);
+            console.warn(error);
             this.setState({ currentLocationLoading: false });
           });
       },
@@ -175,7 +173,7 @@ class GooglePlacesInput extends PureComponent {
           onPress={this.onPress}
           enablePoweredByContainer={false}
           query={{
-            key: GOOGLE_PLACE_KEY,
+            key: GOOGLE_MAP_API_KEY,
             language: 'en',
             types: '',
           }}

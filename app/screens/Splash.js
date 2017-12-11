@@ -1,7 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
@@ -16,7 +15,7 @@ class Splash extends Component {
   }
 
   async componentWillMount() {
-    const { setLogin, setRegister, auth } = this.props;
+    const { setLogin, setRegister, auth, navigation } = this.props;
     const user = await AuthService.getUser();
     const token = await AuthService.getToken();
     const hasUser = await AuthService.hasUser();
@@ -24,44 +23,35 @@ class Splash extends Component {
 
     if (hasUser && !user.emailVerified) {
       await setRegister({ user, token });
-      this.navigateTo('CheckMail');
+      navigation.reset('CheckMail');
       return;
     }
 
     if (hasUser && user.emailVerified && user.phoneNumber === null) {
       await setRegister({ user, token });
-      this.navigateTo('EmailVerified');
+      navigation.reset('EmailVerified');
       return;
     }
 
     if (hasUser && !user.phoneVerified) {
       await setRegister({ user, token });
-      this.navigateTo('SendText');
+      navigation.reset('SendText');
       return;
     }
 
 
     if (auth.login) {
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
       return;
     }
 
     if (isLoggedIn) {
       await setLogin({ user, token });
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
       return;
     }
 
     this.setState({ loading: false });
-  }
-
-  navigateTo = (routeName) => {
-    const { navigation } = this.props;
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
   }
 
   render() {

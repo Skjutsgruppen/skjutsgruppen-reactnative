@@ -181,6 +181,7 @@ query groups($id:Int){
           description
           type
           photo
+          mapPhoto
           User {
             id
             email
@@ -259,6 +260,7 @@ query trips($id:Int, $type:String){
           date
           time
           photo
+          mapPhoto
           returnTrip
         }
         count
