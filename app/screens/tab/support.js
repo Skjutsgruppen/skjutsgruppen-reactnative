@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 });
 
 
-class Support extends Component {
+class Support extends PureComponent {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Support',
@@ -77,6 +77,10 @@ class Support extends Component {
 
   render() {
     const { navigation, user } = this.props;
+
+    if (!user.id) {
+      return null;
+    }
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
