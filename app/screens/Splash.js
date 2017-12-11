@@ -7,10 +7,6 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import Onboarding from '@components/auth/onboarding';
 
-import { createSelector } from 'reselect';
-
-const authSelector = createSelector(state => state.auth, auth => auth);
-
 class Splash extends Component {
   static navigationOptions = { header: null };
 
@@ -24,23 +20,39 @@ class Splash extends Component {
     const user = await AuthService.getUser();
     const token = await AuthService.getToken();
     const hasUser = await AuthService.hasUser();
-
     const isLoggedIn = await AuthService.isLoggedIn();
 
-    if (hasUser && user.emailVerified && user.firstName === null) {
-      await setRegister({ user, token });
-      this.navigateTo('EmailVerified');
-    } else if (hasUser && !user.emailVerified) {
+    if (hasUser && !user.emailVerified) {
       await setRegister({ user, token });
       this.navigateTo('CheckMail');
-    } else if (auth.login) {
+      return;
+    }
+
+    if (hasUser && user.emailVerified && user.phoneNumber === null) {
+      await setRegister({ user, token });
+      this.navigateTo('EmailVerified');
+      return;
+    }
+
+    if (hasUser && !user.phoneVerified) {
+      await setRegister({ user, token });
+      this.navigateTo('SendText');
+      return;
+    }
+
+
+    if (auth.login) {
       this.navigateTo('Tab');
-    } else if (isLoggedIn) {
+      return;
+    }
+
+    if (isLoggedIn) {
       await setLogin({ user, token });
       this.navigateTo('Tab');
-    } else {
-      this.setState({ loading: false });
+      return;
     }
+
+    this.setState({ loading: false });
   }
 
   navigateTo = (routeName) => {
@@ -72,7 +84,7 @@ Splash.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = state => ({ auth: authSelector(state) });
+const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => {
     dispatch(AuthAction.login({ user, token }));

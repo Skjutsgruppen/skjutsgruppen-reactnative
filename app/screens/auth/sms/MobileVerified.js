@@ -5,6 +5,9 @@ import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import AuthAction from '@redux/actions/auth';
+import AuthService from '@services/auth/auth';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -26,15 +29,17 @@ class MobileVerified extends Component {
 
   onEnter = () => {
     const { navigation } = this.props;
-    navigation.navigate('Feed');
+    navigation.navigate('Tab');
   }
 
   render() {
+    const { auth: { user } } = this.props;
+
     return (
       <Container>
-        <Image source={require('@assets/profile_pic.jpg')} style={styles.profilePic} />
+        <Image source={{ uri: user.photo }} style={styles.profilePic} />
         <GreetText>Your number is confirmed!</GreetText>
-        <ColoredText color={Colors.text.blue}>Welcome Johline!</ColoredText>
+        <ColoredText color={Colors.text.blue}>Welcome {user.firstName}!</ColoredText>
         <ColoredText color={Colors.text.purple}>
           You are now part of the non-profit ridesharing movement Skjutsgruppen!
         </ColoredText>
@@ -60,6 +65,27 @@ MobileVerified.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  auth: PropTypes.shape({
+    login: PropTypes.bool,
+    token: PropTypes.string,
+    user: PropTypes.shape({
+      id: PropTypes.number,
+      email: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      phoneNumber: PropTypes.string,
+      photo: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
-export default MobileVerified;
+const mapStateToProps = state => ({ auth: state.auth });
+const mapDispatchToProps = dispatch => ({
+  updateUser: ({ user, token }) => AuthService.setUser(user)
+    .then(() => dispatch(AuthAction.login({ user, token }))),
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
+    .catch(error => console.error(error)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MobileVerified);
