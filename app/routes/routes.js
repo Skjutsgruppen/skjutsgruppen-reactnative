@@ -43,6 +43,16 @@ class Router extends Component {
     let debounce;
     return {
       ...original,
+
+      reset: (routeName, params, action) => {
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          key: null,
+          actions: [NavigationActions.navigate({ routeName, params, action })],
+        });
+        navigation.dispatch(resetAction);
+      },
+
       navigateWithDebounce: (routeName, params, action) => {
         const func = () => {
           clearTimeout(debounce);
@@ -58,7 +68,6 @@ class Router extends Component {
       },
     };
   };
-
 
   render() {
     const { dispatch, nav } = this.props;

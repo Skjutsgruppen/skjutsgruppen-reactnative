@@ -85,7 +85,7 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.login({ user, token }))),
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileVerified);
