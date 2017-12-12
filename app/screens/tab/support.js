@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, StyleSheet, ToastAndroid as Toast } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ToastAndroid as Toast, Modal, TouchableWithoutFeedback } from 'react-native';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ import BackButton from '@components/common/backButton';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
 import CustomButton from '@components/common/customButton';
+import PopupMenu from '@components/profile/popupMenu';
 
 const Profile = withProfile(ProfileDetail);
 
@@ -34,6 +35,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginTop: 8,
     marginBottom: 8,
+  },
+  menuItem: {
+    height: 32,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    width: 160,
+  },
+  menuText: {
+    width: 160,
+    color: Colors.text.darkGray,
+    backgroundColor: 'transparent',
   },
 });
 
@@ -55,13 +67,29 @@ class Support extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ error: '' });
+    this.state = ({
+      error: '',
+      modalVisibility: false,
+    });
   }
 
   onEdit = () => {
+    this.setModalVisibility(false);
     const { navigation } = this.props;
     navigation.navigate('EditProfile');
   }
+
+  onChangePassword = () => {
+    this.setModalVisibility(false);
+    const { navigation } = this.props;
+    navigation.navigate('ChangePassword');
+  }
+
+  setModalVisibility = ((visibility) => {
+    this.setState({
+      modalVisibility: visibility,
+    });
+  })
 
   navigateTo = (routeName) => {
     const { navigation } = this.props;
@@ -113,7 +141,7 @@ class Support extends Component {
           <BackButton onPress={this.goBack} >Back</BackButton>
           <TouchableOpacity
             navigation={navigation}
-            onPress={this.onEdit}
+            onPress={() => this.setModalVisibility(true)}
           >
             <Icon
               name="ios-options"
@@ -144,6 +172,32 @@ class Support extends Component {
             </CustomButton>
           </View>
         </ScrollView>
+        <Modal
+          transparent
+          visible={this.state.modalVisibility}
+          onShow={this.showDropDownMenu}
+          onDismiss={this.hideDropDownMenu}
+          onRequestClose={() => { this.visibleModal(false); }}
+        >
+          <TouchableWithoutFeedback onPress={() => this.setModalVisibility(false)}>
+            <View style={{ flex: 1 }}>
+              <PopupMenu>
+                <TouchableOpacity
+                  onPress={this.onEdit}
+                  style={styles.menuItem}
+                >
+                  <Text style={styles.menuText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this.onChangePassword}
+                  style={styles.menuItem}
+                >
+                  <Text style={styles.menuText}>Change password</Text>
+                </TouchableOpacity>
+              </PopupMenu>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </Wrapper>
     );
   }
