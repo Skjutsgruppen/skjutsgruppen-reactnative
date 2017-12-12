@@ -69,7 +69,7 @@ class EditProfile extends Component {
 
     if (validation.pass()) {
       try {
-        updateProfile(firstName, lastName, photo).then((res) => {
+        updateProfile({ firstName, lastName, photo }).then((res) => {
           setUser(res.data.updateUser.User);
           this.setState({ loading: false, error: '' });
           Toast.show('Profile successfully updated.', Toast.LONG);
