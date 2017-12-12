@@ -6,7 +6,7 @@ const initialState = {
   user: {},
 };
 
-const feed = (state = initialState, { type = '', payload = {} }) => {
+const auth = (state = initialState, { type = '', payload = {} }) => {
   let newState = state;
   switch (type) {
     case LOGIN:
@@ -29,4 +29,4 @@ const feed = (state = initialState, { type = '', payload = {} }) => {
   return newState;
 };
 
-export default feed;
+export default auth;
