@@ -17,6 +17,8 @@ import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
 import CustomButton from '@components/common/customButton';
 import PopupMenu from '@components/profile/popupMenu';
+import { FBLoginManager } from 'react-native-facebook-login';
+import LinkFacebook from '@components/facebook/link';
 
 const Profile = withProfile(ProfileDetail);
 
@@ -86,9 +88,7 @@ class Support extends Component {
   }
 
   setModalVisibility = ((visibility) => {
-    this.setState({
-      modalVisibility: visibility,
-    });
+    this.setState({ modalVisibility: visibility });
   })
 
   navigateTo = (routeName) => {
@@ -108,8 +108,8 @@ class Support extends Component {
 
   logout = () => {
     const { logout } = this.props;
-    logout().then(() => {
-      this.navigateTo('Splash');
+    logout().then(() => this.navigateTo('Splash')).then(() => {
+      FBLoginManager.logout(() => { });
     });
   }
 
@@ -133,7 +133,7 @@ class Support extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, user } = this.props;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -154,7 +154,7 @@ class Support extends Component {
           <ScrollView>
             <Profile
               navigation={navigation}
-              id={this.props.user.id}
+              id={user.id}
             />
             <View style={styles.section}>
               <CustomButton
@@ -172,6 +172,7 @@ class Support extends Component {
                 Sync Contacts
               </CustomButton>
             </View>
+            <LinkFacebook user={user} />
           </ScrollView>
         </View>
         <Modal
@@ -179,7 +180,7 @@ class Support extends Component {
           visible={this.state.modalVisibility}
           onShow={this.showDropDownMenu}
           onDismiss={this.hideDropDownMenu}
-          onRequestClose={() => { this.visibleModal(false); }}
+          onRequestClose={() => this.visibleModal(false)}
         >
           <TouchableWithoutFeedback onPress={() => this.setModalVisibility(false)}>
             <View style={{ flex: 1 }}>

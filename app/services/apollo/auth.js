@@ -17,6 +17,7 @@ mutation login($username: String!, $password:String!) {
       phoneVerified
       phoneNumber
       photo
+      fbId
     }
   }
 }
@@ -29,8 +30,8 @@ export const userLogin = graphql(LOGIN_QUERY, {
 });
 
 const REGISTER_QUERY = gql`
-mutation register($email: String!) {
-  register(email: $email) {
+mutation register($email: String!, $verified:Boolean) {
+  register(email: $email, verified:$verified) {
     token,
     status,
     error,
@@ -45,6 +46,7 @@ mutation register($email: String!) {
       phoneVerified
       phoneNumber
       photo
+      fbId
     }  
   }
 }
@@ -52,7 +54,7 @@ mutation register($email: String!) {
 
 export const userRegister = graphql(REGISTER_QUERY, {
   props: ({ mutate }) => ({
-    register: email => mutate({ variables: { email } }),
+    register: ({ email, verified = false }) => mutate({ variables: { email, verified } }),
   }),
 });
 
@@ -73,9 +75,9 @@ export const withVerifyCode = graphql(VERIFICATION_CODE_QUERY, {
 });
 
 const UPDATE_USER_QUERY = gql`
-mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNumber:String,  $password:String) {
+mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNumber:String,  $password:String, $fbId:String, $fbToken: String) {
   updateUser(input:{
-    firstName:$firstName, lastName: $lastName,  photo: $photo, phoneNumber:$phoneNumber, password: $password
+    firstName:$firstName, lastName: $lastName,  photo: $photo, phoneNumber:$phoneNumber, password: $password, fbId:$fbId, fbToken: $fbToken
   }) {
     token,
     User {
@@ -87,6 +89,7 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
       phoneVerified
       phoneNumber
       photo
+      fbId
     }
   }
 }
@@ -94,9 +97,10 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
 
 export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   props: ({ mutate }) => ({
-    updateProfile: (firstName, lastName, photo, phoneNumber, password) => mutate({
-      variables: { firstName, lastName, photo, phoneNumber, password },
-    }),
+    updateProfile: ({ firstName, lastName, photo, phoneNumber, password, fbId, fbToken }) =>
+      mutate({
+        variables: { firstName, lastName, photo, phoneNumber, password, fbId, fbToken },
+      }),
   }),
 });
 
@@ -396,6 +400,7 @@ mutation changePassword($oldPassword: String, $newPassword: String){
       phoneVerified
       phoneNumber
       photo
+      fbId
     }
   }
 }
