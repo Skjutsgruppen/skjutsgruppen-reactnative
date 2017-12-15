@@ -172,8 +172,8 @@ class Verified extends Component {
   renderCountryCode = () => countries.map(country => (
     <Picker.Item
       key={country.code}
-      label={`${country.dial_code} - ${country.name}`}
-      value={country.dial_code}
+      label={`${country.dialCode} - ${country.name}`}
+      value={country.dialCode}
     />
   ));
 
@@ -205,15 +205,15 @@ class Verified extends Component {
     />
   )
 
-  renderPickerItem = ({ dial_code, code, name }) => {
-    const selected = this.state.countryCode === dial_code ? styles.selected : [];
+  renderPickerItem = ({ dialCode, code, name }) => {
+    const selected = this.state.countryCode === dialCode ? styles.selected : [];
     return (
       <Text
         key={code}
         style={[styles.pickerItem, selected]}
-        onPress={() => this.changeCountryCode(dial_code)}
+        onPress={() => this.changeCountryCode(dialCode)}
       >
-        {`${dial_code} - ${name}`}
+        {`${dialCode} - ${name}`}
       </Text>
     );
   }

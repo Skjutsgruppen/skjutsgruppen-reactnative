@@ -214,7 +214,14 @@ class ExploreGroupsResult extends Component {
     return (
       <FlatList
         data={Group}
-        renderItem={({ item }) => <GroupItem min onPress={this.redirect} group={item} />}
+        renderItem={({ item }) => (
+          <GroupItem
+            min
+            onPress={this.redirect}
+            group={item}
+            wrapperStyle={{ borderBottomWidth: 0 }}
+          />)
+        }
         keyExtractor={(item, index) => `${item.id}-${index}`}
         refreshing={exploreGroups.networkStatus === 4}
         onRefresh={() => exploreGroups.refetch()}

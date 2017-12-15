@@ -26,6 +26,10 @@ const Relation = ({ users }) => {
     return null;
   }
 
+  if (users.length < 1) {
+    return null;
+  }
+
   return (
     <View style={styles.participantWrapper}>
       {users.map((user) => {
