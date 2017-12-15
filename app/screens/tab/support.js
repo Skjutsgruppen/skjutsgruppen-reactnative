@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ToastAndroid as Toast, Modal, TouchableWithoutFeedback } from 'react-native';
-import AuthService from '@services/auth';
-import AuthAction from '@redux/actions/auth';
+import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import TabIcon from '@components/tabIcon';
 import { Wrapper } from '@components/common';
-import { compose } from 'react-apollo';
-import { withContacts } from '@services/apollo/contact';
-import Contacts from 'react-native-contacts';
 import Colors from '@theme/colors';
 import BackButton from '@components/common/backButton';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
-import CustomButton from '@components/common/customButton';
-import PopupMenu from '@components/profile/popupMenu';
-import { FBLoginManager } from 'react-native-facebook-login';
-import LinkFacebook from '@components/facebook/link';
 
 const Profile = withProfile(ProfileDetail);
 
@@ -71,25 +62,8 @@ class Support extends Component {
     this.secureText = true;
     this.state = ({
       error: '',
-      modalVisibility: false,
     });
   }
-
-  onEdit = () => {
-    this.setModalVisibility(false);
-    const { navigation } = this.props;
-    navigation.navigate('EditProfile');
-  }
-
-  onChangePassword = () => {
-    this.setModalVisibility(false);
-    const { navigation } = this.props;
-    navigation.navigate('ChangePassword');
-  }
-
-  setModalVisibility = ((visibility) => {
-    this.setState({ modalVisibility: visibility });
-  })
 
   navigateTo = (routeName) => {
     const { navigation } = this.props;
@@ -106,32 +80,6 @@ class Support extends Component {
     navigation.goBack();
   }
 
-  logout = () => {
-    const { logout } = this.props;
-    logout().then(() => this.navigateTo('Splash')).then(() => {
-      FBLoginManager.logout(() => { });
-    });
-  }
-
-  sync = () => {
-    const { syncContacts } = this.props;
-    Contacts.getAll((err, contacts) => {
-      if (err === 'denied') {
-        console.error(err);
-      } else {
-        const mobiles = [];
-        contacts.forEach(
-          contact => contact.phoneNumbers.forEach(book => mobiles.push(book.number)),
-        );
-        syncContacts(mobiles)
-          .then(() => {
-            Toast.show('Contact successully synced.', Toast.LONG);
-          })
-          .catch(error => console.error(error));
-      }
-    });
-  }
-
   render() {
     const { navigation, user } = this.props;
 
@@ -141,7 +89,7 @@ class Support extends Component {
           <BackButton onPress={this.goBack} >Back</BackButton>
           <TouchableOpacity
             navigation={navigation}
-            onPress={() => this.setModalVisibility(true)}
+            onPress={() => navigation.navigate('Settings')}
           >
             <Icon
               name="ios-options"
@@ -156,58 +104,14 @@ class Support extends Component {
               navigation={navigation}
               id={user.id}
             />
-            <View style={styles.section}>
-              <CustomButton
-                bgColor={Colors.background.darkCyan}
-                style={styles.button}
-                onPress={this.logout}
-              >
-                Logout
-              </CustomButton>
-              <CustomButton
-                bgColor={Colors.background.darkCyan}
-                style={styles.button}
-                onPress={this.sync}
-              >
-                Sync Contacts
-              </CustomButton>
-            </View>
-            <LinkFacebook user={user} />
           </ScrollView>
         </View>
-        <Modal
-          transparent
-          visible={this.state.modalVisibility}
-          onShow={this.showDropDownMenu}
-          onDismiss={this.hideDropDownMenu}
-          onRequestClose={() => this.visibleModal(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => this.setModalVisibility(false)}>
-            <View style={{ flex: 1 }}>
-              <PopupMenu>
-                <TouchableOpacity
-                  onPress={this.onEdit}
-                  style={styles.menuItem}
-                >
-                  <Text style={styles.menuText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={this.onChangePassword}
-                  style={styles.menuItem}
-                >
-                  <Text style={styles.menuText}>Change password</Text>
-                </TouchableOpacity>
-              </PopupMenu>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
       </Wrapper>
     );
   }
 }
 
 Support.propTypes = {
-  logout: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
     firstName: PropTypes.string,
@@ -217,16 +121,8 @@ Support.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  syncContacts: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-const mapDispatchToProps = dispatch => ({
-  logout: () => AuthService.logout()
-    .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.error(error)),
-});
-
-export default compose(withContacts,
-  connect(mapStateToProps, mapDispatchToProps))(Support);
+export default connect(mapStateToProps)(Support);

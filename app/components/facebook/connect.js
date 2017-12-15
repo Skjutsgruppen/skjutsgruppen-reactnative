@@ -28,7 +28,10 @@ class Connect extends PureComponent {
     this.setState({ loading: false });
   }
 
-  async onLogin(fbUser) {
+  async onLogin(data) {
+    const fbUser = data.credentials;
+    fbUser.profile = data.profile;
+
     this.setState({ loading: true, fbUser }, async () => {
       try {
         const { token, user } = await this.getUserByFbId(fbUser.profile.id);
@@ -61,7 +64,6 @@ class Connect extends PureComponent {
     const api = `https://graph.facebook.com/v2.3/${fbUser.userId}?fields=picture,first_name,last_name,email,name&access_token=${fbUser.token}`;
     const response = await fetch(api);
     fbUser.profile = await response.json();
-
     this.setState({ loading: false, fbUser, pressContinue: true });
   }
 
