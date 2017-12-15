@@ -6,6 +6,7 @@ import { CustomButton } from '@components/common';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import PropTypes from 'prop-types';
+import FBLogin from '@components/facebook/login';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -66,13 +67,9 @@ class Method extends Component {
         <ColoredText color={Colors.text.purple}>
           We will not post anything to Facebook or Twitter without asking you.
         </ColoredText>
-        <CustomButton
-          style={styles.button}
-          onPress={this.onPressFacebook}
-          bgColor="#3b5998"
-        >
-          Sign in with Facebook
-        </CustomButton>
+        <View style={styles.button}>
+          <FBLogin navigation={this.props.navigation} />
+        </View>
         <CustomButton
           style={styles.button}
           onPress={this.onPressTwitter}

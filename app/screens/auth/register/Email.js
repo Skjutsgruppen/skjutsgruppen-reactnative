@@ -75,7 +75,7 @@ class Email extends Component {
 
     if (validation.pass()) {
       try {
-        register(email).then(({ data }) => {
+        register({ email }).then(({ data }) => {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
             this.setState({ loading: false }, () => {
