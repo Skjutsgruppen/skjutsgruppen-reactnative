@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar, CustomButton, Loading } from '@components/common';
 import Colors from '@theme/colors';
@@ -27,7 +27,33 @@ const styles = StyleSheet.create({
   herderStyles: {
     marginLeft: 0,
     marginRight: 0,
+    marginBottom: 0,
     borderBottomWidth: 0,
+    borderRadius: 0,
+  },
+  stopText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: Colors.border.lightGray,
+  },
+  stopsIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+    marginRight: 4,
+  },
+  stops: {
+    fontWeight: 'bold',
+    color: Colors.text.darkGray,
+  },
+  msgWrapper: {
+    padding: 24,
+  },
+  lightText: {
+    color: Colors.text.gray,
   },
 });
 
@@ -70,15 +96,27 @@ class JoinGroup extends Component {
     const { loading, requestSent, isPending } = this.state;
 
     if (loading) {
-      return (<Loading />);
+      return (
+        <View style={styles.msgWrapper}>
+          <Loading />
+        </View>
+      );
     }
 
     if (requestSent) {
-      return (<Text> Request has been sent</Text>);
+      return (
+        <View style={styles.msgWrapper}>
+          <Text style={styles.lightText}>Request has been sent</Text>
+        </View>
+      );
     }
 
     if (isPending) {
-      return (<Text> Your Request is pending.</Text>);
+      return (
+        <View style={styles.msgWrapper}>
+          <Text style={styles.lightText}>Your Request is pending.</Text>
+        </View>
+      );
     }
 
     return (
@@ -103,6 +141,16 @@ class JoinGroup extends Component {
           group={group}
           wrapperStyle={styles.herderStyles}
         />
+        {
+          group.Stops.length > 0 &&
+          <View style={styles.stopText}>
+            <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
+            <Text style={styles.lightText}>
+              Stops in
+              <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
+            </Text>
+          </View>
+        }
         <Text style={styles.label}>About</Text>
         <Text style={styles.text}>
           {group.description}

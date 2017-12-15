@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
   Wrapper: {
     width: '100%',
     flexDirection: 'row',
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     backgroundColor: '#fff',
   },
   profilePic: {
@@ -73,7 +74,7 @@ class Feed extends Component {
     return (
       <View style={styles.Wrapper}>
         <TouchableOpacity onPress={() => onPress('profile', feed.User.id)}>{image}</TouchableOpacity>
-        <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
             <Text style={styles.name}>{feed.User.firstName || feed.User.email}</Text>
             <Text style={styles.time}>{feed.date}</Text>
