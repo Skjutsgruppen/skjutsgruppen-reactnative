@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text, Picker, FlatList, Modal, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
@@ -12,8 +12,8 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
-import countries from '@config/countries';
 import { Icons } from '@icons';
+import Phone from '@components/phone';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -53,28 +53,6 @@ const styles = StyleSheet.create({
     marginVertical: 32,
     backgroundColor: Colors.background.lightGray,
   },
-  customPicker: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    paddingHorizontal: 12,
-    paddingVertical: 24,
-  },
-  pickerContent: {
-    flex: 1,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 2,
-    paddingVertical: 12,
-  },
-  pickerItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    fontSize: 16,
-    color: '#333',
-  },
-  selected: {
-    backgroundColor: '#eee',
-    color: Colors.text.gray,
-  },
   buttonWrapper: {
     marginHorizontal: 24,
   },
@@ -87,7 +65,7 @@ class Verified extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '', modalVisibility: false });
+    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '' });
   }
 
   componentWillMount() {
@@ -95,6 +73,8 @@ class Verified extends Component {
     if (auth.login) {
       this.navigateTo('Tab');
     }
+
+    this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '' });
   }
 
   onSubmit = () => {
@@ -106,14 +86,15 @@ class Verified extends Component {
 
     if (validation.pass()) {
       try {
-        updateProfile(firstName, lastName, '', countryCode + phone, password).then(({ data }) => {
-          const { token, User } = data.updateUser;
-          updateUser({ token, user: User }).then(() => {
-            this.navigateTo('Tab');
+        updateProfile({ firstName, lastName, phoneNumber: countryCode + phone, password })
+          .then(({ data }) => {
+            const { token, User } = data.updateUser;
+            updateUser({ token, user: User }).then(() => {
+              this.navigateTo('Tab');
+            });
+          }).catch((err) => {
+            this.setState({ loading: false, error: err.message });
           });
-        }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
-        });
       } catch (err) {
         this.setState({ loading: false, error: err.message });
       }
@@ -121,10 +102,6 @@ class Verified extends Component {
       Toast.show(validation.errors.join('\n'), Toast.LONG);
       this.setState({ loading: false });
     }
-  }
-
-  setModalVisibility = (visibility) => {
-    this.setState({ modalVisibility: visibility });
   }
 
   navigateTo = (routeName) => {
@@ -140,7 +117,7 @@ class Verified extends Component {
 
   checkValidation() {
     const errors = [];
-    const { firstName, lastName, phone, password } = this.state;
+    const { firstName, lastName, countryCode, phone, password } = this.state;
 
     if (firstName === '') {
       errors.push('First Name is required.');
@@ -148,6 +125,10 @@ class Verified extends Component {
 
     if (lastName === '') {
       errors.push('Last Name is required.');
+    }
+
+    if (countryCode === '') {
+      errors.push('Country Code is required.');
     }
 
     if (phone === '') {
@@ -164,19 +145,6 @@ class Verified extends Component {
     };
   }
 
-  changeCountryCode = (countryCode) => {
-    this.setState({ countryCode });
-    this.setModalVisibility(false);
-  }
-
-  renderCountryCode = () => countries.map(country => (
-    <Picker.Item
-      key={country.code}
-      label={`${country.dialCode} - ${country.name}`}
-      value={country.dialCode}
-    />
-  ));
-
   renderButton = () => {
     const { loading } = this.state;
 
@@ -192,29 +160,6 @@ class Verified extends Component {
       >
         Next
       </CustomButton>
-    );
-  }
-
-
-  renderPickerList = () => (
-    <FlatList
-      data={countries}
-      keyExtractor={(item, index) => index}
-      renderItem={({ item }, index) => this.renderPickerItem(item, index)}
-      onPressItem={this.changeCountryCode}
-    />
-  )
-
-  renderPickerItem = ({ dialCode, code, name }) => {
-    const selected = this.state.countryCode === dialCode ? styles.selected : [];
-    return (
-      <Text
-        key={code}
-        style={[styles.pickerItem, selected]}
-        onPress={() => this.changeCountryCode(dialCode)}
-      >
-        {`${dialCode} - ${name}`}
-      </Text>
     );
   }
 
@@ -235,6 +180,7 @@ class Verified extends Component {
             placeholder="Your first name"
             underlineColorAndroid="transparent"
             onChangeText={firstName => this.setState({ firstName })}
+            value={this.state.firstName}
           />
         </View>
         <View style={styles.inputWrapper}>
@@ -243,28 +189,16 @@ class Verified extends Component {
             placeholder="Your last name"
             underlineColorAndroid="transparent"
             onChangeText={lastName => this.setState({ lastName })}
+            value={this.state.lastName}
           />
         </View>
 
-        <View style={styles.inputWrapper}>
-          <Picker
-            selectedValue={this.state.countryCode}
-            onValueChange={countryCode => this.setState({ countryCode })}
-          >
-            {this.renderCountryCode()}
-          </Picker>
-        </View>
-
         <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
-          {/* <TouchableOpacity onPress={() => this.setModalVisibility(true)}>
-            <Text>{this.state.countryCode}</Text>
-          </TouchableOpacity> */}
-          <TextInput
-            keyboardType="phone-pad"
+          <Phone
+            defaultCode={this.state.countryCode}
             style={[styles.input, styles.firstNameInput]}
             placeholder="Your Mobile number"
-            underlineColorAndroid="transparent"
-            onChangeText={phone => this.setState({ phone })}
+            onChange={({ code, number }) => this.setState({ countryCode: code, phone: number })}
           />
         </View>
         <View style={styles.inputWrapper}>
@@ -276,20 +210,6 @@ class Verified extends Component {
             onChangeText={password => this.setState({ password })}
           />
         </View>
-        <Modal
-          transparent
-          visible={this.state.modalVisibility}
-        >
-          <View
-            style={styles.customPicker}
-          >
-            <View style={styles.pickerContent}>
-              {
-                this.renderPickerList()
-              }
-            </View>
-          </View>
-        </Modal>
         {this.renderButton()}
       </Container>
     );
