@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
-import { Loading, Wrapper } from '@components/common';
+import { Loading } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -146,6 +146,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 400,
   },
+  disabledBtn: {
+    margin: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: Colors.background.lightGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.5,
+    borderRadius: 8,
+  },
 });
 
 class Profile extends Component {
@@ -221,7 +231,11 @@ class Profile extends Component {
     }
 
     if (profile.relationshipType === 'friend') {
-      return <Text>You are friend.</Text>;
+      return (
+        <View style={styles.disabledBtn}>
+          <Text>You are friend.</Text>
+        </View>
+      );
     }
 
     if (profile.relationshipType === 'incoming') {
@@ -327,7 +341,7 @@ class Profile extends Component {
     }
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
+      <View>
         <Image source={{ uri: profile.photo }} style={styles.profilePic} />
         <Text style={styles.name}>{profile.firstName} {profile.lastName}</Text>
         <View style={styles.activityWrapper}>
@@ -397,7 +411,7 @@ class Profile extends Component {
             <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
           </TouchableOpacity>
         </View>
-      </Wrapper>
+      </View>
     );
   }
 }

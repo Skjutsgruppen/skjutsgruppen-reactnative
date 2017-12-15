@@ -22,7 +22,7 @@ const Profile = withProfile(ProfileDetail);
 
 const styles = StyleSheet.create({
   navbar: {
-    height: 30,
+    height: 40,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -150,28 +150,30 @@ class Support extends Component {
             />
           </TouchableOpacity>
         </View>
-        <ScrollView>
-          <Profile
-            navigation={navigation}
-            id={this.props.user.id}
-          />
-          <View style={styles.section}>
-            <CustomButton
-              bgColor={Colors.background.darkCyan}
-              style={styles.button}
-              onPress={this.logout}
-            >
-              Logout
-            </CustomButton>
-            <CustomButton
-              bgColor={Colors.background.darkCyan}
-              style={styles.button}
-              onPress={this.sync}
-            >
-              Sync Contacts
-            </CustomButton>
-          </View>
-        </ScrollView>
+        <View style={{ flex: 1, backgroundColor: Colors.background.fullWhite }}>
+          <ScrollView>
+            <Profile
+              navigation={navigation}
+              id={this.props.user.id}
+            />
+            <View style={styles.section}>
+              <CustomButton
+                bgColor={Colors.background.darkCyan}
+                style={styles.button}
+                onPress={this.logout}
+              >
+                Logout
+              </CustomButton>
+              <CustomButton
+                bgColor={Colors.background.darkCyan}
+                style={styles.button}
+                onPress={this.sync}
+              >
+                Sync Contacts
+              </CustomButton>
+            </View>
+          </ScrollView>
+        </View>
         <Modal
           transparent
           visible={this.state.modalVisibility}
