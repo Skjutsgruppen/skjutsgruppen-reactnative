@@ -29,6 +29,7 @@ import EditProfile from '@screens/profile/EditProfile';
 import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
+import Settings from '@screens/Settings';
 
 import Map from '@screens/Map';
 import SingleNotification from '@screens/SingleNotification';
@@ -70,6 +71,7 @@ export const Routes = {
 
   SingleNotification: { screen: SingleNotification },
   Map: { screen: Map },
+  Settings: { screen: Settings },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

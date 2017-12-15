@@ -79,11 +79,11 @@ class Feed extends Component {
   }
 
   redirectToMap = () => {
-    this.props.navigation.navigateWithDebounce('Map');
+    this.props.navigation.navigate('Map');
   };
 
   redirectToGroup = () => {
-    this.props.navigation.navigateWithDebounce('ExploreGroup');
+    this.props.navigation.navigate('ExploreGroup');
   }
 
   renderModal() {
