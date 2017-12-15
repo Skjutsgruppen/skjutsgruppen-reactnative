@@ -36,8 +36,6 @@ import SingleNotification from '@screens/SingleNotification';
 import { StackNavigator } from 'react-navigation';
 
 export const Routes = {
-  Map: { screen: Map },
-
   Splash: { screen: Splash },
   RegisterMethod: { screen: RegisterMethod },
   RegisterViaEmail: { screen: RegisterViaEmail },
@@ -71,6 +69,7 @@ export const Routes = {
   UserTrips: { screen: UserTrips },
 
   SingleNotification: { screen: SingleNotification },
+  Map: { screen: Map },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

@@ -5,6 +5,7 @@ import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import PropTypes from 'prop-types';
+import FBLogin from '@components/facebook/login';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -42,10 +43,6 @@ class Method extends Component {
     header: null,
   };
 
-  onPressFacebook = () => {
-
-  };
-
   onPressTwitter = () => {
 
   };
@@ -63,13 +60,11 @@ class Method extends Component {
       <Container>
         <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Welcome back!</GreetText>
-        <CustomButton
-          onPress={this.onPressFacebook}
-          bgColor="#3b5998"
-          style={styles.button}
-        >
-          Sign in with Facebook
-        </CustomButton>
+
+        <View style={styles.button}>
+          <FBLogin navigation={this.props.navigation} />
+        </View>
+
         <CustomButton
           onPress={this.onPressTwitter}
           bgColor="#1da1f2"
