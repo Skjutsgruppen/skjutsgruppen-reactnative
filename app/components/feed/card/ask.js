@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -110,7 +111,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
               <Text> asks for a ride </Text>
             </Text>
             <Text style={styles.fromTo}>{ask.TripStart.name} - {ask.TripEnd.name}</Text>
-            <Text style={styles.lightText}>{ask.date}</Text>
+            <Text style={styles.lightText}><Date>{ask.date}</Date></Text>
           </View>
         </View>
         <TouchableWithoutFeedback onPress={() => onPress('ask', ask)}>

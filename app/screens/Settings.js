@@ -57,9 +57,9 @@ class Settings extends Component {
 
   logout = () => {
     const { logout } = this.props;
-    logout().then(() => this.navigateTo('Splash')).then(() => {
-      FBLoginManager.logout(() => { });
-    });
+    logout()
+      .then(() => this.navigateTo('Splash'))
+      .then(() => FBLoginManager.logout(() => { }));
   }
 
   navigateTo = (routeName) => {

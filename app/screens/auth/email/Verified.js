@@ -14,6 +14,7 @@ import { withUpdateProfile } from '@services/apollo/auth';
 import { NavigationActions } from 'react-navigation';
 import { Icons } from '@icons';
 import Phone from '@components/phone';
+import { getPhoneNumber } from '@services/device';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -74,7 +75,7 @@ class Verified extends Component {
       this.navigateTo('Tab');
     }
 
-    this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '' });
+    this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', phone: getPhoneNumber() });
   }
 
   onSubmit = () => {

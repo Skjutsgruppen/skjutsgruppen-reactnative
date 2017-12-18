@@ -19,12 +19,13 @@ class Button extends Component {
   }
 
   render() {
+    const { profile } = this.props;
     return (
       <CustomButton
         onPress={this.onPress}
         bgColor="#3b5998"
       >
-        {this.context.isLoggedIn && this.props.profile ? `Continue as ${this.props.profile.name || ''}` : 'Sign in with Facebook'}
+        {this.context.isLoggedIn && profile ? `Continue as ${profile.name || ''}` : 'Sign in with Facebook'}
       </CustomButton>
     );
   }
