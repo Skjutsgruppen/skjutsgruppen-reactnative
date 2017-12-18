@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { userRegister, withUpdateProfile } from '@services/apollo/auth';
-import { connectWithSocial } from '@services/apollo/facebook';
+import { withFacebookConnect } from '@services/apollo/facebook';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
@@ -17,9 +17,10 @@ class FBLogin extends PureComponent {
   }
 
   async onLogin(fbUser, { token, user }) {
+    const { setLogin, navigation } = this.props;
     if (user) {
-      this.props.setLogin({ token, user }).then(() => {
-        this.props.navigation.navigate('Tab');
+      setLogin({ token, user }).then(() => {
+        navigation.navigate('Tab');
       });
     } else {
       this.signupWithFacebook(() => this.register(fbUser));
@@ -27,16 +28,18 @@ class FBLogin extends PureComponent {
   }
 
   async connect({ profile, fbToken }) {
-    const response = await this.props.connectWithSocial({
+    const { facebookConnect, setLogin, navigation } = this.props;
+
+    const response = await facebookConnect({
       id: profile.id,
       email: profile.email,
       token: fbToken,
     });
-    await this.props.setLogin({
+    await setLogin({
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
-    this.props.navigation.navigate('Tab');
+    navigation.navigate('Tab');
   }
 
   async register({ profile, token: fbToken }) {
@@ -44,29 +47,30 @@ class FBLogin extends PureComponent {
       Alert.alert('Error!', 'Email is required');
       return;
     }
+    const { register, setRegister, updateProfile, navigation } = this.props;
 
     try {
-      const { data } = await this.props.register({
+      const { data } = await register({
         email: profile.email,
         verified: profile.verified,
       });
       const { token, User } = data.register;
-      await this.props.setRegister({ token, user: User });
+      await setRegister({ token, user: User });
 
-      const updateProfile = await this.props.updateProfile({
+      const response = await updateProfile({
         firstName: profile.first_name,
         lastName: profile.last_name,
         fbId: profile.id,
       });
-      await this.props.setRegister({
-        token: updateProfile.data.updateUser.token,
-        user: updateProfile.data.updateUser.User,
+      await setRegister({
+        token: response.data.updateUser.token,
+        user: response.data.updateUser.User,
       });
 
       if (profile.verified) {
-        this.props.navigation.navigate('EmailVerified');
+        navigation.navigate('EmailVerified');
       } else {
-        this.props.navigation.navigate('CheckMail');
+        navigation.navigate('CheckMail');
       }
     } catch (error) {
       /* todos :
@@ -109,7 +113,7 @@ FBLogin.propTypes = {
   setRegister: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
-  connectWithSocial: PropTypes.func.isRequired,
+  facebookConnect: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -122,6 +126,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default compose(
-  userRegister, withUpdateProfile, connectWithSocial,
+  userRegister, withUpdateProfile, withFacebookConnect,
   connect(null, mapDispatchToProps),
 )(FBLogin);

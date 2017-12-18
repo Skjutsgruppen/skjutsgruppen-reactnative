@@ -35,7 +35,8 @@ class List extends Component {
   }
 
   componentWillMount() {
-    this.props.subscribeToNewComments({ id: this.props.id });
+    const { subscribeToNewComments, id } = this.props;
+    subscribeToNewComments({ id });
   }
 
   loadMore = () => {

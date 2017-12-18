@@ -331,7 +331,6 @@ class Profile extends Component {
 
   render() {
     const { data: { networkStatus, profile } } = this.props;
-
     if (networkStatus === 1) {
       return (
         <View style={styles.loadingWrapper}>
