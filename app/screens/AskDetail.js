@@ -6,6 +6,7 @@ import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import Date from '@components/date';
 
 const AskComment = withTripComment(Comment);
 
@@ -256,7 +257,7 @@ class AskDetail extends Component {
                     <Text> asks for a ride </Text>
                   </Text>
                   <Text>{ask.TripStart.name} - {ask.TripEnd.name}</Text>
-                  <Text style={styles.lightText}>{ask.date}</Text>
+                  <Text style={styles.lightText}><Date>{ask.date}</Date></Text>
                 </View>
               </View>
               <View>

@@ -5,6 +5,7 @@ import Feed from '@components/group/feed/default';
 import Offer from '@components/feed/card/offer';
 import Ask from '@components/feed/card/ask';
 import Colors from '@theme/colors';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -91,7 +92,7 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
               <Text style={styles.name}>{groupFeed.User.firstName || groupFeed.User.email}</Text>
               <Text>shared a trip</Text>
             </View>
-            <Text style={styles.time}>{groupFeed.date}</Text>
+            <Text style={styles.time}><Date>{groupFeed.date}</Date></Text>
           </View>
         </View>
       );
