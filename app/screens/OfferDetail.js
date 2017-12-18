@@ -6,6 +6,7 @@ import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import Date from '@components/date';
 
 const OfferComment = withTripComment(Comment);
 
@@ -255,7 +256,7 @@ class OfferDetail extends Component {
                     <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
                   </Text>
                   <Text>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
-                  <Text style={styles.lightText}>{offer.date}</Text>
+                  <Text style={styles.lightText}><Date>{offer.date}</Date></Text>
                 </View>
               </View>
               <View>

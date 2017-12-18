@@ -12,6 +12,7 @@ import AuthService from '@services/auth/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { NavigationActions } from 'react-navigation';
+import FBLogin from '@components/facebook/login';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -51,7 +52,7 @@ class Email extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ email: 'manish.singh+@yipl.com.np', loading: false, error: '' });
+    this.state = ({ email: '', loading: false, error: '' });
   }
 
   componentWillMount() {
@@ -155,13 +156,11 @@ class Email extends Component {
         <ColoredText color={Colors.text.purple}>
           Or sign up with Facebook or Twitter instead
         </ColoredText>
-        <CustomButton
-          style={styles.button}
-          onPress={() => { }}
-          bgColor="#3b5998"
-        >
-          Sign Up with Facebook
-        </CustomButton>
+
+        <View style={styles.button}>
+          <FBLogin navigation={this.props.navigation} />
+        </View>
+
         <CustomButton
           style={styles.button}
           onPress={() => { }}

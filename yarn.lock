@@ -3672,9 +3672,15 @@ mkdirp@0.5.0:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.18.1:
-  version "2.19.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
+moment-timezone@^0.5.14:
+  version "0.5.14"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.14.tgz#4eb38ff9538b80108ba467a458f3ed4268ccfcb1"
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.0.tgz#53396358994dd3a551e966a66af715ecb6c30ad0"
 
 morgan@~1.6.1:
   version "1.6.1"
@@ -4288,6 +4294,10 @@ react-devtools@^2.5.0:
     react-devtools-core "^2.5.2"
     update-notifier "^2.1.0"
 
+react-moment@^0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/react-moment/-/react-moment-0.6.8.tgz#8612a90f3c8afec26fef6844806d84b9d9e3b212"
+
 react-native-calendars@^1.7.1:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.9.0.tgz#ee34373459de67b89bc4dbc462981b105bce6de3"
@@ -4302,6 +4312,10 @@ react-native-config@^0.6.0:
 react-native-contacts@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-native-contacts/-/react-native-contacts-1.0.3.tgz#1e8e263916b2a7dcf856d93cdabbf82ad1d3fab1"
+
+react-native-device-info@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.13.0.tgz#81051eebd3db6959e4f1d2cb0ae8df74105040cf"
 
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"

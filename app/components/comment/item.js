@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   commentWrapper: {
@@ -50,7 +51,7 @@ const Item = ({ comment, onPress }) => {
       <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
-          <Text style={styles.time}>{comment.date}</Text>
+          <Text style={styles.time}><Date>{comment.date}</Date></Text>
         </View>
         <View>
           <Text style={styles.commentText}>{comment.text}</Text>
