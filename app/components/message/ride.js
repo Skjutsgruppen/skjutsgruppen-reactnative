@@ -4,6 +4,7 @@ import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -90,7 +91,7 @@ const item = (trip, navigation) => (
         </View>
         <View>
           <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Text style={styles.lightText}>{trip.date}</Text>
+          <Text style={styles.lightText}><Date>{trip.date}</Date></Text>
         </View>
       </View>
       <View>

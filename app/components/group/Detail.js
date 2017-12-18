@@ -303,7 +303,7 @@ class Detail extends Component {
     let hasMember = false;
 
     group.GroupMembers.forEach((member) => {
-      if (member.id === user.id) {
+      if (member && member.id === user.id) {
         hasMember = true;
       }
     });

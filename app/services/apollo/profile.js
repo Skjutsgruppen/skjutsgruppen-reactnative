@@ -33,7 +33,6 @@ query profile($id: Int){
 
 export const withProfile = graphql(profileQuery, {
   options: ({ id }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { id },
     props: ({ profile }) => ({ profile }),
   }),
@@ -66,7 +65,6 @@ query profile {
 
 export const withOwner = graphql(ownerQuery, {
   options: {
-    notifyOnNetworkStatusChange: true,
     props: ({ owner }) => ({ owner }),
   },
 });
@@ -176,7 +174,6 @@ query groups ($userId: Int) {
 
 export const withMyGroups = graphql(myGroupsQuery, {
   options: ({ userId }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { userId },
     props: ({ groups }) => ({ groups }),
   }),
@@ -225,7 +222,6 @@ const myFriendsQuery = gql`
 
 export const withMyFriends = graphql(myFriendsQuery, {
   options: ({ id }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { id, offset: 0, limit: 15 },
     props: ({ friends }) => ({ friends }),
   }),
@@ -311,7 +307,6 @@ query trips (
 
 export const withMyTrips = graphql(myTripsQuery, {
   options: ({ userId, type }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { userId, type },
     props: ({ trips }) => ({ trips }),
   }),

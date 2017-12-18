@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -46,7 +47,17 @@ class Feed extends Component {
           <Text style={styles.commentText}>Created this group</Text>
         </View>
       );
-    } else if (feed.ActivityType.type === 'joined_group') {
+    }
+
+    if (feed.ActivityType.type === 'left_group') {
+      return (
+        <View>
+          <Text style={styles.commentText}>left the group</Text>
+        </View>
+      );
+    }
+
+    if (feed.ActivityType.type === 'joined_group') {
       return (
         <View>
           <Text style={styles.commentText}>Joined the group</Text>
@@ -54,11 +65,15 @@ class Feed extends Component {
       );
     }
 
-    return (
-      <View>
-        <Text style={styles.commentText}>{feed.Comment.text}</Text>
-      </View>
-    );
+    if (feed.ActivityType.type === 'comment') {
+      return (
+        <View>
+          <Text style={styles.commentText}>{feed.Comment.text}</Text>
+        </View>
+      );
+    }
+
+    return null;
   }
 
   render() {
@@ -77,7 +92,7 @@ class Feed extends Component {
         <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
             <Text style={styles.name}>{feed.User.firstName || feed.User.email}</Text>
-            <Text style={styles.time}>{feed.date}</Text>
+            <Text style={styles.time}><Date>{feed.date}</Date></Text>
           </View>
           {this.renderFeed()}
         </View>

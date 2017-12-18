@@ -51,10 +51,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const FriendList = ({ title, loading, friends, total, setOption, selected }) => {
+const FriendList = ({ title, loading, friends, setOption, selected }) => {
+  const filteredFriends = friends.filter(row => row);
+
   if (loading) return (<Loading />);
 
-  if (total < 1) return null;
+  if (filteredFriends.length < 1) return null;
 
   const hasOption = key => selected.indexOf(key) > -1;
 
@@ -72,7 +74,7 @@ const FriendList = ({ title, loading, friends, total, setOption, selected }) => 
     <View>
       <Text style={styles.shareCategoryTitle}>{title}</Text>
       {
-        friends.map(friend => (
+        filteredFriends.map(friend => (
           <View key={friend.id} style={styles.borderedRow}>
             <TouchableWithoutFeedback
               onPress={() => setOption('friends', friend.id)}
@@ -109,7 +111,6 @@ FriendList.propTypes = {
     photo: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
   })).isRequired,
-  total: PropTypes.number.isRequired,
   setOption: PropTypes.func.isRequired,
   selected: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
