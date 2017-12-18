@@ -31,9 +31,9 @@ class GroupFeed extends Component {
   }
 
   componentWillMount() {
-    const { subscribeToGroupFeed } = this.props;
+    const { subscribeToGroupFeed, groupId } = this.props;
 
-    subscribeToGroupFeed({ groupId: 23 });
+    subscribeToGroupFeed({ groupId });
   }
 
   onPress = (type, detail) => {
@@ -146,6 +146,7 @@ class GroupFeed extends Component {
 }
 
 GroupFeed.propTypes = {
+  groupId: PropTypes.number.isRequired,
   groupFeed: PropTypes.shape({
     loading: PropTypes.boolean,
     error: PropTypes.object,

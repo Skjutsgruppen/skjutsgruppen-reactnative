@@ -51,8 +51,8 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
 }
 `;
 
-export const connectWithSocial = graphql(CONNECT_QUERY, {
+export const withFacebookConnect = graphql(CONNECT_QUERY, {
   props: ({ mutate }) => ({
-    connectWithSocial: ({ email, id, token, type = 'facebook' }) => mutate({ variables: { email, id, token, type } }),
+    facebookConnect: ({ email, id, token, type = 'facebook' }) => mutate({ variables: { email, id, token, type } }),
   }),
 });

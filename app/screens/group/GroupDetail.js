@@ -43,7 +43,7 @@ class GroupDetail extends Component {
     let isMember = false;
 
     group.GroupMembers.forEach((member) => {
-      if (member.id === user.id) {
+      if (member && member.id === user.id) {
         isMember = true;
       }
     });

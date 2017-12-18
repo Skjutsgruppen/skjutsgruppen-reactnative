@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { connectWithSocial } from '@services/apollo/facebook';
+import { withFacebookConnect } from '@services/apollo/facebook';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
@@ -32,15 +32,16 @@ class LinkFacebook extends PureComponent {
   }
 
   async onLogin(fbUser, { user }) {
+    const { facebookConnect, setLogin } = this.props;
     if (!user) {
       try {
         this.setState({ loading: true });
-        const response = await this.props.connectWithSocial({
+        const response = await facebookConnect({
           id: fbUser.profile.id,
           email: fbUser.profile.email,
           token: fbUser.token,
         });
-        await this.props.setLogin({
+        await setLogin({
           token: response.data.connect.token,
           user: response.data.connect.User,
         });
@@ -52,14 +53,16 @@ class LinkFacebook extends PureComponent {
   }
 
   async unlink() {
+    const { facebookConnect, user, setLogin } = this.props;
+
     try {
       this.setState({ loading: true });
-      const response = await this.props.connectWithSocial({
+      const response = await facebookConnect({
         id: '',
-        email: this.props.user.email,
+        email: user.email,
         token: '',
       });
-      await this.props.setLogin({
+      await setLogin({
         token: response.data.connect.token,
         user: response.data.connect.User,
       });
@@ -70,10 +73,13 @@ class LinkFacebook extends PureComponent {
   }
 
   render() {
-    if (this.state.loading) {
+    const { loading, linked } = this.state;
+
+    if (loading) {
       return (<Loading />);
     }
-    if (this.state.linked) {
+    
+    if (linked === true) {
       return (<CustomButton
         bgColor={Colors.background.darkCyan}
         style={styles.button}
@@ -90,7 +96,7 @@ class LinkFacebook extends PureComponent {
 }
 
 LinkFacebook.propTypes = {
-  connectWithSocial: PropTypes.func.isRequired,
+  facebookConnect: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   user: PropTypes.shape({
     fbId: PropTypes.string,
@@ -104,4 +110,4 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.error(error)),
 });
 
-export default compose(connectWithSocial, connect(null, mapDispatchToProps))(LinkFacebook);
+export default compose(withFacebookConnect, connect(null, mapDispatchToProps))(LinkFacebook);
