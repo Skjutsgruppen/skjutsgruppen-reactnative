@@ -81,12 +81,8 @@ query groups ($userId: Int) {
         id
         email
         photo 
-        phoneNumber 
         firstName 
         lastName 
-        emailVerified 
-        phoneVerified 
-        verificationCode 
         relation {
           id 
           firstName 
@@ -95,10 +91,6 @@ query groups ($userId: Int) {
           phoneNumber 
           photo
         } 
-        totalOffered 
-        totalAsked 
-        totalComments 
-        fbId 
       } 
       country 
       county 
@@ -123,24 +115,17 @@ query groups ($userId: Int) {
       GroupType:type 
       outreach 
       GroupMembers {
-        id 
-        email 
-        photo 
-        phoneNumber 
-        firstName 
-        lastName 
-        emailVerified 
-        phoneVerified 
-        verificationCode 
-        relation {
-          id 
-          firstName 
-          lastName 
-          email 
-          phoneNumber 
-          photo
+        id
+      }
+      GroupMembershipRequests{
+        id
+        status
+        Member {
+          id
+          email
+          firstName
         }
-      } 
+      }
       Comments {
         id 
         tripId 
@@ -151,12 +136,8 @@ query groups ($userId: Int) {
           id 
           email 
           photo 
-          phoneNumber 
           firstName 
           lastName 
-          emailVerified 
-          phoneVerified 
-          verificationCode 
           relation {
             id 
             firstName 

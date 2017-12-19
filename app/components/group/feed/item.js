@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     height: 55,
     width: 55,
     borderRadius: 28,
-    // marginRight: 12,
   },
   nameWrapper: {
     flexDirection: 'row',

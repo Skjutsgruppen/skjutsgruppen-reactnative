@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, TextInput, Image, ToastAndroid as Toast } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TextInput, Image, Alert } from 'react-native';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import Camera from '@components/camera';
 import Colors from '@theme/colors';
@@ -72,7 +72,7 @@ class EditProfile extends Component {
         updateProfile({ firstName, lastName, photo }).then((res) => {
           setUser(res.data.updateUser.User);
           this.setState({ loading: false, error: '' });
-          Toast.show('Profile successfully updated.', Toast.LONG);
+          Alert.alert('Success!', 'Profile successfully updated.');
         }).catch((err) => {
           this.setState({ loading: false, error: err.message });
         });
@@ -80,7 +80,7 @@ class EditProfile extends Component {
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
   }

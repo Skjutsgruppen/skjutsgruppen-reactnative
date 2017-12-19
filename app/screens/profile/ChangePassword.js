@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity, ToastAndroid as Toast } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import { GreetText, ColoredText } from '@components/auth/texts';
@@ -75,18 +75,18 @@ class ChangePassword extends Component {
     if (validation.pass()) {
       try {
         changePassword(oldPassword, newPassword).then(() => {
-          Toast.show('Password successfully updated.', Toast.LONG);
+          Alert.alert('Success!', 'Password successfully updated.');
           this.setState({ oldPassword: '', newPassword: '', confirmPassword: '', loading: false, error: '' });
         }).catch((err) => {
-          Toast.show(err.message, Toast.LONG);
+          Alert.alert('Error!', err.message);
           this.setState({ loading: false, error: err.message });
         });
       } catch (err) {
-        Toast.show(err.message, Toast.LONG);
+        Alert.alert('Error!', err.message);
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
   }

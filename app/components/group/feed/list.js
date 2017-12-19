@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import Item from '@components/group/feed/item';
+import { compose } from 'react-apollo';
+import { withShare } from '@services/apollo/auth';
+import Share from '@components/common/share';
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   infoText: {
     paddingHorizontal: 16,
     paddingVertical: 6,
@@ -27,7 +33,7 @@ const styles = StyleSheet.create({
 class GroupFeed extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, isOpen: false });
+    this.state = ({ loading: false, modalDetail: {}, modalType: '', isOpen: false });
   }
 
   componentWillMount() {
@@ -58,6 +64,16 @@ class GroupFeed extends Component {
   onSharePress = (modalType, modalDetail) => {
     this.setState({ isOpen: true, modalType, modalDetail });
   };
+
+  onShare = (share) => {
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+      .then(() => this.setState({ isOpen: false }))
+      .catch(console.error);
+  };
+
+  onClose = () => {
+    this.setState({ isOpen: false });
+  }
 
   renderFooter = () => {
     const { loading, rows, count } = this.props.groupFeed;
@@ -91,6 +107,25 @@ class GroupFeed extends Component {
     );
   };
 
+  renderShareModal() {
+    return (
+      <Modal
+        visible={this.state.isOpen}
+        onRequestClose={() => this.setState({ isOpen: false })}
+        animationType="slide"
+      >
+        <ScrollView>
+          <Share
+            modal
+            showGroup={this.state.modalType !== 'group'}
+            onNext={this.onShare}
+            onClose={this.onClose}
+          />
+        </ScrollView>
+      </Modal>
+    );
+  }
+
   render() {
     const { rows, error, count, networkStatus, refetch, loading, fetchMore } = this.props.groupFeed;
 
@@ -111,41 +146,52 @@ class GroupFeed extends Component {
     }
 
     return (
-      <FlatList
-        data={rows}
-        renderItem={({ item }) => (<Item
-          onPress={this.onPress}
-          onSharePress={this.onSharePress}
-          groupFeed={item}
-        />)}
-        keyExtractor={(item, index) => index}
-        refreshing={networkStatus === 4}
-        onRefresh={refetch}
-        onEndReachedThreshold={0.5}
-        ListHeaderComponent={this.props.header}
-        ListFooterComponent={this.renderFooter}
-        style={{ backgroundColor: Colors.background.lightGray }}
-        onEndReached={() => {
-          if (loading || rows.length >= count) return;
+      <View style={styles.wrapper} >
+        <FlatList
+          data={rows}
+          renderItem={({ item }) => (<Item
+            onPress={this.onPress}
+            onSharePress={this.onSharePress}
+            groupFeed={item}
+          />)}
+          keyExtractor={(item, index) => index}
+          refreshing={networkStatus === 4}
+          onRefresh={refetch}
+          onEndReachedThreshold={0.5}
+          ListHeaderComponent={this.props.header}
+          ListFooterComponent={this.renderFooter}
+          style={{ backgroundColor: Colors.background.lightGray }}
+          onEndReached={() => {
+            if (loading || rows.length >= count) return;
 
-          fetchMore({
-            variables: { offset: rows.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.groupFeed.rows.length === 0) {
-                return previousResult;
-              }
+            fetchMore({
+              variables: { offset: rows.length },
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult || fetchMoreResult.groupFeed.rows.length === 0) {
+                  return previousResult;
+                }
 
-              const newRows = previousResult.groupFeed.rows.concat(fetchMoreResult.groupFeed.rows);
-              return { groupFeed: { ...previousResult.groupFeed, ...{ rows: newRows } } };
-            },
-          });
-        }}
-      />
+                const newRows = previousResult.groupFeed.rows.concat(
+                  fetchMoreResult.groupFeed.rows,
+                );
+                return {
+                  groupFeed: {
+                    ...previousResult.groupFeed,
+                    ...{ rows: newRows },
+                  },
+                };
+              },
+            });
+          }}
+        />
+        {this.renderShareModal()}
+      </View>
     );
   }
 }
 
 GroupFeed.propTypes = {
+  share: PropTypes.func.isRequired,
   groupId: PropTypes.number.isRequired,
   groupFeed: PropTypes.shape({
     loading: PropTypes.boolean,
@@ -163,4 +209,4 @@ GroupFeed.propTypes = {
   subscribeToGroupFeed: PropTypes.func.isRequired,
 };
 
-export default GroupFeed;
+export default compose(withShare)(GroupFeed);
