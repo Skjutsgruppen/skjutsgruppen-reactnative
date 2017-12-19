@@ -1,18 +1,19 @@
 import React from 'react';
 import { FlatList } from 'react-native';
 import PropTypes from 'prop-types';
-import Feed from './feedItem';
+import Feed from '@components/feed/feedItem';
 
-const feedList = ({ feeds, ...props }) => (
+const GroupFeed = ({ feeds, ...props }) => (
   <FlatList
     data={feeds}
     renderItem={({ item }) => <Feed key={item.id} feed={item} />}
     keyExtractor={(item, index) => index}
     {...props}
-  />);
+  />
+);
 
-feedList.propTypes = {
+GroupFeed.propTypes = {
   feeds: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default feedList;
+export default GroupFeed;

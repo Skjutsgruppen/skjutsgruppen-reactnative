@@ -93,6 +93,9 @@ subscription{
         time
         photo
         returnTrip
+        Comments {
+          id
+        }
       }
     }
   }
@@ -192,6 +195,9 @@ query getFeed($offset: Int, $limit: Int) {
         time
         photo
         returnTrip
+        Comments {
+          id
+        }
       }
     }
    }
@@ -202,7 +208,6 @@ query getFeed($offset: Int, $limit: Int) {
 
 export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: 'cache-and-network',
     variables: { offset: 0, limit: 10 },
   },
