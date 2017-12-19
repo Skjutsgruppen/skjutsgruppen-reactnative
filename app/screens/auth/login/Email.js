@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  ToastAndroid as Toast,
+  Alert,
   Image,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -87,7 +87,7 @@ class Login extends Component {
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
   }

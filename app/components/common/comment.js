@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View, Text, Alert } from 'react-native';
-import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import ProfilePicture from '@components/common/profilePicture';
 import Username from '@components/common/username';
@@ -72,14 +71,5 @@ const Comment = () => (
     </View>
   </TouchableWithoutFeedback>
 );
-
-// Comment.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   style: Text.propTypes.style,
-// };
-
-// Comment.defaultProps = {
-//   style: {},
-// };
 
 export default Comment;
