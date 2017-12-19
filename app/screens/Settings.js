@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid as Toast, Picker } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Picker } from 'react-native';
 import Colors from '@theme/colors';
 import { Wrapper, NavBar } from '@components/common';
 import PropTypes from 'prop-types';
@@ -84,7 +84,7 @@ class Settings extends Component {
         );
         syncContacts(mobiles)
           .then(() => {
-            Toast.show('Contact successully synced.', Toast.LONG);
+            Alert.alert('Success!', 'Contact successully synced.');
           })
           .catch(error => console.error(error));
       }
