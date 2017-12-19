@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Image, ToastAndroid as Toast, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Image, Alert, Text } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
@@ -100,7 +100,7 @@ class Verified extends Component {
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
   }

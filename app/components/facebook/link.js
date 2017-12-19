@@ -78,7 +78,7 @@ class LinkFacebook extends PureComponent {
     if (loading) {
       return (<Loading />);
     }
-    
+
     if (linked === true) {
       return (<CustomButton
         bgColor={Colors.background.darkCyan}

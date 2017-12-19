@@ -425,12 +425,8 @@ class FeedDetail extends Component {
             <Comment />
           </View>
         </ScrollView>
-        {
-          this.renderFooter()
-        }
-        {
-          this.renderModal()
-        }
+        {this.renderFooter()}
+        {this.renderModal()}
       </KeyboardAvoidingView>
     );
   }
