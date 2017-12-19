@@ -1,33 +1,64 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
+import Filter from '@components/feed/filter';
 import { Loading, Wrapper, FeedContainer } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import { withShare } from '@services/apollo/auth';
-import Header from '@components/feed/header';
-import TabIcon from '@components/tabIcon';
 import PropTypes from 'prop-types';
-import Modal from 'react-native-modalbox';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
+import Colors from '@theme/colors';
+import FeedIcon from '@icons/ic_feed.png';
+import FeedIconActive from '@icons/ic_feed_active.png';
+import Map from '@icons/icon_map.png';
+
+const styles = StyleSheet.create({
+  circle: {
+    position: 'absolute',
+    top: -75,
+    left: -75,
+    height: 300,
+    width: 300,
+    borderRadius: 160,
+    backgroundColor: '#02cbf9',
+  },
+  mapWrapper: {
+    height: 50,
+    width: 50,
+  },
+  mapImg: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
+  },
+  menuBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 50,
+    padding: 16,
+  },
+  menuIcon: {
+    marginLeft: 12,
+  },
+  hi: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.text.white,
+    backgroundColor: 'transparent',
+  },
+});
 
 class Feed extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Feed',
-    tabBarIcon: ({ focused, tintColor }) => (
-      <TabIcon
-        iconDefault="ios-home-outline"
-        iconFocused="ios-home"
-        focused={focused}
-        tintColor={tintColor}
-      />
-    ),
+    tabBarIcon: ({ focused }) => <Image source={focused ? FeedIconActive : FeedIcon} />,
   };
 
   constructor(props) {
     super(props);
-    this.state = ({ refreshing: false, modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ refreshing: false, modalDetail: {}, modalType: '', isOpen: false, filterOpen: false });
   }
 
   componentWillMount() {
@@ -78,17 +109,21 @@ class Feed extends Component {
     this.setState({ isOpen: false });
   }
 
+  setFilterVisibility = (visibility) => {
+    this.setState({ filterOpen: visibility });
+  }
+
   redirectToMap = () => {
     this.props.navigation.navigate('Map');
   };
 
-  redirectToGroup = () => {
-    this.props.navigation.navigate('ExploreGroup');
-  }
-
-  renderModal() {
+  renderShareModal() {
     return (
-      <Modal position={'bottom'} swipeArea={50} isOpen={this.state.isOpen} onClosed={() => this.setState({ isOpen: false })}>
+      <Modal
+        visible={this.state.isOpen}
+        onRequestClose={() => this.setState({ isOpen: false })}
+        animationType="slide"
+      >
         <ScrollView>
           <Share
             modal
@@ -105,37 +140,36 @@ class Feed extends Component {
     const { loading, rows, count } = this.props.feeds;
 
     if (rows.length >= count) {
-      return (
-        <View
-          style={{
-            paddingVertical: 60,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        />
-      );
+      return (<View style={{ paddingVertical: 60 }} />);
     }
 
     if (!loading) return null;
 
-    return (
-      <View
-        style={{
-          paddingVertical: 60,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
+    return (<View style={{ paddingVertical: 60 }}> <Loading /></View>);
+  }
+
+  renderHeader = () => (
+    <View style={styles.menuBar}>
+      {this.renderMap()}
+      <Text style={styles.hi}>Hi!</Text>
+      <TouchableOpacity
+        style={styles.menuIcon}
+        onPress={() => this.setFilterVisibility(true)}
       >
-        <Loading />
-      </View>
-    );
-  };
+        <Image source={require('@icons/ic_menu.png')} />
+      </TouchableOpacity>
+    </View>
+  )
 
   renderFeed() {
     const { feeds } = this.props;
 
     if (feeds.networkStatus === 1) {
-      return <Loading />;
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Loading />
+        </View>
+      );
     }
 
     const refetch = (
@@ -146,7 +180,7 @@ class Feed extends Component {
 
     if (feeds.error) {
       return (
-        <View>
+        <View style={{ marginTop: 100 }}>
           <Text>Error: {feeds.error.message}</Text>
           {refetch}
         </View>
@@ -155,7 +189,7 @@ class Feed extends Component {
 
     if (!feeds.rows || feeds.rows.length < 1) {
       return (
-        <View>
+        <View style={{ marginTop: 100 }}>
           <Text>No Feeds.</Text>
           {refetch}
         </View>
@@ -177,6 +211,7 @@ class Feed extends Component {
         refreshing={feeds.networkStatus === 4}
         onRefresh={() => feeds.refetch()}
         onEndReachedThreshold={0.8}
+        ListHeaderComponent={this.renderHeader}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
           if (feeds.loading || feeds.rows.length >= feeds.count) return;
@@ -197,14 +232,23 @@ class Feed extends Component {
     );
   }
 
+  renderMap = () => (
+    <View style={styles.mapWrapper} >
+      <TouchableOpacity onPress={this.redirectToMap} style={styles.mapWrapper}>
+        <Image source={Map} style={styles.mapImg} />
+      </TouchableOpacity>
+    </View>
+  );
+
   render() {
     return (
-      <Wrapper bgColor="#00aeef" >
-        <FeedContainer bgColor="#dddee3">
-          <Header onPressGroup={this.redirectToGroup} onPressMap={this.redirectToMap} />
+      <Wrapper bgColor="transparent" >
+        <FeedContainer bgColor="transparent">
+          <View style={styles.circle} />
           {this.renderFeed()}
         </FeedContainer>
-        {this.renderModal()}
+        {this.renderShareModal()}
+        <Filter onPress={() => { }} showModal={this.state.filterOpen} onCloseModal={() => this.setFilterVisibility(false)} />
       </Wrapper>
     );
   }

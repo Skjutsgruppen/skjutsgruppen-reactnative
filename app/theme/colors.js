@@ -12,6 +12,8 @@ const Colors = {
     fullWhite: '#ffffff',
     darkCyan: '#2fad9e',
     red: '#e00',
+    pink: '#fc56d4',
+    orange: '#fabf5e',
   },
   text: {
     blue: '#00aeef',
@@ -25,6 +27,7 @@ const Colors = {
     lightGray: '#dddee3',
     red: '#e00',
     darkCyan: '#2fad9e',
+    pink: '#fc56d4',
   },
   border: {
     blue: '#00aeef',

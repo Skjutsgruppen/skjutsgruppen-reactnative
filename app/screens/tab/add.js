@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
-import TabIcon from '@components/tabIcon';
+
+import AddIcon from '@icons/ic_add.png';
+import AddIconActive from '@icons/ic_add_active.png';
 
 const styles = StyleSheet.create({
   title: {
@@ -71,14 +73,7 @@ class Add extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Add',
-    tabBarIcon: ({ focused, tintColor }) => (
-      <TabIcon
-        iconDefault="ios-add-outline"
-        iconFocused="md-add"
-        focused={focused}
-        tintColor={tintColor}
-      />
-    ),
+    tabBarIcon: ({ focused }) => <Image source={focused ? AddIconActive : AddIcon} />,
   };
 
   redirect = (page) => {
