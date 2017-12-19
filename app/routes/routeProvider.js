@@ -1,3 +1,5 @@
+import { StackNavigator, TabNavigator } from 'react-navigation';
+
 import Splash from '@screens/Splash';
 import Offer from '@screens/Offer';
 import Ask from '@screens/Ask';
@@ -9,7 +11,6 @@ import SearchGroup from '@screens/group/SearchGroup';
 
 import OfferDetail from '@screens/OfferDetail';
 import AskDetail from '@screens/AskDetail';
-import Tab from '@screens/tab/main';
 
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
@@ -34,10 +35,61 @@ import Settings from '@screens/Settings';
 import Map from '@screens/Map';
 import SingleNotification from '@screens/SingleNotification';
 
-import { StackNavigator } from 'react-navigation';
+import Add from '@screens/tab/add';
+import Feed from '@screens/tab/feed';
+import Message from '@screens/tab/message';
+import Search from '@screens/tab/search';
+import Support from '@screens/tab/support';
+
+const TabRoutes = {
+  Feed: {
+    screen: Feed,
+  },
+  Add: {
+    screen: Add,
+  },
+  Message: {
+    screen: Message,
+  },
+  Search: {
+    screen: Search,
+  },
+  Support: {
+    screen: Support,
+  },
+};
+
+const Tab = TabNavigator(TabRoutes,
+  {
+    lazy: true,
+    animationEnabled: true,
+    tabBarPosition: 'bottom',
+    tabBarOptions: {
+      activeTintColor: '#3b5998',
+      inactiveTintColor: '#cccccc',
+      showIcon: true,
+      showLabel: false,
+      iconStyle: {
+        width: 35,
+        height: 60,
+      },
+      tabStyle: {
+        height: 40,
+      },
+      style: {
+        backgroundColor: 'white',
+      },
+      pressColor: '#d5dcea',
+      indicatorStyle: {
+        backgroundColor: 'white',
+      },
+    },
+  },
+);
 
 export const Routes = {
   Splash: { screen: Splash },
+
   RegisterMethod: { screen: RegisterMethod },
   RegisterViaEmail: { screen: RegisterViaEmail },
   CheckMail: { screen: CheckEMail },
