@@ -38,6 +38,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: cardHeight / 2,
     resizeMode: 'cover',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   groupName: {
     backgroundColor: 'transparent',
@@ -60,7 +62,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: (profilePicSize / 2),
     borderWidth: 2,
-    backgroundColor: '#ddd',
     borderColor: Colors.border.white,
   },
   offerType: {
