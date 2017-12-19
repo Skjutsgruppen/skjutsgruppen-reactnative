@@ -7,13 +7,14 @@ const styles = StyleSheet.create({
   commentWrapper: {
     width: '100%',
     flexDirection: 'row',
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     backgroundColor: '#fff',
   },
   profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 28,
+    height: 48,
+    width: 48,
+    borderRadius: 24,
     marginRight: 12,
   },
   nameWrapper: {
@@ -29,7 +30,11 @@ const styles = StyleSheet.create({
   },
   time: {
     color: '#777777',
+    fontWeight: 'normal',
     marginTop: 2,
+  },
+  commentText: {
+    marginTop: 4,
   },
   filler: {
     padding: 12,
@@ -48,10 +53,12 @@ const Item = ({ comment, onPress }) => {
   return (
     <View style={styles.commentWrapper}>
       <TouchableOpacity onPress={() => onPress(comment.User.id)}>{image}</TouchableOpacity>
-      <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <Text style={styles.name}>{comment.User.firstName || comment.User.email}</Text>
-          <Text style={styles.time}><Date>{comment.date}</Date></Text>
+      <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+          <Text style={styles.name}>
+            {comment.User.firstName || comment.User.email}
+            <Text style={styles.time}><Date>{comment.date}</Date></Text>
+          </Text>
         </View>
         <View>
           <Text style={styles.commentText}>{comment.text}</Text>

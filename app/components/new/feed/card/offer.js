@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.gray,
   },
   img: {
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
@@ -64,7 +66,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 30,
     borderWidth: 2,
-    backgroundColor: '#ddd',
     borderColor: Colors.border.white,
   },
   offerType: {
