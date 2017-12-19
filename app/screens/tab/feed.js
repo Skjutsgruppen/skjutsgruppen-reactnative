@@ -145,7 +145,7 @@ class Feed extends Component {
 
     if (!loading) return null;
 
-    return (<View style={{ paddingVertical: 60 }}> <Loading /></View>);
+    return (<View style={{ paddingVertical: 60 }}><Loading /></View>);
   }
 
   renderHeader = () => (
@@ -248,7 +248,11 @@ class Feed extends Component {
           {this.renderFeed()}
         </FeedContainer>
         {this.renderShareModal()}
-        <Filter onPress={() => { }} showModal={this.state.filterOpen} onCloseModal={() => this.setFilterVisibility(false)} />
+        <Filter
+          onPress={() => { }}
+          showModal={this.state.filterOpen}
+          onCloseModal={() => this.setFilterVisibility(false)}
+        />
       </Wrapper>
     );
   }

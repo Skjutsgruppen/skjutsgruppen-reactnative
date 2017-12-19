@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, ToastAndroid as Toast } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { ColoredText, GreetText } from '@components/auth/texts';
@@ -90,7 +90,7 @@ class Email extends Component {
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
   }
