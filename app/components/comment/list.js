@@ -7,7 +7,7 @@ import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   infoText: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     paddingVertical: 6,
     color: Colors.text.gray,
   },

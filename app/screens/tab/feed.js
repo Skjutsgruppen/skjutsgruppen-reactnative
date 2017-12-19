@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   mapWrapper: {
     height: 50,
     width: 50,
+    alignSelf: 'flex-end',
   },
   mapImg: {
     width: 40,
@@ -34,8 +35,8 @@ const styles = StyleSheet.create({
   },
   menuBar: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 50,
     padding: 16,
   },
   menuIcon: {
@@ -150,14 +151,16 @@ class Feed extends Component {
 
   renderHeader = () => (
     <View style={styles.menuBar}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 50 }}>
+        <Text style={styles.hi}>Hi!</Text>
+        <TouchableOpacity
+          style={styles.menuIcon}
+          onPress={() => this.setFilterVisibility(true)}
+        >
+          <Image source={require('@icons/ic_menu.png')} />
+        </TouchableOpacity>
+      </View>
       {this.renderMap()}
-      <Text style={styles.hi}>Hi!</Text>
-      <TouchableOpacity
-        style={styles.menuIcon}
-        onPress={() => this.setFilterVisibility(true)}
-      >
-        <Image source={require('@icons/ic_menu.png')} />
-      </TouchableOpacity>
     </View>
   )
 
