@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ToastAndroid as Toast, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Text, Image, Modal, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
+import { withShare } from '@services/apollo/auth';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import Relation from '@components/relation';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
+import Share from '@components/common/share';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
@@ -233,7 +235,7 @@ const styles = StyleSheet.create({
 class Detail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, leaveLoading: false, error: '', comment: '' });
+    this.state = ({ loading: false, leaveLoading: false, error: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
   }
 
   onSubmit = () => {
@@ -245,7 +247,7 @@ class Detail extends Component {
     if (validation.pass()) {
       try {
         submit(null, group.id, comment).then(() => {
-          Toast.show('comment added', Toast.LONG);
+          Alert.alert('Success!', 'Comment added');
           this.setState({ comment: '', loading: false });
         }).catch((err) => {
           this.setState({ loading: false, error: err.message });
@@ -254,9 +256,23 @@ class Detail extends Component {
         this.setState({ loading: false, error: err.message });
       }
     } else {
-      Toast.show(validation.errors.join('\n'), Toast.LONG);
+      Alert.alert('Alert!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
+  }
+
+  onSharePress = (modalType, modalDetail) => {
+    this.setState({ isOpen: true, modalType, modalDetail });
+  }
+
+  onShare = (share) => {
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+      .then(() => this.setState({ isOpen: false }))
+      .catch(console.error);
+  };
+
+  onClose = () => {
+    this.setState({ isOpen: false });
   }
 
   onCommentPress = (id) => {
@@ -382,7 +398,7 @@ class Detail extends Component {
             <Text style={styles.actionLabel}>Calender</Text>
           </TouchableOpacity>
           <View style={styles.actionDevider} />
-          <TouchableOpacity style={[styles.action, styles.shareAction]}>
+          <TouchableOpacity style={[styles.action, styles.shareAction]} onPress={() => this.onSharePress('group', group)}>
             <Image source={require('@icons/icon_share.png')} style={styles.actionIcon} />
             <Text style={styles.actionLabel}>Share</Text>
           </TouchableOpacity>
@@ -449,6 +465,25 @@ class Detail extends Component {
     </View>
   );
 
+  renderShareModal() {
+    return (
+      <Modal
+        visible={this.state.isOpen}
+        onRequestClose={() => this.setState({ isOpen: false })}
+        animationType="slide"
+      >
+        <ScrollView>
+          <Share
+            modal
+            showGroup={this.state.modalType !== 'group'}
+            onNext={this.onShare}
+            onClose={this.onClose}
+          />
+        </ScrollView>
+      </Modal>
+    );
+  }
+
   render() {
     const { group, navigation } = this.props;
     const header = this.header(this.state.leaveLoading);
@@ -463,12 +498,14 @@ class Detail extends Component {
           />
         </View>
         {this.renderCommentForm()}
+        {this.renderShareModal()}
       </Wrapper>
     );
   }
 }
 
 Detail.propTypes = {
+  share: PropTypes.func.isRequired,
   leaveGroup: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   group: PropTypes.shape({
@@ -488,4 +525,4 @@ Detail.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withLeaveGroup, submitComment, connect(mapStateToProps))(Detail);
+export default compose(withShare, withLeaveGroup, submitComment, connect(mapStateToProps))(Detail);

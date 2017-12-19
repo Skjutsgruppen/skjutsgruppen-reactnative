@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
@@ -7,6 +7,9 @@ import { Wrapper, Loading } from '@components/common';
 import BackButton from '@components/common/backButton';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
+import Share from '@components/common/share';
+import { compose } from 'react-apollo';
+import { withShare } from '@services/apollo/auth';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -78,9 +81,7 @@ class SearchResult extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      filters: [],
-    };
+    this.state = { filters: [], modalDetail: {}, modalType: '', isOpen: false };
   }
 
   componentWillMount() {
@@ -110,6 +111,18 @@ class SearchResult extends Component {
   onSharePress = (isGroup) => {
     this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
   };
+
+
+  onShare = (share) => {
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+      .then(() => this.setState({ isOpen: false }))
+      .catch(console.error);
+  };
+
+
+  onClose = () => {
+    this.setState({ isOpen: false });
+  }
 
   onFilterSelect = (param) => {
     const { filters } = this.state;
@@ -253,6 +266,25 @@ class SearchResult extends Component {
     );
   };
 
+  renderShareModal() {
+    return (
+      <Modal
+        visible={this.state.isOpen}
+        onRequestClose={() => this.setState({ isOpen: false })}
+        animationType="slide"
+      >
+        <ScrollView>
+          <Share
+            modal
+            showGroup={this.state.modalType !== 'group'}
+            onNext={this.onShare}
+            onClose={this.onClose}
+          />
+        </ScrollView>
+      </Modal>
+    );
+  }
+
   render() {
     const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
 
@@ -286,12 +318,14 @@ class SearchResult extends Component {
           </View>
         </View>
         {this.renderSearchResult()}
+        {this.renderShareModal()}
       </Wrapper>
     );
   }
 }
 
 SearchResult.propTypes = {
+  share: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
     state: PropTypes.shape({
@@ -331,4 +365,4 @@ SearchResult.defaultProps = {
   direction: '',
 };
 
-export default SearchResult;
+export default compose(withShare)(SearchResult);
