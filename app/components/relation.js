@@ -8,21 +8,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 48,
-    borderBottomWidth: 1,
-    borderColor: '#dddee3',
     marginBottom: 10,
+    paddingHorizontal: 24,
   },
   participant: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
+    height: 30,
+    width: 30,
+    borderRadius: 15,
     backgroundColor: '#000',
     marginRight: 6,
   },
 });
 
 const Relation = ({ users }) => {
-  if (!users) {
+  if (!users || users.length < 1) {
     return null;
   }
 
@@ -38,7 +37,7 @@ const Relation = ({ users }) => {
             <View key={user.id} style={styles.participant}>
               <Image
                 source={{ uri: user.photo }}
-                style={{ width: 20, height: 20, borderRadius: 20 }}
+                style={{ width: 30, height: 30, borderRadius: 30 }}
               />
             </View>
           );
