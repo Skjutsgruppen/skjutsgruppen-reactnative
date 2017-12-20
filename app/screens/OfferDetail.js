@@ -210,6 +210,10 @@ class OfferDetail extends Component {
     navigation.navigate('UserProfile', { profileId: id });
   }
 
+  onCommentChange = (text) => {
+    this.setState({ comment: text });
+  }
+
   onPress = () => {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
@@ -252,7 +256,7 @@ class OfferDetail extends Component {
         <View style={styles.footer}>
           <View style={styles.footerContent}>
             <TextInput
-              onChangeText={comment => this.setState({ comment })}
+              onChangeText={text => this.onCommentChange(text)}
               value={this.state.comment}
               style={styles.msgInput}
               placeholder="Write something..."
