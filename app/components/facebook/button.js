@@ -39,11 +39,13 @@ Button.propTypes = {
     name: PropTypes.string,
   }),
   onPress: PropTypes.func.isRequired,
+  label: PropTypes.string,
 };
 
 Button.defaultProps = {
   profile: {},
   onPress: PropTypes.func.isRequired,
+  label: '',
 };
 
 

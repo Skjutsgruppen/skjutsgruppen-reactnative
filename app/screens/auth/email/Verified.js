@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Image, Alert, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
@@ -14,6 +14,8 @@ import { withUpdateProfile } from '@services/apollo/auth';
 import { Icons } from '@icons';
 import Phone from '@components/phone';
 import { getPhoneNumber } from '@services/device';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -93,14 +95,13 @@ class Verified extends Component {
               navigation.reset('SendText');
             });
           }).catch((err) => {
-            this.setState({ loading: false, error: err.message });
+            this.setState({ loading: false, error: getToast(err) });
           });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -109,23 +110,23 @@ class Verified extends Component {
     const { firstName, lastName, countryCode, phone, password } = this.state;
 
     if (firstName === '') {
-      errors.push('First Name is required.');
+      errors.push('FIRST_NAME_REQUIRED');
     }
 
     if (lastName === '') {
-      errors.push('Last Name is required.');
+      errors.push('LAST_NAME_REQUIRED');
     }
 
     if (countryCode === '') {
-      errors.push('Country Code is required.');
+      errors.push('COUNTRY_CODE_REQUIRED');
     }
 
-    if (phone === '') {
-      errors.push('Phone is required.');
+    if (!phone || phone.length < 1) {
+      errors.push('PHONE_REQUIRED');
     }
 
     if (password === '') {
-      errors.push('Password is required.');
+      errors.push('PASSWORD_REQUIRED');
     }
 
     return {
@@ -162,7 +163,7 @@ class Verified extends Component {
         <GreetText>Your e-mail is confirmed!</GreetText>
         <ColoredText color={Colors.text.purple}>{message}</ColoredText>
 
-        {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
+        {(error !== '') ? (<Toast message={error} type="error" />) : null}
 
         <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
           <TextInput

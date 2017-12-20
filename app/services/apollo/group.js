@@ -287,8 +287,8 @@ query findGroup($id: Int!){
       lastName
       avatar
       relation {
-        id,
-        email,
+        id
+        email
         firstName
         avatar
       }
@@ -311,7 +311,7 @@ query findGroup($id: Int!){
     locality
     GroupMembers{
       id
-      photo
+      avatar
     }
     GroupMembershipRequests{
       id

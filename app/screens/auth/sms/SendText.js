@@ -9,7 +9,9 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withPhoneVerified } from '@services/apollo/profile';
+import { withPhoneVerified, withVerifyPhoneNumber } from '@services/apollo/profile';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -47,7 +49,7 @@ class SendText extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, error: '', user: {}, token: null });
+    this.state = ({ loading: false, loadingSendText: false, error: '', warning: '', success: '', phoneVerified: false, user: {}, token: null });
   }
 
   async componentWillMount() {
@@ -72,7 +74,7 @@ class SendText extends Component {
             Alert.alert('Error!', err.message);
           });
         } else {
-          Alert.alert('Warning!', 'Phone number not verified!');
+          this.setState({ warning: getToast(['PHONE_NUMBER_NOT_VERIFIED']), error: '', success: '' });
         }
         this.setState({ loading: false });
       }).catch((err) => {
@@ -84,6 +86,43 @@ class SendText extends Component {
       this.setState({ loading: false });
     }
   }
+
+  onSubmitSendText = () => {
+    this.setState({ loadingSendText: true });
+    const { verifyPhoneNumber } = this.props;
+    const { phoneNumber, phoneVerificationCode } = this.state.user;
+
+    try {
+      verifyPhoneNumber(phoneNumber, phoneVerificationCode).then(({ data }) => {
+        this.setState({ loadingSendText: false, phoneVerified: data.verifyPhoneNumber.User.phoneVerified, success: getToast(['PHONE_NUMBER_VERIFIED']), error: '', warning: '' });
+      }).catch((err) => {
+        this.setState({ loadingSendText: false, error: getToast(err) });
+      });
+    } catch (err) {
+      Alert.alert('Error!', err.message);
+      this.setState({ loadingSendText: false });
+    }
+  }
+
+  renderSendTextButton = () => {
+    if (this.state.loadingSendText) {
+      return (<Loading />);
+    }
+
+    const { phoneVerified } = this.state;
+
+    return (
+      !phoneVerified && (<CustomButton
+        style={styles.button}
+        bgColor={Colors.background.green}
+        onPress={() => this.onSubmitSendText()}
+        disabled={phoneVerified}
+      >
+        Send Text
+      </CustomButton>)
+    );
+  }
+
   renderButton = () => {
     if (this.state.loading) {
       return (<Loading />);
@@ -101,7 +140,7 @@ class SendText extends Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, error, warning, success } = this.state;
 
     return (
       <Container>
@@ -121,8 +160,12 @@ class SendText extends Component {
           The text message cost the same as an ordinary text message with
           you service provider.
         </ColoredText>
+        {(error !== '') ? (<Toast message={error} type="error" />) : null}
+        {(warning !== '') ? (<Toast message={warning} type="warning" />) : null}
+        {(success !== '') ? (<Toast message={success} type="success" />) : null}
+        {this.renderSendTextButton()}
         {this.renderButton()}
-        <Text style={styles.promise}>We will never give your number to any third parties.</Text>
+        <Text style={styles.promise} > We will never give your number to any third parties.</Text>
       </Container>
     );
   }
@@ -133,6 +176,7 @@ SendText.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
   isPhoneVerified: PropTypes.func.isRequired,
+  verifyPhoneNumber: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
 };
 
@@ -141,4 +185,5 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
-export default compose(withPhoneVerified, connect(null, mapDispatchToProps))(SendText);
+export default compose(withPhoneVerified, withVerifyPhoneNumber,
+  connect(null, mapDispatchToProps))(SendText);
