@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 30,
     borderWidth: 2,
-    backgroundColor: '#ddd',
     borderColor: Colors.border.white,
     position: 'absolute',
     top: (cardHeight / 2) - (profilePicSize / 2),
