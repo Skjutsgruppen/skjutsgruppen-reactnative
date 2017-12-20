@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, Image, Modal, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class Detail extends Component {
+class Detail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = ({ loading: false, leaveLoading: false, error: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });

@@ -138,7 +138,31 @@ class Feed extends Component {
   }
 
   renderFooter = () => {
-    const { loading, rows, count } = this.props.feeds;
+    const { loading, rows, error, count } = this.props.feeds;
+
+    const refetch = (
+      <TouchableOpacity onPress={this.onRefreshClicked}>
+        <Text>Reload</Text>
+      </TouchableOpacity>
+    );
+
+    if (error) {
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Text>Error: {error.message}</Text>
+          {refetch}
+        </View>
+      );
+    }
+
+    if (!rows || rows.length < 1) {
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Text>No Feeds.</Text>
+          {refetch}
+        </View>
+      );
+    }
 
     if (rows.length >= count) {
       return (<View style={{ paddingVertical: 60 }} />);
@@ -175,30 +199,6 @@ class Feed extends Component {
       );
     }
 
-    const refetch = (
-      <TouchableOpacity onPress={this.onRefreshClicked}>
-        <Text>Reload</Text>
-      </TouchableOpacity>
-    );
-
-    if (feeds.error) {
-      return (
-        <View style={{ marginTop: 100 }}>
-          <Text>Error: {feeds.error.message}</Text>
-          {refetch}
-        </View>
-      );
-    }
-
-    if (!feeds.rows || feeds.rows.length < 1) {
-      return (
-        <View style={{ marginTop: 100 }}>
-          <Text>No Feeds.</Text>
-          {refetch}
-        </View>
-      );
-    }
-
     return (
       <FlatList
         data={feeds.rows}
@@ -211,7 +211,7 @@ class Feed extends Component {
           />)
         }
         keyExtractor={(item, index) => index}
-        refreshing={feeds.networkStatus === 4}
+        refreshing={feeds.networkStatus === 4 || feeds.loading}
         onRefresh={() => feeds.refetch()}
         onEndReachedThreshold={0.8}
         ListHeaderComponent={this.renderHeader}
@@ -269,6 +269,7 @@ Feed.propTypes = {
     refetch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     count: PropTypes.numeric,
+    error: PropTypes.object,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

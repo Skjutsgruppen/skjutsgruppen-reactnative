@@ -42,7 +42,7 @@ export const ColoredText = ({ children, style, color }) => (
 );
 
 ColoredText.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   style: View.propTypes.style,
   color: PropTypes.string.isRequired,
 };
