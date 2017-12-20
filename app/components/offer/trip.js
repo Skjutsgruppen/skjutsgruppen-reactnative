@@ -204,9 +204,7 @@ class Trip extends Component {
       stops = state.stops.filter(k => k.coordinates && k.coordinates.length);
     }
 
-    state.stops = stops;
-
-    onNext(state);
+    onNext({ ...state, ...{ stops } });
   };
 
   onChangeText = (i, stop) => {
@@ -284,23 +282,6 @@ class Trip extends Component {
             <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
           </TouchableOpacity>
         </GooglePlace>
-        <View style={styles.destinations}>
-          <TouchableOpacity>
-            <Text style={styles.option}>Anywhere</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.option}>South</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.option}>North</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.option}>West</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.option}>East</Text>
-          </TouchableOpacity>
-        </View>
         {
           isOffer &&
           <View style={styles.stops}>

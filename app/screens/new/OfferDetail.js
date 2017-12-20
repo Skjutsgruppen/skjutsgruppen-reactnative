@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Alert, Modal } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
 import { Loading } from '@components/common';
 import Comment from '@components/comment/list';
@@ -11,6 +11,8 @@ import Share from '@components/common/share';
 import { withShare } from '@services/apollo/auth';
 import { compose } from 'react-apollo';
 import Date from '@components/date';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const OfferComment = withTripComment(Comment);
 
@@ -217,6 +219,7 @@ class OfferDetail extends Component {
     this.state = ({
       loading: false,
       error: '',
+      success: '',
       comment: '',
       modalVisible: false,
       writingComment: false,
@@ -236,17 +239,15 @@ class OfferDetail extends Component {
     if (validation.pass()) {
       try {
         submit(offer.id, null, comment).then(() => {
-          Alert.alert('Success!', 'Comment added');
-          this.setState({ comment: '', loading: false });
+          this.setState({ comment: '', loading: false, success: getToast(['COMMENT_ADDED']), error: '' });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -299,7 +300,7 @@ class OfferDetail extends Component {
     const { comment } = this.state;
 
     if (comment === '') {
-      errors.push('Comment is required.');
+      errors.push('COMMENT_REQUIRED');
     }
 
     return {
@@ -454,7 +455,7 @@ class OfferDetail extends Component {
   render() {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
-    const { error } = this.state;
+    const { error, success } = this.state;
 
     let image = null;
     if (offer.mapPhoto) {
@@ -508,7 +509,8 @@ class OfferDetail extends Component {
               <Relation users={offer.User.relation} />
             </View>
           }
-          {error !== '' && <View><Text>{error}</Text></View>}
+          {error !== '' ? (<Toast message={error} type="error" />) : null}
+          {success !== '' ? (<Toast message={success} type="success" />) : null}
           <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
         </ScrollView>
         {this.renderFooter()}

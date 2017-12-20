@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, Clipboard } from 'react-native';
 import Tab from '@components/tab';
 import Stretch from '@components/group/stretch';
 import OutReach from '@components/group/outreach';
@@ -14,6 +14,8 @@ import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -94,10 +96,10 @@ class Group extends Component {
     let error = 0;
     if (outreach === 'area') {
       if (trip.country === '') {
-        Alert.alert('Error!!', 'Country is required');
+        this.setState({ error: getToast(['COUNTRY_REQUIRED']) });
         error += 1;
       } else if (trip.country === 'SE' && trip.municipality === '') {
-        Alert.alert('Error!!', 'Municipality is required');
+        this.setState({ error: getToast(['MUNICIPALITY_REQUIRED']) });
         error += 1;
       }
 
@@ -106,12 +108,13 @@ class Group extends Component {
 
     if (outreach === 'route') {
       if (trip.start.coordinates.length === 0) {
-        Alert.alert('Error!!', 'From is required');
+        this.setState({ error: getToast(['FROM_REQUIRED']) });
         error += 1;
       } else if (trip.end.coordinates.length === 0) {
-        Alert.alert('Error!!', 'To is required');
+        this.setState({ error: getToast(['TO_REQUIRED']) });
         error += 1;
       }
+
       route = trip;
     }
 
@@ -119,20 +122,20 @@ class Group extends Component {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(2);
       delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ route, area, completedTabs, disabledTabs, activeTab: 3 });
+      this.setState({ route, area, completedTabs, disabledTabs, activeTab: 3, error: '' });
     }
   };
 
   onAboutNext = (about) => {
     if (about.name === '') {
-      Alert.alert('Error!!', 'Name is required');
+      this.setState({ error: getToast(['GROUP_NAME_REQUIRED']) });
     } else if (about.description === '') {
-      Alert.alert('Error!!', 'Description is required');
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(3);
       delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ about, completedTabs, disabledTabs, activeTab: 4 });
+      this.setState({ about, completedTabs, disabledTabs, activeTab: 4, error: '' });
     }
   };
 
@@ -181,11 +184,11 @@ class Group extends Component {
             Clipboard.setString(res.data.group.url);
           }
 
-          this.setState({ loading: false, group: res.data.group });
+          this.setState({ loading: false, group: res.data.group, error: '' });
         })
-        .catch(error => this.setState({ loading: false, error: error.message }));
-    } catch (error) {
-      this.setState({ loading: false, error: error.message });
+        .catch(err => this.setState({ loading: false, error: getToast(err) }));
+    } catch (err) {
+      this.setState({ loading: false, error: getToast(err) });
     }
   }
 
@@ -198,7 +201,7 @@ class Group extends Component {
 
     if (error !== '') {
       return (<View>
-        <Text>{error}</Text>
+        <Toast message={error} type="error" />
         <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
           Try Again
         </CustomButton>
@@ -209,7 +212,7 @@ class Group extends Component {
   }
 
   render() {
-    const { activeTab, completedTabs, disabledTabs } = this.state;
+    const { activeTab, completedTabs, disabledTabs, error } = this.state;
     const { navigation } = this.props;
 
     return (
@@ -254,6 +257,7 @@ class Group extends Component {
               active={activeTab === 5}
             />
           </View>
+          {(error !== '') ? (<Toast message={error} type="error" />) : null}
           {(activeTab === 1) && <Stretch onNext={this.onStrechNext} />}
           {(activeTab === 2) &&
             <OutReach
