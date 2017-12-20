@@ -5,14 +5,16 @@ const profileQuery = gql`
 query profile($id: Int){
   profile (id: $id){
     id
-    email
-    photo
-    phoneNumber
     firstName
     lastName
     emailVerified
+    email
     phoneVerified
+    phoneNumber
+    photo
+    fbId
     verificationCode
+    phoneVerificationCode
     relation {
       id
       email
@@ -42,14 +44,16 @@ const ownerQuery = gql`
 query profile {
   profile {
     id
-    email
-    photo
-    phoneNumber
     firstName
     lastName
     emailVerified
+    email
     phoneVerified
+    phoneNumber
+    photo
+    fbId
     verificationCode
+    phoneVerificationCode
     relation {
       id
       email
@@ -180,9 +184,6 @@ const myFriendsQuery = gql`
         phoneNumber 
         firstName 
         lastName 
-        emailVerified 
-        phoneVerified 
-        verificationCode 
         relation {
           id 
           email 
@@ -253,9 +254,6 @@ query trips (
         photo 
         firstName 
         lastName 
-        emailVerified 
-        phoneVerified 
-        verificationCode 
         relation {
           id 
           email 
@@ -290,5 +288,34 @@ export const withMyTrips = graphql(myTripsQuery, {
   options: ({ userId, type }) => ({
     variables: { userId, type },
     props: ({ trips }) => ({ trips }),
+  }),
+});
+
+const CHECK_PHONE_VERIFICATION_QUERY = gql`
+mutation isPhoneVerified($id: Int){
+  isPhoneVerified(id: $id) {
+    token
+    User {
+      id
+      firstName
+      lastName
+      emailVerified
+      email
+      phoneVerified
+      phoneNumber
+      photo
+      fbId
+      verificationCode
+      phoneVerificationCode
+    }
+  }
+}
+`;
+
+export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
+  props: ({ mutate }) => ({
+    isPhoneVerified: id => mutate({
+      variables: { id },
+    }),
   }),
 });
