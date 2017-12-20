@@ -19,7 +19,7 @@ class GroupDetail extends Component {
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
-    if (!loading) {
+    if (!loading && group.id) {
       this.setState({ group, loading, refetch });
     }
   }

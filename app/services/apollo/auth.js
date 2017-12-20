@@ -18,6 +18,8 @@ mutation login($username: String!, $password:String!) {
       phoneNumber
       photo
       fbId
+      verificationCode
+      phoneVerificationCode
     }
   }
 }
@@ -42,11 +44,12 @@ mutation register($email: String!, $verified:Boolean) {
       lastName
       emailVerified
       email
-      verificationCode
       phoneVerified
       phoneNumber
       photo
       fbId
+      verificationCode
+      phoneVerificationCode
     }  
   }
 }
@@ -90,6 +93,8 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
       phoneNumber
       photo
       fbId
+      verificationCode
+      phoneVerificationCode
     }
   }
 }

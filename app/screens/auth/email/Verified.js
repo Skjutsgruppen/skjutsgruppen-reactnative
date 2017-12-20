@@ -91,7 +91,7 @@ class Verified extends Component {
           .then(({ data }) => {
             const { token, User } = data.updateUser;
             updateUser({ token, user: User }).then(() => {
-              this.navigateTo('Tab');
+              this.navigateTo('SendText');
             });
           }).catch((err) => {
             this.setState({ loading: false, error: err.message });
@@ -167,6 +167,7 @@ class Verified extends Component {
   render() {
     const message = 'Great job! \n Now fill in your name';
     const { error } = this.state;
+
     return (
       <Container>
         <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
