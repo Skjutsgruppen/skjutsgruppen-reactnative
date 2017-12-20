@@ -320,3 +320,30 @@ export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
     }),
   }),
 });
+
+const VERIFY_PHONE_NUMBER_QUERY = gql`
+mutation verifyPhoneNumber ($number: String, $code: String) {
+  verifyPhoneNumber (number: $number, code: $code) {
+    status 
+    User {
+      id 
+      email 
+      avatar 
+      phoneNumber 
+      firstName 
+      lastName 
+      emailVerified 
+      phoneVerified
+    } 
+    message
+  }
+}
+`;
+
+export const withVerifyPhoneNumber = graphql(VERIFY_PHONE_NUMBER_QUERY, {
+  props: ({ mutate }) => ({
+    verifyPhoneNumber: (number, code) => mutate({
+      variables: { number, code },
+    }),
+  }),
+});
