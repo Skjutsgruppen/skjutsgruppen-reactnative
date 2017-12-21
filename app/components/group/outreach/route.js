@@ -139,10 +139,9 @@ class Route extends Component {
     const state = this.state;
     let stops = [];
 
-    if (state.stops.length > 1) {
+    if (state.stops.length > 0) {
       stops = state.stops.filter(k => k.coordinates && k.coordinates.length);
     }
-
     state.stops = stops;
 
     onNext(state);
