@@ -158,7 +158,7 @@ class Email extends Component {
         </ColoredText>
 
         <View style={styles.button}>
-          <FBLogin navigation={this.props.navigation} />
+          {/* <FBLogin navigation={this.props.navigation} /> */}
         </View>
 
         <CustomButton
