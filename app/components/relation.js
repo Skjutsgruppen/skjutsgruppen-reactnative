@@ -32,11 +32,11 @@ const Relation = ({ users }) => {
   return (
     <View style={styles.participantWrapper}>
       {users.map((user) => {
-        if (user.photo) {
+        if (user.avatar) {
           return (
             <View key={user.id} style={styles.participant}>
               <Image
-                source={{ uri: user.photo }}
+                source={{ uri: user.avatar }}
                 style={{ width: 30, height: 30, borderRadius: 30 }}
               />
             </View>

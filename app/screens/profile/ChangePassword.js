@@ -162,7 +162,7 @@ class ChangePassword extends Component {
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <ScrollView>
-          <Image source={{ uri: user.photo }} style={styles.profilePic} />
+          <Image source={{ uri: user.avatar }} style={styles.profilePic} />
           <GreetText color={Colors.text.green}>
             Hi again {user.firstName}!
           </GreetText>

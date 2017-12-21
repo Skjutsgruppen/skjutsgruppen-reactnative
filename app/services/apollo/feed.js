@@ -21,12 +21,12 @@ subscription{
           email
           firstName
           lastName
-          photo
+          avatar
           relation {
             id,
             email,
             firstName
-            photo
+            avatar
           }
         }
         TripStart {
@@ -70,12 +70,12 @@ subscription{
           email
           firstName
           lastName
-          photo
+          avatar
           relation {
             id,
             email,
             firstName
-            photo
+            avatar
           }
         }
         TripStart {
@@ -120,92 +120,92 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         photo
         mapPhoto
         User {
-          id
-          email
-          firstName
-          lastName
-          photo
-          relation {
-            id,
-            email,
-            firstName
-            photo
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
+          relation { 
+            id 
+            email 
+            firstName 
+            avatar
           }
-        }
+        } 
         TripStart {
-          name
-          coordinates
-        }
+          name 
+          coordinates 
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
+        } 
         Stops {
-          name
+          name 
           coordinates
-        }
-        country
-        county
-        municipality
-        locality
-        GroupMembers{
-          id
-          photo
-        }
-        GroupMembershipRequests{
-          id
-          status
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        GroupMembers { 
+          id 
+          avatar 
+        } 
+        GroupMembershipRequests {
+          id 
+          status 
           Member {
-            id
-            email
-            firstName
+            id 
+            email 
+            firstName 
           }
         }
       }
     }
-    ... on TripFeed {
+    ... on TripFeed { 
       Trip {
-        id
-        type
-        description
-        seats
+        id 
+        type 
+        description 
+        seats 
         User {
-          id
-          email
-          firstName
-          lastName
-          photo
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
           relation {
-            id,
-            email,
-            firstName
-            photo
+            id 
+            email 
+            firstName 
+            avatar
           }
-        }
+        } 
         TripStart {
-          name
+          name 
           coordinates
-        }
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
-        Stops {
-          name
-          coordinates
-        }
-        date
-        time
-        photo
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
         mapPhoto
-        returnTrip
+        returnTrip 
         Comments {
           id
         }
       }
     }
-   }
-   count
+    } 
+    count
   } 
 }
 `;
