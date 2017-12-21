@@ -315,8 +315,8 @@ class OfferDetail extends Component {
     }
 
     let profileImage = null;
-    if (offer.User.photo) {
-      profileImage = (<Image source={{ uri: offer.User.photo }} style={styles.profilePic} />);
+    if (offer.User.avatar) {
+      profileImage = (<Image source={{ uri: offer.User.avatar }} style={styles.profilePic} />);
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }

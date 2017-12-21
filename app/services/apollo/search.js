@@ -34,7 +34,7 @@ query search
         User {
           id 
           email 
-          photo 
+          avatar
           phoneNumber 
           firstName 
           lastName 
@@ -70,7 +70,7 @@ query search
         GroupMembers {
           id
           email
-          photo
+          avatar
           phoneNumber
           firstName
           lastName
@@ -91,7 +91,7 @@ query search
           User{
             id 
             email 
-            photo 
+            avatar 
             phoneNumber 
             firstName 
             lastName 
@@ -130,7 +130,7 @@ query search
         User { 
           id 
           email 
-          photo 
+          avatar 
           phoneNumber 
           firstName 
           lastName 
@@ -154,7 +154,7 @@ query search
           User {
             id 
             email 
-            photo  
+            avatar
             phoneNumber 
             firstName 
             lastName 
