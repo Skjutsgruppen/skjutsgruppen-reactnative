@@ -321,7 +321,7 @@ class Profile extends Component {
     return profile.relation.map((user, index) => (
       <View key={user.id} style={styles.withArrow}>
         <TouchableOpacity onPress={() => this.onPressProfile(user.id)}>
-          <Image source={{ uri: user.photo }} style={styles.connectionPic} />
+          <Image source={{ uri: user.avatar }} style={styles.connectionPic} />
         </TouchableOpacity>
         {!(index === (profile.relation.length - 1)) && <Image source={require('@assets/icons/icon_arrow_fat.png')} style={styles.connectionArrow} />}
       </View>
@@ -341,7 +341,7 @@ class Profile extends Component {
 
     return (
       <View>
-        <Image source={{ uri: profile.photo }} style={styles.profilePic} />
+        <Image source={{ uri: profile.avatar }} style={styles.profilePic} />
         <Text style={styles.name}>{profile.firstName} {profile.lastName}</Text>
         <View style={styles.activityWrapper}>
           <View>

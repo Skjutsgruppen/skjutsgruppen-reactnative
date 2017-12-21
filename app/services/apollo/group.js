@@ -132,12 +132,12 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
         email
         firstName
         lastName
-        photo
+        avatar
         relation {
           id,
           email,
           firstName
-          photo
+          avatar
         }
       }
       TripStart {
@@ -211,12 +211,12 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
         email
         firstName
         lastName
-        photo
+        avatar
         relation {
           id,
           email,
           firstName
-          photo
+          avatar
         }
       }
       TripStart {
@@ -285,12 +285,12 @@ query findGroup($id: Int!){
       email
       firstName
       lastName
-      photo
+      avatar
       relation {
         id,
         email,
         firstName
-        photo
+        avatar
       }
     }
     TripStart {
@@ -350,7 +350,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       User {
         id
         email
-        photo
+        avatar
         phoneNumber
         firstName
         lastName
@@ -376,12 +376,12 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             email
             firstName
             lastName
-            photo
+            avatar
             relation {
               id
               email
               firstName
-              photo
+              avatar
             }
           }
           TripStart {
@@ -425,12 +425,12 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             email
             firstName
             lastName
-            photo
+            avatar
             relation {
               id
               email
               firstName
-              photo
+              avatar
             }
           }
           TripStart {
@@ -461,14 +461,14 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           User {
             id
             email
-            photo
+            avatar
             firstName
             lastName
             relation {
               id
               email
               firstName
-              photo
+              avatar
             }
           }
         }
@@ -486,7 +486,7 @@ subscription groupFeed($groupId: Int!){
     User {
       id
       email
-      photo
+      avatar
       phoneNumber
       firstName
       lastName
@@ -512,12 +512,12 @@ subscription groupFeed($groupId: Int!){
           email
           firstName
           lastName
-          photo
+          avatar
           relation {
             id
             email
             firstName
-            photo
+            avatar
           }
         }
         TripStart {
@@ -561,12 +561,12 @@ subscription groupFeed($groupId: Int!){
           email
           firstName
           lastName
-          photo
+          avatar
           relation {
             id
             email
             firstName
-            photo
+            avatar
           }
         }
         TripStart {
@@ -597,14 +597,14 @@ subscription groupFeed($groupId: Int!){
         User {
           id
           email
-          photo
+          avatar
           firstName
           lastName
           relation {
             id
             email
             firstName
-            photo
+            avatar
           }
         }
       }

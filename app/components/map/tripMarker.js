@@ -38,7 +38,7 @@ const TripMarker = ({ lat, lng, loading, trips, user, onMarkerPress }) => {
           onMarkerPress(row.trip);
         }}
         coordinate={coordinate}
-        image={row.trip.User.photo}
+        image={row.trip.User.avatar}
         count={row.trip.seats}
       />
     );
@@ -69,7 +69,7 @@ const TripMarker = ({ lat, lng, loading, trips, user, onMarkerPress }) => {
             latitude: lat,
             longitude: lng,
           }}
-          image={user.photo}
+          image={user.avatar}
           count={0}
         />
         {renderMarkers}
