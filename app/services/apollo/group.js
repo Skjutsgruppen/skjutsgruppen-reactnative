@@ -311,6 +311,7 @@ query findGroup($id: Int!){
     locality
     GroupMembers{
       id
+      photo
     }
     GroupMembershipRequests{
       id

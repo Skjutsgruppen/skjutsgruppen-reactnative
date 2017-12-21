@@ -147,10 +147,11 @@ const styles = StyleSheet.create({
 const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
   if (offer.mapPhoto) {
-    image = (<Image source={{ uri: offer.mapPhoto }} style={styles.feedImg} />);
+    image = (<Image source={{ uri: offer.mapPhoto }} style={styles.img} />);
   }
+
   if (offer.photo) {
-    image = (<Image source={{ uri: offer.photo }} style={styles.feedImg} />);
+    image = (<Image source={{ uri: offer.photo }} style={styles.img} />);
   }
 
   let profileImage = null;

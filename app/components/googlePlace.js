@@ -123,7 +123,7 @@ class GooglePlacesInput extends PureComponent {
             const value = {
               name: responseJson.results[0].address_components[0].long_name,
               countryCode: responseJson.results[0].address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-              coordinates: [position.coords.latitude, position.coords.longitude],
+              coordinates: [position.coords.longitude, position.coords.latitude],
             };
 
             this.setState({
