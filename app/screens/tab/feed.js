@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
-import { Loading, Wrapper, FeedContainer } from '@components/common';
+import { Loading, Wrapper } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import { withShare } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
@@ -11,33 +11,34 @@ import { compose } from 'react-apollo';
 import Colors from '@theme/colors';
 import FeedIcon from '@icons/ic_feed.png';
 import FeedIconActive from '@icons/ic_feed_active.png';
-import Map from '@icons/icon_map.png';
+import Map from '@assets/map_toggle.png';
 
 const styles = StyleSheet.create({
   circle: {
     position: 'absolute',
     top: -75,
     left: -75,
-    height: 300,
-    width: 300,
+    height: 280,
+    width: 280,
     borderRadius: 160,
     backgroundColor: '#02cbf9',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  menuWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 16,
+    marginBottom: 24,
+  },
   mapWrapper: {
-    height: 50,
-    width: 50,
     alignSelf: 'flex-end',
   },
   mapImg: {
-    width: 40,
-    height: 40,
     resizeMode: 'contain',
-  },
-  menuBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
   },
   menuIcon: {
     marginLeft: 12,
@@ -59,7 +60,13 @@ class Feed extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ refreshing: false, modalDetail: {}, modalType: '', isOpen: false, filterOpen: false });
+    this.state = ({
+      refreshing: false,
+      modalDetail: {},
+      modalType: '',
+      isOpen: false,
+      filterOpen: false,
+    });
   }
 
   componentWillMount() {
@@ -155,7 +162,7 @@ class Feed extends Component {
       );
     }
 
-    if (!rows || rows.length < 1) {
+    if (rows || rows.length < 1) {
       return (
         <View style={{ marginTop: 100 }}>
           <Text>No Feeds.</Text>
@@ -174,8 +181,8 @@ class Feed extends Component {
   }
 
   renderHeader = () => (
-    <View style={styles.menuBar}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 50 }}>
+    <View style={styles.header}>
+      <View style={styles.menuWrapper}>
         <Text style={styles.hi}>Hi!</Text>
         <TouchableOpacity
           style={styles.menuIcon}
@@ -245,11 +252,9 @@ class Feed extends Component {
 
   render() {
     return (
-      <Wrapper bgColor="transparent" >
-        <FeedContainer bgColor="transparent">
-          <View style={styles.circle} />
-          {this.renderFeed()}
-        </FeedContainer>
+      <Wrapper bgColor="#eee" >
+        <View style={styles.circle} />
+        {this.renderFeed()}
         {this.renderShareModal()}
         <Filter
           onPress={() => { }}
