@@ -148,6 +148,7 @@ query getFeed($offset: Int, $limit: Int) {
         locality
         GroupMembers{
           id
+          photo
         }
         GroupMembershipRequests{
           id
