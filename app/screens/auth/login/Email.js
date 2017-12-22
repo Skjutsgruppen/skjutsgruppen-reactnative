@@ -204,7 +204,7 @@ const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(userLogin, connect(mapStateToProps, mapDispatchToProps))(Login);

@@ -214,7 +214,7 @@ class Offer extends Component {
         this.setState({ loading: false, offer: res.data.createTrip });
       });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   }
 

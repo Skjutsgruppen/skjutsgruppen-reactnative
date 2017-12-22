@@ -106,6 +106,8 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   let image = null;
   if (group.photo) {
     image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
+  } else if (group.mapPhoto) {
+    image = (<Image source={{ uri: group.mapPhoto }} style={styles.feedImg} />);
   } else {
     image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
   }

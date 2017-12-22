@@ -20,7 +20,7 @@ class FBLogin extends PureComponent {
     const { setLogin, navigation } = this.props;
     if (user) {
       setLogin({ token, user }).then(() => {
-        navigation.navigate('Tab');
+        navigation.reset('Tab');
       });
     } else {
       this.signupWithFacebook(() => this.register(fbUser));
@@ -39,7 +39,7 @@ class FBLogin extends PureComponent {
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
-    navigation.navigate('Tab');
+    navigation.reset('Tab');
   }
 
   async register({ profile, token: fbToken }) {
@@ -68,9 +68,9 @@ class FBLogin extends PureComponent {
       });
 
       if (profile.verified) {
-        navigation.navigate('EmailVerified');
+        navigation.reset('EmailVerified');
       } else {
-        navigation.navigate('CheckMail');
+        navigation.reset('CheckMail');
       }
     } catch (error) {
       /* todos :
@@ -107,7 +107,7 @@ class FBLogin extends PureComponent {
 
 FBLogin.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   register: PropTypes.func.isRequired,
   setRegister: PropTypes.func.isRequired,
@@ -119,10 +119,10 @@ FBLogin.propTypes = {
 const mapDispatchToProps = dispatch => ({
   setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.register({ user, token })))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(

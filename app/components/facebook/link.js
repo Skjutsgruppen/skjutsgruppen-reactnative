@@ -118,7 +118,7 @@ LinkFacebook.propTypes = {
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withFacebookConnect, connect(null, mapDispatchToProps))(LinkFacebook);

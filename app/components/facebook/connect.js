@@ -39,22 +39,22 @@ class Connect extends PureComponent {
           this.props.onLogin(fbUser, { token, user });
         });
       } catch (error) {
-        console.error(error);
+        console.warn(error);
         this.setState({ loading: false });
       }
     });
   }
 
-
   async onPressLogin() {
     const { fbUser } = this.state;
+    this.setState({ loading: true });
     try {
       const { token, user } = await this.getUserByFbId(fbUser.profile.id);
       this.setState({ loading: false }, () => {
         this.props.onLogin(fbUser, { token, user });
       });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       this.setState({ loading: false });
     }
   }

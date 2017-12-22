@@ -175,7 +175,7 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.user(user))),
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.error(error)),
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withVerifyCode, connect(mapStateToProps, mapDispatchToProps))(Check);

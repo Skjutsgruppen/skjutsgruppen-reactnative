@@ -137,13 +137,11 @@ class Route extends Component {
   onNext = () => {
     const { onNext } = this.props;
     const state = this.state;
-    const stops = [];
+    let stops = [];
 
-    state.stops.forEach((k) => {
-      if (k.name !== '') {
-        stops.push(k);
-      }
-    });
+    if (state.stops.length > 1) {
+      stops = state.stops.filter(k => k.coordinates && k.coordinates.length);
+    }
 
     state.stops = stops;
 

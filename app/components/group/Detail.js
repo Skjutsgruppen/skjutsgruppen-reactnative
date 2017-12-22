@@ -268,7 +268,7 @@ class Detail extends PureComponent {
   onShare = (share) => {
     this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
-      .catch(console.error);
+      .catch(console.warn);
   };
 
   onClose = () => {
@@ -285,13 +285,24 @@ class Detail extends PureComponent {
     navigation.navigate('UserProfile', { profileId: group.User.id });
   }
 
+  onMapPress = () => {
+    const { navigation, group } = this.props;
+    const coordinates = {
+      start: group.TripStart,
+      end: group.TripEnd,
+      stops: group.Stops,
+    };
+
+    navigation.navigate('Route', { coordinates });
+  }
+
   leaveGroup = () => {
     const { group, leaveGroup, refresh } = this.props;
     this.setState(
       { leaveLoading: true },
       () => leaveGroup(group.id)
         .then(refresh)
-        .catch(console.error),
+        .catch(console.warn),
     );
   }
 
@@ -336,9 +347,11 @@ class Detail extends PureComponent {
     const { group } = this.props;
     const { error } = this.state;
 
-    let image = '';
+    let image = null;
     if (group.photo) {
       image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
+    } else if (group.mapPhoto) {
+      image = (<Image source={{ uri: group.mapPhoto }} style={styles.feedImg} />);
     } else {
       image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
     }
@@ -489,7 +502,7 @@ class Detail extends PureComponent {
     const header = this.header(this.state.leaveLoading);
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} map />
+        <NavBar handleBack={this.goBack} onMapPress={this.onMapPress} />
         <View style={styles.feed}>
           <GroupFeedList
             header={header}
@@ -510,7 +523,7 @@ Detail.propTypes = {
   submit: PropTypes.func.isRequired,
   group: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    photo: PropTypes.string.isRequired,
+    photo: PropTypes.string,
     GroupMembers: PropTypes.array.isRequired,
     User: PropTypes.object.isRequired,
   }).isRequired,
