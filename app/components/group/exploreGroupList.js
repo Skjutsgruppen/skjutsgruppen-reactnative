@@ -161,13 +161,13 @@ class ExploreGroupsResult extends Component {
   renderHeader = () => <Text style={styles.listLabel}>{this.state.filterTitle}</Text>
 
   renderFooter = () => {
-    const { exploreGroups: { networkStatus, exploreGroups: { rows: Group, count } } } = this.props;
+    const { networkStatus, rows, count } = this.props.exploreGroups;
 
     if (networkStatus === 1) {
       return <Loading />;
     }
 
-    if (Group.length >= count) {
+    if (rows.length >= count) {
       return (
         <View
           style={{
@@ -189,9 +189,17 @@ class ExploreGroupsResult extends Component {
   }
 
   renderAllGroups() {
-    const { exploreGroups } = this.props;
+    const {
+      loading,
+      rows,
+      count,
+      error,
+      networkStatus,
+      refetch,
+      fetchMore,
+    } = this.props.exploreGroups;
 
-    if (exploreGroups.networkStatus !== 7) {
+    if (networkStatus !== 7) {
       return (
         <View
           style={styles.loadingWrapper}
@@ -201,19 +209,17 @@ class ExploreGroupsResult extends Component {
       );
     }
 
-    if (exploreGroups.error) {
+    if (error) {
       return (
         <View style={styles.errorWrapper}>
-          <Text>Error: {exploreGroups.error.message}</Text>
+          <Text>Error: {error.message}</Text>
         </View>
       );
     }
 
-    const { exploreGroups: { rows: Group, count } } = exploreGroups;
-
     return (
       <FlatList
-        data={Group}
+        data={rows}
         renderItem={({ item }) => (
           <GroupItem
             min
@@ -223,16 +229,16 @@ class ExploreGroupsResult extends Component {
           />)
         }
         keyExtractor={(item, index) => `${item.id}-${index}`}
-        refreshing={exploreGroups.networkStatus === 4}
-        onRefresh={() => exploreGroups.refetch()}
+        refreshing={networkStatus === 4}
+        onRefresh={() => refetch()}
         onEndReachedThreshold={0.5}
         ListHeaderComponent={this.renderHeader}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          if (exploreGroups.loading || Group.length >= count) return;
+          if (loading || rows.length >= count) return;
 
-          exploreGroups.fetchMore({
-            variables: { offset: Group.length },
+          fetchMore({
+            variables: { offset: rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
               if (!fetchMoreResult || fetchMoreResult.exploreGroups.length === 0) {
                 return previousResult;
@@ -243,7 +249,12 @@ class ExploreGroupsResult extends Component {
                 fetchMoreResult.exploreGroups.rows,
               );
 
-              return { exploreGroups: { ...prevExploreGroups, ...{ rows: updatedGroup } } };
+              return {
+                exploreGroups: {
+                  ...prevExploreGroups,
+                  ...{ rows: updatedGroup },
+                },
+              };
             },
           });
         }}
@@ -298,12 +309,12 @@ ExploreGroupsResult.propTypes = {
   }).isRequired,
   exploreGroups: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
-    total: PropTypes.numeric,
     networkStatus: PropTypes.number,
-    exploreGroups: PropTypes.shape({
-      Groups: PropTypes.arrayOf(PropTypes.object),
-      total: PropTypes.number,
-    }),
+    rows: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.number,
+    error: PropTypes.object,
+    refetch: PropTypes.func,
+    fetchMore: PropTypes.func,
   }).isRequired,
 };
 

@@ -36,6 +36,7 @@ class GroupDetail extends Component {
   isMember = () => {
     const { user } = this.props;
     const { group } = this.state;
+
     if (user.id === group.User.id) {
       return true;
     }

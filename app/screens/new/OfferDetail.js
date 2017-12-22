@@ -257,7 +257,7 @@ class OfferDetail extends Component {
   onShare = (share) => {
     this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
-      .catch(console.error);
+      .catch(console.warn);
   };
 
   onClose = () => {
@@ -271,6 +271,18 @@ class OfferDetail extends Component {
 
   onCommentChange = (text) => {
     this.setState({ comment: text });
+  }
+
+  onMapPress = () => {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+    const coordinates = {
+      start: offer.TripStart,
+      end: offer.TripEnd,
+      stops: offer.Stops,
+    };
+
+    navigation.navigate('Route', { coordinates });
   }
 
   setModalVisible(visible) {
@@ -445,6 +457,9 @@ class OfferDetail extends Component {
     const { error } = this.state;
 
     let image = null;
+    if (offer.mapPhoto) {
+      image = (<Image source={{ uri: offer.mapPhoto }} style={styles.feedImage} />);
+    }
     if (offer.photo) {
       image = (<Image source={{ uri: offer.photo }} style={styles.feedImage} />);
     }
@@ -460,9 +475,11 @@ class OfferDetail extends Component {
       <View style={styles.wrapper}>
         <Navbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('offer', offer)} />
         <ScrollView>
-          <View style={styles.imgWrapper}>
-            {image}
-          </View>
+          <TouchableOpacity onPress={this.onMapPress}>
+            <View style={styles.imgWrapper}>
+              {image}
+            </View>
+          </TouchableOpacity>
           {profileImage}
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
