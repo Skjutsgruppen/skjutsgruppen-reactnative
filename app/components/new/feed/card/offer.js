@@ -146,6 +146,9 @@ const styles = StyleSheet.create({
 
 const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
+  if (offer.mapPhoto) {
+    image = (<Image source={{ uri: offer.mapPhoto }} style={styles.feedImg} />);
+  }
   if (offer.photo) {
     image = (<Image source={{ uri: offer.photo }} style={styles.feedImg} />);
   }

@@ -80,6 +80,7 @@ query groups ($userId: Int) {
       id
       name
       photo
+      mapPhoto
       description
       User {
         id

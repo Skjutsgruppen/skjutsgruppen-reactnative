@@ -142,6 +142,9 @@ const styles = StyleSheet.create({
 
 const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
+  if (ask.mapPhoto) {
+    image = (<Image source={{ uri: ask.mapPhoto }} style={styles.img} />);
+  }
   if (ask.photo) {
     image = (<Image source={{ uri: ask.photo }} style={styles.img} />);
   }

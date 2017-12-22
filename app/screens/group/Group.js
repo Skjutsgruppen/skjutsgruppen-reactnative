@@ -12,6 +12,8 @@ import { submitGroup } from '@services/apollo/group';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
+import CustomButton from '@components/common/customButton';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -145,12 +147,9 @@ class Group extends Component {
     const { completedTabs, disabledTabs } = this.state;
     completedTabs.push(5);
     delete disabledTabs[disabledTabs.indexOf(5)];
-    this.setState(
-      {
-        share, completedTabs, disabledTabs, activeTab: 6, loading: true,
-      },
-      this.createGroup,
-    );
+    this.setState({
+      share, completedTabs, disabledTabs, activeTab: 6, loading: true,
+    }, this.createGroup);
   };
 
   onButtonPress = () => {
@@ -200,6 +199,9 @@ class Group extends Component {
     if (error !== '') {
       return (<View>
         <Text>{error}</Text>
+        <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
+          Try Again
+        </CustomButton>
       </View>);
     }
 
