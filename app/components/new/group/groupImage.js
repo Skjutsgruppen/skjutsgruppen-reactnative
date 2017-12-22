@@ -40,11 +40,9 @@ const styles = StyleSheet.create({
 });
 
 const GroupImage = ({ imageURI, name }) => (
-  <View>
-    <View style={styles.imgWrapper}>
-      <Image source={{ uri: imageURI }} style={styles.img} />
-      <Text style={styles.groupName}>{name}</Text>
-    </View>
+  <View style={styles.imgWrapper}>
+    <Image source={{ uri: imageURI }} style={styles.img} />
+    <Text style={styles.groupName}>{name}</Text>
   </View>
 );
 

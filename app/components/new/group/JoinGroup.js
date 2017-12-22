@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -54,13 +54,14 @@ const styles = StyleSheet.create({
   },
   stops: {
     fontWeight: 'bold',
-    color: Colors.text.darkGray,
   },
   description: {
     marginTop: 24,
   },
   msgWrapper: {
-    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 45,
   },
   lightText: {
     color: Colors.text.gray,
@@ -69,13 +70,30 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.fullWhite,
   },
   footer: {
-    paddingTop: 16,
-    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
     backgroundColor: Colors.background.fullWhite,
     shadowOffset: { width: 0, height: -4 },
-    shadowColor: Colors.background.balck,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
+    shadowColor: Colors.background.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  participateButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: 45,
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    backgroundColor: Colors.background.pink,
+  },
+  buttonText: {
+    color: Colors.text.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 16,
+    backgroundColor: 'transparent',
   },
 });
 
@@ -119,37 +137,42 @@ class JoinGroup extends Component {
 
     if (loading) {
       return (
-        <View style={styles.msgWrapper}>
-          <Loading />
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Loading />
+          </View>
         </View>
       );
     }
 
     if (requestSent) {
       return (
-        <View style={styles.msgWrapper}>
-          <Text style={styles.lightText}>Request has been sent</Text>
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Text style={styles.lightText}>Request has been sent</Text>
+          </View>
         </View>
       );
     }
 
     if (isPending) {
       return (
-        <View style={styles.msgWrapper}>
-          <Text style={styles.lightText}>Your Request is pending.</Text>
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Text style={styles.lightText}>Your Request is pending.</Text>
+          </View>
         </View>
       );
     }
 
     return (
       <View style={styles.footer}>
-        <CustomButton
-          bgColor={Colors.background.green}
-          style={styles.button}
+        <TouchableOpacity
+          style={styles.participateButton}
           onPress={this.joinGroup}
         >
-          Join the group
-        </CustomButton>
+          <Text style={styles.buttonText}>Participate</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -185,7 +208,7 @@ class JoinGroup extends Component {
             group.Stops.length > 0 &&
             <View style={styles.stopText}>
               <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
-              <Text style={styles.lightText}>
+              <Text style={{ color: '#333' }}>
                 Stops in
               <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
               </Text>
