@@ -54,7 +54,13 @@ class Route extends Component {
       const { distance, duration, coordinates } = await getCoordinates({ start: origin, end: destination, stops: stopsCoordinates.join('|') });
       this.setState({ waypoints: coordinates, distance, duration }, this.fitMap);
     } catch (error) {
-      console.warn(error);
+      const coords = [];
+      coords.push(origin);
+      stops.forEach((row) => {
+        coords.push({ latitude: row.coordinates[1], longitude: row.coordinates[0] });
+      });
+      coords.push(destination);
+      this.setState({ waypoints: coords, distance: 0, duration: 0 }, this.fitMap);
     }
   }
 

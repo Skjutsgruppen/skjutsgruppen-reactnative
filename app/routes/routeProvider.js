@@ -63,7 +63,7 @@ const TabRoutes = {
 const Tab = TabNavigator(TabRoutes,
   {
     lazy: true,
-    animationEnabled: true,
+    animationEnabled: false,
     tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: '#3b5998',

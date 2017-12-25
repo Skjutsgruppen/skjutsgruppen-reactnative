@@ -64,12 +64,10 @@ const Filter = ({ showModal, onCloseModal, onPress }) => (
     <View style={styles.modalContent}>
       <View style={styles.actionsWrapper}>
         <Text style={styles.title}>Filters:</Text>
-        <Action label="Everything" onPress={() => onPress('all')} />
-        <Action label="Offered rides" onPress={() => onPress('offer')} />
-        <Action label="Rides that are asked for" onPress={() => onPress('ask')} />
-        <Action label="Close to you" onPress={() => onPress('nearYou')} />
-        <Action label="Experiences" onPress={() => onPress('experiences')} />
-        <Action label="News" onPress={() => onPress('news')} />
+        <Action label="Everything" onPress={() => onPress('everything')} />
+        <Action label="Offered rides" onPress={() => onPress('offered')} />
+        <Action label="Rides that are asked for" onPress={() => onPress('wanted')} />
+        <Action label="Close to you" onPress={() => onPress('nearBy')} />
       </View>
       <View style={styles.closeWrapper}>
         <TouchableOpacity

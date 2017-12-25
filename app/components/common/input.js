@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Input = ({ style, placeholder, defaultValue, onChangeText }) => (
+const Input = ({ style, placeholder, defaultValue, onChangeText, ...props }) => (
   <View style={styles.wrapper}>
     <TextInput
       style={[styles.input, style]}
@@ -48,6 +48,7 @@ const Input = ({ style, placeholder, defaultValue, onChangeText }) => (
       onChangeText={onChangeText}
       underlineColorAndroid="transparent"
       defaultValue={defaultValue}
+      {...props}
     />
     <View style={styles.topShadow} />
     <View style={styles.leftShadow} />
