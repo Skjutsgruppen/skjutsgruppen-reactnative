@@ -313,7 +313,7 @@ Detail.propTypes = {
   submit: PropTypes.func.isRequired,
   group: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    photo: PropTypes.string.isRequired,
+    photo: PropTypes.string,
     GroupMembers: PropTypes.array.isRequired,
     User: PropTypes.object.isRequired,
   }).isRequired,

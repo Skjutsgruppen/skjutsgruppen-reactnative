@@ -104,8 +104,8 @@ subscription{
 `;
 
 const GET_FEED_QUERY = gql`
-query getFeed($offset: Int, $limit: Int) {
-  getFeed (offset:$offset, limit:$limit){
+query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
+  getFeed (offset:$offset, limit:$limit, filter:$filter){
    rows {
     id
     feedable
@@ -213,7 +213,7 @@ query getFeed($offset: Int, $limit: Int) {
 export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
     fetchPolicy: 'cache-and-network',
-    variables: { offset: 0, limit: 10 },
+    variables: { offset: 0, limit: 10, filter: { type: 'everything' } },
   },
   props: ({
     data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
