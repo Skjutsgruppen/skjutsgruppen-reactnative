@@ -150,6 +150,9 @@ class Email extends Component {
           defaultValue={this.state.email}
           onChangeText={email => this.setState({ email })}
           placeholder="Fill in your e-mail"
+          keyboardType="email-address"
+          returnKeyType="send"
+          onSubmitEditing={this.onSubmit}
         />
         {this.renderButton()}
         <View style={styles.divider} />

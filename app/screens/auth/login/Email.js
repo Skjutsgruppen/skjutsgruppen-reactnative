@@ -178,6 +178,8 @@ class Login extends Component {
             placeholder="Your Password"
             underlineColorAndroid="transparent"
             value={this.state.password}
+            returnKeyType="send"
+            onSubmitEditing={this.onSubmit}
           />
         </View>
         {this.renderButton()}
