@@ -55,7 +55,7 @@ class Map extends PureComponent {
         Alert.alert(error.message);
         this.setState({ loading: false, locationError: true });
       },
-      { timeout: 20000, maximumAge: 1000 },
+      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: false },
     );
   };
 
