@@ -1,3 +1,4 @@
+/* global navigator */
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
@@ -66,6 +67,8 @@ class Feed extends Component {
       modalType: '',
       isOpen: false,
       filterOpen: false,
+      filterType: 'everything',
+      coordinates: [],
     });
   }
 
@@ -76,7 +79,7 @@ class Feed extends Component {
     if (params && typeof params.refetch !== 'undefined') {
       feeds.refetch();
     }
-
+    this.currentLocation();
     subscribeToFeed();
   }
 
@@ -117,9 +120,30 @@ class Feed extends Component {
     this.setState({ isOpen: false });
   }
 
+  onFilterChange = (type) => {
+    const { filterType, coordinates } = this.state;
+    if (type !== filterType) {
+      this.setState({ filterType: type }, () => {
+        this.props.feeds.refetch({ offset: 0, filter: { type, from: coordinates } });
+      });
+      this.setFilterVisibility(false);
+    }
+  }
+
   setFilterVisibility = (visibility) => {
     this.setState({ filterOpen: visibility });
   }
+
+  currentLocation = () => {
+    this.setState({ loading: true });
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({ coordinates: [position.coords.longitude, position.coords.latitude] });
+      },
+      error => console.warn(error),
+      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: false },
+    );
+  };
 
   redirectToMap = () => {
     this.props.navigation.navigate('Map');
@@ -162,7 +186,7 @@ class Feed extends Component {
       );
     }
 
-    if (rows || rows.length < 1) {
+    if (count < 1) {
       return (
         <View style={{ marginTop: 100 }}>
           <Text>No Feeds.</Text>
@@ -218,7 +242,7 @@ class Feed extends Component {
           />)
         }
         keyExtractor={(item, index) => index}
-        refreshing={feeds.networkStatus === 4 || feeds.loading}
+        refreshing={feeds.networkStatus === 4 || feeds.networkStatus === 2}
         onRefresh={() => feeds.refetch()}
         onEndReachedThreshold={0.8}
         ListHeaderComponent={this.renderHeader}
@@ -257,7 +281,8 @@ class Feed extends Component {
         {this.renderFeed()}
         {this.renderShareModal()}
         <Filter
-          onPress={() => { }}
+          selected={this.state.filterType}
+          onPress={this.onFilterChange}
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setFilterVisibility(false)}
         />
