@@ -244,7 +244,7 @@ class Share extends Component {
       <View>
         <Text style={styles.shareCategoryTitle}>Groups</Text>
         {
-          groups.rows.map(group => (
+          groups.rows.map(group => group && (
             <View key={group.id} style={styles.borderedRow}>
               <TouchableWithoutFeedback
                 onPress={() => this.setOption('groups', group.id)}

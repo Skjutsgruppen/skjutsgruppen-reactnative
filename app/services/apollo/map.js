@@ -66,8 +66,8 @@ export const withMapTrips = graphql(NEAR_BY_TRIPS_QUERY, {
         const { startPoint, Routable } = trip;
         return {
           coordinate: {
-            lat: startPoint[0],
-            lng: startPoint[1],
+            lng: startPoint[0],
+            lat: startPoint[1],
           },
           trip: Routable,
         };
