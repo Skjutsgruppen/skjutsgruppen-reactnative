@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import Apollo from '@services/apollo';
 import { navReducer } from '@routes/routeProvider';
-import feed from './feed';
-import auth from './auth';
+import { apolloReducer } from 'apollo-cache-redux';
+import feed from '@redux/reducers/feed';
+import auth from '@redux/reducers/auth';
 
-export default combineReducers({ feed, auth, apollo: Apollo.reducer(), nav: navReducer });
+export default combineReducers({ feed, auth, apollo: apolloReducer, nav: navReducer });

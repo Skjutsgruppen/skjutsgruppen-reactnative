@@ -1,54 +1,66 @@
-import ApolloClient, { createNetworkInterface, IntrospectionFragmentMatcher } from 'apollo-client';
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+import { ApolloClient } from 'apollo-client';
+import { setContext } from 'apollo-link-context';
+import { createHttpLink } from 'apollo-link-http';
+import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
+import { WebSocketLink } from 'apollo-link-ws';
+import { split } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
 import { API_URL, WS_API_URL } from '@config';
 import Auth from '@services/auth';
+import { ReduxCache } from 'apollo-cache-redux';
+import configureStore from '@redux/store';
 
-const wsClient = new SubscriptionClient(WS_API_URL, {
-  reconnect: true,
+const httpLink = createHttpLink({
+  uri: API_URL,
 });
 
-const networkInterface = createNetworkInterface({ uri: API_URL });
-
-networkInterface.use([{
-  async applyMiddleware(req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {};
-    }
-
-    const token = await Auth.getToken();
-    req.options.headers.authorization = token;
-    next();
+const wsLink = new WebSocketLink({
+  uri: WS_API_URL,
+  options: {
+    reconnect: true,
   },
-}]);
+});
 
-const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
-  networkInterface,
-  wsClient,
+const middlewareLink = setContext(() => ({
+  headers: { authorization: Auth.getToken() || null },
+}));
+
+const httpLinkWithMiddleware = middlewareLink.concat(httpLink);
+
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === 'OperationDefinition' && operation === 'subscription';
+  },
+  wsLink,
+  httpLinkWithMiddleware,
 );
 
-const feedFragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData: {
-    __schema: {
-      types: [
-        {
-          kind: 'INTERFACE',
-          name: 'Feed',
-          possibleTypes: [
-            {
-              name: 'GroupFeed',
-            },
-            {
-              name: 'TripFeed',
-            },
-          ],
-        },
-      ],
+const cache = new ReduxCache({
+  store: configureStore({}),
+  fragmentMatcher: new IntrospectionFragmentMatcher({
+    introspectionQueryResultData: {
+      __schema: {
+        types: [
+          {
+            kind: 'INTERFACE',
+            name: 'Feed',
+            possibleTypes: [
+              {
+                name: 'GroupFeed',
+              },
+              {
+                name: 'TripFeed',
+              },
+            ],
+          },
+        ],
+      },
     },
-  },
+  }),
 });
 
-
 export default new ApolloClient({
-  networkInterface: networkInterfaceWithSubscriptions,
-  fragmentMatcher: feedFragmentMatcher,
+  link,
+  cache,
 });

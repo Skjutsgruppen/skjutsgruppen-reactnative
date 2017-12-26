@@ -5,7 +5,6 @@ import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducers from '@redux/reducers/reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import Apollo from '@services/apollo';
 
 const congifureStore = (initialState = {}) => {
   const middlewares = [thunk];
@@ -13,8 +12,6 @@ const congifureStore = (initialState = {}) => {
   if (__DEV__) {
     middlewares.push(logger);
   }
-
-  middlewares.push(Apollo.middleware());
 
   const enhancers = [
     applyMiddleware(...middlewares),
