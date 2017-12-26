@@ -145,7 +145,7 @@ class Item extends PureComponent {
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
-          {this.renderPic(User.photo)}
+          {this.renderPic(User.avatar)}
         </View>
         <Text style={styles.textWrap}>
           <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
@@ -168,7 +168,7 @@ class Item extends PureComponent {
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
-          {this.renderPic(User.photo)}
+          {this.renderPic(User.avatar)}
         </View>
         <Text style={styles.textWrap}>
           <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
@@ -194,7 +194,7 @@ class Item extends PureComponent {
     </View>
   );
 
-  item = ({ user, photo, text, date, onPress }) => (
+  item = ({ user, photo, text, onPress }) => (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.list}>
         <View style={styles.flexRow}>
@@ -212,20 +212,20 @@ class Item extends PureComponent {
           </View>
         </View>
         <View>
-          <Text style={[styles.time, styles.bold]}>{date}</Text>
+          {/* <Text style={[styles.time, styles.bold]}>{date}</Text> */}
         </View>
       </View>
     </TouchableOpacity>
   );
 
   memberRequest = ({ GroupMembershipRequest, User, date, id }) => {
-    if (GroupMembershipRequest && GroupMembershipRequest.status === 'pending') {
+    if (GroupMembershipRequest && GroupMembershipRequest.gmrStatus === 'pending') {
       return this.requestJoinGroup({ User, GroupMembershipRequest });
     }
 
-    if (GroupMembershipRequest && GroupMembershipRequest.status === 'accepted') {
+    if (GroupMembershipRequest && GroupMembershipRequest.gmrStatus === 'accepted') {
       return this.item({
-        photo: User.photo,
+        photo: User.avatar,
         text: `You have accepted ${User.firstName}'s request to join group "${GroupMembershipRequest.Group.name}"`,
         date,
         onPress: () => this.redirect(id, 'GroupDetail', { group: GroupMembershipRequest.Group }),
@@ -239,7 +239,7 @@ class Item extends PureComponent {
     if (Group) {
       return this.item({
         user: User.firstName,
-        photo: User.photo,
+        photo: User.avatar,
         text: `accepted your request to join group "${Group.name}"`,
         date,
         onPress: () => this.redirect(id, 'GroupDetail', { group: Group }),
@@ -253,7 +253,7 @@ class Item extends PureComponent {
     if (FriendRequest) {
       return this.item({
         user: User.firstName,
-        photo: User.photo,
+        photo: User.avatar,
         text: 'accepted your friend request',
         date,
         onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
@@ -263,33 +263,33 @@ class Item extends PureComponent {
     return null;
   }
 
-  comment = ({ Group, Trip, User, date, id }) => {
+  comment = ({ notifiable, Notifiable, User, id, createdAt }) => {
     let type = null;
     let params = null;
     let route = null;
 
-    if (Group) {
-      type = `group "${Group.name}"`;
+    if (notifiable === 'Group') {
+      type = `group "${Notifiable.name}"`;
       route = 'GroupDetail';
-      params = { group: Group };
+      params = { group: Notifiable };
     }
 
-    if (Trip) {
-      type = `ride ${Trip.TripStart.name} - ${Trip.TripEnd.name}`;
-      if (Trip.type === 'offer') {
+    if (notifiable === 'Trip') {
+      type = `ride ${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
+      if (Notifiable.tripType === 'offer') {
         route = 'OfferDetail';
-        params = { offer: Trip };
+        params = { offer: Notifiable };
       } else {
         route = 'AskDetail';
-        params = { ask: Trip };
+        params = { ask: Notifiable };
       }
     }
 
     return this.item({
       user: User.firstName,
-      photo: User.photo,
+      photo: User.avatar,
       text: `commented on your ${type}`,
-      date,
+      date: createdAt,
       onPress: () => this.redirect(id, route, params),
     });
   }
@@ -307,7 +307,7 @@ class Item extends PureComponent {
 
     if (Trip) {
       type = `ride "${Trip.TripStart.name} - ${Trip.TripEnd.name}"`;
-      if (Trip.type === 'offer') {
+      if (Trip.tripType === 'offer') {
         route = 'OfferDetail';
         params = { offer: Trip };
       } else {
@@ -318,7 +318,7 @@ class Item extends PureComponent {
 
     return this.item({
       user: User.firstName,
-      photo: User.photo,
+      photo: User.avatar,
       text: `shared a ${type}`,
       date,
       onPress: () => this.redirect(id, route, params),

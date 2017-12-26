@@ -11,150 +11,17 @@ subscription notification($userId: Int!) {
       firstName
       lastName
       email
-      photo
+      avatar
     }
     Receiver{
       id
       firstName
     }
-    Trip {
-      id
-      type
-      description
-      seats
-      User {
+    notifiable
+    Notifiable {
+      ... on Trip {
         id
-        email
-        firstName
-        lastName
-        photo
-      }
-      TripStart {
-        name
-        coordinates
-      }
-      TripEnd {
-        name
-        coordinates
-      }
-      Stops {
-        name
-        coordinates
-      }
-      date
-      time
-      photo
-      returnTrip
-    }
-    Group {
-      id
-      outreach
-      name
-      description
-      type
-      photo
-      User {
-        id
-        email
-        firstName
-        lastName
-        photo
-      }
-      TripStart {
-        name
-        coordinates
-      }
-      TripEnd {
-        name
-        coordinates
-      }
-      Stops {
-        name
-        coordinates
-      }
-      country
-      county
-      municipality
-      locality
-      GroupMembers{
-        id
-      }
-    }
-    read
-    createdAt
-    GroupMembershipRequest {
-      id
-      status
-      Group {
-        id
-        name
-        description
-        type
-        photo
-        User {
-          id
-          email
-          firstName
-          lastName
-          photo
-        }
-        TripStart {
-          name
-          coordinates
-        }
-        TripEnd {
-          name
-          coordinates
-        }
-        Stops {
-          name
-          coordinates
-        }
-        country
-        county
-        municipality
-        locality
-        GroupMembers{
-          id
-        }
-      }
-    }
-    FriendRequest {
-      id
-      status
-      User {
-        id
-        firstName
-      }
-      FutureFriend{
-        id
-        firstName
-      }
-    }
-  }
-}
-`;
-
-const NOTIFICATION_QUERY = gql`
-query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
-  notifications (filters:$filters, offset:$offset, limit:$limit) {
-    rows {
-      id
-      type
-      User {
-        id
-        firstName
-        lastName
-        email
-        photo
-      }
-      Receiver{
-        id
-        firstName
-      }
-      Trip {
-        id
-        type
+        tripType:type
         description
         seats
         User {
@@ -162,7 +29,12 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           email
           firstName
           lastName
-          photo
+          avatar
+          relation {
+            id
+            firstName
+            avatar
+          }
         }
         TripStart {
           name
@@ -181,19 +53,25 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         photo
         returnTrip
       }
-      Group {
+      ... on Group {
         id
         outreach
         name
         description
         type
         photo
+        mapPhoto
         User {
           id
           email
           firstName
           lastName
-          photo
+          avatar
+          relation {
+            id
+            firstName
+            avatar
+          }
         }
         TripStart {
           name
@@ -215,23 +93,27 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           id
         }
       }
-      read
-      createdAt
-      GroupMembershipRequest {
+      ... on GroupMembershipRequest {
         id
-        status
+        gmrStatus:status
         Group {
           id
           name
           description
           type
           photo
+          mapPhoto
           User {
             id
             email
             firstName
             lastName
-            photo
+            avatar
+            relation {
+              id
+              firstName
+              avatar
+            }
           }
           TripStart {
             name
@@ -254,7 +136,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           }
         }
       }
-      FriendRequest {
+      ... on FriendRequest {
         id
         status
         User {
@@ -266,6 +148,163 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           firstName
         }
       }
+    }
+    read
+    createdAt
+  }
+}
+`;
+
+const NOTIFICATION_QUERY = gql`
+query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
+  notifications (filters:$filters, offset:$offset, limit:$limit) {
+    rows {
+      id
+      type
+      User {
+        id
+        firstName
+        lastName
+        email
+        avatar
+      }
+      Receiver{
+        id
+        firstName
+      }
+      type
+      notifiable
+      Notifiable {
+        ... on Trip {
+          id
+          tripType:type
+          description
+          seats
+          User {
+            id
+            email
+            firstName
+            lastName
+            avatar
+            relation {
+              id
+              firstName
+              avatar
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          time
+          photo
+          returnTrip
+        }
+        ... on Group {
+          id
+          outreach
+          name
+          description
+          type
+          photo
+          User {
+            id
+            email
+            firstName
+            lastName
+            avatar
+            relation {
+              id
+              firstName
+              avatar
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          country
+          county
+          municipality
+          locality
+          GroupMembers{
+            id
+          }
+        }
+        ... on GroupMembershipRequest {
+          id
+          gmrStatus:status
+          Group {
+            id
+            name
+            description
+            type
+            photo
+            User {
+              id
+              email
+              firstName
+              lastName
+              avatar
+              relation {
+                id
+                firstName
+                avatar
+              }
+            }
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+            Stops {
+              name
+              coordinates
+            }
+            country
+            county
+            municipality
+            locality
+            GroupMembers{
+              id
+            }
+          }
+        }
+        ... on FriendRequest {
+          id
+          status
+          User {
+            id
+            firstName
+          }
+          FutureFriend{
+            id
+            firstName
+          }
+        }
+      }
+      read
+      createdAt      
     }
     count
   }
@@ -299,6 +338,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           if (!subscriptionData.data) {
             return prev;
           }
+
           const newNotification = subscriptionData.data.notification;
           const newrows = [newNotification].concat(prev.notifications.rows);
           return {

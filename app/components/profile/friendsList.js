@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { Loading } from '@components/common';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
@@ -13,13 +13,21 @@ const UsersGroupsList = ({ id, onPress, data, data: { friends }, ...props }) => 
     );
   }
 
+  if (friends.rows.length) {
+    return (
+      <FlatList
+        data={friends.rows}
+        renderItem={({ item }) => <Friends key={item.id} friend={item} onPress={onPress} />}
+        keyExtractor={(item, index) => index}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <FlatList
-      data={friends.rows}
-      renderItem={({ item }) => <Friends key={item.id} friend={item} onPress={onPress} />}
-      keyExtractor={(item, index) => index}
-      {...props}
-    />
+    <View style={{ padding: 24 }}>
+      <Text>No friends yet.</Text>
+    </View>
   );
 };
 

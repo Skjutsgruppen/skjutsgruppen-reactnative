@@ -16,7 +16,7 @@ mutation login($username: String!, $password:String!) {
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
       verificationCode
       phoneVerificationCode
@@ -46,7 +46,7 @@ mutation register($email: String!, $verified:Boolean) {
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
       verificationCode
       phoneVerificationCode
@@ -78,9 +78,9 @@ export const withVerifyCode = graphql(VERIFICATION_CODE_QUERY, {
 });
 
 const UPDATE_USER_QUERY = gql`
-mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNumber:String,  $password:String, $fbId:String, $fbToken: String) {
+mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneNumber:String,  $password:String, $fbId:String, $fbToken: String) {
   updateUser(input:{
-    firstName:$firstName, lastName: $lastName,  photo: $photo, phoneNumber:$phoneNumber, password: $password, fbId:$fbId, fbToken: $fbToken
+    firstName:$firstName, lastName: $lastName,  avatar: $avatar, phoneNumber:$phoneNumber, password: $password, fbId:$fbId, fbToken: $fbToken
   }) {
     token,
     User {
@@ -91,7 +91,7 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
       verificationCode
       phoneVerificationCode
@@ -102,9 +102,9 @@ mutation updateUser($firstName:String, $lastName:String, $photo:String, $phoneNu
 
 export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   props: ({ mutate }) => ({
-    updateProfile: ({ firstName, lastName, photo, phoneNumber, password, fbId, fbToken }) =>
+    updateProfile: ({ firstName, lastName, avatar, phoneNumber, password, fbId, fbToken }) =>
       mutate({
-        variables: { firstName, lastName, photo, phoneNumber, password, fbId, fbToken },
+        variables: { firstName, lastName, avatar, phoneNumber, password, fbId, fbToken },
       }),
   }),
 });
@@ -118,7 +118,7 @@ query friends($id:Int, $limit: Int, $offset: Int,){
         firstName
         lastName
         phoneNumber
-        photo
+        avatar
       }
       count
      } 
@@ -149,7 +149,7 @@ query bestFriends($id:Int, $limit: Int, $offset: Int,){
         firstName
         lastName
         phoneNumber
-        photo
+        avatar
       }
       count
      } 
@@ -187,7 +187,7 @@ query groups($id:Int){
             email
             firstName
             lastName
-            photo
+            avatar
           }
           TripStart {
             name
@@ -243,7 +243,12 @@ query trips($id:Int, $type:String){
             email
             firstName
             lastName
-            photo
+            avatar
+            relation {
+              id
+              firstName
+              avatar
+            }
           }
           TripStart {
             name
@@ -406,7 +411,7 @@ mutation changePassword($oldPassword: String, $newPassword: String){
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
     }
   }

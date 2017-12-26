@@ -52,24 +52,24 @@ class EditProfile extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', photo: '', profileImage: null, loading: false, error: '' });
+    this.state = ({ firstName: '', lastName: '', avatar: '', profileImage: null, loading: false, error: '' });
   }
 
   componentWillMount() {
-    const { firstName, lastName, photo } = this.props.user;
+    const { firstName, lastName, avatar } = this.props.user;
 
-    this.setState({ firstName, lastName, profileImage: photo });
+    this.setState({ firstName, lastName, profileImage: avatar });
   }
 
   onSubmit = () => {
     this.setState({ loading: true });
     const { updateProfile, setUser } = this.props;
-    const { firstName, lastName, photo } = this.state;
+    const { firstName, lastName, avatar } = this.state;
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        updateProfile({ firstName, lastName, photo }).then((res) => {
+        updateProfile({ firstName, lastName, avatar }).then((res) => {
           setUser(res.data.updateUser.User);
           this.setState({ loading: false, error: '' });
           Alert.alert('Success!', 'Profile successfully updated.');
@@ -133,7 +133,7 @@ class EditProfile extends Component {
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <ScrollView>
-          <Camera onSelect={res => this.setState({ photo: res.data })}>
+          <Camera onSelect={res => this.setState({ avatar: res.data })}>
             <View>
               <Image source={{ uri: profileImage }} style={styles.profilePicture} />
               <Text style={styles.profilePicLabel}>Update Profile Picture</Text>
@@ -178,7 +178,7 @@ EditProfile.propTypes = {
   user: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    photo: PropTypes.string,
+    avatar: PropTypes.string,
   }).isRequired,
 };
 

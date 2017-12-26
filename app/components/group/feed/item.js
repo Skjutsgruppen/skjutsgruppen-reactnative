@@ -77,8 +77,8 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
   } else if (groupFeed.ActivityType.type === 'share') {
     if (groupFeed.feedable === 'Trip') {
       let image = null;
-      if (groupFeed.User.photo) {
-        image = (<Image source={{ uri: groupFeed.User.photo }} style={styles.profilePic} />);
+      if (groupFeed.User.avatar) {
+        image = (<Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />);
       } else {
         image = (<View style={styles.imgIcon} />);
       }
