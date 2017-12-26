@@ -87,7 +87,7 @@ const item = (trip, navigation) => (
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
-          {renderPic(trip.photo)}
+          {trip.photo ? renderPic(trip.photo) : renderPic(trip.mapPhoto)}
         </View>
         <View>
           <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>

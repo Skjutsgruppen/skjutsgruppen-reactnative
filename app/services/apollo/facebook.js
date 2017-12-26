@@ -16,7 +16,7 @@ mutation getUserByFbId($id: String!) {
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
     }
   }
@@ -44,7 +44,7 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
     }
   }

@@ -11,7 +11,7 @@ query profile($id: Int){
     email
     phoneVerified
     phoneNumber
-    photo
+    avatar
     fbId
     verificationCode
     phoneVerificationCode
@@ -20,7 +20,7 @@ query profile($id: Int){
       email
       firstName
       lastName
-      photo
+      avatar
     }
     totalOffered
     totalAsked
@@ -50,7 +50,7 @@ query profile {
     email
     phoneVerified
     phoneNumber
-    photo
+    avatar
     fbId
     verificationCode
     phoneVerificationCode
@@ -59,7 +59,7 @@ query profile {
       email
       firstName
       lastName
-      photo
+      avatar
     }
     totalOffered
     totalAsked
@@ -85,7 +85,7 @@ query groups ($userId: Int) {
       User {
         id
         email
-        photo 
+        avatar 
         firstName 
         lastName 
         relation {
@@ -94,7 +94,7 @@ query groups ($userId: Int) {
           lastName 
           email 
           phoneNumber 
-          photo
+          avatar
         } 
       } 
       country 
@@ -140,7 +140,7 @@ query groups ($userId: Int) {
         User { 
           id 
           email 
-          photo 
+          avatar 
           firstName 
           lastName 
           relation {
@@ -149,7 +149,7 @@ query groups ($userId: Int) {
             lastName 
             email 
             phoneNumber 
-            photo
+            avatar
           }
         }
       }
@@ -181,14 +181,14 @@ const myFriendsQuery = gql`
       rows {
         id 
         email 
-        photo 
+        avatar 
         phoneNumber 
         firstName 
         lastName 
         relation {
           id 
           email 
-          photo 
+          avatar 
           phoneNumber 
           firstName 
           lastName
@@ -210,7 +210,7 @@ export const withMyFriends = graphql(myFriendsQuery, {
   }),
 });
 
-const myTripsQuery = gql`
+const MY_TRIPS_QUERY = gql`
 query trips (
   $userId: Int
   $type: String
@@ -252,13 +252,13 @@ query trips (
         id 
         phoneNumber 
         email 
-        photo 
+        avatar 
         firstName 
         lastName 
         relation {
           id 
           email 
-          photo 
+          avatar 
           firstName 
           lastName
         } 
@@ -275,7 +275,7 @@ query trips (
           firstName
           lastName 
           email 
-          photo
+          avatar
         }
       } 
       url
@@ -285,7 +285,7 @@ query trips (
 }
 `;
 
-export const withMyTrips = graphql(myTripsQuery, {
+export const withMyTrips = graphql(MY_TRIPS_QUERY, {
   options: ({ userId, type }) => ({
     variables: { userId, type },
     props: ({ trips }) => ({ trips }),
@@ -304,7 +304,7 @@ mutation isPhoneVerified($id: Int){
       email
       phoneVerified
       phoneNumber
-      photo
+      avatar
       fbId
       verificationCode
       phoneVerificationCode

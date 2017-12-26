@@ -12,7 +12,7 @@ const COMMENTS_SUBSCRIPTION = gql`
         email
         firstName
         lastName
-        photo
+        avatar
       }
     }
   }
@@ -30,7 +30,7 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         email
         firstName
         lastName
-        photo
+        avatar
       }
     }
     count
@@ -75,7 +75,7 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         email
         firstName
         lastName
-        photo
+        avatar
       }
     }
     count

@@ -22,12 +22,12 @@ query nearByTrips($from:[Float]!) {
           email
           firstName
           lastName
-          photo
+          avatar
           relation {
             id,
             email,
             firstName
-            photo
+            avatar
           }
         }
         TripStart {

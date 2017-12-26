@@ -105,7 +105,7 @@ class SendText extends Component {
 
     return (
       <Container>
-        <Image source={{ uri: user.photo }} style={styles.profilePic} />
+        <Image source={{ uri: user.avatar }} style={styles.profilePic} />
         <GreetText>Great {user.firstName}!</GreetText>
         <ColoredText color={Colors.text.blue}>You are almost done!</ColoredText>
         <ColoredText color={Colors.text.purple}>

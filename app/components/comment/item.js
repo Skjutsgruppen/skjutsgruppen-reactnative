@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
 
 const Item = ({ comment, onPress }) => {
   let image = null;
-  if (comment.User.photo) {
-    image = (<Image source={{ uri: comment.User.photo }} style={styles.profilePic} />);
+  if (comment.User.avatar) {
+    image = (<Image source={{ uri: comment.User.avatar }} style={styles.profilePic} />);
   } else {
     image = (<View style={styles.imgIcon} />);
   }
@@ -57,7 +57,7 @@ const Item = ({ comment, onPress }) => {
         <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
           <Text style={styles.name}>
             {comment.User.firstName || comment.User.email}
-            <Text style={styles.time}><Date>{comment.date}</Date></Text>
+            <Text style={styles.time}> <Date>{comment.date}</Date></Text>
           </Text>
         </View>
         <View>

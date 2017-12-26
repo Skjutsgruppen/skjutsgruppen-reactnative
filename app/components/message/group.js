@@ -73,7 +73,7 @@ const item = (group, navigation) => (
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
-          {renderPic(group.photo)}
+          {group.photo ? renderPic(group.photo) : renderPic(group.mapPhoto)}
         </View>
         <View>
           <Text>{group.name}</Text>

@@ -37,7 +37,7 @@ class MobileVerified extends Component {
 
     return (
       <Container>
-        <Image source={{ uri: user.photo }} style={styles.profilePic} />
+        <Image source={{ uri: user.avatar }} style={styles.profilePic} />
         <GreetText>Your number is confirmed!</GreetText>
         <ColoredText color={Colors.text.blue}>Welcome {user.firstName}!</ColoredText>
         <ColoredText color={Colors.text.purple}>

@@ -92,8 +92,8 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
   }
 
   let profileImage = null;
-  if (ask.User.photo) {
-    profileImage = (<Image source={{ uri: ask.User.photo }} style={styles.profilePic} />);
+  if (ask.User.avatar) {
+    profileImage = (<Image source={{ uri: ask.User.avatar }} style={styles.profilePic} />);
   } else {
     profileImage = (<View style={styles.imgIcon} />);
   }
