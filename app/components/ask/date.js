@@ -133,7 +133,6 @@ class Date extends Component {
     const options = [];
     let i = 0;
     do {
-      i += 1;
       if (i === 0 || i % 15 === 0) {
         options.push(<Picker.Item
           key={`minute-${i}`}
@@ -141,6 +140,7 @@ class Date extends Component {
           value={pad(i)}
         />);
       }
+      i += 1;
     } while (i < 60);
 
     return options;

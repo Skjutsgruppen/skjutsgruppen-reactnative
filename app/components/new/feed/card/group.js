@@ -135,8 +135,8 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   let profileImage = null;
 
   if (!min) {
-    if (group.User.photo) {
-      profileImage = (<Image source={{ uri: group.User.photo }} style={styles.profilePic} />);
+    if (group.User.avatar) {
+      profileImage = (<Image source={{ uri: group.User.avatar }} style={styles.profilePic} />);
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }

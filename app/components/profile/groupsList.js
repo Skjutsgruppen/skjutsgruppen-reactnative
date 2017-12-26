@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { Loading } from '@components/common';
 import GroupsItem from '@components/profile/card/groups';
 import PropTypes from 'prop-types';
@@ -13,20 +13,28 @@ const UsersGroupsList = ({ userId, onPress, data, data: { groups }, ...props }) 
     );
   }
 
+  if (groups.rows.length !== 0) {
+    return (
+      <FlatList
+        data={groups.rows}
+        renderItem={({ item }) => (
+          <GroupsItem
+            key={item.id}
+            group={item}
+            onPress={onPress}
+            wrapperStyle={{ borderBottomWidth: 0, marginTop: 12, marginBottom: 0 }}
+          />)
+        }
+        keyExtractor={(item, index) => index}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <FlatList
-      data={groups.rows}
-      renderItem={({ item }) => (
-        <GroupsItem
-          key={item.id}
-          group={item}
-          onPress={onPress}
-          wrapperStyle={{ borderBottomWidth: 0, marginTop: 12, marginBottom: 0 }}
-        />)
-      }
-      keyExtractor={(item, index) => index}
-      {...props}
-    />
+    <View style={{ padding: 24 }}>
+      <Text>No groups yet.</Text>
+    </View>
   );
 };
 
