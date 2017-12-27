@@ -257,7 +257,7 @@ class Group extends Component {
               active={activeTab === 5}
             />
           </View>
-          {(error !== '') ? (<Toast message={error} type="error" />) : null}
+          <Toast message={error} type="error" />
           {(activeTab === 1) && <Stretch onNext={this.onStrechNext} />}
           {(activeTab === 2) &&
             <OutReach

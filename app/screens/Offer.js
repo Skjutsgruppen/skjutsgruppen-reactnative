@@ -248,7 +248,7 @@ class Offer extends Component {
     if (error !== '') {
       return (<View>
         <Toast message={error} type="error" />
-        <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
+        <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
           Try Again
         </CustomButton>
       </View>);
@@ -315,7 +315,7 @@ class Offer extends Component {
           </View>
 
           <View>
-            {(error !== '') ? (<Toast message={error} type="error" />) : null}
+            <Toast message={error} type="error" />
             {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
             {(activeTab === 2) && <Trip
               isReturnTrip={isReturnedTrip}

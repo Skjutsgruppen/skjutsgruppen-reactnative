@@ -93,8 +93,8 @@ class Feed extends Component {
     const { feed, onPressUser } = this.props;
 
     let image = null;
-    if (feed.User.photo) {
-      image = (<Image source={{ uri: feed.User.photo }} style={styles.profilePic} />);
+    if (feed.User.avatar) {
+      image = (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
     } else {
       image = (<View style={styles.imgIcon} />);
     }

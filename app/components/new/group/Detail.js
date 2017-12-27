@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -14,6 +14,8 @@ import GroupFeed from '@components/new/group/feed/list';
 import GroupImage from '@components/new/group/groupImage';
 import Share from '@components/common/share';
 import MapToggle from '@components/new/group/mapToggle';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
 class Detail extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, leaveLoading: false, error: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ loading: false, leaveLoading: false, error: '', success: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
   }
 
   onSubmit = () => {
@@ -98,17 +100,15 @@ class Detail extends PureComponent {
     if (validation.pass()) {
       try {
         submit(null, group.id, comment).then(() => {
-          Alert.alert('Success!', 'Comment added');
-          this.setState({ comment: '', loading: false });
+          this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Alert!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -197,7 +197,6 @@ class Detail extends PureComponent {
 
   header = (leaveLoading) => {
     const { group } = this.props;
-    const { error } = this.state;
 
     let image = null;
     if (group.photo) {
@@ -213,7 +212,6 @@ class Detail extends PureComponent {
         {image}
         {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
         <MapToggle handlePress={this.onMapPress} />
-        {error !== '' && <View><Text>{error}</Text></View>}
       </View>);
   }
 
@@ -229,8 +227,12 @@ class Detail extends PureComponent {
   }
 
   renderCommentForm() {
+    const { error, success } = this.state;
+
     return (
       <View style={styles.footer}>
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
         <View style={styles.footerContent}>
           <TextInput
             onChangeText={comment => this.setState({ comment })}
@@ -292,6 +294,7 @@ class Detail extends PureComponent {
   render() {
     const { group, navigation } = this.props;
     const header = this.header(this.state.leaveLoading);
+
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <Navbar handleBack={this.goBack} />

@@ -51,7 +51,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ username: '', password: '', loading: false, error: '' });
+    this.state = ({ username: '', password: '', loading: false, error: '', inputs: {} });
   }
 
   componentWillMount() {
@@ -94,6 +94,13 @@ class Login extends Component {
     this.props.navigation.goBack();
   }
 
+  focusNextField = (id) => {
+    const { inputs } = this.state;
+
+    inputs[id].focus();
+  }
+
+
   checkValidation() {
     const errors = [];
     const { username, password } = this.state;
@@ -131,7 +138,7 @@ class Login extends Component {
   }
 
   render() {
-    const { error } = this.state;
+    const { error, inputs } = this.state;
 
     return (
       <Container>
@@ -141,9 +148,7 @@ class Login extends Component {
         <ColoredText color={Colors.text.purple}>
           You can use your cellphone number or e-mail to sign in
         </ColoredText>
-
-        {(error !== '') ? (<Toast message={error} type="error" />) : null}
-
+        <Toast message={error} type="error" />
         <View style={styles.inputWrapper}>
           <TextInput
             autoCapitalize="none"
@@ -152,6 +157,13 @@ class Login extends Component {
             placeholder="Your cellphone number or e-mail"
             underlineColorAndroid="transparent"
             value={this.state.username}
+            keyboardType="email-address"
+            autoFocus
+            onSubmitEditing={() => {
+              this.focusNextField('two');
+            }}
+            ref={(input) => { inputs.one = input; }}
+            returnKeyType="next"
           />
         </View>
         <View style={styles.inputWrapper}>
@@ -164,6 +176,7 @@ class Login extends Component {
             value={this.state.password}
             returnKeyType="send"
             onSubmitEditing={this.onSubmit}
+            ref={(input) => { inputs.two = input; }}
           />
         </View>
         {this.renderButton()}
