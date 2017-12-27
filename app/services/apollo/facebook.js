@@ -29,6 +29,35 @@ export const withgetUserByFbId = graphql(GET_USER_BY_FBID_QUERY, {
   }),
 });
 
+
+const GET_USER_BY_EMAIL_QUERY = gql`
+mutation getUserByEmail($email: String!) {
+  getUserByEmail(email: $email) {
+    token,
+    status,
+    error,
+    message
+    User {
+      id
+      firstName
+      lastName
+      emailVerified
+      email
+      phoneVerified
+      phoneNumber
+      avatar
+      fbId
+    }
+  }
+}
+`;
+
+export const withGetUserByEmail = graphql(GET_USER_BY_EMAIL_QUERY, {
+  props: ({ mutate }) => ({
+    getUserByEmail: email => mutate({ variables: { email } }),
+  }),
+});
+
 const CONNECT_QUERY = gql`
 mutation connect($email: String!, $id: String!, $token: String!, $type: String!) {
   connect(input:{email:$email, id:$id, token:$token, type:$type}) {

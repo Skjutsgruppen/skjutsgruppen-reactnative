@@ -13,7 +13,6 @@ import PropTypes from 'prop-types';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
-import { NavigationActions } from 'react-navigation';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
@@ -61,15 +60,16 @@ class Login extends Component {
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const { auth, navigation } = this.props;
+
     if (auth.login) {
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
     }
   }
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { submit, setLogin } = this.props;
+    const { submit, setLogin, navigation } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
@@ -79,9 +79,9 @@ class Login extends Component {
           const { User, token } = data.login;
           setLogin({ token, user: User }).then(() => {
             if (!User.phoneVerified) {
-              this.navigateTo('SendText');
+              navigation.reset('SendText');
             } else {
-              this.navigateTo('Tab');
+              navigation.reset('Tab');
             }
           });
         }).catch((err) => {
@@ -98,16 +98,6 @@ class Login extends Component {
 
   onPressBack = () => {
     this.props.navigation.goBack();
-  };
-
-  navigateTo = (routeName) => {
-    const { navigation } = this.props;
-
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
   }
 
   checkValidation() {
@@ -197,7 +187,7 @@ Login.propTypes = {
   submit: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
 };

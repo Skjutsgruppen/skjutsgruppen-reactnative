@@ -67,7 +67,7 @@ class SendText extends Component {
             token: data.isPhoneVerified.token,
             user: data.isPhoneVerified.User,
           }).then(() => {
-            navigation.navigate('MobileVerified');
+            navigation.reset('MobileVerified');
           }).catch((err) => {
             Alert.alert('Error!', err.message);
           });
@@ -130,7 +130,7 @@ class SendText extends Component {
 
 SendText.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   isPhoneVerified: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
