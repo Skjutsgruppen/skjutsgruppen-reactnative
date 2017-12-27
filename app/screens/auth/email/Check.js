@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, Image, Alert } from 'react-native';
+import { Text, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { ColoredText, GreetText } from '@components/auth/texts';
@@ -12,6 +12,8 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withVerifyCode } from '@services/apollo/auth';
 import { Icons } from '@icons';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   envelopIcon: {
@@ -67,27 +69,24 @@ class Check extends Component {
     if (validation.pass()) {
       try {
         verifyCode(code).then(({ data }) => {
-          const { status, message } = data.verifyCode;
+          const { status } = data.verifyCode;
           const user = auth.user;
           user.emailVerified = true;
           if (status) {
             setUser(user).then(() => {
-              this.setState({ loading: false }, () => {
-                navigation.reset('EmailVerified');
+              this.setState({ loading: false, error: '' }, () => {
+                navigation.navigate('EmailVerified');
               });
             });
-          } else {
-            this.setState({ loading: false, error: message });
           }
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -96,7 +95,7 @@ class Check extends Component {
     const { code } = this.state;
 
     if (code === '') {
-      errors.push('Verification code is required.');
+      errors.push('EMAIL_VERIFICATION_CODE_REQUIRED');
     }
 
     return {
@@ -141,7 +140,7 @@ class Check extends Component {
           <Text>and enter confirmation code below</Text>
         </ColoredText>
 
-        {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
+        {(error !== '') ? (<Toast message={error} type="error" />) : null}
         <Input
           onChangeText={code => this.setState({ code })}
           placeholder="Verification code"

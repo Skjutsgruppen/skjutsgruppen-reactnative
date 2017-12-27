@@ -13,6 +13,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
+  disabled: {
+    opacity: 0.6,
+  },
 });
 
 const CustomButton = ({ children, style, onPress, bgColor, textColor }) => (
