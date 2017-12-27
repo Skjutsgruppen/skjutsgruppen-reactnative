@@ -56,9 +56,9 @@ class Email extends Component {
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const { auth, navigation } = this.props;
     if (auth.login) {
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
     }
   }
 
@@ -80,7 +80,7 @@ class Email extends Component {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
             this.setState({ loading: false }, () => {
-              navigation.navigate('CheckMail');
+              navigation.reset('CheckMail');
             });
           });
         }).catch((err) => {
@@ -93,16 +93,6 @@ class Email extends Component {
       Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
-  }
-
-  navigateTo = (routeName) => {
-    const { navigation } = this.props;
-    navigation.navigate(routeName);
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
   }
 
   checkValidation() {
@@ -161,7 +151,7 @@ class Email extends Component {
         </ColoredText>
 
         <View style={styles.button}>
-          <FBLogin navigation={this.props.navigation} />
+          <FBLogin signup navigation={this.props.navigation} />
         </View>
 
         <CustomButton
@@ -169,7 +159,7 @@ class Email extends Component {
           onPress={() => { }}
           bgColor="#1da1f2"
         >
-          Sign Up with Twitter
+          Sign up with Twitter
         </CustomButton>
         <BackButton onPress={this.onPressBack} />
       </Container>
@@ -185,7 +175,7 @@ Email.propTypes = {
     login: PropTypes.bool,
   }).isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   setRegister: PropTypes.func.isRequired,
 };

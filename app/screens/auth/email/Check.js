@@ -51,9 +51,9 @@ class Check extends Component {
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const { auth, navigation } = this.props;
     if (auth.login) {
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
     }
   }
 
@@ -73,7 +73,7 @@ class Check extends Component {
           if (status) {
             setUser(user).then(() => {
               this.setState({ loading: false }, () => {
-                navigation.navigate('EmailVerified');
+                navigation.reset('EmailVerified');
               });
             });
           } else {
@@ -106,11 +106,9 @@ class Check extends Component {
   }
 
   reset = () => {
-    const { logout } = this.props;
+    const { logout, navigation } = this.props;
 
-    logout().then(() => {
-      this.props.navigation.navigate('Splash');
-    });
+    logout().then(() => navigation.reset('Splash'));
   }
 
   renderButton = () => {
@@ -163,7 +161,7 @@ Check.propTypes = {
     login: PropTypes.bool,
   }).isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   setUser: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,

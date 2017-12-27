@@ -11,7 +11,6 @@ import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
-import { NavigationActions } from 'react-navigation';
 import { Icons } from '@icons';
 import Phone from '@components/phone';
 import { getPhoneNumber } from '@services/device';
@@ -70,9 +69,9 @@ class Verified extends Component {
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const { auth, navigation } = this.props;
     if (auth.login) {
-      this.navigateTo('Tab');
+      navigation.reset('Tab');
     }
 
     this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', phone: getPhoneNumber() });
@@ -80,7 +79,7 @@ class Verified extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { updateProfile, updateUser } = this.props;
+    const { updateProfile, updateUser, navigation } = this.props;
     const { firstName, lastName, countryCode, phone, password } = this.state;
 
     const validation = this.checkValidation();
@@ -91,7 +90,7 @@ class Verified extends Component {
           .then(({ data }) => {
             const { token, User } = data.updateUser;
             updateUser({ token, user: User }).then(() => {
-              this.navigateTo('SendText');
+              navigation.reset('SendText');
             });
           }).catch((err) => {
             this.setState({ loading: false, error: err.message });
@@ -103,17 +102,6 @@ class Verified extends Component {
       Alert.alert('Error!', validation.errors.join('\n'));
       this.setState({ loading: false });
     }
-  }
-
-  navigateTo = (routeName) => {
-    const { navigation } = this.props;
-    navigation.navigate(routeName);
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      key: null,
-      actions: [NavigationActions.navigate({ routeName })],
-    });
-    navigation.dispatch(resetAction);
   }
 
   checkValidation() {
@@ -225,7 +213,7 @@ Verified.propTypes = {
     login: PropTypes.bool,
   }).isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   updateUser: PropTypes.func.isRequired,
 };
