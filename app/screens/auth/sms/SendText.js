@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Image, Alert } from 'react-native';
+import { Text, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { CustomButton, Loading } from '@components/common';
@@ -71,19 +71,17 @@ class SendText extends Component {
           }).then(() => {
             navigation.reset('MobileVerified');
           }).catch((err) => {
-            Alert.alert('Error!', err.message);
+            this.setState({ loading: false, error: getToast(err) });
           });
         } else {
           this.setState({ warning: getToast(['PHONE_NUMBER_NOT_VERIFIED']), error: '', success: '' });
         }
         this.setState({ loading: false });
       }).catch((err) => {
-        Alert.alert('Error!', err.message);
-        this.setState({ loading: false });
+        this.setState({ loading: false, error: getToast(err) });
       });
     } catch (err) {
-      Alert.alert('Error!', err.message);
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(err) });
     }
   }
 
@@ -99,8 +97,7 @@ class SendText extends Component {
         this.setState({ loadingSendText: false, error: getToast(err) });
       });
     } catch (err) {
-      Alert.alert('Error!', err.message);
-      this.setState({ loadingSendText: false });
+      this.setState({ loadingSendText: false, error: getToast(err) });
     }
   }
 
@@ -160,9 +157,9 @@ class SendText extends Component {
           The text message cost the same as an ordinary text message with
           you service provider.
         </ColoredText>
-        {(error !== '') ? (<Toast message={error} type="error" />) : null}
-        {(warning !== '') ? (<Toast message={warning} type="warning" />) : null}
-        {(success !== '') ? (<Toast message={success} type="success" />) : null}
+        <Toast message={error} type="error" />
+        <Toast message={warning} type="warning" />
+        <Toast message={success} type="success" />
         {this.renderSendTextButton()}
         {this.renderButton()}
         <Text style={styles.promise} > We will never give your number to any third parties.</Text>
