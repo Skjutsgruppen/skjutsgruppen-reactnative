@@ -63,41 +63,58 @@ subscription{
     }
     ... on TripFeed {
       Trip {
-        id
-        type
-        description
-        seats
+        id 
+        type 
+        description 
+        seats 
+        parentId
         User {
-          id
-          email
-          firstName
-          lastName
-          avatar
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
           relation {
-            id
-            email
-            firstName
+            id 
+            email 
+            firstName 
             avatar
           }
-        }
+        } 
         TripStart {
-          name
+          name 
           coordinates
-        }
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
-        Stops {
-          name
-          coordinates
-        }
-        date
-        time
-        photo
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
         mapPhoto
-        returnTrip
+        returnTrip 
         totalComments
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+        }
+        Recurring {
+          id
+          date
+        }
       }
     }
   }
@@ -170,6 +187,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         type 
         description 
         seats 
+        parentId
         User {
           id 
           email 
@@ -201,9 +219,25 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         mapPhoto
         returnTrip 
         totalComments
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+        }
+        Recurring {
+          id
+          date
+        }
       }
-    } 
-   } 
+    }
+   }
    count
   }
 }
