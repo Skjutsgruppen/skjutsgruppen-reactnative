@@ -8,6 +8,7 @@ import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/connect';
+import { Loading } from '@components/common';
 
 class FBLogin extends PureComponent {
   constructor(props) {
@@ -17,11 +18,31 @@ class FBLogin extends PureComponent {
   }
 
   async onLogin(fbUser, { token, user }) {
+    const { profile, token: fbToken } = fbUser;
     const { setLogin, navigation } = this.props;
-    if (user) {
-      setLogin({ token, user }).then(() => {
-        navigation.reset('Tab');
-      });
+    this.setState({ loading: true });
+
+    const hasAccountWithFbid = user && user.fbId === profile.id;
+    const hasAccountWithEmail = user && user.email === profile.email;
+
+    if (hasAccountWithFbid) {
+      setLogin({ token, user }).then(() => navigation.reset('Tab'));
+      return;
+    }
+
+    if (hasAccountWithEmail) {
+      Alert.alert(`User already exist with ${profile.email}`,
+        'Would you like to connect with facebook?',
+        [
+          { text: 'Cancel', onPress: () => this.setState({ loading: false }) },
+          { text: 'OK', onPress: () => this.connect({ profile, fbToken }) },
+        ],
+      );
+      return;
+    }
+
+    if (this.props.signup) {
+      this.register(fbUser);
     } else {
       this.signupWithFacebook(() => this.register(fbUser));
     }
@@ -35,10 +56,12 @@ class FBLogin extends PureComponent {
       email: profile.email,
       token: fbToken,
     });
+
     await setLogin({
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
+
     navigation.reset('Tab');
   }
 
@@ -54,6 +77,7 @@ class FBLogin extends PureComponent {
         email: profile.email,
         verified: profile.verified,
       });
+
       const { token, User } = data.register;
       await setRegister({ token, user: User });
 
@@ -61,6 +85,7 @@ class FBLogin extends PureComponent {
         firstName: profile.first_name,
         lastName: profile.last_name,
         fbId: profile.id,
+        fbToken,
       });
       await setRegister({
         token: response.data.updateUser.token,
@@ -73,34 +98,27 @@ class FBLogin extends PureComponent {
         navigation.reset('CheckMail');
       }
     } catch (error) {
-      /* todos :
-      check for proper error message
-      */
-      this.setState({ loading: false }, () => {
-        Alert.alert(`User already exist with ${profile.email}`,
-          'Would you like to connect with facebook?',
-          [
-            { text: 'Cancel' },
-            { text: 'OK', onPress: () => this.connect({ profile, fbToken }) },
-          ],
-        );
-      });
+      console.warn(error, error.graphQLErrors[0].code);
     }
   }
 
   signupWithFacebook = (register) => {
-    Alert.alert('Signup with facebook',
-      'You are not Sign with facebook. Please signup with facebook first.',
+    Alert.alert('Sign up with facebook',
+      'You are not sign up with facebook. Please tap on sign up button to continue with facebook.',
       [
-        { text: 'Cancel' },
-        { text: 'OK', onPress: register },
+        { text: 'Not Now', onPress: () => this.setState({ loading: false }) },
+        { text: 'Sign up', onPress: register },
       ],
     );
   }
 
   render() {
+    if (this.state.loading) {
+      return (<Loading />);
+    }
+
     return (
-      <Connect onLogin={this.onLogin} />
+      <Connect buttonType={this.props.signup ? 'signup' : 'login'} onLogin={this.onLogin} />
     );
   }
 }
@@ -114,6 +132,11 @@ FBLogin.propTypes = {
   setLogin: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
   facebookConnect: PropTypes.func.isRequired,
+  signup: PropTypes.bool,
+};
+
+FBLogin.defaultProps = {
+  signup: false,
 };
 
 const mapDispatchToProps = dispatch => ({

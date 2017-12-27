@@ -101,7 +101,7 @@ class LinkFacebook extends PureComponent {
     }
 
     return (
-      <Connect onLogin={this.onLogin} />
+      <Connect cache buttonType="connect" onLogin={this.onLogin} />
     );
   }
 }

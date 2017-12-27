@@ -29,7 +29,7 @@ class MobileVerified extends Component {
 
   onEnter = () => {
     const { navigation } = this.props;
-    navigation.navigate('Tab');
+    navigation.reset('Tab');
   }
 
   render() {
@@ -63,7 +63,7 @@ class MobileVerified extends Component {
 
 MobileVerified.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
   auth: PropTypes.shape({
     login: PropTypes.bool,
