@@ -68,14 +68,14 @@ class Method extends Component {
           We will not post anything to Facebook or Twitter without asking you.
         </ColoredText>
         <View style={styles.button}>
-          <FBLogin navigation={this.props.navigation} />
+          <FBLogin signup navigation={this.props.navigation} />
         </View>
         <CustomButton
           style={styles.button}
           onPress={this.onPressTwitter}
           bgColor="#1da1f2"
         >
-          Sign in with Twitter
+          Sign up with Twitter
         </CustomButton>
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>
