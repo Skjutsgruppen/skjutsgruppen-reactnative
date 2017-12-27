@@ -4175,7 +4175,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -4338,12 +4338,6 @@ react-native-google-places-autocomplete@^1.3.6:
 react-native-image-picker@^0.26.7:
   version "0.26.7"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.26.7.tgz#ad2ee957f7f6cc01396893ea03d84cb2adb2e376"
-
-"react-native-maps-directions@https://github.com/manishgs/react-native-maps-directions/tarball/support-waypoints":
-  version "1.2.0"
-  resolved "https://github.com/manishgs/react-native-maps-directions/tarball/support-waypoints#8e9dbdc5437f6d9d2d2edb1df204928e58b5b11c"
-  dependencies:
-    prop-types "^15.6.0"
 
 react-native-maps@^0.17.1:
   version "0.17.1"
