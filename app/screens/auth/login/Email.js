@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Alert,
-  Image,
-} from 'react-native';
+import { View, StyleSheet, TextInput, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -19,6 +12,8 @@ import Container from '@components/auth/container';
 import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -85,14 +80,13 @@ class Login extends Component {
             }
           });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -105,11 +99,11 @@ class Login extends Component {
     const { username, password } = this.state;
 
     if (username === '') {
-      errors.push('Username is required.');
+      errors.push('USERNAME_REQUIRED');
     }
 
     if (password === '') {
-      errors.push('Password is required.');
+      errors.push('PASSWORD_REQUIRED');
     }
 
     return {
@@ -148,7 +142,7 @@ class Login extends Component {
           You can use your cellphone number or e-mail to sign in
         </ColoredText>
 
-        {(error !== '') ? (<View style={styles.inputWrapper}><Text>{error}</Text></View>) : null}
+        {(error !== '') ? (<Toast message={error} type="error" />) : null}
 
         <View style={styles.inputWrapper}>
           <TextInput

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { ColoredText, GreetText } from '@components/auth/texts';
@@ -11,8 +11,9 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { NavigationActions } from 'react-navigation';
 import FBLogin from '@components/facebook/login';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -79,19 +80,18 @@ class Email extends Component {
         register({ email }).then(({ data }) => {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
-            this.setState({ loading: false }, () => {
-              navigation.reset('CheckMail');
+            this.setState({ loading: false, error: '' }, () => {
+              navigation.navigate('CheckMail');
             });
           });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(['EMAIL_REQUIRED']) });
     }
   }
 
@@ -135,7 +135,7 @@ class Email extends Component {
         <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Become a participant</GreetText>
         <ColoredText color={Colors.text.purple}>Confirm your e-mail</ColoredText>
-        {(error !== '') ? (<View><Text>{error}</Text></View>) : null}
+        {(error !== '') ? (<Toast message={error} type="error" />) : null}
         <Input
           defaultValue={this.state.email}
           onChangeText={email => this.setState({ email })}
