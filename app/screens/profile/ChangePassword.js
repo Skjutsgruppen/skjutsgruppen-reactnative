@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import { GreetText, ColoredText } from '@components/auth/texts';
@@ -10,6 +10,7 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -64,7 +65,7 @@ class ChangePassword extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, oldPassword: '', hideOldPassword: true, hideNewPassword: true, newPassword: '', confirmPassword: '', error: '' });
+    this.state = ({ loading: false, oldPassword: '', hideOldPassword: true, hideNewPassword: true, newPassword: '', confirmPassword: '', error: '', success: '', inputs: {} });
   }
 
   onSubmit = () => {
@@ -76,20 +77,22 @@ class ChangePassword extends Component {
     if (validation.pass()) {
       try {
         changePassword(oldPassword, newPassword).then(() => {
-          Alert.alert('Success!', 'Password successfully updated.');
-          this.setState({ oldPassword: '', newPassword: '', confirmPassword: '', loading: false, error: '' });
+          this.setState({ oldPassword: '', newPassword: '', confirmPassword: '', loading: false, error: '', success: getToast(['PASSWORD_UPDATED']) });
         }).catch((err) => {
-          Alert.alert('Error!', getToast(err.graphQLErrors[0].code));
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err), success: '' });
         });
       } catch (err) {
-        Alert.alert('Error!', getToast(err.graphQLErrors[0].code));
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err), success: '' });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors), success: '' });
     }
+  }
+
+  focusNextField = (id) => {
+    const { inputs } = this.state;
+
+    inputs[id].focus();
   }
 
   checkValidation() {
@@ -97,21 +100,21 @@ class ChangePassword extends Component {
     const { oldPassword, newPassword, confirmPassword } = this.state;
 
     if (oldPassword.length === 0) {
-      errors.push('Please enter old password.');
+      errors.push('ENTER_OLD_PASSWORD');
     }
 
     if (newPassword.length === 0) {
-      errors.push('Please enter new password.');
+      errors.push('ENTER_NEW_PASSWORD');
     } else if (newPassword.length < 5) {
-      errors.push('New password too short, should be atleast 5 characters.');
+      errors.push('PASSWORD_SHORT');
     }
 
     if (confirmPassword.length === 0) {
-      errors.push('Please enter confirm password.');
+      errors.push('ENTER_CONFIRM_PASSWORD');
     }
 
     if (newPassword !== confirmPassword) {
-      errors.push('New passwords do not match.');
+      errors.push('PASSWORD_UNMATCH');
     }
 
     return {
@@ -158,6 +161,7 @@ class ChangePassword extends Component {
 
   render() {
     const { auth: { user } } = this.props;
+    const { error, success, inputs } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -168,6 +172,8 @@ class ChangePassword extends Component {
             Hi again {user.firstName}!
           </GreetText>
           <ColoredText color={Colors.text.blue}>Change your password here:</ColoredText>
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
           <Text style={styles.label}>Current Password</Text>
           <View style={styles.inputWrapper}>
             <TextInput
@@ -177,6 +183,11 @@ class ChangePassword extends Component {
               onChangeText={oldPassword => this.setState({ oldPassword })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
+              onSubmitEditing={() => {
+                this.focusNextField('two');
+              }}
+              ref={(input) => { inputs.one = input; }}
+              returnKeyType="next"
             />
             <TouchableOpacity
               onPress={this.showCurrentPassword}
@@ -210,6 +221,11 @@ class ChangePassword extends Component {
               onChangeText={newPassword => this.setState({ newPassword })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
+              onSubmitEditing={() => {
+                this.focusNextField('three');
+              }}
+              ref={(input) => { inputs.two = input; }}
+              returnKeyType="next"
             />
             <TouchableOpacity
               onPress={this.showNewPassword}
@@ -243,6 +259,9 @@ class ChangePassword extends Component {
               onChangeText={confirmPassword => this.setState({ confirmPassword })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
+              onSubmitEditing={this.onSubmit}
+              ref={(input) => { inputs.three = input; }}
+              returnKeyType="send"
             />
           </View>
           {this.renderUpdateButton()}

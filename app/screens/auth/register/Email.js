@@ -91,7 +91,7 @@ class Email extends Component {
         this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      this.setState({ loading: false, error: getToast(['EMAIL_REQUIRED']) });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -100,7 +100,7 @@ class Email extends Component {
     const { email } = this.state;
 
     if (email === '') {
-      errors.push('Email is required.');
+      errors.push('EMAIL_REQUIRED');
     }
 
     return {
@@ -135,7 +135,7 @@ class Email extends Component {
         <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Become a participant</GreetText>
         <ColoredText color={Colors.text.purple}>Confirm your e-mail</ColoredText>
-        {(error !== '') ? (<Toast message={error} type="error" />) : null}
+        <Toast message={error} type="error" />
         <Input
           defaultValue={this.state.email}
           onChangeText={email => this.setState({ email })}

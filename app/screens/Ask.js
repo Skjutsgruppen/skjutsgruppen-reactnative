@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, TouchableOpacity, Image, Clipboard } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, Clipboard } from 'react-native';
 import Tab from '@components/tab';
 import PropTypes from 'prop-types';
 import Description from '@components/ask/description';
@@ -11,8 +11,11 @@ import Completed from '@components/common/completed';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { Loading, Wrapper, Container } from '@components/common';
-
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
+import CustomButton from '@components/common/customButton';
 import { submitAsk } from '@services/apollo/ask';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -105,6 +108,7 @@ class Ask extends Component {
       completedTabs: [],
       loading: false,
       ask: {},
+      error: '',
     };
   }
 
@@ -124,12 +128,12 @@ class Ask extends Component {
 
   onDescriptionNext = (description) => {
     if (description.text === '') {
-      Alert.alert('Error!!', 'Description is required');
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(1);
       delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ description, completedTabs, disabledTabs, activeTab: 2 });
+      this.setState({ description, completedTabs, disabledTabs, activeTab: 2, error: '' });
     }
   }
 
@@ -137,38 +141,32 @@ class Ask extends Component {
     const { completedTabs, disabledTabs } = this.state;
     completedTabs.push(2);
     delete disabledTabs[disabledTabs.indexOf(2)];
-    this.setState({ photo, completedTabs, disabledTabs, activeTab: 3 });
+    this.setState({ photo, completedTabs, disabledTabs, activeTab: 3, error: '' });
   }
 
   onTripNext = (trip) => {
-    let error = 0;
-
-    if (typeof trip.start.name === 'undefined') {
-      Alert.alert('Error!!', 'From is required.');
-      error += 1;
-    } else if (typeof trip.end.name === 'undefined') {
-      Alert.alert('Error!!', 'Destination is required');
-      error += 1;
-    }
-
-    if (error === 0) {
+    if (trip.start.coordinates.length === 0) {
+      this.setState({ error: getToast(['FROM_REQUIRED']) });
+    } else if (trip.end.coordinates.length === 0) {
+      this.setState({ error: getToast(['TO_REQUIRED']) });
+    } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(3);
       delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ trip, completedTabs, disabledTabs, activeTab: 4 });
+      this.setState({ trip, completedTabs, disabledTabs, activeTab: 4, error: '' });
     }
   }
 
   onDateNext = (date) => {
     if (date.dates.length < 1) {
-      Alert.alert('Error!!', 'Date is required');
+      this.setState({ error: getToast(['DATE_REQUIRED']) });
     } else if (date.time === '00:00') {
-      Alert.alert('Error!!', 'Time is required');
+      this.setState({ error: getToast(['TIME_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(4);
       delete disabledTabs[disabledTabs.indexOf(4)];
-      this.setState({ date, completedTabs, disabledTabs, activeTab: 5 });
+      this.setState({ date, completedTabs, disabledTabs, activeTab: 5, error: '' });
     }
   }
 
@@ -254,9 +252,19 @@ class Ask extends Component {
   }
 
   renderFinish() {
-    const { loading, ask, share } = this.state;
+    const { loading, ask, share, error } = this.state;
+
     if (loading) {
       return (<Loading />);
+    }
+
+    if (error !== '') {
+      return (<View>
+        <Toast message={error} type="error" />
+        <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
+          Try Again
+        </CustomButton>
+      </View>);
     }
 
     return (<Completed
@@ -270,7 +278,14 @@ class Ask extends Component {
   }
 
   render() {
-    const { activeTab, completedTabs, disabledTabs, isReturnedTrip, defaultTrip } = this.state;
+    const {
+      activeTab,
+      completedTabs,
+      disabledTabs,
+      isReturnedTrip,
+      defaultTrip,
+      error,
+    } = this.state;
     const { navigation } = this.props;
 
     return (
@@ -315,6 +330,7 @@ class Ask extends Component {
               active={activeTab === 5}
             />
           </View>
+          <Toast message={error} type="error" />
           {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
           {(activeTab === 2) && <Photo onNext={this.onPhotoNext} />}
           {(activeTab === 3) && <Trip

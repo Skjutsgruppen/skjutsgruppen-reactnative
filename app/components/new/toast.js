@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
 });
 
 const Toast = ({ message, type }) => {
+  if (message === '') {
+    return null;
+  }
+
   if (type === 'error') {
     return (<View style={styles.toastError}><Text style={styles.msg}>{message}</Text></View>);
   } else if (type === 'warning') {
