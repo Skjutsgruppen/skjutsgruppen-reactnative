@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, Image, StyleSheet, Alert, TouchableOpacity, Clipboard } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
-
 import Tab from '@components/tab';
 import Description from '@components/offer/description';
 import Trip from '@components/offer/trip';
@@ -12,8 +11,11 @@ import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
-
 import { submitOffer } from '@services/apollo/offer';
+import CustomButton from '@components/common/customButton';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -86,6 +88,7 @@ class Offer extends Component {
       completedTabs: [],
       loading: false,
       offer: {},
+      error: '',
     };
   }
 
@@ -105,49 +108,49 @@ class Offer extends Component {
 
   onDescriptionNext = (description) => {
     if (description.text === '') {
-      Alert.alert('Error!!', 'Description is required');
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(1);
       delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ description, completedTabs, disabledTabs, activeTab: 2 });
+      this.setState({ description, completedTabs, disabledTabs, activeTab: 2, error: '' });
     }
   };
 
   onTripNext = (trip) => {
     if (trip.start.coordinates.length === 0) {
-      Alert.alert('Error!!', 'From is required');
+      this.setState({ error: getToast(['FROM_REQUIRED']) });
     } else if (trip.end.coordinates.length === 0) {
-      Alert.alert('Error!!', 'To is required');
+      this.setState({ error: getToast(['TO_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(2);
       delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ trip, completedTabs, disabledTabs, activeTab: 3 });
+      this.setState({ trip, completedTabs, disabledTabs, activeTab: 3, error: '' });
     }
   };
 
   onDateNext = (date) => {
     if (date.dates.length < 1) {
-      Alert.alert('Error!!', 'Date is required');
+      this.setState({ error: getToast(['DATE_REQUIRED']) });
     } else if (date.time === '00:00') {
-      Alert.alert('Error!!', 'Time is required');
+      this.setState({ error: getToast(['TIME_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(3);
       delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ date, completedTabs, disabledTabs, activeTab: 4 });
+      this.setState({ date, completedTabs, disabledTabs, activeTab: 4, error: '' });
     }
   }
 
   onSeatNext = (seat) => {
     if (seat === '' || parseInt(seat, 10) < 1) {
-      Alert.alert('Error!!', 'No. of seat must be atleast one');
+      this.setState({ error: getToast(['SEAT_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(4);
       delete disabledTabs[disabledTabs.indexOf(4)];
-      this.setState({ seat, completedTabs, disabledTabs, activeTab: 5 });
+      this.setState({ seat, completedTabs, disabledTabs, activeTab: 5, error: '' });
     }
   };
 
@@ -236,9 +239,19 @@ class Offer extends Component {
   }
 
   renderFinish() {
-    const { loading, offer, share } = this.state;
+    const { loading, offer, share, error } = this.state;
+
     if (loading) {
       return (<Loading />);
+    }
+
+    if (error !== '') {
+      return (<View>
+        <Toast message={error} type="error" />
+        <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
+          Try Again
+        </CustomButton>
+      </View>);
     }
 
     return (<Completed
@@ -252,7 +265,14 @@ class Offer extends Component {
   }
 
   render() {
-    const { activeTab, completedTabs, disabledTabs, isReturnedTrip, defaultTrip } = this.state;
+    const {
+      activeTab,
+      completedTabs,
+      disabledTabs,
+      isReturnedTrip,
+      defaultTrip,
+      error,
+    } = this.state;
     const { navigation } = this.props;
     return (
       <Wrapper bgColor="#eded18">
@@ -293,7 +313,9 @@ class Offer extends Component {
               active={activeTab === 5}
             />
           </View>
+
           <View>
+            {(error !== '') ? (<Toast message={error} type="error" />) : null}
             {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
             {(activeTab === 2) && <Trip
               isReturnTrip={isReturnedTrip}

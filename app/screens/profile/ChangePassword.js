@@ -9,6 +9,7 @@ import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withChangePassword } from '@services/apollo/auth';
+import { getToast } from '@config/toast';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -78,11 +79,11 @@ class ChangePassword extends Component {
           Alert.alert('Success!', 'Password successfully updated.');
           this.setState({ oldPassword: '', newPassword: '', confirmPassword: '', loading: false, error: '' });
         }).catch((err) => {
-          Alert.alert('Error!', err.message);
+          Alert.alert('Error!', getToast(err.graphQLErrors[0].code));
           this.setState({ loading: false, error: err.message });
         });
       } catch (err) {
-        Alert.alert('Error!', err.message);
+        Alert.alert('Error!', getToast(err.graphQLErrors[0].code));
         this.setState({ loading: false, error: err.message });
       }
     } else {
