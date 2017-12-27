@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
-import { withgetUserByFbId } from '@services/apollo/facebook';
+import { withGetUserByEmail } from '@services/apollo/facebook';
 import FBLoginView from '@components/facebook/button';
 import { Loading } from '@components/common';
 
@@ -34,7 +34,7 @@ class Connect extends PureComponent {
 
     this.setState({ loading: true, fbUser }, async () => {
       try {
-        const { token, user } = await this.getUserByFbId(fbUser.profile.id);
+        const { token, user } = await this.getUserByEmail(fbUser.profile.email);
         this.setState({ loading: false }, () => {
           this.props.onLogin(fbUser, { token, user });
         });
@@ -49,7 +49,7 @@ class Connect extends PureComponent {
     const { fbUser } = this.state;
     this.setState({ loading: true });
     try {
-      const { token, user } = await this.getUserByFbId(fbUser.profile.id);
+      const { token, user } = await this.getUserByEmail(fbUser.profile.email);
       this.setState({ loading: false }, () => {
         this.props.onLogin(fbUser, { token, user });
       });
@@ -60,17 +60,21 @@ class Connect extends PureComponent {
   }
 
   async onLoginFound(data) {
-    const fbUser = data.credentials;
-    const api = `https://graph.facebook.com/v2.3/${fbUser.userId}?fields=picture,first_name,last_name,email,name&access_token=${fbUser.token}`;
-    const response = await fetch(api);
-    fbUser.profile = await response.json();
-    this.setState({ loading: false, fbUser, pressContinue: true });
+    if (this.props.cache) {
+      const fbUser = data.credentials;
+      const api = `https://graph.facebook.com/v2.3/${fbUser.userId}?fields=picture,first_name,last_name,email,name&access_token=${fbUser.token}`;
+      const response = await fetch(api);
+      fbUser.profile = await response.json();
+      this.setState({ loading: false, fbUser, pressContinue: true });
+    } else {
+      this.fbLogout();
+    }
   }
 
-  async getUserByFbId(id) {
+  async getUserByEmail(email) {
     try {
-      const { data } = await this.props.getUserByFbId(id);
-      const { token, User } = data.getUserByFbId;
+      const { data } = await this.props.getUserByEmail(email);
+      const { token, User } = data.getUserByEmail;
       return { token, user: User };
     } catch (error) {
       return {};
@@ -83,15 +87,41 @@ class Connect extends PureComponent {
     });
   };
 
-  render() {
-    const buttonView = this.state.loading ? <Loading /> : (<FBLoginView
-      onPress={this.onPressLogin}
-      profile={this.state.fbUser.profile}
-    />);
+  buttonView = () => {
+    const { buttonType } = this.props;
+    const { fbUser } = this.state;
 
+    if (buttonType === 'login') {
+      return (<FBLoginView
+        label={'Sign in with Facebook'}
+        onPress={this.onPressLogin}
+        profile={fbUser.profile}
+      />);
+    }
+
+    if (buttonType === 'connect') {
+      return (<FBLoginView
+        label={'Connect with Facebook'}
+        onPress={this.onPressLogin}
+        profile={fbUser.profile}
+      />);
+    }
+
+    if (buttonType === 'signup') {
+      return (<FBLoginView
+        label={'Sign up with Facebook'}
+        onPress={this.onPressLogin}
+        profile={fbUser.profile}
+      />);
+    }
+
+    return null;
+  }
+
+  render() {
     return (
       <FBLogin
-        buttonView={buttonView}
+        buttonView={this.state.loading ? <Loading /> : this.buttonView()}
         ref={(fbLogin) => { this.fbLogin = fbLogin; }}
         loginBehavior={FBLoginManager.LoginBehaviors.Native}
         permissions={['email']}
@@ -107,9 +137,15 @@ class Connect extends PureComponent {
 }
 
 Connect.propTypes = {
-  getUserByFbId: PropTypes.func.isRequired,
+  getUserByEmail: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
+  cache: PropTypes.bool,
+  buttonType: PropTypes.string,
 };
 
+Connect.defaultProps = {
+  cache: false,
+  buttonType: 'login',
+};
 
-export default withgetUserByFbId(Connect);
+export default withGetUserByEmail(Connect);
