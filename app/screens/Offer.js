@@ -65,6 +65,7 @@ class Offer extends Component {
     super(props);
     this.state = {
       isReturnedTrip: false,
+      parentId: null,
       defaultTrip: {
         start: {
           name: '',
@@ -97,6 +98,7 @@ class Offer extends Component {
     if (params && typeof params.isReturnedTrip !== 'undefined') {
       this.setState({
         isReturnedTrip: true,
+        parentId: params.parentId,
         defaultTrip: {
           start: params.defaultTrip.start,
           end: params.defaultTrip.end,
@@ -180,6 +182,7 @@ class Offer extends Component {
     if (this.state.trip.isReturning) {
       navigate('Offer', {
         isReturnedTrip: true,
+        parentId: this.state.offer.id,
         defaultTrip: {
           end: this.state.trip.start,
           start: this.state.trip.end,
@@ -192,15 +195,16 @@ class Offer extends Component {
   }
 
   createTrip() {
-    const { description, trip, date, seat, share } = this.state;
+    const { description, trip, date, seat, share, parentId } = this.state;
 
     const rideData = {
+      parentId,
       description: description.text,
       tripStart: trip.start,
       tripEnd: trip.end,
       photo: description.photo,
       stops: trip.stops,
-      returnTrip: trip.isReturning,
+      returnTrip: trip.isReturning || trip.isReturnTrip,
       dates: date.dates,
       time: date.time,
       seats: seat,
