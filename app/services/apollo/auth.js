@@ -78,9 +78,9 @@ export const withVerifyCode = graphql(VERIFICATION_CODE_QUERY, {
 });
 
 const UPDATE_USER_QUERY = gql`
-mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneNumber:String,  $password:String, $fbId:String, $fbToken: String) {
+mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneNumber:String,  $phoneCountryCode: String, $password:String, $fbId:String, $fbToken: String) {
   updateUser(input:{
-    firstName:$firstName, lastName: $lastName,  avatar: $avatar, phoneNumber:$phoneNumber, password: $password, fbId:$fbId, fbToken: $fbToken
+    firstName:$firstName, lastName: $lastName,  avatar: $avatar, phoneNumber:$phoneNumber, phoneCountryCode: $phoneCountryCode, password: $password, fbId:$fbId, fbToken: $fbToken
   }) {
     token,
     User {
@@ -102,9 +102,9 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
 
 export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   props: ({ mutate }) => ({
-    updateProfile: ({ firstName, lastName, avatar, phoneNumber, password, fbId, fbToken }) =>
+    updateProfile: ({ firstName, lastName, avatar, phoneNumber, phoneCountryCode, password, fbId, fbToken }) =>
       mutate({
-        variables: { firstName, lastName, avatar, phoneNumber, password, fbId, fbToken },
+        variables: { firstName, lastName, avatar, phoneNumber, phoneCountryCode, password, fbId, fbToken },
       }),
   }),
 });
