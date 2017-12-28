@@ -2,7 +2,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const NEAR_BY_TRIPS_QUERY = gql`
-query nearByTrips($from:[Float]!) {
+mutation nearByTrips($from:[Float]!) {
   nearByTrips (input:{from:$from}){
     id
     date
@@ -53,27 +53,7 @@ query nearByTrips($from:[Float]!) {
 `;
 
 export const withMapTrips = graphql(NEAR_BY_TRIPS_QUERY, {
-  options: ({ lat, lng }) => ({
-    notifyOnNetworkStatusChange: true,
-    variables: { from: [lat, lng] },
+  props: ({ mutate }) => ({
+    getMapTrips: from => mutate({ variables: { from } }),
   }),
-  props: ({ data }) => {
-    const { nearByTrips, loading } = data;
-    let trips = [];
-
-    if (nearByTrips) {
-      trips = nearByTrips.map((trip) => {
-        const { startPoint, Routable } = trip;
-        return {
-          coordinate: {
-            lng: startPoint[0],
-            lat: startPoint[1],
-          },
-          trip: Routable,
-        };
-      });
-    }
-
-    return { trips, loading };
-  },
 });
