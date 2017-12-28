@@ -67,7 +67,7 @@ class Verified extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '' });
+    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '', inputs: {} });
   }
 
   componentWillMount() {
@@ -103,6 +103,12 @@ class Verified extends Component {
     } else {
       this.setState({ loading: false, error: getToast(validation.errors) });
     }
+  }
+
+  focusNextField = (id) => {
+    const { inputs } = this.state;
+
+    inputs[id].focus();
   }
 
   checkValidation() {
@@ -155,16 +161,14 @@ class Verified extends Component {
 
   render() {
     const message = 'Great job! \n Now fill in your name';
-    const { error } = this.state;
+    const { error, inputs } = this.state;
 
     return (
       <Container>
         <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Your e-mail is confirmed!</GreetText>
         <ColoredText color={Colors.text.purple}>{message}</ColoredText>
-
-        {(error !== '') ? (<Toast message={error} type="error" />) : null}
-
+        <Toast message={error} type="error" />
         <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
           <TextInput
             style={[styles.input, styles.firstNameInput]}
@@ -172,6 +176,13 @@ class Verified extends Component {
             underlineColorAndroid="transparent"
             onChangeText={firstName => this.setState({ firstName })}
             value={this.state.firstName}
+            autoCapitalize="words"
+            autoFocus
+            onSubmitEditing={() => {
+              this.focusNextField('two');
+            }}
+            ref={(input) => { inputs.one = input; }}
+            returnKeyType="next"
           />
         </View>
         <View style={styles.inputWrapper}>
@@ -181,6 +192,8 @@ class Verified extends Component {
             underlineColorAndroid="transparent"
             onChangeText={lastName => this.setState({ lastName })}
             value={this.state.lastName}
+            autoCapitalize="words"
+            ref={(input) => { inputs.two = input; }}
           />
         </View>
 
@@ -199,6 +212,8 @@ class Verified extends Component {
             secureTextEntry
             underlineColorAndroid="transparent"
             onChangeText={password => this.setState({ password })}
+            onSubmitEditing={this.onSubmit}
+            returnKeyType="send"
           />
         </View>
         {this.renderButton()}
