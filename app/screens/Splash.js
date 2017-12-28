@@ -39,7 +39,6 @@ class Splash extends Component {
       return;
     }
 
-
     if (auth.login) {
       navigation.reset('Tab');
       return;
