@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedba
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Colors from '@theme/colors';
+import GroupImage from '@components/group/groupImage';
 import ShareIcon from '@icons/ic_share.png';
 import { trans } from '@lang/i18n';
 
@@ -126,15 +127,6 @@ const styles = StyleSheet.create({
 });
 
 const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
-  let image = null;
-  if (group.photo) {
-    image = (<Image source={{ uri: group.photo }} style={styles.img} />);
-  } else if (group.mapPhoto) {
-    image = (<Image source={{ uri: group.mapPhoto }} style={styles.img} />);
-  } else {
-    image = (<Image source={require('@assets/feed-img.jpg')} style={styles.img} />);
-  }
-
   let profileImage = null;
 
   if (!min) {
@@ -152,10 +144,10 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
         style={styles.flex1}
       >
         <View style={styles.flex1}>
-          <View style={styles.imgWrapper}>
-            {image}
-            <Text style={styles.groupName}>{group.name}</Text>
-          </View>
+          <GroupImage
+            group={group}
+            roundedCorner
+          />
           <View style={styles.detail}>
             <View>
               <Text style={[styles.text, styles.lightText]}>
