@@ -88,7 +88,7 @@ class Verified extends Component {
 
     if (validation.pass()) {
       try {
-        updateProfile({ firstName, lastName, phoneNumber: countryCode + phone, password })
+        updateProfile({ firstName, lastName, phoneNumber: phone, phoneCountryCode: countryCode, password })
           .then(({ data }) => {
             const { token, User } = data.updateUser;
             updateUser({ token, user: User }).then(() => {

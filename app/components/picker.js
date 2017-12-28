@@ -48,6 +48,7 @@ class Picker extends PureComponent {
 
   onSelect = (key) => {
     this.setState({ selected: key });
+    this.props.onChange(key);
     this.hideModal();
   }
 
@@ -132,6 +133,7 @@ class Picker extends PureComponent {
 Picker.propTypes = {
   list: PropTypes.arrayOf(PropTypes.object).isRequired,
   defaultValue: PropTypes.string,
+  onChange: PropTypes.func.isRequired
 };
 
 Picker.defaultProps = {
