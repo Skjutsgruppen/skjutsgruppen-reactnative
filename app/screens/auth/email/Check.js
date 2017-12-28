@@ -140,10 +140,12 @@ class Check extends Component {
           <Text>and enter confirmation code below</Text>
         </ColoredText>
 
-        {(error !== '') ? (<Toast message={error} type="error" />) : null}
+        <Toast message={error} type="error" />
         <Input
           onChangeText={code => this.setState({ code })}
           placeholder="Verification code"
+          returnKeyType="send"
+          onSubmitEditing={this.onSubmit}
         />
         {this.renderButton()}
         <Text style={styles.grayText}>You can not proceed without confirming your e-mail</Text>

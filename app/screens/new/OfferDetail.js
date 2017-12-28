@@ -509,8 +509,8 @@ class OfferDetail extends Component {
               <Relation users={offer.User.relation} />
             </View>
           }
-          {error !== '' ? (<Toast message={error} type="error" />) : null}
-          {success !== '' ? (<Toast message={success} type="success" />) : null}
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
           <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
         </ScrollView>
         {this.renderFooter()}

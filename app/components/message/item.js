@@ -164,7 +164,7 @@ class Item extends PureComponent {
     </View>
   );
 
-  requestJoinGroup = ({ User, GroupMembershipRequest }) => (
+  requestJoinGroup = ({ User, Notifiable }) => (
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
@@ -174,12 +174,12 @@ class Item extends PureComponent {
           <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
           <Text>
             has requested to join
-            <Text style={styles.bold}> {GroupMembershipRequest.Group.name} </Text>
+            <Text style={styles.bold}> {Notifiable.Group.name} </Text>
             group
             <Text style={styles.bold}>
-              {GroupMembershipRequest.Group.TripStart.name}
+              {Notifiable.Group.TripStart.name}
               -
-              {GroupMembershipRequest.Group.TripEnd.name}
+              {Notifiable.Group.TripEnd.name}
             </Text>
           </Text>
         </Text>
@@ -187,7 +187,7 @@ class Item extends PureComponent {
       {this.state.loading ?
         <Loading /> :
         this.renderAction(
-          GroupMembershipRequest.id,
+          Notifiable.id,
           this.acceptGroupRequest,
           this.rejectGroupRequest,
         )}
@@ -218,17 +218,17 @@ class Item extends PureComponent {
     </TouchableOpacity>
   );
 
-  memberRequest = ({ GroupMembershipRequest, User, date, id }) => {
-    if (GroupMembershipRequest && GroupMembershipRequest.gmrStatus === 'pending') {
-      return this.requestJoinGroup({ User, GroupMembershipRequest });
+  memberRequest = ({ Notifiable, User, date, id }) => {
+    if (Notifiable && Notifiable.gmrStatus === 'pending') {
+      return this.requestJoinGroup({ User, Notifiable });
     }
 
-    if (GroupMembershipRequest && GroupMembershipRequest.gmrStatus === 'accepted') {
+    if (Notifiable && Notifiable.gmrStatus === 'accepted') {
       return this.item({
         photo: User.avatar,
-        text: `You have accepted ${User.firstName}'s request to join group "${GroupMembershipRequest.Group.name}"`,
+        text: `You have accepted ${User.firstName}'s request to join group "${Notifiable.Group.name}"`,
         date,
-        onPress: () => this.redirect(id, 'GroupDetail', { group: GroupMembershipRequest.Group }),
+        onPress: () => this.redirect(id, 'GroupDetail', { group: Notifiable.Group }),
       });
     }
 
