@@ -49,11 +49,11 @@ const TabRoutes = {
   Add: {
     screen: Add,
   },
-  Message: {
-    screen: Message,
-  },
   Search: {
     screen: Search,
+  },
+  Message: {
+    screen: Message,
   },
   Support: {
     screen: Support,
