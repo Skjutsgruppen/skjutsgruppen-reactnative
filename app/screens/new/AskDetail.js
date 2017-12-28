@@ -509,8 +509,8 @@ class AskDetail extends Component {
               <Relation users={ask.User.relation} />
             </View>
           }
-          {error !== '' ? (<Toast message={error} type="error" />) : null}
-          {success !== '' ? (<Toast message={success} type="success" />) : null}
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
           <AskComment onCommentPress={this.onCommentPress} id={ask.id} />
         </ScrollView>
         {this.renderFooter()}

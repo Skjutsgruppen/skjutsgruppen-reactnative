@@ -11,6 +11,8 @@ import Share from '@components/common/share';
 import { withShare } from '@services/apollo/auth';
 import GroupImage from '@components/new/group/groupImage';
 import Participants from '@components/new/group/participants';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   label: {
@@ -110,6 +112,7 @@ class JoinGroup extends Component {
       modalDetail: {},
       modalType: '',
       isOpen: false,
+      error: '',
     });
   }
 
@@ -153,11 +156,13 @@ class JoinGroup extends Component {
       if (group.type === 'ClosedGroup') {
         this.setState({ requestSent: true, loading: false });
       }
+    }).catch((err) => {
+      this.setState({ loading: false, error: getToast(err) });
     }));
   }
 
   renderButton = () => {
-    const { loading, requestSent, isPending } = this.state;
+    const { loading, requestSent, isPending, error } = this.state;
 
     if (loading) {
       return (
@@ -191,6 +196,7 @@ class JoinGroup extends Component {
 
     return (
       <View style={styles.footer}>
+        <Toast message={error} type="error" />
         <TouchableOpacity
           style={styles.participateButton}
           onPress={this.joinGroup}

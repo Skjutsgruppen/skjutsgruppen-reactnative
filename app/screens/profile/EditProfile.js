@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, TextInput, Image, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TextInput, Image } from 'react-native';
 import { Wrapper, Loading, NavBar } from '@components/common';
 import Camera from '@components/camera';
 import Colors from '@theme/colors';
@@ -10,6 +10,8 @@ import AuthAction from '@redux/actions/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getToast } from '@config/toast';
+import Toast from '@components/new/toast';
 
 const styles = StyleSheet.create({
   profilePicture: {
@@ -52,7 +54,7 @@ class EditProfile extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', avatar: '', profileImage: null, loading: false, error: '' });
+    this.state = ({ firstName: '', lastName: '', avatar: '', profileImage: null, loading: false, error: '', success: '' });
   }
 
   componentWillMount() {
@@ -71,17 +73,15 @@ class EditProfile extends Component {
       try {
         updateProfile({ firstName, lastName, avatar }).then((res) => {
           setUser(res.data.updateUser.User);
-          this.setState({ loading: false, error: '' });
-          Alert.alert('Success!', 'Profile successfully updated.');
+          this.setState({ loading: false, error: '', success: getToast(['PROFILE_UPDATED']) });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err), success: '' });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err), success: '' });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors), success: '' });
     }
   }
 
@@ -90,11 +90,11 @@ class EditProfile extends Component {
     const { firstName, lastName } = this.state;
 
     if (firstName === '') {
-      errors.push('First Name is required.');
+      errors.push('FIRST_NAME_REQUIRED');
     }
 
     if (lastName === '') {
-      errors.push('Last Name is required.');
+      errors.push('LAST_NAME_REQUIRED');
     }
 
     return {
@@ -127,7 +127,7 @@ class EditProfile extends Component {
 
 
   render() {
-    const { profileImage } = this.state;
+    const { profileImage, success, error } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -139,6 +139,8 @@ class EditProfile extends Component {
               <Text style={styles.profilePicLabel}>Update Profile Picture</Text>
             </View>
           </Camera>
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
           <Text style={styles.label}>First name</Text>
           <TextInput
             onChangeText={firstName => this.setState({ firstName })}
