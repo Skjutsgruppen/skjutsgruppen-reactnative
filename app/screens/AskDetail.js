@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, AppNotification, FloatingNavbar } from '@components/common';
+import { Loading, AppNotification, FloatingNavbar, DetailHeader } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
@@ -504,14 +504,6 @@ class AskDetail extends Component {
     const { ask, notifier, notificationMessage } = navigation.state.params;
     const { error, success, notification, notifierOffset } = this.state;
 
-    let image = null;
-    if (ask.mapPhoto) {
-      image = (<Image source={{ uri: ask.mapPhoto }} style={styles.feedImage} />);
-    }
-    if (ask.photo) {
-      image = (<Image source={{ uri: ask.photo }} style={styles.feedImage} />);
-    }
-
     let profileImage = null;
     if (ask.User.avatar) {
       profileImage = (<Image source={{ uri: ask.User.avatar }} style={styles.profilePic} />);
@@ -545,11 +537,7 @@ class AskDetail extends Component {
           handleClose={this.onCloseNotification}
         />}
         <ScrollView>
-          <TouchableOpacity onPress={this.onMapPress}>
-            <View style={styles.imgWrapper}>
-              {image}
-            </View>
-          </TouchableOpacity>
+          <DetailHeader trip={ask} handleMapPress={this.onMapPress} />
           {profileImage}
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>

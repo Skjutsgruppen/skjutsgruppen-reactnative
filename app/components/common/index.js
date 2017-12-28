@@ -11,6 +11,7 @@ import CustomButton from '@components/common/customButton';
 import Input from '@components/common/input';
 import ShareButton from '@components/common/shareButton';
 import ProfilePicture from '@components/common/profilePicture';
+import DetailHeader from '@components/common/detailHeader';
 import Comment from '@components/common/comment';
 import SharedCard from '@components/common/sharedCard';
 import AppNotification from '@components/common/appNotification';
@@ -29,6 +30,7 @@ export {
   CustomButton,
   Input,
   ProfilePicture,
+  DetailHeader,
   Comment,
   SharedCard,
   AppNotification,

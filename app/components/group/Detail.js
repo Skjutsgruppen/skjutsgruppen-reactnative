@@ -211,18 +211,9 @@ class Detail extends PureComponent {
   header = (leaveLoading) => {
     const { group } = this.props;
 
-    let image = null;
-    if (group.photo) {
-      image = (<GroupImage imageURI={group.photo} name={group.name} />);
-    } else if (group.mapPhoto) {
-      image = (<GroupImage imageURI={group.mapPhoto} name={group.name} />);
-    } else {
-      image = (<GroupImage imageURI={require('@assets/feed-img.jpg')} name={group.name} />);
-    }
-
     return (
       <View>
-        {image}
+        <GroupImage group={group} />
         {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
         <MapToggle handlePress={this.onMapPress} />
       </View>);
