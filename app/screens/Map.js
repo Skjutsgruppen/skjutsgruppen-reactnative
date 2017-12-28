@@ -1,32 +1,63 @@
-/* global navigator */
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
-import TripMarker from '@components/map/tripMarker';
 import PropTypes from 'prop-types';
+import { getCountryLocation, getCurrentLocation } from '@components/location';
+import MapView from 'react-native-maps';
+import Marker from '@components/map/marker';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
-const TripMap = withMapTrips(TripMarker);
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  itemContainer: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    position: 'absolute',
+  },
+});
 
 class Map extends PureComponent {
   static navigationOptions = {
     header: null,
-  };
-
+  }
   constructor(props) {
     super(props);
     this.state = ({
-      loading: true,
+      latitude: '',
+      longitude: '',
       locationError: false,
-      region: {
-        latitude: '',
-        longitude: '',
-      },
+      currentLocation: false,
+      trips: [],
+      error: '',
     });
   }
 
   componentWillMount() {
-    this.currentLocation();
+    const { latitude, longitude } = getCountryLocation();
+    this.setState({ latitude, longitude, loading: true });
+  }
+
+  componentDidMount() {
+    this.ismounted = true;
+    this.getLocation();
+  }
+
+  componentWillUnmount() {
+    this.ismounted = false;
   }
 
   onMarkerPress = (Trip) => {
@@ -41,45 +72,169 @@ class Map extends PureComponent {
     }
   }
 
-  currentLocation = () => {
-    this.setState({ loading: true });
-    const { region } = this.state;
+  async getLocation() {
+    try {
+      const res = await getCurrentLocation();
+      this.setState({
+        latitude: res.latitude,
+        longitude: res.longitude,
+        currentLocation: true,
+        locationError: false,
+      }, async () => {
+        const trips = await this.fetchTripMap();
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        region.latitude = position.coords.latitude;
-        region.longitude = position.coords.longitude;
-        this.setState({ region, loading: false });
+        if (!this.ismounted) {
+          return;
+        }
+
+        this.setState({ trips, loading: false }, () => {
+          const coordinate = [];
+
+          trips.forEach((row) => {
+            coordinate.push({
+              latitude: row.coordinate.lat,
+              longitude: row.coordinate.lng,
+            });
+          });
+
+          this.fitMap(coordinate);
+        });
+      });
+    } catch (error) {
+      if (!this.state.currentLocation) {
+        this.setState({ locationError: true });
+      }
+      this.setState({ error, loading: false });
+    }
+  }
+
+  fitMap(coordinates) {
+    this.mapView.fitToCoordinates(coordinates, {
+      edgePadding: {
+        right: Math.ceil(width / 20),
+        bottom: Math.ceil(height / 20),
+        left: Math.ceil(width / 20),
+        top: Math.ceil(height / 20),
       },
-      () => this.setState({ loading: false, locationError: true }),
-      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: false },
-    );
-  };
+      animation: true,
+    });
+  }
 
-  render() {
-    const { loading, locationError } = this.state;
-    if (loading) {
-      return (<Loading />);
+  async fetchTripMap() {
+    const { data } = await this.props.getMapTrips([this.state.longitude, this.state.latitude]);
+
+    let trips = [];
+
+    if (data.nearByTrips) {
+      trips = data.nearByTrips.map((trip) => {
+        const { startPoint, Routable } = trip;
+        return {
+          coordinate: {
+            lng: startPoint[0],
+            lat: startPoint[1],
+          },
+          trip: Routable,
+        };
+      });
     }
 
-    if (locationError) {
-      return (
-        <View>
-          <TouchableOpacity onPress={this.currentLocation}>
-            <Text>
-              Try Again
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
+    return trips;
+  }
+
+  renderCurrentLocation = () => {
+    if (!this.state.currentLocation) {
+      return null;
+    }
+
+    return (<Marker
+      onPress={(e) => {
+        e.stopPropagation();
+      }}
+      coordinate={{
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
+      }}
+      image={this.props.user.avatar}
+      count={0}
+    />);
+  }
+
+  renderError = () => {
+    const { locationError } = this.state;
+
+    if (!locationError) {
+      return null;
     }
 
     return (
-      <TripMap
-        onMarkerPress={this.onMarkerPress}
-        lat={this.state.region.latitude}
-        lng={this.state.region.longitude}
-      />
+      <View>
+        <TouchableOpacity onPress={this.currentLocation}>
+          <Text>
+            Try Again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  renderTrip = () => {
+    let coordinate = {};
+    const { trips } = this.state;
+    if (trips.length < 1) {
+      return null;
+    }
+
+    return trips.map((row) => {
+      coordinate = {
+        latitude: row.coordinate.lat,
+        longitude: row.coordinate.lng,
+      };
+      return (
+        <Marker
+          key={row.trip.id}
+          onPress={(e) => {
+            e.stopPropagation();
+            this.onMarkerPress(row.trip);
+          }}
+          coordinate={coordinate}
+          image={row.trip.User.avatar}
+          count={row.trip.seats}
+        />
+      );
+    });
+  }
+
+  render() {
+    const { loading } = this.state;
+
+    if (loading && this.state.latitude === '') {
+      return (<Loading />);
+    }
+
+    return (
+      <View style={styles.container}>
+        <MapView
+          ref={(c) => { this.mapView = c; }}
+          cacheEnabled
+          loadingEnabled
+          loadingIndicatorColor="#666666"
+          loadingBackgroundColor="#eeeeee"
+          style={styles.map}
+          region={{
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}
+        >
+          {this.renderTrip()}
+          {this.renderCurrentLocation()}
+        </MapView>
+        <View style={styles.itemContainer}>
+          {this.renderError()}
+          {loading && <View><Loading /><Text>Fetching data...</Text></View>}
+        </View>
+      </View>
     );
   }
 }
@@ -88,7 +243,12 @@ Map.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  getMapTrips: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    avatar: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
+const mapStateToProps = state => ({ user: state.auth.user });
 
-export default Map;
+export default compose(withMapTrips, connect(mapStateToProps))(Map);
