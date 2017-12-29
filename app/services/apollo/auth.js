@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_OFFERED } from '@config/constant';
 
 const LOGIN_QUERY = gql`
 mutation login($username: String!, $password:String!) {
@@ -305,7 +305,7 @@ query trips($id:Int, $type:String){
 `;
 
 export const withTrips = graphql(TRIPS_QUERY, {
-  options: ({ id = null, offset = 0, limit = PER_FETCH_LIMIT, type = null, active = null }) => ({
+  options: ({ id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true }) => ({
     variables: { id, offset, limit, type, active },
   }),
   props: ({ data: { loading, trips } }) => {

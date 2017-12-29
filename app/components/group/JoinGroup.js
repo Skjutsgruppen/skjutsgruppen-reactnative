@@ -228,7 +228,6 @@ class JoinGroup extends Component {
 
   render() {
     const { group } = this.props;
-
     let image = null;
     if (group.photo) {
       image = (<GroupImage imageURI={group.photo} name={group.name} />);

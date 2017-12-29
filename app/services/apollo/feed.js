@@ -18,6 +18,109 @@ subscription{
         photo
         mapPhoto
         User {
+          id
+          email
+          firstName
+          lastName
+          avatar
+          relation {
+            id,
+            email,
+            firstName
+            avatar
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        country
+        county
+        municipality
+        locality
+        GroupMembers{
+          id
+          avatar
+        }
+        GroupMembershipRequests{
+          id
+          status
+          Member {
+            id
+            email
+            firstName
+          }
+        }
+      }
+    }
+    ... on TripFeed {
+      Trip {
+        id
+        type
+        description
+        seats
+        User {
+          id
+          email
+          firstName
+          lastName
+          avatar
+          relation {
+            id
+            email
+            firstName
+            avatar
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
+        mapPhoto
+        returnTrip
+        totalComments
+      }
+    }
+  }
+}
+`;
+
+export const GET_FEED_QUERY = gql`
+query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
+  getFeed (offset:$offset, limit:$limit, filter:$filter){
+   rows {
+    id
+    feedable
+    updatedAt
+    ... on GroupFeed {
+      Group {
+        id
+        outreach
+        name
+        description
+        type
+        photo
+        mapPhoto
+        User {
           id 
           email 
           firstName 
@@ -99,113 +202,10 @@ subscription{
         returnTrip 
         totalComments
       }
-    }
-  }
-}
-`;
-
-const GET_FEED_QUERY = gql`
-query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
-  getFeed (offset:$offset, limit:$limit, filter:$filter){
-    rows {
-    id
-    feedable
-    updatedAt
-      ... on GroupFeed {
-        Group {
-          id
-          outreach
-          name
-          description
-          type
-          photo
-          mapPhoto
-          User {
-            id 
-            email 
-            firstName 
-            lastName 
-            avatar 
-            relation { 
-              id 
-              email 
-              firstName 
-              avatar
-            }
-          } 
-          TripStart {
-            name 
-            coordinates 
-          } 
-          TripEnd {
-            name 
-            coordinates
-          } 
-          Stops {
-            name 
-            coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
-          GroupMembers { 
-            id 
-            avatar 
-          } 
-          GroupMembershipRequests {
-            id 
-            status 
-            Member {
-              id 
-              email 
-              firstName 
-            }
-          }
-        }
-      }
-      ... on TripFeed { 
-        Trip {
-          id 
-          type 
-          description 
-          seats 
-          User {
-            id 
-            email 
-            firstName 
-            lastName 
-            avatar 
-            relation {
-              id 
-              email 
-              firstName 
-              avatar
-            }
-          } 
-          TripStart {
-            name 
-            coordinates
-          } 
-          TripEnd {
-            name 
-            coordinates
-          } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          time 
-          photo 
-          mapPhoto
-          returnTrip 
-          totalComments
-        }
-      }
     } 
-    count
-  } 
+   } 
+   count
+  }
 }
 `;
 

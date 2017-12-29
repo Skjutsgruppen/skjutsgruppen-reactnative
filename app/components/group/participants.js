@@ -67,7 +67,7 @@ const Participants = ({ members }) => {
               zIndex -= 1;
               return (
                 <Image
-                  source={{ uri: member.photo }}
+                  source={{ uri: member.avatar }}
                   style={[
                     styles.profilePic,
                     index > 0 && { left: (index * imageSize) - (margin * index) },
@@ -125,7 +125,7 @@ const Participants = ({ members }) => {
 Participants.propTypes = {
   members: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
-    photo: PropTypes.string,
+    avatar: PropTypes.string,
   })).isRequired,
 };
 
