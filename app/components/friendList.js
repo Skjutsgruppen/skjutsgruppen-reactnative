@@ -60,11 +60,11 @@ const FriendList = ({ title, loading, friends, setOption, selected }) => {
 
   const hasOption = key => selected.indexOf(key) > -1;
 
-  const renderPic = (photo) => {
+  const renderPic = (avatar) => {
     let profileImage = null;
 
-    if (photo) {
-      profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+    if (avatar) {
+      profileImage = (<Image source={{ uri: avatar }} style={styles.profilePic} />);
     }
 
     return profileImage;
@@ -80,7 +80,7 @@ const FriendList = ({ title, loading, friends, setOption, selected }) => {
               onPress={() => setOption('friends', friend.id)}
             >
               <View style={styles.shareItem}>
-                {renderPic(friend.photo)}
+                {renderPic(friend.avatar)}
                 <Text>{friend.firstName || friend.email}</Text>
                 <View
                   style={[styles.shareToggle, hasOption(friend.id)
@@ -108,7 +108,7 @@ FriendList.propTypes = {
   loading: PropTypes.bool.isRequired,
   friends: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
-    photo: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
   })).isRequired,
   setOption: PropTypes.func.isRequired,
