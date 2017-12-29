@@ -47,11 +47,9 @@ const styles = StyleSheet.create({
 const Friends = ({ friend, onPress }) => {
   let profileImage = null;
 
-  if (friend.photo) {
+  if (friend.avatar) {
     profileImage = (
-      <TouchableOpacity onPress={() => onPress(friend.id)}>
-        <Image source={{ uri: friend.photo }} style={styles.profilePic} />
-      </TouchableOpacity>
+      <Image source={{ uri: friend.avatar }} style={styles.profilePic} />
     );
   } else {
     profileImage = (<View style={styles.imgIcon} />);
@@ -61,7 +59,9 @@ const Friends = ({ friend, onPress }) => {
     <View style={styles.feed}>
       <View style={styles.feedContent}>
         <View style={styles.feedTitle}>
-          <TouchableOpacity>{profileImage}</TouchableOpacity>
+          <TouchableOpacity onPress={() => onPress(friend.id)}>
+            {profileImage}
+          </TouchableOpacity>
           <Text style={styles.lightText}>
             <Text style={styles.name}>
               {friend.firstName || friend.email} {friend.lastName}

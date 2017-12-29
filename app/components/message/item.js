@@ -7,6 +7,16 @@ import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
 import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/auth';
+import {
+  FEEDABLE_TRIP,
+  FEEDABLE_GROUP,
+  NOTIFICATION_TYPE_MEMBERSHIP_REQUEST,
+  NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED,
+  NOTIFICATION_TYPE_COMMENT,
+  NOTIFICATION_TYPE_INVIVATION,
+  NOTIFICATION_TYPE_FRIEND_REQUEST,
+  NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
+} from '@config/constant';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -141,7 +151,7 @@ class Item extends PureComponent {
     navigation.navigate(route, params);
   }
 
-  friendRequest = ({ User, FriendRequest }) => (
+  friendRequest = ({ User, Notifiable }) => (
     <View style={styles.list}>
       <View style={styles.flexRow}>
         <View style={styles.profilePicWrapper}>
@@ -157,7 +167,7 @@ class Item extends PureComponent {
       {this.state.loading ?
         <Loading /> :
         this.renderAction(
-          FriendRequest.id,
+          Notifiable.id,
           this.acceptFriendRequest,
           this.rejectFriendRequest,
         )}
@@ -268,13 +278,13 @@ class Item extends PureComponent {
     let params = null;
     let route = null;
 
-    if (notifiable === 'Group') {
+    if (notifiable === FEEDABLE_GROUP) {
       type = `group "${Notifiable.name}"`;
       route = 'GroupDetail';
       params = { group: Notifiable };
     }
 
-    if (notifiable === 'Trip') {
+    if (notifiable === FEEDABLE_TRIP) {
       type = `ride ${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       if (Notifiable.tripType === 'offer') {
         route = 'OfferDetail';
@@ -294,25 +304,25 @@ class Item extends PureComponent {
     });
   }
 
-  invitation = ({ Group, Trip, User, date, id }) => {
+  invitation = ({ notifiable, Notifiable, User, date, id }) => {
     let type = null;
     let params = null;
     let route = null;
 
-    if (Group) {
-      type = `group "${Group.name}"`;
+    if (notifiable === FEEDABLE_GROUP) {
+      type = `group "${Notifiable.name}"`;
       route = 'GroupDetail';
-      params = { group: Group };
+      params = { group: Notifiable };
     }
 
-    if (Trip) {
-      type = `ride "${Trip.TripStart.name} - ${Trip.TripEnd.name}"`;
-      if (Trip.tripType === 'offer') {
+    if (notifiable === FEEDABLE_TRIP) {
+      type = `ride "${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}"`;
+      if (Notifiable.tripType === 'offer') {
         route = 'OfferDetail';
-        params = { offer: Trip };
+        params = { offer: Notifiable };
       } else {
         route = 'AskDetail';
-        params = { ask: Trip };
+        params = { ask: Notifiable };
       }
     }
 
@@ -402,27 +412,27 @@ class Item extends PureComponent {
     const { notification } = this.props;
     let message = null;
 
-    if (notification.type === 'membership_request') {
+    if (notification.type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
       message = this.memberRequest(notification);
     }
 
-    if (notification.type === 'membership_request_accepted') {
+    if (notification.type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED) {
       message = this.membershipRequestAccepted(notification);
     }
 
-    if (notification.type === 'comment') {
+    if (notification.type === NOTIFICATION_TYPE_COMMENT) {
       message = this.comment(notification);
     }
 
-    if (notification.type === 'invitation') {
+    if (notification.type === NOTIFICATION_TYPE_INVIVATION) {
       message = this.invitation(notification);
     }
 
-    if (notification.type === 'friend_request') {
+    if (notification.type === NOTIFICATION_TYPE_FRIEND_REQUEST) {
       message = this.friendRequest(notification);
     }
 
-    if (notification.type === 'friend_request_accepted') {
+    if (notification.type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
       message = this.friendRequestAccepted(notification);
     }
 
