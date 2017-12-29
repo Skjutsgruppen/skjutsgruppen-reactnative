@@ -305,7 +305,9 @@ query trips($id:Int, $type:String){
 `;
 
 export const withTrips = graphql(TRIPS_QUERY, {
-  options: ({ id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true }) => ({
+  options: (
+    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
+  ) => ({
     variables: { id, offset, limit, type, active },
   }),
   props: ({ data: { loading, trips } }) => {
