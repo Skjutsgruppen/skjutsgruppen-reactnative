@@ -162,7 +162,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
   notifications (filters:$filters, offset:$offset, limit:$limit) {
     rows {
       id
-      type
       User {
         id
         firstName
@@ -343,7 +342,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           if (!subscriptionData.data) {
             return prev;
           }
-
+          // console.log(prev, 'notification');
           const newNotification = subscriptionData.data.notification;
           const prevNotification = prev.notifications.rows.slice(1, 5);
           const newrows = [newNotification].concat(prevNotification);

@@ -10,6 +10,7 @@ import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apol
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
+  FEED_TYPE_OFFER,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_COMMENT,
@@ -252,7 +253,7 @@ class Item extends PureComponent {
         photo: User.avatar,
         text: `accepted your request to join group "${Group.name}"`,
         date,
-        onPress: () => this.redirect(id, 'GroupDetail', { group: Group }),
+        onPress: () => this.redirect(id, 'GroupDetail', { group: Group, notifier: User, notificationMessage: 'Added you to this group' }),
       });
     }
 
@@ -281,17 +282,17 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_GROUP) {
       type = `group "${Notifiable.name}"`;
       route = 'GroupDetail';
-      params = { group: Notifiable };
+      params = { group: Notifiable, notifier: User, notificationMessage: 'Commented on this group' };
     }
 
     if (notifiable === FEEDABLE_TRIP) {
       type = `ride ${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
-      if (Notifiable.tripType === 'offer') {
+      if (Notifiable.tripType === FEED_TYPE_OFFER) {
         route = 'OfferDetail';
-        params = { offer: Notifiable };
+        params = { offer: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
       } else {
         route = 'AskDetail';
-        params = { ask: Notifiable };
+        params = { ask: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
       }
     }
 

@@ -7,6 +7,8 @@ import {
   GROUP_FEED_TYPE_LEFT_GROUP,
   GROUP_FEED_TYPE_JOINED_GROUP,
   GROUP_FEED_TYPE_COMMENT,
+  GROUP_FEED_TYPE_SHARE,
+  CLOSE_GROUP,
 } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -55,15 +57,7 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
         <View>
-          <Text style={styles.commentText}>created this group</Text>
-        </View>
-      );
-    }
-
-    if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
-      return (
-        <View>
-          <Text style={styles.commentText}>left the group</Text>
+          <Text style={styles.commentText}>Started the group</Text>
         </View>
       );
     }
@@ -71,7 +65,15 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP) {
       return (
         <View>
-          <Text style={styles.commentText}>joined the group</Text>
+          <Text style={styles.commentText}>Joined the group</Text>
+        </View>
+      );
+    }
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
+      return (
+        <View>
+          <Text style={styles.commentText}>Left the group</Text>
         </View>
       );
     }
@@ -84,10 +86,10 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === 'share') {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
       return (
         <View>
-          <Text style={styles.commentText}>shared a trip</Text>
+          <Text style={styles.commentText}>Shared a trip</Text>
         </View>
       );
     }
@@ -95,7 +97,36 @@ class Feed extends Component {
     return null;
   }
 
-  render() {
+  renderClosedGroup() {
+    const { feed, onPressUser } = this.props;
+    let image = null;
+
+    if (feed.Group.User.avatar) {
+      image = (<Image source={{ uri: feed.Group.User.avatar }} style={styles.profilePic} />);
+    } else {
+      image = (<View style={styles.imgIcon} />);
+    }
+
+    return (
+      <View style={styles.Wrapper}>
+        <TouchableOpacity onPress={() => onPressUser('profile', feed.Group.User.id)}>
+          {image}
+        </TouchableOpacity>
+        <View style={styles.content}>
+          <View style={styles.title}>
+            <Text style={styles.name} onPress={() => onPressUser('profile', feed.Group.User.id)}>{feed.Group.User.firstName || feed.Group.User.email}
+            </Text>
+            <Text style={styles.commentText}>
+              Added <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
+            </Text>
+          </View>
+          <Text style={styles.time}><Date>{feed.date}</Date></Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderOpenGroup() {
     const { feed, onPressUser } = this.props;
 
     let image = null;
@@ -120,6 +151,17 @@ class Feed extends Component {
         </View>
       </View>
     );
+  }
+
+  render() {
+    const { feed } = this.props;
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
+      && feed.Group.type === CLOSE_GROUP) {
+      return (<View>{this.renderClosedGroup()}</View>);
+    }
+
+    return (<View>{this.renderOpenGroup()}</View>);
   }
 }
 
