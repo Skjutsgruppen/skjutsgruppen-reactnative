@@ -44,6 +44,7 @@ mutation createTrip(
       coordinates
     }
     photo 
+    mapPhoto
     Stops 
     {
       name

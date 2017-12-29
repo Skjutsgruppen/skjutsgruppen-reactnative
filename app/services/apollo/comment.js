@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { GET_FEED_QUERY } from '@services/apollo/feed';
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription commentAdded($tripId:Int, $groupId:Int) {
@@ -98,6 +100,17 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
         }
 
         const newFeedItem = subscriptionData.data.commentAdded;
+        const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+                
+        feeds.getFeed.rows.map((feed) => {
+          if (feed.feedable === 'Trip' && feed.Trip.id === props.ownProps.id) {
+            feed.Trip.totalComments += 1;
+          }
+
+          return feed;
+        });
+
+        client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
 
         const rows = [newFeedItem].concat(prev.comments.rows);
 
