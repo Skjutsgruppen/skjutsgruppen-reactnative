@@ -5,6 +5,7 @@ import { Loading } from '@components/common';
 import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
+import { FEED_TYPE_OFFER } from '@config/constant';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -75,7 +76,7 @@ const item = (trip, navigation) => (
     onPress={() => {
       let nav = 'AskDetail';
       let params = { ask: trip };
-      if (trip.type === 'offered') {
+      if (trip.type === FEED_TYPE_OFFER) {
         nav = 'OfferDetail';
         params = { offer: trip };
       }

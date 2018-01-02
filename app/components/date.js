@@ -2,7 +2,7 @@ import React from 'react';
 import Moment from 'react-moment';
 import { Text } from 'react-native';
 import 'moment-timezone';
-import { getTimezone } from '@services/device';
+import { getTimezone } from '@helpers/device';
 import PropTypes from 'prop-types';
 
 Moment.globalElement = Text;

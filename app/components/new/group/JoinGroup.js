@@ -13,6 +13,7 @@ import GroupImage from '@components/new/group/groupImage';
 import Participants from '@components/new/group/participants';
 import { getToast } from '@config/toast';
 import Toast from '@components/new/toast';
+import { CLOSE_GROUP, OPEN_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 
 const styles = StyleSheet.create({
   label: {
@@ -153,7 +154,7 @@ class JoinGroup extends Component {
     const { submit, refresh } = this.props;
 
     this.setState({ loading: true }, () => submit(group.id).then(refresh).then(() => {
-      if (group.type === 'ClosedGroup') {
+      if (group.type === CLOSE_GROUP) {
         this.setState({ requestSent: true, loading: false });
       }
     }).catch((err) => {
@@ -248,18 +249,18 @@ class JoinGroup extends Component {
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
           <Text style={styles.text}>
             {
-              group.type === 'OpenGroup' && 'Open Group'
+              group.type === OPEN_GROUP && 'Open Group'
             }
             {
-              group.type === 'ClosedGroup' && 'Closed Group'
+              group.type === CLOSE_GROUP && 'Closed Group'
             }
           </Text>
           <Text style={styles.text}>
             {
-              group.outreach === 'area' && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')
+              group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')
             }
             {
-              group.outreach === 'route' && `${group.TripStart.name} - ${group.TripEnd.name}`
+              group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`
             }
           </Text>
           {

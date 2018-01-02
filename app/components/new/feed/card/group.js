@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedba
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
+import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -162,13 +163,13 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 <Text> created a group</Text>
               </Text>
               {
-                group.outreach === 'area' &&
+                group.outreach === STRETCH_TYPE_AREA &&
                 <Text style={[styles.text, styles.lightText]}>
                   {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
                 </Text>
               }
               {
-                group.outreach === 'route' &&
+                group.outreach === STRETCH_TYPE_ROUTE &&
                 <Text style={[styles.text, styles.lightText]}>
                   {group.TripStart.name} - {group.TripEnd.name}
                 </Text>

@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription commentAdded($tripId:Int, $groupId:Int) {
@@ -40,7 +41,7 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 
 export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
   name: 'comments',
-  options: ({ id, offset, limit = 5 }) => ({ variables: { id, offset, limit } }),
+  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
   props: props => ({
     comments: props.comments,
     subscribeToNewComments: param => props.comments.subscribeToMore({
@@ -85,7 +86,7 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 
 export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   name: 'comments',
-  options: ({ id, offset, limit = 5 }) => ({ variables: { id, offset, limit } }),
+  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
   props: props => ({
     comments: props.comments,
     subscribeToNewComments: param => props.comments.subscribeToMore({
