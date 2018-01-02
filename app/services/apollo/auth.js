@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const LOGIN_QUERY = gql`
 mutation login($username: String!, $password:String!) {
@@ -102,9 +103,27 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
 
 export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   props: ({ mutate }) => ({
-    updateProfile: ({ firstName, lastName, avatar, phoneNumber, phoneCountryCode, password, fbId, fbToken }) =>
+    updateProfile: ({
+      firstName,
+      lastName,
+      avatar,
+      phoneNumber,
+      phoneCountryCode,
+      password,
+      fbId,
+      fbToken,
+    }) =>
       mutate({
-        variables: { firstName, lastName, avatar, phoneNumber, phoneCountryCode, password, fbId, fbToken },
+        variables: {
+          firstName,
+          lastName,
+          avatar,
+          phoneNumber,
+          phoneCountryCode,
+          password,
+          fbId,
+          fbToken,
+        },
       }),
   }),
 });
@@ -126,7 +145,11 @@ query friends($id:Int, $limit: Int, $offset: Int,){
 `;
 
 export const withFriends = graphql(FRIEND_QUERY, {
-  options: ({ id = null, offset = 0, limit = 5 }) => ({ variables: { id, offset, limit } }),
+  options: ({
+    id = null,
+    offset = 0,
+    limit = PER_FETCH_LIMIT,
+  }) => ({ variables: { id, offset, limit } }),
   props: ({ data: { loading, friends } }) => {
     let rows = [];
     let count = 0;
@@ -157,7 +180,11 @@ query bestFriends($id:Int, $limit: Int, $offset: Int,){
 `;
 
 export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
-  options: ({ id = null, offset = 0, limit = 5 }) => ({ variables: { id, offset, limit } }),
+  options: ({
+    id = null,
+    offset = 0,
+    limit = PER_FETCH_LIMIT,
+  }) => ({ variables: { id, offset, limit } }),
   props: ({ data: { loading, bestFriends } }) => {
     let rows = [];
     let count = 0;
@@ -215,7 +242,11 @@ query groups($id:Int){
 `;
 
 export const withGroups = graphql(GROUPS_QUERY, {
-  options: ({ id = null, offset = 0, limit = 5 }) => ({ variables: { id, offset, limit } }),
+  options: ({
+    id = null,
+    offset = 0,
+    limit = PER_FETCH_LIMIT,
+  }) => ({ variables: { id, offset, limit } }),
   props: ({ data: { loading, groups } }) => {
     let rows = [];
     let count = 0;
@@ -274,7 +305,7 @@ query trips($id:Int, $type:String){
 `;
 
 export const withTrips = graphql(TRIPS_QUERY, {
-  options: ({ id = null, offset = 0, limit = 5, type = null, active = null }) => ({
+  options: ({ id = null, offset = 0, limit = PER_FETCH_LIMIT, type = null, active = null }) => ({
     variables: { id, offset, limit, type, active },
   }),
   props: ({ data: { loading, trips } }) => {

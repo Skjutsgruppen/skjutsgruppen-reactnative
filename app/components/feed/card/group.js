@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import Relation from '@components/relation';
+import { CLOSE_GROUP, OPEN_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -123,9 +124,9 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   }
 
   let groupType = '';
-  if (group.type === 'OpenGroup') {
+  if (group.type === OPEN_GROUP) {
     groupType = 'Open';
-  } else if (group.type === 'ClosedGroup') {
+  } else if (group.type === CLOSE_GROUP) {
     groupType = 'Closed';
   }
 
@@ -151,14 +152,14 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 <Text style={styles.newGroupName}>{group.name}</Text>
               </View>
               {
-                group.outreach === 'area' &&
+                group.outreach === STRETCH_TYPE_AREA &&
                 <Text style={styles.newGroupPlace}>
                   {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
                 </Text>
               }
 
               {
-                group.outreach === 'route' &&
+                group.outreach === STRETCH_TYPE_ROUTE &&
                 <Text style={styles.newGroupPlace}>
                   {group.TripStart.name} - {group.TripEnd.name}
                 </Text>

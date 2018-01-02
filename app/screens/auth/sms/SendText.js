@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Image } from 'react-native';
+import { Text, StyleSheet, Image, Clipboard } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { CustomButton, Loading } from '@components/common';
@@ -9,9 +9,11 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withPhoneVerified, withVerifyPhoneNumber } from '@services/apollo/profile';
+import { withPhoneVerified } from '@services/apollo/profile';
 import { getToast } from '@config/toast';
 import Toast from '@components/new/toast';
+import SendSMS from 'react-native-sms';
+import { SMS_NUMBER } from '@config';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -49,12 +51,17 @@ class SendText extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, loadingSendText: false, error: '', warning: '', success: '', phoneVerified: false, user: {}, token: null });
+    this.state = ({ loading: false, error: '', warning: '', success: '', user: {}, token: null });
+    this.interval = null;
   }
 
   async componentWillMount() {
     const user = await AuthService.getUser();
-    this.setState({ user });
+    this.setState({ user }, this.setPolling);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   onSubmit = () => {
@@ -86,39 +93,46 @@ class SendText extends Component {
   }
 
   onSubmitSendText = () => {
-    this.setState({ loadingSendText: true });
-    const { verifyPhoneNumber } = this.props;
-    const { phoneNumber, phoneVerificationCode } = this.state.user;
+    const { user } = this.state;
+    Clipboard.setString(user.phoneVerificationCode);
 
-    try {
-      verifyPhoneNumber(phoneNumber, phoneVerificationCode).then(({ data }) => {
-        this.setState({ loadingSendText: false, phoneVerified: data.verifyPhoneNumber.User.phoneVerified, success: getToast(['PHONE_NUMBER_VERIFIED']), error: '', warning: '' });
-      }).catch((err) => {
-        this.setState({ loadingSendText: false, error: getToast(err) });
-      });
-    } catch (err) {
-      this.setState({ loadingSendText: false, error: getToast(err) });
-    }
+    SendSMS.send({
+      body: user.phoneVerificationCode,
+      recipients: [SMS_NUMBER],
+      successTypes: ['sent', 'queued'],
+    }, () => { });
   }
 
-  renderSendTextButton = () => {
-    if (this.state.loadingSendText) {
-      return (<Loading />);
-    }
-
-    const { phoneVerified } = this.state;
-
-    return (
-      !phoneVerified && (<CustomButton
-        style={styles.button}
-        bgColor={Colors.background.green}
-        onPress={() => this.onSubmitSendText()}
-        disabled={phoneVerified}
-      >
-        Send Text
-      </CustomButton>)
-    );
+  setPolling() {
+    const { navigation, isPhoneVerified, setLogin } = this.props;
+    const { user } = this.state;
+    this.interval = setInterval(() => {
+      try {
+        isPhoneVerified(user.id).then(({ data }) => {
+          if (data.isPhoneVerified.User.phoneVerified) {
+            setLogin({
+              token: data.isPhoneVerified.token,
+              user: data.isPhoneVerified.User,
+            }).then(() => {
+              navigation.reset('MobileVerified');
+            }).catch(console.warn);
+          }
+        }).catch(console.warn);
+      } catch (err) {
+        console.warn(err);
+      }
+    }, 10000);
   }
+
+  renderSendTextButton = () => (
+    <CustomButton
+      style={styles.button}
+      bgColor={Colors.background.green}
+      onPress={() => this.onSubmitSendText()}
+    >
+      Send SMS
+    </CustomButton>
+  );
 
   renderButton = () => {
     if (this.state.loading) {
@@ -129,7 +143,7 @@ class SendText extends Component {
       <CustomButton
         style={styles.button}
         bgColor={Colors.background.green}
-        onPress={() => this.onSubmit()}
+        onPress={this.onSubmit}
       >
         Check Verification
       </CustomButton>
@@ -161,7 +175,6 @@ class SendText extends Component {
         <Toast message={warning} type="warning" />
         <Toast message={success} type="success" />
         {this.renderSendTextButton()}
-        {this.renderButton()}
         <Text style={styles.promise} > We will never give your number to any third parties.</Text>
       </Container>
     );
@@ -173,7 +186,6 @@ SendText.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
   isPhoneVerified: PropTypes.func.isRequired,
-  verifyPhoneNumber: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
 };
 
@@ -182,5 +194,5 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
-export default compose(withPhoneVerified, withVerifyPhoneNumber,
+export default compose(withPhoneVerified,
   connect(null, mapDispatchToProps))(SendText);

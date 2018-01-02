@@ -3,11 +3,12 @@ import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import Feed from '@components/new/group/feed/default';
 import { SharedCard } from '@components/new/common';
+import { GROUP_FEED_TYPE_SHARE, FEEDABLE_TRIP, FEED_TYPE_OFFER } from '@config/constant';
 
 const GroupFeedItem = ({ groupFeed, onPress }) => {
-  if (groupFeed.ActivityType.type === 'share') {
-    if (groupFeed.feedable === 'Trip') {
-      if (groupFeed.Trip.type === 'offered') {
+  if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
+    if (groupFeed.feedable === FEEDABLE_TRIP) {
+      if (groupFeed.Trip.type === FEED_TYPE_OFFER) {
         return (
           <View style={{ marginTop: 12 }} >
             <Feed feed={groupFeed} onPressUser={onPress} />

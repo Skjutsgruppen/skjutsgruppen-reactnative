@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
 import { connect } from 'react-redux';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
   section: {
@@ -174,7 +175,7 @@ const NotificationList = compose(withNotification, connect(mapStateToProps))(New
 
 const SingleNotification = ({ navigation }) => {
   const { filters } = navigation.state.params;
-  return (<NotificationList limit="3" filters={filters} navigation={navigation} />);
+  return (<NotificationList limit={PER_FETCH_LIMIT} filters={filters} navigation={navigation} />);
 };
 
 SingleNotification.navigationOptions = {
