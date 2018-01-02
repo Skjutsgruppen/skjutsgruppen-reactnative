@@ -1,94 +1,153 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
-import Relation from '@components/relation';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
+import ShareIcon from '@icons/ic_share.png';
+import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
 
+const cardHeight = 484;
+const profilePicSize = 60;
+
 const styles = StyleSheet.create({
-  lightText: {
-    color: '#777777',
+  flex1: {
+    flex: 1,
   },
-  tab: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
+  wrapper: {
+    height: cardHeight,
+    backgroundColor: Colors.background.fullWhite,
+    marginHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 12,
+    shadowOffset: { width: 0, height: 1 },
+    shadowColor: 'rgba(0,0,0,0.1)',
+    shadowOpacity: 0,
+    shadowRadius: 5,
+    elevation: 4,
   },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
-  },
-  feed: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginRight: 6,
-    marginLeft: 6,
-    marginBottom: 16,
-    borderColor: '#cccccc',
-    borderBottomWidth: 4,
-  },
-  feedContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  feedTitle: {
-    flexDirection: 'row',
+  imgWrapper: {
     alignItems: 'center',
-    padding: 12,
-  },
-  feedImg: {
+    justifyContent: 'center',
     width: '100%',
+    height: cardHeight / 2,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: Colors.background.gray,
   },
-  profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 27,
-    marginRight: 12,
+  img: {
+    width: '100%',
+    height: cardHeight / 2,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
-  name: {
-    color: '#1db0ed',
+  groupName: {
+    backgroundColor: 'transparent',
+    fontSize: 18,
     fontWeight: 'bold',
-  },
-  fromTo: {
-    fontWeight: 'bold',
-  },
-  info: {
-    padding: 12,
-  },
-  stopIcon: {
-    width: 12,
-    resizeMode: 'contain',
-    marginRight: 6,
-  },
-  stopText: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 12,
-  },
-  messageText: {
-    marginBottom: 16,
-  },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
+    color: Colors.text.white,
     alignSelf: 'center',
   },
+  profilePicWrapper: {
+    height: profilePicSize,
+    width: profilePicSize,
+    position: 'absolute',
+    top: (cardHeight / 2) - (profilePicSize / 2),
+    right: 20,
+    zIndex: 10,
+  },
+  profilePic: {
+    height: profilePicSize,
+    width: 'auto',
+    resizeMode: 'cover',
+    borderRadius: (profilePicSize / 2),
+    borderWidth: 2,
+    borderColor: Colors.border.white,
+  },
+  offerType: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 10,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 1,
+    elevation: 2,
+  },
+  blueBg: {
+    backgroundColor: Colors.background.blue,
+  },
+  typeText: {
+    color: Colors.text.white,
+    fontSize: 10,
+  },
+  detail: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  comment: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    marginTop: 'auto',
+    overflow: 'hidden',
+  },
+  commentGradientOverlay: {
+    height: 24,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    marginHorizontal: 24,
+  },
+  footer: {
+    paddingTop: 24,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  commentIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  commentCout: {
+    color: '#888',
+    marginRight: 10,
+  },
+  text: {
+    lineHeight: 20,
+  },
+  lightText: {
+    color: Colors.text.darkGray,
+  },
+  username: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
 });
+
 const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
   let image = null;
+  if (ask.mapPhoto) {
+    image = (<Image source={{ uri: ask.mapPhoto }} style={styles.img} />);
+  }
   if (ask.photo) {
-    image = (<Image source={{ uri: ask.photo }} style={{ width: '100%', height: 200 }} />);
+    image = (<Image source={{ uri: ask.photo }} style={styles.img} />);
   }
 
   let profileImage = null;
@@ -98,47 +157,55 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
     profileImage = (<View style={styles.imgIcon} />);
   }
 
+  console.log(ask);
+
   return (
-    <View style={[styles.feed, wrapperStyle]}>
-      <View style={styles.feedContent}>
-        <View style={styles.feedTitle}>
-          <TouchableOpacity onPress={() => onPress('profile', ask.User.id)}>{profileImage}</TouchableOpacity>
-          <View>
-            <Text style={styles.lightText}>
-              <Text style={styles.name}>
-                {ask.User.firstName || ask.User.email}
-              </Text>
-              <Text> asks for a ride </Text>
-            </Text>
-            <Text style={styles.fromTo}>{ask.TripStart.name} - {ask.TripEnd.name}</Text>
-            <Text style={styles.lightText}><Date>{ask.date}</Date></Text>
-          </View>
-        </View>
-        <TouchableWithoutFeedback onPress={() => onPress('ask', ask)}>
-          <View>
-            <View style={styles.info}>
-              <Text style={styles.messageText}>{ask.description}</Text>
-            </View>
+    <View style={[styles.wrapper, wrapperStyle]}>
+      <TouchableWithoutFeedback
+        onPress={() => onPress('ask', ask)}
+        style={styles.flex1}
+      >
+        <View style={styles.flex1}>
+          <View style={styles.imgWrapper}>
             {image}
           </View>
-        </TouchableWithoutFeedback>
-      </View>
-      <View style={styles.feedAction}>
-        <Relation users={ask.User.relation} />
-        <View style={styles.verticalDevider} />
-        <View style={{ width: '33.33%', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => onSharePress('ask', ask)}>
-            <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.tabLabel}>Share</Text>
+          <View style={[styles.offerType, styles.blueBg]}>
+            <Text style={styles.typeText}>{('asking a ride').toUpperCase()}</Text>
+          </View>
+          <View style={styles.detail}>
+            <View>
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.username}>
+                  {ask.User.firstName || ask.User.email}
+                </Text>
+                <Text> asks for a ride </Text>
+              </Text>
+              <Text style={[styles.text, styles.lightText]}>
+                {ask.TripStart.name} - {ask.TripEnd.name}
+              </Text>
+              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{ask.date}</Date></Text>
             </View>
-          </TouchableOpacity>
+          </View>
+          <View style={styles.comment}>
+            <Text style={styles.text}>{ask.description}</Text>
+            <View style={styles.commentGradientOverlay} />
+          </View>
         </View>
-        <View style={styles.verticalDevider} />
-        <View style={{ width: '33.33%', alignItems: 'center' }}>
+      </TouchableWithoutFeedback>
+      <TouchableOpacity
+        onPress={() => onPress('profile', ask.User.id)}
+        style={styles.profilePicWrapper}
+      >
+        {profileImage}
+      </TouchableOpacity>
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => onSharePress('ask', ask)}>
+          <Image source={ShareIcon} style={styles.icon} />
+        </TouchableOpacity>
+        <View style={styles.commentIcon}>
+          <Text style={styles.commentCout}>{ask.totalComments}</Text>
           <TouchableOpacity onPress={() => onPress('ask', ask)}>
-            <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.tabLabel}>Comment</Text>
-            </View>
+            <Image source={CommentIcon} style={styles.icon} />
           </TouchableOpacity>
         </View>
       </View>

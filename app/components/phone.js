@@ -22,8 +22,15 @@ class Phone extends PureComponent {
     this.setState({ code: this.props.defaultCode });
   }
 
-  onChange = (value) => {
+  onChangePhoneNumber = (value) => {
     this.setState({ number: value }, () => {
+      const { code, number } = this.state;
+      this.props.onChange({ code, number });
+    });
+  }
+
+  onChangeCountryCode = (value) => {
+    this.setState({ code: value }, () => {
       const { code, number } = this.state;
       this.props.onChange({ code, number });
     });
@@ -44,14 +51,14 @@ class Phone extends PureComponent {
             <Picker
               defaultValue={this.state.code}
               list={list}
-              onChange={(code) => { this.setState({ code }); }}
+              onChange={this.onChangeCountryCode}
             />
           </View>
           <View style={{ flex: 4 }}>
             <TextInput
               keyboardType="phone-pad"
               underlineColorAndroid="transparent"
-              onChangeText={this.onChange}
+              onChangeText={this.onChangePhoneNumber}
               {...rest}
             />
           </View>

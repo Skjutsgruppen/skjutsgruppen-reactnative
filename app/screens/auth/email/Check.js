@@ -13,7 +13,7 @@ import AuthService from '@services/auth/auth';
 import { withVerifyCode } from '@services/apollo/auth';
 import { Icons } from '@icons';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   envelopIcon: {

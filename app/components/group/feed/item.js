@@ -1,114 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import Feed from '@components/group/feed/default';
-import Offer from '@components/feed/card/offer';
-import Ask from '@components/feed/card/ask';
-import Colors from '@theme/colors';
-import Date from '@components/date';
-import { FEED_TYPE_OFFER, FEEDABLE_TRIP, GROUP_FEED_TYPE_ASK_RIDE, GROUP_FEED_TYPE_OFFER_RIDE, GROUP_FEED_TYPE_SHARE } from '@config/constant';
+import { SharedCard } from '@components/common';
 
-const styles = StyleSheet.create({
-  Wrapper: {
-    flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: '#fff',
-    marginRight: 6,
-    marginLeft: 6,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
-  },
-  singleCard: {
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  sharedCard: {
-    marginBottom: 12,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
-  profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 28,
-  },
-  nameWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-  },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
-    paddingRight: 4,
-  },
-  time: {
-    color: '#777777',
-    marginTop: 2,
-  },
-  filler: {
-    padding: 12,
-    color: '#999',
-  },
-});
-
-const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
-  if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_ASK_RIDE) {
-    return (
-      <Ask
-        ask={groupFeed.Trip}
-        onPress={onPress}
-        onSharePress={onSharePress}
-        wrapperStyle={styles.card}
-      />
-    );
-  } else if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_OFFER_RIDE) {
-    return (
-      <Offer
-        offer={groupFeed.Trip}
-        onPress={onPress}
-        onSharePress={onSharePress}
-        wrapperStyle={styles.card}
-      />
-    );
-  } else if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
-    if (groupFeed.feedable === FEEDABLE_TRIP) {
-      let image = null;
-      if (groupFeed.User.avatar) {
-        image = (<Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />);
-      } else {
-        image = (<View style={styles.imgIcon} />);
-      }
-
-      const user = (
-        <View style={styles.Wrapper}>
-          <TouchableOpacity onPress={() => onPress('profile', groupFeed.User.id)}>{image}</TouchableOpacity>
-          <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-              <Text style={styles.name}>{groupFeed.User.firstName || groupFeed.User.email}</Text>
-              <Text>shared a trip</Text>
-            </View>
-            <Text style={styles.time}><Date>{groupFeed.date}</Date></Text>
-          </View>
-        </View>
-      );
-
-      if (groupFeed.Trip.type === FEED_TYPE_OFFER) {
+const GroupFeedItem = ({ groupFeed, onPress }) => {
+  if (groupFeed.ActivityType.type === 'share') {
+    if (groupFeed.feedable === 'Trip') {
+      if (groupFeed.Trip.type === 'offered') {
         return (
-          <View style={{
-            marginTop: 12,
-          }}
-          >
-            {user}
-            <Offer
-              offer={groupFeed.Trip}
+          <View style={{ marginTop: 12 }} >
+            <Feed feed={groupFeed} onPressUser={onPress} />
+            <SharedCard
+              trip={groupFeed.Trip}
               onPress={onPress}
-              onSharePress={onSharePress}
-              wrapperStyle={styles.sharedCard}
             />
           </View>
         );
@@ -116,19 +21,17 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
 
       return (
         <View>
-          {user}
-          <Ask
-            ask={groupFeed.Trip}
+          <Feed feed={groupFeed} onPressUser={onPress} />
+          <SharedCard
+            trip={groupFeed.Trip}
             onPress={onPress}
-            onSharePress={onSharePress}
-            wrapperStyle={styles.sharedCard}
           />
         </View>
       );
     }
   }
 
-  return (<Feed feed={groupFeed} onPress={onPress} />);
+  return (<Feed feed={groupFeed} onPressUser={onPress} />);
 };
 
 GroupFeedItem.propTypes = ({
@@ -148,7 +51,6 @@ GroupFeedItem.propTypes = ({
     updatedAt: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onSharePress: PropTypes.func.isRequired,
 });
 
 export default GroupFeedItem;

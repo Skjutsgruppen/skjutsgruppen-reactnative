@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { Loading, Wrapper, Container } from '@components/common';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 import CustomButton from '@components/common/customButton';
 import { submitAsk } from '@services/apollo/ask';
 import Colors from '@theme/colors';

@@ -1,159 +1,210 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Modal, Text, TextInput, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { withShare } from '@services/apollo/auth';
-import { compose } from 'react-apollo';
-import { Wrapper, Loading, NavBar } from '@components/common';
+import { Loading, FloatingNavbar } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Date from '@components/date';
 import Share from '@components/common/share';
+import { withShare } from '@services/apollo/auth';
+import { compose } from 'react-apollo';
+import Date from '@components/date';
+import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 
 const OfferComment = withTripComment(Comment);
 
 const styles = StyleSheet.create({
-  contentWrapper: {
-    backgroundColor: '#fff',
-  },
-  lightText: {
-    color: '#777777',
-  },
-  feed: {
-    backgroundColor: '#fff',
-    marginBottom: 64,
-  },
-  feedContent: {
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#dddee3',
-  },
-  feedTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-  },
-  feedImg: {
-    width: '100%',
-  },
-  imgIcon: {
-    height: 55,
-    width: 55,
-    backgroundColor: '#ddd',
-    borderRadius: 28,
-    marginRight: 12,
-  },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
-  },
-  info: {
-    paddingHorizontal: 12,
-  },
-  stopsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  stopText: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  stopsIcon: {
-    width: 12,
-    resizeMode: 'contain',
-    marginRight: 4,
-  },
-  messageText: {
-    marginTop: 12,
-    marginBottom: 16,
-  },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  participantWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '33.33%',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: '100%',
-  },
-  footerContent: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f3ed',
-    borderTopWidth: 2,
-    borderColor: '#cececf',
-    paddingVertical: 9,
-    paddingLeft: 24,
-    paddingRight: 12,
-  },
-  msgInput: {
+  wrapper: {
     flex: 1,
-    backgroundColor: '#fff',
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#b1abab',
-    paddingHorizontal: 12,
+    backgroundColor: Colors.background.fullWhite,
   },
-  send: {
+  section: {
+    padding: 24,
+  },
+  flexRow: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 0.25,
+  },
+  imgWrapper: {
+    height: 224,
+    backgroundColor: '#e0e0e0',
+  },
+  feedImage: {
+    height: 224,
+    width: '100%',
   },
   profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 28,
-    marginRight: 12,
+    height: 60,
+    width: 60,
+    resizeMode: 'cover',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: Colors.border.white,
+    position: 'absolute',
+    top: 224 - (60 / 2),
+    right: 20,
+    zIndex: 20,
   },
-  sendText: {
-    color: '#00aeef',
+  detail: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  username: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+    marginRight: 4,
+  },
+  text: {
+    lineHeight: 22,
+  },
+  lightText: {
+    color: Colors.text.darkGray,
+  },
+  stopsLabel: {
+    color: Colors.text.pink,
     fontWeight: 'bold',
   },
-  actionsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+  fromTo: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
-  action: {
-    width: '33.33%',
+  date: {
+    marginVertical: 12,
+  },
+  userComment: {
+    margin: 24,
+    paddingBottom: 24,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  relationLabelWrapper: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  relationLabel: {
+    fontSize: 12,
+  },
+  chevronDown: {
+    height: 12,
+    width: 12,
+    resizeMode: 'contain',
+    marginLeft: 16,
+    marginTop: 2,
+  },
+  btnSection: {
+    justifyContent: 'space-between',
+  },
+  pillBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 6,
+    height: 48,
+    paddingHorizontal: 24,
+    backgroundColor: Colors.background.fullWhite,
+    shadowOffset: { width: 0, height: 1 },
+    shadowColor: 'rgba(0,0,0,0.1)',
+    shadowOpacity: 1.0,
+    shadowRadius: 2,
+    borderRadius: 24,
   },
-  actionDivider: {
-    height: '100%',
-    width: StyleSheet.hairlineWidth,
-    backgroundColor: Colors.border.lightGray,
-  },
-  actionIcon: {
-    height: 16,
-    width: 16,
+  btnIcon: {
+    height: 32,
+    width: 32,
     resizeMode: 'contain',
-    marginRight: 12,
+    marginRight: 16,
+  },
+  btnLabel: {
+    color: Colors.text.gray,
+  },
+  commentSection: {
+    paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  footer: {
+    backgroundColor: Colors.background.fullWhite,
+    borderTopWidth: 2,
+    borderColor: Colors.border.lightGray,
+  },
+  footerCommentSection: {
+    height: 54,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  footerSocialSection: {
+    height: 42,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  moreIconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    paddingHorizontal: 24,
+  },
+  moreIcon: {
+    height: 24,
+    width: 24,
+    resizeMode: 'contain',
+  },
+  commentInput: {
+    height: '100%',
+    flex: 1,
+    fontSize: 14,
+    paddingHorizontal: 12,
+    textAlignVertical: 'center',
+  },
+  send: {
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  sendText: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
+  title: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    padding: 16,
+  },
+  actionsWrapper: {
+    marginTop: 'auto',
+    marginHorizontal: 16,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 24,
+  },
+  action: {
+    padding: 16,
   },
   actionLabel: {
+    textAlign: 'center',
     fontWeight: 'bold',
     color: Colors.text.blue,
+  },
+  horizontalDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  closeWrapper: {
+    backgroundColor: Colors.background.fullWhite,
+  },
+  closeModal: {
+    padding: 16,
   },
 });
 
@@ -164,7 +215,17 @@ class OfferDetail extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, error: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({
+      loading: false,
+      error: '',
+      success: '',
+      comment: '',
+      modalVisible: false,
+      writingComment: false,
+      modalDetail: {},
+      modalType: '',
+      isOpen: false,
+    });
   }
 
   onSubmit = () => {
@@ -177,17 +238,15 @@ class OfferDetail extends Component {
     if (validation.pass()) {
       try {
         submit(offer.id, null, comment).then(() => {
-          Alert.alert('Success!', 'Comment added');
-          this.setState({ comment: '', loading: false });
+          this.setState({ comment: '', loading: false, success: getToast(['COMMENT_ADDED']), error: '' });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Error!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -214,12 +273,6 @@ class OfferDetail extends Component {
     this.setState({ comment: text });
   }
 
-  onPress = () => {
-    const { navigation } = this.props;
-    const { offer } = navigation.state.params;
-    navigation.navigate('UserProfile', { profileId: offer.User.id });
-  }
-
   onMapPress = () => {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
@@ -232,6 +285,10 @@ class OfferDetail extends Component {
     navigation.navigate('Route', { coordinates });
   }
 
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
+
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
@@ -242,7 +299,7 @@ class OfferDetail extends Component {
     const { comment } = this.state;
 
     if (comment === '') {
-      errors.push('Comment is required.');
+      errors.push('COMMENT_REQUIRED');
     }
 
     return {
@@ -251,39 +308,87 @@ class OfferDetail extends Component {
     };
   }
 
+  handleFocus = () => {
+    this.setState({ writingComment: true });
+  }
+
+  handleBlur = () => {
+    this.setState({ writingComment: false });
+  }
+
   renderButton = () => {
     const { loading } = this.state;
-    if (loading) {
-      return (<View style={styles.loadingWrapper}><Loading /></View>);
-    }
+    const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
     return (
-      <TouchableOpacity onPress={this.onSubmit}>
-        <Text style={styles.sendText}> Send</Text>
+      <TouchableOpacity onPress={this.onSubmit} style={styles.send}>
+        {content}
       </TouchableOpacity>);
   }
 
-  renderCommentForm = () => (
-    <View>
-      <View style={styles.footer}>
-        <View style={styles.footerContent}>
-          <TextInput
-            onChangeText={comment => this.setState({ comment })}
-            value={this.state.comment}
-            style={styles.msgInput}
-            placeholder="Write something..."
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            returnKeyType={'done'}
-            placeholderTextColor="#666"
-            underlineColorAndroid="transparent"
-          />
-          <View style={styles.send}>
-            {this.renderButton()}
+  renderModal() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent
+        onRequestClose={() => this.setState({ modalVisible: false })}
+        visible={this.state.modalVisible}
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.actionsWrapper}>
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Create your experience</Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Share your live location </Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Mute two hours</Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Mute one day</Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Mute forever</Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Embeded with HTML</Text>
+            </TouchableOpacity>
+            <View style={styles.horizontalDivider} />
+            <TouchableOpacity
+              style={styles.action}
+            >
+              <Text style={styles.actionLabel}>Report this ride</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.closeWrapper}>
+            <TouchableOpacity
+              style={styles.closeModal}
+              onPress={() => this.setModalVisible(!this.state.modalVisible)}
+            >
+              <Text style={styles.actionLabel}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </View>
-  )
+      </Modal>
+    );
+  }
 
   renderShareModal() {
     return (
@@ -304,14 +409,59 @@ class OfferDetail extends Component {
     );
   }
 
+
+  renderFooter = () => (
+    <View style={styles.footer}>
+      <View style={styles.footerCommentSection}>
+        {
+          !this.state.writingComment &&
+          <TouchableOpacity
+            style={styles.moreIconWrapper}
+            onPress={() => this.setModalVisible(true)}
+          >
+            <Image source={require('@icons/icon_more_gray.png')} style={styles.moreIcon} />
+          </TouchableOpacity>
+        }
+        <TextInput
+          value={this.state.comment}
+          onChangeText={text => this.onCommentChange(text)}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
+          placeholderTextColor="#000"
+          placeholder="Write"
+          multiline
+          underlineColorAndroid="transparent"
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          returnKeyType={'done'}
+          style={styles.commentInput}
+        />
+        {
+          this.state.writingComment &&
+          this.renderButton()
+        }
+      </View>
+      {
+        this.state.writingComment &&
+        <View style={styles.footerSocialSection}>
+          <Text>A post on your Facebook timeline</Text>
+          <Text style={{ marginLeft: 12 }}>A Tweet</Text>
+        </View>
+      }
+    </View>
+  );
+
   render() {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
-    const { error } = this.state;
+    const { error, success } = this.state;
 
     let image = null;
+    if (offer.mapPhoto) {
+      image = (<Image source={{ uri: offer.mapPhoto }} style={styles.feedImage} />);
+    }
     if (offer.photo) {
-      image = (<Image source={{ uri: offer.photo }} style={{ width: '100%', height: 200, marginBottom: 16 }} />);
+      image = (<Image source={{ uri: offer.photo }} style={styles.feedImage} />);
     }
 
     let profileImage = null;
@@ -322,63 +472,50 @@ class OfferDetail extends Component {
     }
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} onMapPress={this.onMapPress} />
-
-        <ScrollView style={styles.contentWrapper}>
-          <View style={styles.feed}>
-            <View style={styles.feedContent}>
-              <View style={styles.feedTitle}>
-                <TouchableOpacity onPress={this.onPress}>{profileImage}</TouchableOpacity>
-                <View>
-                  <Text style={styles.lightText}>
-                    <Text style={styles.name}>
-                      {offer.User.firstName || offer.User.email}
-                    </Text>
-                    <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
-                  </Text>
-                  <Text>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
-                  <Text style={styles.lightText}><Date>{offer.date}</Date></Text>
-                </View>
-              </View>
-              <View>
-                {image}
-                <View style={styles.info}>
-                  {
-                    offer.Stops.length > 0 &&
-                    <View style={styles.stopText}>
-                      <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
-                      <Text style={styles.lightText}>Stops in {offer.Stops.map(place => place.name).join(', ')}</Text>
-                    </View>
-                  }
-                  <Text style={styles.messageText}>{offer.description}</Text>
-                </View>
-              </View>
+      <View style={styles.wrapper}>
+        <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('offer', offer)} />
+        <ScrollView>
+          <TouchableOpacity onPress={this.onMapPress}>
+            <View style={styles.imgWrapper}>
+              {image}
             </View>
-            <Relation users={offer.User.relation} />
-            <View style={styles.actionsWrapper}>
-              <TouchableOpacity style={styles.action}>
-                <Image source={require('@icons/icon_location_purple.png')} style={styles.actionIcon} />
-                <Text style={styles.actionLabel}>Location</Text>
-              </TouchableOpacity>
-              <View style={styles.actionDivider} />
-              <TouchableOpacity style={[styles.action, styles.shareAction]} onPress={() => this.onSharePress('offer', offer)}>
-                <Image source={require('@icons/icon_share.png')} style={styles.actionIcon} />
-                <Text style={styles.actionLabel}>Share</Text>
-              </TouchableOpacity>
-              <View style={styles.actionDivider} />
-              <TouchableOpacity style={styles.action}>
-                <Image source={require('@icons/icon_more_green.png')} style={styles.actionIcon} />
-                <Text style={styles.actionLabel}>More</Text>
-              </TouchableOpacity>
-            </View>
-            {error !== '' && <View><Text>{error}</Text></View>}
-            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
+          </TouchableOpacity>
+          {profileImage}
+          <View style={styles.detail}>
+            <Text style={[styles.text, styles.lightText]}>
+              <Text style={styles.username} onPress={() => { }}>
+                {offer.User.firstName || offer.User.email}
+              </Text>
+              <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
+            </Text>
+            <Text style={styles.fromTo}>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD HH:mm">{offer.date}</Date></Text>
+            {
+              offer.Stops.length > 0 &&
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.stopsLabel}>Stops in </Text>
+                {offer.Stops.map(place => place.name).join(', ')}
+              </Text>
+            }
           </View>
+          <View style={styles.userComment}>
+            <Text style={[styles.text]}>{offer.description}</Text>
+          </View>
+          {
+            offer.User.relation.length > 0 &&
+            <View style={{ alignItems: 'center' }}>
+              <Text>This is how you know</Text>
+              <Relation users={offer.User.relation} />
+            </View>
+          }
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
+          <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
         </ScrollView>
-        {this.renderCommentForm()}
+        {this.renderFooter()}
+        {this.renderModal()}
         {this.renderShareModal()}
-      </Wrapper>
+      </View>
     );
   }
 }
