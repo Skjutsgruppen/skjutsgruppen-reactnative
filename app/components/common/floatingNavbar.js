@@ -2,9 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-// import { BackButton, ShareButton } from '@components/new/common';
-import BackButton from './backButton';
-import ShareButton from './shareButton';
+import { FloatingBackButton, ShareButton } from '@components/common';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -29,9 +27,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Navbar = ({ style, handleBack, title, showShare, handleShare }) => (
+const FloatingNavbar = ({ style, handleBack, title, showShare, handleShare }) => (
   <View style={[styles.wrapper, style]}>
-    <BackButton onPress={handleBack} />
+    <FloatingBackButton onPress={handleBack} />
     {
       (title !== '') &&
       <Text style={styles.title}>{title}</Text>
@@ -45,7 +43,7 @@ const Navbar = ({ style, handleBack, title, showShare, handleShare }) => (
   </View>
 );
 
-Navbar.propTypes = {
+FloatingNavbar.propTypes = {
   style: View.propTypes.style,
   handleBack: PropTypes.func,
   showShare: PropTypes.bool,
@@ -53,7 +51,7 @@ Navbar.propTypes = {
   title: PropTypes.string,
 };
 
-Navbar.defaultProps = {
+FloatingNavbar.defaultProps = {
   style: {},
   handleBack: () => { },
   showShare: false,
@@ -61,4 +59,4 @@ Navbar.defaultProps = {
   title: '',
 };
 
-export default Navbar;
+export default FloatingNavbar;
