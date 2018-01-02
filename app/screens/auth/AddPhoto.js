@@ -37,7 +37,7 @@ class AddPhoto extends Component {
         <CustomButton
           style={styles.button}
           bgColor={Colors.background.green}
-          onPress={() => this.props.navigation.navigate('SendText')}
+          onPress={() => this.props.navigation.reset('SendText')}
         >
           Next
         </CustomButton>
@@ -48,7 +48,7 @@ class AddPhoto extends Component {
 
 AddPhoto.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
 };
 

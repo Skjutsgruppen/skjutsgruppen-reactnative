@@ -200,7 +200,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
           <Image source={ShareIcon} style={styles.icon} />
         </TouchableOpacity>
         <View style={styles.commentIcon}>
-          <Text style={styles.commentCout}>{ask.Comments.length}</Text>
+          <Text style={styles.commentCout}>{ask.totalComments}</Text>
           <TouchableOpacity onPress={() => onPress('ask', ask)}>
             <Image source={CommentIcon} style={styles.icon} />
           </TouchableOpacity>

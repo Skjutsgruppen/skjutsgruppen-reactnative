@@ -133,7 +133,7 @@ class Picker extends PureComponent {
 Picker.propTypes = {
   list: PropTypes.arrayOf(PropTypes.object).isRequired,
   defaultValue: PropTypes.string,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };
 
 Picker.defaultProps = {

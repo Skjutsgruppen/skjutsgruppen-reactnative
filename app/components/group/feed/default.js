@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
+import {
+  NOTIFICATION_TYPE_CREATE_GROUP,
+  NOTIFICATION_TYPE_LEFT_GROUP,
+  NOTIFICATION_TYPE_JOINED_GROUP,
+  NOTIFICATION_TYPE_COMMENT,
+} from '@config/constant';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
 class Feed extends Component {
   renderFeed() {
     const { feed } = this.props;
-    if (feed.ActivityType.type === 'create_group') {
+    if (feed.ActivityType.type === NOTIFICATION_TYPE_CREATE_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>Created this group</Text>
@@ -49,7 +55,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === 'left_group') {
+    if (feed.ActivityType.type === NOTIFICATION_TYPE_LEFT_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>left the group</Text>
@@ -57,7 +63,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === 'joined_group') {
+    if (feed.ActivityType.type === NOTIFICATION_TYPE_JOINED_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>Joined the group</Text>
@@ -65,7 +71,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === 'comment') {
+    if (feed.ActivityType.type === NOTIFICATION_TYPE_COMMENT) {
       return (
         <View>
           <Text style={styles.commentText}>{feed.Comment.text}</Text>

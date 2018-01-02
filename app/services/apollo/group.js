@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const SUBMIT_GROUP_QUERY = gql`
 mutation group
@@ -180,7 +181,7 @@ export const withExploreGroup = graphql(EXPLORE_GROUPS_QUERY, {
       from,
       filter,
       offset: 0,
-      limit: 5,
+      limit: PER_FETCH_LIMIT,
     },
   }),
   props: ({ data: { loading, exploreGroups, refetch, fetchMore, networkStatus, error } }) => {
@@ -254,7 +255,7 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
 `;
 export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
   options: ({ keyword }) => ({
-    variables: { keyword, offset: 0, limit: 5 },
+    variables: { keyword, offset: 0, limit: PER_FETCH_LIMIT },
   }),
   props: ({ data: { loading, searchGroup, refetch, fetchMore, networkStatus, error } }) => {
     let rows = [];
@@ -615,7 +616,7 @@ subscription groupFeed($groupId: Int!){
 
 export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
   options: ({ groupId }) => ({
-    variables: { offset: 0, limit: 10, groupId },
+    variables: { offset: 0, limit: PER_FETCH_LIMIT, groupId },
   }),
   props: ({
     data: { loading, groupFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },

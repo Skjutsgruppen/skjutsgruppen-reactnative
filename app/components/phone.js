@@ -44,7 +44,7 @@ class Phone extends PureComponent {
             <Picker
               defaultValue={this.state.code}
               list={list}
-              onChange={code => {this.setState({ code })}}
+              onChange={(code) => { this.setState({ code }); }}
             />
           </View>
           <View style={{ flex: 4 }}>

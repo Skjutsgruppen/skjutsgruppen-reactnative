@@ -1,4 +1,3 @@
-/* global navigator */
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
@@ -13,6 +12,7 @@ import Colors from '@theme/colors';
 import FeedIcon from '@icons/ic_feed.png';
 import FeedIconActive from '@icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
+import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 
 const styles = StyleSheet.create({
   circle: {
@@ -134,16 +134,26 @@ class Feed extends Component {
     this.setState({ filterOpen: visibility });
   }
 
-  currentLocation = () => {
-    this.setState({ loading: true });
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({ coordinates: [position.coords.longitude, position.coords.latitude] });
-      },
-      error => console.warn(error),
-      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: false },
-    );
-  };
+  async currentLocation() {
+    if (this.state.currentLocation) return;
+
+    try {
+      const res = await getCurrentLocation();
+      this.setState({
+        latitude: res.latitude,
+        longitude: res.longitude,
+        currentLocation: true,
+        locationError: false,
+      });
+    } catch (error) {
+      const { latitude, longitude } = getCountryLocation();
+      if (latitude) {
+        this.setState({ latitude, longitude, currentLocation: false, locationError: false });
+      } else {
+        this.setState({ locationError: true });
+      }
+    }
+  }
 
   redirectToMap = () => {
     this.props.navigation.navigate('Map');
