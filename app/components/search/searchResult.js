@@ -10,6 +10,7 @@ import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -303,16 +304,37 @@ class SearchResult extends Component {
           <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
           <Text style={styles.time}>{prettyDate.join(', ')}</Text>
           <View style={styles.suggestionsContainer}>
-            <TouchableOpacity onPress={() => this.onFilterSelect('offered')} style={[styles.suggestion, filters.indexOf('offered') > -1 ? styles.selected : {}]}>
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(FEED_TYPE_OFFER) > -1 ? styles.selected : {},
+              ]}
+            >
               <Text style={styles.whiteText}>Offered</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('wanted')} style={[styles.suggestion, filters.indexOf('wanted') > -1 ? styles.selected : {}]}>
+
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(FEED_TYPE_WANTED) > -1 ? styles.selected : {},
+              ]}
+            >
               <Text style={styles.whiteText}>Asked for</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('public')} style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}>
+
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect('public')}
+              style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}
+            >
               <Text style={styles.whiteText}>Public transport</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('group')} style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}>
+
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect('group')}
+              style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}
+            >
               <Text style={styles.whiteText}>Groups</Text>
             </TouchableOpacity>
           </View>

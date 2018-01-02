@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Route from './outreach/route';
-import Area from './outreach/area';
+import Route from '@components/group/outreach/route';
+import Area from '@components/group/outreach/area';
+import { STRETCH_TYPE_ROUTE } from '@config/constant';
 
 const OutReach = ({ outreach, onNext }) => {
-  if (outreach === 'route') {
+  if (outreach === STRETCH_TYPE_ROUTE) {
     return <Route onNext={onNext} />;
   }
 

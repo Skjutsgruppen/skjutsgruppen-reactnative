@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Radio from '@components/common/radio';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
+import { OPEN_GROUP, CLOSE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
   title: {
@@ -51,9 +52,9 @@ class OpenClosed extends Component {
     onNext(type);
   }
 
-  onPressOpen = () => this.setType('OpenGroup')
+  onPressOpen = () => this.setType(OPEN_GROUP)
 
-  onPressClosed = () => this.setType('ClosedGroup')
+  onPressClosed = () => this.setType(CLOSE_GROUP)
 
   setType = (type) => {
     this.setState({ type });
@@ -71,8 +72,8 @@ class OpenClosed extends Component {
           them to the group).
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === 'OpenGroup'} />
-          <Radio onPress={this.onPressClosed} label="ClosedGroup" checked={type === 'ClosedGroup'} />
+          <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === OPEN_GROUP} />
+          <Radio onPress={this.onPressClosed} label="ClosedGroup" checked={type === CLOSE_GROUP} />
         </View>
         <CustomButton
           onPress={this.onNext}

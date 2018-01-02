@@ -6,6 +6,7 @@ import Offer from '@components/feed/card/offer';
 import Ask from '@components/feed/card/ask';
 import Colors from '@theme/colors';
 import Date from '@components/date';
+import { FEED_TYPE_OFFER, FEEDABLE_TRIP, GROUP_FEED_TYPE_ASK_RIDE, GROUP_FEED_TYPE_OFFER_RIDE, GROUP_FEED_TYPE_SHARE } from '@config/constant';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
 });
 
 const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
-  if (groupFeed.ActivityType.type === 'ask_ride') {
+  if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_ASK_RIDE) {
     return (
       <Ask
         ask={groupFeed.Trip}
@@ -65,7 +66,7 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
         wrapperStyle={styles.card}
       />
     );
-  } else if (groupFeed.ActivityType.type === 'offer_ride') {
+  } else if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_OFFER_RIDE) {
     return (
       <Offer
         offer={groupFeed.Trip}
@@ -74,8 +75,8 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
         wrapperStyle={styles.card}
       />
     );
-  } else if (groupFeed.ActivityType.type === 'share') {
-    if (groupFeed.feedable === 'Trip') {
+  } else if (groupFeed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
+    if (groupFeed.feedable === FEEDABLE_TRIP) {
       let image = null;
       if (groupFeed.User.avatar) {
         image = (<Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />);
@@ -96,7 +97,7 @@ const GroupFeedItem = ({ groupFeed, onPress, onSharePress }) => {
         </View>
       );
 
-      if (groupFeed.Trip.type === 'offered') {
+      if (groupFeed.Trip.type === FEED_TYPE_OFFER) {
         return (
           <View style={{
             marginTop: 12,

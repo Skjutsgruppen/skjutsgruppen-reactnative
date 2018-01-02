@@ -16,6 +16,7 @@ import Share from '@components/common/share';
 import MapToggle from '@components/new/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/new/toast';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
@@ -117,7 +118,7 @@ class Detail extends PureComponent {
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? FEEDABLE_GROUP : FEEDABLE_TRIP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };

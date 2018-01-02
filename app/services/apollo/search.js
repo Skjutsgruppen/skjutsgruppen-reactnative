@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const SEARCH = gql`
 query search
@@ -179,7 +180,7 @@ export const withSearch = graphql(SEARCH, {
       filters,
       dateRange: [],
       offset: 0,
-      limit: 5,
+      limit: PER_FETCH_LIMIT,
     },
   }),
   props: ({ search }) => ({ search }),

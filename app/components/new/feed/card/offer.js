@@ -203,7 +203,7 @@ const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
           <Image source={ShareIcon} style={styles.shareIcon} />
         </TouchableOpacity>
         <View style={styles.commentIcon}>
-          <Text style={styles.commentCout}>{offer.Comments.length}</Text>
+          <Text style={styles.commentCout}>{offer.totalComments}</Text>
           <TouchableOpacity onPress={() => onPress('offer', offer)}>
             <Image source={CommentIcon} style={styles.commentIcon} />
           </TouchableOpacity>

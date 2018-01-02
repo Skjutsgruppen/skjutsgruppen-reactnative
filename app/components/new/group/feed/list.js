@@ -7,6 +7,7 @@ import Item from '@components/new/group/feed/item';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import Share from '@components/common/share';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -49,11 +50,11 @@ class GroupFeed extends Component {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
-    if (type === 'offered') {
+    if (type === FEED_TYPE_OFFER) {
       navigation.navigate('OfferDetail', { offer: detail });
     }
 
-    if (type === 'wanted') {
+    if (type === FEED_TYPE_WANTED) {
       navigation.navigate('AskDetail', { ask: detail });
     }
 
@@ -67,7 +68,9 @@ class GroupFeed extends Component {
   };
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    const { modalDetail, modalType } = this.state;
+
+    this.props.share({ id: modalDetail.id, type: modalType === 'group' ? FEEDABLE_GROUP : FEEDABLE_TRIP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
