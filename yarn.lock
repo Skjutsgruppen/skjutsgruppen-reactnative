@@ -4343,6 +4343,10 @@ react-native-maps@^0.17.1:
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.17.1.tgz#ab2236341fd984dac8864202ae55331bc262f60c"
 
+react-native-sms@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-sms/-/react-native-sms-1.5.1.tgz#144ec9bf2cfd477a1d8912744c83e5a76d493117"
+
 react-native-tab-view@^0.0.69:
   version "0.0.69"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-0.0.69.tgz#f52d4354a98a382f10eb5fcf61db5216c91dc7e7"

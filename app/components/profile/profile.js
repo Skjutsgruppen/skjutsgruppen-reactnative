@@ -8,6 +8,11 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  RELATIONSHIP_TYPE_FRIEND,
+  RELATIONSHIP_TYPE_INCOMING,
+  RELATIONSHIP_TYPE_OUTGOING,
+} from '@config/constant';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -230,7 +235,7 @@ class Profile extends Component {
       return (<Loading />);
     }
 
-    if (profile.relationshipType === 'friend') {
+    if (profile.relationshipType === RELATIONSHIP_TYPE_FRIEND) {
       return (
         <View style={styles.disabledBtn}>
           <Text>You are friend.</Text>
@@ -238,11 +243,11 @@ class Profile extends Component {
       );
     }
 
-    if (profile.relationshipType === 'incoming') {
+    if (profile.relationshipType === RELATIONSHIP_TYPE_INCOMING) {
       return this.renderAction();
     }
 
-    if (profile.relationshipType === 'outgoing') {
+    if (profile.relationshipType === RELATIONSHIP_TYPE_OUTGOING) {
       return (
         <CustomButton
           style={styles.button}

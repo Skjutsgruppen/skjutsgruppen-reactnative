@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
 import { connect } from 'react-redux';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
   section: {
@@ -56,7 +57,7 @@ class NewNotification extends PureComponent {
     const { notifications } = this.props;
     if (notifications.loading) return null;
 
-    const remaining = notifications.count - 5;
+    const remaining = notifications.count - PER_FETCH_LIMIT;
     if (remaining < 1) return null;
 
     return (

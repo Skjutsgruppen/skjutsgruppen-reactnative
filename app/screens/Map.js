@@ -3,11 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
 import PropTypes from 'prop-types';
-import { getCountryLocation, getCurrentLocation } from '@components/location';
+import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import MapView from 'react-native-maps';
 import Marker from '@components/map/marker';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -63,11 +64,11 @@ class Map extends PureComponent {
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
 
-    if (Trip.type === 'offered') {
+    if (Trip.type === FEED_TYPE_OFFER) {
       navigation.navigate('OfferDetail', { offer: Trip });
     }
 
-    if (Trip.type === 'wanted') {
+    if (Trip.type === FEED_TYPE_WANTED) {
       navigation.navigate('AskDetail', { ask: Trip });
     }
   }

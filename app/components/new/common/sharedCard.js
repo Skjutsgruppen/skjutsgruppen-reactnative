@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -39,14 +40,14 @@ const SharedCard = ({ trip, onPress }) => {
   }
 
   let title = null;
-  if (trip.type === 'offered') {
+  if (trip.type === FEED_TYPE_OFFER) {
     title = (
       <Text style={styles.text}>
         {trip.User.firstName || trip.User.email}
         <Text> offers {trip.seats} {trip.seats > 1 ? 'seats' : 'seat'} </Text>
       </Text>
     );
-  } else if (trip.type === 'wanted') {
+  } else if (trip.type === FEED_TYPE_WANTED) {
     title = (
       <Text style={styles.text}>
         {trip.User.firstName || trip.User.email}

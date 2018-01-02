@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Ask from '@components/feed/card/ask';
 import Offer from '@components/feed/card/offer';
+import { FEED_TYPE_OFFER } from '@config/constant';
 
 const TripsItem = ({ trip, onPress, onSharePress }) => {
-  if (trip.type === 'offered') {
+  if (trip.type === FEED_TYPE_OFFER) {
     return (
       <Offer
         offer={trip}

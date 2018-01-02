@@ -13,7 +13,7 @@ import AuthService from '@services/auth/auth';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { Icons } from '@icons';
 import Phone from '@components/phone';
-import { getPhoneNumber } from '@services/device';
+import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
 import { getToast } from '@config/toast';
 import Toast from '@components/new/toast';
 
@@ -67,7 +67,7 @@ class Verified extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ firstName: '', lastName: '', countryCode: '+977', phone: '', password: '', loading: false, error: '', inputs: {} });
+    this.state = ({ firstName: '', lastName: '', countryCode: '', phone: '', password: '', loading: false, error: '', inputs: {} });
   }
 
   componentWillMount() {
@@ -76,7 +76,7 @@ class Verified extends Component {
       navigation.reset('Tab');
     }
 
-    this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', phone: getPhoneNumber() });
+    this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', countryCode: getCountryDialCode(), phone: getPhoneNumber() });
   }
 
   onSubmit = () => {
@@ -88,7 +88,13 @@ class Verified extends Component {
 
     if (validation.pass()) {
       try {
-        updateProfile({ firstName, lastName, phoneNumber: phone, phoneCountryCode: countryCode, password })
+        updateProfile({
+          firstName,
+          lastName,
+          phoneNumber: phone,
+          phoneCountryCode: countryCode,
+          password,
+        })
           .then(({ data }) => {
             const { token, User } = data.updateUser;
             updateUser({ token, user: User }).then(() => {

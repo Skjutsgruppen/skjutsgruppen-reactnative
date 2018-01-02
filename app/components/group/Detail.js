@@ -12,6 +12,7 @@ import Relation from '@components/relation';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import Share from '@components/common/share';
+import { FEEDABLE_GROUP, FEEDABLE_TRIP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
@@ -266,7 +267,7 @@ class Detail extends PureComponent {
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? FEEDABLE_GROUP : FEEDABLE_TRIP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -373,14 +374,14 @@ class Detail extends PureComponent {
                 <Text style={styles.newGroupName}>{group.name}</Text>
               </View>
               {
-                group.outreach === 'area' &&
+                group.outreach === STRETCH_TYPE_AREA &&
                 <Text style={styles.newGroupPlace}>
                   {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
                 </Text>
               }
 
               {
-                group.outreach === 'route' &&
+                group.outreach === STRETCH_TYPE_ROUTE &&
                 <Text style={styles.newGroupPlace}>
                   {group.TripStart.name} - {group.TripEnd.name}
                 </Text>

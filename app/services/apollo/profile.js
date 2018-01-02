@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const profileQuery = gql`
 query profile($id: Int){
@@ -205,7 +206,7 @@ const myFriendsQuery = gql`
 
 export const withMyFriends = graphql(myFriendsQuery, {
   options: ({ id }) => ({
-    variables: { id, offset: 0, limit: 15 },
+    variables: { id, offset: 0, limit: PER_FETCH_LIMIT },
     props: ({ friends }) => ({ friends }),
   }),
 });

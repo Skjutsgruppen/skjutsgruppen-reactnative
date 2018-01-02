@@ -7,6 +7,7 @@ import GroupItem from '@components/feed/card/group';
 import { withJoinGroup } from '@services/apollo/group';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import { CLOSE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
   label: {
@@ -86,7 +87,7 @@ class JoinGroup extends Component {
     const { submit, refresh } = this.props;
 
     this.setState({ loading: true }, () => submit(group.id).then(refresh).then(() => {
-      if (group.type === 'ClosedGroup') {
+      if (group.type === CLOSE_GROUP) {
         this.setState({ requestSent: true, loading: false });
       }
     }));
