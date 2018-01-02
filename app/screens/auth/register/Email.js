@@ -81,7 +81,7 @@ class Email extends Component {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
             this.setState({ loading: false, error: '' }, () => {
-              navigation.navigate('CheckMail');
+              navigation.reset('CheckMail');
             });
           });
         }).catch((err) => {

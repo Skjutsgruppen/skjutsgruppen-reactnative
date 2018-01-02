@@ -7,7 +7,7 @@ import Colors from '@theme/colors';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import SearchIcon from '@icons/ic_search.png';
 import SearchIconActive from '@icons/ic_search_active.png';
 
@@ -179,7 +179,7 @@ class Search extends Component {
         coordinates: [],
       },
       direction: 'anywhere',
-      filters: ['offered', 'wanted', 'public', 'group'],
+      filters: [FEED_TYPE_OFFER, FEED_TYPE_WANTED, 'public', 'group'],
       markedDates: {},
       dates: [],
       modalVisible: false,
@@ -361,16 +361,34 @@ class Search extends Component {
           </Modal>
           <Text style={styles.label}>Show results from</Text>
           <View style={styles.resultsFrom}>
-            <TouchableOpacity onPress={() => this.onFilterSelect('offered')} style={[styles.suggestion, filters.indexOf('offered') > -1 ? styles.selected : {}]}>
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(FEED_TYPE_OFFER) > -1 ? styles.selected : {},
+              ]}
+            >
               <Text style={styles.suggestionText}>Offered</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('wanted')} style={[styles.suggestion, filters.indexOf('wanted') > -1 ? styles.selected : {}]}>
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(FEED_TYPE_WANTED) > -1 ? styles.selected : {},
+              ]}
+            >
               <Text style={styles.suggestionText}>Asked for</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('public')} style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}>
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect('public')}
+              style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}
+            >
               <Text style={styles.suggestionText}>Public transport</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onFilterSelect('group')} style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}>
+            <TouchableOpacity
+              onPress={() => this.onFilterSelect('group')}
+              style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}
+            >
               <Text style={styles.suggestionText}>Groups</Text>
             </TouchableOpacity>
           </View>

@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Colors from '@theme/colors';
 import Radio from '@components/common/radio';
 import CustomButton from '@components/common/customButton';
+import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 
 const styles = StyleSheet.create({
   title: {
@@ -37,15 +38,24 @@ const styles = StyleSheet.create({
 class Stretch extends Component {
   constructor(props) {
     super(props);
-    this.state = { outreach: 'route' };
+    this.state = { outreach: STRETCH_TYPE_ROUTE };
   }
 
-  setStretchType = (status) => {
-    this.setState({ outreach: status });
+  onPress = () => {
+    const { onNext } = this.props;
+    const { outreach } = this.state;
+    onNext(outreach);
+  }
+
+  setRouteType = () => {
+    this.setState({ outreach: STRETCH_TYPE_ROUTE });
+  }
+
+  setAreaType = () => {
+    this.setState({ outreach: STRETCH_TYPE_AREA });
   }
 
   render() {
-    const { onNext } = this.props;
     const { outreach } = this.state;
     return (
       <View>
@@ -55,11 +65,11 @@ class Stretch extends Component {
           you going different stretches?
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={() => this.setStretchType('route')} label="Specific stretch" checked={outreach === 'route'} />
-          <Radio onPress={() => this.setStretchType('area')} label="Different stretches" checked={outreach === 'area'} />
+          <Radio onPress={this.setRouteType} label="Specific stretch" checked={outreach === STRETCH_TYPE_ROUTE} />
+          <Radio onPress={this.setAreaType} label="Different stretches" checked={outreach === STRETCH_TYPE_AREA} />
         </View>
         <View style={styles.buttonWrapper}>
-          <CustomButton onPress={() => onNext(outreach)} bgColor={Colors.background.darkCyan}>
+          <CustomButton onPress={this.onPress} bgColor={Colors.background.darkCyan}>
             Next
           </CustomButton>
         </View>

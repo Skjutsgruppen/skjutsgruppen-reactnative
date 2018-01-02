@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
@@ -312,7 +313,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
 `;
 
 export const withNotification = graphql(NOTIFICATION_QUERY, {
-  options: ({ filters, offset = 0, limit = 5 }) => ({
+  options: ({ filters, offset = 0, limit = PER_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { filters, offset, limit },
   }),

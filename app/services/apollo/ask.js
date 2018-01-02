@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { FEED_TYPE_WANTED } from '@config/constant';
 
 const CREATE_ASK_QUERY = gql`
 mutation createTrip(
@@ -71,21 +72,22 @@ export const submitAsk = graphql(CREATE_ASK_QUERY, {
       time,
       flexibility,
       share,
-    }) => mutate({
-      variables: {
-        description,
-        type: 'wanted',
-        tripStart,
-        tripEnd,
-        photo,
-        stops: null,
-        returnTrip,
-        dates,
-        time,
-        seats: 0,
-        flexibility,
-        share,
-      },
-    }),
+    }) =>
+      mutate({
+        variables: {
+          description,
+          type: FEED_TYPE_WANTED,
+          tripStart,
+          tripEnd,
+          photo,
+          stops: null,
+          returnTrip,
+          dates,
+          time,
+          seats: 0,
+          flexibility,
+          share,
+        },
+      }),
   }),
 });

@@ -75,7 +75,7 @@ class Check extends Component {
           if (status) {
             setUser(user).then(() => {
               this.setState({ loading: false, error: '' }, () => {
-                navigation.navigate('EmailVerified');
+                navigation.reset('EmailVerified');
               });
             });
           }
