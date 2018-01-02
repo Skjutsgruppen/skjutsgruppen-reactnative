@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import JoinGroup from '@components/new/group/JoinGroup';
-import Detail from '@components/new/group/Detail';
+import JoinGroup from '@components/group/JoinGroup';
+import Detail from '@components/group/Detail';
 import { withFindGroup } from '@services/apollo/group';
 import { Loading } from '@components/common';
 

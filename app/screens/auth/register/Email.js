@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import FBLogin from '@components/facebook/login';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {

@@ -9,8 +9,8 @@ import GroupDetail from '@screens/group/GroupDetail';
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
 
-import OfferDetail from '@screens/new/OfferDetail';
-import AskDetail from '@screens/new/AskDetail';
+import OfferDetail from '@screens/OfferDetail';
+import AskDetail from '@screens/AskDetail';
 
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
