@@ -120,10 +120,10 @@ class Map extends PureComponent {
 
     this.mapView.fitToCoordinates(coordinates, {
       edgePadding: {
-        right: Math.ceil(width / 5),
-        bottom: Math.ceil(height / 5),
-        left: Math.ceil(width / 5),
-        top: Math.ceil(height / 5),
+        right: Math.ceil(width / 2),
+        bottom: Math.ceil(height / 2),
+        left: Math.ceil(width / 2),
+        top: Math.ceil(height / 2),
       },
       animation: false,
     });

@@ -100,6 +100,7 @@ subscription{
         photo 
         mapPhoto
         totalComments
+        isParticipant
         ReturnTrip {
           id
           date
@@ -140,6 +141,88 @@ subscription{
         visibleFrom 
         visibleUntil 
         updatedAt
+        totalComments
+      }
+    }
+    ... on ExperienceFeed{
+      Experience{
+        id
+        createdAt
+        description
+        photo
+        Participants {
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+          } 
+          status
+        }
+        Trip {
+          id 
+          type 
+          description 
+          seats 
+          parentId
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+            relation {
+              id 
+              email 
+              firstName
+              lastName
+              avatar
+            }
+          } 
+          TripStart {
+            name 
+            coordinates
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          time 
+          photo 
+          mapPhoto
+          totalComments
+          isParticipant
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
+        }
+        User {
+          id 
+          firstName 
+          lastName 
+          email 
+          avatar 
+        } 
+        totalComments
       }
     }
   }
@@ -149,6 +232,7 @@ subscription{
 export const GET_FEED_QUERY = gql`
 query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
   getFeed (offset:$offset, limit:$limit, filter:$filter){
+   totalExperiences
    rows {
     id
     feedable
@@ -245,6 +329,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         photo 
         mapPhoto
         totalComments
+        isParticipant
         ReturnTrip {
           id
           date
@@ -288,6 +373,87 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         totalComments
       }
     }
+    ... on ExperienceFeed{
+      Experience{
+        id
+        createdAt
+        description
+        photo
+        Participants {
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+          } 
+          status
+        }
+        Trip {
+          id 
+          type 
+          description 
+          seats 
+          parentId
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+            relation {
+              id 
+              email 
+              firstName
+              lastName
+              avatar
+            }
+          } 
+          TripStart {
+            name 
+            coordinates
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          time 
+          photo 
+          mapPhoto
+          totalComments
+          isParticipant
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
+        }
+        User {
+          id 
+          firstName 
+          lastName 
+          email 
+          avatar 
+        } 
+        totalComments
+      }
+    }
    }
    count
   }
@@ -303,16 +469,28 @@ export const withFeed = graphql(GET_FEED_QUERY, {
   props: ({
     data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
   }) => {
+    let totalExperiences = 0;
     let rows = [];
     let count = 0;
 
     if (getFeed) {
+      totalExperiences = getFeed.totalExperiences;
       rows = getFeed.rows;
       count = getFeed.count;
     }
 
     return {
-      feeds: { loading, rows, count, fetchMore, refetch, subscribeToMore, networkStatus, error },
+      feeds: {
+        loading,
+        totalExperiences,
+        rows,
+        count,
+        fetchMore,
+        refetch,
+        subscribeToMore,
+        networkStatus,
+        error,
+      },
       subscribeToFeed: () => subscribeToMore({
         document: FEED_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
