@@ -196,6 +196,10 @@ class Profile extends Component {
     if (type === 'ride') {
       navigation.navigate('UserTrips', { userId: id });
     }
+
+    if (type === 'experiences') {
+      navigation.navigate('UserExperiences', { userId: id });
+    }
   }
 
   sendRequest = () => {

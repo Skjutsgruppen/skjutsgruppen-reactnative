@@ -6,10 +6,7 @@ import MemberItem from '@components/memberItem';
 
 const styles = StyleSheet.create({
   returnModalContent: {
-    flex: 1,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    maxHeight: '90%',
     backgroundColor: '#e5e5e5',
     paddingTop: 24,
     borderTopLeftRadius: 12,
@@ -40,7 +37,7 @@ const RelationModal = ({ users, onPress, setModalVisibility, showFofModal }) => 
     onRequestClose={() => setModalVisibility(false)}
     visible={showFofModal}
   >
-    <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.85)', paddingTop: 16 }}>
+    <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.85)', paddingTop: 16, justifyContent: 'flex-end' }}>
       <View style={styles.returnModalContent}>
         <FlatList
           data={users}

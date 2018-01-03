@@ -14,7 +14,7 @@ import { Loading, Wrapper, Container } from '@components/common';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import CustomButton from '@components/common/customButton';
-import { submitAsk } from '@services/apollo/ask';
+import { submitAsk } from '@services/apollo/trip';
 import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({

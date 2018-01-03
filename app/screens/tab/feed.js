@@ -14,6 +14,11 @@ import FeedIconActive from '@icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
+import { FEED_FILTER_EVERYTHING, EXPERIENCE_AFTER_CARDS, EXPERIENCE_FETCH_LIMIT } from '@config/constant';
+import { withGetExperiences } from '@services/apollo/experience';
+import List from '@components/experience/list';
+
+const FeedExperience = withGetExperiences(List);
 
 const styles = StyleSheet.create({
   circle: {
@@ -68,8 +73,9 @@ class Feed extends Component {
       modalType: '',
       isOpen: false,
       filterOpen: false,
-      filterType: 'everything',
+      filterType: FEED_FILTER_EVERYTHING,
       coordinates: [],
+      totalExperiences: 0,
     });
   }
 
@@ -83,6 +89,10 @@ class Feed extends Component {
     this.currentLocation();
     subscribeToFeed();
   }
+
+  onExperiencePress = () => {
+    this.props.navigation.navigate('ExperienceDetail');
+  };
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
@@ -104,6 +114,10 @@ class Feed extends Component {
 
     if (type === 'news') {
       navigation.navigate('NewsDetail', { news: detail });
+    }
+
+    if (type === 'experience') {
+      navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
 
@@ -192,7 +206,7 @@ class Feed extends Component {
       </TouchableOpacity>
     );
 
-    if (error) {
+    if (error && !loading) {
       return (
         <View style={{ marginTop: 100 }}>
           <Text>Error: {error.message}</Text>
@@ -201,7 +215,7 @@ class Feed extends Component {
       );
     }
 
-    if (count < 1) {
+    if (count < 1 && !loading) {
       return (
         <View style={{ marginTop: 100 }}>
           <Text>No Feeds.</Text>
@@ -234,10 +248,40 @@ class Feed extends Component {
     </View>
   )
 
+  renderExperience = (index) => {
+    const { totalExperiences } = this.props.feeds;
+    const indexPlusOne = index + 1;
+    const isRenderable = (indexPlusOne % EXPERIENCE_AFTER_CARDS === 0);
+    const offset = ((indexPlusOne / EXPERIENCE_AFTER_CARDS) - 1) * EXPERIENCE_FETCH_LIMIT;
+    const isLimitNotExceeded = totalExperiences > offset;
+
+    if (isLimitNotExceeded && isRenderable) {
+      return (
+        <FeedExperience
+          title="Experiences"
+          offset={offset}
+          limit={EXPERIENCE_FETCH_LIMIT}
+        />);
+    }
+
+    return null;
+  }
+
+  renderItem = ({ item, index }) => (
+    <View>
+      <FeedItem
+        onSharePress={this.onSharePress}
+        onPress={this.onPress}
+        feed={item}
+      />
+      {this.renderExperience(index)}
+    </View>
+  );
+
   renderFeed() {
     const { feeds } = this.props;
 
-    if (feeds.networkStatus === 1) {
+    if (feeds.networkStatus === 1 && feeds.rows.length < 1) {
       return (
         <View style={{ marginTop: 100 }}>
           <Loading />
@@ -248,13 +292,7 @@ class Feed extends Component {
     return (
       <FlatList
         data={feeds.rows}
-        renderItem={
-          ({ item }) => (<FeedItem
-            onSharePress={this.onSharePress}
-            onPress={this.onPress}
-            feed={item}
-          />)
-        }
+        renderItem={this.renderItem}
         keyExtractor={item => item.id}
         refreshing={feeds.networkStatus === 4 || feeds.networkStatus === 2}
         onRefresh={() => feeds.refetch()}
@@ -308,6 +346,7 @@ class Feed extends Component {
 Feed.propTypes = {
   share: PropTypes.func.isRequired,
   feeds: PropTypes.shape({
+    totalExperiences: PropTypes.numeric,
     rows: PropTypes.arrayOf(PropTypes.object),
     fetchMore: PropTypes.func.isRequired,
     refetch: PropTypes.func.isRequired,

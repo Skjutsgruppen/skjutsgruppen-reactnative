@@ -4,6 +4,7 @@ import { submitComment, withTripComment } from '@services/apollo/comment';
 import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
+import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
@@ -215,6 +216,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: Colors.text.blue,
+  },
+  dividerWrapper: {
+    marginHorizontal: 24,
   },
   horizontalDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -437,6 +441,20 @@ class OfferDetail extends Component {
     );
   }
 
+  renderExperiencButton = () => {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+    const tripStarted = Moment(offer.date).isBefore();
+
+    if (!offer.isParticipant || !tripStarted) return null;
+
+    return (
+      <MakeExperience
+        handlePress={() => navigation.navigate('Experience', { trip: offer })}
+      />
+    );
+  }
+
   renderShareModal() {
     return (
       <Modal
@@ -466,7 +484,7 @@ class OfferDetail extends Component {
             style={styles.moreIconWrapper}
             onPress={() => this.setModalVisible(true)}
           >
-            <Image source={require('@icons/icon_more_gray.png')} style={styles.moreIcon} />
+            <Image source={require('@icons/ic_options.png')} style={styles.moreIcon} />
           </TouchableOpacity>
         }
         <TextInput
@@ -640,7 +658,7 @@ class OfferDetail extends Component {
           </View>
           {
             offer.User.relation.length > 0 &&
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <Text>This is how you know {offer.User.firstName}</Text>
               <Relation
                 navigation={navigation}
@@ -649,8 +667,15 @@ class OfferDetail extends Component {
               />
             </View>
           }
+          <View style={styles.dividerWrapper}>
+            <View style={styles.horizontalDivider} />
+          </View>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
+          {this.renderExperiencButton()}
+          <View style={styles.dividerWrapper}>
+            <View style={styles.horizontalDivider} />
+          </View>
           <OfferComment
             navigation={navigation}
             onCommentPress={this.onProfilePress}
