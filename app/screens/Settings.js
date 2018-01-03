@@ -5,12 +5,15 @@ import { Wrapper, NavBar, Loading } from '@components/common';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
+import LangService from '@services/lang';
 import { withContacts } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Contacts from 'react-native-contacts';
 import { FBLoginManager } from 'react-native-facebook-login';
 import LinkFacebook from '@components/facebook/link';
+import I18n from 'react-native-i18n';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -37,7 +40,13 @@ class Settings extends Component {
       error: '',
       language: 'en',
       loading: false,
+      languageChanged: 0,
     });
+  }
+
+  async componentWillMount() {
+    const language = await LangService.getLanguage();
+    this.setState({ language });
   }
 
   onEdit = () => {
@@ -48,6 +57,16 @@ class Settings extends Component {
   onChangePassword = () => {
     const { navigation } = this.props;
     navigation.navigate('ChangePassword');
+  }
+
+  setLanguage = (language) => {
+    if (language === this.state.language) return;
+    
+    this.setState({ language });
+    LangService.setLanguage(language).then(() => {
+      I18n.locale = language;
+      this.props.navigation.reset('Tab');
+    });
   }
 
   goBack = () => {
@@ -101,14 +120,14 @@ class Settings extends Component {
           </View>
           <View style={styles.listWrapper}>
             <TouchableOpacity onPress={this.onChangePassword} style={styles.list}>
-              <Text>Change Password</Text>
+              <Text>{trans('setting.change_password')}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.listWrapper}>
             <Text>Language</Text>
             <Picker
               selectedValue={this.state.language}
-              onValueChange={language => this.setState({ language })}
+              onValueChange={language => this.setLanguage(language)}
             >
               <Picker.Item label="English" value="en" />
               <Picker.Item label="Swedish" value="se" />
