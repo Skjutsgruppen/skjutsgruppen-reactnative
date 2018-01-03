@@ -15,7 +15,7 @@ import { Icons } from '@icons';
 import Phone from '@components/phone';
 import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {

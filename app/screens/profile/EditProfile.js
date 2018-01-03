@@ -11,7 +11,7 @@ import { withUpdateProfile } from '@services/apollo/auth';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   profilePicture: {

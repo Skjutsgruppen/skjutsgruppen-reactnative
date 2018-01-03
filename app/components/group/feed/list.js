@@ -12,6 +12,7 @@ import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_GROUP, FEEDABLE_TRIP } from
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    backgroundColor: Colors.background.fullWhite,
   },
   infoText: {
     paddingHorizontal: 16,
@@ -91,7 +92,7 @@ class GroupFeed extends Component {
           style={{
             paddingVertical: 60,
             borderTopWidth: 1,
-            borderColor: '#CED0CE',
+            borderColor: 'transparent',
           }}
         />
       );
@@ -129,7 +130,6 @@ class GroupFeed extends Component {
 
   render() {
     const { rows, error, count, networkStatus, refetch, loading, fetchMore } = this.props.groupFeed;
-
     if (networkStatus === 1) {
       return (
         <View
@@ -161,7 +161,6 @@ class GroupFeed extends Component {
           onEndReachedThreshold={0.5}
           ListHeaderComponent={this.props.header}
           ListFooterComponent={this.renderFooter}
-          style={{ backgroundColor: Colors.background.lightGray }}
           onEndReached={() => {
             if (loading || rows.length >= count) return;
 
