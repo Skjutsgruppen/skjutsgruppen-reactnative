@@ -44,6 +44,7 @@ mutation createTrip(
       coordinates
     }
     photo 
+    mapPhoto
     Stops 
     {
       name
@@ -54,7 +55,7 @@ mutation createTrip(
     date 
     time 
     seats 
-    flexibility,
+    flexibility
     url
   }
 }

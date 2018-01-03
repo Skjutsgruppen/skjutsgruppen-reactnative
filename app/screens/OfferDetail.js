@@ -269,6 +269,11 @@ class OfferDetail extends Component {
     navigation.navigate('UserProfile', { profileId: id });
   }
 
+  onProfilePress = (id) => {
+    const { navigation } = this.props;
+    navigation.navigate('UserProfile', { profileId: id });
+  }
+
   onCommentChange = (text) => {
     this.setState({ comment: text });
   }
@@ -480,7 +485,11 @@ class OfferDetail extends Component {
               {image}
             </View>
           </TouchableOpacity>
-          {profileImage}
+          <TouchableOpacity
+            onPress={() => this.onProfilePress(offer.User.id)}
+          >
+            {profileImage}
+          </TouchableOpacity>
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>

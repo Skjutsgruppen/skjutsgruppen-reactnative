@@ -52,6 +52,7 @@ subscription notification($userId: Int!) {
         date
         time
         photo
+        mapPhoto
         returnTrip
       }
       ... on Group {
@@ -208,6 +209,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           date
           time
           photo
+          mapPhoto
           returnTrip
         }
         ... on Group {
@@ -217,6 +219,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           description
           type
           photo
+          mapPhoto
           User {
             id
             email
@@ -258,6 +261,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             description
             type
             photo
+            mapPhoto
             User {
               id
               email
@@ -341,7 +345,8 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           }
 
           const newNotification = subscriptionData.data.notification;
-          const newrows = [newNotification].concat(prev.notifications.rows);
+          const prevNotification = prev.notifications.rows.slice(1, 5);
+          const newrows = [newNotification].concat(prevNotification);
           return {
             notifications: {
               ...prev.notifications,
