@@ -36,15 +36,16 @@ mutation group
         share : $share
       }) 
     {
-      outreach,
-      url,
-      name,
-      description,
-      photo,
-      country,
-      county,
-      municipality,
-      locality,
+      outreach
+      url
+      name
+      description
+      photo
+      mapPhoto
+      country
+      county
+      municipality
+      locality
       TripStart {
         name
         coordinates
@@ -128,6 +129,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       description
       type
       photo
+      mapPhoto
       User {
         id
         email
@@ -207,6 +209,7 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
       description
       type
       photo
+      mapPhoto
       User {
         id
         email

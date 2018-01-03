@@ -3,10 +3,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import {
-  NOTIFICATION_TYPE_CREATE_GROUP,
-  NOTIFICATION_TYPE_LEFT_GROUP,
-  NOTIFICATION_TYPE_JOINED_GROUP,
-  NOTIFICATION_TYPE_COMMENT,
+  GROUP_FEED_TYPE_CREATE_GROUP,
+  GROUP_FEED_TYPE_LEFT_GROUP,
+  GROUP_FEED_TYPE_JOINED_GROUP,
+  GROUP_FEED_TYPE_COMMENT,
 } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 class Feed extends Component {
   renderFeed() {
     const { feed } = this.props;
-    if (feed.ActivityType.type === NOTIFICATION_TYPE_CREATE_GROUP) {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>created this group</Text>
@@ -60,7 +60,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === NOTIFICATION_TYPE_LEFT_GROUP) {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>left the group</Text>
@@ -68,7 +68,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === NOTIFICATION_TYPE_JOINED_GROUP) {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP) {
       return (
         <View>
           <Text style={styles.commentText}>joined the group</Text>
@@ -76,7 +76,7 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === NOTIFICATION_TYPE_COMMENT) {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
       return (
         <View style={{ width: '100%' }}>
           <Text style={styles.commentText}>{feed.Comment.text}</Text>
