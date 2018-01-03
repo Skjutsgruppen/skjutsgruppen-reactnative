@@ -2,8 +2,15 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import { FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED, FEED_FILTER_WANTED, FEED_FILTER_NEARBY, FEED_FILTER_NEWS } from '@config/constant';
 import { trans } from '@lang/i18n';
+import {
+  FEED_FILTER_EVERYTHING,
+  FEED_FILTER_OFFERED,
+  FEED_FILTER_WANTED,
+  FEED_FILTER_EXPERIENCE,
+  FEED_FILTER_NEARBY,
+  FEED_FILTER_NEWS,
+} from '@config/constant';
 
 const styles = StyleSheet.create({
   actionsWrapper: {
@@ -16,7 +23,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   title: {
     textAlign: 'center',
@@ -71,6 +78,7 @@ const Filter = ({ showModal, onCloseModal, onPress }) => (
         <Action label={trans('feed.rides_that_are_asked_for')} onPress={() => onPress(FEED_FILTER_WANTED)} />
         <Action label={trans('feed.close_to_you')} onPress={() => onPress(FEED_FILTER_NEARBY)} />
         <Action label={trans('feed.news')} onPress={() => onPress(FEED_FILTER_NEWS)} />
+        <Action label="Experience" onPress={() => onPress(FEED_FILTER_EXPERIENCE)} />
       </View>
       <View style={styles.closeWrapper}>
         <TouchableOpacity

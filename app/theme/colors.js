@@ -40,6 +40,7 @@ const Colors = {
     gray: '#9b9b9b',
     lightGray: '#dddee3',
     white: '#ffffff',
+    pink: '#fc56d4',
   },
 };
 

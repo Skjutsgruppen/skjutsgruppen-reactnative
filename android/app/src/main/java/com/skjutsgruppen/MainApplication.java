@@ -3,6 +3,8 @@ package com.skjutsgruppen;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -31,6 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
+            new RCTCameraPackage(),
             SendSMSPackage.getInstance(),
             new RNDeviceInfo(),
             new MapsPackage(),
