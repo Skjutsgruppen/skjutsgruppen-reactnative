@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
-import PropTypes from 'prop-types';
-import { Wrapper, NavBar, CustomButton, Loading } from '@components/common';
-import Colors from '@theme/colors';
-import GroupItem from '@components/feed/card/group';
-import { withJoinGroup } from '@services/apollo/group';
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { CLOSE_GROUP } from '@config/constant';
+import PropTypes from 'prop-types';
+import { withJoinGroup } from '@services/apollo/group';
+import { Wrapper, Loading, FloatingNavbar } from '@components/common';
+import Colors from '@theme/colors';
+import Share from '@components/common/share';
+import { withShare } from '@services/apollo/auth';
+import GroupImage from '@components/group/groupImage';
+import Participants from '@components/group/participants';
+import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   label: {
@@ -16,14 +21,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginTop: 32,
   },
+  sectionTitle: {
+    fontSize: 12,
+    color: Colors.text.blue,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
   text: {
-    margin: 24,
+    marginHorizontal: 16,
+    marginVertical: 4,
     lineHeight: 20,
     color: '#333',
-  },
-  button: {
-    marginHorizontal: 24,
-    marginVertical: 12,
   },
   hearderStyles: {
     marginLeft: 0,
@@ -32,13 +40,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderRadius: 0,
   },
+  aboutTitle: {
+    marginTop: 6,
+    marginBottom: 8,
+  },
   stopText: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: Colors.border.lightGray,
+    marginHorizontal: 16,
+    marginVertical: 4,
   },
   stopsIcon: {
     width: 16,
@@ -48,20 +58,62 @@ const styles = StyleSheet.create({
   },
   stops: {
     fontWeight: 'bold',
-    color: Colors.text.darkGray,
+  },
+  description: {
+    marginTop: 24,
   },
   msgWrapper: {
-    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 45,
   },
   lightText: {
     color: Colors.text.gray,
+  },
+  whitebg: {
+    backgroundColor: Colors.background.fullWhite,
+  },
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: Colors.background.fullWhite,
+    shadowOffset: { width: 0, height: -4 },
+    shadowColor: Colors.background.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  participateButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: 45,
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    backgroundColor: Colors.background.pink,
+  },
+  buttonText: {
+    color: Colors.text.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 16,
+    backgroundColor: 'transparent',
   },
 });
 
 class JoinGroup extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, isPending: false, group: {}, requestSent: false });
+    this.state = ({
+      loading: false,
+      isPending: false,
+      group: {},
+      requestSent: false,
+      modalDetail: {},
+      modalType: '',
+      isOpen: false,
+      error: '',
+    });
   }
 
   componentWillMount() {
@@ -77,6 +129,20 @@ class JoinGroup extends Component {
     this.setState({ group, isPending });
   }
 
+  onSharePress = (modalType, modalDetail) => {
+    this.setState({ isOpen: true, modalType, modalDetail });
+  }
+
+  onShare = (share) => {
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+      .then(() => this.setState({ isOpen: false }))
+      .catch(console.warn);
+  };
+
+  onClose = () => {
+    this.setState({ isOpen: false });
+  }
+
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
@@ -90,73 +156,128 @@ class JoinGroup extends Component {
       if (group.type === CLOSE_GROUP) {
         this.setState({ requestSent: true, loading: false });
       }
+    }).catch((err) => {
+      this.setState({ loading: false, error: getToast(err) });
     }));
   }
 
   renderButton = () => {
-    const { loading, requestSent, isPending } = this.state;
+    const { loading, requestSent, isPending, error } = this.state;
 
     if (loading) {
       return (
-        <View style={styles.msgWrapper}>
-          <Loading />
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Loading />
+          </View>
         </View>
       );
     }
 
     if (requestSent) {
       return (
-        <View style={styles.msgWrapper}>
-          <Text style={styles.lightText}>Request has been sent</Text>
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Text style={styles.lightText}>Request has been sent</Text>
+          </View>
         </View>
       );
     }
 
     if (isPending) {
       return (
-        <View style={styles.msgWrapper}>
-          <Text style={styles.lightText}>Your Request is pending.</Text>
+        <View style={styles.footer}>
+          <View style={styles.msgWrapper}>
+            <Text style={styles.lightText}>Your Request is pending.</Text>
+          </View>
         </View>
       );
     }
 
     return (
-      <CustomButton
-        bgColor={Colors.background.green}
-        style={styles.button}
-        onPress={this.joinGroup}
+      <View style={styles.footer}>
+        <Toast message={error} type="error" />
+        <TouchableOpacity
+          style={styles.participateButton}
+          onPress={this.joinGroup}
+        >
+          <Text style={styles.buttonText}>Participate</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  renderShareModal() {
+    return (
+      <Modal
+        visible={this.state.isOpen}
+        onRequestClose={() => this.setState({ isOpen: false })}
+        animationType="slide"
       >
-        Join the group
-      </CustomButton>
+        <ScrollView>
+          <Share
+            modal
+            showGroup={this.state.modalType !== 'group'}
+            onNext={this.onShare}
+            onClose={this.onClose}
+          />
+        </ScrollView>
+      </Modal>
     );
   }
 
   render() {
     const { group } = this.props;
+
+    let image = null;
+    if (group.photo) {
+      image = (<GroupImage imageURI={group.photo} name={group.name} />);
+    } else if (group.mapPhoto) {
+      image = (<GroupImage imageURI={group.mapPhoto} name={group.name} />);
+    } else {
+      image = (<GroupImage imageURI={require('@assets/feed-img.jpg')} name={group.name} />);
+    }
+
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
-        <GroupItem
-          min
-          onPress={() => { }}
-          group={group}
-          wrapperStyle={styles.hearderStyles}
-        />
-        {
-          group.Stops.length > 0 &&
-          <View style={styles.stopText}>
-            <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
-            <Text style={styles.lightText}>
-              Stops in
-              <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
-            </Text>
-          </View>
-        }
-        <Text style={styles.label}>About</Text>
-        <Text style={styles.text}>
-          {group.description}
-        </Text>
+      <Wrapper bgColor={Colors.background.fullWhite}>
+        <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('group', group)} />
+        <ScrollView>
+          {image}
+          <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
+          <Participants members={group.GroupMembers} />
+          <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
+          <Text style={styles.text}>
+            {
+              group.type === 'OpenGroup' && 'Open Group'
+            }
+            {
+              group.type === 'ClosedGroup' && 'Closed Group'
+            }
+          </Text>
+          <Text style={styles.text}>
+            {
+              group.outreach === 'area' && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')
+            }
+            {
+              group.outreach === 'route' && `${group.TripStart.name} - ${group.TripEnd.name}`
+            }
+          </Text>
+          {
+            group.Stops.length > 0 &&
+            <View style={styles.stopText}>
+              <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
+              <Text style={{ color: '#333' }}>
+                Stops in
+                <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
+              </Text>
+            </View>
+          }
+          <Text style={[styles.text, styles.description]}>
+            {group.description}
+          </Text>
+        </ScrollView>
         {this.renderButton()}
+        {this.renderShareModal()}
       </Wrapper>
     );
   }
@@ -175,9 +296,9 @@ JoinGroup.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
+  share: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withJoinGroup, connect(mapStateToProps))(JoinGroup);
-
+export default compose(withShare, withJoinGroup, connect(mapStateToProps))(JoinGroup);

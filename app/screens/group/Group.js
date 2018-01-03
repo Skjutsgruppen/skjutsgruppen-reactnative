@@ -15,7 +15,7 @@ import { Loading, Wrapper, Container } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {

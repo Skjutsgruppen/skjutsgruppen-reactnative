@@ -10,7 +10,7 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   profilePic: {

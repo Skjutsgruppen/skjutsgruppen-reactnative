@@ -3,7 +3,7 @@ export const PER_FETCH_LIMIT = 10;
 export const DEFAULT_COUNTRY_CODE = 'SE';
 export const DEFAULT_LOCALE = 'en';
 
-export const FEED_FILTER_EVERYTHING = 'everthing';
+export const FEED_FILTER_EVERYTHING = 'everything';
 export const FEED_FILTER_OFFERED = 'offered';
 export const FEED_FILTER_WANTED = 'wanted';
 export const FEED_FILTER_NEARBY = 'nearby';
