@@ -12,7 +12,7 @@ import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP, FEEDABLE_TRIP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';

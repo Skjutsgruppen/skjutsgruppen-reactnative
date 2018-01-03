@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import GooglePlace from '@components/googlePlace';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -199,10 +200,10 @@ class Route extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}>Specific stretch</Text>
-        <Text style={styles.label}>From</Text>
+        <Text style={styles.title}>{trans('addGroup.specific_stretch')}</Text>
+        <Text style={styles.label}>{trans('global.from')}</Text>
         <GooglePlace
-          placeholder="Start here"
+          placeholder={trans('addGroup.start_here')}
           currentLocation
           defaultValue={this.state.start}
           onChangeText={start => this.setState({ start })}
@@ -211,7 +212,7 @@ class Route extends Component {
         <Text style={styles.label}>To</Text>
         <View style={[styles.inputWrapper, { zIndex: 8 }]}>
           <GooglePlace
-            placeholder="Destination"
+            placeholder={trans('global.destination')}
             defaultValue={this.state.end}
             onChangeText={end => this.setState({ end })}
           >
@@ -226,14 +227,13 @@ class Route extends Component {
               <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
             </TouchableOpacity>
             <Text style={styles.stopsLabel}>
-              Stops along the way:
+              {trans('addGroup.stops_along_the_way')}:
             </Text>
           </View>
           <View>
             {this.renderStops()}
             <Text style={styles.stopsInfo}>
-              You can add as many stops as you want as long as
-              you would like to pick up people there.
+              {trans('addGroup.add_many_stops')}
             </Text>
           </View>
         </View>
@@ -242,7 +242,7 @@ class Route extends Component {
             onPress={this.onNext}
             bgColor={Colors.background.darkCyan}
           >
-            Next
+            {trans('global.next')}
           </CustomButton>
         </View>
       </View>

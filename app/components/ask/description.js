@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CustomButtom from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   addPhoto: {
@@ -88,7 +89,7 @@ class Description extends Component {
 
         {profile}
 
-        <Text style={styles.title}> Description</Text>
+        <Text style={styles.title}> {trans('trip.description')}</Text>
         <View>
           <TextInput
             style={styles.textarea}
@@ -100,18 +101,16 @@ class Description extends Component {
           />
         </View>
         <Text style={styles.infoText}>
-          This is the most important part of our movement!
-          <Text style={styles.bold}> We love to talk to each other! </Text>
-          Write about who you are and where are you going. You can also include what
-          vehicle you have, if you offer your seats for free or if you want to share the
-          costs equally.
+          {trans('trip.most_important_part_of_movement')}
+          <Text style={styles.bold}> {trans('trip.love_to_talk_to_each_other')} </Text>
+          {trans('trip.write_about_who_you_are')}
         </Text>
         <CustomButtom
           onPress={this.onNext}
           bgColor={Colors.background.darkCyan}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </CustomButtom>
       </View>
     );

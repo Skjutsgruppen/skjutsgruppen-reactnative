@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, TextInput, Image } from 'react-native';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   header: {
@@ -49,10 +50,10 @@ const styles = StyleSheet.create({
 
 const Search = () => (
   <View style={styles.header}>
-    <Text style={styles.title}>Messages and groups</Text>
+    <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
     <View style={styles.searchInputWrapper}>
       <TextInput
-        placeholder="Search"
+        placeholder={trans('message.search')}
         underlineColorAndroid="transparent"
         style={styles.searchInput}
       />

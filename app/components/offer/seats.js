@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -56,8 +57,8 @@ class Seats extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}> Seats</Text>
-        <Text style={styles.text}>How many seats do you offer?</Text>
+        <Text style={styles.title}> {trans('trip.seats')}</Text>
+        <Text style={styles.text}>{trans('trip.how_many_seats_do_you_offer')}</Text>
         <View style={styles.inputWrapper}>
           <TextInput
             defaultValue={this.state.seat}
@@ -73,7 +74,7 @@ class Seats extends Component {
           bgColor={Colors.background.darkCyan}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
       </View>
     );

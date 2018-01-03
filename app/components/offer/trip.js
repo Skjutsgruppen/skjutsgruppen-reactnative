@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import GooglePlace from '@components/googlePlace';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -248,7 +249,7 @@ class Trip extends Component {
         <View key={j} style={styles.place}>
           <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
-            placeholder="Place"
+            placeholder={trans('trip.place')}
             defaultValue={this.state.stops[i]}
             onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
@@ -264,17 +265,17 @@ class Trip extends Component {
     const { start: StateStart, end: StateEnd, isReturning, isReturnTrip } = this.state;
     return (
       <View>
-        <Text style={styles.title}> Trip</Text>
-        <Text style={styles.label}>From</Text>
+        <Text style={styles.title}> {trans('trip.trip')}</Text>
+        <Text style={styles.label}>{trans('global.from')}</Text>
         <GooglePlace
-          placeholder="Start here"
+          placeholder={trans('trip.start_here')}
           currentLocation={!this.state.isReturnTrip}
           defaultValue={StateStart}
           onChangeText={start => this.setState({ start })}
         />
-        <Text style={styles.label}>To</Text>
+        <Text style={styles.label}>{trans('global.to')}</Text>
         <GooglePlace
-          placeholder="Destination"
+          placeholder={trans('global.destination')}
           defaultValue={StateEnd}
           onChangeText={end => this.setState({ end })}
         >
@@ -282,6 +283,23 @@ class Trip extends Component {
             <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
           </TouchableOpacity>
         </GooglePlace>
+        <View style={styles.destinations}>
+          <TouchableOpacity>
+            <Text style={styles.option}>{trans('global.anywhere')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>{trans('global.south')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>{trans('global.north')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>{trans('global.west')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.option}>{trans('global.east')}</Text>
+          </TouchableOpacity>
+        </View>
         {
           isOffer &&
           <View style={styles.stops}>
@@ -290,14 +308,13 @@ class Trip extends Component {
                 <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
               </TouchableOpacity>
               <Text style={styles.stopsLabel}>
-                Stops along the way:
+                {trans('trip.stops_along_the_way')}:
               </Text>
             </View>
             <View>
               {this.renderStops()}
               <Text style={styles.stopsInfo}>
-                You can add as many stops as you want as long as you would like to
-                pick up people there.
+                {trans('trip.add_many_stops')}
               </Text>
             </View>
           </View>
@@ -306,12 +323,11 @@ class Trip extends Component {
         {!isReturnTrip &&
           <View style={styles.verticalDivider} >
             <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
-            <Text style={styles.title}>Are You making a return ride?</Text>
+            <Text style={styles.title}>{trans('trip.are_you_making_return')}</Text>
             <Text style={styles.returnInfo}>
-              If select
-              <Text style={styles.bold}> yes </Text>
-              you will get to do a new card for your return ride after you are done
-                filling in this card. The cards will be connected to each other.
+              {trans('trip.if_select')}
+              <Text style={styles.bold}> {trans('trip.yes')} </Text>
+              {trans('trip.you_will_get_to_do_a_new_card_for_return')}
             </Text>
             <View style={styles.radioRow}>
               <View style={styles.radioWrapper}>
@@ -320,7 +336,7 @@ class Trip extends Component {
                 >
                   <View style={[styles.radio, { backgroundColor: isReturning ? '#1db0ed' : '#ffffff' }]} />
                 </TouchableWithoutFeedback>
-                <Text style={styles.radioLabel}>Yes!</Text>
+                <Text style={styles.radioLabel}>{trans('trip.yes_exclamation')}</Text>
               </View>
               <View style={styles.radioWrapper}>
                 <TouchableWithoutFeedback
@@ -328,7 +344,7 @@ class Trip extends Component {
                 >
                   <View style={[styles.radio, { backgroundColor: isReturning ? '#ffffff' : '#1db0ed' }]} />
                 </TouchableWithoutFeedback>
-                <Text style={styles.radioLabel}>Not this time</Text>
+                <Text style={styles.radioLabel}>{trans('trip.not_this_time')}</Text>
               </View>
             </View>
           </View>

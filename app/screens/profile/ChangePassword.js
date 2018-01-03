@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import { trans } from '@lang/i18n';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -154,7 +155,7 @@ class ChangePassword extends Component {
         style={styles.button}
         onPress={this.onSubmit}
       >
-        Change Password
+        {trans('setting.change_password')}
       </CustomButton>
     );
   }
@@ -169,7 +170,7 @@ class ChangePassword extends Component {
         <ScrollView>
           <Image source={{ uri: user.avatar }} style={styles.profilePic} />
           <GreetText color={Colors.text.green}>
-            Hi again {user.firstName}!
+            {trans('setting.hi_again')} {user.firstName}!
           </GreetText>
           <ColoredText color={Colors.text.blue}>Change your password here:</ColoredText>
           <Toast message={error} type="error" />
@@ -212,7 +213,7 @@ class ChangePassword extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.label}>New Password</Text>
+          <Text style={styles.label}>{trans('setting.new_password')}</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               value={this.state.newPassword}
@@ -250,7 +251,7 @@ class ChangePassword extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.label}>Confirm Password</Text>
+          <Text style={styles.label}>{trans('setting.confirm_password')}</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               value={this.state.confirmPassword}

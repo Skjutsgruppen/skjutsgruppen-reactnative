@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -103,7 +104,7 @@ const Groups = ({ group, onPress, wrapperStyle }) => {
             <Text style={styles.name}>
               {group.User.firstName || group.User.email}
             </Text>
-            <Text> created a group</Text>
+            <Text> {trans('feed.created_a_group')}</Text>
           </Text>
         </View>
 
@@ -128,7 +129,7 @@ const Groups = ({ group, onPress, wrapperStyle }) => {
                 </Text>
               }
               <Text style={styles.newGroupInfo}>
-                {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
+                {group.type} {trans('feed.group')}, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
               </Text>
             </View>
           </View>

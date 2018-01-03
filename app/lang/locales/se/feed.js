@@ -1,0 +1,16 @@
+export const feed = {
+  map: 'Karta',
+  group: 'grupp',
+  groups: 'Grupper',
+  created_a_group: 'skapade en grupp',
+  participant: 'deltagare',
+  participants: 'deltagare',
+  offers: 'erbjuder',
+  seat: 'sittplats',
+  seats: 'platser',
+  stops_in: 'Stoppar in',
+  asks_for_a_ride: 'ber om en tur',
+  join_the_group: 'Gå med i gruppen',
+  joined_the_group: 'Anställd i gruppen',
+  leave_the_group: 'Lämna gruppen',
+};

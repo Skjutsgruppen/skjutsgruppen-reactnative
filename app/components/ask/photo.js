@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Camera from '@components/camera';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -68,17 +69,17 @@ class Photo extends PureComponent {
         <View style={styles.addPhoto}>
           <Camera onSelect={res => this.setState({ photo: res.data })}>
             <View>
-              <Text style={styles.title}>Add a photo to your ride</Text>
+              <Text style={styles.title}>{trans('trip.add_photo_to_ride')}</Text>
               <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
             </View>
           </Camera>
         </View>
         <Text style={styles.infoText}>
-          Make your ride more visible by adding a photo.
+          {trans('trip.ride_visible_by_adding_photo')}
         </Text>
         <Image source={require('@icons/icon_garden.png')} style={styles.gardenIcon} />
         <Text style={[styles.infoText, styles.infoTextWider]}>
-          You can add a photo after you have supported the self-sustaining garden.
+          {trans('trip.add_photo_after_supporting_garden')}
         </Text>
         <CustomButton
           onPress={this.onNext}
@@ -86,7 +87,7 @@ class Photo extends PureComponent {
           style={styles.button}
         >
           {
-            this.state.photo ? 'Next' : 'Go without a photo'
+            this.state.photo ? trans('global.next') : trans('trip.go_on_without_photo')
           }
         </CustomButton>
       </View>

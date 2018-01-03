@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
 import Camera from '@components/camera';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   addPhotoWrapper: {
@@ -87,17 +88,17 @@ class About extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}>About</Text>
+        <Text style={styles.title}>{trans('addGroup.about')}</Text>
         <View style={styles.addPhotoWrapper}>
           <Camera onSelect={res => this.setState({ photo: res.data })}>
             <View style={styles.addPhoto}>
               <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
-              <Text style={styles.addPhotoLabel}>Add a group photo</Text>
+              <Text style={styles.addPhotoLabel}>{trans('addGroup.add_group_photo')}</Text>
             </View>
           </Camera>
         </View>
         <View>
-          <Text style={styles.label}>Name of the group</Text>
+          <Text style={styles.label}>{trans('addGroup.name_of_the_group')}</Text>
           <View>
             <TextInput
               style={styles.input}
@@ -106,12 +107,11 @@ class About extends Component {
             />
           </View>
           <Text style={styles.text}>
-            Examples: “The soccer group” or “We who commute together”
-            or what ever you like :)
+            {trans('addGroup.example_soccer_group')}
           </Text>
         </View>
         <View>
-          <Text style={styles.label}>Description</Text>
+          <Text style={styles.label}>{trans('addGroup.description')}</Text>
           <View>
             <TextInput
               style={styles.textarea}
@@ -122,13 +122,13 @@ class About extends Component {
             />
           </View>
         </View>
-        <Text style={styles.text}>Describe the purpose of the group.</Text>
+        <Text style={styles.text}>{trans('addGroup.describe_the_group_purpose')}</Text>
         <CustomButton
           onPress={this.onNext}
           bgColor={Colors.background.darkCyan}
           style={styles.buttonWrapper}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
       </View>
     );

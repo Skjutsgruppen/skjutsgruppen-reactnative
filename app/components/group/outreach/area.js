@@ -8,6 +8,7 @@ import { compose } from 'react-apollo';
 import { withCounties, withMunicipalities, withLocalities } from '@services/apollo/auth';
 import countries from '@config/countries';
 import LocationList from '@components/group/outreach/locationList';
+import { trans } from '@lang/i18n';
 
 const Municipality = withMunicipalities(LocationList);
 const Locality = withLocalities(LocationList);
@@ -108,7 +109,7 @@ class Area extends Component {
       onValueChange={county => this.setState({ county, municipality: null, locality: null })}
     >
       {[<Picker.Item
-        label="Select"
+        label={trans('addGroup.select')}
         value=""
         key="0"
       />].concat(node)}
@@ -156,9 +157,7 @@ class Area extends Component {
       return (
         <View>
           <Text style={styles.infoText}>
-            {`We don't have counties, municipalities and places for the
-            country you have choosen. Would you like to help us with adding this?
-            E-mail us at samarbeta@skjutsgruppen.nu and we'll do this together`}
+            {trans('addGroup.we_dont_have_countries_municipalities_and_places')}
           </Text>
         </View>
       );
@@ -167,27 +166,28 @@ class Area extends Component {
     return (
       <View>
         <View>
-          <Text style={styles.label}>County, <Text style={styles.optional}>optional</Text></Text>
+          <Text style={styles.label}>{trans('addGroup.county')}, <Text style={styles.optional}>{trans('addGroup.optional')}</Text></Text>
           {this.renderCounties()}
         </View>
         <View>
-          <Text style={styles.label}>Municipality</Text>
+          <Text style={styles.label}>{trans('addGroup.municipality')}</Text>
           {this.renderMunicipality()}
         </View>
         <View>
-          <Text style={styles.label}>Locality, <Text style={styles.optional}>optional</Text></Text>
+          <Text style={styles.label}>{trans('addGroup.locality')}, <Text style={styles.optional}>{trans('addGroup.optional')}</Text></Text>
           {this.renderLocality()}
         </View>
       </View>
     );
   }
+
   render() {
     return (
       <View>
-        <Text style={styles.title}>Area Different stretchs</Text>
-        <Text style={styles.text}>This groups is based in:</Text>
+        <Text style={styles.title}>{trans('addGroup.area_different_stretches')}</Text>
+        <Text style={styles.text}>{trans('addGroup.this_group_is_based_on')}:</Text>
         <View>
-          <Text style={styles.label}>Country</Text>
+          <Text style={styles.label}>{trans('addGroup.country')}</Text>
           <Picker
             style={styles.input}
             selectedValue={this.state.country}
@@ -204,7 +204,7 @@ class Area extends Component {
           bgColor={Colors.background.darkCyan}
           style={styles.buttonWrapper}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
       </View>
     );

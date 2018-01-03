@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   profilePicture: {
@@ -120,7 +121,7 @@ class EditProfile extends Component {
         style={styles.button}
         onPress={this.onSubmit}
       >
-        Update
+        {trans('global.update')}
       </CustomButton>
     );
   }
@@ -136,27 +137,27 @@ class EditProfile extends Component {
           <Camera onSelect={res => this.setState({ avatar: res.data })}>
             <View>
               <Image source={{ uri: profileImage }} style={styles.profilePicture} />
-              <Text style={styles.profilePicLabel}>Update Profile Picture</Text>
+              <Text style={styles.profilePicLabel}>{trans('setting.update_profile_picture')}</Text>
             </View>
           </Camera>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <Text style={styles.label}>First name</Text>
+          <Text style={styles.label}>{trans('setting.first_name')}</Text>
           <TextInput
             onChangeText={firstName => this.setState({ firstName })}
             style={styles.input}
-            placeholder="Your first name"
+            placeholder={trans('setting.your_first_name')}
             value={this.state.firstName}
             autoCorrect={false}
             returnKeyType={'done'}
             placeholderTextColor="#666"
             underlineColorAndroid="transparent"
           />
-          <Text style={styles.label}>Last name</Text>
+          <Text style={styles.label}>{trans('setting.last_name')}</Text>
           <TextInput
             onChangeText={lastName => this.setState({ lastName })}
             style={styles.input}
-            placeholder="Your last name"
+            placeholder={trans('setting.your_last_name')}
             value={this.state.lastName}
             autoCorrect={false}
             returnKeyType={'done'}

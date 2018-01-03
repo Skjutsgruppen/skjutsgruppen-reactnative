@@ -1,0 +1,16 @@
+export const search = {
+  from_where_i_am_now: 'From where I am now',
+  or_choose: 'Or choose',
+  all_dates_and_times: 'All dates and times',
+  change: 'Change',
+  show_results_from: 'Show results from',
+  offered: 'Offered',
+  asked_for: 'Asked for',
+  public_transport: 'Public transport',
+  groups: 'Groups',
+  search: 'Search',
+  explore_existing_groups: 'Explore existing groups',
+  cards: 'Cards',
+  list: 'List',
+  found: 'found',
+};

@@ -16,6 +16,7 @@ import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -220,38 +221,38 @@ class Group extends Component {
         <View style={styles.backButtonWrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
-            <Text style={styles.backText}>Back</Text>
+            <Text style={styles.backText}>{trans('global.back')}</Text>
           </TouchableOpacity>
         </View>
         <Container bgColor="#f3f3ed">
-          <Text style={styles.mainTitle}>Add a new group</Text>
+          <Text style={styles.mainTitle}>{trans('addGroup.add_new_group')}</Text>
           <View style={styles.tabContainer}>
             <Tab
-              label="Stretch"
+              label={trans('addGroup.stretch')}
               disabled={disabledTabs.indexOf(1) > -1}
               complete={completedTabs.indexOf(1) > -1}
               active={activeTab === 1}
             />
             <Tab
-              label="Area"
+              label={trans('addGroup.area')}
               disabled={disabledTabs.indexOf(2) > -1}
               complete={completedTabs.indexOf(2) > -1}
               active={activeTab === 2}
             />
             <Tab
-              label="About"
+              label={trans('addGroup.about')}
               disabled={disabledTabs.indexOf(3) > -1}
               complete={completedTabs.indexOf(3) > -1}
               active={activeTab === 3}
             />
             <Tab
-              label="Open/Closed"
+              label={trans('addGroup.open_closed')}
               disabled={disabledTabs.indexOf(4) > -1}
               complete={completedTabs.indexOf(4) > -1}
               active={activeTab === 4}
             />
             <Tab
-              label="Invite"
+              label={trans('addGroup.invite')}
               disabled={disabledTabs.indexOf(5) > -1}
               complete={completedTabs.indexOf(5) > -1}
               active={activeTab === 5}

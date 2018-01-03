@@ -11,6 +11,7 @@ import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -170,10 +171,10 @@ class SearchResult extends Component {
   renderHeader = () => (
     <View style={styles.switchViewWrapper}>
       <TouchableOpacity style={[styles.viewSwitcher, styles.selected]}>
-        <Text style={styles.whiteText}>Cards</Text>
+        <Text style={styles.whiteText}>{trans('search.cards')}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.viewSwitcher}>
-        <Text style={styles.whiteText}>List</Text>
+        <Text style={styles.whiteText}>{trans('search.list')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -184,7 +185,7 @@ class SearchResult extends Component {
     if (!loading) return null;
 
     if (rows.length === 0) {
-      return (<Text style={styles.time}>{count} {count <= 1 ? 'result' : 'results'} found</Text>);
+      return (<Text style={styles.time}>{count} {count <= 1 ? 'result' : 'results'} {trans('search.found')}</Text>);
     }
 
     if (rows.length > 20 && rows.length >= count) {

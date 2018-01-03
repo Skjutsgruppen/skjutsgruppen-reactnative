@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -54,13 +55,13 @@ const styles = StyleSheet.create({
 
 const Completed = ({ url, text, isCliped, onButtonPress, isReturnedTrip, onMakeReturnRide }) => (
   <View style={styles.wrapper}>
-    <Text style={styles.title}>Your {text} is published.</Text>
+    <Text style={styles.title}>{trans('global.your')} {text} {trans('global.is_published')}</Text>
     <Image source={require('@assets/celebration.png')} style={styles.image} />
-    <Text style={[styles.text, styles.bold]}>Its now searchable, well done.!</Text>
-    <Text style={styles.text}>This is the unique address to your {text}:</Text>
+    <Text style={[styles.text, styles.bold]}>{trans('global.now_searchable')}</Text>
+    <Text style={styles.text}>{trans('global.unique_address')} {text}:</Text>
     <Text selectable style={styles.uniqueAddress}>{url}</Text>
     {isCliped && <Text style={[styles.text, styles.italic]}>
-      (Its copied to your clipboard so you can paste it wherever you want)
+      {trans('global.copied_to_your_clipboard')}
     </Text>}
     <View style={styles.buttonWrapper}>
 
@@ -68,21 +69,21 @@ const Completed = ({ url, text, isCliped, onButtonPress, isReturnedTrip, onMakeR
         isReturnedTrip ?
           (<View>
             <Text style={[styles.text, styles.blueText, styles.bold]}>
-              You have choosen to make an return ride connected to this ride.
+              {trans('global.chose_to_make_a_return_ride')}
             </Text>
             <CustomButton onPress={onMakeReturnRide} bgColor={Colors.background.darkCyan}>
-              Make return ride
+              {trans('global.make_return_ride')}
             </CustomButton>
             <TouchableOpacity onPress={onButtonPress}>
               <Text style={[styles.text, styles.textUnderlined]}>
-                I do not want to make a return ride
+                {trans('global.do_not_want_to_make_return_ride')}
               </Text>
             </TouchableOpacity>
           </View>)
           :
           (
             <CustomButton onPress={onButtonPress} bgColor={Colors.background.darkCyan}>
-              {`See your ${text}`}
+              {trans('global.see_your')}{` ${text}`}
             </CustomButton>
           )
       }

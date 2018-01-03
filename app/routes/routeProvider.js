@@ -123,7 +123,6 @@ export const Routes = {
   UserGroups: { screen: UserGroups },
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
-
   SingleNotification: { screen: SingleNotification },
   Settings: { screen: Settings },
 };

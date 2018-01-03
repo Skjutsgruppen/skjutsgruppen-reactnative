@@ -5,6 +5,7 @@ import Radio from '@components/common/radio';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
 import { OPEN_GROUP, CLOSE_GROUP } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -65,26 +66,23 @@ class OpenClosed extends Component {
 
     return (
       <View>
-        <Text style={styles.title}>Open / Closed</Text>
+        <Text style={styles.title}>{trans('addGroup.open_closed')}</Text>
         <Text style={styles.text}>
-          Is your group open for everyone to join (recommended) or
-          do you wish to moderate everyone who wants to join (you will then need to accept
-          them to the group).
+          {trans('addGroup.is_group_for_everyone_to_join')}
         </Text>
         <View style={styles.radioWrapper}>
-          <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === OPEN_GROUP} />
-          <Radio onPress={this.onPressClosed} label="ClosedGroup" checked={type === CLOSE_GROUP} />
+          <Radio onPress={this.onPressOpen} label={trans('addGroup.open_group')} checked={type === 'OpenGroup'} />
+          <Radio onPress={this.onPressClosed} label={trans('addGroup.closed_group')} checked={type === 'ClosedGroup'} />
         </View>
         <CustomButton
           onPress={this.onNext}
           bgColor={Colors.background.darkCyan}
           style={styles.buttonWrapper}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
         <Text style={[styles.text, styles.note]}>
-          * Please note that rides published in a closed group still will be
-          searchable and joinable for everyone in the movement.
+          {trans('addGroup.please_note_rides_published')}
         </Text>
       </View>
     );

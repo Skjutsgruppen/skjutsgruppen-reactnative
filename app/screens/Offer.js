@@ -11,6 +11,7 @@ import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
+import { trans } from '@lang/i18n';
 import { submitOffer } from '@services/apollo/offer';
 import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
@@ -235,7 +236,7 @@ class Offer extends Component {
       );
     }
 
-    return (<Text style={styles.mainTitle}>Offer a ride</Text>);
+    return (<Text style={styles.mainTitle}>{trans('trip.offer_a_ride')}</Text>);
   }
 
   renderFinish() {
@@ -277,37 +278,37 @@ class Offer extends Component {
     return (
       <Wrapper bgColor="#eded18">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.title}>Back</Text>
+          <Text style={styles.title}>{trans('trip.back')}</Text>
         </TouchableOpacity>
         <Container bgColor="#f3f3ed">
           {this.header()}
           <View style={styles.tabContainer}>
             <Tab
-              label="Description"
+              label={trans('trip.description')}
               disabled={disabledTabs.indexOf(1) > -1}
               complete={completedTabs.indexOf(1) > -1}
               active={activeTab === 1}
             />
             <Tab
-              label="Trip"
+              label={trans('trip.trip')}
               disabled={disabledTabs.indexOf(2) > -1}
               complete={completedTabs.indexOf(2) > -1}
               active={activeTab === 2}
             />
             <Tab
-              label="Date"
+              label={trans('trip.date')}
               disabled={disabledTabs.indexOf(3) > -1}
               complete={completedTabs.indexOf(3) > -1}
               active={activeTab === 3}
             />
             <Tab
-              label="Seats"
+              label={trans('trip.seats')}
               disabled={disabledTabs.indexOf(4) > -1}
               complete={completedTabs.indexOf(4) > -1}
               active={activeTab === 4}
             />
             <Tab
-              label="Share"
+              label={trans('trip.share')}
               disabled={disabledTabs.indexOf(5) > -1}
               complete={completedTabs.indexOf(5) > -1}
               active={activeTab === 5}

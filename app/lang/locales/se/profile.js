@@ -1,0 +1,18 @@
+export const profile = {
+  Experiences: 'Erfarenheter',
+  experiences: 'upplevelser',
+  supporter: 'Anhängare',
+  offered: 'Erbjuds',
+  asked: 'Frågade',
+  talked: 'Pratade',
+  rides: 'rider',
+  ride: 'rida',
+  about: 'handla om',
+  for_rides: 'för åkattraktioner',
+  this_is_how_you_know: 'Så här vet du',
+  ask_to_be: 'Be om att vara',
+  s_friend: ' vän',
+  groups: 'grupper',
+  friends: 'vänner',
+  my: 'Mina',
+};

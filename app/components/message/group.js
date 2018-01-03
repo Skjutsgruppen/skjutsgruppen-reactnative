@@ -4,6 +4,7 @@ import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import { withGroups } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -91,7 +92,7 @@ const item = (group, navigation) => (
 
 
 const Group = ({ groups, navigation }) => {
-  let render = (<Text style={styles.emptyMessage}>No Group</Text>);
+  let render = (<Text style={styles.emptyMessage}>{trans('message.no_group')}</Text>);
 
   if (groups.count > 0) {
     render = groups.rows.map(group => item(group, navigation));
@@ -108,7 +109,7 @@ const Group = ({ groups, navigation }) => {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>
-        {('Your groups'.toUpperCase())}
+        {trans('message.your_groups')}
       </Text>
       {render}
     </View>
