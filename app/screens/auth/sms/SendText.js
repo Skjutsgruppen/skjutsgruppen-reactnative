@@ -11,7 +11,6 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withPhoneVerified } from '@services/apollo/profile';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 

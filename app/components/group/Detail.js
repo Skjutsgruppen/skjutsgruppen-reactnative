@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, Image, Modal, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -7,93 +7,19 @@ import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withShare } from '@services/apollo/auth';
-import { Wrapper, Loading, NavBar } from '@components/common';
-import Relation from '@components/relation';
+import { Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
+import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
 import { FEEDABLE_GROUP, FEEDABLE_TRIP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import MapToggle from '@components/group/mapToggle';
+import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
 const styles = StyleSheet.create({
-  contentWrapper: {
-    backgroundColor: '#fff',
-  },
-  lightText: {
-    color: '#777777',
-  },
-  feed: {
-    backgroundColor: '#fff',
-    marginBottom: 60,
-    flex: 1,
-  },
-  header: {
-    marginBottom: 24,
-  },
-  feedContent: {
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#dddee3',
-  },
-  feedTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-  },
-  feedImg: {
-    width: '100%',
-    height: 200,
-  },
-  imgIcon: {
-    height: 55,
-    width: 55,
-    backgroundColor: '#ddd',
-    borderRadius: 36,
-    marginRight: 12,
-  },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
-  },
-  info: {
-    paddingHorizontal: 24,
-  },
-  stopsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  stopText: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 16,
-    marginBottom: 8,
-  },
-  stopsIcon: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
-    marginRight: 4,
-  },
-  messageText: {
-    paddingTop: 8,
-    marginBottom: 16,
-  },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  button: {
-    margin: 24,
-  },
   leaveButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -122,67 +48,6 @@ const styles = StyleSheet.create({
   leaveText: {
     fontSize: 13,
     color: Colors.text.darkGray,
-  },
-  newGroupInfoWrapper: {
-    position: 'absolute',
-    flex: 1,
-    backgroundColor: '#00000011',
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  newGroupNameWrapper: {
-    borderColor: '#ffffff',
-    borderBottomWidth: 2,
-    marginBottom: 16,
-    paddingBottom: 16,
-  },
-  newGroupName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  newGroupPlace: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 10,
-  },
-  newGroupInfo: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 16,
-  },
-  actionsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-  },
-  action: {
-    width: '33.33%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 6,
-  },
-  actionDevider: {
-    height: '100%',
-    width: StyleSheet.hairlineWidth,
-    backgroundColor: Colors.border.lightGray,
-  },
-  actionIcon: {
-    height: 16,
-    width: 16,
-    resizeMode: 'contain',
-    marginRight: 12,
-  },
-  actionLabel: {
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
   footer: {
     position: 'absolute',
@@ -218,25 +83,12 @@ const styles = StyleSheet.create({
     color: '#00aeef',
     fontWeight: 'bold',
   },
-  profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 28,
-    marginRight: 12,
-  },
-  participantWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '33.33%',
-    height: 48,
-  },
 });
 
 class Detail extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, leaveLoading: false, error: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ loading: false, leaveLoading: false, error: '', success: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
   }
 
   onSubmit = () => {
@@ -248,17 +100,15 @@ class Detail extends PureComponent {
     if (validation.pass()) {
       try {
         submit(null, group.id, comment).then(() => {
-          Alert.alert('Success!', 'Comment added');
-          this.setState({ comment: '', loading: false });
+          this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
         }).catch((err) => {
-          this.setState({ loading: false, error: err.message });
+          this.setState({ loading: false, error: getToast(err) });
         });
       } catch (err) {
-        this.setState({ loading: false, error: err.message });
+        this.setState({ loading: false, error: getToast(err) });
       }
     } else {
-      Alert.alert('Alert!', validation.errors.join('\n'));
-      this.setState({ loading: false });
+      this.setState({ loading: false, error: getToast(validation.errors) });
     }
   }
 
@@ -287,7 +137,8 @@ class Detail extends PureComponent {
   }
 
   onMapPress = () => {
-    const { navigation, group } = this.props;
+    const { navigation } = this.props;
+    const { group } = navigation.state.params;
     const coordinates = {
       start: group.TripStart,
       end: group.TripEnd,
@@ -346,83 +197,21 @@ class Detail extends PureComponent {
 
   header = (leaveLoading) => {
     const { group } = this.props;
-    const { error } = this.state;
 
     let image = null;
     if (group.photo) {
-      image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
+      image = (<GroupImage imageURI={group.photo} name={group.name} />);
     } else if (group.mapPhoto) {
-      image = (<Image source={{ uri: group.mapPhoto }} style={styles.feedImg} />);
+      image = (<GroupImage imageURI={group.mapPhoto} name={group.name} />);
     } else {
-      image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
-    }
-
-    let groupType = '';
-    if (group.type === 'OpenGroup') {
-      groupType = 'Open';
-    } else if (group.type === 'ClosedGroup') {
-      groupType = 'Closed';
+      image = (<GroupImage imageURI={require('@assets/feed-img.jpg')} name={group.name} />);
     }
 
     return (
-      <View style={styles.header}>
-        <View style={styles.feedContent}>
-          <View>
-            {image}
-            <View style={styles.newGroupInfoWrapper}>
-              <View style={styles.newGroupNameWrapper}>
-                <Text style={styles.newGroupName}>{group.name}</Text>
-              </View>
-              {
-                group.outreach === STRETCH_TYPE_AREA &&
-                <Text style={styles.newGroupPlace}>
-                  {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-                </Text>
-              }
-
-              {
-                group.outreach === STRETCH_TYPE_ROUTE &&
-                <Text style={styles.newGroupPlace}>
-                  {group.TripStart.name} - {group.TripEnd.name}
-                </Text>
-              }
-              <Text style={styles.newGroupInfo}>
-                {groupType} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
-              </Text>
-            </View>
-            {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
-          </View>
-          <View style={styles.info}>
-            {
-              group.Stops.length > 0 &&
-              <View style={styles.stopText}>
-                <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
-                <Text style={styles.lightText}>Stops in {group.Stops.map(place => place.name).join(', ')}</Text>
-              </View>
-            }
-            <View style={styles.messageText}>
-              <Text>{group.description}</Text>
-            </View>
-          </View>
-        </View>
-        <Relation users={group.User.relation} />
-        <View style={styles.actionsWrapper}>
-          <TouchableOpacity style={styles.action}>
-            <Image source={require('@icons/icon_calender.png')} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Calender</Text>
-          </TouchableOpacity>
-          <View style={styles.actionDevider} />
-          <TouchableOpacity style={[styles.action, styles.shareAction]} onPress={() => this.onSharePress('group', group)}>
-            <Image source={require('@icons/icon_share.png')} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Share</Text>
-          </TouchableOpacity>
-          <View style={styles.actionDevider} />
-          <TouchableOpacity style={styles.action}>
-            <Image source={require('@icons/icon_more_green.png')} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>More</Text>
-          </TouchableOpacity>
-        </View>
-        {error !== '' && <View><Text>{error}</Text></View>}
+      <View>
+        {image}
+        {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
+        <MapToggle handlePress={this.onMapPress} />
       </View>);
   }
 
@@ -438,8 +227,12 @@ class Detail extends PureComponent {
   }
 
   renderCommentForm() {
+    const { error, success } = this.state;
+
     return (
       <View style={styles.footer}>
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
         <View style={styles.footerContent}>
           <TextInput
             onChangeText={comment => this.setState({ comment })}
@@ -501,16 +294,15 @@ class Detail extends PureComponent {
   render() {
     const { group, navigation } = this.props;
     const header = this.header(this.state.leaveLoading);
+
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} onMapPress={this.onMapPress} />
-        <View style={styles.feed}>
-          <GroupFeedList
-            header={header}
-            navigation={navigation}
-            groupId={group.id}
-          />
-        </View>
+        <FloatingNavbar handleBack={this.goBack} />
+        <GroupFeedList
+          header={header}
+          navigation={navigation}
+          groupId={group.id}
+        />
         {this.renderCommentForm()}
         {this.renderShareModal()}
       </Wrapper>

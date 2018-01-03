@@ -1,116 +1,137 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import Relation from '@components/relation';
 import { CLOSE_GROUP, OPEN_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import Colors from '@theme/colors';
+import ShareIcon from '@icons/ic_share.png';
+
+const cardHeight = 484;
+const profilePicSize = 60;
 
 const styles = StyleSheet.create({
-  lightText: {
-    color: '#777777',
-  },
-  tab: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-  },
-  tabLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1db0ed',
-  },
-  feed: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginRight: 6,
-    marginLeft: 6,
-    marginBottom: 16,
-    borderColor: '#cccccc',
-    borderBottomWidth: 4,
-    overflow: 'hidden',
-  },
-  feedContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  feedTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-  },
-  feedImg: {
-    width: '100%',
-    height: 160,
-  },
-  imgIcon: {
-    height: 55,
-    width: 55,
-    backgroundColor: '#ddd',
-    borderRadius: 36,
-    marginRight: 12,
-  },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
-  },
-  feedAction: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    borderTopWidth: 2,
-    borderColor: '#dddee3',
-  },
-  verticalDevider: {
-    width: 1,
-    backgroundColor: '#dddddd',
-    height: '70%',
-    alignSelf: 'center',
-  },
-  newGroupInfoWrapper: {
-    position: 'absolute',
+  flex1: {
     flex: 1,
-    backgroundColor: '#00000011',
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
+  },
+  wrapper: {
+    height: cardHeight,
+    backgroundColor: Colors.background.fullWhite,
+    marginHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 12,
+    shadowOffset: { width: 0, height: 1 },
+    shadowColor: 'rgba(0,0,0,0.1)',
+    shadowOpacity: 0,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  imgWrapper: {
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: cardHeight / 2,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: Colors.background.gray,
   },
-  newGroupNameWrapper: {
-    borderColor: '#ffffff',
-    borderBottomWidth: 2,
-    marginBottom: 12,
-    paddingBottom: 8,
+  img: {
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
-  newGroupName: {
+  groupName: {
+    backgroundColor: 'transparent',
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: Colors.text.white,
+    alignSelf: 'center',
+    marginHorizontal: 24,
+    textAlign: 'center',
   },
-  newGroupPlace: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 6,
-  },
-  newGroupInfo: {
-    color: '#ffffff',
+  profilePicWrapper: {
+    height: profilePicSize,
+    width: profilePicSize,
+    position: 'absolute',
+    top: (cardHeight / 2) - (profilePicSize / 2),
+    right: 20,
+    zIndex: 10,
   },
   profilePic: {
-    height: 55,
-    width: 55,
-    borderRadius: 27,
-    marginRight: 12,
+    height: profilePicSize,
+    width: profilePicSize,
+    resizeMode: 'cover',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: Colors.border.white,
+  },
+  detail: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  comment: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    marginTop: 'auto',
+    overflow: 'hidden',
+  },
+  commentGradientOverlay: {
+    height: 24,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    marginHorizontal: 24,
+  },
+  footer: {
+    paddingTop: 24,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  commentIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text: {
+    lineHeight: 20,
+  },
+  lightText: {
+    color: Colors.text.darkGray,
+  },
+  username: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+    marginRight: 2,
+  },
+  readMore: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+  },
+  shareIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 });
 
 const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   let image = null;
   if (group.photo) {
-    image = (<Image source={{ uri: group.photo }} style={styles.feedImg} />);
+    image = (<Image source={{ uri: group.photo }} style={styles.img} />);
   } else if (group.mapPhoto) {
-    image = (<Image source={{ uri: group.mapPhoto }} style={styles.feedImg} />);
+    image = (<Image source={{ uri: group.mapPhoto }} style={styles.img} />);
   } else {
-    image = (<Image source={require('@assets/feed-img.jpg')} style={styles.feedImg} />);
+    image = (<Image source={require('@assets/feed-img.jpg')} style={styles.img} />);
   }
 
   let profileImage = null;
@@ -131,67 +152,58 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   }
 
   return (
-    <View style={[styles.feed, wrapperStyle]}>
-      <View style={styles.feedContent}>
-        {!min &&
-          <View style={styles.feedTitle}>
-            <TouchableOpacity onPress={() => onPress('profile', group.User.id)}>{profileImage}</TouchableOpacity>
-            <Text style={styles.lightText}>
-              <Text style={styles.name}>
-                {group.User.firstName || group.User.email}
-              </Text>
-              <Text> created a group</Text>
-            </Text>
-          </View>
-        }
-        <TouchableWithoutFeedback onPress={() => onPress('group', group)}>
-          <View>
+    <View style={[styles.wrapper, wrapperStyle]}>
+      <TouchableWithoutFeedback
+        onPress={() => onPress('group', group)}
+        style={styles.flex1}
+      >
+        <View style={styles.flex1}>
+          <View style={styles.imgWrapper}>
             {image}
-            <View style={styles.newGroupInfoWrapper}>
-              <View style={styles.newGroupNameWrapper}>
-                <Text style={styles.newGroupName}>{group.name}</Text>
-              </View>
+            <Text style={styles.groupName}>{group.name}</Text>
+          </View>
+          <View style={styles.detail}>
+            <View>
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.username}>
+                  {group.User.firstName || group.User.email}
+                </Text>
+                <Text> created a group</Text>
+              </Text>
               {
                 group.outreach === STRETCH_TYPE_AREA &&
-                <Text style={styles.newGroupPlace}>
+                <Text style={[styles.text, styles.lightText]}>
                   {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
                 </Text>
               }
-
               {
                 group.outreach === STRETCH_TYPE_ROUTE &&
-                <Text style={styles.newGroupPlace}>
+                <Text style={[styles.text, styles.lightText]}>
                   {group.TripStart.name} - {group.TripEnd.name}
                 </Text>
               }
-              <Text style={styles.newGroupInfo}>
-                {groupType} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
-              </Text>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-      </View>
-      {!min &&
-        <View style={styles.feedAction}>
-          <Relation users={group.User.relation} />
-          <View style={styles.verticalDevider} />
-          <View style={{ width: '33.33%', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => onSharePress('group', group)}>
-              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.tabLabel}>Share</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.verticalDevider} />
-          <View style={{ width: '33.33%', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => onPress('group', group)}>
-              <View style={{ height: 48, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.tabLabel}>Comment</Text>
-              </View>
-            </TouchableOpacity>
+          <View style={styles.comment}>
+            <Text style={styles.text}>{group.description}</Text>
+            <View style={styles.commentGradientOverlay} />
           </View>
         </View>
-      }
+      </TouchableWithoutFeedback>
+      <TouchableOpacity
+        onPress={() => onPress('profile', group.User.id)}
+        style={styles.profilePicWrapper}
+      >
+        {profileImage}
+      </TouchableOpacity>
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => onSharePress('group', group)}>
+          <Image source={ShareIcon} style={styles.shareIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.readMoreWrapper} onPress={() => onPress('group', group)}>
+          <Text style={styles.readMore}>Read more</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

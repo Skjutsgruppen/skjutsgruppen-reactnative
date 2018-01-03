@@ -17,19 +17,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const BackButton = ({ style, onPress }) => (
+const FloatingBackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
     <Image source={Icon} style={styles.icon} />
   </TouchableOpacity>
 );
 
-BackButton.propTypes = {
+FloatingBackButton.propTypes = {
   style: View.propTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 
-BackButton.defaultProps = {
+FloatingBackButton.defaultProps = {
   style: {},
 };
 
-export default BackButton;
+export default FloatingBackButton;

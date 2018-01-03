@@ -13,7 +13,7 @@ import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import { getToast } from '@config/toast';
-import Toast from '@components/new/toast';
+import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   garderIcon: {
