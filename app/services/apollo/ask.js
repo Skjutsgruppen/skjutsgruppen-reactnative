@@ -4,6 +4,7 @@ import { FEED_TYPE_WANTED } from '@config/constant';
 
 const CREATE_ASK_QUERY = gql`
 mutation createTrip(
+  $parentId:Int,
   $description:String, 
   $type:TripTypeEnum!,
   $tripStart:PlaceInput!,
@@ -18,6 +19,7 @@ mutation createTrip(
   $share:ShareInput,
 ) {
   createTrip( input :{
+    parentId: $parentId
     description : $description
     type : $type
     TripStart : $tripStart
@@ -31,6 +33,7 @@ mutation createTrip(
     flexibility : $flexibility
     share : $share
   }) {
+    id
     description 
     type 
     TripStart {
@@ -57,6 +60,7 @@ mutation createTrip(
     seats 
     flexibility,
     url
+    parentId
   }
 }
 `;
@@ -64,6 +68,7 @@ mutation createTrip(
 export const submitAsk = graphql(CREATE_ASK_QUERY, {
   props: ({ mutate }) => ({
     submit: ({
+      parentId,
       description,
       photo,
       tripStart,
@@ -73,22 +78,22 @@ export const submitAsk = graphql(CREATE_ASK_QUERY, {
       time,
       flexibility,
       share,
-    }) =>
-      mutate({
-        variables: {
-          description,
-          type: FEED_TYPE_WANTED,
-          tripStart,
-          tripEnd,
-          photo,
-          stops: null,
-          returnTrip,
-          dates,
-          time,
-          seats: 0,
-          flexibility,
-          share,
-        },
-      }),
+    }) => mutate({
+      variables: {
+        parentId,
+        description,
+        type: FEED_TYPE_WANTED,
+        tripStart,
+        tripEnd,
+        photo,
+        stops: null,
+        returnTrip,
+        dates,
+        time,
+        seats: 0,
+        flexibility,
+        share,
+      },
+    }),
   }),
 });

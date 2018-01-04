@@ -420,40 +420,58 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       }
       ... on TripFeed {
         Trip {
-          id
-          type
-          description
+          id 
+          type 
+          description 
           seats 
+          parentId
           User {
-            id
-            email
-            firstName
-            lastName
-            avatar
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
             relation {
-              id
-              email
-              firstName
+              id 
+              email 
+              firstName 
               avatar
             }
-          }
+          } 
           TripStart {
-            name
+            name 
             coordinates
-          }
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
-          Stops {
-            name
-            coordinates
-          }
-          date
-          time
-          photo
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          time 
+          photo 
           mapPhoto
-          returnTrip
+          returnTrip 
+          totalComments
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
         }
       }
       ... on CommentFeed {
@@ -556,40 +574,58 @@ subscription groupFeed($groupId: Int!){
     }
     ... on TripFeed {
       Trip {
-        id
-        type
-        description
+        id 
+        type 
+        description 
         seats 
+        parentId
         User {
-          id
-          email
-          firstName
-          lastName
-          avatar
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
           relation {
-            id
-            email
-            firstName
+            id 
+            email 
+            firstName 
             avatar
           }
-        }
+        } 
         TripStart {
-          name
+          name 
           coordinates
-        }
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
-        Stops {
-          name
-          coordinates
-        }
-        date
-        time
-        photo
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
         mapPhoto
-        returnTrip
+        returnTrip 
+        totalComments
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+        }
+        Recurring {
+          id
+          date
+        }
       }
     }
     ... on CommentFeed {
