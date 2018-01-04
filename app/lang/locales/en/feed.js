@@ -1,4 +1,10 @@
 export const feed = {
+  hi: 'Hi',
+  everything: 'Everything',
+  offered_rides: 'Offered rides',
+  rides_that_are_asked_for: 'Rides that are asked for',
+  close_to_you: 'Close to you',
+  news: 'News',
   created_a_group: 'created a group',
   read_more: 'Read more',
   offers: 'offers',

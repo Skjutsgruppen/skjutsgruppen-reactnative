@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
 import GooglePlace from '@components/googlePlace';
 import PropTypes from 'prop-types';
-import CustomButton from '@components/common/customButton';
+import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
@@ -10,16 +10,26 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import SearchIcon from '@icons/ic_search.png';
 import SearchIconActive from '@icons/ic_search_active.png';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
+  circle: {
+    height: 250,
+    width: 250,
+    borderRadius: 125,
+    backgroundColor: Colors.background.blue,
+    position: 'absolute',
+    top: -50,
+    left: -80,
+  },
   container: {
     flex: 1,
-    backgroundColor: Colors.background.blue,
+    backgroundColor: Colors.background.lightBlueWhite,
     paddingTop: 24,
   },
   title: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
     paddingHorizontal: 24,
     marginTop: 12,
@@ -28,9 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 300,
     backgroundColor: Colors.background.fullWhite,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    marginTop: 16,
+    marginTop: 24,
   },
   locationWrapper: {
     marginTop: 16,
@@ -116,6 +124,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.blue,
   },
   searchBtn: {
+    width: '50%',
+    alignSelf: 'center',
     marginHorizontal: 24,
     marginVertical: 32,
   },
@@ -131,24 +141,60 @@ const styles = StyleSheet.create({
   earlierSearch: {
     paddingVertical: 12,
   },
-  exploreGroupWrapper: {
-    backgroundColor: Colors.background.cream,
-    paddingHorizontal: 24,
-    paddingVertical: 50,
-  },
   exploreGroup: {
     alignItems: 'center',
-  },
-  telescope: {
-    width: 40,
-    height: 40,
+    marginVertical: 50,
+    marginHorizontal: 16,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    elevation: 4,
   },
   exploreGroupTitle: {
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.text.blue,
-    marginVertical: 12,
+    marginHorizontal: 24,
+    marginTop: 40,
     textAlign: 'center',
+  },
+  exploreIcon: {
+    height: 150,
+    width: 150,
+    borderRadius: 75,
+    backgroundColor: Colors.background.pink,
+    alignSelf: 'center',
+    margin: 30,
+  },
+  exploreFooter: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingVertical: 36,
+    backgroundColor: Colors.background.lightBlueWhite,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  newestGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 24,
+  },
+  exploreFooterLabel: {
+    color: Colors.text.blue,
+    marginBottom: 16,
+  },
+  totalGroupCount: {
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  avatar: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  groupName: {
+    fontSize: 16,
   },
   closeModal: {
     position: 'absolute',
@@ -274,6 +320,7 @@ class Search extends Component {
 
     return (
       <View style={styles.container}>
+        <View style={styles.circle} />
         <Text style={styles.title}>Search</Text>
         <ScrollView keyboardShouldPersistTaps="handled" style={styles.scrollArea}>
           <View style={styles.locationWrapper}>
@@ -281,11 +328,11 @@ class Search extends Component {
               <GooglePlace
                 defaultValue={this.state.from}
                 currentLocation
-                placeholder="From where I am now"
+                placeholder={trans('search.from_where_i_am_now')}
                 onChangeText={from => this.setState({ from })}
                 style={styles.input}
               />
-              <Text style={styles.inputLabel}>From</Text>
+              <Text style={styles.inputLabel}>{trans('global.from')}</Text>
             </View>
             <View style={styles.inputWrapper}>
               <View style={styles.divider} />
@@ -295,36 +342,36 @@ class Search extends Component {
             </View>
             <View style={styles.inputWrapper}>
               <GooglePlace
-                placeholder="Destination"
+                placeholder={trans('global.destination')}
                 defaultValue={this.state.to}
                 onChangeText={to => this.setState({ to })}
                 style={styles.input}
               />
-              <Text style={styles.inputLabel}>To</Text>
+              <Text style={styles.inputLabel}>{trans('global.to')}</Text>
             </View>
           </View>
-          <Text style={styles.label}>Or choose:</Text>
+          <Text style={styles.label}>{trans('search.or_choose')}:</Text>
           <View style={styles.locationSuggestions}>
             <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>Anywhere</Text>
+              <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>North</Text>
+              <Text style={styles.suggestionText}>{trans('global.north')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>South</Text>
+              <Text style={styles.suggestionText}>{trans('global.south')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>East</Text>
+              <Text style={styles.suggestionText}>{trans('global.east')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>West</Text>
+              <Text style={styles.suggestionText}>{trans('global.west')}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.dateRow}>
-            <Text style={styles.dateLabel}>{dates.length === 0 ? 'All dates and times' : (prettyDate).join(', ')}</Text>
+            <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
             <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-              <Text style={styles.changeButton}>Change</Text>
+              <Text style={styles.changeButton}>{trans('search.change')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -359,7 +406,7 @@ class Search extends Component {
               }}
             />
           </Modal>
-          <Text style={styles.label}>Show results from</Text>
+          <Text style={styles.label}>{trans('search.show_results_from')}</Text>
           <View style={styles.resultsFrom}>
             <TouchableOpacity
               onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
@@ -368,7 +415,7 @@ class Search extends Component {
                 filters.indexOf(FEED_TYPE_OFFER) > -1 ? styles.selected : {},
               ]}
             >
-              <Text style={styles.suggestionText}>Offered</Text>
+              <Text style={styles.suggestionText}>{trans('search.offered')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
@@ -377,33 +424,48 @@ class Search extends Component {
                 filters.indexOf(FEED_TYPE_WANTED) > -1 ? styles.selected : {},
               ]}
             >
-              <Text style={styles.suggestionText}>Asked for</Text>
+              <Text style={styles.suggestionText}>{trans('search.asked_for')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.onFilterSelect('public')}
               style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}
             >
-              <Text style={styles.suggestionText}>Public transport</Text>
+              <Text style={styles.suggestionText}>{trans('search.public_transport')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.onFilterSelect('group')}
               style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}
             >
-              <Text style={styles.suggestionText}>Groups</Text>
+              <Text style={styles.suggestionText}>{trans('search.groups')}</Text>
             </TouchableOpacity>
           </View>
-          <CustomButton
-            bgColor={Colors.background.green}
+          <RoundedButton
+            bgColor={Colors.background.pink}
             style={styles.searchBtn}
             onPress={this.renderSearch}
           >
-            Search
-          </CustomButton>
-          <View style={styles.exploreGroupWrapper}>
-            <TouchableOpacity style={styles.exploreGroup}>
-              <Image source={require('@icons/icon_telescope.png')} style={styles.telescope} />
-              <Text style={styles.exploreGroupTitle}>Explore existing groups</Text>
+            {trans('search.search')}
+          </RoundedButton>
+          <View style={styles.exploreGroup}>
+            <Text style={styles.exploreGroupTitle}>{trans('search.explore_groups')}</Text>
+            <TouchableOpacity>
+              <View style={styles.exploreIcon} />
             </TouchableOpacity>
+            <View style={styles.exploreFooter}>
+              <View style={{ width: '60%' }}>
+                <Text style={styles.exploreFooterLabel}>{trans('search.newest')}</Text>
+                <View style={styles.newestGroup}>
+                  <Image source={require('@assets/profilePic.jpg')} style={styles.avatar} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.groupName}>{trans('search.daily_commute_to_town')}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ width: '40%' }}>
+                <Text style={styles.exploreFooterLabel}>{trans('search.total_groups')}</Text>
+                <Text style={styles.totalGroupCount}>375</Text>
+              </View>
+            </View>
           </View>
         </ScrollView>
       </View>
