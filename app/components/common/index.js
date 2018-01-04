@@ -13,6 +13,7 @@ import ShareButton from '@components/common/shareButton';
 import ProfilePicture from '@components/common/profilePicture';
 import Comment from '@components/common/comment';
 import SharedCard from '@components/common/sharedCard';
+import AppNotification from '@components/common/appNotification';
 
 export {
   Loading,
@@ -30,4 +31,5 @@ export {
   ProfilePicture,
   Comment,
   SharedCard,
+  AppNotification,
 };

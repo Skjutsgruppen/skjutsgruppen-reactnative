@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, FloatingNavbar } from '@components/common';
+import { Loading, FloatingNavbar, AppNotification } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
@@ -225,7 +225,18 @@ class OfferDetail extends Component {
       modalDetail: {},
       modalType: '',
       isOpen: false,
+      notification: false,
+      notifierOffset: 0,
     });
+  }
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    const { notifier } = navigation.state.params;
+
+    if (notifier) {
+      this.setState({ notification: true, notifierOffset: 70 });
+    }
   }
 
   onSubmit = () => {
@@ -288,6 +299,10 @@ class OfferDetail extends Component {
     };
 
     navigation.navigate('Route', { coordinates });
+  }
+
+  onCloseNotification = () => {
+    this.setState({ notification: false, notifierOffset: 0 });
   }
 
   setModalVisible(visible) {
@@ -458,8 +473,8 @@ class OfferDetail extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { offer } = navigation.state.params;
-    const { error, success } = this.state;
+    const { offer, notifier, notificationMessage } = navigation.state.params;
+    const { error, success, notification, notifierOffset } = this.state;
 
     let image = null;
     if (offer.mapPhoto) {
@@ -478,7 +493,18 @@ class OfferDetail extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('offer', offer)} />
+        <FloatingNavbar
+          handleBack={this.goBack}
+          showShare
+          handleShare={() => this.onSharePress('offer', offer)}
+          offset={notifierOffset}
+        />
+        {notification && <AppNotification
+          image={notifier.avatar}
+          name={notifier.firstName}
+          message={notificationMessage}
+          handleClose={this.onCloseNotification}
+        />}
         <ScrollView>
           <TouchableOpacity onPress={this.onMapPress}>
             <View style={styles.imgWrapper}>
