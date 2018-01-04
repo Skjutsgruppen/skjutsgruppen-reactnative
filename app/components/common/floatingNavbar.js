@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const FloatingNavbar = ({ style, handleBack, title, showShare, handleShare }) => (
-  <View style={[styles.wrapper, style]}>
+const FloatingNavbar = ({ style, handleBack, title, showShare, handleShare, offset }) => (
+  <View style={[styles.wrapper, style, offset && { top: offset }]}>
     <FloatingBackButton onPress={handleBack} />
     {
       (title !== '') &&
@@ -49,6 +49,7 @@ FloatingNavbar.propTypes = {
   showShare: PropTypes.bool,
   handleShare: PropTypes.func,
   title: PropTypes.string,
+  offset: PropTypes.number,
 };
 
 FloatingNavbar.defaultProps = {
@@ -57,6 +58,7 @@ FloatingNavbar.defaultProps = {
   showShare: false,
   handleShare: () => { },
   title: '',
+  offset: 0,
 };
 
 export default FloatingNavbar;

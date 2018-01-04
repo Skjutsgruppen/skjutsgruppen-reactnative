@@ -7,12 +7,12 @@ import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withShare } from '@services/apollo/auth';
-import { Wrapper, Loading, FloatingNavbar } from '@components/common';
+import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP, FEEDABLE_TRIP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -88,7 +88,16 @@ const styles = StyleSheet.create({
 class Detail extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, leaveLoading: false, error: '', success: '', comment: '', modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ loading: false, leaveLoading: false, error: '', success: '', comment: '', modalDetail: {}, modalType: '', isOpen: false, notification: false, notifierOffset: 0 });
+  }
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    const { notifier } = navigation.state.params;
+
+    if (notifier) {
+      this.setState({ notification: true, notifierOffset: 70 });
+    }
   }
 
   onSubmit = () => {
@@ -146,6 +155,10 @@ class Detail extends PureComponent {
     };
 
     navigation.navigate('Route', { coordinates });
+  }
+
+  onCloseNotification = () => {
+    this.setState({ notification: false, notifierOffset: 0 });
   }
 
   leaveGroup = () => {
@@ -294,10 +307,18 @@ class Detail extends PureComponent {
   render() {
     const { group, navigation } = this.props;
     const header = this.header(this.state.leaveLoading);
+    const { notifier, notificationMessage } = navigation.state.params;
+    const { notification, notifierOffset } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <FloatingNavbar handleBack={this.goBack} />
+        <FloatingNavbar handleBack={this.goBack} offset={notifierOffset} />
+        {notification && <AppNotification
+          image={notifier.avatar}
+          name={notifier.firstName}
+          message={notificationMessage}
+          handleClose={this.onCloseNotification}
+        />}
         <GroupFeedList
           header={header}
           navigation={navigation}
@@ -305,7 +326,7 @@ class Detail extends PureComponent {
         />
         {this.renderCommentForm()}
         {this.renderShareModal()}
-      </Wrapper>
+      </Wrapper >
     );
   }
 }
