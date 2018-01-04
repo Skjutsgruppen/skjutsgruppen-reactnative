@@ -59,7 +59,7 @@ class Splash extends Component {
     return (
       <Onboarding
         handleLogin={() => navigation.navigate('LoginMethod')}
-        handleRegister={() => navigation.navigate('RegisterMethod')}
+        handleRegister={() => navigation.navigate('OnBoardingFirst')}
         loading={this.state.loading}
       />
     );
