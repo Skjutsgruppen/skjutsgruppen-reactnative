@@ -1843,7 +1843,7 @@ const timezone = [
     ],
   },
   {
-    name: 'Asia/Katmandu',
+    name: 'Asia/Kathmandu',
     lat: 27.7167,
     long: 85.3167,
     countries: [

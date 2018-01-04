@@ -12,6 +12,9 @@ import { compose } from 'react-apollo';
 import Date from '@components/date';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import ReturnRides from '@components/offer/returnRides';
+import { Calendar } from 'react-native-calendars';
+import Moment from 'moment';
 
 const AskComment = withTripComment(Comment);
 
@@ -96,20 +99,38 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   btnSection: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    paddingVertical: 24,
   },
   pillBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     height: 48,
+    maxWidth: '45%',
+    borderRadius: 24,
     paddingHorizontal: 24,
     backgroundColor: Colors.background.fullWhite,
-    shadowOffset: { width: 0, height: 1 },
-    shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 1.0,
-    shadowRadius: 2,
-    borderRadius: 24,
+    shadowOffset: { width: 0, height: -1 },
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 40,
+    elevation: 2,
+  },
+  returnModalContent: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#f6f9fc',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    shadowOffset: { width: 0, height: -4 },
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 4,
   },
   btnIcon: {
     height: 32,
@@ -118,6 +139,8 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   btnLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: Colors.text.gray,
   },
   commentSection: {
@@ -227,6 +250,8 @@ class AskDetail extends Component {
       isOpen: false,
       notification: false,
       notifierOffset: 0,
+      showReturnRides: false,
+      showRecurringRides: false,
     });
   }
 
@@ -302,6 +327,14 @@ class AskDetail extends Component {
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
+  }
+
+  setReturnRidesModalVisibility = (show) => {
+    this.setState({ showReturnRides: show });
+  }
+
+  setRecurringRidesModalVisibility = (show) => {
+    this.setState({ showRecurringRides: show });
   }
 
   goBack = () => {
@@ -486,6 +519,17 @@ class AskDetail extends Component {
       profileImage = (<View style={styles.imgIcon} />);
     }
 
+    const markedDates = {};
+    let selectedDate = '';
+
+    ask.Recurring.forEach((trip) => {
+      selectedDate = Moment(trip.date).format('YYYY-MM-DD');
+      markedDates[selectedDate] = [
+        { startingDay: true, color: '#1ca9e5', textColor: '#fff' },
+        { endingDay: true, color: '#1ca9e5', textColor: '#fff' },
+      ];
+    });
+
     return (
       <View style={styles.wrapper}>
         <FloatingNavbar
@@ -522,6 +566,80 @@ class AskDetail extends Component {
                 <Text style={styles.stopsLabel}>Stops in </Text>
                 {ask.Stops.map(place => place.name).join(', ')}
               </Text>
+            }
+            <View style={[styles.flexRow, styles.btnSection]}>
+              {
+                ask.ReturnTrip.length > 0 &&
+                <TouchableOpacity
+                  style={styles.pillBtn}
+                  onPress={() => this.setReturnRidesModalVisibility(true)}
+                >
+                  <Image source={require('@icons/icon_return.png')} style={styles.btnIcon} />
+                  <Text style={styles.btnLabel}>Return</Text>
+                </TouchableOpacity>
+              }
+              {
+                ask.Recurring.length > 0 &&
+                <TouchableOpacity
+                  style={styles.pillBtn}
+                  onPress={() => this.setRecurringRidesModalVisibility(true)}
+                >
+                  <Image source={require('@icons/icon_calender.png')} style={styles.btnIcon} />
+                  <Text style={styles.btnLabel}>Recurring</Text>
+                </TouchableOpacity>
+              }
+            </View>
+            {
+              this.state.showReturnRides &&
+              <Modal
+                animationType="slide"
+                transparent
+                onRequestClose={() => this.setReturnRidesModalVisibility(false)}
+                visible={this.state.returnRidesModalVisible}
+              >
+                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+                  <View style={styles.returnModalContent}>
+                    <ReturnRides avatar={ask.User.avatar} trips={ask.ReturnTrip} />
+                    <View style={styles.closeWrapper}>
+                      <TouchableOpacity
+                        style={styles.closeModal}
+                        onPress={() =>
+                          this.setReturnRidesModalVisibility(false)}
+                      >
+                        <Text style={styles.actionLabel}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+            }
+            {
+              this.state.showRecurringRides &&
+              <Modal
+                animationType="slide"
+                transparent
+                onRequestClose={() => this.setRecurringRidesModalVisibility(false)}
+                visible={this.state.recurringRidesModalVisible}
+              >
+                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+                  <View style={styles.returnModalContent}>
+                    <Calendar
+                      markedDates={markedDates}
+                      markingType="interactive"
+                      hideExtraDays
+                    />
+                    <View style={styles.closeWrapper}>
+                      <TouchableOpacity
+                        style={styles.closeModal}
+                        onPress={() =>
+                          this.setRecurringRidesModalVisibility(false)}
+                      >
+                        <Text style={styles.actionLabel}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
             }
           </View>
           <View style={styles.userComment}>
