@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -161,7 +162,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 <Text style={styles.username}>
                   {group.User.firstName || group.User.email}
                 </Text>
-                <Text> created a group</Text>
+                <Text> { trans('feed.created_a_group')}</Text>
               </Text>
               {
                 group.outreach === STRETCH_TYPE_AREA &&
@@ -194,7 +195,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
           <Image source={ShareIcon} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.readMoreWrapper} onPress={() => onPress('group', group)}>
-          <Text style={styles.readMore}>Read more</Text>
+          <Text style={styles.readMore}>{trans('feed.read_more')}</Text>
         </TouchableOpacity>
       </View>
     </View>
