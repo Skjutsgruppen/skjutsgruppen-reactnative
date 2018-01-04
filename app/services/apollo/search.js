@@ -29,88 +29,27 @@ query search
     rows{
       ...on Group {
         id
-        name 
-        photo 
-        description 
+        outreach
+        name
+        description
+        GroupType: type 
+        photo
+        mapPhoto
         User {
           id 
           email 
-          avatar
-          phoneNumber 
           firstName 
           lastName 
-          emailVerified 
-          phoneVerified 
-          relation {
+          avatar 
+          relation { 
             id 
             email 
-            phoneNumber 
-            firstName 
-            lastName
-          }
-        } 
-        country 
-        county 
-        municipality 
-        locality 
-        stopsIds 
-        TripStart{ 
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops{
-          name 
-          coordinates
-        } 
-        GroupType: type 
-        outreach
-        GroupMembers {
-          id
-          email
-          avatar
-          phoneNumber
-          firstName
-          lastName
-          relation {
-            id
-            email
-            phoneNumber
             firstName
             lastName
+            avatar
           }
-        }
-        Comments {
-          id 
-          tripId 
-          groupId 
-          text 
-          date 
-          User{
-            id 
-            email 
-            avatar 
-            phoneNumber 
-            firstName 
-            lastName 
-            relation { 
-              id 
-              email 
-              phoneNumber 
-              firstName 
-              lastName
-            }
-          }
-        }
-      } 
-      ...on Trip {
-        id 
-        description 
-        type 
-        TripStart { 
+        } 
+        TripStart {
           name 
           coordinates 
         } 
@@ -118,47 +57,80 @@ query search
           name 
           coordinates
         } 
-        photo 
         Stops {
           name 
           coordinates
         } 
-        date 
-        time 
+        country 
+        county 
+        municipality 
+        locality 
+        GroupMembers { 
+          id 
+          avatar 
+        } 
+        GroupMembershipRequests {
+          id 
+          status 
+          Member {
+            id 
+            email 
+            firstName 
+          }
+        }
+      }
+      ...on Trip {
+        id 
+        type 
+        description 
         seats 
-        flexibility 
-        User { 
+        parentId
+        User {
           id 
           email 
-          avatar 
-          phoneNumber 
           firstName 
           lastName 
-          relation { 
+          avatar 
+          relation {
             id 
             email 
-            phoneNumber 
-            firstName 
+            firstName
             lastName
-          } 
-          totalOffered 
-          totalAsked 
-          totalComments
-        } 
-        Comments {
-          id 
-          tripId 
-          groupId 
-          text 
-          date 
-          User {
-            id 
-            email 
             avatar
-            phoneNumber 
-            firstName 
-            lastName 
           }
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
+        mapPhoto
+        totalComments
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+        }
+        Recurring {
+          id
+          date
         }
       }
     }
