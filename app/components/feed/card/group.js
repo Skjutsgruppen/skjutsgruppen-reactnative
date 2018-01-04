@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import { CLOSE_GROUP, OPEN_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
 
@@ -142,13 +142,6 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }
-  }
-
-  let groupType = '';
-  if (group.type === OPEN_GROUP) {
-    groupType = 'Open';
-  } else if (group.type === CLOSE_GROUP) {
-    groupType = 'Closed';
   }
 
   return (
