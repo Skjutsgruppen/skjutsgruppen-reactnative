@@ -8,6 +8,7 @@ import FloatingNavbar from '@components/common/floatingNavbar';
 import FloatingBackButton from '@components/common/floatingBackButton';
 import NavBar from '@components/common/navbar';
 import CustomButton from '@components/common/customButton';
+import RoundedButton from '@components/common/roundedButton';
 import Input from '@components/common/input';
 import ShareButton from '@components/common/shareButton';
 import ProfilePicture from '@components/common/profilePicture';
@@ -28,6 +29,7 @@ export {
   FloatingNavbar,
   FloatingBackButton,
   CustomButton,
+  RoundedButton,
   Input,
   ProfilePicture,
   DetailHeader,
