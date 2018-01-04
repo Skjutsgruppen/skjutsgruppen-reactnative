@@ -1,0 +1,17 @@
+export const feed = {
+  map: 'Map',
+  group: 'group',
+  groups: 'Groups',
+  created_a_group: 'created a group_se',
+  read_more: 'Read more_se',
+  participant: 'participant',
+  participants: 'participants',
+  offers: 'offers',
+  seat: 'seat',
+  seats: 'seats',
+  stops_in: 'Stops in',
+  asks_for_a_ride: 'asks for a ride',
+  join_the_group: 'Join the group',
+  joined_the_group: 'Joined the group',
+  leave_the_group: 'Leave the group',
+};
