@@ -12,6 +12,12 @@ import SearchGroup from '@screens/group/SearchGroup';
 import NewsDetail from '@screens/NewsDetail';
 import TripDetail from '@screens/TripDetail';
 
+import OnBoardingFirst from '@screens/auth/onboarding/first';
+import OnBoardingSecond from '@screens/auth/onboarding/second';
+import OnBoardingThird from '@screens/auth/onboarding/third';
+import OnBoardingFourth from '@screens/auth/onboarding/fourth';
+import OnBoardingFifth from '@screens/auth/onboarding/fifth';
+
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
 import CheckEMail from '@screens/auth/email/Check';
@@ -96,6 +102,12 @@ const Tab = TabNavigator(TabRoutes,
 );
 export const Routes = {
   Splash: { screen: Splash },
+
+  OnBoardingFirst: { screen: OnBoardingFirst },
+  OnBoardingSecond: { screen: OnBoardingSecond },
+  OnBoardingThird: { screen: OnBoardingThird },
+  OnBoardingFourth: { screen: OnBoardingFourth },
+  OnBoardingFifth: { screen: OnBoardingFifth },
 
   RegisterMethod: { screen: RegisterMethod },
   RegisterViaEmail: { screen: RegisterViaEmail },

@@ -14,12 +14,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   disabled: {
-    opacity: 0.6,
+    backgroundColor: '#ddd',
   },
 });
 
-const CustomButton = ({ children, style, onPress, bgColor, textColor }) => (
-  <TouchableOpacity style={[styles.button, style, { backgroundColor: bgColor }]} onPress={onPress}>
+const CustomButton = ({ children, style, onPress, bgColor, textColor, disabled }) => (
+  <TouchableOpacity
+    style={[
+      styles.button,
+      style,
+      { backgroundColor: bgColor },
+      disabled && styles.disabled,
+    ]}
+    disabled={disabled}
+    onPress={onPress}
+  >
     <Text style={[styles.text, { color: textColor }]}>{children}</Text>
   </TouchableOpacity>
 );
@@ -30,12 +39,14 @@ CustomButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   bgColor: PropTypes.string,
   textColor: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 CustomButton.defaultProps = {
   style: {},
   bgColor: '#333',
   textColor: '#fff',
+  disabled: false,
 };
 
 export default CustomButton;
