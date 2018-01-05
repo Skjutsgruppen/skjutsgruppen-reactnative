@@ -264,42 +264,61 @@ const TRIPS_QUERY = gql`
 
 query trips($id:Int, $type:String){ 
   trips(input:{userId:$id, type:$type}) { 
-        rows{
+    rows {
+        id
+        type
+        description
+        seats
+        parentId
+        User {
           id
-          type
-          description
-          seats
-          User {
+          email
+          firstName
+          lastName
+          avatar
+          relation {
             id
-            email
+            email 
             firstName
-            lastName
             avatar
-            relation {
-              id
-              firstName
-              avatar
+          }
+        }
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
+        mapPhoto
+        returnTrip
+          totalComments
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
             }
           }
-          TripStart {
-            name
-            coordinates
+          Recurring {
+            id
+            date
           }
-          TripEnd {
-            name
-            coordinates
-          }
-          Stops {
-            name
-            coordinates
-          }
-          date
-          time
-          photo
-          mapPhoto
-          returnTrip
-        }
-        count
+      }
+      count
       }
     }
 `;
