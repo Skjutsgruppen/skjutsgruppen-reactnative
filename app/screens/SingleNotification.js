@@ -6,7 +6,6 @@ import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
-import { connect } from 'react-redux';
 import { PER_FETCH_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -159,15 +158,9 @@ NewNotification.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  subscribeToNotification: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.numeric,
-  }).isRequired,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
-
-const NotificationList = compose(withNotification, connect(mapStateToProps))(NewNotification);
+const NotificationList = compose(withNotification)(NewNotification);
 
 const SingleNotification = ({ navigation }) => {
   const { filters } = navigation.state.params;

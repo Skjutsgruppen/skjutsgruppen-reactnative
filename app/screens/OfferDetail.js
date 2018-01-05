@@ -39,6 +39,12 @@ const styles = StyleSheet.create({
     height: 224,
     width: '100%',
   },
+  profilePicWrapper: {
+    position: 'absolute',
+    top: 224 - (60 / 2),
+    right: 20,
+    zIndex: 20,
+  },
   profilePic: {
     height: 60,
     width: 60,
@@ -46,10 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 2,
     borderColor: Colors.border.white,
-    position: 'absolute',
-    top: 224 - (60 / 2),
-    right: 20,
-    zIndex: 20,
   },
   detail: {
     paddingHorizontal: 24,
@@ -295,11 +297,6 @@ class OfferDetail extends Component {
     this.setState({ isOpen: false });
   }
 
-  onCommentPress = (id) => {
-    const { navigation } = this.props;
-    navigation.navigate('UserProfile', { profileId: id });
-  }
-
   onProfilePress = (id) => {
     const { navigation } = this.props;
     navigation.navigate('UserProfile', { profileId: id });
@@ -538,7 +535,12 @@ class OfferDetail extends Component {
         />}
         <ScrollView>
           <DetailHeader trip={offer} handleMapPress={this.onMapPress} />
-          {profileImage}
+          <TouchableOpacity
+            onPress={() => this.onProfilePress(offer.User.id)}
+            style={styles.profilePicWrapper}
+          >
+            {profileImage}
+          </TouchableOpacity>
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>
@@ -636,15 +638,21 @@ class OfferDetail extends Component {
           {
             offer.User.relation.length > 0 &&
             <View style={{ alignItems: 'center' }}>
-              <Text>This is how you know</Text>
-              <Relation users={offer.User.relation} />
+              <Text>This is how you know {offer.User.firstName}</Text>
+              <Relation
+                navigation={navigation}
+                users={offer.User.relation}
+                avatarSize={45}
+              />
             </View>
           }
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <View style={styles.commentsWrapper}>
-            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
-          </View>
+          <OfferComment
+            navigation={navigation}
+            onCommentPress={this.onProfilePress}
+            id={offer.id}
+          />
         </ScrollView>
         {this.renderFooter()}
         {this.renderModal()}
