@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, FloatingNavbar, AppNotification } from '@components/common';
+import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@components/common';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
@@ -126,27 +126,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f9fc',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    shadowOffset: { width: 0, height: -4 },
+    shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
     shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowRadius: 2,
     elevation: 4,
   },
   btnIcon: {
-    height: 32,
-    width: 32,
-    resizeMode: 'contain',
     marginRight: 16,
   },
   btnLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.text.gray,
   },
-  commentSection: {
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
+  commentsWrapper: {
+    paddingBottom: 50,
   },
   footer: {
     backgroundColor: Colors.background.fullWhite,
@@ -509,14 +504,6 @@ class OfferDetail extends Component {
     const { offer, notifier, notificationMessage } = navigation.state.params;
     const { error, success, notification, notifierOffset } = this.state;
 
-    let image = null;
-    if (offer.mapPhoto) {
-      image = (<Image source={{ uri: offer.mapPhoto }} style={styles.feedImage} />);
-    }
-    if (offer.photo) {
-      image = (<Image source={{ uri: offer.photo }} style={styles.feedImage} />);
-    }
-
     let profileImage = null;
     if (offer.User.avatar) {
       profileImage = (<Image source={{ uri: offer.User.avatar }} style={styles.profilePic} />);
@@ -550,16 +537,8 @@ class OfferDetail extends Component {
           handleClose={this.onCloseNotification}
         />}
         <ScrollView>
-          <TouchableOpacity onPress={this.onMapPress}>
-            <View style={styles.imgWrapper}>
-              {image}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.onProfilePress(offer.User.id)}
-          >
-            {profileImage}
-          </TouchableOpacity>
+          <DetailHeader trip={offer} handleMapPress={this.onMapPress} />
+          {profileImage}
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>
@@ -583,7 +562,7 @@ class OfferDetail extends Component {
                   style={styles.pillBtn}
                   onPress={() => this.setReturnRidesModalVisibility(true)}
                 >
-                  <Image source={require('@icons/icon_return.png')} style={styles.btnIcon} />
+                  <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
                   <Text style={styles.btnLabel}>Return</Text>
                 </TouchableOpacity>
               }
@@ -593,7 +572,7 @@ class OfferDetail extends Component {
                   style={styles.pillBtn}
                   onPress={() => this.setRecurringRidesModalVisibility(true)}
                 >
-                  <Image source={require('@icons/icon_calender.png')} style={styles.btnIcon} />
+                  <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
                   <Text style={styles.btnLabel}>Recurring</Text>
                 </TouchableOpacity>
               }
@@ -663,7 +642,9 @@ class OfferDetail extends Component {
           }
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
+          <View style={styles.commentsWrapper}>
+            <OfferComment onCommentPress={this.onCommentPress} id={offer.id} />
+          </View>
         </ScrollView>
         {this.renderFooter()}
         {this.renderModal()}

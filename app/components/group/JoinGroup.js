@@ -228,20 +228,12 @@ class JoinGroup extends Component {
 
   render() {
     const { group } = this.props;
-    let image = null;
-    if (group.photo) {
-      image = (<GroupImage imageURI={group.photo} name={group.name} />);
-    } else if (group.mapPhoto) {
-      image = (<GroupImage imageURI={group.mapPhoto} name={group.name} />);
-    } else {
-      image = (<GroupImage imageURI={require('@assets/feed-img.jpg')} name={group.name} />);
-    }
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
         <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('group', group)} />
         <ScrollView>
-          {image}
+          <GroupImage group={group} />
           <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
           <Participants members={group.GroupMembers} />
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
