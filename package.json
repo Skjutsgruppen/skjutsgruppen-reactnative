@@ -31,6 +31,7 @@
     "react-native-image-picker": "^0.26.7",
     "react-native-maps": "^0.17.1",
     "react-native-sms": "^1.5.1",
+    "react-native-swiper": "^1.5.13",
     "react-native-vector-icons": "^4.4.0",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.6",

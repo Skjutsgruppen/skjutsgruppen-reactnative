@@ -25,6 +25,7 @@ subscription notification($userId: Int!) {
         tripType:type
         description
         seats
+        parentId
         User {
           id
           email
@@ -33,6 +34,7 @@ subscription notification($userId: Int!) {
           avatar
           relation {
             id
+            email 
             firstName
             avatar
           }
@@ -54,6 +56,23 @@ subscription notification($userId: Int!) {
         photo
         mapPhoto
         returnTrip
+          totalComments
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
       }
       ... on Group {
         id
@@ -181,6 +200,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           tripType:type
           description
           seats
+          parentId
           User {
             id
             email
@@ -189,6 +209,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             avatar
             relation {
               id
+              email 
               firstName
               avatar
             }
@@ -210,6 +231,23 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           photo
           mapPhoto
           returnTrip
+            totalComments
+            ReturnTrip {
+              id
+              date
+              TripStart {
+                name
+                coordinates
+              }
+              TripEnd {
+                name
+                coordinates
+              }
+            }
+            Recurring {
+              id
+              date
+            }
         }
         ... on Group {
           id

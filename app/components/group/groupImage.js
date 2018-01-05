@@ -11,13 +11,17 @@ import Colors from '@theme/colors';
 const cardHeight = 484;
 
 const styles = StyleSheet.create({
-  imgWrapper: {
+  roundedCorner: {
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  wrapper: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     height: cardHeight / 2,
     overflow: 'hidden',
-    backgroundColor: Colors.background.gray,
+    backgroundColor: Colors.background.black,
   },
   img: {
     width: '100%',
@@ -27,8 +31,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+    opacity: 0.75,
   },
-  groupName: {
+  name: {
     backgroundColor: 'transparent',
     fontSize: 18,
     fontWeight: 'bold',
@@ -39,16 +44,39 @@ const styles = StyleSheet.create({
   },
 });
 
-const GroupImage = ({ imageURI, name }) => (
-  <View style={styles.imgWrapper}>
-    <Image source={{ uri: imageURI }} style={styles.img} />
-    <Text style={styles.groupName}>{name}</Text>
-  </View>
-);
+const GroupImage = ({ group, wrapperStyle, roundedCorner }) => {
+  let source = null;
+  if (group.photo) {
+    source = { uri: group.photo };
+  } else if (group.mapPhoto) {
+    source = { uri: group.mapPhoto };
+  } else {
+    source = require('@assets/feed-img.jpg');
+  }
+
+  return (
+    <View style={[styles.wrapper, wrapperStyle, roundedCorner && styles.roundedCorner]}>
+      <Image
+        source={source}
+        style={[styles.img, roundedCorner && styles.roundedCorner]}
+      />
+      <Text style={styles.name}>{group.name}</Text>
+    </View>
+  );
+};
 
 GroupImage.propTypes = {
-  imageURI: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  group: PropTypes.shape({
+    imageURI: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
+  wrapperStyle: View.propTypes.style,
+  roundedCorner: PropTypes.bool,
+};
+
+GroupImage.defaultProps = {
+  wrapperStyle: {},
+  roundedCorner: false,
 };
 
 export default GroupImage;
