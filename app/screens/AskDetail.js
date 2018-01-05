@@ -39,6 +39,12 @@ const styles = StyleSheet.create({
     height: 224,
     width: '100%',
   },
+  profilePicWrapper: {
+    position: 'absolute',
+    top: 224 - (60 / 2),
+    right: 20,
+    zIndex: 20,
+  },
   profilePic: {
     height: 60,
     width: 60,
@@ -46,10 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 2,
     borderColor: Colors.border.white,
-    position: 'absolute',
-    top: 224 - (60 / 2),
-    right: 20,
-    zIndex: 20,
   },
   detail: {
     paddingHorizontal: 24,
@@ -83,20 +85,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
-  relationLabelWrapper: {
+  relationTitle: {
     justifyContent: 'center',
+    alignItems: 'flex-end',
     flexDirection: 'row',
+    marginHorizontal: 24,
     marginBottom: 6,
   },
-  relationLabel: {
-    fontSize: 12,
-  },
-  chevronDown: {
+  downArrow: {
     height: 12,
     width: 12,
     resizeMode: 'contain',
-    marginLeft: 16,
-    marginTop: 2,
+    position: 'absolute',
+    top: 2,
+    right: 0,
   },
   btnSection: {
     justifyContent: 'space-around',
@@ -300,11 +302,6 @@ class AskDetail extends Component {
     this.setState({ isOpen: false });
   }
 
-  onCommentPress = (id) => {
-    const { navigation } = this.props;
-    navigation.navigate('UserProfile', { profileId: id });
-  }
-
   onCommentChange = (text) => {
     this.setState({ comment: text });
   }
@@ -323,6 +320,12 @@ class AskDetail extends Component {
 
   onCloseNotification = () => {
     this.setState({ notification: false, notifierOffset: 0 });
+  }
+
+  onProfilePress = (id) => {
+    const { navigation } = this.props;
+
+    navigation.navigate('UserProfile', { profileId: id });
   }
 
   setModalVisible(visible) {
@@ -538,7 +541,12 @@ class AskDetail extends Component {
         />}
         <ScrollView>
           <DetailHeader trip={ask} handleMapPress={this.onMapPress} />
-          {profileImage}
+          <TouchableOpacity
+            onPress={() => this.onProfilePress(ask.User.id)}
+            style={styles.profilePicWrapper}
+          >
+            {profileImage}
+          </TouchableOpacity>
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>
@@ -555,28 +563,31 @@ class AskDetail extends Component {
                 {ask.Stops.map(place => place.name).join(', ')}
               </Text>
             }
-            <View style={[styles.flexRow, styles.btnSection]}>
-              {
-                ask.ReturnTrip.length > 0 &&
-                <TouchableOpacity
-                  style={styles.pillBtn}
-                  onPress={() => this.setReturnRidesModalVisibility(true)}
-                >
-                  <Image source={require('@icons/icon_return.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>Return</Text>
-                </TouchableOpacity>
-              }
-              {
-                ask.Recurring.length > 0 &&
-                <TouchableOpacity
-                  style={styles.pillBtn}
-                  onPress={() => this.setRecurringRidesModalVisibility(true)}
-                >
-                  <Image source={require('@icons/icon_calender.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>Recurring</Text>
-                </TouchableOpacity>
-              }
-            </View>
+            {
+              (ask.ReturnTrip.length > 0 || ask.Recurring.length > 0) &&
+              <View style={[styles.flexRow, styles.btnSection]}>
+                {
+                  ask.ReturnTrip.length > 0 &&
+                  <TouchableOpacity
+                    style={styles.pillBtn}
+                    onPress={() => this.setReturnRidesModalVisibility(true)}
+                  >
+                    <Image source={require('@icons/icon_return.png')} style={styles.btnIcon} />
+                    <Text style={styles.btnLabel}>Return</Text>
+                  </TouchableOpacity>
+                }
+                {
+                  ask.Recurring.length > 0 &&
+                  <TouchableOpacity
+                    style={styles.pillBtn}
+                    onPress={() => this.setRecurringRidesModalVisibility(true)}
+                  >
+                    <Image source={require('@icons/icon_calender.png')} style={styles.btnIcon} />
+                    <Text style={styles.btnLabel}>Recurring</Text>
+                  </TouchableOpacity>
+                }
+              </View>
+            }
             {
               this.state.showReturnRides &&
               <Modal
@@ -636,13 +647,20 @@ class AskDetail extends Component {
           {
             ask.User.relation.length > 0 &&
             <View style={{ alignItems: 'center' }}>
-              <Text>This is how you know</Text>
-              <Relation users={ask.User.relation} />
+              <View style={styles.relationTitle}>
+                <Text>This is how you know {ask.User.firstName}</Text>
+                <Image source={require('@icons/icon_chevron_down.png')} style={styles.downArrow} />
+              </View>
+              <Relation
+                navigation={navigation}
+                users={ask.User.relation}
+                avatarSize={45}
+              />
             </View>
           }
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <AskComment onCommentPress={this.onCommentPress} id={ask.id} />
+          <AskComment navigation={navigation} onCommentPress={this.onProfilePress} id={ask.id} />
         </ScrollView>
         {this.renderFooter()}
         {this.renderModal()}
