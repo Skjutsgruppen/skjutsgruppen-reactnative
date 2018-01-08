@@ -1,14 +1,9 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, ScrollView, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 import Colors from '@theme/colors';
 import { Wrapper } from '@components/common';
-import Ride from '@components/message/ride';
-import Group from '@components/message/group';
-import Notification from '@components/message/notification';
 import PropTypes from 'prop-types';
-
-import MessageIcon from '@icons/ic_message.png';
-import MessageIconActive from '@icons/ic_message_active.png';
+import SearchList from '@components/message/searchList';
 
 const styles = StyleSheet.create({
   header: {
@@ -54,28 +49,40 @@ const styles = StyleSheet.create({
   },
 });
 
-class Message extends PureComponent {
+class MessageSearch extends PureComponent {
   static navigationOptions = {
     header: null,
-    tabBarLabel: 'Message',
-    tabBarIcon: ({ focused }) => <Image source={focused ? MessageIconActive : MessageIcon} />,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = { query: '', searchQuery: '' };
+  }
+
+  searchMessages = () => {
+    const { query } = this.state;
+    this.setState({ searchQuery: query });
+  }
+
   render() {
-    const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <View style={styles.header}>
-          <Text style={styles.title}>Messages and groups</Text>
+          <Text style={styles.title}>Search Messages</Text>
           <View style={styles.searchInputWrapper}>
             <TextInput
+              onChangeText={query => this.setState({ query })}
               placeholder="Search"
-              onFocus={() => navigation.navigate('SearchNotification')}
               underlineColorAndroid="transparent"
               style={styles.searchInput}
+              returnKeyType="search"
+              autoFocus
+              onSubmitEditing={this.searchMessages}
             />
             <TouchableOpacity
               style={styles.iconWrapper}
-              disabled
+              onPress={this.searchMessages}
+              disabled={this.state.query.length < 1}
             >
               <Image
                 source={require('@assets/icons/icon_search_blue.png')}
@@ -85,22 +92,20 @@ class Message extends PureComponent {
           </View>
         </View>
         <View style={styles.content}>
-          <ScrollView>
-            <Notification filters="new" navigation={navigation} />
-            <Ride navigation={navigation} />
-            <Group navigation={navigation} />
-            <Notification filters="old" navigation={navigation} />
-          </ScrollView>
+          {
+            this.state.searchQuery.length > 0 &&
+            <SearchList navigation={this.props.navigation} keyword={this.state.searchQuery} />
+          }
         </View>
       </Wrapper>
     );
   }
 }
 
-Message.propTypes = {
+MessageSearch.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
 };
 
-export default Message;
+export default MessageSearch;

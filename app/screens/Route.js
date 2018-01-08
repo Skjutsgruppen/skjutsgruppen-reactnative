@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
@@ -9,7 +9,7 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-class Route extends Component {
+class Route extends PureComponent {
   static navigationOptions = {
     header: null,
   };
@@ -65,15 +65,20 @@ class Route extends Component {
   }
 
   fitMap = () => {
-    this.mapView.fitToCoordinates([this.state.origin, this.state.destination], {
-      edgePadding: {
-        right: Math.ceil(width / 20),
-        bottom: Math.ceil(height / 20),
-        left: Math.ceil(width / 20),
-        top: Math.ceil(height / 20),
-      },
-      animation: true,
-    });
+    if (this.state.waypoints.length < 1) return;
+    try {
+      this.mapView.fitToCoordinates(this.state.waypoints, {
+        edgePadding: {
+          right: Math.ceil(width / 5),
+          bottom: Math.ceil(height / 5),
+          left: Math.ceil(width / 5),
+          top: Math.ceil(height / 5),
+        },
+        animation: false,
+      });
+    } catch (error) {
+      console.warn(error.message);
+    }
   }
 
   renderStops = () => {

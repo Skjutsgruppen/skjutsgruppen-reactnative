@@ -110,14 +110,16 @@ class Map extends PureComponent {
   }
 
   fitMap(coordinates) {
+    if (coordinates.length < 1) return;
+
     this.mapView.fitToCoordinates(coordinates, {
       edgePadding: {
-        right: Math.ceil(width / 20),
-        bottom: Math.ceil(height / 20),
-        left: Math.ceil(width / 20),
-        top: Math.ceil(height / 20),
+        right: Math.ceil(width / 5),
+        bottom: Math.ceil(height / 5),
+        left: Math.ceil(width / 5),
+        top: Math.ceil(height / 5),
       },
-      animation: true,
+      animation: false,
     });
   }
 

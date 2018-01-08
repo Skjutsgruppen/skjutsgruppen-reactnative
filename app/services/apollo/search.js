@@ -123,7 +123,6 @@ query search
           name 
           coordinates
         } 
-        returnTrip 
         date 
         time 
         seats 
