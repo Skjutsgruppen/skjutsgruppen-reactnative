@@ -52,6 +52,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 
+.history/
 .env
 .env.production
 *.swp

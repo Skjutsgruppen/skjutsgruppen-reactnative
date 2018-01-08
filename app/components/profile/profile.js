@@ -6,6 +6,7 @@ import { Loading } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import Relation from '@components/relation';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   connectionLabel: {
     justifyContent: 'center',
     flexDirection: 'row',
-    paddingVertical: 12,
+    marginTop: 12,
   },
   lightText: {
     color: Colors.text.gray,
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   },
   listWrapper: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.gray,
+    borderColor: Colors.border.lightGray,
   },
   lastListWrapper: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -320,22 +321,8 @@ class Profile extends Component {
     </View>
   )
 
-  renderRelation = () => {
-    const { data: { profile } } = this.props;
-
-    return profile.relation.map((user, index) => (
-      <View key={user.id} style={styles.withArrow}>
-        <TouchableOpacity onPress={() => this.onPressProfile(user.id)}>
-          <Image source={{ uri: user.avatar }} style={styles.connectionPic} />
-        </TouchableOpacity>
-        {!(index === (profile.relation.length - 1)) && <Image source={require('@assets/icons/icon_arrow_fat.png')} style={styles.connectionArrow} />}
-      </View>
-    ),
-    );
-  }
-
   render() {
-    const { data: { networkStatus, profile } } = this.props;
+    const { data: { networkStatus, profile }, navigation } = this.props;
     if (networkStatus === 1) {
       return (
         <View style={styles.loadingWrapper}>
@@ -386,7 +373,11 @@ class Profile extends Component {
               </TouchableOpacity>
             </View>
             <View style={styles.connection}>
-              {this.renderRelation()}
+              <Relation
+                navigation={navigation}
+                users={profile.relation}
+                avatarSize={45}
+              />
             </View>
           </View>
         }

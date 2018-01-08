@@ -260,8 +260,8 @@ class Item extends PureComponent {
     return null;
   }
 
-  friendRequestAccepted = ({ FriendRequest, User, date, id }) => {
-    if (FriendRequest) {
+  friendRequestAccepted = ({ Notifiable, User, date, id }) => {
+    if (Notifiable) {
       return this.item({
         user: User.firstName,
         photo: User.avatar,

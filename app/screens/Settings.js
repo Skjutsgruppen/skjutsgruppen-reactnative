@@ -18,7 +18,7 @@ import { trans } from '@lang/i18n';
 const styles = StyleSheet.create({
   listWrapper: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.gray,
+    borderColor: Colors.border.lightGray,
   },
   list: {
     flexDirection: 'row',
@@ -61,11 +61,13 @@ class Settings extends Component {
 
   setLanguage = (language) => {
     if (language === this.state.language) return;
-    
+
+    const { navigation } = this.props;
+
     this.setState({ language });
     LangService.setLanguage(language).then(() => {
       I18n.locale = language;
-      this.props.navigation.reset('Tab');
+      navigation.reset('Tab');
     });
   }
 
