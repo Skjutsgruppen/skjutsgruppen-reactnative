@@ -380,10 +380,10 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           if (!subscriptionData.data) {
             return prev;
           }
-          // console.log(prev, 'notification');
+
           const newNotification = subscriptionData.data.notification;
-          const prevNotification = prev.notifications.rows.slice(1, 5);
-          const newrows = [newNotification].concat(prevNotification);
+          const newrows = [newNotification].concat(prev.notifications.rows);
+
           return {
             notifications: {
               ...prev.notifications,
