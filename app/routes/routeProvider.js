@@ -33,8 +33,10 @@ import UserTrips from '@screens/profile/UserTrips';
 import Settings from '@screens/Settings';
 
 import Map from '@screens/Map';
-import SingleNotification from '@screens/SingleNotification';
-import Route from '@components/route';
+import SingleNotification from '@screens/notification/List';
+import SearchNotification from '@screens/notification/Search';
+
+import Route from '@screens/Route';
 
 import Add from '@screens/tab/add';
 import Feed from '@screens/tab/feed';
@@ -125,6 +127,8 @@ export const Routes = {
   UserTrips: { screen: UserTrips },
 
   SingleNotification: { screen: SingleNotification },
+  SearchNotification: { screen: SearchNotification },
+
   Settings: { screen: Settings },
 };
 
