@@ -93,6 +93,17 @@ class NewNotification extends PureComponent {
       ));
     }
 
+    if (notifications.error) {
+      render = (
+        <View style={{ marginTop: 100 }}>
+          <Text>Error: {notifications.error.message}</Text>
+          <TouchableOpacity onPress={() => notifications.refetch()}>
+            <Text>Reload</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     if (notifications.loading) {
       render = (
         <View style={styles.spacedWrapper}>
@@ -124,6 +135,7 @@ NewNotification.propTypes = {
     refetch: PropTypes.func.isRequired,
     rows: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.numeric,
+    error: PropTypes.object,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

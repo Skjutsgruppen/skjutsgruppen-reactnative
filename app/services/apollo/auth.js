@@ -62,7 +62,6 @@ export const userRegister = graphql(REGISTER_QUERY, {
   }),
 });
 
-
 const VERIFICATION_CODE_QUERY = gql`
 mutation verifyCode($code:String!) {
   verifyCode(code:$code) {
@@ -197,48 +196,64 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
   },
 });
 
-
 const GROUPS_QUERY = gql`
 query groups($id:Int){ 
   groups(userId:$id) { 
-        rows{
+    rows {
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id
+        email
+        firstName
+        lastName
+        avatar
+        relation {
           id
-          outreach
-          name
-          description
-          type
-          photo
-          mapPhoto
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-          }
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-          Stops {
-            name
-            coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          GroupMembers{
-            id
-          }
+          email
+          firstName
+          lastName
+          avatar
         }
-        count
+      }
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      country
+      county
+      municipality
+      locality
+      GroupMembers{
+        id
+        avatar
+      }
+      GroupMembershipRequests{
+        id
+        status
+        Member {
+          id
+          email
+          firstName
+        }
       }
     }
+    count
+  }
+}
 `;
 
 export const withGroups = graphql(GROUPS_QUERY, {
@@ -247,7 +262,7 @@ export const withGroups = graphql(GROUPS_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, groups } }) => {
+  props: ({ data: { loading, groups, error, refetch } }) => {
     let rows = [];
     let count = 0;
 
@@ -255,34 +270,53 @@ export const withGroups = graphql(GROUPS_QUERY, {
       rows = groups.rows;
       count = groups.count;
     }
-    return { groups: { loading, rows, count } };
+    return { groups: { loading, rows, count, error, refetch } };
   },
 });
 
-
 const TRIPS_QUERY = gql`
-
 query trips($id:Int, $type:String){ 
   trips(input:{userId:$id, type:$type}) { 
     rows {
-        id
-        type
-        description
-        seats
-        parentId
-        User {
-          id
-          email
+      id 
+      type 
+      description 
+      seats 
+      parentId
+      User {
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+        relation {
+          id 
+          email 
           firstName
           lastName
           avatar
-          relation {
-            id
-            email 
-            firstName
-            avatar
-          }
         }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      ReturnTrip {
+        id
+        date
         TripStart {
           name
           coordinates
@@ -291,36 +325,15 @@ query trips($id:Int, $type:String){
           name
           coordinates
         }
-        Stops {
-          name
-          coordinates
-        }
-        date
-        time
-        photo
-        mapPhoto
-        returnTrip
-          totalComments
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
-          }
-          Recurring {
-            id
-            date
-          }
       }
-      count
+      Recurring {
+        id
+        date
       }
     }
+    count
+  }
+}
 `;
 
 export const withTrips = graphql(TRIPS_QUERY, {
@@ -329,7 +342,7 @@ export const withTrips = graphql(TRIPS_QUERY, {
   ) => ({
     variables: { id, offset, limit, type, active },
   }),
-  props: ({ data: { loading, trips } }) => {
+  props: ({ data: { loading, trips, error, refetch } }) => {
     let rows = [];
     let count = 0;
 
@@ -337,10 +350,9 @@ export const withTrips = graphql(TRIPS_QUERY, {
       rows = trips.rows;
       count = trips.count;
     }
-    return { trips: { loading, rows, count } };
+    return { trips: { loading, rows, count, error, refetch } };
   },
 });
-
 
 const COUNTY_QUERY = gql`
 query {

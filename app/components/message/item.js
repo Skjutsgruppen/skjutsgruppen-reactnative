@@ -188,9 +188,7 @@ class Item extends PureComponent {
             <Text style={styles.bold}> {Notifiable.Group.name} </Text>
             group
             <Text style={styles.bold}>
-              {Notifiable.Group.TripStart.name}
-              -
-              {Notifiable.Group.TripEnd.name}
+              {` ${Notifiable.Group.TripStart.name}-${Notifiable.Group.TripEnd.name}`}
             </Text>
           </Text>
         </Text>

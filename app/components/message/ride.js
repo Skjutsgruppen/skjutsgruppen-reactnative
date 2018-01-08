@@ -112,6 +112,17 @@ const Ride = ({ trips, navigation }) => {
     render = trips.rows.map(trip => item(trip, navigation));
   }
 
+  if (trips.error) {
+    render = (
+      <View style={{ marginTop: 100 }}>
+        <Text>Error: {trips.error.message}</Text>
+        <TouchableOpacity onPress={() => trips.refetch()}>
+          <Text>Reload</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   if (trips.loading) {
     render = (
       <View style={styles.spacedWrapper}>
@@ -134,6 +145,8 @@ Ride.propTypes = {
   trips: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.numeric,
+    error: PropTypes.object,
+    refetch: PropTypes.func,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
