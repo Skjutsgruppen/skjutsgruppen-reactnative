@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
-import Relation from '@components/relation';
+import RelationBubbleList from '@components/relationBubbleList';
 
 const styles = StyleSheet.create({
   commentWrapper: {
@@ -17,12 +17,6 @@ const styles = StyleSheet.create({
     width: 48,
     borderRadius: 24,
     marginRight: 12,
-  },
-  nameWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
   },
   name: {
     color: '#1db0ed',
@@ -41,22 +35,21 @@ const styles = StyleSheet.create({
   commentRelation: {
     marginTop: 16,
   },
-  filler: {
-    padding: 12,
-    color: '#999',
-  },
   smallText: {
     fontSize: 12,
   },
 });
 
-const Item = ({ comment, onPress, navigation }) => {
+const Item = ({ comment, onPress, setModalVisibility }) => {
   let image = null;
+
   if (comment.User.avatar) {
     image = (<Image source={{ uri: comment.User.avatar }} style={styles.profilePic} />);
   } else {
     image = (<View style={styles.imgIcon} />);
   }
+
+  const avatarSize = 24;
 
   return (
     <View style={styles.commentWrapper}>
@@ -77,12 +70,14 @@ const Item = ({ comment, onPress, navigation }) => {
             : (comment.User.relation.length >= 1)
             && (<Text style={styles.smallText}>You are friends!</Text>)
           }
-          <Relation
-            navigation={navigation}
-            users={comment.User.relation}
-            avatarSize={24}
-            style={{ marginHorizontal: 0 }}
-          />
+          <View>
+            <RelationBubbleList
+              users={comment.User.relation}
+              avatarSize={avatarSize}
+              style={{ marginHorizontal: 0 }}
+              setModalVisibility={setModalVisibility}
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -100,9 +95,7 @@ Item.propTypes = {
     text: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }).isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
 };
 
 export default Item;
