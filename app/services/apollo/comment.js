@@ -16,6 +16,12 @@ const COMMENTS_SUBSCRIPTION = gql`
         firstName
         lastName
         avatar
+        relation{
+          id
+          firstName
+          lastName
+          avatar
+        }
       }
     }
   }
@@ -34,6 +40,12 @@ query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         firstName
         lastName
         avatar
+        relation{
+          id
+          firstName
+          lastName
+          avatar
+        }
       }
     }
     count
@@ -79,6 +91,12 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         firstName
         lastName
         avatar
+        relation {
+          id
+          firstName
+          lastName
+          avatar
+        }
       }
     }
     count

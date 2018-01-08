@@ -24,9 +24,10 @@ subscription{
           lastName
           avatar
           relation {
-            id,
-            email,
+            id
+            email
             firstName
+            lastName
             avatar
           }
         }
@@ -77,7 +78,8 @@ subscription{
           relation {
             id 
             email 
-            firstName 
+            firstName
+            lastName
             avatar
           }
         } 
@@ -146,7 +148,8 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           relation { 
             id 
             email 
-            firstName 
+            firstName
+            lastName
             avatar
           }
         } 
@@ -197,7 +200,8 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           relation {
             id 
             email 
-            firstName 
+            firstName
+            lastName
             avatar
           }
         } 
