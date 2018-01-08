@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
 import Camera from '@components/camera';
+import { GROUP_NAME_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
   addPhotoWrapper: {
@@ -103,6 +104,7 @@ class About extends Component {
               style={styles.input}
               onChangeText={name => this.setState({ name })}
               underlineColorAndroid="transparent"
+              maxLength={GROUP_NAME_LIMIT}
             />
           </View>
           <Text style={styles.text}>

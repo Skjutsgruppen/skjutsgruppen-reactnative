@@ -76,9 +76,14 @@ class NewNotification extends PureComponent {
     const { notifications, navigation, filters } = this.props;
 
     let render = (<Text style={styles.emptyMessage}>No Messages</Text>);
+    let limitedNotifications = notifications.rows;
+
+    if (limitedNotifications.length > PER_FETCH_LIMIT) {
+      limitedNotifications = limitedNotifications.slice(0, PER_FETCH_LIMIT);
+    }
 
     if (notifications.count > 0) {
-      render = notifications.rows.map(message => (
+      render = limitedNotifications.map(message => (
         <MesssageItem
           key={message.id}
           navigation={navigation}

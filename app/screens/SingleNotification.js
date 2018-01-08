@@ -39,10 +39,6 @@ class NewNotification extends PureComponent {
     super(props);
     this.state = ({ loading: false });
   }
-  componentWillMount() {
-    const { subscribeToNotification, user } = this.props;
-    subscribeToNotification({ userId: user.id });
-  }
 
   goBack = () => {
     const { navigation } = this.props;

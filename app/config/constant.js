@@ -39,3 +39,5 @@ export const RELATIONSHIP_TYPE_FRIEND = 'friend';
 export const RELATIONSHIP_TYPE_INCOMING = 'incoming';
 export const RELATIONSHIP_TYPE_OUTGOING = 'outgoing';
 
+export const GROUP_NAME_LIMIT = 22;
+

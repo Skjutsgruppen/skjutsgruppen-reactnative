@@ -33,8 +33,11 @@ const styles = StyleSheet.create({
 
 const SharedCard = ({ trip, onPress }) => {
   let image = null;
+
   if (trip.photo) {
     image = (<Image source={{ uri: trip.photo }} style={styles.img} />);
+  } else if (trip.mapPhoto) {
+    image = (<Image source={{ uri: trip.mapPhoto }} style={styles.img} />);
   } else {
     image = (<Image source={require('@assets/feed-img.jpg')} style={styles.img} />);
   }
