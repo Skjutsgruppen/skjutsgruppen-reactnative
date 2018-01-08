@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import { FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED, FEED_FILTER_WANTED, FEED_FILTER_NEARBY } from '@config/constant';
+import { FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED, FEED_FILTER_WANTED, FEED_FILTER_NEARBY, FEED_FILTER_NEWS } from '@config/constant';
 
 const styles = StyleSheet.create({
   actionsWrapper: {
@@ -69,6 +69,7 @@ const Filter = ({ showModal, onCloseModal, onPress }) => (
         <Action label="Offered rides" onPress={() => onPress(FEED_FILTER_OFFERED)} />
         <Action label="Rides that are asked for" onPress={() => onPress(FEED_FILTER_WANTED)} />
         <Action label="Close to you" onPress={() => onPress(FEED_FILTER_NEARBY)} />
+        <Action label="News" onPress={() => onPress(FEED_FILTER_NEWS)} />
       </View>
       <View style={styles.closeWrapper}>
         <TouchableOpacity

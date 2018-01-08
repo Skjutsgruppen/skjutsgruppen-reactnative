@@ -108,7 +108,7 @@ class Detail extends PureComponent {
 
     if (validation.pass()) {
       try {
-        submit(null, group.id, comment).then(() => {
+        submit({ groupId: group.id, text: comment }).then(() => {
           this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });

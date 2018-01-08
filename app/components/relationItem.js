@@ -58,7 +58,13 @@ const RelationshipItem = ({ user, onPress }) => {
 
 RelationshipItem.propTypes = {
   onPress: PropTypes.func.isRequired,
-  user: PropTypes.shape().isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+    avatar: PropTypes.string,
+  }).isRequired,
 };
 
 export default RelationshipItem;

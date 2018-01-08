@@ -42,13 +42,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-  groupName: {
-    backgroundColor: 'transparent',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text.white,
-    alignSelf: 'center',
-  },
   profilePicWrapper: {
     height: profilePicSize,
     width: profilePicSize,
