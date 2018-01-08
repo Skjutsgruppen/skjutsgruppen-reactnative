@@ -239,6 +239,7 @@ query trips (
         countryCode
       } 
       photo 
+      mapPhoto
       Stops {
         name 
         coordinates 
