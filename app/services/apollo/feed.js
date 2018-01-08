@@ -118,6 +118,30 @@ subscription{
         }
       }
     }
+    ... on NewsFeed { 
+      News {
+        id 
+        User {
+          id 
+          firstName 
+          lastName 
+          email 
+          avatar 
+          relation {
+            id 
+            firstName 
+            avatar
+          }
+        } 
+        title 
+        body 
+        links 
+        photo 
+        visibleFrom 
+        visibleUntil 
+        updatedAt
+      }
+    }
   }
 }
 `;
@@ -237,6 +261,31 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id
           date
         }
+      }
+    }
+    ... on NewsFeed { 
+      News {
+        id 
+        User {
+          id 
+          firstName 
+          lastName 
+          email 
+          avatar 
+          relation {
+            id 
+            firstName 
+            avatar
+          }
+        } 
+        title 
+        body 
+        links 
+        photo 
+        visibleFrom 
+        visibleUntil 
+        updatedAt
+        totalComments
       }
     }
    }
