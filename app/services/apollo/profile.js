@@ -79,49 +79,45 @@ query groups ($userId: Int) {
   groups (userId: $userId) {
     rows {
       id
+      outreach
       name
+      description
+      type
       photo
       mapPhoto
-      description
       User {
         id
         email
-        avatar 
-        firstName 
-        lastName 
+        firstName
+        lastName
+        avatar
         relation {
-          id 
-          firstName 
-          lastName 
-          email 
-          phoneNumber 
+          id
+          email
+          firstName
+          lastName
           avatar
-        } 
-      } 
-      country 
-      county 
-      municipality 
-      locality 
-      stopsIds 
+        }
+      }
       TripStart {
-        name 
-        countryCode 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
-        countryCode 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
-        countryCode 
+        name
         coordinates
-      } 
-      GroupType:type 
-      outreach 
-      GroupMembers {
+      }
+      country
+      county
+      municipality
+      locality
+      GroupMembers{
         id
+        avatar
       }
       GroupMembershipRequests{
         id
@@ -130,28 +126,6 @@ query groups ($userId: Int) {
           id
           email
           firstName
-        }
-      }
-      Comments {
-        id 
-        tripId 
-        groupId 
-        text 
-        date 
-        User { 
-          id 
-          email 
-          avatar 
-          firstName 
-          lastName 
-          relation {
-            id 
-            firstName 
-            lastName 
-            email 
-            phoneNumber 
-            avatar
-          }
         }
       }
     }
@@ -226,62 +200,58 @@ query trips (
   {
     rows {
       id 
-      description 
       type 
-      TripStart {
-        name 
-        coordinates 
-        countryCode
-      } 
-      TripEnd {
-        name 
-        coordinates 
-        countryCode
-      } 
-      photo 
-      mapPhoto
-      Stops {
-        name 
-        coordinates 
-        countryCode
-      } 
-      returnTrip 
-      date 
-      time 
+      description 
       seats 
-      flexibility 
+      parentId
       User {
         id 
-        phoneNumber 
         email 
-        avatar 
         firstName 
         lastName 
+        avatar 
         relation {
           id 
           email 
-          avatar 
-          firstName 
-          lastName
-        } 
-        fbId
-      } 
-      Comments {
-        id 
-        tripId 
-        groupId 
-        text 
-        date 
-        User {
-          id
           firstName
-          lastName 
-          email 
+          lastName
           avatar
         }
       } 
-      url
-    } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      ReturnTrip {
+        id
+        date
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+      }
+      Recurring {
+        id
+        date
+      }
+    }
     count 
   }
 }

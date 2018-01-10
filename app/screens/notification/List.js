@@ -6,7 +6,7 @@ import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
   section: {
@@ -34,11 +34,6 @@ const styles = StyleSheet.create({
 });
 
 class NewNotification extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = ({ loading: false });
-  }
-
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
@@ -86,13 +81,10 @@ class NewNotification extends PureComponent {
         onEndReachedThreshold={0.8}
         ListFooterComponent={this.renderFooter}
         onEndReached={() => {
-          this.setState({ loading: true });
-          if (notifications.loading || this.state.loading) return;
-
+          if (notifications.loading || notifications.rows.length >= notifications.count) return;
           notifications.fetchMore({
             variables: { offset: notifications.rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              this.setState({ loading: false });
               if (!fetchMoreResult || fetchMoreResult.notifications.rows.length === 0) {
                 return previousResult;
               }
@@ -164,7 +156,13 @@ const NotificationList = compose(withNotification)(NewNotification);
 
 const SingleNotification = ({ navigation }) => {
   const { filters } = navigation.state.params;
-  return (<NotificationList limit={PER_FETCH_LIMIT} filters={filters} navigation={navigation} />);
+  return (
+    <NotificationList
+      limit={NOTIFICATION_FETCH_LIMIT}
+      filters={filters}
+      navigation={navigation}
+    />
+  );
 };
 
 SingleNotification.navigationOptions = {
