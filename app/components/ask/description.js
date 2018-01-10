@@ -70,17 +70,22 @@ class Description extends Component {
     this.state = { text: '' };
   }
 
+  componentWillMount() {
+    const { text } = this.props.defaultDescription;
+    this.setState({ text });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
   }
 
   render() {
-    const { photo } = this.props.user;
+    const { avatar } = this.props.user;
     let profile = null;
 
-    if (photo) {
-      profile = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+    if (avatar) {
+      profile = (<Image source={{ uri: avatar }} style={styles.profilePic} />);
     }
 
     return (
@@ -96,7 +101,7 @@ class Description extends Component {
             numberOfLines={4}
             onChangeText={text => this.setState({ text })}
             underlineColorAndroid="transparent"
-            value={this.state.text}
+            defaultValue={this.state.text}
           />
         </View>
         <Text style={styles.infoText}>
@@ -120,9 +125,18 @@ class Description extends Component {
 
 Description.propTypes = {
   user: PropTypes.shape({
-    photo: PropTypes.string,
+    avatar: PropTypes.string,
   }).isRequired,
+  defaultDescription: PropTypes.shape({
+    text: PropTypes.string,
+  }),
   onNext: PropTypes.func.isRequired,
+};
+
+Description.defaultProps = {
+  defaultDescription: {
+    text: '',
+  },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

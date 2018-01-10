@@ -7,16 +7,25 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import ImagePicker from 'react-native-image-picker';
 import PropTypes from 'prop-types';
+
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
   },
-  imageContainer: {},
+  imageContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    margin: 24,
+    elevation: 10,
+  },
   selectImage: {
     backgroundColor: 'white',
     padding: 8,
@@ -24,8 +33,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: 200,
-    height: 150,
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 12,
+  },
+  closeButton: {
+    height: 32,
+    width: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.background.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 12,
+    right: 12,
   },
 });
 
@@ -35,6 +57,17 @@ class Camera extends Component {
     this.state = {
       imageSource: null,
     };
+  }
+
+  componentWillMount() {
+    const { defaultPhoto } = this.props;
+    if (defaultPhoto) {
+      this.setState({ imageSource: { uri: `data:image/jpg;base64,${defaultPhoto}` } });
+    }
+  }
+
+  removePhoto = () => {
+    this.setState({ imageSource: null });
   }
 
   selectPhotoTapped = () => {
@@ -79,20 +112,37 @@ class Camera extends Component {
     }
 
     return (
-      <View>
+      <View style={styles.imageContainer}>
         <Image style={styles.image} source={this.state.imageSource} />
       </View>
     );
+  }
+
+  renderRemoveButton() {
+    if (this.state.imageSource) {
+      return (
+        <TouchableOpacity onPress={this.removePhoto} style={styles.closeButton}>
+          <Icon
+            name="ios-close"
+            size={32}
+            style={{ color: '#fff' }}
+          />
+        </TouchableOpacity>
+      );
+    }
+
+    return null;
   }
 
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={this.selectPhotoTapped}>
-          <View style={[styles.imageContainer]}>
+          <View>
             {this.renderPhoto()}
           </View>
         </TouchableOpacity>
+        {this.renderRemoveButton()}
       </View>
     );
   }
@@ -102,11 +152,13 @@ Camera.propTypes = {
   onSelect: PropTypes.func.isRequired,
   children: PropTypes.element,
   label: PropTypes.string,
+  defaultPhoto: PropTypes.string,
 };
 
 Camera.defaultProps = {
   children: null,
   label: 'Select a Photo',
+  defaultPhoto: null,
 };
 
 export default Camera;
