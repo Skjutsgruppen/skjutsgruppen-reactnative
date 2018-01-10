@@ -270,7 +270,7 @@ class OfferDetail extends Component {
 
     if (validation.pass()) {
       try {
-        submit(offer.id, null, comment).then(() => {
+        submit({ tripId: offer.id, text: comment }).then(() => {
           this.setState({ comment: '', loading: false, success: getToast(['COMMENT_ADDED']), error: '' });
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });

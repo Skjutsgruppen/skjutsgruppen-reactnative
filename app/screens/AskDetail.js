@@ -275,7 +275,7 @@ class AskDetail extends Component {
 
     if (validation.pass()) {
       try {
-        submit(ask.id, null, comment).then(() => {
+        submit({ tripId: ask.id, text: comment }).then(() => {
           this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });

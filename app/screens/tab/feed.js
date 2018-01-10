@@ -100,6 +100,10 @@ class Feed extends Component {
     if (type === 'profile') {
       navigation.navigate('UserProfile', { profileId: detail });
     }
+
+    if (type === 'news') {
+      navigation.navigate('NewsDetail', { news: detail });
+    }
   };
 
   onSharePress = (modalType, modalDetail) => {
@@ -247,11 +251,10 @@ class Feed extends Component {
           ({ item }) => (<FeedItem
             onSharePress={this.onSharePress}
             onPress={this.onPress}
-            key={item.id}
             feed={item}
           />)
         }
-        keyExtractor={(item, index) => index}
+        keyExtractor={item => item.id}
         refreshing={feeds.networkStatus === 4 || feeds.networkStatus === 2}
         onRefresh={() => feeds.refetch()}
         onEndReachedThreshold={0.8}
