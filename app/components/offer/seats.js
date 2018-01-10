@@ -48,6 +48,11 @@ class Seats extends Component {
     };
   }
 
+  componentWillMount() {
+    const seat = this.props.defaultSeat;
+    this.setState({ seat });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state.seat);
@@ -82,6 +87,11 @@ class Seats extends Component {
 
 Seats.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultSeat: PropTypes.string,
+};
+
+Seats.defaultProps = {
+  defaultSeat: 0,
 };
 
 export default Seats;

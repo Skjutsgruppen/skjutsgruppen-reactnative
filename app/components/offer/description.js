@@ -78,22 +78,29 @@ class Description extends Component {
     this.state = { text: '', photo: '' };
   }
 
+  componentWillMount() {
+    const { text, photo } = this.props.defaultValue;
+    this.setState({ text, photo });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
   }
 
   render() {
-    const { photo } = this.props.user;
+    const { avatar } = this.props.user;
+    const { photo } = this.state;
+
     let profile = null;
 
-    if (photo) {
-      profile = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+    if (avatar) {
+      profile = (<Image source={{ uri: avatar }} style={styles.profilePic} />);
     }
 
     return (
       <View>
-        <Camera onSelect={res => this.setState({ photo: res.data })}>
+        <Camera onSelect={res => this.setState({ photo: res.data })} defaultPhoto={photo}>
           <View style={styles.addPhoto}>
             <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
             <View>
@@ -111,7 +118,7 @@ class Description extends Component {
             numberOfLines={4}
             onChangeText={text => this.setState({ text })}
             underlineColorAndroid="transparent"
-            value={this.state.text}
+            defaultValue={this.state.text}
           />
         </View>
         <Text style={styles.infoText}>
@@ -135,9 +142,20 @@ class Description extends Component {
 
 Description.propTypes = {
   user: PropTypes.shape({
-    photo: PropTypes.string,
+    avatar: PropTypes.string,
   }).isRequired,
+  defaultValue: PropTypes.shape({
+    photo: PropTypes.string,
+    text: PropTypes.string,
+  }),
   onNext: PropTypes.func.isRequired,
+};
+
+Description.defaultProps = {
+  defaultValue: {
+    photo: null,
+    text: '',
+  },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

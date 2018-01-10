@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Platform,
+  Button,
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
@@ -35,6 +36,15 @@ class Camera extends Component {
     this.state = {
       imageSource: null,
     };
+  }
+
+  componentWillMount() {
+    const imageSource = this.props.defaultPhoto;
+    this.setState({ imageSource });
+  }
+
+  removePhoto = () => {
+    this.setState({ defaultPhoto: null, imageSource: null });
   }
 
   selectPhotoTapped = () => {
@@ -85,6 +95,20 @@ class Camera extends Component {
     );
   }
 
+  renderRemoveButton() {
+    if (this.state.defaultPhoto || this.state.imageSource) {
+      return (
+        <Button
+          onPress={this.removePhoto}
+          title="X"
+          color="red"
+        />
+      );
+    }
+
+    return null;
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -93,6 +117,7 @@ class Camera extends Component {
             {this.renderPhoto()}
           </View>
         </TouchableOpacity>
+        {this.renderRemoveButton()}
       </View>
     );
   }
@@ -102,11 +127,13 @@ Camera.propTypes = {
   onSelect: PropTypes.func.isRequired,
   children: PropTypes.element,
   label: PropTypes.string,
+  defaultPhoto: PropTypes.string,
 };
 
 Camera.defaultProps = {
   children: null,
   label: 'Select a Photo',
+  defaultPhoto: null,
 };
 
 export default Camera;

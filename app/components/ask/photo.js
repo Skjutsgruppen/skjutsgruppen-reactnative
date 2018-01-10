@@ -57,6 +57,11 @@ class Photo extends PureComponent {
     this.state = { photo: '' };
   }
 
+  componentWillMount() {
+    const photo = this.props.defaultPhoto;
+    this.setState({ photo });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
@@ -66,7 +71,7 @@ class Photo extends PureComponent {
     return (
       <View>
         <View style={styles.addPhoto}>
-          <Camera onSelect={res => this.setState({ photo: res.data })}>
+          <Camera onSelect={res => this.setState({ photo: res.data })} defaultPhoto={this.state.photo}>
             <View>
               <Text style={styles.title}>Add a photo to your ride</Text>
               <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
@@ -96,6 +101,11 @@ class Photo extends PureComponent {
 
 Photo.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultPhoto: PropTypes.string,
+};
+
+Photo.defaultProps = {
+  defaultPhoto: '',
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

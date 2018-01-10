@@ -97,6 +97,10 @@ class Ask extends Component {
           coordinates: [],
         },
         dates: [],
+        time: '00:00',
+        description: { text: '' },
+        photo: { photo: '' },
+        flexible: '00',
       },
       description: {},
       photo: {},
@@ -121,6 +125,10 @@ class Ask extends Component {
           start: params.defaultTrip.start,
           end: params.defaultTrip.end,
           dates: params.defaultTrip.dates,
+          description: params.defaultTrip.description,
+          photo: params.defaultTrip.photo,
+          time: params.defaultTrip.time,
+          flexible: params.defaultTrip.flexible,
         },
       });
     }
@@ -200,6 +208,10 @@ class Ask extends Component {
           end: this.state.trip.start,
           start: this.state.trip.end,
           dates: this.state.date.dates,
+          description: this.state.description,
+          photo: this.state.ask.photo,
+          time: this.state.date.time,
+          flexible: this.state.date.flexible,
         },
       });
     } else {
@@ -217,7 +229,7 @@ class Ask extends Component {
       returnTrip: trip.isReturning,
       dates: date.dates,
       time: date.time,
-      flexibility: date.flexsible,
+      flexibility: date.flexible,
       share,
     };
 
@@ -242,7 +254,7 @@ class Ask extends Component {
           <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
-            Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
+            Return ride of your asked ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
           </Text>
         </View>
       );
@@ -331,15 +343,15 @@ class Ask extends Component {
             />
           </View>
           <Toast message={error} type="error" />
-          {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
-          {(activeTab === 2) && <Photo onNext={this.onPhotoNext} />}
+          {(activeTab === 1) && <Description onNext={this.onDescriptionNext} defaultDescription={defaultTrip.description} />}
+          {(activeTab === 2) && <Photo onNext={this.onPhotoNext} defaultPhoto={defaultTrip.photo} />}
           {(activeTab === 3) && <Trip
             isReturnTrip={isReturnedTrip}
             start={defaultTrip.start}
             end={defaultTrip.end}
             onNext={this.onTripNext}
           />}
-          {(activeTab === 4) && <Date onNext={this.onDateNext} />}
+          {(activeTab === 4) && <Date onNext={this.onDateNext} defaultTime={defaultTrip.time} defaultFlexible={defaultTrip.flexible} />}
           {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
           {(activeTab === 6) && this.renderFinish()}
         </Container>
