@@ -11,6 +11,7 @@ import SearchGroup from '@screens/group/SearchGroup';
 
 import OfferDetail from '@screens/OfferDetail';
 import AskDetail from '@screens/AskDetail';
+import NewsDetail from '@screens/NewsDetail';
 
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
@@ -111,6 +112,7 @@ export const Routes = {
   OfferDetail: { screen: OfferDetail, path: 'offer/:id' },
   Ask: { screen: Ask },
   AskDetail: { screen: AskDetail, path: 'ask/:id' },
+  NewsDetail: { screen: NewsDetail, path: 'news/:id' },
 
   Group: { screen: Group },
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },

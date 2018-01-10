@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Item from '@components/comment/item';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
+import RelationModal from '@components/relationModal';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -31,12 +32,27 @@ const styles = StyleSheet.create({
 class List extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false });
+    this.state = ({ loading: false, showFofModal: false, friendsData: [] });
   }
 
   componentWillMount() {
     const { subscribeToNewComments, id } = this.props;
     subscribeToNewComments({ id });
+  }
+
+  onPress = (userId) => {
+    const { navigation } = this.props;
+
+    this.setState({ showFofModal: false });
+    navigation.navigate('UserProfile', { profileId: userId });
+  }
+
+  setModalVisibility = (show, friendsData) => {
+    this.setState({ showFofModal: show, friendsData });
+  }
+
+  setFriendsData = (data) => {
+    this.setState({ friendsData: data });
   }
 
   loadMore = () => {
@@ -61,6 +77,17 @@ class List extends Component {
       });
     });
   };
+
+  renderModal() {
+    return (
+      <RelationModal
+        users={this.state.friendsData}
+        onPress={this.onPress}
+        setModalVisibility={this.setModalVisibility}
+        showFofModal={this.state.showFofModal}
+      />
+    );
+  }
 
   renderFooter = (loading) => {
     if (loading) {
@@ -125,6 +152,7 @@ class List extends Component {
                   navigation={navigation}
                   onPress={this.props.onCommentPress}
                   comment={item}
+                  setModalVisibility={this.setModalVisibility}
                 />
               )
           }
@@ -132,6 +160,7 @@ class List extends Component {
           onEndReachedThreshold={0}
           ListFooterComponent={() => this.renderFooter(this.state.loading)}
         />
+        {this.state.showFofModal && this.renderModal()}
       </View>
     );
   }

@@ -8,12 +8,14 @@ export const FEED_FILTER_EVERYTHING = 'everything';
 export const FEED_FILTER_OFFERED = 'offered';
 export const FEED_FILTER_WANTED = 'wanted';
 export const FEED_FILTER_NEARBY = 'nearby';
+export const FEED_FILTER_NEWS = 'news';
 
 export const FEED_TYPE_OFFER = 'offered';
 export const FEED_TYPE_WANTED = 'wanted';
 
 export const FEEDABLE_TRIP = 'Trip';
 export const FEEDABLE_GROUP = 'Group';
+export const FEEDABLE_NEWS = 'News';
 
 export const OPEN_GROUP = 'OpenGroup';
 export const CLOSE_GROUP = 'ClosedGroup';
