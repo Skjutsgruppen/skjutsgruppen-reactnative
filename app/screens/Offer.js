@@ -77,7 +77,21 @@ class Offer extends Component {
           countryCode: '',
           coordinates: [],
         },
+        stops: [
+          {
+            name: '',
+            countryCode: '',
+            coordinates: [],
+          },
+        ],
         dates: [],
+        description: {
+          text: '',
+          photo: null,
+        },
+        seat: '1',
+        time: '00:00',
+        flexible: '00',
       },
       description: {},
       trip: {},
@@ -95,6 +109,7 @@ class Offer extends Component {
 
   componentWillMount() {
     const { params } = this.props.navigation.state;
+
     if (params && typeof params.isReturnedTrip !== 'undefined') {
       this.setState({
         isReturnedTrip: true,
@@ -103,6 +118,11 @@ class Offer extends Component {
           start: params.defaultTrip.start,
           end: params.defaultTrip.end,
           dates: params.defaultTrip.dates,
+          stops: params.defaultTrip.stops,
+          description: params.defaultTrip.description,
+          seat: params.defaultTrip.seat,
+          time: params.defaultTrip.time,
+          flexible: params.defaultTrip.flexible,
         },
       });
     }
@@ -179,14 +199,23 @@ class Offer extends Component {
 
   onMakeReturnRide = () => {
     const { navigate } = this.props.navigation;
+
     if (this.state.trip.isReturning) {
       navigate('Offer', {
         isReturnedTrip: true,
         parentId: this.state.offer.id,
         defaultTrip: {
-          end: this.state.trip.start,
           start: this.state.trip.end,
+          end: this.state.trip.start,
           dates: this.state.date.dates,
+          stops: (this.state.trip.stops.length > 0) ? this.state.trip.stops.reverse() : this.state.defaultTrip.stops,
+          description: {
+            text: this.state.description.text,
+            photo: this.state.description.photo,
+          },
+          seat: this.state.seat,
+          time: this.state.date.time,
+          flexible: this.state.date.flexible,
         },
       });
     } else {
@@ -208,7 +237,7 @@ class Offer extends Component {
       dates: date.dates,
       time: date.time,
       seats: seat,
-      flexibility: date.flexsible,
+      flexibility: date.flexible,
       share,
     };
 
@@ -320,16 +349,24 @@ class Offer extends Component {
 
           <View>
             <Toast message={error} type="error" />
-            {(activeTab === 1) && <Description onNext={this.onDescriptionNext} />}
+            {(activeTab === 1) && <Description
+              onNext={this.onDescriptionNext}
+              defaultValue={defaultTrip.description}
+            />}
             {(activeTab === 2) && <Trip
               isReturnTrip={isReturnedTrip}
               start={defaultTrip.start}
               end={defaultTrip.end}
+              stops={defaultTrip.stops}
               onNext={this.onTripNext}
               isOffer
             />}
-            {(activeTab === 3) && <Date onNext={this.onDateNext} />}
-            {(activeTab === 4) && <Seats onNext={this.onSeatNext} />}
+            {(activeTab === 3) && <Date
+              onNext={this.onDateNext}
+              defaultTime={defaultTrip.time}
+              defaultFlexible={defaultTrip.flexible}
+            />}
+            {(activeTab === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
             {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
             {(activeTab === 6) && this.renderFinish()}
           </View>

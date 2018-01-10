@@ -69,7 +69,12 @@ const styles = StyleSheet.create({
 class Date extends Component {
   constructor(props) {
     super(props);
-    this.state = { markedDates: {}, dates: [], flexsible: '00', time: '00:00' };
+    this.state = { markedDates: {}, dates: [], flexible: '00', time: '00:00' };
+  }
+
+  componentWillMount() {
+    const { defaultTime: time, defaultFlexible: flexible } = this.props;
+    this.setState({ time, flexible });
   }
 
   onNext = () => {
@@ -229,8 +234,8 @@ class Date extends Component {
           <View style={styles.inputWrapper}>
 
             <Picker
-              onValueChange={flexsible => this.setState({ flexsible })}
-              selectedValue={this.state.flexsible}
+              onValueChange={flexible => this.setState({ flexible })}
+              selectedValue={this.state.flexible}
             >
               {this.renderFlexibleOptions()}
             </Picker>
@@ -256,6 +261,13 @@ class Date extends Component {
 
 Date.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultTime: PropTypes.string,
+  defaultFlexible: PropTypes.string,
+};
+
+Date.defaultProps = {
+  defaultTime: '00:00',
+  defaultFlexible: '00',
 };
 
 export default Date;

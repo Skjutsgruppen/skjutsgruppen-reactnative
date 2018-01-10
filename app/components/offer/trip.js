@@ -191,8 +191,8 @@ class Trip extends Component {
   }
 
   componentWillMount() {
-    const { start, end, isReturnTrip } = this.props;
-    this.setState({ start, end, isReturnTrip });
+    const { start, end, stops, isReturnTrip } = this.props;
+    this.setState({ start, end, stops, isReturnTrip });
   }
 
   onNext = () => {
@@ -358,12 +358,19 @@ Trip.propTypes = {
     countryCode: PropTypes.string,
     coordinates: PropTypes.array,
   }).isRequired,
+  stops: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      countryCode: PropTypes.string,
+      coordinates: PropTypes.array,
+    })),
   isReturnTrip: PropTypes.bool.isRequired,
   isOffer: PropTypes.bool,
 };
 
 Trip.defaultProps = {
   isOffer: false,
+  stops: [{ name: '', countryCode: '', coordinates: [] }],
 };
 
 export default Trip;
