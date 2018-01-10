@@ -54,7 +54,6 @@ mutation createTrip(
       countryCode
       coordinates
     }
-    returnTrip 
     date 
     time 
     seats 

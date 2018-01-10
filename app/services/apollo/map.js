@@ -45,7 +45,6 @@ mutation nearByTrips($from:[Float]!) {
         date
         time
         photo
-        returnTrip
       }
     }
   }

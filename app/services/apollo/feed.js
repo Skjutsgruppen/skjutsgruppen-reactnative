@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -18,46 +18,46 @@ subscription{
         photo
         mapPhoto
         User {
-          id
-          email
-          firstName
-          lastName
-          avatar
-          relation {
-            id
-            email
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
+          relation { 
+            id 
+            email 
             firstName
             lastName
             avatar
           }
-        }
+        } 
         TripStart {
-          name
-          coordinates
-        }
+          name 
+          coordinates 
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
+        } 
         Stops {
-          name
+          name 
           coordinates
-        }
-        country
-        county
-        municipality
-        locality
-        GroupMembers{
-          id
-          avatar
-        }
-        GroupMembershipRequests{
-          id
-          status
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        GroupMembers { 
+          id 
+          avatar 
+        } 
+        GroupMembershipRequests {
+          id 
+          status 
           Member {
-            id
-            email
-            firstName
+            id 
+            email 
+            firstName 
           }
         }
       }
@@ -99,7 +99,6 @@ subscription{
         time 
         photo 
         mapPhoto
-        returnTrip 
         totalComments
         ReturnTrip {
           id
@@ -221,7 +220,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         time 
         photo 
         mapPhoto
-        returnTrip 
         totalComments
         ReturnTrip {
           id
@@ -250,7 +248,8 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
 export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
     fetchPolicy: 'cache-and-network',
-    variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: 'everything' } },
+    notifyOnNetworkStatusChange: true,
+    variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: FEED_FILTER_EVERYTHING } },
   },
   props: ({
     data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },

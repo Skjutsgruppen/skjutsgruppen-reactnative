@@ -97,6 +97,17 @@ const Group = ({ groups, navigation }) => {
     render = groups.rows.map(group => item(group, navigation));
   }
 
+  if (groups.error) {
+    render = (
+      <View style={{ marginTop: 100 }}>
+        <Text>Error: {groups.error.message}</Text>
+        <TouchableOpacity onPress={() => groups.refetch()}>
+          <Text>Reload</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   if (groups.loading) {
     render = (
       <View style={styles.spacedWrapper}>
