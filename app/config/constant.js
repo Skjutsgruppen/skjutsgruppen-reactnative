@@ -1,4 +1,5 @@
 export const PER_FETCH_LIMIT = 10;
+export const NOTIFICATION_FETCH_LIMIT = 20;
 
 export const DEFAULT_COUNTRY_CODE = 'SE';
 export const DEFAULT_LOCALE = 'en';

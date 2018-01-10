@@ -157,7 +157,7 @@ class GroupFeed extends Component {
           />)}
           keyExtractor={(item, index) => index}
           refreshing={networkStatus === 4}
-          onRefresh={refetch}
+          onRefresh={() => refetch()}
           onEndReachedThreshold={0.5}
           ListHeaderComponent={this.props.header}
           ListFooterComponent={this.renderFooter}

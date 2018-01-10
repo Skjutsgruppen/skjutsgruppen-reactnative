@@ -454,7 +454,6 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           time 
           photo 
           mapPhoto
-          returnTrip 
           totalComments
           ReturnTrip {
             id
@@ -608,7 +607,6 @@ subscription groupFeed($groupId: Int!){
         time 
         photo 
         mapPhoto
-        returnTrip 
         totalComments
         ReturnTrip {
           id

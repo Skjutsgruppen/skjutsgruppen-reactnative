@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
@@ -55,24 +55,23 @@ subscription notification($userId: Int!) {
         time
         photo
         mapPhoto
-        returnTrip
-          totalComments
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
+        totalComments
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
           }
-          Recurring {
-            id
-            date
+          TripEnd {
+            name
+            coordinates
           }
+        }
+        Recurring {
+          id
+          date
+        }
       }
       ... on Group {
         id
@@ -90,7 +89,9 @@ subscription notification($userId: Int!) {
           avatar
           relation {
             id
+            email
             firstName
+            lastName
             avatar
           }
         }
@@ -112,6 +113,16 @@ subscription notification($userId: Int!) {
         locality
         GroupMembers{
           id
+          avatar
+        }
+        GroupMembershipRequests{
+          id
+          status
+          Member {
+            id
+            email
+            firstName
+          }
         }
       }
       ... on GroupMembershipRequest {
@@ -230,24 +241,23 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           time
           photo
           mapPhoto
-          returnTrip
-            totalComments
-            ReturnTrip {
-              id
-              date
-              TripStart {
-                name
-                coordinates
-              }
-              TripEnd {
-                name
-                coordinates
-              }
+          totalComments
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
             }
-            Recurring {
-              id
-              date
+            TripEnd {
+              name
+              coordinates
             }
+          }
+          Recurring {
+            id
+            date
+          }
         }
         ... on Group {
           id
@@ -265,7 +275,9 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             avatar
             relation {
               id
+              email
               firstName
+              lastName
               avatar
             }
           }
@@ -287,6 +299,16 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           locality
           GroupMembers{
             id
+            avatar
+          }
+          GroupMembershipRequests{
+            id
+            status
+            Member {
+              id
+              email
+              firstName
+            }
           }
         }
         ... on GroupMembershipRequest {
@@ -346,7 +368,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         }
       }
       read
-      createdAt      
+      createdAt
     }
     count
   }
@@ -354,7 +376,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
 `;
 
 export const withNotification = graphql(NOTIFICATION_QUERY, {
-  options: ({ filters, offset = 0, limit = PER_FETCH_LIMIT }) => ({
+  options: ({ filters, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { filters, offset, limit },
   }),
@@ -459,4 +481,216 @@ export const withLeaveGroup = graphql(LEAVE_GROUP_QUERY, {
   props: ({ mutate }) => ({
     leaveGroup: id => mutate({ variables: { id } }),
   }),
+});
+
+const NOTIFICATION_SEARCH_QUERY = gql`
+query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
+  searchMessages (keyword: $keyword, offset:$offset, limit:$limit) {
+    rows {
+      id
+      User {
+        id
+        firstName
+        lastName
+        email
+        avatar
+      }
+      Receiver{
+        id
+        firstName
+      }
+      type
+      notifiable
+      Notifiable {
+        ... on Trip {
+          id
+          tripType:type
+          description
+          seats
+          parentId
+          User {
+            id
+            email
+            firstName
+            lastName
+            avatar
+            relation {
+              id
+              email 
+              firstName
+              avatar
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          time
+          photo
+          mapPhoto
+          totalComments
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
+        }
+        ... on Group {
+          id
+          outreach
+          name
+          description
+          type
+          photo
+          mapPhoto
+          User {
+            id
+            email
+            firstName
+            lastName
+            avatar
+            relation {
+              id
+              email
+              firstName
+              lastName
+              avatar
+            }
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+          country
+          county
+          municipality
+          locality
+          GroupMembers{
+            id
+            avatar
+          }
+          GroupMembershipRequests{
+            id
+            status
+            Member {
+              id
+              email
+              firstName
+            }
+          }
+        }
+        ... on GroupMembershipRequest {
+          id
+          gmrStatus:status
+          Group {
+            id
+            name
+            description
+            type
+            photo
+            mapPhoto
+            User {
+              id
+              email
+              firstName
+              lastName
+              avatar
+              relation {
+                id
+                firstName
+                avatar
+              }
+            }
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+            Stops {
+              name
+              coordinates
+            }
+            country
+            county
+            municipality
+            locality
+            GroupMembers{
+              id
+            }
+          }
+        }
+        ... on FriendRequest {
+          id
+          status
+          User {
+            id
+            firstName
+          }
+          FutureFriend{
+            id
+            firstName
+          }
+        }
+      }
+      read
+      createdAt
+    }
+    count
+  }
+}
+`;
+
+export const withNotificationSearch = graphql(NOTIFICATION_SEARCH_QUERY, {
+  options: ({ keyword, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { keyword, offset, limit },
+  }),
+  props: ({
+    data: { loading, searchMessages, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  }) => {
+    let rows = [];
+    let count = 0;
+
+    if (searchMessages) {
+      rows = searchMessages.rows;
+      count = searchMessages.count;
+    }
+
+    return {
+      searchMessages: {
+        loading, rows, count, fetchMore, refetch, subscribeToMore, networkStatus, error,
+      },
+    };
+  },
 });
