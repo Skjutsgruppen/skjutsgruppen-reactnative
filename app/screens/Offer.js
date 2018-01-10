@@ -205,12 +205,14 @@ class Offer extends Component {
         isReturnedTrip: true,
         parentId: this.state.offer.id,
         defaultTrip: {
-          photo: this.state.offer.photo,
           start: this.state.trip.end,
           end: this.state.trip.start,
           dates: this.state.date.dates,
           stops: (this.state.trip.stops.length > 0) ? this.state.trip.stops.reverse() : this.state.defaultTrip.stops,
-          description: this.state.description,
+          description: {
+            text: this.state.description.text,
+            photo: this.state.description.photo,
+          },
           seat: this.state.seat,
           time: this.state.date.time,
           flexible: this.state.date.flexible,
@@ -347,7 +349,10 @@ class Offer extends Component {
 
           <View>
             <Toast message={error} type="error" />
-            {(activeTab === 1) && <Description onNext={this.onDescriptionNext} defaultValue={defaultTrip.description} />}
+            {(activeTab === 1) && <Description
+              onNext={this.onDescriptionNext}
+              defaultValue={defaultTrip.description}
+            />}
             {(activeTab === 2) && <Trip
               isReturnTrip={isReturnedTrip}
               start={defaultTrip.start}
@@ -356,7 +361,11 @@ class Offer extends Component {
               onNext={this.onTripNext}
               isOffer
             />}
-            {(activeTab === 3) && <Date onNext={this.onDateNext} defaultTime={defaultTrip.time} defaultFlexible={defaultTrip.flexible} />}
+            {(activeTab === 3) && <Date
+              onNext={this.onDateNext}
+              defaultTime={defaultTrip.time}
+              defaultFlexible={defaultTrip.flexible}
+            />}
             {(activeTab === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
             {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
             {(activeTab === 6) && this.renderFinish()}

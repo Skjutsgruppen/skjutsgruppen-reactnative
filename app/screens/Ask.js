@@ -99,7 +99,7 @@ class Ask extends Component {
         dates: [],
         time: '00:00',
         description: { text: '' },
-        photo: { photo: '' },
+        photo: { photo: null },
         flexible: '00',
       },
       description: {},
@@ -209,7 +209,7 @@ class Ask extends Component {
           start: this.state.trip.end,
           dates: this.state.date.dates,
           description: this.state.description,
-          photo: this.state.ask.photo,
+          photo: this.state.photo,
           time: this.state.date.time,
           flexible: this.state.date.flexible,
         },
@@ -343,8 +343,14 @@ class Ask extends Component {
             />
           </View>
           <Toast message={error} type="error" />
-          {(activeTab === 1) && <Description onNext={this.onDescriptionNext} defaultDescription={defaultTrip.description} />}
-          {(activeTab === 2) && <Photo onNext={this.onPhotoNext} defaultPhoto={defaultTrip.photo} />}
+          {(activeTab === 1) && <Description
+            onNext={this.onDescriptionNext}
+            defaultDescription={defaultTrip.description}
+          />}
+          {(activeTab === 2) && <Photo
+            onNext={this.onPhotoNext}
+            defaultPhoto={defaultTrip.photo.photo}
+          />}
           {(activeTab === 3) && <Trip
             isReturnTrip={isReturnedTrip}
             start={defaultTrip.start}

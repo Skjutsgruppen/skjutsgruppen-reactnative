@@ -54,12 +54,12 @@ const styles = StyleSheet.create({
 class Photo extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { photo: '' };
+    this.state = { photo: null };
   }
 
   componentWillMount() {
-    const photo = this.props.defaultPhoto;
-    this.setState({ photo });
+    const { defaultPhoto } = this.props;
+    this.setState({ photo: defaultPhoto });
   }
 
   onNext = () => {
@@ -71,7 +71,10 @@ class Photo extends PureComponent {
     return (
       <View>
         <View style={styles.addPhoto}>
-          <Camera onSelect={res => this.setState({ photo: res.data })} defaultPhoto={this.state.photo}>
+          <Camera
+            onSelect={res => this.setState({ photo: res.data })}
+            defaultPhoto={this.state.photo}
+          >
             <View>
               <Text style={styles.title}>Add a photo to your ride</Text>
               <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
@@ -90,9 +93,7 @@ class Photo extends PureComponent {
           bgColor={Colors.background.darkCyan}
           style={styles.button}
         >
-          {
-            this.state.photo ? 'Next' : 'Go without a photo'
-          }
+          {this.state.photo ? 'Next' : 'Go without a photo'}
         </CustomButton>
       </View>
     );
@@ -105,7 +106,7 @@ Photo.propTypes = {
 };
 
 Photo.defaultProps = {
-  defaultPhoto: '',
+  defaultPhoto: null,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

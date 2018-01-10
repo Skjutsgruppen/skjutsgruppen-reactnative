@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 class Description extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '', photo: '' };
+    this.state = { text: '', photo: null };
   }
 
   componentWillMount() {
