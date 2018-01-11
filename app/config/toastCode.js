@@ -81,4 +81,5 @@ export const AppToastCode = {
   ENTER_CONFIRM_PASSWORD: 'Please enter confirm password.',
   PASSWORD_SHORT: 'New password too short, should be atleast 5 characters.',
   PROFILE_UPDATED: 'Profile successfully updated.',
+  GROUP_PHOTO_REQUIRED: 'Group photo is required',
 };

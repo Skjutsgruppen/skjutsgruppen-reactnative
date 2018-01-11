@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { BackHandler } from 'react-native';
+import { BackHandler, StatusBar } from 'react-native';
 import { AppNavigator } from './routeProvider';
 
 class Router extends Component {
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    StatusBar.setHidden(true);
   }
 
   componentWillUnmount() {

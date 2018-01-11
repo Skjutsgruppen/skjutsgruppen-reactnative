@@ -186,7 +186,7 @@ class Trip extends Component {
         coordinates: [],
       }],
       stopsCount: 1,
-      isReturning: false,
+      isReturning: true,
     };
   }
 
