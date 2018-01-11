@@ -68,6 +68,7 @@ class Camera extends Component {
 
   removePhoto = () => {
     this.setState({ imageSource: null });
+    this.props.onSelect({ data: '' });
   }
 
   selectPhotoTapped = () => {
