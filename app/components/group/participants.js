@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import ParticipantsModal from '@components/participantsModal';
+import { Loading } from '@components/common';
+import { withGroupMembers } from '@services/apollo/group';
+
+const ParticipantsInModal = withGroupMembers(ParticipantsModal);
 
 const imageSize = 48;
 const margin = 12;
@@ -51,82 +57,148 @@ const styles = StyleSheet.create({
   },
 });
 
-const Participants = ({ members }) => {
-  const { width } = Dimensions.get('window');
-  const maxImage = parseInt(((width - 32) / 36), 0);
-  let zIndex = maxImage;
-  const membersToRender = members.filter((member, index) => index <= maxImage - 1 && member);
-  const warpperWidth = members.length > maxImage ? 36 * maxImage : 36 * members.length;
+class Participants extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { showFofModal: false };
+  }
 
-  if (members.length <= maxImage) {
+  onPress = (userId) => {
+    const { navigation } = this.props;
+
+    this.setState({ showFofModal: false });
+    navigation.navigate('UserProfile', { profileId: userId });
+  }
+
+  setModalVisibility = (show) => {
+    this.setState({ showFofModal: show });
+  }
+
+  renderModal() {
+    const { id } = this.props;
+
     return (
-      <View style={{ justifyContent: 'center', backgroundColor: '#fff' }}>
-        <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
-          {
-            membersToRender.map((member, index) => {
-              zIndex -= 1;
-              return (
-                <Image
-                  source={{ uri: member.avatar }}
-                  style={[
-                    styles.profilePic,
-                    index > 0 && { left: (index * imageSize) - (margin * index) },
-                    { zIndex },
-                  ]}
-                  key={member.id}
-                />
-              );
-            })
-          }
-        </View>
-      </View>
+      <ParticipantsInModal
+        id={id}
+        offset={0}
+        onPress={this.onPress}
+        setModalVisibility={this.setModalVisibility}
+        showFofModal={this.state.showFofModal}
+      />
     );
   }
 
-  return (
-    <View style={{ justifyContent: 'center', backgroundColor: '#fff' }}>
-      <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
-        {
-          membersToRender.map((member, index) => {
-            zIndex -= 1;
-            if (index < membersToRender.length - 1) {
-              return (
-                <Image
-                  source={require('@assets/profilePic.jpg')}
-                  style={[
-                    styles.profilePic,
-                    index > 0 && { left: (index * imageSize) - (margin * index) },
-                    { zIndex },
-                  ]}
-                  key={member.id}
-                />
-              );
-            }
+  render() {
+    const { groupMembers: { count, rows, loading } } = this.props;
+    if (loading) {
+      return (<Loading />);
+    }
 
-            return (
-              <View
-                style={[
-                  styles.remainingCount,
-                  index > 0 && { left: (index * imageSize) - (margin * index) },
-                  { zIndex },
-                ]}
-                key={member.id}
-              >
-                <Text style={styles.count}>{(members.length - maxImage) + 1}</Text>
+    const { width } = Dimensions.get('window');
+    const maxImage = parseInt(((width - 32) / 36), 0);
+    let zIndex = maxImage;
+    const membersToRender = rows.filter((member, index) => index <= maxImage - 1 && member);
+    const warpperWidth = rows.length > maxImage ? 36 * maxImage : 36 * rows.length;
+
+    if (count <= maxImage) {
+      return (
+        <View>
+          <TouchableOpacity
+            onPress={() => this.setModalVisibility(true)}
+          >
+            <View style={{ justifyContent: 'center', backgroundColor: '#fff' }}>
+              <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
+                {
+                  membersToRender.map((member, index) => {
+                    zIndex -= 1;
+
+                    return (
+                      <Image
+                        source={{ uri: member.avatar }}
+                        style={[
+                          styles.profilePic,
+                          index > 0 && { left: (index * imageSize) - (margin * index) },
+                          { zIndex },
+                        ]}
+                        key={member.id}
+                      />
+                    );
+                  })
+                }
               </View>
-            );
-          })
-        }
+            </View>
+          </TouchableOpacity>
+          {this.state.showFofModal && this.renderModal()}
+        </View>
+      );
+    }
+
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => this.setModalVisibility(true)}
+        >
+          <View style={{ justifyContent: 'center', backgroundColor: '#fff' }}>
+            <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
+              {
+                membersToRender.map((member, index) => {
+                  zIndex -= 1;
+                  if (index < membersToRender.length - 1) {
+                    return (
+                      <Image
+                        source={{ uri: member.avatar }}
+                        style={[
+                          styles.profilePic,
+                          index > 0 && { left: (index * imageSize) - (margin * index) },
+                          { zIndex },
+                        ]}
+                        key={member.id}
+                      />
+                    );
+                  }
+
+                  return (
+                    <View
+                      style={[
+                        styles.remainingCount,
+                        index > 0 && { left: (index * imageSize) - (margin * index) },
+                        { zIndex },
+                      ]}
+                      key={member.id}
+                    >
+                      <Text style={styles.count}>
+                        +{
+                          (rows.length > maxImage)
+                            ? (count - (maxImage - 1))
+                            : (count - rows.length) + 1
+                        }
+                      </Text>
+                    </View>
+                  );
+                })
+              }
+            </View>
+          </View>
+        </TouchableOpacity>
+        {this.state.showFofModal && this.renderModal()}
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 Participants.propTypes = {
-  members: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-    avatar: PropTypes.string,
-  })).isRequired,
+  id: PropTypes.number.isRequired,
+  groupMembers: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      avatar: PropTypes.string,
+    })),
+    count: PropTypes.number,
+  }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }).isRequired,
 };
 
 export default Participants;

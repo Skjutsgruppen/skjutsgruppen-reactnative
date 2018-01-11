@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { CLOSE_GROUP } from '@config/constant';
 import PropTypes from 'prop-types';
-import { withJoinGroup } from '@services/apollo/group';
+import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import { Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
@@ -13,6 +13,8 @@ import GroupImage from '@components/group/groupImage';
 import Participants from '@components/group/participants';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+
+const ParticipantListBubble = withGroupMembers(Participants);
 
 const styles = StyleSheet.create({
   label: {
@@ -227,7 +229,7 @@ class JoinGroup extends Component {
   }
 
   render() {
-    const { group } = this.props;
+    const { group, navigation } = this.props;
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
@@ -235,7 +237,7 @@ class JoinGroup extends Component {
         <ScrollView>
           <GroupImage group={group} />
           <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
-          <Participants members={group.GroupMembers} />
+          <ParticipantListBubble id={group.id} offset={0} navigation={navigation} />
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
           <Text style={styles.text}>
             {
