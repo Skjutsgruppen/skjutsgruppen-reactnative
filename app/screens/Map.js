@@ -9,6 +9,7 @@ import Marker from '@components/map/marker';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import Navigation from '@components/map/navigation';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -109,6 +110,11 @@ class Map extends PureComponent {
     }
   }
 
+  handleBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
   fitMap(coordinates) {
     if (coordinates.length < 1) return;
 
@@ -159,6 +165,7 @@ class Map extends PureComponent {
       }}
       image={this.props.user.avatar}
       count={0}
+      current
     />);
   }
 
@@ -202,6 +209,7 @@ class Map extends PureComponent {
           coordinate={coordinate}
           image={row.trip.User.avatar}
           count={row.trip.seats}
+          tripType={row.trip.type}
         />
       );
     });
@@ -216,6 +224,7 @@ class Map extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <Navigation onPressBack={this.handleBack} />
         <MapView
           ref={(c) => { this.mapView = c; }}
           cacheEnabled
