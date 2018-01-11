@@ -10,6 +10,7 @@ import {
   GROUP_FEED_TYPE_SHARE,
   CLOSE_GROUP,
 } from '@config/constant';
+import RelationBubbleList from '@components/relationBubbleList';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -97,6 +98,21 @@ class Feed extends Component {
     return null;
   }
 
+  renderRelation() {
+    const { feed, setModalVisibility } = this.props;
+
+    return (
+      <View style={{ width: '100%' }}>
+        <RelationBubbleList
+          users={feed.User.relation}
+          avatarSize={24}
+          style={{ marginHorizontal: 0 }}
+          setModalVisibility={setModalVisibility}
+        />
+      </View>
+    );
+  }
+
   renderClosedGroup() {
     const { feed, onPressUser } = this.props;
     let image = null;
@@ -148,6 +164,7 @@ class Feed extends Component {
             {this.renderFeed()}
           </View>
           <Text style={styles.time}><Date>{feed.date}</Date></Text>
+          {this.renderRelation()}
         </View>
       </View>
     );
@@ -176,6 +193,7 @@ Feed.propTypes = {
     text: PropTypes.string,
   }).isRequired,
   onPressUser: PropTypes.func.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
 };
 
 export default Feed;

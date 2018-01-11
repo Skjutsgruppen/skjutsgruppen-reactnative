@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Modal, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import RelationItem from '@components/relationItem';
+import MemberItem from '@components/memberItem';
 
 const styles = StyleSheet.create({
   returnModalContent: {
@@ -46,7 +46,7 @@ const RelationModal = ({ users, onPress, setModalVisibility, showFofModal }) => 
           data={users}
           renderItem={
             ({ item }) => (
-              <RelationItem onPress={onPress} user={item} key={item.id} />
+              <MemberItem onPress={onPress} user={item} key={item.id} />
             )
           }
           keyExtractor={(item, index) => index}

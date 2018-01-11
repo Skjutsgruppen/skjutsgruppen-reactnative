@@ -357,7 +357,11 @@ class Ask extends Component {
             end={defaultTrip.end}
             onNext={this.onTripNext}
           />}
-          {(activeTab === 4) && <Date onNext={this.onDateNext} defaultTime={defaultTrip.time} defaultFlexible={defaultTrip.flexible} />}
+          {(activeTab === 4) && <Date
+            onNext={this.onDateNext}
+            defaultTime={defaultTrip.time}
+            defaultFlexible={defaultTrip.flexible}
+          />}
           {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
           {(activeTab === 6) && this.renderFinish()}
         </Container>
