@@ -309,13 +309,14 @@ class AskDetail extends Component {
   onMapPress = () => {
     const { navigation } = this.props;
     const { ask } = navigation.state.params;
+    const type = ask.type;
     const coordinates = {
       start: ask.TripStart,
       end: ask.TripEnd,
       stops: ask.Stops,
     };
 
-    navigation.navigate('Route', { coordinates });
+    navigation.navigate('Route', { coordinates, type });
   }
 
   onCloseNotification = () => {
