@@ -127,7 +127,9 @@ class Group extends Component {
   };
 
   onAboutNext = (about) => {
-    if (about.name === '') {
+    if (about.photo === '') {
+      this.setState({ error: getToast(['GROUP_PHOTO_REQUIRED']) });
+    } else if (about.name === '') {
       this.setState({ error: getToast(['GROUP_NAME_REQUIRED']) });
     } else if (about.description === '') {
       this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
