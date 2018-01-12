@@ -9,6 +9,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
+    paddingHorizontal: 2,
+  },
+  iconWrapper: {
+    height: 32,
+    width: 32,
+    borderRadius: 16,
+    elevation: 2,
   },
   icon: {
     height: 32,
@@ -19,7 +26,9 @@ const styles = StyleSheet.create({
 
 const FloatingBackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-    <Image source={Icon} style={styles.icon} />
+    <View style={styles.iconWrapper}>
+      <Image source={Icon} style={styles.icon} />
+    </View>
   </TouchableOpacity>
 );
 
