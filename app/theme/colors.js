@@ -2,6 +2,7 @@ const Colors = {
   background: {
     blue: '#00aeef',
     lightBlueWhite: '#f6f9fc',
+    mutedBlue: '#f6f9fc',
     yellow: '#ffed00',
     green: '#2b9c48',
     purple: '#a27ba8',
@@ -18,6 +19,7 @@ const Colors = {
   },
   text: {
     blue: '#00aeef',
+    mutedBlue: '#f6f9fc',
     yellow: '#ffed00',
     green: '#2b9c48',
     purple: '#a27ba8',
@@ -32,6 +34,7 @@ const Colors = {
   },
   border: {
     blue: '#00aeef',
+    mutedBlue: '#f6f9fc',
     yellow: '#ffed00',
     green: '#2b9c48',
     purple: '#a27ba8',

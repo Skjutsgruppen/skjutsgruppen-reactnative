@@ -18,6 +18,7 @@ import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import { withTripExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
+import About from '@components/common/about';
 
 const AskComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -448,11 +449,12 @@ class AskDetail extends Component {
     );
   }
 
-  renderExperiencButton = () => {
+  renderExperienceButton = () => {
     const { navigation } = this.props;
     const { ask } = navigation.state.params;
+    const tripStarted = Moment(ask.date).isBefore();
 
-    if (!ask.isParticipant) return null;
+    if (!ask.isParticipant || !tripStarted) return null;
 
     return (
       <MakeExperience
@@ -684,11 +686,12 @@ class AskDetail extends Component {
             <View style={styles.horizontalDivider} />
           </View>
           <TripExperiences title="Experiences!" tripId={ask.id} />
-          {this.renderExperiencButton()}
+          {this.renderExperienceButton()}
           <View style={styles.dividerWrapper}>
             <View style={styles.horizontalDivider} />
           </View>
           <AskComment navigation={navigation} onCommentPress={this.onProfilePress} id={ask.id} />
+          <About />
         </ScrollView>
         {this.renderFooter()}
         {this.renderModal()}
