@@ -56,6 +56,12 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     backgroundColor: 'transparent',
   },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
+  },
 });
 
 class Feed extends Component {
@@ -202,14 +208,14 @@ class Feed extends Component {
 
     const refetch = (
       <TouchableOpacity onPress={this.onRefreshClicked}>
-        <Text>Reload</Text>
+        <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
       </TouchableOpacity>
     );
 
     if (error && !loading) {
       return (
         <View style={{ marginTop: 100 }}>
-          <Text>Error: {error.message}</Text>
+          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
           {refetch}
         </View>
       );
@@ -218,7 +224,7 @@ class Feed extends Component {
     if (count < 1 && !loading) {
       return (
         <View style={{ marginTop: 100 }}>
-          <Text>No Feeds.</Text>
+          <Text style={styles.errorText}>No Feeds</Text>
           {refetch}
         </View>
       );
@@ -254,8 +260,9 @@ class Feed extends Component {
     const isRenderable = (indexPlusOne % EXPERIENCE_AFTER_CARDS === 0);
     const offset = ((indexPlusOne / EXPERIENCE_AFTER_CARDS) - 1) * EXPERIENCE_FETCH_LIMIT;
     const isLimitNotExceeded = totalExperiences > offset;
+    const isEverythingFilter = this.state.filterType === FEED_FILTER_EVERYTHING;
 
-    if (isLimitNotExceeded && isRenderable) {
+    if (isLimitNotExceeded && isRenderable && isEverythingFilter) {
       return (
         <FeedExperience
           title="Experiences"
