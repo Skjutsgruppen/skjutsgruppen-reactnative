@@ -107,37 +107,48 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   name: 'comments',
   options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
-  props: props => ({
-    comments: props.comments,
-    subscribeToNewComments: param => props.comments.subscribeToMore({
-      document: COMMENTS_SUBSCRIPTION,
-      variables: { tripId: param.id },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
+  props: ({ comments }) => {
+    let rows = [];
+    let count = 0;
+    const { error, fetchMore, loading, networkStatus, variables, subscribeToMore } = comments;
 
-        const newFeedItem = subscriptionData.data.commentAdded;
-        const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+    if (comments.comments) {
+      rows = comments.comments.rows.slice(0).reverse();
+      count = comments.comments.count;
+    }
 
-        feeds.getFeed.rows.map((feed) => {
-          if (feed.feedable === 'Trip' && feed.Trip.id === props.ownProps.id) {
-            feed.Trip.totalComments += 1;
+    return {
+      comments: { comments: { rows, count }, fetchMore, loading, error, networkStatus },
+      subscribeToNewComments: () => subscribeToMore({
+        document: COMMENTS_SUBSCRIPTION,
+        variables: { tripId: variables.id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
           }
 
-          return feed;
-        });
+          const newFeedItem = subscriptionData.data.commentAdded;
+          const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
 
-        client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+          feeds.getFeed.rows.map((feed) => {
+            if (feed.feedable === 'Trip' && feed.Trip.id === variables.id) {
+              feed.Trip.totalComments += 1;
+            }
 
-        const rows = [newFeedItem].concat(prev.comments.rows);
+            return feed;
+          });
 
-        return {
-          comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
-        };
-      },
-    }),
-  }),
+          client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+
+          rows = [newFeedItem].concat(prev.comments.rows);
+
+          return {
+            comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
+          };
+        },
+      }),
+    }
+  },
 });
 
 const GET_NEWS_COMMENTS_QUERY = gql`
@@ -234,12 +245,12 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
         newsId = null,
         text,
       }) => mutate({
-        variables: {
-          tripId,
-          groupId,
-          newsId,
-          text,
-        },
-      }),
+          variables: {
+            tripId,
+            groupId,
+            newsId,
+            text,
+          },
+        }),
     }),
 });

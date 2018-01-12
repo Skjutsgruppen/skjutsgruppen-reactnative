@@ -89,7 +89,7 @@ class List extends Component {
     );
   }
 
-  renderFooter = (loading) => {
+  renderHeader = (loading) => {
     if (loading) {
       return (
         <View
@@ -158,7 +158,7 @@ class List extends Component {
           }
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0}
-          ListFooterComponent={() => this.renderFooter(this.state.loading)}
+          ListHeaderComponent={() => this.renderHeader(this.state.loading)}
         />
         {this.state.showFofModal && this.renderModal()}
       </View>
