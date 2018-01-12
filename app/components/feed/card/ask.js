@@ -162,7 +162,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
             {image}
           </View>
           <View style={[styles.offerType, styles.blueBg]}>
-            <Text style={styles.typeText}>{trans('feed.asking_a_ride')}</Text>
+            <Text style={styles.typeText}>{trans('feed.asking_for_ride')}</Text>
           </View>
           <View style={styles.detail}>
             <View>

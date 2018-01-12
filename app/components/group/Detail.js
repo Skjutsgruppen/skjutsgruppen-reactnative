@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -109,7 +109,8 @@ class Detail extends PureComponent {
     if (validation.pass()) {
       try {
         submit({ groupId: group.id, text: comment }).then(() => {
-          this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
+          this.setState({ comment: '', loading: false, error: '' });
+          Keyboard.dismiss();
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });
         });
@@ -248,6 +249,7 @@ class Detail extends PureComponent {
             returnKeyType={'done'}
             placeholderTextColor="#666"
             underlineColorAndroid="transparent"
+            editable={!this.state.loading}
           />
 
           <View style={styles.send}>

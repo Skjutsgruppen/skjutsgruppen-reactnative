@@ -12,6 +12,6 @@ export const feed = {
   seats: 'seats se',
   asks_for_a_ride: 'asks for a ride se',
   offering_a_ride: 'OFFERING A RIDE se',
-  asking_a_ride: 'ASKING A RIDE se',
   your_movement: 'Your movement se',
+  asking_for_ride: 'ASKING FOR RIDE se',
 };
