@@ -9,8 +9,10 @@ export const search = {
   public_transport: 'Public transport',
   groups: 'Groups',
   search: 'Search',
-  explore_existing_groups: 'Explore existing groups',
+  explore_groups: 'Explore groups',
+  newest: 'NEWEST',
+  total_groups: 'TOTAL GROUPS',
+  daily_commute_to_town: 'Daily commute to town',
   cards: 'Cards',
   list: 'List',
-  found: 'found',
 };

@@ -13,6 +13,7 @@ import FeedIcon from '@icons/ic_feed.png';
 import FeedIconActive from '@icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   circle: {
@@ -221,7 +222,7 @@ class Feed extends Component {
   renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.menuWrapper}>
-        <Text style={styles.hi}>Hi!</Text>
+        <Text style={styles.hi}>{trans('feed.hi')}!</Text>
         <TouchableOpacity
           style={styles.menuIcon}
           onPress={() => this.setFilterVisibility(true)}
