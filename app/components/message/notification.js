@@ -8,6 +8,7 @@ import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
 import { connect } from 'react-redux';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   section: {
@@ -42,6 +43,12 @@ const styles = StyleSheet.create({
   moreText: {
     fontSize: 12,
     color: '#333',
+  },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
   },
 });
 
@@ -95,10 +102,10 @@ class NewNotification extends PureComponent {
 
     if (notifications.error) {
       render = (
-        <View style={{ marginTop: 100 }}>
-          <Text>Error: {notifications.error.message}</Text>
+        <View style={{ marginTop: 20, marginBottom: 20 }}>
+          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
           <TouchableOpacity onPress={() => notifications.refetch()}>
-            <Text>Reload</Text>
+            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
           </TouchableOpacity>
         </View>
       );

@@ -4,6 +4,7 @@ import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import { withGroups } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -56,6 +57,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 14,
   },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
+  },
 });
 
 const renderPic = (photo) => {
@@ -99,10 +106,10 @@ const Group = ({ groups, navigation }) => {
 
   if (groups.error) {
     render = (
-      <View style={{ marginTop: 100 }}>
-        <Text>Error: {groups.error.message}</Text>
+      <View style={{ marginTop: 20, marginBottom: 20 }}>
+        <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
         <TouchableOpacity onPress={() => groups.refetch()}>
-          <Text>Reload</Text>
+          <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
         </TouchableOpacity>
       </View>
     );

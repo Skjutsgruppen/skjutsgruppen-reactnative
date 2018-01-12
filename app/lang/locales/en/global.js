@@ -3,6 +3,7 @@ export const global = {
   comment: 'Comment',
   back: 'Back',
   close: 'Close',
+  cancel: 'Cancel',
   about: 'About',
   write_something: 'Write something...',
   send: 'Send',
@@ -36,4 +37,6 @@ export const global = {
   do_not_want_to_make_return_ride: 'I do not want to make a return ride',
   see_your: 'See your',
   update: 'Update',
+  oops_something_went_wrong: 'Oops! Something went wrong.',
+  tap_to_retry: 'Tap to Retry',
 };
