@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import Feed from '@components/group/feed/default';
 import { SharedCard } from '@components/common';
 
-const GroupFeedItem = ({ groupFeed, onPress }) => {
+const GroupFeedItem = ({ groupFeed, onPress, setModalVisibility }) => {
   if (groupFeed.ActivityType.type === 'share') {
     if (groupFeed.feedable === 'Trip') {
       if (groupFeed.Trip.type === 'offered') {
         return (
           <View style={{ marginTop: 12 }} >
-            <Feed feed={groupFeed} onPressUser={onPress} />
+            <Feed feed={groupFeed} onPressUser={onPress} setModalVisibility={setModalVisibility} />
             <SharedCard
               trip={groupFeed.Trip}
               onPress={onPress}
@@ -21,7 +21,7 @@ const GroupFeedItem = ({ groupFeed, onPress }) => {
 
       return (
         <View>
-          <Feed feed={groupFeed} onPressUser={onPress} />
+          <Feed feed={groupFeed} onPressUser={onPress} setModalVisibility={setModalVisibility} />
           <SharedCard
             trip={groupFeed.Trip}
             onPress={onPress}
@@ -31,7 +31,7 @@ const GroupFeedItem = ({ groupFeed, onPress }) => {
     }
   }
 
-  return (<Feed feed={groupFeed} onPressUser={onPress} />);
+  return (<Feed feed={groupFeed} onPressUser={onPress} setModalVisibility={setModalVisibility} />);
 };
 
 GroupFeedItem.propTypes = ({
@@ -51,6 +51,7 @@ GroupFeedItem.propTypes = ({
     updatedAt: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
 });
 
 export default GroupFeedItem;

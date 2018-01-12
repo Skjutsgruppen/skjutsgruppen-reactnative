@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RelationshipItem = ({ user, onPress }) => {
+const MemberItem = ({ user, onPress }) => {
   let profileImage = null;
 
   if (user.avatar) {
@@ -56,7 +56,7 @@ const RelationshipItem = ({ user, onPress }) => {
   );
 };
 
-RelationshipItem.propTypes = {
+MemberItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
@@ -67,5 +67,5 @@ RelationshipItem.propTypes = {
   }).isRequired,
 };
 
-export default RelationshipItem;
+export default MemberItem;
 
