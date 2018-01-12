@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import CommentIcon from '@icons/ic_comment.png';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -160,13 +161,13 @@ class News extends Component {
               {image}
             </View>
             <View style={[styles.offerType, styles.blueBg]}>
-              <Text style={styles.typeText}>{('your movement').toUpperCase()}</Text>
+              <Text style={styles.typeText}>{trans('feed.your_movement').toUpperCase()}</Text>
             </View>
             <View style={styles.detail}>
               <View>
                 <Text style={[styles.text, styles.lightText]}>
                   <Text style={styles.username}>
-                    Your movement
+                    {trans('feed.your_movement')}
                   </Text>
                 </Text>
                 <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>

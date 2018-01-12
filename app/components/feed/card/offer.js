@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
 import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -173,13 +174,13 @@ const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
             {image}
           </View>
           <View style={[styles.offerType, styles.pinkBg]}>
-            <Text style={styles.typeText}>{('offering a ride').toUpperCase()}</Text>
+            <Text style={styles.typeText}>{trans('feed.offering_a_ride')}</Text>
           </View>
           <View style={styles.detail}>
             <View>
               <Text style={[styles.text, styles.lightText]}>
                 <Text style={styles.username}>{offer.User.firstName || offer.User.email} </Text>
-                <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
+                <Text> {trans('feed.offers')} {offer.seats} {offer.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
                 {offer.TripStart.name} - {offer.TripEnd.name}
