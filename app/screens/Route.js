@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
+
+import { FloatingNavbar } from '@components/common';
+import TripMarker from '@components/map/roundMarker';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -81,8 +84,23 @@ class Route extends PureComponent {
     }
   }
 
+  handleBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
   renderStops = () => {
     const { stops } = this.state;
+    const { navigation } = this.props;
+    const { type } = navigation.state.params;
+
+    let color = null;
+    if (type === 'ask') {
+      color = 'blue';
+    } else {
+      color = 'pink';
+    }
+
     let i = 0;
     return stops.map((row) => {
       i += 1;
@@ -90,7 +108,9 @@ class Route extends PureComponent {
         <MapView.Marker.Animated
           key={i}
           coordinate={{ longitude: row.coordinates[0], latitude: row.coordinates[1] }}
-        />
+        >
+          <TripMarker color={color} />
+        </MapView.Marker.Animated>
       );
     });
   }
@@ -99,21 +119,29 @@ class Route extends PureComponent {
     const { origin, destination, initialRegion, waypoints } = this.state;
 
     return (
-      <MapView
-        initialRegion={initialRegion}
-        style={StyleSheet.absoluteFill}
-        ref={(c) => { this.mapView = c; }}
-        onMapReady={this.fitMap}
-      >
-        <MapView.Marker.Animated coordinate={origin} />
-        <MapView.Marker.Animated coordinate={destination} />
-        {this.renderStops()}
-        <MapView.Polyline
-          strokeWidth={5}
-          strokeColor="#3b99fc"
-          coordinates={waypoints}
-        />
-      </MapView>
+      <View style={StyleSheet.absoluteFill}>
+        <FloatingNavbar handleBack={this.handleBack} />
+        <MapView
+          initialRegion={initialRegion}
+          style={StyleSheet.absoluteFill}
+          ref={(c) => { this.mapView = c; }}
+          onMapReady={this.fitMap}
+          cacheEnabled
+        >
+          <MapView.Marker.Animated coordinate={origin}>
+            <TripMarker />
+          </MapView.Marker.Animated>
+          <MapView.Marker.Animated coordinate={destination}>
+            <TripMarker type="destination" />
+          </MapView.Marker.Animated>
+          {this.renderStops()}
+          <MapView.Polyline
+            strokeWidth={5}
+            strokeColor="#3b99fc"
+            coordinates={waypoints}
+          />
+        </MapView>
+      </View>
     );
   }
 }

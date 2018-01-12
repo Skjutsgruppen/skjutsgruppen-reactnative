@@ -309,13 +309,14 @@ class OfferDetail extends Component {
   onMapPress = () => {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
+    const tripType = offer.type;
     const coordinates = {
       start: offer.TripStart,
       end: offer.TripEnd,
       stops: offer.Stops,
     };
 
-    navigation.navigate('Route', { coordinates });
+    navigation.navigate('Route', { coordinates, tripType });
   }
 
   onCloseNotification = () => {
