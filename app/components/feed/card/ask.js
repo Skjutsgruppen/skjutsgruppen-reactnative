@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import ShareIcon from '@icons/ic_share.png';
 import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -161,7 +162,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
             {image}
           </View>
           <View style={[styles.offerType, styles.blueBg]}>
-            <Text style={styles.typeText}>{('asking a ride').toUpperCase()}</Text>
+            <Text style={styles.typeText}>{trans('feed.asking_a_ride')}</Text>
           </View>
           <View style={styles.detail}>
             <View>
@@ -169,7 +170,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
                 <Text style={styles.username}>
                   {ask.User.firstName || ask.User.email}
                 </Text>
-                <Text> asks for a ride </Text>
+                <Text> {trans('feed.asks_for_a_ride')} </Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
                 {ask.TripStart.name} - {ask.TripEnd.name}
