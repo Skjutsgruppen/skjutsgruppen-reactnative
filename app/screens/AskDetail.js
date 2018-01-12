@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
 import { Loading, AppNotification, FloatingNavbar, DetailHeader } from '@components/common';
 import Comment from '@components/comment/list';
@@ -276,7 +276,8 @@ class AskDetail extends Component {
     if (validation.pass()) {
       try {
         submit({ tripId: ask.id, text: comment }).then(() => {
-          this.setState({ comment: '', loading: false, error: '', success: getToast(['COMMENT_ADDED']) });
+          this.setState({ comment: '', loading: false, error: '' });
+          Keyboard.dismiss();
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });
         });
@@ -487,6 +488,7 @@ class AskDetail extends Component {
           autoCapitalize={'none'}
           returnKeyType={'done'}
           style={styles.commentInput}
+          editable={!this.state.loading}
         />
         {
           this.state.writingComment &&
