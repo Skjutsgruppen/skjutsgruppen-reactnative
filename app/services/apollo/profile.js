@@ -37,7 +37,8 @@ query profile($id: Int){
 export const withProfile = graphql(profileQuery, {
   options: ({ id }) => ({
     variables: { id },
-    props: ({ profile }) => ({ profile }),
+    props: ({ profile, networkStatus, error, refetch, loading }) =>
+      ({ profile, networkStatus, error, refetch, loading }),
   }),
 });
 

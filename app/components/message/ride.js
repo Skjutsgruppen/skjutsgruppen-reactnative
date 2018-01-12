@@ -6,6 +6,7 @@ import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -57,6 +58,12 @@ const styles = StyleSheet.create({
   spacedWrapper: {
     paddingHorizontal: 24,
     paddingVertical: 14,
+  },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
   },
 });
 
@@ -114,10 +121,10 @@ const Ride = ({ trips, navigation }) => {
 
   if (trips.error) {
     render = (
-      <View style={{ marginTop: 100 }}>
-        <Text>Error: {trips.error.message}</Text>
+      <View style={{ marginTop: 20, marginBottom: 20 }}>
+        <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
         <TouchableOpacity onPress={() => trips.refetch()}>
-          <Text>Reload</Text>
+          <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
         </TouchableOpacity>
       </View>
     );
