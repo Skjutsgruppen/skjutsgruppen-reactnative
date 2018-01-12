@@ -208,7 +208,9 @@ class Offer extends Component {
           start: this.state.trip.end,
           end: this.state.trip.start,
           dates: this.state.date.dates,
-          stops: (this.state.trip.stops.length > 0) ? this.state.trip.stops.reverse() : this.state.defaultTrip.stops,
+          stops: (this.state.trip.stops.length > 0)
+            ? this.state.trip.stops.reverse()
+            : this.state.defaultTrip.stops,
           description: {
             text: this.state.description.text,
             photo: this.state.description.photo,

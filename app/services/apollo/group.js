@@ -358,6 +358,12 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
         phoneNumber
         firstName
         lastName
+        relation{
+          id
+          firstName
+          lastName
+          avatar
+        }
       }
       rate
       updatedAt
@@ -385,6 +391,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
               id
               email
               firstName
+              lastName
               avatar
             }
           }
@@ -434,7 +441,8 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             relation {
               id 
               email 
-              firstName 
+              firstName
+              lastName
               avatar
             }
           } 
@@ -489,6 +497,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
               id
               email
               firstName
+              lastName
               avatar
             }
           }
@@ -696,5 +705,37 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
         },
       }),
     };
+  },
+});
+
+const GROUP_MEMBRES_QUERY = gql`
+query groupMembers($id: Int, $limit: Int, $offset: Int){
+  groupMembers(id: $id, limit: $limit, offset: $offset){
+    rows{
+      id
+      firstName
+      lastName
+      avatar
+    }
+    count
+  }
+}
+`;
+
+export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
+  options: ({ id, offset, limit = 10 }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { id, limit, offset },
+  }),
+  props: ({ data: { loading, groupMembers, fetchMore, refetch, networkStatus, error } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (groupMembers) {
+      rows = groupMembers.rows;
+      count = groupMembers.count;
+    }
+
+    return { groupMembers: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
   },
 });

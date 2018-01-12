@@ -8,6 +8,7 @@ import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import Share from '@components/common/share';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
+import RelationModal from '@components/relationModal';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
 class GroupFeed extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ loading: false, modalDetail: {}, modalType: '', isOpen: false, showFofModal: false, friendsData: [] });
   }
 
   componentWillMount() {
@@ -77,6 +78,24 @@ class GroupFeed extends Component {
     this.setState({ isOpen: false });
   }
 
+  setModalVisibility = (show, friendsData) => {
+    this.setState({ showFofModal: show, friendsData });
+  }
+
+  setFriendsData = (data) => {
+    this.setState({ friendsData: data });
+  }
+
+  renderFofModal() {
+    return (
+      <RelationModal
+        users={this.state.friendsData}
+        onPress={this.onPress}
+        setModalVisibility={this.setModalVisibility}
+        showFofModal={this.state.showFofModal}
+      />
+    );
+  }
   renderFooter = () => {
     const { loading, rows, count } = this.props.groupFeed;
 
@@ -154,6 +173,7 @@ class GroupFeed extends Component {
             onPress={this.onPress}
             onSharePress={this.onSharePress}
             groupFeed={item}
+            setModalVisibility={this.setModalVisibility}
           />)}
           keyExtractor={(item, index) => index}
           refreshing={networkStatus === 4}
@@ -185,6 +205,7 @@ class GroupFeed extends Component {
           }}
         />
         {this.renderShareModal()}
+        {this.state.showFofModal && this.renderFofModal()}
       </View>
     );
   }
