@@ -1,6 +1,7 @@
 const Colors = {
   background: {
     blue: '#00aeef',
+    lightBlueWhite: '#f6f9fc',
     yellow: '#ffed00',
     green: '#2b9c48',
     purple: '#a27ba8',
@@ -12,7 +13,7 @@ const Colors = {
     fullWhite: '#ffffff',
     darkCyan: '#2fad9e',
     red: '#e00',
-    pink: '#fc56d4',
+    pink: '#ea4c89',
     orange: '#fabf5e',
   },
   text: {
@@ -27,7 +28,7 @@ const Colors = {
     lightGray: '#dddee3',
     red: '#e00',
     darkCyan: '#2fad9e',
-    pink: '#fc56d4',
+    pink: '#ea4c89',
   },
   border: {
     blue: '#00aeef',

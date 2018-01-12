@@ -3,14 +3,14 @@ import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView, FlatList }
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
-import { Wrapper, Loading } from '@components/common';
-import BackButton from '@components/common/backButton';
+import { Wrapper, FloatingNavbar, Loading } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -82,7 +82,7 @@ class SearchResult extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { filters: [], modalDetail: {}, modalType: '', isOpen: false };
+    this.state = { filters: [], modalDetail: {}, modalType: '', isOpen: false, resultsStyle: 'card' };
   }
 
   componentWillMount() {
@@ -167,13 +167,21 @@ class SearchResult extends Component {
 
   prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
 
+  switchResultsStyle = style => this.setState({ resultsStyle: style });
+
   renderHeader = () => (
     <View style={styles.switchViewWrapper}>
-      <TouchableOpacity style={[styles.viewSwitcher, styles.selected]}>
-        <Text style={styles.whiteText}>Cards</Text>
+      <TouchableOpacity
+        style={[styles.viewSwitcher, this.state.resultsStyle === 'card' ? styles.selected : {}]}
+        onPress={() => this.switchResultsStyle('card')}
+      >
+        <Text style={styles.whiteText}>{trans('search.cards')}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.viewSwitcher}>
-        <Text style={styles.whiteText}>List</Text>
+      <TouchableOpacity
+        style={[styles.viewSwitcher, this.state.resultsStyle === 'list' ? styles.selected : {}]}
+        onPress={() => this.switchResultsStyle('list')}
+      >
+        <Text style={styles.whiteText}>{trans('search.list')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -233,9 +241,10 @@ class SearchResult extends Component {
           onSharePress={this.onSharePress}
           onPress={this.onPress}
           searchResult={item}
+          resultsStyle={this.state.resultsStyle}
         />)}
         keyExtractor={(item, index) => index}
-        refreshing={search.networkStatus === 4}
+        refreshing={search.networkStatus === 4 || search.networkStatus === 2}
         onRefresh={() => search.refetch()}
         onEndReachedThreshold={0.5}
         ListHeaderComponent={this.renderHeader}
@@ -289,20 +298,15 @@ class SearchResult extends Component {
   render() {
     const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
 
-    if (search.networkStatus === 1) {
-      return <Loading />;
-    }
-
     const prettyDate = this.formatDates();
-
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <View style={styles.navBar}>
-          <BackButton onPress={() => navigation.goBack()} />
-        </View>
+      <Wrapper bgColor={Colors.background.lightBlueWhite}>
+        <FloatingNavbar handleBack={() => navigation.goBack()} />
         <View style={styles.searchContent}>
-          <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
-          <Text style={styles.time}>{prettyDate.join(', ')}</Text>
+          <View style={{ marginLeft: 40 }}>
+            <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
+            <Text style={styles.time}>{prettyDate.join(', ')}</Text>
+          </View>
           <View style={styles.suggestionsContainer}>
             <TouchableOpacity
               onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
@@ -311,7 +315,7 @@ class SearchResult extends Component {
                 filters.indexOf(FEED_TYPE_OFFER) > -1 ? styles.selected : {},
               ]}
             >
-              <Text style={styles.whiteText}>Offered</Text>
+              <Text style={styles.whiteText}>{trans('search.offered')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -321,21 +325,21 @@ class SearchResult extends Component {
                 filters.indexOf(FEED_TYPE_WANTED) > -1 ? styles.selected : {},
               ]}
             >
-              <Text style={styles.whiteText}>Asked for</Text>
+              <Text style={styles.whiteText}>{trans('search.asked_for')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => this.onFilterSelect('public')}
               style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}
             >
-              <Text style={styles.whiteText}>Public transport</Text>
+              <Text style={styles.whiteText}>{trans('search.public_transport')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => this.onFilterSelect('group')}
               style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}
             >
-              <Text style={styles.whiteText}>Groups</Text>
+              <Text style={styles.whiteText}>{trans('search.groups')}</Text>
             </TouchableOpacity>
           </View>
         </View>
