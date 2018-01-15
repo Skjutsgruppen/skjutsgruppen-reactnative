@@ -50,3 +50,6 @@ export const RELATIONSHIP_TYPE_OUTGOING = 'outgoing';
 
 export const GROUP_NAME_LIMIT = 22;
 
+export const FLEXIBILITY_UNITS = ['minutes', 'hours', 'days'];
+export const FLEXIBILITY_TYPES = ['earlier', 'later'];
+

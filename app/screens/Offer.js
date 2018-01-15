@@ -16,6 +16,8 @@ import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import Colors from '@theme/colors';
+import { getTimezone } from '@helpers/device';
+import Moment from 'moment-timezone';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -91,7 +93,11 @@ class Offer extends Component {
         },
         seat: '1',
         time: '00:00',
-        flexible: '00',
+        flexibilityInfo: {
+          duration: 0,
+          unit: 'minute',
+          type: 'later',
+        },
       },
       description: {},
       trip: {},
@@ -122,7 +128,7 @@ class Offer extends Component {
           description: params.defaultTrip.description,
           seat: params.defaultTrip.seat,
           time: params.defaultTrip.time,
-          flexible: params.defaultTrip.flexible,
+          flexibilityInfo: params.defaultTrip.flexibilityInfo,
         },
       });
     }
@@ -217,7 +223,7 @@ class Offer extends Component {
           },
           seat: this.state.seat,
           time: this.state.date.time,
-          flexible: this.state.date.flexible,
+          flexibilityInfo: this.state.date.flexibilityInfo,
         },
       });
     } else {
@@ -227,6 +233,14 @@ class Offer extends Component {
 
   createTrip() {
     const { description, trip, date, seat, share, parentId } = this.state;
+    let utcTime = '';
+    const dates = [];
+
+    date.dates.forEach((tripDate) => {
+      const dateTime = this.convertToGMT(tripDate, date.time).split(' ');
+      utcTime = dateTime[1];
+      dates.push(dateTime[0]);
+    });
 
     const rideData = {
       parentId,
@@ -236,10 +250,10 @@ class Offer extends Component {
       photo: description.photo,
       stops: trip.stops,
       returnTrip: trip.isReturning || trip.isReturnTrip,
-      dates: date.dates,
-      time: date.time,
+      dates,
+      time: utcTime,
       seats: seat,
-      flexibility: date.flexible,
+      flexibilityInfo: date.flexibilityInfo,
       share,
     };
 
@@ -255,6 +269,8 @@ class Offer extends Component {
       console.warn(error);
     }
   }
+
+  convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
   header() {
     const { isReturnedTrip } = this.state;
@@ -366,7 +382,7 @@ class Offer extends Component {
             {(activeTab === 3) && <Date
               onNext={this.onDateNext}
               defaultTime={defaultTrip.time}
-              defaultFlexible={defaultTrip.flexible}
+              defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
             />}
             {(activeTab === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
             {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}

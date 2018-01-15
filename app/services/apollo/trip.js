@@ -15,7 +15,7 @@ mutation createTrip(
   $dates:[String!],
   $time:String,
   $seats:Int,
-  $flexibility:String,
+  $flexibilityInfo:FlexibilityInput,
   $share:ShareInput,
 ) {
   createTrip( input :{
@@ -30,7 +30,7 @@ mutation createTrip(
     dates : $dates
     time : $time
     seats : $seats
-    flexibility : $flexibility
+    flexibilityInfo : $flexibilityInfo
     share : $share
   }) {
     id
@@ -58,7 +58,11 @@ mutation createTrip(
     date 
     time 
     seats 
-    flexibility,
+    flexibilityInfo {
+      duration
+      unit
+      type
+    },
     url
     parentId
   }
@@ -76,7 +80,7 @@ export const submitAsk = graphql(CREATE_ASK_QUERY, {
       returnTrip,
       dates,
       time,
-      flexibility,
+      flexibilityInfo,
       share,
     }) =>
       mutate({
@@ -92,7 +96,7 @@ export const submitAsk = graphql(CREATE_ASK_QUERY, {
           dates,
           time,
           seats: 0,
-          flexibility,
+          flexibilityInfo,
           share,
         },
       }),
@@ -112,7 +116,7 @@ mutation createTrip(
   $dates:[String!],
   $time:String,
   $seats:Int,
-  $flexibility:String,
+  $flexibilityInfo:FlexibilityInput,
   $share:ShareInput,
 ) {
   createTrip( input :{
@@ -127,7 +131,7 @@ mutation createTrip(
     dates : $dates
     time : $time
     seats : $seats
-    flexibility : $flexibility
+    flexibilityInfo : $flexibilityInfo
     share : $share
   }) {
     id
@@ -155,7 +159,11 @@ mutation createTrip(
     date 
     time 
     seats 
-    flexibility
+    flexibilityInfo {
+      duration
+      unit
+      type
+    }
     url
     parentId
   }
@@ -175,7 +183,7 @@ export const submitOffer = graphql(CREATE_OFFER_QUERY, {
       dates,
       time,
       seats,
-      flexibility,
+      flexibilityInfo,
       share,
     }) =>
       mutate({
@@ -191,7 +199,7 @@ export const submitOffer = graphql(CREATE_OFFER_QUERY, {
           dates,
           time,
           seats,
-          flexibility,
+          flexibilityInfo,
           share,
         },
       }),
