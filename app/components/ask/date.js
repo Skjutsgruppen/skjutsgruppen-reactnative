@@ -5,6 +5,7 @@ import Moment from 'moment';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
+import { FLEXIBILITY_UNITS, FLEXIBILITY_TYPES } from '@config/constant';
 
 function pad(n, width = 2, padString = '0') {
   const num = String(n);
@@ -67,12 +68,22 @@ const styles = StyleSheet.create({
 class Date extends Component {
   constructor(props) {
     super(props);
-    this.state = { markedDates: {}, dates: [], flexible: '00', time: '00:00' };
+    this.state = {
+      markedDates: {},
+      dates: [],
+      flexible: '00',
+      flexibilityInfo: {
+        duration: 0,
+        unit: 'minute',
+        type: 'later',
+      },
+      time: '00:00',
+    };
   }
 
   componentWillMount() {
-    const { defaultTime: time, defaultFlexible: flexible } = this.props;
-    this.setState({ time, flexible });
+    const { defaultTime: time, defaultFlexibilityInfo: flexibilityInfo } = this.props;
+    this.setState({ time, flexibilityInfo });
   }
 
   onNext = () => {
@@ -80,6 +91,7 @@ class Date extends Component {
     const state = this.state;
     const markedDates = { ...state.markedDates };
     const dates = [];
+
     Object.keys(markedDates).forEach((day) => {
       dates.push(day);
     });
@@ -119,6 +131,26 @@ class Date extends Component {
     this.setState({ time: `${h}:${m}` });
   };
 
+  setDuration = (duration) => {
+    const { flexibilityInfo } = this.state;
+    flexibilityInfo.duration = parseInt(duration, 10);
+    this.setState({ flexibilityInfo });
+  }
+
+  setUnit = (unit) => {
+    const { flexibilityInfo } = this.state;
+    flexibilityInfo.unit = unit;
+
+    this.setState({ flexibilityInfo });
+  }
+
+  setType = (type) => {
+    const { flexibilityInfo } = this.state;
+    flexibilityInfo.type = type;
+
+    this.setState({ flexibilityInfo });
+  }
+
   renderHoursOptions = () => {
     const options = [];
     let i = 0;
@@ -151,25 +183,47 @@ class Date extends Component {
     return options;
   };
 
-  renderFlexibleOptions = () => {
+  renderDuration = () => {
     const options = [];
     let i = 0;
     do {
+      options.push(<Picker.Item
+        key={`flexible-${i}`}
+        label={pad(i)}
+        value={pad(i)}
+      />);
       i += 1;
-      if (i === 0 || i % 5 === 0) {
-        options.push(<Picker.Item
-          key={`flexible-${i}`}
-          label={pad(i)}
-          value={pad(i)}
-        />);
-      }
     } while (i < 60);
 
     return options;
   };
 
+  renderUnit = () => {
+    const units = FLEXIBILITY_UNITS;
+
+    return units.map(option => (
+      <Picker.Item
+        key={option}
+        value={option}
+        label={option}
+      />
+    ));
+  };
+
+  renderType = () => {
+    const types = FLEXIBILITY_TYPES;
+
+    return types.map(option => (
+      <Picker.Item
+        key={option}
+        value={option}
+        label={option}
+      />
+    ));
+  }
+
   render() {
-    const { time } = this.state;
+    const { time, flexibilityInfo } = this.state;
     const [h, m] = time.split(':');
 
     return (
@@ -231,17 +285,27 @@ class Date extends Component {
         <View style={styles.inputContainer}>
           <View style={styles.inputWrapper}>
             <Picker
-              onValueChange={flexible => this.setState({ flexible })}
-              selectedValue={this.state.flexible}
+              onValueChange={duration => this.setDuration(duration)}
+              selectedValue={pad(flexibilityInfo.duration.toString())}
             >
-              {this.renderFlexibleOptions()}
+              {this.renderDuration()}
             </Picker>
           </View>
           <View style={styles.inputWrapper}>
-            <Text style={styles.flexibleInput}>Minutes</Text>
+            <Picker
+              onValueChange={unit => this.setUnit(unit)}
+              selectedValue={flexibilityInfo.unit}
+            >
+              {this.renderUnit()}
+            </Picker>
           </View>
           <View style={styles.inputWrapper}>
-            <Text style={styles.flexibleInput}>Later</Text>
+            <Picker
+              onValueChange={type => this.setType(type)}
+              selectedValue={flexibilityInfo.type}
+            >
+              {this.renderType()}
+            </Picker>
           </View>
         </View>
         <CustomButton
@@ -259,12 +323,20 @@ class Date extends Component {
 Date.propTypes = {
   onNext: PropTypes.func.isRequired,
   defaultTime: PropTypes.string,
-  defaultFlexible: PropTypes.string,
+  defaultFlexibilityInfo: PropTypes.shape({
+    duration: PropTypes.number,
+    type: PropTypes.string,
+    unit: PropTypes.string,
+  }),
 };
 
 Date.defaultProps = {
   defaultTime: '00:00',
-  defaultFlexible: '00',
+  defaultFlexibilityInfo: {
+    duration: 0,
+    type: 'minute',
+    unit: 'later',
+  },
 };
 
 export default Date;
