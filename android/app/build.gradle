@@ -160,6 +160,7 @@ android {
 dependencies {
     compile project(':react-native-fs')
     compile project(':react-native-camera')
+    compile project(':react-native-linear-gradient')
     compile project(':react-native-sms')
     compile project(':react-native-device-info')
 

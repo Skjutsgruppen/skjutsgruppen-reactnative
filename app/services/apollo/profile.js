@@ -19,10 +19,13 @@ query profile($id: Int){
     totalComments
     relationshipType 
     totalExperiences
+    totalGroups
+    totalFriends
     FriendRequest {
       id
       status
     }
+    createdAt
   }
 }`;
 
