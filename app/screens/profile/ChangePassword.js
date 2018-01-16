@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Wrapper, Loading, NavBar } from '@components/common';
-import { GreetText, ColoredText } from '@components/auth/texts';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
-import { compose } from 'react-apollo';
-import { connect } from 'react-redux';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -138,6 +135,14 @@ class ChangePassword extends Component {
     this.setState({ hideNewPassword: !hideNewPassword });
   }
 
+  secretIcon = (hide, text) => (
+    <Icon
+      name={hide ? 'ios-eye' : 'ios-eye-off'}
+      size={32}
+      style={text === '' ? styles.disabled : styles.showIcon}
+    />
+  );
+
   renderUpdateButton = () => {
     const { loading } = this.state;
     if (loading) {
@@ -160,103 +165,74 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const { auth: { user } } = this.props;
-    const { error, success, inputs } = this.state;
+    const {
+      error,
+      success,
+      inputs,
+      oldPassword,
+      hideOldPassword,
+      newPassword,
+      hideNewPassword,
+      confirmPassword,
+    } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <ScrollView>
-          <Image source={{ uri: user.avatar }} style={styles.profilePic} />
-          <GreetText color={Colors.text.green}>
-            Hi again {user.firstName}!
-          </GreetText>
-          <ColoredText color={Colors.text.blue}>Change your password here:</ColoredText>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
           <Text style={styles.label}>Current Password</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              value={this.state.oldPassword}
-              secureTextEntry={this.state.hideOldPassword}
+              value={oldPassword}
+              secureTextEntry={hideOldPassword}
               style={styles.input}
-              onChangeText={oldPassword => this.setState({ oldPassword })}
+              onChangeText={text => this.setState({ oldPassword: text })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
-              onSubmitEditing={() => {
-                this.focusNextField('two');
-              }}
+              onSubmitEditing={() => this.focusNextField('two')}
               ref={(input) => { inputs.one = input; }}
               returnKeyType="next"
             />
             <TouchableOpacity
               onPress={this.showCurrentPassword}
-              disabled={this.state.oldPassword.length < 1}
+              disabled={oldPassword.length < 1}
             >
               <View style={styles.iconWrapper}>
-                {
-                  this.state.hideOldPassword ? (
-                    <Icon
-                      name="ios-eye"
-                      size={32}
-                      style={this.state.oldPassword === '' ? styles.disabled : []}
-                    />
-                  ) : (
-                    <Icon
-                      name="ios-eye-off"
-                      size={32}
-                      style={styles.showIcon}
-                    />
-                  )
-                }
+                {this.secretIcon(hideOldPassword, oldPassword)}
               </View>
             </TouchableOpacity>
           </View>
           <Text style={styles.label}>New Password</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              value={this.state.newPassword}
-              secureTextEntry={this.state.hideNewPassword}
+              value={newPassword}
+              secureTextEntry={hideNewPassword}
               style={styles.input}
-              onChangeText={newPassword => this.setState({ newPassword })}
+              onChangeText={text => this.setState({ newPassword: text })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
-              onSubmitEditing={() => {
-                this.focusNextField('three');
-              }}
+              onSubmitEditing={() => this.focusNextField('three')}
               ref={(input) => { inputs.two = input; }}
               returnKeyType="next"
             />
             <TouchableOpacity
               onPress={this.showNewPassword}
-              disabled={this.state.newPassword.length < 1}
+              disabled={newPassword.length < 1}
             >
               <View style={styles.iconWrapper}>
-                {
-                  this.state.hideNewPassword ? (
-                    <Icon
-                      name="ios-eye"
-                      size={32}
-                      style={this.state.newPassword === '' ? styles.disabled : []}
-                    />
-                  ) : (
-                    <Icon
-                      name="ios-eye-off"
-                      size={32}
-                      style={styles.showIcon}
-                    />
-                  )
-                }
+                {this.secretIcon(hideNewPassword, newPassword)}
               </View>
             </TouchableOpacity>
           </View>
           <Text style={styles.label}>Confirm Password</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              value={this.state.confirmPassword}
+              value={confirmPassword}
               secureTextEntry
               style={styles.input}
-              onChangeText={confirmPassword => this.setState({ confirmPassword })}
+              onChangeText={text => this.setState({ confirmPassword: text })}
               placeholderTextColor="#ccc"
               underlineColorAndroid="transparent"
               onSubmitEditing={this.onSubmit}
@@ -267,7 +243,6 @@ class ChangePassword extends Component {
           {this.renderUpdateButton()}
         </ScrollView>
       </Wrapper>
-
     );
   }
 }
@@ -278,15 +253,6 @@ ChangePassword.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   changePassword: PropTypes.func.isRequired,
-  auth: PropTypes.shape({
-    user: PropTypes.shape({
-      id: PropTypes.number,
-      firstName: PropTypes.string,
-      photo: PropTypes.string,
-    }),
-  }).isRequired,
 };
 
-const mapStateToProps = state => ({ auth: state.auth });
-
-export default compose(withChangePassword, connect(mapStateToProps))(ChangePassword);
+export default withChangePassword(ChangePassword);

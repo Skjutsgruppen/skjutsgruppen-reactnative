@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile } from '@services/apollo/profile';
 import PropTypes from 'prop-types';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 
 const Profile = withProfile(ProfileDetail);
@@ -13,7 +13,7 @@ const UserProfile = ({ navigation }) => {
 
   return (
     <Wrapper bgColor={Colors.background.cream}>
-      <NavBar handleBack={() => navigation.goBack()} />
+      <FloatingNavbar handleBack={() => navigation.goBack()} />
       <View style={{ flex: 1, backgroundColor: Colors.background.fullWhite }}>
         <ScrollView>
           <Profile
