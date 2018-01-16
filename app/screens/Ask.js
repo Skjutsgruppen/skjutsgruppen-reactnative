@@ -16,6 +16,8 @@ import Toast from '@components/toast';
 import CustomButton from '@components/common/customButton';
 import { submitAsk } from '@services/apollo/trip';
 import Colors from '@theme/colors';
+import { getTimezone } from '@helpers/device';
+import Moment from 'moment-timezone';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -100,7 +102,11 @@ class Ask extends Component {
         time: '00:00',
         description: { text: '' },
         photo: { photo: null },
-        flexible: '00',
+        flexibilityInfo: {
+          duration: 0,
+          unit: 'minute',
+          type: 'later',
+        },
       },
       description: {},
       photo: {},
@@ -128,7 +134,7 @@ class Ask extends Component {
           description: params.defaultTrip.description,
           photo: params.defaultTrip.photo,
           time: params.defaultTrip.time,
-          flexible: params.defaultTrip.flexible,
+          flexibilityInfo: params.defaultTrip.flexibilityInfo,
         },
       });
     }
@@ -211,7 +217,7 @@ class Ask extends Component {
           description: this.state.description,
           photo: this.state.photo,
           time: this.state.date.time,
-          flexible: this.state.date.flexible,
+          flexibilityInfo: this.state.date.flexibilityInfo,
         },
       });
     } else {
@@ -221,15 +227,24 @@ class Ask extends Component {
 
   createTrip() {
     const { description, photo, trip, date, share } = this.state;
+    let utcTime = '';
+    const dates = [];
+
+    date.dates.forEach((tripDate) => {
+      const dateTime = this.convertToGMT(tripDate, date.time).split(' ');
+      utcTime = dateTime[1];
+      dates.push(dateTime[0]);
+    });
+
     const rideData = {
       description: description.text,
       photo: photo.photo,
       tripStart: trip.start,
       tripEnd: trip.end,
       returnTrip: trip.isReturning,
-      dates: date.dates,
-      time: date.time,
-      flexibility: date.flexible,
+      dates,
+      time: utcTime,
+      flexibilityInfo: date.flexibilityInfo,
       share,
     };
 
@@ -245,6 +260,8 @@ class Ask extends Component {
       console.warn(error);
     }
   }
+
+  convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
   header() {
     const { isReturnedTrip } = this.state;
@@ -360,7 +377,7 @@ class Ask extends Component {
           {(activeTab === 4) && <Date
             onNext={this.onDateNext}
             defaultTime={defaultTrip.time}
-            defaultFlexible={defaultTrip.flexible}
+            defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
           />}
           {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
           {(activeTab === 6) && this.renderFinish()}

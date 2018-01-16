@@ -192,7 +192,9 @@ class Trip extends Component {
 
   componentWillMount() {
     const { start, end, stops, isReturnTrip } = this.props;
-    this.setState({ start, end, stops, isReturnTrip });
+    const isReturning = (!isReturnTrip === true);
+
+    this.setState({ start, end, stops, isReturnTrip, isReturning });
   }
 
   onNext = () => {
