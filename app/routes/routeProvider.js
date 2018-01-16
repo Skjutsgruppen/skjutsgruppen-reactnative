@@ -83,7 +83,7 @@ const Tab = TabNavigator(TabRoutes,
         height: 60,
       },
       tabStyle: {
-        height: 40,
+        height: 60,
       },
       style: {
         backgroundColor: 'white',

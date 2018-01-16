@@ -16,6 +16,7 @@ import DetailHeader from '@components/common/detailHeader';
 import Comment from '@components/common/comment';
 import SharedCard from '@components/common/sharedCard';
 import AppNotification from '@components/common/appNotification';
+import About from '@components/common/about';
 
 export {
   Loading,
@@ -36,4 +37,5 @@ export {
   Comment,
   SharedCard,
   AppNotification,
+  About,
 };
