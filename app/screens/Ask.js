@@ -87,6 +87,7 @@ class Ask extends Component {
 
     this.state = {
       isReturnedTrip: false,
+      parentId: null,
       defaultTrip: {
         start: {
           name: '',
@@ -127,6 +128,7 @@ class Ask extends Component {
     if (params && typeof params.isReturnedTrip !== 'undefined') {
       this.setState({
         isReturnedTrip: true,
+        parentId: params.parentId,
         defaultTrip: {
           start: params.defaultTrip.start,
           end: params.defaultTrip.end,
@@ -210,6 +212,7 @@ class Ask extends Component {
     if (this.state.trip.isReturning) {
       navigate('Ask', {
         isReturnedTrip: true,
+        parentId: this.state.ask.id,
         defaultTrip: {
           end: this.state.trip.start,
           start: this.state.trip.end,
@@ -226,7 +229,7 @@ class Ask extends Component {
   }
 
   createTrip() {
-    const { description, photo, trip, date, share } = this.state;
+    const { description, photo, trip, date, share, parentId } = this.state;
     let utcTime = '';
     const dates = [];
 
@@ -237,6 +240,7 @@ class Ask extends Component {
     });
 
     const rideData = {
+      parentId,
       description: description.text,
       photo: photo.photo,
       tripStart: trip.start,

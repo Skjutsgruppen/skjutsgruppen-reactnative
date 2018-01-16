@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-
+import { FEED_FILTER_WANTED, FEED_FILTER_OFFERED } from '@config/constant';
 
 const styles = StyleSheet.create({
   returnRidesWrapper: {
@@ -44,14 +44,19 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     borderRadius: 8,
-    backgroundColor: Colors.background.pink,
     position: 'absolute',
     top: 0,
     right: 0,
   },
+  pinkBg: {
+    backgroundColor: Colors.background.pink,
+  },
+  blueBg: {
+    backgroundColor: Colors.background.blue,
+  },
 });
 
-const ReturnRides = ({ avatar, trips }) => (
+const ReturnRides = ({ avatar, trips, type }) => (
   <View style={styles.returnRidesWrapper}>
     <Text style={styles.title}>Return rides:</Text>
     {
@@ -59,7 +64,7 @@ const ReturnRides = ({ avatar, trips }) => (
         <View key={trip.id} style={styles.card}>
           <View style={styles.profilePicWrapper}>
             <Image source={{ uri: avatar }} style={styles.profilePic} />
-            <View style={styles.indicator} />
+            <View style={[styles.indicator, (type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg]} />
           </View>
           <View style={styles.content}>
             <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
@@ -77,6 +82,7 @@ ReturnRides.propTypes = {
     TripStart: PropTypes.shape,
     date: PropTypes.string,
   })).isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 ReturnRides.defaultProps = {
