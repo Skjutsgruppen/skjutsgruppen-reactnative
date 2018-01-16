@@ -75,7 +75,11 @@ class Check extends Component {
           if (status) {
             setUser(user).then(() => {
               this.setState({ loading: false, error: '' }, () => {
-                navigation.reset('EmailVerified');
+                if (user.phoneNumber && !user.phoneVerified) {
+                  navigation.reset('SendText');
+                } else {
+                  navigation.reset('EmailVerified');
+                }
               });
             });
           }
@@ -130,6 +134,7 @@ class Check extends Component {
 
   render() {
     const { error } = this.state;
+
     return (
       <Container>
         <Image source={Icons.EnvelopOpen} style={styles.envelopIcon} resizeMethod="resize" />

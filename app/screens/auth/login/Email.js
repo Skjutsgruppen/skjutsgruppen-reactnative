@@ -62,26 +62,29 @@ class Login extends Component {
     }
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     this.setState({ loading: true });
-    const { submit, setLogin, navigation } = this.props;
+    const { submit, setLogin, setRegister, navigation } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        submit(username, password).then(({ data }) => {
-          const { User, token } = data.login;
-          setLogin({ token, user: User }).then(() => {
-            if (!User.phoneVerified) {
-              navigation.reset('SendText');
-            } else {
-              navigation.reset('Tab');
-            }
+        const { data } = await submit(username, password);
+        const { User, token } = data.login;
+        if (!User.emailVerified) {
+          setRegister({ token, user: User }).then(() => {
+            navigation.reset('CheckMail');
           });
-        }).catch((err) => {
-          this.setState({ loading: false, error: getToast(err) });
-        });
+        } else if (!User.phoneVerified) {
+          setRegister({ token, user: User }).then(() => {
+            navigation.reset('SendText');
+          });
+        } else {
+          setLogin({ token, user: User }).then(() => {
+            navigation.reset('Tab');
+          });
+        }
       } catch (err) {
         this.setState({ loading: false, error: getToast(err) });
       }
@@ -99,7 +102,6 @@ class Login extends Component {
 
     inputs[id].focus();
   }
-
 
   checkValidation() {
     const errors = [];
@@ -193,6 +195,7 @@ Login.propTypes = {
   }).isRequired,
   submit: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
+  setRegister: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     reset: PropTypes.func,
     goBack: PropTypes.func,
@@ -204,6 +207,8 @@ const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
     .catch(error => console.warn(error)),
+  setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.register({ user, token }))),
 });
 
 export default compose(userLogin, connect(mapStateToProps, mapDispatchToProps))(Login);
