@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, View, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
 import { Loading } from '@components/common';
 import CheckIcon from '@icons/icon_check_white.png';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   shareCategoryTitle: {
@@ -34,6 +35,17 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     marginLeft: 'auto',
   },
+  shareToggleGray: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: Colors.border.gray,
+    backgroundColor: Colors.border.gray,
+    marginLeft: 'auto',
+  },
   shareToggleActive: {
     backgroundColor: '#a27ba8',
     borderColor: '#a27ba8',
@@ -51,14 +63,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const FriendList = ({ title, loading, friends, setOption, selected }) => {
+const FriendList = ({ title, loading, friends, setOption, selected, disabled }) => {
   const filteredFriends = friends.filter(row => row);
 
-  if (loading) return (<Loading />);
+  if (loading && filteredFriends.length < 1) return (<Loading />);
 
   if (filteredFriends.length < 1) return null;
 
   const hasOption = key => selected.indexOf(key) > -1;
+  const hasDisabled = key => disabled.indexOf(key) > -1;
 
   const renderPic = (avatar) => {
     let profileImage = null;
@@ -77,17 +90,17 @@ const FriendList = ({ title, loading, friends, setOption, selected }) => {
         filteredFriends.map(friend => (
           <View key={friend.id} style={styles.borderedRow}>
             <TouchableWithoutFeedback
-              onPress={() => setOption('friends', friend.id)}
+              onPress={() => !hasDisabled(friend.id) && setOption('friends', friend.id)}
             >
               <View style={styles.shareItem}>
                 {renderPic(friend.avatar)}
                 <Text>{friend.firstName || friend.email}</Text>
                 <View
-                  style={[styles.shareToggle, hasOption(friend.id)
-                    ?
-                    styles.shareToggleActive
-                    :
-                    {}]}
+                  style={[
+                    styles.shareToggle,
+                    hasOption(friend.id) && styles.shareToggleActive,
+                    hasDisabled(friend.id) && styles.shareToggleGray,
+                  ]}
                 >
                   {
                     hasOption(friend.id) &&
@@ -113,6 +126,11 @@ FriendList.propTypes = {
   })).isRequired,
   setOption: PropTypes.func.isRequired,
   selected: PropTypes.arrayOf(PropTypes.number).isRequired,
+  disabled: PropTypes.arrayOf(PropTypes.number),
+};
+
+FriendList.defaultProps = {
+  disabled: [],
 };
 
 export default FriendList;

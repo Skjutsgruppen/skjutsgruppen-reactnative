@@ -111,9 +111,8 @@ subscription notification($userId: Int!) {
         county
         municipality
         locality
-        GroupMembers{
+        GroupMembers {
           id
-          avatar
         }
         GroupMembershipRequests{
           id
@@ -179,6 +178,9 @@ subscription notification($userId: Int!) {
           id
           firstName
         }
+      }
+      ... on Experience {
+        id
       }
     }
     read
@@ -297,9 +299,8 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           county
           municipality
           locality
-          GroupMembers{
+          GroupMembers {
             id
-            avatar
           }
           GroupMembershipRequests{
             id
@@ -365,6 +366,9 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             id
             firstName
           }
+        }
+        ... on Experience {
+          id
         }
       }
       read

@@ -31,6 +31,8 @@ import EditProfile from '@screens/profile/EditProfile';
 import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
+import UserExperiences from '@screens/profile/UserExperiences';
+
 import Settings from '@screens/Settings';
 
 import Map from '@screens/Map';
@@ -44,6 +46,9 @@ import Feed from '@screens/tab/feed';
 import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
 import Support from '@screens/tab/support';
+
+import Experience from '@screens/Experience';
+import ExperienceDetail from '@screens/ExperienceDetail';
 
 const TabRoutes = {
   Feed: {
@@ -106,6 +111,7 @@ export const Routes = {
 
   Map: { screen: Map },
   Route: { screen: Route },
+  Experience: { screen: Experience },
 
   Tab: { screen: Tab },
   Offer: { screen: Offer },
@@ -127,11 +133,13 @@ export const Routes = {
   UserGroups: { screen: UserGroups },
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
-
+  UserExperiences: { screen: UserExperiences },
   SingleNotification: { screen: SingleNotification },
   SearchNotification: { screen: SearchNotification },
 
   Settings: { screen: Settings },
+
+  ExperienceDetail: { screen: ExperienceDetail },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

@@ -7,6 +7,8 @@ import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
 import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/auth';
+import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
+
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -17,6 +19,8 @@ import {
   NOTIFICATION_TYPE_INVIVATION,
   NOTIFICATION_TYPE_FRIEND_REQUEST,
   NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
+  NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
+  NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED,
 } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -100,10 +104,14 @@ const styles = StyleSheet.create({
   },
 });
 
+const ACTION_NONE = 0;
+const ACTION_ACCEPTED = 1;
+const ACTION_REJECTED = 2;
+
 class Item extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { loading: false, action: 0 };
+    this.state = { loading: false, action: ACTION_NONE };
   }
 
   acceptGroupRequest = (id) => {
@@ -111,7 +119,7 @@ class Item extends PureComponent {
     this.setState({ loading: true });
     acceptGroupRequest(id)
       .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 1 }))
+      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -120,7 +128,7 @@ class Item extends PureComponent {
     this.setState({ loading: true });
     rejectGroupInvitation(id)
       .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 2 }))
+      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -129,7 +137,7 @@ class Item extends PureComponent {
     this.setState({ loading: true });
     acceptFriendRequest(id)
       .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 1 }))
+      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -138,7 +146,7 @@ class Item extends PureComponent {
     this.setState({ loading: true });
     rejectFriendRequest(id)
       .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: 2 }))
+      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -272,6 +280,61 @@ class Item extends PureComponent {
     return null;
   }
 
+  experienceAccepted = ({ Notifiable, User, date, id }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'accepted to tag on an experience',
+        date,
+        onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
+      });
+    }
+
+    return null;
+  }
+
+  acceptTagRequest = (id) => {
+    const { acceptExperience, notification } = this.props;
+    this.setState({ loading: true });
+    acceptExperience(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  rejectTagRequest = (id) => {
+    const { rejectExperience, notification } = this.props;
+    this.setState({ loading: true });
+    rejectExperience(id)
+      .then(notification.refetch)
+      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
+      .catch(() => this.setState({ loading: false }));
+  }
+
+  experienceTagged = ({ User, Notifiable }) => (
+    <View style={styles.list}>
+      <View style={styles.flexRow}>
+        <View style={styles.profilePicWrapper}>
+          {this.renderPic(User.avatar)}
+        </View>
+        <Text style={styles.textWrap}>
+          <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+          <Text>
+            tagged you in an experience.
+          </Text>
+        </Text>
+      </View>
+      {this.state.loading ?
+        <Loading /> :
+        this.renderAction(
+          Notifiable.id,
+          this.acceptTagRequest,
+          this.rejectTagRequest,
+        )}
+    </View>
+  );
+
   comment = ({ notifiable, Notifiable, User, id, createdAt }) => {
     let type = null;
     let params = null;
@@ -337,7 +400,7 @@ class Item extends PureComponent {
   renderAction = (id, accept, reject) => {
     const { action } = this.state;
 
-    if (action === 0) {
+    if (action === ACTION_NONE) {
       return (
         <View style={styles.actions}>
           <TouchableOpacity
@@ -363,7 +426,7 @@ class Item extends PureComponent {
       );
     }
 
-    if (action === 1) {
+    if (action === ACTION_ACCEPTED) {
       return (
         <View style={styles.requestResult}>
           <Icon
@@ -379,7 +442,7 @@ class Item extends PureComponent {
       );
     }
 
-    if (action === 2) {
+    if (action === ACTION_REJECTED) {
       return (
         <View style={styles.requestResult}>
           <Icon
@@ -435,6 +498,14 @@ class Item extends PureComponent {
       message = this.friendRequestAccepted(notification);
     }
 
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_TAGGED) {
+      message = this.experienceTagged(notification);
+    }
+
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED) {
+      message = this.experienceAccepted(notification);
+    }
+
     return (
       <View key={notification.id}>
         {message}
@@ -457,6 +528,8 @@ Item.propTypes = {
   }).isRequired,
   rejectFriendRequest: PropTypes.func.isRequired,
   acceptFriendRequest: PropTypes.func.isRequired,
+  acceptExperience: PropTypes.func.isRequired,
+  rejectExperience: PropTypes.func.isRequired,
 };
 
 export default compose(
@@ -465,4 +538,6 @@ export default compose(
   withAcceptGroupRequest,
   withAcceptFriendRequest,
   withRejectFriendRequest,
+  withAcceptExperience,
+  withRejectExperience,
 )(Item);

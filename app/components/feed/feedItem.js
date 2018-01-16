@@ -1,10 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_NEWS } from '@config/constant';
+import {
+  FEEDABLE_TRIP,
+  FEEDABLE_GROUP,
+  FEED_TYPE_OFFER,
+  FEED_TYPE_WANTED,
+  FEEDABLE_NEWS,
+  FEEDABLE_EXPERIENCE,
+} from '@config/constant';
 import Group from '@components/feed/card/group';
 import Offer from '@components/feed/card/offer';
 import Ask from '@components/feed/card/ask';
 import News from '@components/feed/card/news';
+import Experience from '@components/feed/card/experience';
 
 const feedItem = ({ feed, onPress, onSharePress }) => {
   if (feed.feedable === FEEDABLE_TRIP) {
@@ -21,6 +29,14 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
 
   if (feed.feedable === FEEDABLE_NEWS) {
     return (<News onPress={onPress} onSharePress={onSharePress} news={feed.News} />);
+  }
+
+  if (feed.feedable === FEEDABLE_EXPERIENCE) {
+    return (<Experience
+      onPress={onPress}
+      onSharePress={onSharePress}
+      experience={feed.Experience}
+    />);
   }
 
   return null;
