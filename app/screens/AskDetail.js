@@ -540,10 +540,18 @@ class AskDetail extends Component {
     let selectedDate = '';
 
     ask.Recurring.forEach((trip) => {
-      selectedDate = Moment(trip.date).format('YYYY-MM-DD');
-      markedDates[selectedDate] = [
-        { startingDay: true, color: '#1ca9e5', textColor: '#fff' },
-        { endingDay: true, color: '#1ca9e5', textColor: '#fff' },
+      selectedDate = Moment(trip.date);
+      markedDates[selectedDate.format('YYYY-MM-DD')] = [
+        {
+          startingDay: true,
+          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.blue,
+          textColor: '#fff',
+        },
+        {
+          endingDay: true,
+          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.blue,
+          textColor: '#fff',
+        },
       ];
     });
 
@@ -620,7 +628,7 @@ class AskDetail extends Component {
               >
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
                   <View style={styles.returnModalContent}>
-                    <ReturnRides avatar={ask.User.avatar} trips={ask.ReturnTrip} />
+                    <ReturnRides avatar={ask.User.avatar} trips={ask.ReturnTrip} type={ask.type} />
                     <View style={styles.closeWrapper}>
                       <TouchableOpacity
                         style={styles.closeModal}
