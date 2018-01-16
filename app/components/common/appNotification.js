@@ -71,7 +71,7 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
 
 AppNotification.propTypes = {
   type: PropTypes.string,
-  image: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+  image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string,
   message: PropTypes.string.isRequired,
   style: View.propTypes.style,

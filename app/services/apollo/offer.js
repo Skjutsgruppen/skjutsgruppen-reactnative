@@ -1,8 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { FEED_TYPE_WANTED } from '@config/constant';
+import { FEED_TYPE_OFFER } from '@config/constant';
 
-const CREATE_ASK_QUERY = gql`
+const CREATE_OFFER_QUERY = gql`
 mutation createTrip(
   $parentId:Int,
   $description:String, 
@@ -54,10 +54,11 @@ mutation createTrip(
       countryCode
       coordinates
     }
+    returnTrip 
     date 
     time 
     seats 
-    flexibilityInfo{
+    flexibilityInfo {
       duration
       unit
       type
@@ -68,32 +69,34 @@ mutation createTrip(
 }
 `;
 
-export const submitAsk = graphql(CREATE_ASK_QUERY, {
+export const submitOffer = graphql(CREATE_OFFER_QUERY, {
   props: ({ mutate }) => ({
     submit: ({
       parentId,
       description,
-      photo,
       tripStart,
       tripEnd,
+      photo,
+      stops,
       returnTrip,
       dates,
       time,
+      seats,
       flexibilityInfo,
       share,
     }) => mutate({
       variables: {
         parentId,
         description,
-        type: FEED_TYPE_WANTED,
+        type: FEED_TYPE_OFFER,
         tripStart,
         tripEnd,
         photo,
-        stops: null,
+        stops,
         returnTrip,
         dates,
         time,
-        seats: 0,
+        seats,
         flexibilityInfo,
         share,
       },
