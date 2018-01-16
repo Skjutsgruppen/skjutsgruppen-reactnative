@@ -178,12 +178,12 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
 `;
 
 export const withExploreGroup = graphql(EXPLORE_GROUPS_QUERY, {
-  options: ({ from, filter }) => ({
+  options: ({ from, filter, limit = PER_FETCH_LIMIT, offset = 0 }) => ({
     variables: {
       from,
       filter,
-      offset: 0,
-      limit: PER_FETCH_LIMIT,
+      offset,
+      limit,
     },
   }),
   props: ({ data: { loading, exploreGroups, refetch, fetchMore, networkStatus, error } }) => {
