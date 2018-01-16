@@ -37,4 +37,6 @@ export const global = {
   do_not_want_to_make_return_ride: 'I do not want to make a return ride',
   see_your: 'See your',
   update: 'Update',
+  oops_something_went_wrong: 'Oops! Something went wrong. se',
+  tap_to_retry: 'Tap to Retry se',
 };

@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginRight: 12,
   },
+  icon: {
+    marginRight: 12,
+  },
   text: {
     color: Colors.text.white,
   },
@@ -31,18 +34,26 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppNotification = ({ image, name, message, style, handleClose }) => {
+const AppNotification = ({ image, name, message, style, handleClose, type }) => {
   if (message === '') {
     return null;
+  }
+
+  let imgIcon = null;
+
+  if (type === 'image') {
+    imgIcon = { uri: image };
+  } else {
+    imgIcon = image;
   }
 
   return (
     <View style={[styles.wrapper, style]}>
       <View style={styles.content}>
-        <Image source={{ uri: image }} style={styles.image} />
+        <Image source={imgIcon} style={styles.image} />
         <View>
           {
-            name && <Text style={[styles.text, styles.bold]}>{name}</Text>
+            name !== '' && <Text style={[styles.text, styles.bold]}>{name}</Text>
           }
           <Text style={styles.text}>{message}</Text>
         </View>
@@ -59,7 +70,8 @@ const AppNotification = ({ image, name, message, style, handleClose }) => {
 };
 
 AppNotification.propTypes = {
-  image: PropTypes.string,
+  type: PropTypes.string,
+  image: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
   name: PropTypes.string,
   message: PropTypes.string.isRequired,
   style: View.propTypes.style,
@@ -67,6 +79,7 @@ AppNotification.propTypes = {
 };
 
 AppNotification.defaultProps = {
+  type: 'image',
   image: '',
   name: '',
   style: {},

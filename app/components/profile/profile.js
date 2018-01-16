@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import Relation from '@components/relation';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { trans } from '@lang/i18n';
 import {
   RELATIONSHIP_TYPE_FRIEND,
   RELATIONSHIP_TYPE_INCOMING,
@@ -162,6 +163,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     borderRadius: 8,
   },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
+  },
 });
 
 class Profile extends Component {
@@ -174,6 +181,11 @@ class Profile extends Component {
     const { navigation } = this.props;
 
     navigation.navigate('UserProfile', { profileId: id });
+  }
+
+  onRefreshClick = () => {
+    const { data: { refetch } } = this.props;
+    refetch();
   }
 
   getPrefix = () => {
@@ -326,7 +338,19 @@ class Profile extends Component {
   )
 
   render() {
-    const { data: { networkStatus, profile }, navigation } = this.props;
+    const { data: { networkStatus, profile, error }, navigation } = this.props;
+
+    if (error) {
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <TouchableOpacity onPress={this.onRefreshClick}>
+            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     if (networkStatus === 1) {
       return (
         <View style={styles.loadingWrapper}>
