@@ -16,6 +16,8 @@ export const FEED_FILTER_EXPERIENCE = 'experience';
 
 export const FEED_TYPE_OFFER = 'offered';
 export const FEED_TYPE_WANTED = 'wanted';
+export const FEED_TYPE_PUBLIC_TRANSPORT = 'public_transport';
+export const FEED_TYPE_GROUP = 'group';
 
 export const FEEDABLE_TRIP = 'Trip';
 export const FEEDABLE_GROUP = 'Group';
@@ -53,11 +55,6 @@ export const RELATIONSHIP_TYPE_FRIEND = 'friend';
 export const RELATIONSHIP_TYPE_INCOMING = 'incoming';
 export const RELATIONSHIP_TYPE_OUTGOING = 'outgoing';
 
-export const SEARCH_FILTER_ASK = 'wanted';
-export const SEARCH_FILTER_OFFER = 'offered';
-export const SEARCH_FILTER_GROUP = 'group';
-export const SEARCH_FILTER_PUBLIC = 'public_transport';
-
 export const GROUP_FILTER_NEARBY = 'nearby';
 export const GROUP_FILTER_NAME = 'name';
 export const GROUP_FILTER_POPULAR = 'popular';
@@ -68,3 +65,5 @@ export const GROUP_NAME_LIMIT = 22;
 export const FLEXIBILITY_UNITS = ['minutes', 'hours', 'days'];
 export const FLEXIBILITY_TYPES = ['earlier', 'later'];
 
+export const PUBLIC_TRANSPORT_JOURNEY = 'JNY';
+export const PUBLIC_TRANSPORT_WALK = 'WALK';
