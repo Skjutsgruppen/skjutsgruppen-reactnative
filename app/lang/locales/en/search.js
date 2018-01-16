@@ -12,7 +12,6 @@ export const search = {
   explore_groups: 'Explore groups',
   newest: 'NEWEST',
   total_groups: 'TOTAL GROUPS',
-  daily_commute_to_town: 'Daily commute to town',
   cards: 'Cards',
   list: 'List',
 };
