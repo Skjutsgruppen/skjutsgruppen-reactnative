@@ -54,11 +54,11 @@ class DetailHeader extends PureComponent {
         showsButtons={false}
         style={styles.wrapper}
         autoplay
-        loop
+        loop={false}
         paginationStyle={styles.paginationStyle}
         dotColor="#aaa"
         activeDotColor="#fff"
-        autoplayTimeout={3}
+        autoplayTimeout={5}
       >
         {this.renderSlides()}
       </Swiper>

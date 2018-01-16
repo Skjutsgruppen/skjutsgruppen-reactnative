@@ -296,7 +296,7 @@ class SearchResult extends Component {
   }
 
   render() {
-    const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
+    const { fromObj: from, toObj: to, direction, filters, navigation } = this.props;
 
     const prettyDate = this.formatDates();
     return (

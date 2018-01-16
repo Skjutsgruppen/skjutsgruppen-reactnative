@@ -199,7 +199,7 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
 const GROUPS_QUERY = gql`
 query groups($id:Int){ 
   groups(userId:$id) { 
-    rows {
+    rows{
       id
       outreach
       name
@@ -208,46 +208,45 @@ query groups($id:Int){
       photo
       mapPhoto
       User {
-        id
-        email
-        firstName
-        lastName
-        avatar
-        relation {
-          id
-          email
-          firstName
-          lastName
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+        relation { 
+          id 
+          email 
+          firstName 
           avatar
         }
-      }
+      } 
       TripStart {
-        name
-        coordinates
-      }
+        name 
+        coordinates 
+      } 
       TripEnd {
-        name
+        name 
         coordinates
-      }
+      } 
       Stops {
-        name
+        name 
         coordinates
-      }
-      country
-      county
-      municipality
-      locality
-      GroupMembers{
-        id
-        avatar
-      }
-      GroupMembershipRequests{
-        id
-        status
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      GroupMembers { 
+        id 
+        avatar 
+      } 
+      GroupMembershipRequests {
+        id 
+        status 
         Member {
-          id
-          email
-          firstName
+          id 
+          email 
+          firstName 
         }
       }
     }
@@ -351,6 +350,109 @@ export const withTrips = graphql(TRIPS_QUERY, {
       count = trips.count;
     }
     return { trips: { loading, rows, count, error, refetch } };
+  },
+});
+
+const MY_EXPERIENCES_QUERY = gql`
+query myExperiences($id:Int, $limit: Int, $offset: Int,){ 
+  myExperiences(userId:$id, limit: $limit, offset: $offset) { 
+    rows{
+      id
+      createdAt
+      description
+      photo
+      Participants {
+        User {
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
+        } 
+        status
+      }
+      Trip {
+        id 
+        type 
+        description 
+        seats 
+        parentId
+        User {
+          id 
+          email 
+          firstName 
+          lastName 
+          avatar 
+          relation {
+            id 
+            email 
+            firstName
+            lastName
+            avatar
+          }
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
+        mapPhoto
+        totalComments
+        isParticipant
+        ReturnTrip {
+          id
+          date
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+        }
+        Recurring {
+          id
+          date
+        }
+      }
+      User {
+        id 
+        firstName 
+        lastName 
+        email 
+        avatar 
+      } 
+      totalComments
+    }
+    count
+  }
+}
+`;
+
+export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
+  options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
+    variables: { id, offset, limit },
+  }),
+  props: ({ data: { loading, myExperiences, error, networkStatus, refetch, fetchMore } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (myExperiences) {
+      rows = myExperiences.rows;
+      count = myExperiences.count;
+    }
+    return { myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
   },
 });
 

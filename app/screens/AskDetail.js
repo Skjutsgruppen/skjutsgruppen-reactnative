@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity,
 import { submitComment, withTripComment } from '@services/apollo/comment';
 import { Loading, AppNotification, FloatingNavbar, DetailHeader } from '@components/common';
 import Comment from '@components/comment/list';
+import MakeExperience from '@components/experience/make';
 import Relation from '@components/relation';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
@@ -15,8 +16,11 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
+import { withTripExperiences } from '@services/apollo/experience';
+import List from '@components/experience/list';
 
 const AskComment = withTripComment(Comment);
+const TripExperiences = withTripExperiences(List);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -86,6 +90,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   relationTitle: {
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
     flexDirection: 'row',
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     position: 'absolute',
     top: 2,
-    right: 0,
+    right: 24,
   },
   btnSection: {
     justifyContent: 'space-around',
@@ -135,13 +140,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   btnIcon: {
-    height: 32,
-    width: 32,
-    resizeMode: 'contain',
     marginRight: 16,
   },
   btnLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.text.gray,
   },
@@ -220,6 +222,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: Colors.text.blue,
+  },
+  dividerWrapper: {
+    marginHorizontal: 24,
   },
   horizontalDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -443,6 +448,19 @@ class AskDetail extends Component {
     );
   }
 
+  renderExperiencButton = () => {
+    const { navigation } = this.props;
+    const { ask } = navigation.state.params;
+
+    if (!ask.isParticipant) return null;
+
+    return (
+      <MakeExperience
+        handlePress={() => navigation.navigate('Experience', { trip: ask })}
+      />
+    );
+  }
+
   renderShareModal() {
     return (
       <Modal
@@ -462,7 +480,6 @@ class AskDetail extends Component {
     );
   }
 
-
   renderFooter = () => (
     <View style={styles.footer}>
       <View style={styles.footerCommentSection}>
@@ -472,7 +489,7 @@ class AskDetail extends Component {
             style={styles.moreIconWrapper}
             onPress={() => this.setModalVisible(true)}
           >
-            <Image source={require('@icons/icon_more_gray.png')} style={styles.moreIcon} />
+            <Image source={require('@icons/ic_options.png')} style={styles.moreIcon} />
           </TouchableOpacity>
         }
         <TextInput
@@ -575,7 +592,7 @@ class AskDetail extends Component {
                     style={styles.pillBtn}
                     onPress={() => this.setReturnRidesModalVisibility(true)}
                   >
-                    <Image source={require('@icons/icon_return.png')} style={styles.btnIcon} />
+                    <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
                     <Text style={styles.btnLabel}>Return</Text>
                   </TouchableOpacity>
                 }
@@ -585,7 +602,7 @@ class AskDetail extends Component {
                     style={styles.pillBtn}
                     onPress={() => this.setRecurringRidesModalVisibility(true)}
                   >
-                    <Image source={require('@icons/icon_calender.png')} style={styles.btnIcon} />
+                    <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
                     <Text style={styles.btnLabel}>Recurring</Text>
                   </TouchableOpacity>
                 }
@@ -649,7 +666,7 @@ class AskDetail extends Component {
           </View>
           {
             ask.User.relation.length > 0 &&
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <View style={styles.relationTitle}>
                 <Text>This is how you know {ask.User.firstName}</Text>
                 <Image source={require('@icons/icon_chevron_down.png')} style={styles.downArrow} />
@@ -663,6 +680,14 @@ class AskDetail extends Component {
           }
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
+          <View style={styles.dividerWrapper}>
+            <View style={styles.horizontalDivider} />
+          </View>
+          <TripExperiences title="Experiences!" tripId={ask.id} />
+          {this.renderExperiencButton()}
+          <View style={styles.dividerWrapper}>
+            <View style={styles.horizontalDivider} />
+          </View>
           <AskComment navigation={navigation} onCommentPress={this.onProfilePress} id={ask.id} />
         </ScrollView>
         {this.renderFooter()}

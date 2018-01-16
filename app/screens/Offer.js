@@ -11,7 +11,7 @@ import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
-import { submitOffer } from '@services/apollo/offer';
+import { submitOffer } from '@services/apollo/trip';
 import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';

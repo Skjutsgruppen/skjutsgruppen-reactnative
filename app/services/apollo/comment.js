@@ -147,7 +147,7 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           };
         },
       }),
-    }
+    };
   },
 });
 
@@ -245,12 +245,12 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
         newsId = null,
         text,
       }) => mutate({
-          variables: {
-            tripId,
-            groupId,
-            newsId,
-            text,
-          },
-        }),
+        variables: {
+          tripId,
+          groupId,
+          newsId,
+          text,
+        },
+      }),
     }),
 });
