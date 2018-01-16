@@ -453,6 +453,7 @@ subscription groupFeed($groupId: Int!){
         municipality 
         locality 
         membershipStatus
+        totalParticipants
       }
     }
     ... on TripFeed {

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Trip from '@components/feed/card/trip';
 import Group from '@components/feed/card/group';
-import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
 import ListItem from '@components/search/listItem';
 import PublicTransportItem from '@components/search/publicTransportItem';
 
@@ -15,7 +15,7 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
     const image = { uri: searchResult.User.avatar };
     return (
       <ListItem
-        onPress={() => onPress('trip', searchResult)}
+        onPress={() => onPress(FEEDABLE_TRIP, searchResult)}
         type={searchResult.type}
         image={image}
         title={`${searchResult.TripStart.name} - ${searchResult.TripEnd.name}`}
@@ -25,7 +25,7 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
   }
 
   if (searchResult.type === FEED_TYPE_WANTED || searchResult.type === FEED_TYPE_OFFER) {
-    return (<Trip onPress={onPress} onSharePress={onSharePress} ask={searchResult} />);
+    return (<Trip onPress={onPress} onSharePress={onSharePress} trip={searchResult} />);
   } else if (searchResult.url) {
     return null;
   }

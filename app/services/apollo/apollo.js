@@ -5,6 +5,10 @@ import Auth from '@services/auth';
 
 const wsClient = new SubscriptionClient(WS_API_URL, {
   reconnect: true,
+  lazy: true,
+  connectionParams: {
+    authToken: Auth.getToken(),
+  },
 });
 
 const networkInterface = createNetworkInterface({ uri: API_URL });

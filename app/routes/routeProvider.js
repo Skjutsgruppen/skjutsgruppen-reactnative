@@ -32,13 +32,10 @@ import MobileVerified from '@screens/auth/sms/MobileVerified';
 import SearchResult from '@screens/Search';
 import UserProfile from '@screens/profile/UserProfile';
 import ChangePassword from '@screens/profile/ChangePassword';
-import EditProfile from '@screens/profile/EditProfile';
 import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
 import UserExperiences from '@screens/profile/UserExperiences';
-
-import Settings from '@screens/Settings';
 
 import Map from '@screens/Map';
 import SingleNotification from '@screens/notification/List';
@@ -51,9 +48,12 @@ import Feed from '@screens/tab/feed';
 import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
 import Support from '@screens/tab/support';
+import Garden from '@screens/tab/garden';
 
 import Experience from '@screens/Experience';
 import ExperienceDetail from '@screens/ExperienceDetail';
+
+import EditProfile from '@screens/profile/EditProfile';
 
 const TabRoutes = {
   Feed: {
@@ -68,8 +68,8 @@ const TabRoutes = {
   Message: {
     screen: Message,
   },
-  Support: {
-    screen: Support,
+  Garden: {
+    screen: Garden,
   },
 };
 
@@ -147,10 +147,8 @@ export const Routes = {
   UserExperiences: { screen: UserExperiences },
   SingleNotification: { screen: SingleNotification },
   SearchNotification: { screen: SearchNotification },
-
-  Settings: { screen: Settings },
-
   ExperienceDetail: { screen: ExperienceDetail },
+  Support: { screen: Support },
 };
 
 export const AppNavigator = StackNavigator(Routes, {
