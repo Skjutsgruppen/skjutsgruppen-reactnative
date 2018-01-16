@@ -11,6 +11,10 @@ import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import SearchIcon from '@icons/ic_search.png';
 import SearchIconActive from '@icons/ic_search_active.png';
 import { trans } from '@lang/i18n';
+import ExploreRecentGroup from '@components/group/exploreRecentCard';
+import { withExploreGroup } from '@services/apollo/group';
+
+const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
 
 const styles = StyleSheet.create({
   circle: {
@@ -128,73 +132,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginHorizontal: 24,
     marginVertical: 32,
-  },
-  earlierSearchesWrapper: {
-    backgroundColor: Colors.background.cream,
-    padding: 24,
-  },
-  earlierSearchtitle: {
-    fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  earlierSearch: {
-    paddingVertical: 12,
-  },
-  exploreGroup: {
-    alignItems: 'center',
-    marginVertical: 50,
-    marginHorizontal: 16,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    elevation: 4,
-  },
-  exploreGroupTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 24,
-    marginTop: 40,
-    textAlign: 'center',
-  },
-  exploreIcon: {
-    height: 150,
-    width: 150,
-    borderRadius: 75,
-    backgroundColor: Colors.background.pink,
-    alignSelf: 'center',
-    margin: 30,
-  },
-  exploreFooter: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 36,
-    backgroundColor: Colors.background.lightBlueWhite,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-  },
-  newestGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 24,
-  },
-  exploreFooterLabel: {
-    color: Colors.text.blue,
-    marginBottom: 16,
-  },
-  totalGroupCount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  avatar: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  groupName: {
-    fontSize: 16,
   },
   closeModal: {
     position: 'absolute',
@@ -317,6 +254,7 @@ class Search extends Component {
   render() {
     const prettyDate = this.formatDates();
     const { filters, direction, dates, markedDates } = this.state;
+    const { navigation } = this.props;
 
     return (
       <View style={styles.container}>
@@ -446,27 +384,7 @@ class Search extends Component {
           >
             {trans('search.search')}
           </RoundedButton>
-          <View style={styles.exploreGroup}>
-            <Text style={styles.exploreGroupTitle}>{trans('search.explore_groups')}</Text>
-            <TouchableOpacity>
-              <View style={styles.exploreIcon} />
-            </TouchableOpacity>
-            <View style={styles.exploreFooter}>
-              <View style={{ width: '60%' }}>
-                <Text style={styles.exploreFooterLabel}>{trans('search.newest')}</Text>
-                <View style={styles.newestGroup}>
-                  <Image source={require('@assets/profilePic.jpg')} style={styles.avatar} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.groupName}>{trans('search.daily_commute_to_town')}</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={{ width: '40%' }}>
-                <Text style={styles.exploreFooterLabel}>{trans('search.total_groups')}</Text>
-                <Text style={styles.totalGroupCount}>375</Text>
-              </View>
-            </View>
-          </View>
+          <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" navigation={navigation} />
         </ScrollView>
       </View>
     );
