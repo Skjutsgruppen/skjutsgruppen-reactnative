@@ -277,56 +277,56 @@ export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
 export const FIND_GROUP_QUERY = gql`
 query findGroup($id: Int!){
   findGroup(id: $id){
-    id
-    outreach
-    name
-    description
-    type
-    photo
-    mapPhoto
-    User {
       id
-      email
-      firstName
-      lastName
-      avatar
-      relation {
-        id
-        email
-        firstName
-        avatar
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+        relation { 
+          id 
+          email 
+          firstName 
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      GroupMembers { 
+        id 
+        avatar 
+      } 
+      GroupMembershipRequests {
+        id 
+        status 
+        Member {
+          id 
+          email 
+          firstName 
+        }
       }
-    }
-    TripStart {
-      name
-      coordinates
-    }
-    TripEnd {
-      name
-      coordinates
-    }
-    Stops {
-      name
-      coordinates
-    }
-    country
-    county
-    municipality
-    locality
-    GroupMembers{
-      id
-      avatar
-    }
-    GroupMembershipRequests{
-      id
-      status
-      Member {
-        id
-        email
-        firstName
-      }
-    }
-    }
+  }
 }
 `;
 

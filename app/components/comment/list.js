@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+  block: {
+    paddingVertical: 24,
+  },
 });
 
 class List extends Component {
@@ -89,16 +92,12 @@ class List extends Component {
     );
   }
 
+  renderFooter = () => (<View style={{ paddingBottom: 50 }} />)
+
   renderHeader = (loading) => {
     if (loading) {
       return (
-        <View
-          style={{
-            paddingVertical: 20,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        >
+        <View style={styles.block} >
           <Loading />
         </View>
       );
@@ -123,12 +122,12 @@ class List extends Component {
     const { navigation } = this.props;
 
     if (loading) {
-      return <Loading />;
+      return <View style={styles.block}><Loading /></View>;
     }
 
     if (error) {
       return (
-        <Text style={styles.infoText}>{error}</Text>
+        <View style={styles.block}><Text style={styles.infoText}>{error}</Text></View>
       );
     }
 
@@ -136,12 +135,12 @@ class List extends Component {
 
     if (rows && rows.length < 1) {
       return (
-        <Text style={styles.infoText}>No Comment</Text>
+        <View style={styles.block}><Text style={styles.infoText}>No Comment</Text></View>
       );
     }
 
     return (
-      <View style={{ paddingBottom: 50 }}>
+      <View style={{ marginTop: 24 }}>
         <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>
         <FlatList
           data={rows}
@@ -159,6 +158,7 @@ class List extends Component {
           keyExtractor={(item, index) => index}
           onEndReachedThreshold={0}
           ListHeaderComponent={() => this.renderHeader(this.state.loading)}
+          ListFooterComponent={this.renderFooter}
         />
         {this.state.showFofModal && this.renderModal()}
       </View>
