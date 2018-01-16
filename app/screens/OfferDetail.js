@@ -16,8 +16,12 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
+import { withTripExperiences } from '@services/apollo/experience';
+import List from '@components/experience/list';
+import About from '@components/common/about';
 
 const OfferComment = withTripComment(Comment);
+const TripExperiences = withTripExperiences(List);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -441,7 +445,7 @@ class OfferDetail extends Component {
     );
   }
 
-  renderExperiencButton = () => {
+  renderExperienceButton = () => {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
     const tripStarted = Moment(offer.date).isBefore();
@@ -672,7 +676,8 @@ class OfferDetail extends Component {
           </View>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          {this.renderExperiencButton()}
+          <TripExperiences title="Experiences!" tripId={offer.id} />
+          {this.renderExperienceButton()}
           <View style={styles.dividerWrapper}>
             <View style={styles.horizontalDivider} />
           </View>
@@ -681,6 +686,7 @@ class OfferDetail extends Component {
             onCommentPress={this.onProfilePress}
             id={offer.id}
           />
+          <About />
         </ScrollView>
         {this.renderFooter()}
         {this.renderModal()}
