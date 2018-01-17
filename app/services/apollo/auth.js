@@ -275,8 +275,8 @@ export const withGroups = graphql(GROUPS_QUERY, {
 });
 
 const TRIPS_QUERY = gql`
-query trips($id:Int, $type:String){ 
-  trips(input:{userId:$id, type:$type}) { 
+query trips($id:Int, $type:String, $active:Boolean){ 
+  trips(input:{userId:$id, type:$type, active:$active}) { 
     rows {
       id 
       type 

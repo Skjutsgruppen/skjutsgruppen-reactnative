@@ -99,7 +99,7 @@ const item = (trip, navigation) => (
         </View>
         <View>
           <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Text style={styles.lightText}><Date format="MMM DD HH:mm">{trip.date}</Date></Text>
+          <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
         </View>
       </View>
       <View>

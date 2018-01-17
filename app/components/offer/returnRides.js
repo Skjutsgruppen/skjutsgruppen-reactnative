@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_FILTER_WANTED } from '@config/constant';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   returnRidesWrapper: {
@@ -73,7 +74,7 @@ const ReturnRides = ({ avatar, trips, type }) => (
           </View>
           <View style={styles.content}>
             <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-            <Text>{trip.date}</Text>
+            <Date format="YYYY-MM-DD HH:mm">{trip.date}</Date>
           </View>
         </View>
       ))
