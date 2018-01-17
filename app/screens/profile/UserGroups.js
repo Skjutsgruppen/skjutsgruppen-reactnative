@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import GroupsList from '@components/profile/groupsList';
-import { withMyGroups } from '@services/apollo/profile';
+import { withGroups } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Groups = withMyGroups(GroupsList);
+const Groups = withGroups(GroupsList);
 
 class UserGroups extends Component {
   static navigationOptions = {
@@ -45,7 +45,7 @@ class UserGroups extends Component {
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <View style={styles.listWrapper}>
-          <Groups userId={userId} onPress={this.onPress} />
+          <Groups id={userId} onPress={this.onPress} />
         </View>
       </Wrapper>
     );

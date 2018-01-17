@@ -116,6 +116,8 @@ query search
         photo 
         mapPhoto
         totalComments
+        isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -140,7 +142,6 @@ query search
 `;
 
 export const withSearch = graphql(SEARCH, {
-  name: 'search',
   options: ({ from, to, direction, filters, dates }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -154,5 +155,15 @@ export const withSearch = graphql(SEARCH, {
       limit: PER_FETCH_LIMIT,
     },
   }),
-  props: ({ search }) => ({ search }),
+  props: ({ data: { loading, search, error, refetch, networkStatus, fetchMore } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (search) {
+      rows = search.rows;
+      count = search.count;
+    }
+
+    return { search: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
+  },
 });

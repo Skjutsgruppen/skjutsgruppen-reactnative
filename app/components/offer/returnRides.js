@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import { FEED_FILTER_WANTED, FEED_FILTER_OFFERED } from '@config/constant';
+import { FEED_FILTER_WANTED } from '@config/constant';
 
 const styles = StyleSheet.create({
   returnRidesWrapper: {
@@ -64,7 +64,12 @@ const ReturnRides = ({ avatar, trips, type }) => (
         <View key={trip.id} style={styles.card}>
           <View style={styles.profilePicWrapper}>
             <Image source={{ uri: avatar }} style={styles.profilePic} />
-            <View style={[styles.indicator, (type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg]} />
+            <View
+              style={[
+                styles.indicator,
+                (type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
+              ]}
+            />
           </View>
           <View style={styles.content}>
             <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>

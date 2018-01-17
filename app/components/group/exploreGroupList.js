@@ -1,10 +1,11 @@
 /* global navigator */
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
-import { Loading } from '@components/common';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import GroupItem from '@components/feed/card/group';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import DataList from '@components/dataList';
+import { GROUP_FILTER_NEARBY, GROUP_FILTER_NAME, GROUP_FILTER_POPULAR } from '@config/constant';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -87,7 +88,7 @@ class ExploreGroupsResult extends Component {
         longitudeDelta: 0.0121,
       },
       filterTitle: 'Popular Groups',
-      filterType: 'popular',
+      filterType: GROUP_FILTER_POPULAR,
     });
   }
 
@@ -99,7 +100,7 @@ class ExploreGroupsResult extends Component {
     const { region } = this.state;
     const { exploreGroups } = this.props;
 
-    if (filter === 'nearby') {
+    if (filter === GROUP_FILTER_NEARBY) {
       let error = 0;
 
       if (region.latitude.length === 0 && region.longitude.length === 0) {
@@ -112,25 +113,25 @@ class ExploreGroupsResult extends Component {
           from: [region.latitude, region.longitude],
           filter,
         });
-        this.setState({ filterTitle: 'Groups Near You', filterType: 'nearby' });
+        this.setState({ filterTitle: 'Groups Near You', filterType: GROUP_FILTER_NEARBY });
       }
     }
 
-    if (filter === 'name') {
+    if (filter === GROUP_FILTER_NAME) {
       exploreGroups.refetch({
         from: null,
         filter,
         order: 'asc',
       });
-      this.setState({ filterTitle: 'A to Z', filterType: 'name' });
+      this.setState({ filterTitle: 'A to Z', filterType: GROUP_FILTER_NAME });
     }
 
-    if (filter === 'popular') {
+    if (filter === GROUP_FILTER_POPULAR) {
       exploreGroups.refetch({
         from: null,
-        filter: 'popular',
+        filter: GROUP_FILTER_POPULAR,
       });
-      this.setState({ filterTitle: 'Popular Groups', filterType: 'popular' });
+      this.setState({ filterTitle: 'Popular Groups', filterType: GROUP_FILTER_POPULAR });
     }
   }
 
@@ -160,116 +161,51 @@ class ExploreGroupsResult extends Component {
 
   renderHeader = () => <Text style={styles.listLabel}>{this.state.filterTitle}</Text>
 
-  renderFooter = () => {
-    const { networkStatus, rows, count } = this.props.exploreGroups;
-
-    if (networkStatus === 1) {
-      return <Loading />;
-    }
-
-    if (rows.length >= count) {
-      return (
-        <View
-          style={{
-            paddingVertical: 60,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        />
-      );
-    }
-
-    return (
-      <View
-        style={styles.loadingWrapper}
-      >
-        <Loading />
-      </View>
-    );
-  }
-
   renderAllGroups() {
-    const {
-      loading,
-      rows,
-      count,
-      error,
-      networkStatus,
-      refetch,
-      fetchMore,
-    } = this.props.exploreGroups;
-
-    if (networkStatus !== 7) {
-      return (
-        <View
-          style={styles.loadingWrapper}
-        >
-          <Loading />
-        </View>
-      );
-    }
-
-    if (error) {
-      return (
-        <View style={styles.errorWrapper}>
-          <Text>Error: {error.message}</Text>
-        </View>
-      );
-    }
+    const { exploreGroups } = this.props;
 
     return (
-      <FlatList
-        data={rows}
+      <DataList
+        data={exploreGroups}
         renderItem={({ item }) => (
           <GroupItem
             min
+            key={item.id}
             onPress={this.redirect}
             group={item}
             wrapperStyle={{ borderBottomWidth: 0 }}
-          />)
-        }
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        refreshing={networkStatus === 4}
-        onRefresh={() => refetch()}
-        onEndReachedThreshold={0.5}
-        ListHeaderComponent={this.renderHeader}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (loading || rows.length >= count) return;
+          />
+        )}
+        fetchMoreOptions={{
+          variables: { offset: exploreGroups.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.exploreGroups.rows.length === 0) {
+              return previousResult;
+            }
 
-          fetchMore({
-            variables: { offset: rows.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.exploreGroups.length === 0) {
-                return previousResult;
-              }
+            const rows = previousResult.exploreGroups.rows.concat(
+              fetchMoreResult.exploreGroups.rows,
+            );
 
-              const prevExploreGroups = previousResult.exploreGroups;
-              const updatedGroup = previousResult.exploreGroups.rows.concat(
-                fetchMoreResult.exploreGroups.rows,
-              );
-
-              return {
-                exploreGroups: {
-                  ...prevExploreGroups,
-                  ...{ rows: updatedGroup },
-                },
-              };
-            },
-          });
+            return { exploreGroups: { ...previousResult.exploreGroups, ...{ rows } } };
+          },
         }}
       />
     );
   }
 
   render() {
+    const { filterType } = this.state;
     return (
       <View style={styles.wrapper} >
         <View style={styles.filterRow}>
           <View style={{ width: '33.33%' }}>
-            <TouchableOpacity onPress={() => this.onPressFilter('nearby')}>
+            <TouchableOpacity onPress={() => this.onPressFilter(GROUP_FILTER_NEARBY)}>
               <View
-                style={[styles.filterLabelWrapper, this.state.filterType === 'nearby' ? styles.activeFilterLabelWrapper : []]}
+                style={[
+                  styles.filterLabelWrapper,
+                  filterType === GROUP_FILTER_NEARBY && styles.activeFilterLabelWrapper,
+                ]}
               >
                 <Image source={require('@icons/icon_location_purple.png')} style={styles.icon} />
                 <Text style={styles.filterLabel}>Near You</Text>
@@ -278,9 +214,12 @@ class ExploreGroupsResult extends Component {
           </View>
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
-            <TouchableOpacity onPress={() => this.onPressFilter('popular')}>
+            <TouchableOpacity onPress={() => this.onPressFilter(GROUP_FILTER_POPULAR)}>
               <View
-                style={[styles.filterLabelWrapper, this.state.filterType === 'popular' ? styles.activeFilterLabelWrapper : []]}
+                style={[
+                  styles.filterLabelWrapper,
+                  filterType === GROUP_FILTER_POPULAR && styles.activeFilterLabelWrapper,
+                ]}
               >
                 <Text style={styles.filterLabel}>Popular</Text>
               </View>
@@ -288,9 +227,12 @@ class ExploreGroupsResult extends Component {
           </View>
           <View style={styles.verticalDivider} />
           <View style={{ width: '33.33%' }}>
-            <TouchableOpacity onPress={() => this.onPressFilter('name')}>
+            <TouchableOpacity onPress={() => this.onPressFilter(GROUP_FILTER_NAME)}>
               <View
-                style={[styles.filterLabelWrapper, this.state.filterType === 'name' ? styles.activeFilterLabelWrapper : []]}
+                style={[
+                  styles.filterLabelWrapper,
+                  filterType === GROUP_FILTER_NAME && styles.activeFilterLabelWrapper,
+                ]}
               >
                 <Text style={styles.filterLabel}>A to Z</Text>
               </View>

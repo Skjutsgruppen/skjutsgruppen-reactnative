@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
 import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/auth';
 import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
-
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -21,6 +20,9 @@ import {
   NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
   NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED,
+  NOTIFICATION_TYPE_EXPERIENCE_VOID,
+  NOTIFICATION_TYPE_EXPERIENCE_SHARED,
+  NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
 } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -229,7 +231,7 @@ class Item extends PureComponent {
           </View>
         </View>
         <View>
-          {/* <Text style={[styles.time, styles.bold]}>{date}</Text> */}
+          {/* {<Text style={[styles.time, styles.bold]}>{date}</Text>} */}
         </View>
       </View>
     </TouchableOpacity>
@@ -288,6 +290,48 @@ class Item extends PureComponent {
         text: 'accepted to tag on an experience',
         date,
         onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
+      });
+    }
+
+    return null;
+  }
+
+  experienceVoid = ({ Notifiable, User, date, id }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'One of the participants in your Experience said no, so your Experience is not published',
+        date,
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+      });
+    }
+
+    return null;
+  }
+
+  experiencePublished = ({ Notifiable, User, date, id }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'Your experience has been published.',
+        date,
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+      });
+    }
+
+    return null;
+  }
+
+  experienceShared = ({ Notifiable, User, date, id }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'shared an experience.',
+        date,
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
@@ -505,6 +549,19 @@ class Item extends PureComponent {
     if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED) {
       message = this.experienceAccepted(notification);
     }
+
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_VOID) {
+      message = this.experienceVoid(notification);
+    }
+
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_SHARED) {
+      message = this.experienceShared(notification);
+    }
+
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED) {
+      message = this.experiencePublished(notification);
+    }
+
 
     return (
       <View key={notification.id}>
