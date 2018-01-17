@@ -123,7 +123,7 @@ class ExperienceDetail extends Component {
   renderParticipants = () => {
     const { navigation } = this.props;
     const { experience } = this.state;
-    const going = experience.Participants.filter(row => row.status);
+    const going = experience.Participants.filter(row => row.status === 'accepted');
     return going.map((row, index) => {
       let separator = ' ';
       if (index === (going.length - 2)) {
@@ -184,8 +184,8 @@ class ExperienceDetail extends Component {
                 {this.renderParticipants()}
                 <Text onPress={this.redirectTrip}>
                   <Text>
-                    went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD HH:mm">{experience.Trip.date}</Date>
-                    . See their trip here
+                    went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
+                    . <Text style={styles.name}>See their trip here</Text>
                   </Text>
                 </Text>
               </Text>
