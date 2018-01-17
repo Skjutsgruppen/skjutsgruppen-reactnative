@@ -1,60 +1,41 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { Loading } from '@components/common';
 import TripItem from '@components/profile/tripsItem';
 import PropTypes from 'prop-types';
+import DataList from '@components/dataList';
 
-const UserTripsList = ({ userId, onPress, onSharePress, data, ...props }) => {
-  if (data.networkStatus === 1) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Loading />
-      </View>
-    );
-  }
-
-  const { trips } = data;
-
-  if (trips.rows.length !== 0) {
-    return (
-      <FlatList
-        data={trips.rows}
-        renderItem={({ item }) => (
-          <TripItem
-            key={item.id}
-            trip={item}
-            onPress={onPress}
-            onSharePress={onSharePress}
-          />
-        )
-        }
-        keyExtractor={(item, index) => index}
-        {...props}
+const UserTripsList = ({ onPress, onSharePress, trips }) => (
+  <DataList
+    data={trips}
+    renderItem={({ item }) => (
+      <TripItem
+        key={item.id}
+        trip={item}
+        onPress={onPress}
+        onSharePress={onSharePress}
       />
-    );
-  }
+    )}
+    fetchMoreOptions={{
+      variables: { offset: trips.rows.length },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || fetchMoreResult.trips.rows.length === 0) {
+          return previousResult;
+        }
 
-  return (
-    <View style={{ padding: 24 }}>
-      <Text>No rides yet.</Text>
-    </View>
-  );
-};
+        const rows = previousResult.trips.rows.concat(fetchMoreResult.trips.rows);
 
-UserTripsList.defaultProps = {
-  data: {},
-};
+        return { trips: { ...previousResult.trips, ...{ rows } } };
+      },
+    }}
+  />
+);
 
 UserTripsList.propTypes = {
-  userId: PropTypes.number.isRequired,
-  data: PropTypes.shape({
-    trips: PropTypes.shape({
-      rows: PropTypes.array,
-      count: PropTypes.number,
-    }),
-  }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
+  trips: PropTypes.shape({
+    rows: PropTypes.array,
+    count: PropTypes.number,
+  }).isRequired,
 };
 
 export default UserTripsList;

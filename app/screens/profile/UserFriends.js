@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import FriendsList from '@components/profile/friendsList';
-import { withMyFriends } from '@services/apollo/profile';
+import { withFriends } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Friends = withMyFriends(FriendsList);
+const Friends = withFriends(FriendsList);
 
 class UserFriends extends Component {
   static navigationOptions = {

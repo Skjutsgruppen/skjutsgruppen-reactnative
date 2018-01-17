@@ -39,7 +39,7 @@ class UserExperience extends PureComponent {
         <NavBar handleBack={this.goBack} />
         <View style={styles.listWrapper}>
           <Experiences
-            userId={userId}
+            id={userId}
             onPress={this.onPress}
           />
         </View>

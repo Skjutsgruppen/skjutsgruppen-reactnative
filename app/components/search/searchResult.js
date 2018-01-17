@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
-import { Wrapper, FloatingNavbar, Loading } from '@components/common';
+import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
-import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import { trans } from '@lang/i18n';
+import DataList from '@components/dataList';
+import { SEARCH_FILTER_OFFER, SEARCH_FILTER_PUBLIC, SEARCH_FILTER_GROUP, SEARCH_FILTER_ASK } from '@config/constant';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -92,7 +93,7 @@ class SearchResult extends Component {
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
-    if (type === 'group') {
+    if (type === SEARCH_FILTER_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
@@ -110,12 +111,12 @@ class SearchResult extends Component {
   };
 
   onSharePress = (isGroup) => {
-    this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
+    this.setState({ isOpen: true, isGroup: isGroup !== SEARCH_FILTER_GROUP });
   };
 
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === SEARCH_FILTER_GROUP ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -186,91 +187,33 @@ class SearchResult extends Component {
     </View>
   );
 
-  renderFooter = () => {
-    const { loading, search: { rows, count } } = this.props.search;
-
-    if (!loading) return null;
-
-    if (rows.length === 0) {
-      return (<Text style={styles.time}>{count} {count <= 1 ? 'result' : 'results'} found</Text>);
-    }
-
-    if (rows.length > 20 && rows.length >= count) {
-      return (
-        <View
-          style={{
-            paddingVertical: 120,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        />
-      );
-    }
-
-    return (
-      <View
-        style={{
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
-      >
-        <Loading />
-      </View>
-    );
-  }
-
   renderSearchResult = () => {
     const { from, to, filters, dates, search } = this.props;
 
-    if (search.networkStatus === 1) {
-      return <Loading />;
-    }
-
-    if (search.error) {
-      return <Text>Error: {search.error.message}</Text>;
-    }
-
-    const { rows, count } = search.search;
-
     return (
-      <FlatList
-        data={rows}
-        renderItem={({ item }) => (<SearchItem
-          key={item.id}
-          onSharePress={this.onSharePress}
-          onPress={this.onPress}
-          searchResult={item}
-          resultsStyle={this.state.resultsStyle}
-        />)}
-        keyExtractor={(item, index) => index}
-        refreshing={search.networkStatus === 4 || search.networkStatus === 2}
-        onRefresh={() => search.refetch()}
-        onEndReachedThreshold={0.5}
-        ListHeaderComponent={this.renderHeader}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (search.loading || rows.length >= count) return;
+      <DataList
+        data={search}
+        header={this.renderHeader}
+        renderItem={({ item }) => (
+          <SearchItem
+            key={item.id}
+            onSharePress={this.onSharePress}
+            onPress={this.onPress}
+            searchResult={item}
+            resultsStyle={this.state.resultsStyle}
+          />
+        )}
+        fetchMoreOptions={{
+          variables: { from, to, filters, dates, offset: search.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.search.rows.length === 0) {
+              return previousResult;
+            }
 
-          search.fetchMore({
-            variables: {
-              from,
-              to,
-              filters,
-              dates,
-              offset: rows.length,
-            },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult) {
-                return previousResult;
-              }
-              const updatedSearchResult = previousResult.search.rows.concat(
-                fetchMoreResult.search.rows,
-              );
+            const rows = previousResult.search.rows.concat(fetchMoreResult.search.rows);
 
-              return { search: { rows: updatedSearchResult } };
-            },
-          });
+            return { search: { ...previousResult.search, ...{ rows } } };
+          },
         }}
       />
     );
@@ -286,7 +229,7 @@ class SearchResult extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== 'group'}
+            showGroup={this.state.modalType !== SEARCH_FILTER_GROUP}
             onNext={this.onShare}
             onClose={this.onClose}
           />
@@ -309,35 +252,41 @@ class SearchResult extends Component {
           </View>
           <View style={styles.suggestionsContainer}>
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
+              onPress={() => this.onFilterSelect(SEARCH_FILTER_OFFER)}
               style={[
                 styles.suggestion,
-                filters.indexOf(FEED_TYPE_OFFER) > -1 ? styles.selected : {},
+                filters.indexOf(SEARCH_FILTER_OFFER) > -1 ? styles.selected : {},
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.offered')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
+              onPress={() => this.onFilterSelect(SEARCH_FILTER_ASK)}
               style={[
                 styles.suggestion,
-                filters.indexOf(FEED_TYPE_WANTED) > -1 ? styles.selected : {},
+                filters.indexOf(SEARCH_FILTER_ASK) > -1 ? styles.selected : {},
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.asked_for')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect('public')}
-              style={[styles.suggestion, filters.indexOf('public') > -1 ? styles.selected : {}]}
+              onPress={() => this.onFilterSelect(SEARCH_FILTER_PUBLIC)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(SEARCH_FILTER_PUBLIC) > -1 && styles.selected,
+              ]}
             >
               <Text style={styles.whiteText}>{trans('search.public_transport')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect('group')}
-              style={[styles.suggestion, filters.indexOf('group') > -1 ? styles.selected : {}]}
+              onPress={() => this.onFilterSelect(SEARCH_FILTER_GROUP)}
+              style={[
+                styles.suggestion,
+                filters.indexOf(SEARCH_FILTER_GROUP) > -1 && styles.selected,
+              ]}
             >
               <Text style={styles.whiteText}>{trans('search.groups')}</Text>
             </TouchableOpacity>
@@ -378,10 +327,8 @@ SearchResult.propTypes = {
   search: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     networkStatus: PropTypes.number,
-    search: PropTypes.shape({
-      rows: PropTypes.arrayOf(PropTypes.object),
-      count: PropTypes.number,
-    }),
+    rows: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.number,
   }).isRequired,
 };
 

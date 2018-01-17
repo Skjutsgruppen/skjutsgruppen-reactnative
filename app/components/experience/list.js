@@ -71,11 +71,10 @@ const styles = StyleSheet.create({
   },
 });
 
-
 class List extends PureComponent {
   render() {
-    const { experiences, navigation, title, onComplete } = this.props;
-    const { rows, loading, error, count } = experiences;
+    const { experiences, navigation, title } = this.props;
+    const { rows, loading, error } = experiences;
     let list = <Text style={[styles.block, styles.msg]}>No experiences has been created yet.</Text>;
 
     if (loading) {
@@ -96,8 +95,6 @@ class List extends PureComponent {
     if (rows.length < 1) {
       return null;
     }
-
-    onComplete(count);
 
     list = rows.map(experience => (
       <TouchableOpacity key={experience.id} onPress={() => navigation.navigate('ExperienceDetail', { experience })} style={styles.experience}>
@@ -138,7 +135,6 @@ List.propTypes = {
     navigate: PropTypes.func.isRequired,
   }).isRequired,
   title: PropTypes.string.isRequired,
-  onComplete: PropTypes.func,
 };
 
 List.defaultProps = {

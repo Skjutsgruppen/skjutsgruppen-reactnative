@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { View, Text, Modal, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MemberItem from '@components/memberItem';
-import { Loading } from '@components/common';
+import DataList from '@components/dataList';
 
 const styles = StyleSheet.create({
   returnModalContent: {
@@ -49,106 +49,54 @@ const styles = StyleSheet.create({
   },
 });
 
-class ParticipantsModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: false };
-  }
-
-  loadMore = () => {
-    const { groupMembers: { rows, fetchMore }, id } = this.props;
-
-    this.setState({ loading: true }, () => {
-      fetchMore({
-        variables: { id, offset: rows.length },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          this.setState({ loading: false });
-          if (!fetchMoreResult || fetchMoreResult.groupMembers.length === 0) {
-            return previousResult;
-          }
-
-          const newRows =
-            previousResult.groupMembers.rows.concat(fetchMoreResult.groupMembers.rows);
-          const newCount = fetchMoreResult.groupMembers.count;
-
-          return {
-            groupMembers: { ...previousResult.groupMembers, ...{ rows: newRows, count: newCount } },
-          };
-        },
-      });
-    });
-  };
-
-  renderFooter = (loading) => {
-    if (loading) {
-      return (
-        <View
-          style={{
-            paddingVertical: 20,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        >
-          <Loading />
-        </View>
-      );
-    }
-
-    const { groupMembers } = this.props;
-    const { rows, count } = groupMembers;
-
-    if (rows.length >= count) {
-      return null;
-    }
-
-    return (
-      <TouchableOpacity onPress={this.loadMore} style={styles.loadMoreBtn}>
-        <Text style={styles.loadMoreText}>Load More...</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  render() {
-    const { groupMembers, onPress, setModalVisibility, showFofModal } = this.props;
-
-    return (
-      <Modal
-        animationType="slide"
-        transparent
-        onRequestClose={() => setModalVisibility(false)}
-        visible={showFofModal}
-      >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.85)', paddingTop: 16 }}>
-          <View style={styles.returnModalContent}>
-            <FlatList
-              data={groupMembers.rows}
-              renderItem={
-                ({ item }) => (
-                  <MemberItem onPress={onPress} user={item} key={item.id} />
-                )
-              }
-              keyExtractor={(item, index) => index}
-              onEndReachedThreshold={0}
-              ListFooterComponent={() => this.renderFooter(this.state.loading)}
+const ParticipantsModal = ({ groupMembers, onPress, setModalVisibility, showFofModal }) => (
+  <Modal
+    animationType="slide"
+    transparent
+    onRequestClose={() => setModalVisibility(false)}
+    visible={showFofModal}
+  >
+    <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.85)', paddingTop: 16 }}>
+      <View style={styles.returnModalContent}>
+        <DataList
+          data={groupMembers}
+          renderItem={({ item }) => (
+            <MemberItem
+              onPress={onPress}
+              user={item}
+              key={item.id}
             />
-            <View style={styles.closeWrapper}>
-              <TouchableOpacity
-                style={styles.closeModal}
-                onPress={() =>
-                  setModalVisibility(false)}
-              >
-                <Text style={styles.closeModalText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
+          fetchMoreOptions={{
+            variables: { offset: groupMembers.rows.length },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              if (!fetchMoreResult || fetchMoreResult.groupMembers.rows.length === 0) {
+                return previousResult;
+              }
+
+              const rows = previousResult.groupMembers.rows.concat(
+                fetchMoreResult.groupMembers.rows,
+              );
+
+              return { groupMembers: { ...previousResult.groupMembers, ...{ rows } } };
+            },
+          }}
+        />
+        <View style={styles.closeWrapper}>
+          <TouchableOpacity
+            style={styles.closeModal}
+            onPress={() =>
+              setModalVisibility(false)}
+          >
+            <Text style={styles.closeModalText}>Close</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
-    );
-  }
-}
+      </View>
+    </View>
+  </Modal>
+);
 
 ParticipantsModal.propTypes = {
-  id: PropTypes.number.isRequired,
   groupMembers: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.shape()),
     count: PropTypes.number,

@@ -1,41 +1,32 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { Loading } from '@components/common';
 import Item from '@components/feed/card/experience';
 import PropTypes from 'prop-types';
+import DataList from '@components/dataList';
 
-const UserExperienceList = ({ onPress, myExperiences }) => {
-  if (myExperiences.networkStatus === 1) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Loading />
-      </View>
-    );
-  }
-
-  if (myExperiences.rows.length > 0) {
-    return (
-      <FlatList
-        data={myExperiences.rows}
-        renderItem={({ item }) => (
-          <Item
-            key={item.id}
-            experience={item}
-            onPress={onPress}
-          />
-        )
-        }
-        keyExtractor={(item, index) => index}
+const UserExperienceList = ({ onPress, myExperiences }) => (
+  <DataList
+    data={myExperiences}
+    renderItem={({ item }) => (
+      <Item
+        key={item.id}
+        experience={item}
+        onPress={onPress}
       />
-    );
-  }
+    )}
+    fetchMoreOptions={{
+      variables: { offset: myExperiences.rows.length },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || fetchMoreResult.myExperiences.rows.length === 0) {
+          return previousResult;
+        }
 
-  return (
-    <View style={{ padding: 24 }}>
-      <Text>No experiences yet.</Text>
-    </View>
-  );
-};
+        const rows = previousResult.myExperiences.rows.concat(fetchMoreResult.myExperiences.rows);
+
+        return { myExperiences: { ...previousResult.myExperiences, ...{ rows } } };
+      },
+    }}
+  />
+);
 
 UserExperienceList.propTypes = {
   myExperiences: PropTypes.shape({
