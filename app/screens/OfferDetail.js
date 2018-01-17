@@ -553,9 +553,14 @@ class OfferDetail extends Component {
 
     const markedDates = {};
     let selectedDate = '';
+    let tripDate = '';
 
-    offer.Recurring.forEach((trip) => {
-      selectedDate = Moment(trip.date);
+    offer.Recurring.forEach((trip, index) => {
+      selectedDate = Moment(trip.date).tz(getTimezone());
+      if (index === 0) {
+        tripDate = selectedDate.format('YYYY-MM-DD');
+      }
+
       markedDates[selectedDate.format('YYYY-MM-DD')] = [
         {
           startingDay: true,
@@ -600,7 +605,7 @@ class OfferDetail extends Component {
               <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
             </Text>
             <Text style={styles.fromTo}>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
-            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD HH:mm">{offer.date}</Date></Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{offer.date}</Date></Text>
             {
               offer.Stops.length > 0 &&
               <Text style={[styles.text, styles.lightText]}>
@@ -668,6 +673,7 @@ class OfferDetail extends Component {
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
                   <View style={styles.returnModalContent}>
                     <Calendar
+                      current={tripDate}
                       markedDates={markedDates}
                       markingType="interactive"
                       hideExtraDays
