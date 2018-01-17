@@ -1,0 +1,17 @@
+export const about = {
+  you_are_a_part_of_ride_sharing_movement: 'You are part of the ridesharing movement.',
+  we_are_friends_of_friends: 'We are friends and friends of friends of friends.',
+  we_are_getting_closer_to_each_other: 'We’re getting closer to each other.',
+  we_are_going_same_direction: 'When we’re going the same direction we offer our spare seats to each other in buses, boats, cars, bicycles and hot air balloons.',
+  we_share_the_costs_of_our_ride: 'We share the costs of our rides equally or offer rides for free, because friends don’t make money of friends.',
+  thank_you_for_being_a_part: 'Thank you for being a part of this Insert_First_Name!',
+  we_believe_in_conversation: 'We believe in conversation',
+  good_time_digitally: 'Thanks to you we have a good time both here digitally and in the vehicle.',
+  be_health_cautious: 'Be healthy cautious',
+  rideshare_if_you_feel_safe: 'Rideshare if you feel safe.',
+  share_equally_or_offer_rides: 'Share equally or offer rides for free',
+  in_sweden_the_cost_you_share: 'In Sweden the cost you share is up to 18,50 SEK per 10 kilometers (km) for cars. 18,50 SEK is close to 2 € or 2 $. In our movement the costs you share can not be more then that (see the Participant Agreement). For other vehicles there is no set cost per km as long as you don’t make profit. Help each other in the comments to calculate kilometers and costs before the ride. Read more about costs',
+  you_are_awesome: 'You are awesome',
+  the_movement_is_self_regulating: 'The movement is self-regulating, since we’re all the movement together. No “leader” is in charge over your conversation. You’re in charge. Comment as much as you like as long as you keep to the Participant agreement.',
+  we_made_this_together: 'We made this together!',
+};
