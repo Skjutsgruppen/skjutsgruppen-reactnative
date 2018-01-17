@@ -88,7 +88,9 @@ class Feed extends Component {
 
   componentWillMount() {
     const { params } = this.props.navigation.state;
-    const { feeds, subscribeToFeed } = this.props;
+    const { feeds, subscribeToFeed, screenProps } = this.props;
+    const filterType = screenProps.feed.filterType;
+    this.setState({ filterType });
 
     if (params && typeof params.refetch !== 'undefined') {
       feeds.refetch();
@@ -319,6 +321,11 @@ Feed.propTypes = {
     }).isRequired,
   }).isRequired,
   subscribeToFeed: PropTypes.func.isRequired,
+  screenProps: PropTypes.shape({
+    feed: PropTypes.shape({
+      filterType: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 export default compose(withShare, withFeed)(Feed);

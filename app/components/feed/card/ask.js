@@ -175,7 +175,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
               <Text style={[styles.text, styles.lightText]}>
                 {ask.TripStart.name} - {ask.TripEnd.name}
               </Text>
-              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{ask.date}</Date></Text>
+              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{ask.date}</Date></Text>
             </View>
           </View>
           <View style={styles.comment}>
@@ -184,12 +184,9 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableOpacity
-        onPress={() => onPress('profile', ask.User.id)}
-        style={styles.profilePicWrapper}
-      >
+      <View style={styles.profilePicWrapper}>
         {profileImage}
-      </TouchableOpacity>
+      </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => onSharePress('ask', ask)}>
           <Image source={ShareIcon} style={styles.icon} />
