@@ -8,3 +8,4 @@ export { message } from './message';
 export { trip } from './trip';
 export { addGroup } from './addGroup';
 export { setting } from './setting';
+export { about } from './about';
