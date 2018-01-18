@@ -135,6 +135,21 @@ query search
           date
         }
       }
+      ...on PublicTransport{
+        Routes {
+          Point {
+            name
+            date
+            time
+          }
+          type
+          Product {
+            name
+            catCode
+          }
+        }
+        url
+      }
     }
     count
   }
