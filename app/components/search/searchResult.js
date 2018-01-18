@@ -7,11 +7,15 @@ import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
-import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import { trans } from '@lang/i18n';
 import DataList from '@components/dataList';
-import { SEARCH_FILTER_OFFER, SEARCH_FILTER_PUBLIC, SEARCH_FILTER_GROUP, SEARCH_FILTER_ASK } from '@config/constant';
+import {
+  FEED_TYPE_OFFER,
+  FEED_TYPE_PUBLIC_TRANSPORT,
+  FEED_TYPE_GROUP,
+  FEED_TYPE_WANTED,
+} from '@config/constant';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -89,11 +93,14 @@ class SearchResult extends Component {
   componentWillMount() {
     const { filters } = this.props;
     this.setState({ filters });
+    if (filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1) {
+      this.setState({ resultsStyle: 'list' });
+    }
   }
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
-    if (type === SEARCH_FILTER_GROUP) {
+    if (type === FEED_TYPE_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
@@ -111,12 +118,12 @@ class SearchResult extends Component {
   };
 
   onSharePress = (isGroup) => {
-    this.setState({ isOpen: true, isGroup: isGroup !== SEARCH_FILTER_GROUP });
+    this.setState({ isOpen: true, isGroup: isGroup !== FEED_TYPE_GROUP });
   };
 
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === SEARCH_FILTER_GROUP ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === FEED_TYPE_GROUP ? 'Group' : 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -229,7 +236,7 @@ class SearchResult extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== SEARCH_FILTER_GROUP}
+            showGroup={this.state.modalType !== FEED_TYPE_GROUP}
             onNext={this.onShare}
             onClose={this.onClose}
           />
@@ -252,40 +259,40 @@ class SearchResult extends Component {
           </View>
           <View style={styles.suggestionsContainer}>
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(SEARCH_FILTER_OFFER)}
+              onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
               style={[
                 styles.suggestion,
-                filters.indexOf(SEARCH_FILTER_OFFER) > -1 ? styles.selected : {},
+                filters.indexOf(FEED_TYPE_OFFER) > -1 && styles.selected,
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.offered')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(SEARCH_FILTER_ASK)}
+              onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
               style={[
                 styles.suggestion,
-                filters.indexOf(SEARCH_FILTER_ASK) > -1 ? styles.selected : {},
+                filters.indexOf(FEED_TYPE_WANTED) > -1 && styles.selected,
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.asked_for')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(SEARCH_FILTER_PUBLIC)}
+              onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
               style={[
                 styles.suggestion,
-                filters.indexOf(SEARCH_FILTER_PUBLIC) > -1 && styles.selected,
+                filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.public_transport')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => this.onFilterSelect(SEARCH_FILTER_GROUP)}
+              onPress={() => this.onFilterSelect(FEED_TYPE_GROUP)}
               style={[
                 styles.suggestion,
-                filters.indexOf(SEARCH_FILTER_GROUP) > -1 && styles.selected,
+                filters.indexOf(FEED_TYPE_GROUP) > -1 && styles.selected,
               ]}
             >
               <Text style={styles.whiteText}>{trans('search.groups')}</Text>
@@ -338,4 +345,4 @@ SearchResult.defaultProps = {
   direction: '',
 };
 
-export default compose(withShare)(SearchResult);
+export default withShare(SearchResult);
