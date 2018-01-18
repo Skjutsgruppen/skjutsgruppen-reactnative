@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'cover',
     borderRadius: 12,
+    marginBottom: 50,
   },
 });
 

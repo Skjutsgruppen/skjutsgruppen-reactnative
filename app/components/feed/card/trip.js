@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import ShareIcon from '@assets/icons/ic_share.png';
-import CommentIcon from '@assets/icons/ic_comment.png';
+import { TripTypePill, TripImage, Footer } from '@components/feed/card';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
@@ -13,11 +12,8 @@ const cardHeight = 484;
 const profilePicSize = 60;
 
 const styles = StyleSheet.create({
-  flex1: {
-    flex: 1,
-  },
   wrapper: {
-    height: cardHeight,
+    maxHeight: cardHeight,
     backgroundColor: Colors.background.fullWhite,
     marginHorizontal: 16,
     marginVertical: 10,
@@ -27,27 +23,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     shadowRadius: 5,
     elevation: 4,
-  },
-  imgWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: cardHeight / 2,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: Colors.background.gray,
-  },
-  img: {
-    width: '100%',
-    height: cardHeight / 2,
-    resizeMode: 'cover',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
   },
   groupName: {
     backgroundColor: 'transparent',
@@ -60,7 +35,7 @@ const styles = StyleSheet.create({
     height: profilePicSize,
     width: profilePicSize,
     position: 'absolute',
-    top: (cardHeight / 2) - (profilePicSize / 2),
+    top: (cardHeight * 0.48) - (profilePicSize / 2),
     right: 20,
     zIndex: 10,
   },
@@ -72,67 +47,30 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.border.white,
   },
-  tripType: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    zIndex: 10,
-    height: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    shadowOffset: { width: 0, height: 2 },
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 1,
-    elevation: 2,
-  },
-  pinkBg: {
-    backgroundColor: Colors.background.pink,
-  },
-  blueBg: {
-    backgroundColor: Colors.background.blue,
-  },
-  typeText: {
-    color: Colors.text.white,
-    fontSize: 10,
-  },
   detail: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
+    paddingHorizontal: 18,
+    paddingTop: 20,
+    marginBottom: 20,
   },
   comment: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    flexBasis: 50,
+    minHeight: 50,
+    paddingHorizontal: 18,
     marginTop: 'auto',
     overflow: 'hidden',
   },
+  commentText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
   commentGradientOverlay: {
     height: 24,
-    backgroundColor: 'rgba(255,255,255,0.85)',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     marginHorizontal: 24,
-  },
-  footer: {
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  commentIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  commentCout: {
-    color: '#888',
-    marginRight: 10,
   },
   text: {
     lineHeight: 20,
@@ -144,23 +82,9 @@ const styles = StyleSheet.create({
     color: Colors.text.blue,
     fontWeight: 'bold',
   },
-  shareIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
 });
 
 const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
-  let image = null;
-  if (trip.mapPhoto) {
-    image = (<Image source={{ uri: trip.mapPhoto }} style={styles.img} />);
-  }
-
-  if (trip.photo) {
-    image = (<Image source={{ uri: trip.photo }} style={styles.img} />);
-  }
-
   let profileImage = null;
   if (trip.User.avatar) {
     profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
@@ -168,27 +92,25 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
     profileImage = (<View style={styles.imgIcon} />);
   }
 
+  let tripColor = null;
+  if (trip.type === FEED_TYPE_OFFER) { tripColor = 'pink'; }
+  if (trip.type === FEED_TYPE_WANTED) { tripColor = 'blue'; }
+
+  let tripLabel = null;
+  if (trip.type === FEED_TYPE_OFFER) { tripLabel = trans('feed.offering_a_ride'); }
+  if (trip.type === FEED_TYPE_WANTED) { tripLabel = trans('feed.asking_for_ride'); }
+
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableHightlight
         onPress={() => onPress(FEEDABLE_TRIP, trip)}
-        style={styles.flex1}
       >
-        <View style={styles.flex1}>
-          <View style={styles.imgWrapper}>
-            {image}
-          </View>
-          <View style={[
-            styles.tripType,
-            trip.type === FEED_TYPE_OFFER && styles.pinkBg,
-            trip.type === FEED_TYPE_WANTED && styles.blueBg,
-          ]}
-          >
-            <Text style={styles.typeText}>
-              {trip.type === FEED_TYPE_OFFER && trans('feed.offering_a_ride')}
-              {trip.type === FEED_TYPE_WANTED && trans('feed.asking_for_ride')}
-            </Text>
-          </View>
+        <View>
+          <TripImage
+            imageURI={trip.photo ? trip.photo : trip.mapPhoto}
+            height={cardHeight * 0.48}
+          />
+          <TripTypePill color={tripColor} label={tripLabel} />
           <View style={styles.detail}>
             <View>
               <Text style={[styles.text, styles.lightText]}>
@@ -206,7 +128,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
             </View>
           </View>
           <View style={styles.comment}>
-            <Text style={styles.text}>{trip.description}</Text>
+            <Text style={[styles.text, styles.commentText]}>{trip.description}</Text>
             <View style={styles.commentGradientOverlay} />
           </View>
           <View style={styles.profilePicWrapper}>
@@ -214,18 +136,12 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableHightlight>
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => onSharePress(FEEDABLE_TRIP, trip)}>
-          <Image source={ShareIcon} style={styles.shareIcon} />
-        </TouchableOpacity>
-        <View style={styles.commentIcon}>
-          <Text style={styles.commentCout}>{trip.totalComments}</Text>
-          <TouchableOpacity onPress={() => onPress(FEEDABLE_TRIP, trip)}>
-            <Image source={CommentIcon} style={styles.commentIcon} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>);
+      <Footer
+        onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
+        onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
+        totalComments={trip.totalComments}
+      />
+    </View >);
 };
 
 Trip.propTypes = {
