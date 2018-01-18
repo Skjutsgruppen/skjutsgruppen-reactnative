@@ -154,7 +154,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 <Text style={styles.username}>
                   {group.User.firstName || group.User.email}
                 </Text>
-                <Text> { trans('feed.created_a_group')}</Text>
+                <Text> {trans('feed.created_a_group')}</Text>
               </Text>
               {
                 group.outreach === STRETCH_TYPE_AREA &&
@@ -176,12 +176,9 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableOpacity
-        onPress={() => onPress('profile', group.User.id)}
-        style={styles.profilePicWrapper}
-      >
+      <View style={styles.profilePicWrapper}>
         {profileImage}
-      </TouchableOpacity>
+      </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => onSharePress('group', group)}>
           <Image source={ShareIcon} style={styles.shareIcon} />
