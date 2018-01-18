@@ -90,7 +90,7 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
       return (
         <View>
-          <Text style={styles.commentText}>Shared a trip</Text>
+          <Text style={styles.commentText}>Shared a {feed.feedable} </Text>
         </View>
       );
     }

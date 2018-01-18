@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Modal, View, ScrollView } from 'react-native';
-import { withMyTrips } from '@services/apollo/profile';
+import { withTrips, withShare } from '@services/apollo/auth';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
-import { withShare } from '@services/apollo/auth';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 
@@ -17,7 +16,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Trips = withMyTrips(TripsList);
+const Trips = withTrips(TripsList);
 
 class UserTrips extends Component {
   static navigationOptions = {
@@ -91,7 +90,7 @@ class UserTrips extends Component {
         <NavBar handleBack={this.goBack} />
         <View style={styles.listWrapper}>
           <Trips
-            userId={userId}
+            id={userId}
             type={type}
             onPress={this.onPress}
             onSharePress={this.onSharePress}

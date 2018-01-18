@@ -41,11 +41,9 @@ const RelationModal = ({ users, onPress, setModalVisibility, showFofModal }) => 
       <View style={styles.returnModalContent}>
         <FlatList
           data={users}
-          renderItem={
-            ({ item }) => (
-              <MemberItem onPress={onPress} user={item} key={item.id} />
-            )
-          }
+          renderItem={({ item }) => (
+            <MemberItem onPress={onPress} user={item} key={item.id} />
+          )}
           keyExtractor={(item, index) => index}
         />
         <View style={styles.closeWrapper}>

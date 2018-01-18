@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
-import { Loading, Wrapper } from '@components/common';
+import { Wrapper } from '@components/common';
 import { withFeed } from '@services/apollo/feed';
 import { withShare } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
@@ -17,6 +17,7 @@ import { trans } from '@lang/i18n';
 import { FEED_FILTER_EVERYTHING, EXPERIENCE_AFTER_CARDS, EXPERIENCE_FETCH_LIMIT } from '@config/constant';
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
+import DataList from '@components/dataList';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -203,42 +204,6 @@ class Feed extends Component {
     );
   }
 
-  renderFooter = () => {
-    const { loading, rows, error, count } = this.props.feeds;
-
-    const refetch = (
-      <TouchableOpacity onPress={this.onRefreshClicked}>
-        <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-      </TouchableOpacity>
-    );
-
-    if (error && !loading) {
-      return (
-        <View style={{ marginTop: 100 }}>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          {refetch}
-        </View>
-      );
-    }
-
-    if (count < 1 && !loading) {
-      return (
-        <View style={{ marginTop: 100 }}>
-          <Text style={styles.errorText}>No Feeds</Text>
-          {refetch}
-        </View>
-      );
-    }
-
-    if (rows.length >= count) {
-      return (<View style={{ paddingVertical: 60 }} />);
-    }
-
-    if (!loading) return null;
-
-    return (<View style={{ paddingVertical: 60 }}><Loading /></View>);
-  }
-
   renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.menuWrapper}>
@@ -288,41 +253,24 @@ class Feed extends Component {
   renderFeed() {
     const { feeds } = this.props;
 
-    if (feeds.networkStatus === 1 && feeds.rows.length < 1) {
-      return (
-        <View style={{ marginTop: 100 }}>
-          <Loading />
-        </View>
-      );
-    }
-
     return (
-      <FlatList
-        data={feeds.rows}
+      <DataList
+        data={feeds}
+        header={this.renderHeader}
         renderItem={this.renderItem}
-        keyExtractor={item => item.id}
-        refreshing={feeds.networkStatus === 4 || feeds.networkStatus === 2}
-        onRefresh={() => feeds.refetch()}
-        onEndReachedThreshold={0.8}
-        ListHeaderComponent={this.renderHeader}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (feeds.loading || feeds.rows.length >= feeds.count) return;
-          feeds.fetchMore({
-            variables: { offset: feeds.rows.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.getFeed.rows.length === 0) {
-                return previousResult;
-              }
+        fetchMoreOptions={{
+          variables: { offset: this.props.feeds.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.getFeed.rows.length === 0) {
+              return previousResult;
+            }
 
-              const rows = previousResult.getFeed.rows.concat(fetchMoreResult.getFeed.rows);
+            const rows = previousResult.getFeed.rows.concat(fetchMoreResult.getFeed.rows);
 
-              return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
-            },
-          });
+            return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
+          },
         }}
-      />
-    );
+      />);
   }
 
   renderMap = () => (

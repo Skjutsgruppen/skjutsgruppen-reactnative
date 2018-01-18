@@ -1,45 +1,39 @@
 import React from 'react';
-import { View, FlatList, Text } from 'react-native';
-import { Loading } from '@components/common';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
+import DataList from '@components/dataList';
 
-const UsersGroupsList = ({ id, onPress, data, data: { friends }, ...props }) => {
-  if (data.networkStatus === 1) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Loading />
-      </View>
-    );
-  }
-
-  if (friends.rows.length) {
-    return (
-      <FlatList
-        data={friends.rows}
-        renderItem={({ item }) => <Friends key={item.id} friend={item} onPress={onPress} />}
-        keyExtractor={(item, index) => index}
-        {...props}
+const UserFriendsList = ({ onPress, friends }) => (
+  <DataList
+    data={friends}
+    renderItem={({ item }) => (
+      <Friends
+        key={item.id}
+        friend={item}
+        onPress={onPress}
       />
-    );
-  }
+    )}
+    fetchMoreOptions={{
+      variables: { offset: friends.rows.length },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || fetchMoreResult.friends.rows.length === 0) {
+          return previousResult;
+        }
 
-  return (
-    <View style={{ padding: 24 }}>
-      <Text>No friends yet.</Text>
-    </View>
-  );
-};
+        const rows = previousResult.friends.rows.concat(fetchMoreResult.friends.rows);
 
-UsersGroupsList.propTypes = {
-  id: PropTypes.number.isRequired,
-  data: PropTypes.shape({
-    friends: PropTypes.shape({
-      rows: PropTypes.array,
-      count: PropTypes.number,
-    }),
+        return { friends: { ...previousResult.friends, ...{ rows } } };
+      },
+    }}
+  />
+);
+
+UserFriendsList.propTypes = {
+  friends: PropTypes.shape({
+    rows: PropTypes.array,
+    count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };
 
-export default UsersGroupsList;
+export default UserFriendsList;

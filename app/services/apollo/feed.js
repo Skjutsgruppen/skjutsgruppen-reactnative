@@ -100,7 +100,7 @@ subscription{
         photo 
         mapPhoto
         totalComments
-        isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -198,6 +198,7 @@ subscription{
           mapPhoto
           totalComments
           isParticipant
+          duration
           ReturnTrip {
             id
             date
@@ -330,6 +331,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         mapPhoto
         totalComments
         isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -427,6 +429,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           mapPhoto
           totalComments
           isParticipant
+          duration
           ReturnTrip {
             id
             date

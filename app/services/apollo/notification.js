@@ -56,6 +56,8 @@ subscription notification($userId: Int!) {
         photo
         mapPhoto
         totalComments
+        isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -181,6 +183,83 @@ subscription notification($userId: Int!) {
       }
       ... on Experience {
         id
+        createdAt
+        description
+        photo
+        Participants {
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+          } 
+          status
+        }
+        Trip {
+          id 
+          type 
+          description 
+          seats 
+          parentId
+          User {
+            id 
+            email 
+            firstName 
+            lastName 
+            avatar 
+            relation {
+              id 
+              email 
+              firstName
+              lastName
+              avatar
+            }
+          } 
+          TripStart {
+            name 
+            coordinates
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          time 
+          photo 
+          mapPhoto
+          totalComments
+          isParticipant
+          duration
+          ReturnTrip {
+            id
+            date
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          Recurring {
+            id
+            date
+          }
+        }
+        User {
+          id 
+          firstName 
+          lastName 
+          email 
+          avatar 
+        } 
+        totalComments
       }
     }
     read
@@ -244,6 +323,8 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           photo
           mapPhoto
           totalComments
+          isParticipant
+          duration
           ReturnTrip {
             id
             date
@@ -369,6 +450,83 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         }
         ... on Experience {
           id
+          createdAt
+          description
+          photo
+          Participants {
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+            } 
+            status
+          }
+          Trip {
+            id 
+            type 
+            description 
+            seats 
+            parentId
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+              relation {
+                id 
+                email 
+                firstName
+                lastName
+                avatar
+              }
+            } 
+            TripStart {
+              name 
+              coordinates
+            } 
+            TripEnd {
+              name 
+              coordinates
+            } 
+            Stops { 
+              name 
+              coordinates 
+            } 
+            date 
+            time 
+            photo 
+            mapPhoto
+            totalComments
+            isParticipant
+            duration
+            ReturnTrip {
+              id
+              date
+              TripStart {
+                name
+                coordinates
+              }
+              TripEnd {
+                name
+                coordinates
+              }
+            }
+            Recurring {
+              id
+              date
+            }
+          }
+          User {
+            id 
+            firstName 
+            lastName 
+            email 
+            avatar 
+          } 
+          totalComments
         }
       }
       read
@@ -542,6 +700,8 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           photo
           mapPhoto
           totalComments
+          isParticipant
+          duration
           ReturnTrip {
             id
             date
@@ -665,6 +825,86 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id
             firstName
           }
+        }
+        ... on Experience {
+          id
+          createdAt
+          description
+          photo
+          Participants {
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+            } 
+            status
+          }
+          Trip {
+            id 
+            type 
+            description 
+            seats 
+            parentId
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+              relation {
+                id 
+                email 
+                firstName
+                lastName
+                avatar
+              }
+            } 
+            TripStart {
+              name 
+              coordinates
+            } 
+            TripEnd {
+              name 
+              coordinates
+            } 
+            Stops { 
+              name 
+              coordinates 
+            } 
+            date 
+            time 
+            photo 
+            mapPhoto
+            totalComments
+            isParticipant
+            duration
+            ReturnTrip {
+              id
+              date
+              TripStart {
+                name
+                coordinates
+              }
+              TripEnd {
+                name
+                coordinates
+              }
+            }
+            Recurring {
+              id
+              date
+            }
+          }
+          User {
+            id 
+            firstName 
+            lastName 
+            email 
+            avatar 
+          } 
+          totalComments
         }
       }
       read

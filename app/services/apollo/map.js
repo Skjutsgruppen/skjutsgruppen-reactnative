@@ -49,6 +49,8 @@ mutation nearByTrips($from:[Float]!) {
         photo 
         mapPhoto
         totalComments
+        isParticipant
+        duration
         ReturnTrip {
           id
           date

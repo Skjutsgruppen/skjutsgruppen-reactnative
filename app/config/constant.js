@@ -42,11 +42,26 @@ export const NOTIFICATION_TYPE_COMMENT = 'comment';
 export const NOTIFICATION_TYPE_INVIVATION = 'invitation';
 export const NOTIFICATION_TYPE_FRIEND_REQUEST = 'friend_request';
 export const NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = 'friend_request_accepted';
+
 export const NOTIFICATION_TYPE_EXPERIENCE_TAGGED = 'experience_tagged';
 export const NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED = 'experience_accepted';
+export const NOTIFICATION_TYPE_EXPERIENCE_SHARED = 'experience_shared';
+export const NOTIFICATION_TYPE_EXPERIENCE_VOID = 'experience_void';
+export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
+
 export const RELATIONSHIP_TYPE_FRIEND = 'friend';
 export const RELATIONSHIP_TYPE_INCOMING = 'incoming';
 export const RELATIONSHIP_TYPE_OUTGOING = 'outgoing';
+
+export const SEARCH_FILTER_ASK = 'wanted';
+export const SEARCH_FILTER_OFFER = 'offered';
+export const SEARCH_FILTER_GROUP = 'group';
+export const SEARCH_FILTER_PUBLIC = 'public_transport';
+
+export const GROUP_FILTER_NEARBY = 'nearby';
+export const GROUP_FILTER_NAME = 'name';
+export const GROUP_FILTER_POPULAR = 'popular';
+export const GROUP_FILTER_RECENT = 'recent';
 
 export const GROUP_NAME_LIMIT = 22;
 

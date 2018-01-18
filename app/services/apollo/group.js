@@ -275,8 +275,8 @@ export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
 });
 
 export const FIND_GROUP_QUERY = gql`
-query findGroup($id: Int!){
-  findGroup(id: $id){
+query group($id: Int!){
+  group(id: $id){
       id
       outreach
       name
@@ -334,15 +334,9 @@ export const withFindGroup = graphql(FIND_GROUP_QUERY, {
   options: ({ id }) => ({
     variables: { id },
   }),
-  props: ({ data: { loading, findGroup, refetch, networkStatus, error } }) => {
-    let group = {};
-
-    if (findGroup) {
-      group = findGroup;
-    }
-
-    return { loading, group, refetch, networkStatus, error };
-  },
+  props: ({ data: { loading, group = {}, refetch, networkStatus, error } }) => ({
+    loading, group, refetch, networkStatus, error,
+  }),
 });
 
 export const GROUP_FEED_QUERY = gql`
@@ -463,6 +457,8 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           photo 
           mapPhoto
           totalComments
+          isParticipant
+          duration
           ReturnTrip {
             id
             date
@@ -501,6 +497,88 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
               avatar
             }
           }
+        }
+      }
+      ... on ExperienceFeed{
+        Experience{
+          id
+          createdAt
+          description
+          photo
+          Participants {
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+            } 
+            status
+          }
+          Trip {
+            id 
+            type 
+            description 
+            seats 
+            parentId
+            User {
+              id 
+              email 
+              firstName 
+              lastName 
+              avatar 
+              relation {
+                id 
+                email 
+                firstName
+                lastName
+                avatar
+              }
+            } 
+            TripStart {
+              name 
+              coordinates
+            } 
+            TripEnd {
+              name 
+              coordinates
+            } 
+            Stops { 
+              name 
+              coordinates 
+            } 
+            date 
+            time 
+            photo 
+            mapPhoto
+            totalComments
+            isParticipant
+            duration
+            ReturnTrip {
+              id
+              date
+              TripStart {
+                name
+                coordinates
+              }
+              TripEnd {
+                name
+                coordinates
+              }
+            }
+            Recurring {
+              id
+              date
+            }
+          }
+          User {
+            id 
+            firstName 
+            lastName 
+            email 
+            avatar 
+          } 
+          totalComments
         }
       }
     }
@@ -547,6 +625,7 @@ subscription groupFeed($groupId: Int!){
             id
             email
             firstName
+            lastName
             avatar
           }
         }
@@ -617,6 +696,8 @@ subscription groupFeed($groupId: Int!){
         photo 
         mapPhoto
         totalComments
+        isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -651,6 +732,7 @@ subscription groupFeed($groupId: Int!){
             id
             email
             firstName
+            lastName
             avatar
           }
         }
