@@ -177,7 +177,7 @@ const Experience = ({ experience, onPress, wrapperStyle }) => {
                 <Text> shared an experience</Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
-                <Date format="MMM DD HH:mm">{experience.createdAt}</Date>
+                <Date format="MMM DD, YYYY HH:mm">{experience.createdAt}</Date>
               </Text>
             </View>
           </View>

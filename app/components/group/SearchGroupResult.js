@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import GroupItem from '@components/feed/card/group';
 import PropTypes from 'prop-types';
-import { View, FlatList, Text } from 'react-native';
-import { Loading } from '@components/common';
+import DataList from '@components/dataList';
 
 class SearchGroupResult extends PureComponent {
   redirect = (type, detail) => {
@@ -11,88 +10,34 @@ class SearchGroupResult extends PureComponent {
     navigation.navigate('GroupDetail', { group: detail });
   }
 
-  renderFooter = () => {
-    const { loading, rows, count } = this.props.searchGroup;
-
-    if (!loading) return null;
-
-    if (rows.length >= count) {
-      return (
-        <View
-          style={{
-            paddingVertical: 60,
-            borderTopWidth: 1,
-            borderColor: '#CED0CE',
-          }}
-        />
-      );
-    }
-
-    return (
-      <View
-        style={{
-          paddingVertical: 60,
-          borderTopWidth: 1,
-          borderColor: '#CED0CE',
-        }}
-      >
-        <Loading />
-      </View>
-    );
-  }
-
-  renderSearchGroupList() {
+  render() {
     const { searchGroup, keyword } = this.props;
-    const { rows, count, networkStatus, refetch, loading, fetchMore } = searchGroup;
 
     return (
-      <FlatList
-        data={rows}
-        renderItem={({ item }) => (<GroupItem
-          min
-          onPress={this.redirect}
-          key={item.id}
-          group={item}
-        />)}
-        keyExtractor={(item, index) => index}
-        refreshing={networkStatus === 4}
-        onRefresh={() => refetch()}
-        onEndReachedThreshold={0.8}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (loading || rows.length >= count) return;
+      <DataList
+        data={searchGroup}
+        renderItem={({ item }) => (
+          <GroupItem
+            min
+            onPress={this.redirect}
+            key={item.id}
+            group={item}
+          />
+        )}
+        fetchMoreOptions={{
+          variables: { keyword, offset: searchGroup.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.searchGroup.rows.length === 0) {
+              return previousResult;
+            }
 
-          fetchMore({
-            variables: { keyword, offset: rows.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.searchGroup.length === 0) {
-                return previousResult;
-              }
-              const prevExploreGroups = previousResult.searchGroup;
-              const updatedGroup = previousResult.searchGroup.rows.concat(
-                fetchMoreResult.searchGroup.rows,
-              );
+            const rows = previousResult.searchGroup.rows.concat(fetchMoreResult.searchGroup.rows);
 
-              return { searchGroup: { ...prevExploreGroups, ...{ rows: updatedGroup } } };
-            },
-          });
+            return { searchGroup: { ...previousResult.searchGroup, ...{ rows } } };
+          },
         }}
       />
     );
-  }
-
-  render() {
-    const { error, networkStatus } = this.props.searchGroup;
-
-    if (networkStatus === 1) {
-      return <Loading />;
-    }
-
-    if (error) {
-      return <Text>Error: {error.message}</Text>;
-    }
-
-    return this.renderSearchGroupList();
   }
 }
 

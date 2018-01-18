@@ -19,6 +19,7 @@ import Moment from 'moment';
 import { withTripExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import About from '@components/common/about';
+import { getTimezone } from '@helpers/device';
 
 const OfferComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -371,6 +372,13 @@ class OfferDetail extends Component {
     navigation.goBack();
   }
 
+  isTripStarted = () => {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+
+    return Moment(offer.date).tz(getTimezone()).add(offer.duration / 2, 'second').isBefore();
+  }
+
   renderButton = () => {
     const { loading } = this.state;
     const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
@@ -381,6 +389,10 @@ class OfferDetail extends Component {
   }
 
   renderModal() {
+    const { navigation } = this.props;
+    const { offer } = navigation.state.params;
+    const canCreateExperience = offer.totalComments > 0 && offer.isParticipant;
+
     return (
       <Modal
         animationType="slide"
@@ -390,11 +402,18 @@ class OfferDetail extends Component {
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>Create your experience</Text>
-            </TouchableOpacity>
+            {
+              canCreateExperience &&
+              <TouchableOpacity
+                style={styles.action}
+                onPress={() => {
+                  this.setState({ modalVisible: false });
+                  navigation.navigate('Experience', { trip: offer });
+                }}
+              >
+                <Text style={styles.actionLabel}>Create your experience</Text>
+              </TouchableOpacity>
+            }
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
@@ -448,9 +467,8 @@ class OfferDetail extends Component {
   renderExperienceButton = () => {
     const { navigation } = this.props;
     const { offer } = navigation.state.params;
-    const tripStarted = Moment(offer.date).isBefore();
 
-    if (!offer.isParticipant || !tripStarted) return null;
+    if (offer.totalComments < 1 || !offer.isParticipant || !this.isTripStarted()) return null;
 
     return (
       <MakeExperience
@@ -622,12 +640,15 @@ class OfferDetail extends Component {
               >
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
                   <View style={styles.returnModalContent}>
-                    <ReturnRides avatar={offer.User.avatar} trips={offer.ReturnTrip} type={offer.type} />
+                    <ReturnRides
+                      avatar={offer.User.avatar}
+                      trips={offer.ReturnTrip}
+                      type={offer.type}
+                    />
                     <View style={styles.closeWrapper}>
                       <TouchableOpacity
                         style={styles.closeModal}
-                        onPress={() =>
-                          this.setReturnRidesModalVisibility(false)}
+                        onPress={() => this.setReturnRidesModalVisibility(false)}
                       >
                         <Text style={styles.actionLabel}>Cancel</Text>
                       </TouchableOpacity>

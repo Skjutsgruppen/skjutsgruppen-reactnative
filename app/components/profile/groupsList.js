@@ -1,50 +1,38 @@
 import React from 'react';
-import { View, FlatList, Text } from 'react-native';
-import { Loading } from '@components/common';
-import GroupsItem from '@components/profile/card/groups';
 import PropTypes from 'prop-types';
+import DataList from '@components/dataList';
+import GroupsItem from '@components/profile/card/groups';
 
-const UsersGroupsList = ({ userId, onPress, data, data: { groups }, ...props }) => {
-  if (data.networkStatus === 1) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Loading />
-      </View>
-    );
-  }
-
-  if (groups.rows.length !== 0) {
-    return (
-      <FlatList
-        data={groups.rows}
-        renderItem={({ item }) => (
-          <GroupsItem
-            key={item.id}
-            group={item}
-            onPress={onPress}
-            wrapperStyle={{ borderBottomWidth: 0, marginTop: 12, marginBottom: 0 }}
-          />)
-        }
-        keyExtractor={(item, index) => index}
-        {...props}
+const UsersGroupsList = ({ onPress, groups }) => (
+  <DataList
+    data={groups}
+    renderItem={({ item }) => (
+      <GroupsItem
+        key={item.id}
+        group={item}
+        onPress={onPress}
+        wrapperStyle={{ borderBottomWidth: 0, marginTop: 12, marginBottom: 0 }}
       />
-    );
-  }
+    )}
+    fetchMoreOptions={{
+      variables: { offset: groups.rows.length },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || fetchMoreResult.groups.rows.length === 0) {
+          return previousResult;
+        }
 
-  return (
-    <View style={{ padding: 24 }}>
-      <Text>No groups yet.</Text>
-    </View>
-  );
-};
+        const rows = previousResult.groups.rows.concat(fetchMoreResult.groups.rows);
+
+        return { groups: { ...previousResult.groups, ...{ rows } } };
+      },
+    }}
+  />
+);
 
 UsersGroupsList.propTypes = {
-  userId: PropTypes.number.isRequired,
-  data: PropTypes.shape({
-    groups: PropTypes.shape({
-      rows: PropTypes.array,
-      count: PropTypes.number,
-    }),
+  groups: PropTypes.shape({
+    rows: PropTypes.array,
+    count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };
