@@ -19,6 +19,7 @@ import Moment from 'moment';
 import { withTripExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import About from '@components/common/about';
+import { getTimezone } from '@helpers/device';
 
 const AskComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -353,6 +354,13 @@ class AskDetail extends Component {
     navigation.goBack();
   }
 
+  isTripStarted = () => {
+    const { navigation } = this.props;
+    const { ask } = navigation.state.params;
+
+    return Moment(ask.date).tz(getTimezone()).add(ask.duration / 2, 'second').isBefore();
+  }
+
   checkValidation() {
     const errors = [];
     const { comment } = this.state;
@@ -385,6 +393,10 @@ class AskDetail extends Component {
   }
 
   renderModal() {
+    const { navigation } = this.props;
+    const { ask } = navigation.state.params;
+    const canCreateExperience = ask.totalComments > 0 && ask.isParticipant;
+
     return (
       <Modal
         animationType="slide"
@@ -394,11 +406,18 @@ class AskDetail extends Component {
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>Create your experience</Text>
-            </TouchableOpacity>
+            {
+              canCreateExperience &&
+              <TouchableOpacity
+                style={styles.action}
+                onPress={() => {
+                  this.setState({ modalVisible: false });
+                  navigation.navigate('Experience', { trip: ask });
+                }}
+              >
+                <Text style={styles.actionLabel}>Create your experience</Text>
+              </TouchableOpacity>
+            }
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
@@ -452,9 +471,8 @@ class AskDetail extends Component {
   renderExperienceButton = () => {
     const { navigation } = this.props;
     const { ask } = navigation.state.params;
-    const tripStarted = Moment(ask.date).isBefore();
 
-    if (!ask.isParticipant || !tripStarted) return null;
+    if (ask.totalComments < 1 || !ask.isParticipant || !this.isTripStarted()) return null;
 
     return (
       <MakeExperience

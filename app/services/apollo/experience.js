@@ -130,6 +130,7 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
         mapPhoto
         totalComments
         isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -240,6 +241,7 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
         mapPhoto
         totalComments
         isParticipant
+        duration
         ReturnTrip {
           id
           date
@@ -350,6 +352,7 @@ query getExperiences($limit: Int, $offset: Int) {
         mapPhoto
         totalComments
         isParticipant
+        duration
         ReturnTrip {
           id
           date

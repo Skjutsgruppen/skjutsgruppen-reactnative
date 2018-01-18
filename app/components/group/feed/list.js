@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Modal, StyleSheet, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import Item from '@components/group/feed/item';
 import { compose } from 'react-apollo';
@@ -9,6 +8,7 @@ import { withShare } from '@services/apollo/auth';
 import Share from '@components/common/share';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import RelationModal from '@components/relationModal';
+import DataList from '@components/dataList';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -62,6 +62,10 @@ class GroupFeed extends Component {
     if (type === 'profile') {
       navigation.navigate('UserProfile', { profileId: detail });
     }
+
+    if (type === 'experience') {
+      navigation.navigate('ExperienceDetail', { experience: detail });
+    }
   };
 
   onSharePress = (modalType, modalDetail) => {
@@ -86,7 +90,7 @@ class GroupFeed extends Component {
     this.setState({ friendsData: data });
   }
 
-  renderFofModal() {
+  renderModal() {
     return (
       <RelationModal
         users={this.state.friendsData}
@@ -96,37 +100,6 @@ class GroupFeed extends Component {
       />
     );
   }
-  renderFooter = () => {
-    const { loading, rows, count } = this.props.groupFeed;
-
-    if (rows && rows.length < 1) {
-      return (
-        <Text style={styles.infoText}>No feeds</Text>
-      );
-    }
-
-    if (rows.length >= count) {
-      return (
-        <View
-          style={{
-            paddingVertical: 60,
-            borderTopWidth: 1,
-            borderColor: 'transparent',
-          }}
-        />
-      );
-    }
-
-    if (!loading) return null;
-
-    return (
-      <View
-        style={styles.loadingWrapper}
-      >
-        <Loading />
-      </View>
-    );
-  };
 
   renderShareModal() {
     return (
@@ -148,64 +121,36 @@ class GroupFeed extends Component {
   }
 
   render() {
-    const { rows, error, count, networkStatus, refetch, loading, fetchMore } = this.props.groupFeed;
-    if (networkStatus === 1) {
-      return (
-        <View
-          style={styles.loadingWrapper}
-        >
-          <Loading />
-        </View>
-      );
-    }
-
-    if (error) {
-      return (
-        <Text style={styles.infoText}>{error}</Text>
-      );
-    }
+    const { groupFeed, header } = this.props;
 
     return (
-      <View style={styles.wrapper} >
-        <FlatList
-          data={rows}
-          renderItem={({ item }) => (<Item
-            onPress={this.onPress}
-            onSharePress={this.onSharePress}
-            groupFeed={item}
-            setModalVisibility={this.setModalVisibility}
-          />)}
-          keyExtractor={(item, index) => index}
-          refreshing={networkStatus === 4}
-          onRefresh={() => refetch()}
-          onEndReachedThreshold={0.5}
-          ListHeaderComponent={this.props.header}
-          ListFooterComponent={this.renderFooter}
-          onEndReached={() => {
-            if (loading || rows.length >= count) return;
+      <View style={styles.wrapper}>
+        <DataList
+          data={groupFeed}
+          header={header}
+          renderItem={({ item }) => (
+            <Item
+              onPress={this.onPress}
+              onSharePress={this.onSharePress}
+              groupFeed={item}
+              setModalVisibility={this.setModalVisibility}
+            />
+          )}
+          fetchMoreOptions={{
+            variables: { offset: groupFeed.rows.length },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              if (!fetchMoreResult || fetchMoreResult.groupFeed.rows.length === 0) {
+                return previousResult;
+              }
 
-            fetchMore({
-              variables: { offset: rows.length },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                if (!fetchMoreResult || fetchMoreResult.groupFeed.rows.length === 0) {
-                  return previousResult;
-                }
+              const rows = previousResult.groupFeed.rows.concat(fetchMoreResult.groupFeed.rows);
 
-                const newRows = previousResult.groupFeed.rows.concat(
-                  fetchMoreResult.groupFeed.rows,
-                );
-                return {
-                  groupFeed: {
-                    ...previousResult.groupFeed,
-                    ...{ rows: newRows },
-                  },
-                };
-              },
-            });
+              return { groupFeed: { ...previousResult.groupFeed, ...{ rows } } };
+            },
           }}
         />
         {this.renderShareModal()}
-        {this.state.showFofModal && this.renderFofModal()}
+        {this.state.showFofModal && this.renderModal()}
       </View>
     );
   }

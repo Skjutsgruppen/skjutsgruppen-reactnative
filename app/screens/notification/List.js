@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
-import { Wrapper, Loading, NavBar } from '@components/common';
+import { StyleSheet, View, Text } from 'react-native';
+import { Wrapper, NavBar } from '@components/common';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
 import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
+import DataList from '@components/dataList';
 
 const styles = StyleSheet.create({
   section: {
@@ -39,88 +40,35 @@ class NewNotification extends PureComponent {
     navigation.goBack();
   }
 
-  renderFooter = () => {
-    const { loading, rows, count } = this.props.notifications;
-
-    if (rows.length >= count) {
-      return (
-        <View
-          style={styles.footer}
-        />
-      );
-    }
-
-    if (!loading) return null;
-
-    return (
-      <View
-        style={styles.spacedWrapper}
-      >
-        <Loading />
-      </View>
-    );
-  };
-
   renderNotification = () => {
     const { notifications, navigation, filters } = this.props;
 
-    if (notifications.count > 0) {
-      return (<FlatList
-        data={notifications.rows}
-        renderItem={
-          ({ item }) => (<MesssageItem
+    return (
+      <DataList
+        data={notifications}
+        renderItem={({ item }) => (
+          <MesssageItem
             key={item.id}
             navigation={navigation}
             filters={filters}
             notification={item}
-          />)
-        }
-        keyExtractor={(item, index) => index}
-        refreshing={notifications.networkStatus === 4}
-        onRefresh={() => notifications.refetch()}
-        onEndReachedThreshold={0.8}
-        ListFooterComponent={this.renderFooter}
-        onEndReached={() => {
-          if (notifications.loading || notifications.rows.length >= notifications.count) return;
-          notifications.fetchMore({
-            variables: { offset: notifications.rows.length },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.notifications.rows.length === 0) {
-                return previousResult;
-              }
+          />
+        )}
+        fetchMoreOptions={{
+          variables: { offset: notifications.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.notifications.rows.length === 0) {
+              return previousResult;
+            }
 
-              const rows = previousResult.notifications.rows.concat(
-                fetchMoreResult.notifications.rows,
-              );
+            const rows = previousResult.notifications.rows.concat(
+              fetchMoreResult.notifications.rows,
+            );
 
-              return { notifications: { ...previousResult.notifications, ...{ rows } } };
-            },
-          });
+            return { notifications: { ...previousResult.notifications, ...{ rows } } };
+          },
         }}
       />);
-    }
-
-    if (notifications.loading) {
-      return (
-        <View
-          style={styles.spacedWrapper}
-        >
-          <Loading />
-        </View>
-      );
-    }
-
-    if (!notifications.rows || notifications.rows.length < 1) {
-      return (
-        <View
-          style={styles.spacedWrapper}
-        >
-          <Text>No Message.</Text>
-        </View>
-      );
-    }
-
-    return null;
   }
 
   render() {

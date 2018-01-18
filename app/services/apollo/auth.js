@@ -129,7 +129,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
 
 const FRIEND_QUERY = gql`
 query friends($id:Int, $limit: Int, $offset: Int,){ 
-    friends(input:{id:$id, limit: $limit, offset: $offset}) { 
+    friends(id:$id, limit: $limit, offset: $offset) { 
       rows {
         id 
         email 
@@ -149,7 +149,7 @@ export const withFriends = graphql(FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, friends } }) => {
+  props: ({ data: { loading, friends, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
 
@@ -158,13 +158,13 @@ export const withFriends = graphql(FRIEND_QUERY, {
       count = friends.count;
     }
 
-    return { friends: { loading, rows, count } };
+    return { friends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });
 
 const BEST_FRIEND_QUERY = gql`
 query bestFriends($id:Int, $limit: Int, $offset: Int,){ 
-    bestFriends(input:{id:$id, limit: $limit, offset: $offset}) { 
+    bestFriends(id:$id, limit: $limit, offset: $offset) { 
       rows {
         id 
         email 
@@ -184,7 +184,7 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, bestFriends } }) => {
+  props: ({ data: { loading, bestFriends, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
 
@@ -192,7 +192,7 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
       rows = bestFriends.rows;
       count = bestFriends.count;
     }
-    return { bestFriends: { loading, rows, count } };
+    return { bestFriends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });
 
@@ -261,7 +261,7 @@ export const withGroups = graphql(GROUPS_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, groups, error, refetch } }) => {
+  props: ({ data: { loading, groups, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
 
@@ -269,7 +269,8 @@ export const withGroups = graphql(GROUPS_QUERY, {
       rows = groups.rows;
       count = groups.count;
     }
-    return { groups: { loading, rows, count, error, refetch } };
+
+    return { groups: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });
 
@@ -313,6 +314,7 @@ query trips($id:Int, $type:String){
       photo 
       mapPhoto
       totalComments
+      isParticipant
       ReturnTrip {
         id
         date
@@ -337,11 +339,11 @@ query trips($id:Int, $type:String){
 
 export const withTrips = graphql(TRIPS_QUERY, {
   options: (
-    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
+    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = false },
   ) => ({
     variables: { id, offset, limit, type, active },
   }),
-  props: ({ data: { loading, trips, error, refetch } }) => {
+  props: ({ data: { loading, trips, error, networkStatus, refetch, fetchMore } }) => {
     let rows = [];
     let count = 0;
 
@@ -349,7 +351,7 @@ export const withTrips = graphql(TRIPS_QUERY, {
       rows = trips.rows;
       count = trips.count;
     }
-    return { trips: { loading, rows, count, error, refetch } };
+    return { trips: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
   },
 });
 
@@ -409,6 +411,7 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
         mapPhoto
         totalComments
         isParticipant
+        duration
         ReturnTrip {
           id
           date
