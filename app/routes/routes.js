@@ -3,6 +3,7 @@ import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { BackHandler, StatusBar } from 'react-native';
+import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import { AppNavigator } from './routeProvider';
 
 class Router extends Component {
@@ -77,7 +78,12 @@ class Router extends Component {
       state: nav,
     });
 
-    return (<AppNavigator navigation={navigation} />);
+    return (
+      <AppNavigator
+        navigation={navigation}
+        screenProps={{ feed: { filterType: FEED_FILTER_EVERYTHING } }}
+      />
+    );
   }
 }
 
