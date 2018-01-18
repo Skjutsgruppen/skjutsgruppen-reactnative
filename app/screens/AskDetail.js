@@ -19,11 +19,8 @@ import Moment from 'moment';
 import { withTripExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import About from '@components/common/about';
-<<<<<<< HEAD
 import { getTimezone } from '@helpers/device';
-=======
 import { trans } from '@lang/i18n';
->>>>>>> Localization in feed trip detail and share modal
 
 const AskComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);

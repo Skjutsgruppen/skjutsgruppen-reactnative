@@ -4,10 +4,15 @@ import Group from '@components/feed/card/group';
 import Offer from '@components/feed/card/offer';
 import Ask from '@components/feed/card/ask';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
-import ListItem from './listItem';
+import ListItem from '@components/search/listItem';
+import PublicTransportItem from '@components/search/publicTransportItem';
 
 const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
   if (resultsStyle === 'list') {
+    if (searchResult.url) {
+      return (<PublicTransportItem publicTransport={searchResult} />);
+    }
+
     const image = { uri: searchResult.User.avatar };
     return (
       <ListItem
@@ -24,6 +29,8 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
     return (<Ask onPress={onPress} onSharePress={onSharePress} ask={searchResult} />);
   } else if (searchResult.type === FEED_TYPE_OFFER) {
     return (<Offer onPress={onPress} onSharePress={onSharePress} offer={searchResult} />);
+  } else if (searchResult.url) {
+    return null;
   }
 
   return (<Group onPress={onPress} onSharePress={onSharePress} group={searchResult} />);
