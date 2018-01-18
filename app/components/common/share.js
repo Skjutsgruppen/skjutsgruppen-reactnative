@@ -9,6 +9,7 @@ import CustomButton from '@components/common/customButton';
 import CheckIcon from '@icons/icon_check_white.png';
 import Colors from '@theme/colors';
 import FriendList from '@components/friendList';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -278,18 +279,16 @@ class Share extends Component {
           this.isModal() &&
           <View style={styles.navBar}>
             <CloseButton onPress={this.onClose} />
-            <Text style={styles.pageTitle} >Share with</Text>
+            <Text style={styles.pageTitle} >{trans('global.share_with')}</Text>
             <View style={styles.map} />
           </View>
         }
         <View style={styles.listWrapper}>
           {!this.isModal() &&
             <View style={styles.infoTextWrapper}>
-              <Text style={styles.title}> Invite & Publish</Text>
+              <Text style={styles.title}> {trans('global.invite_and_publish')}</Text>
               <Text style={styles.text}>
-                Participants who are part of the movement will
-                be automatically added to the group when yo invite them.
-                Others who are not participants yet will get a link.
+                {trans('global.participants_who_are_part_of_movement')}
               </Text>
             </View>
           }
@@ -297,7 +296,7 @@ class Share extends Component {
             <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
             <TextInput
               style={styles.searchField}
-              placeholder="Search"
+              placeholder={trans('global.search')}
             />
           </View>
           {!this.isModal() &&
@@ -306,7 +305,7 @@ class Share extends Component {
             >
               <View style={styles.shareItem}>
                 <View style={styles.defaultSelectedIcon} />
-                <Text style={styles.shareLabel}>Publish to the whole movement</Text>
+                <Text style={styles.shareLabel}>{trans('global.publish_to_whole_movement')}</Text>
                 <View
                   style={styles.shareToggleGray}
                 >
@@ -321,8 +320,8 @@ class Share extends Component {
             <View style={styles.shareItem}>
               <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
               <View style={styles.shareLabel}>
-                <Text>Copy to clipboard</Text>
-                <Text style={styles.smallText}>Paste whereever you want</Text>
+                <Text>{trans('global.copy_to_clipboard')}</Text>
+                <Text style={styles.smallText}>{trans('global.paste_wherever_you_want')}</Text>
               </View>
               <View
                 style={[styles.shareToggle, this.hasOption('social', 'copy_to_clip') ? styles.shareToggleActive : {}]}
@@ -341,7 +340,7 @@ class Share extends Component {
               <View style={styles.shareItemIconWrapper}>
                 <Image source={require('@icons/icon_facebook.png')} style={styles.shareItemIcon} />
               </View>
-              <Text>Your Facebook Timeline</Text>
+              <Text>{trans('global.your_fb_timeline')}</Text>
               <View
                 style={[styles.shareToggle, this.hasOption('social', 'facebook') ? styles.shareToggleActive : {}]}
               >
@@ -359,7 +358,7 @@ class Share extends Component {
               <View style={styles.shareItemIconWrapper}>
                 <Image source={require('@icons/icon_twitter.png')} style={styles.shareItemIcon} />
               </View>
-              <Text>Tweet</Text>
+              <Text>{trans('global.tweet')}</Text>
               <View
                 style={[styles.shareToggle, this.hasOption('social', 'tweet') ? styles.shareToggleActive : {}]}
               >
@@ -379,7 +378,7 @@ class Share extends Component {
           bgColor="#38ad9e"
           style={styles.button}
         >
-          Share
+          {trans('global.share')}
         </CustomButton>
       </Wrapper>
     );
