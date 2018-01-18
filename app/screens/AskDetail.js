@@ -556,9 +556,14 @@ class AskDetail extends Component {
 
     const markedDates = {};
     let selectedDate = '';
+    let tripDate = '';
 
-    ask.Recurring.forEach((trip) => {
-      selectedDate = Moment(trip.date);
+    ask.Recurring.forEach((trip, index) => {
+      selectedDate = Moment(trip.date).tz(getTimezone());
+      if (index === 0) {
+        tripDate = selectedDate.format('YYYY-MM-DD');
+      }
+
       markedDates[selectedDate.format('YYYY-MM-DD')] = [
         {
           startingDay: true,
@@ -603,7 +608,7 @@ class AskDetail extends Component {
               <Text> asks for a ride.</Text>
             </Text>
             <Text style={styles.fromTo}>{ask.TripStart.name} - {ask.TripEnd.name}</Text>
-            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD HH:mm">{ask.date}</Date></Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{ask.date}</Date></Text>
             {
               ask.Stops.length > 0 &&
               <Text style={[styles.text, styles.lightText]}>
@@ -671,6 +676,7 @@ class AskDetail extends Component {
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
                   <View style={styles.returnModalContent}>
                     <Calendar
+                      current={tripDate}
                       markedDates={markedDates}
                       markingType="interactive"
                       hideExtraDays
