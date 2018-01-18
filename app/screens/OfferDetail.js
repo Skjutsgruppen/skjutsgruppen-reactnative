@@ -19,7 +19,11 @@ import Moment from 'moment';
 import { withTripExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import About from '@components/common/about';
+<<<<<<< HEAD
 import { getTimezone } from '@helpers/device';
+=======
+import { trans } from '@lang/i18n';
+>>>>>>> Localization in feed trip detail and share modal
 
 const OfferComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -411,44 +415,44 @@ class OfferDetail extends Component {
                   navigation.navigate('Experience', { trip: offer });
                 }}
               >
-                <Text style={styles.actionLabel}>Create your experience</Text>
+                <Text style={styles.actionLabel}>{trans('trip.create_your_experience')}</Text>
               </TouchableOpacity>
             }
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Share your live location </Text>
+              <Text style={styles.actionLabel}>{trans('trip.share_your_live_location')} </Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Mute two hours</Text>
+              <Text style={styles.actionLabel}>{trans('trip.mute_two_hours')}</Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Mute one day</Text>
+              <Text style={styles.actionLabel}>{trans('trip.mute_one_day')}</Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Mute forever</Text>
+              <Text style={styles.actionLabel}>{trans('trip.mute_forever')}</Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Embeded with HTML</Text>
+              <Text style={styles.actionLabel}>{trans('trip.embeded_with_html')}</Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
             >
-              <Text style={styles.actionLabel}>Report this ride</Text>
+              <Text style={styles.actionLabel}>{trans('trip.report_this_ride')}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.closeWrapper}>
@@ -456,7 +460,7 @@ class OfferDetail extends Component {
               style={styles.closeModal}
               onPress={() => this.setModalVisible(!this.state.modalVisible)}
             >
-              <Text style={styles.actionLabel}>Cancel</Text>
+              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -515,7 +519,7 @@ class OfferDetail extends Component {
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           placeholderTextColor="#000"
-          placeholder="Write"
+          placeholder={trans('global.write')}
           multiline
           underlineColorAndroid="transparent"
           autoCorrect={false}
@@ -532,8 +536,8 @@ class OfferDetail extends Component {
       {
         this.state.writingComment &&
         <View style={styles.footerSocialSection}>
-          <Text>A post on your Facebook timeline</Text>
-          <Text style={{ marginLeft: 12 }}>A Tweet</Text>
+          <Text>{trans('trip.a_post_on_your_fb_timeline')}</Text>
+          <Text style={{ marginLeft: 12 }}>{trans('trip.a_tweet')}</Text>
         </View>
       }
     </View>
@@ -602,14 +606,14 @@ class OfferDetail extends Component {
               <Text style={styles.username} onPress={() => { }}>
                 {offer.User.firstName || offer.User.email}
               </Text>
-              <Text> offers {offer.seats} {offer.seats > 1 ? 'seats' : 'seat'} </Text>
+              <Text> {trans('feed.offers')} {offer.seats} {offer.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
             </Text>
             <Text style={styles.fromTo}>{offer.TripStart.name} - {offer.TripEnd.name}</Text>
             <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{offer.date}</Date></Text>
             {
               offer.Stops.length > 0 &&
               <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.stopsLabel}>Stops in </Text>
+                <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
                 {offer.Stops.map(place => place.name).join(', ')}
               </Text>
             }
@@ -621,7 +625,7 @@ class OfferDetail extends Component {
                   onPress={() => this.setReturnRidesModalVisibility(true)}
                 >
                   <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>Return</Text>
+                  <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
                 </TouchableOpacity>
               }
               {
@@ -631,7 +635,7 @@ class OfferDetail extends Component {
                   onPress={() => this.setRecurringRidesModalVisibility(true)}
                 >
                   <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>Recurring</Text>
+                  <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
                 </TouchableOpacity>
               }
             </View>
@@ -655,7 +659,7 @@ class OfferDetail extends Component {
                         style={styles.closeModal}
                         onPress={() => this.setReturnRidesModalVisibility(false)}
                       >
-                        <Text style={styles.actionLabel}>Cancel</Text>
+                        <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -684,7 +688,7 @@ class OfferDetail extends Component {
                         onPress={() =>
                           this.setRecurringRidesModalVisibility(false)}
                       >
-                        <Text style={styles.actionLabel}>Cancel</Text>
+                        <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -698,7 +702,7 @@ class OfferDetail extends Component {
           {
             offer.User.relation.length > 0 &&
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <Text>This is how you know {offer.User.firstName}</Text>
+              <Text>{trans('trip.this_is_how_you_know')} {offer.User.firstName}</Text>
               <Relation
                 navigation={navigation}
                 users={offer.User.relation}

@@ -13,6 +13,7 @@ import {
   trip as tripEn,
   addGroup as addGroupEn,
   setting as settingEn,
+  about as aboutEn,
 } from '@lang/locales/en';
 import {
   global as globalSe,
@@ -25,6 +26,7 @@ import {
   trip as tripSe,
   addGroup as addGroupSe,
   setting as settingSe,
+  about as aboutSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -41,6 +43,7 @@ I18n.translations = {
     trip: tripEn,
     addGroup: addGroupEn,
     setting: settingEn,
+    about: aboutEn,
   },
   se: {
     global: globalSe,
@@ -53,6 +56,7 @@ I18n.translations = {
     trip: tripSe,
     addGroup: addGroupSe,
     setting: settingSe,
+    about: aboutSe,
   },
 };
 
