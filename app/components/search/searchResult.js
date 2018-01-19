@@ -15,6 +15,9 @@ import {
   FEED_TYPE_PUBLIC_TRANSPORT,
   FEED_TYPE_GROUP,
   FEED_TYPE_WANTED,
+  FEEDABLE_GROUP,
+  FEEDABLE_TRIP,
+  FEEDABLE_PROFILE,
 } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -100,19 +103,16 @@ class SearchResult extends Component {
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
-    if (type === FEED_TYPE_GROUP) {
+
+    if (type === FEEDABLE_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
-    if (type === 'offer') {
-      navigation.navigate('OfferDetail', { offer: detail });
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('TripDetail', { trip: detail });
     }
 
-    if (type === 'ask') {
-      navigation.navigate('AskDetail', { ask: detail });
-    }
-
-    if (type === 'profile') {
+    if (type === FEEDABLE_PROFILE) {
       navigation.navigate('UserProfile', { profileId: detail });
     }
   };
@@ -121,9 +121,8 @@ class SearchResult extends Component {
     this.setState({ isOpen: true, isGroup: isGroup !== FEED_TYPE_GROUP });
   };
 
-
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === FEED_TYPE_GROUP ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
