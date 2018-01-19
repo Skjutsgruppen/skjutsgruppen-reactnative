@@ -8,6 +8,7 @@ import Colors from '@theme/colors';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -80,7 +81,8 @@ class UserTrips extends Component {
   }
 
   render() {
-    const { userId, type } = this.props.navigation.state.params;
+    const { userId } = this.props.navigation.state.params || this.props.user.id;
+    const { type } = this.props.navigation.state.params;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -107,6 +109,11 @@ UserTrips.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.numeric,
+  }).isRequired,
 };
 
-export default compose(withShare)(UserTrips);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withShare, connect(mapStateToProps))(UserTrips);
