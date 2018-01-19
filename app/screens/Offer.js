@@ -11,13 +11,14 @@ import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
 import { Loading, Wrapper, Container } from '@components/common';
-import { submitOffer } from '@services/apollo/trip';
+import { withCreateTrip } from '@services/apollo/trip';
 import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import Colors from '@theme/colors';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
+import { FEED_TYPE_OFFER } from '@config/constant';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -255,10 +256,11 @@ class Offer extends Component {
       seats: seat,
       flexibilityInfo: date.flexibilityInfo,
       share,
+      type: FEED_TYPE_OFFER,
     };
 
     try {
-      this.props.submit(rideData).then((res) => {
+      this.props.createTrip(rideData).then((res) => {
         if (share.social.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
@@ -395,7 +397,7 @@ class Offer extends Component {
 }
 
 Offer.propTypes = {
-  submit: PropTypes.func.isRequired,
+  createTrip: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.object,
     navigate: PropTypes.func,
@@ -405,4 +407,4 @@ Offer.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default compose(submitOffer, connect(mapStateToProps))(Offer);
+export default compose(withCreateTrip, connect(mapStateToProps))(Offer);

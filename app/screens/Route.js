@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
-
+import { FEED_TYPE_WANTED, FEED_TYPE_OFFER } from '@config/constant';
 import { FloatingNavbar } from '@components/common';
 import TripMarker from '@components/map/roundMarker';
 
@@ -95,9 +95,11 @@ class Route extends PureComponent {
     const { type } = navigation.state.params;
 
     let color = null;
-    if (type === 'ask') {
+    if (FEED_TYPE_WANTED === type) {
       color = 'blue';
-    } else {
+    }
+
+    if (FEED_TYPE_OFFER === type) {
       color = 'pink';
     }
 

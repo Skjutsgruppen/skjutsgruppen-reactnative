@@ -13,7 +13,7 @@ import Colors from '@theme/colors';
 import { FloatingNavbar } from '@components/common';
 import ShareIcon from '@icons/ic_share_white.png';
 import Date from '@components/date';
-import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { FEEDABLE_EXPERIENCE } from '@config/constant';
 import Share from '@components/common/share';
 import { withShare } from '@services/apollo/auth';
 import { withMoreExperiences } from '@services/apollo/experience';
@@ -93,7 +93,7 @@ class ExperienceDetail extends Component {
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.experience.id, type: 'Experience', share })
+    this.props.share({ id: this.state.experience.id, type: FEEDABLE_EXPERIENCE, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -111,13 +111,7 @@ class ExperienceDetail extends Component {
     const { navigation } = this.props;
     const { experience } = this.state;
 
-    if (experience.Trip.type === FEED_TYPE_OFFER) {
-      navigation.navigate('OfferDetail', { offer: experience.Trip });
-    }
-
-    if (experience.Trip.type === FEED_TYPE_WANTED) {
-      navigation.navigate('AskDetail', { ask: experience.Trip });
-    }
+    navigation.navigate('TripDetail', { trip: experience.Trip });
   }
 
   renderParticipants = () => {

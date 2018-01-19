@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Ima
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
+import { FEEDABLE_EXPERIENCE, FEEDABLE_PROFILE } from '@config/constant';
 
 const cardHeight = 350;
 const profilePicSize = 60;
@@ -161,7 +162,7 @@ const Experience = ({ experience, onPress, wrapperStyle }) => {
   return (
     <View style={[styles.wrapper, wrapperStyle]} >
       <TouchableWithoutFeedback
-        onPress={() => onPress('experience', experience)}
+        onPress={() => onPress(FEEDABLE_EXPERIENCE, experience)}
         style={styles.flex1}
       >
         <View style={styles.flex1}>
@@ -188,7 +189,7 @@ const Experience = ({ experience, onPress, wrapperStyle }) => {
         </View>
       </TouchableWithoutFeedback>
       <TouchableOpacity
-        onPress={() => onPress('profile', experience.User.id)}
+        onPress={() => onPress(FEEDABLE_PROFILE, experience.User.id)}
         style={styles.profilePicWrapper}
       >
         {profileImage}

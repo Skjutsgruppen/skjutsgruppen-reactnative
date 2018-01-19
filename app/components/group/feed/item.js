@@ -62,7 +62,11 @@ const GroupFeedItem = ({ groupFeed, onPress, setModalVisibility }) => {
       <View>
         <Feed feed={groupFeed} onPressUser={onPress} setModalVisibility={setModalVisibility} />
         <View style={styles.wrapper}>
-          <TouchableOpacity key={groupFeed.Experience.id} onPress={() => onPress('experience', groupFeed.Experience)} style={styles.experience}>
+          <TouchableOpacity
+            key={groupFeed.Experience.id}
+            onPress={() => onPress(FEEDABLE_EXPERIENCE, groupFeed.Experience)}
+            style={styles.experience}
+          >
             <Image source={{ uri: groupFeed.Experience.photo }} style={styles.image} />
           </TouchableOpacity>
         </View>
