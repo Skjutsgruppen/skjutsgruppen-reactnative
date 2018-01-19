@@ -274,6 +274,66 @@ export const withGroups = graphql(GROUPS_QUERY, {
   },
 });
 
+const TRIPS_SUBSCRIPTION_QUERY = gql`
+  subscription myTrip($userId: Int!){
+    myTrip(userId:$userId){
+      id 
+      type 
+      description 
+      seats 
+      parentId
+      User {
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+        relation {
+          id 
+          email 
+          firstName
+          lastName
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      isParticipant
+      ReturnTrip {
+        id
+        date
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+      }
+      Recurring {
+        id
+        date
+      }
+    }
+  }
+`;
+
 const TRIPS_QUERY = gql`
 query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: Int ){ 
   trips(input:{userId:$id, type:$type, active:$active}, limit: $limit, offset: $offset) { 
@@ -343,7 +403,19 @@ export const withTrips = graphql(TRIPS_QUERY, {
   ) => ({
     variables: { id, offset, limit, type, active },
   }),
-  props: ({ data: { loading, trips, error, networkStatus, refetch, fetchMore } }) => {
+  props: (
+    {
+      data: {
+        loading,
+        trips,
+        error,
+        networkStatus,
+        refetch,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -351,7 +423,26 @@ export const withTrips = graphql(TRIPS_QUERY, {
       rows = trips.rows;
       count = trips.count;
     }
-    return { trips: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
+
+    return {
+      trips: { loading, rows, count, error, networkStatus, subscribeToMore, refetch, fetchMore },
+      subscribeToNewTrip: param => subscribeToMore({
+        document: TRIPS_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const newTrip = subscriptionData.data.myTrip;
+          rows = [newTrip].concat(prev.trips.rows);
+
+          return {
+            trips: { ...prev.trips, ...{ rows, count: prev.trips.count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
 
