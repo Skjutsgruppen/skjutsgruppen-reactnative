@@ -101,6 +101,7 @@ subscription{
         mapPhoto
         totalComments
         duration
+        isParticipant
         ReturnTrip {
           id
           date

@@ -133,6 +133,7 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           feeds.getFeed.rows.map((feed) => {
             if (feed.feedable === 'Trip' && feed.Trip.id === variables.id) {
               feed.Trip.totalComments += 1;
+              feed.Trip.isParticipant = true;
             }
 
             return feed;
