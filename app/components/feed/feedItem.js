@@ -32,11 +32,13 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
   }
 
   if (feed.feedable === FEEDABLE_EXPERIENCE) {
-    return (<Experience
-      onPress={onPress}
-      onSharePress={onSharePress}
-      experience={feed.Experience}
-    />);
+    return (
+      <Experience
+        onPress={onPress}
+        onSharePress={onSharePress}
+        experience={feed.Experience}
+      />
+    );
   }
 
   return null;

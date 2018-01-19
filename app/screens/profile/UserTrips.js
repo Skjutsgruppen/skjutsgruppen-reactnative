@@ -7,6 +7,7 @@ import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
+import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -31,16 +32,12 @@ class UserTrips extends Component {
   onPress = (type, detail) => {
     const { navigation } = this.props;
 
-    if (type === 'profile') {
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('TripDetail', { trip: detail });
+    }
+
+    if (type === FEEDABLE_PROFILE) {
       navigation.navigate('UserProfile', { profileId: detail });
-    }
-
-    if (type === 'ask') {
-      navigation.navigate('AskDetail', { ask: detail });
-    }
-
-    if (type === 'offer') {
-      navigation.navigate('OfferDetail', { offer: detail });
     }
   }
 
@@ -92,6 +89,7 @@ class UserTrips extends Component {
           <Trips
             id={userId}
             type={type}
+            active={null}
             onPress={this.onPress}
             onSharePress={this.onSharePress}
           />

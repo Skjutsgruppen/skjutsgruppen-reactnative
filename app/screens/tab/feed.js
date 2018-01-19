@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Alert } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper } from '@components/common';
@@ -14,7 +14,18 @@ import FeedIconActive from '@icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
-import { FEED_FILTER_EVERYTHING, EXPERIENCE_AFTER_CARDS, EXPERIENCE_FETCH_LIMIT } from '@config/constant';
+import {
+  FEEDABLE_TRIP,
+  FEEDABLE_GROUP,
+  FEED_FILTER_EVERYTHING,
+  EXPERIENCE_AFTER_CARDS,
+  EXPERIENCE_FETCH_LIMIT,
+  FEEDABLE_PROFILE,
+  FEEDABLE_NEWS,
+  FEEDABLE_EXPERIENCE,
+  FEED_FILTER_NEARBY,
+} from '@config/constant';
+
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
@@ -81,7 +92,10 @@ class Feed extends Component {
       isOpen: false,
       filterOpen: false,
       filterType: FEED_FILTER_EVERYTHING,
-      coordinates: [],
+      latitude: '',
+      longitude: '',
+      locationError: false,
+      currentLocation: false,
       totalExperiences: 0,
     });
   }
@@ -89,7 +103,7 @@ class Feed extends Component {
   componentWillMount() {
     const { params } = this.props.navigation.state;
     const { feeds, subscribeToFeed, screenProps } = this.props;
-    const filterType = screenProps.feed.filterType;
+    const { filterType } = screenProps.feed;
     this.setState({ filterType });
 
     if (params && typeof params.refetch !== 'undefined') {
@@ -99,33 +113,26 @@ class Feed extends Component {
     subscribeToFeed();
   }
 
-  onExperiencePress = () => {
-    this.props.navigation.navigate('ExperienceDetail');
-  };
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
-    if (type === 'group') {
+    if (type === FEEDABLE_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
-    if (type === 'offer') {
-      navigation.navigate('OfferDetail', { offer: detail });
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('TripDetail', { trip: detail });
     }
 
-    if (type === 'ask') {
-      navigation.navigate('AskDetail', { ask: detail });
-    }
-
-    if (type === 'profile') {
+    if (type === FEEDABLE_PROFILE) {
       navigation.navigate('UserProfile', { profileId: detail });
     }
 
-    if (type === 'news') {
+    if (type === FEEDABLE_NEWS) {
       navigation.navigate('NewsDetail', { news: detail });
     }
 
-    if (type === 'experience') {
+    if (type === FEEDABLE_EXPERIENCE) {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
@@ -135,7 +142,7 @@ class Feed extends Component {
   };
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -149,10 +156,14 @@ class Feed extends Component {
   }
 
   onFilterChange = (type) => {
-    const { filterType, coordinates } = this.state;
-    if (type !== filterType) {
+    const { filterType, longitude, latitude } = this.state;
+    if (type === FEED_FILTER_NEARBY && (longitude === '' || latitude === '')) {
+      this.currentLocation();
+      Alert.alert('Location Error', 'Could not find your location. Please enable location service or try again.');
+      this.setFilterVisibility(false);
+    } else if (type !== filterType) {
       this.setState({ filterType: type }, () => {
-        this.props.feeds.refetch({ offset: 0, filter: { type, from: coordinates } });
+        this.props.feeds.refetch({ offset: 0, filter: { type, from: [longitude, latitude] } });
       });
       this.setFilterVisibility(false);
     }
@@ -180,6 +191,7 @@ class Feed extends Component {
       } else {
         this.setState({ locationError: true });
       }
+      console.warn(error);
     }
   }
 
@@ -228,6 +240,7 @@ class Feed extends Component {
     const offset = ((indexPlusOne / EXPERIENCE_AFTER_CARDS) - 1) * EXPERIENCE_FETCH_LIMIT;
     const isLimitNotExceeded = totalExperiences > offset;
     const isEverythingFilter = this.state.filterType === FEED_FILTER_EVERYTHING;
+
 
     if (isLimitNotExceeded && isRenderable && isEverythingFilter) {
       return (

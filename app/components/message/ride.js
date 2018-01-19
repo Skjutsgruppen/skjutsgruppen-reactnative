@@ -5,7 +5,6 @@ import { Loading } from '@components/common';
 import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
-import { FEED_TYPE_OFFER } from '@config/constant';
 import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
@@ -80,16 +79,7 @@ const renderPic = (photo) => {
 
 const item = (trip, navigation) => (
   <TouchableOpacity
-    onPress={() => {
-      let nav = 'AskDetail';
-      let params = { ask: trip };
-      if (trip.type === FEED_TYPE_OFFER) {
-        nav = 'OfferDetail';
-        params = { offer: trip };
-      }
-
-      navigation.navigate(nav, params);
-    }}
+    onPress={() => navigation.navigate('TripDetail', { trip })}
     key={trip.id}
   >
     <View style={styles.list}>

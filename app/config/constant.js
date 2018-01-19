@@ -8,9 +8,9 @@ export const DEFAULT_COUNTRY_CODE = 'SE';
 export const DEFAULT_LOCALE = 'en';
 
 export const FEED_FILTER_EVERYTHING = 'everything';
-export const FEED_FILTER_OFFERED = 'offered';
 export const FEED_FILTER_WANTED = 'wanted';
-export const FEED_FILTER_NEARBY = 'nearby';
+export const FEED_FILTER_OFFERED = 'offered';
+export const FEED_FILTER_NEARBY = 'nearBy';
 export const FEED_FILTER_NEWS = 'news';
 export const FEED_FILTER_EXPERIENCE = 'experience';
 
@@ -23,6 +23,7 @@ export const FEEDABLE_TRIP = 'Trip';
 export const FEEDABLE_GROUP = 'Group';
 export const FEEDABLE_NEWS = 'News';
 export const FEEDABLE_EXPERIENCE = 'Experience';
+export const FEEDABLE_PROFILE = 'Profile';
 
 export const OPEN_GROUP = 'OpenGroup';
 export const CLOSE_GROUP = 'ClosedGroup';

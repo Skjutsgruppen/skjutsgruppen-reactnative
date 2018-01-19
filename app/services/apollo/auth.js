@@ -128,7 +128,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
 });
 
 const FRIEND_QUERY = gql`
-query friends($id:Int, $limit: Int, $offset: Int,){ 
+query friends($id:Int, $limit: Int, $offset: Int){ 
     friends(id:$id, limit: $limit, offset: $offset) { 
       rows {
         id 
@@ -197,8 +197,8 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
 });
 
 const GROUPS_QUERY = gql`
-query groups($id:Int){ 
-  groups(userId:$id) { 
+query groups($id:Int, $limit: Int, $offset: Int){ 
+  groups(userId:$id, limit: $limit, offset: $offset) { 
     rows{
       id
       outreach
@@ -275,8 +275,8 @@ export const withGroups = graphql(GROUPS_QUERY, {
 });
 
 const TRIPS_QUERY = gql`
-query trips($id:Int, $type:String, $active:Boolean){ 
-  trips(input:{userId:$id, type:$type, active:$active}) { 
+query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: Int ){ 
+  trips(input:{userId:$id, type:$type, active:$active}, limit: $limit, offset: $offset) { 
     rows {
       id 
       type 
@@ -339,7 +339,7 @@ query trips($id:Int, $type:String, $active:Boolean){
 
 export const withTrips = graphql(TRIPS_QUERY, {
   options: (
-    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = false },
+    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
   ) => ({
     variables: { id, offset, limit, type, active },
   }),

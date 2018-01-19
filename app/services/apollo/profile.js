@@ -82,8 +82,7 @@ export const withOwner = graphql(ownerQuery, {
 });
 
 const CHECK_PHONE_VERIFICATION_QUERY = gql`
-mutation isPhoneVerified($id: Int){
-  isPhoneVerified(id: $id) {
+mutation  isPhoneVerified {
     token
     User {
       id
@@ -115,7 +114,6 @@ mutation isPhoneVerified($id: Int){
       }
     }
   }
-}
 `;
 
 export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {

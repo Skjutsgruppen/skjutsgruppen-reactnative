@@ -6,7 +6,12 @@ import Item from '@components/group/feed/item';
 import { compose } from 'react-apollo';
 import { withShare } from '@services/apollo/auth';
 import Share from '@components/common/share';
-import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
+import {
+  FEEDABLE_PROFILE,
+  FEEDABLE_EXPERIENCE,
+  FEEDABLE_GROUP,
+  FEEDABLE_TRIP,
+} from '@config/constant';
 import RelationModal from '@components/relationModal';
 import DataList from '@components/dataList';
 
@@ -47,23 +52,20 @@ class GroupFeed extends Component {
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
-    if (type === 'group') {
+
+    if (type === FEEDABLE_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
 
-    if (type === FEED_TYPE_OFFER) {
-      navigation.navigate('OfferDetail', { offer: detail });
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('TripDetail', { trip: detail });
     }
 
-    if (type === FEED_TYPE_WANTED) {
-      navigation.navigate('AskDetail', { ask: detail });
-    }
-
-    if (type === 'profile') {
+    if (type === FEEDABLE_PROFILE) {
       navigation.navigate('UserProfile', { profileId: detail });
     }
 
-    if (type === 'experience') {
+    if (type === FEEDABLE_EXPERIENCE) {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
@@ -73,7 +75,7 @@ class GroupFeed extends Component {
   };
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? FEEDABLE_GROUP : FEEDABLE_TRIP, share })
+    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
