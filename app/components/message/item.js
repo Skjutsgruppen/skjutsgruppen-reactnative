@@ -11,7 +11,6 @@ import { withAcceptExperience, withRejectExperience } from '@services/apollo/exp
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
-  FEED_TYPE_OFFER,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_COMMENT,
@@ -392,13 +391,8 @@ class Item extends PureComponent {
 
     if (notifiable === FEEDABLE_TRIP) {
       type = `ride ${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
-      if (Notifiable.tripType === FEED_TYPE_OFFER) {
-        route = 'OfferDetail';
-        params = { offer: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
-      } else {
-        route = 'AskDetail';
-        params = { ask: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
-      }
+      route = 'TripDetail';
+      params = { trip: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
     }
 
     return this.item({
@@ -423,13 +417,8 @@ class Item extends PureComponent {
 
     if (notifiable === FEEDABLE_TRIP) {
       type = `ride "${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}"`;
-      if (Notifiable.tripType === 'offer') {
-        route = 'OfferDetail';
-        params = { offer: Notifiable };
-      } else {
-        route = 'AskDetail';
-        params = { ask: Notifiable };
-      }
+      route = 'TripDetail';
+      params = { trip: Notifiable };
     }
 
     return this.item({

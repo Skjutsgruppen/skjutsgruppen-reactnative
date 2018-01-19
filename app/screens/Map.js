@@ -8,7 +8,6 @@ import MapView from 'react-native-maps';
 import Marker from '@components/map/marker';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import Navigation from '@components/map/navigation';
 
 const { width, height } = Dimensions.get('window');
@@ -64,14 +63,7 @@ class Map extends PureComponent {
 
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
-
-    if (Trip.type === FEED_TYPE_OFFER) {
-      navigation.navigate('OfferDetail', { offer: Trip });
-    }
-
-    if (Trip.type === FEED_TYPE_WANTED) {
-      navigation.navigate('AskDetail', { ask: Trip });
-    }
+    navigation.navigate('TripDetail', { trip: Trip });
   }
 
   async getLocation() {
