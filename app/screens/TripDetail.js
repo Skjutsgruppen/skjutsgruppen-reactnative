@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { submitComment, withTripComment } from '@services/apollo/comment';
-import { Loading, AppNotification, FloatingNavbar, DetailHeader } from '@components/common';
+import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@components/common';
+import { withShare } from '@services/apollo/auth';
+import { getToast } from '@config/toast';
+import { Calendar } from 'react-native-calendars';
+import { getTimezone } from '@helpers/device';
+import { withTripExperiences } from '@services/apollo/experience';
+import { compose } from 'react-apollo';
+import { trans } from '@lang/i18n';
 import Comment from '@components/comment/list';
-import MakeExperience from '@components/experience/make';
 import Relation from '@components/relation';
+import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
+import List from '@components/experience/list';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
-import { withShare } from '@services/apollo/auth';
-import { compose } from 'react-apollo';
 import Date from '@components/date';
-import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
-import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
-import { withTripExperiences } from '@services/apollo/experience';
-import List from '@components/experience/list';
 import About from '@components/common/about';
-import { getTimezone } from '@helpers/device';
-import { trans } from '@lang/i18n';
 
-const AskComment = withTripComment(Comment);
+const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
 
 const styles = StyleSheet.create({
@@ -92,21 +92,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
-  relationTitle: {
-    width: '100%',
+  relationLabelWrapper: {
     justifyContent: 'center',
-    alignItems: 'flex-end',
     flexDirection: 'row',
-    marginHorizontal: 24,
     marginBottom: 6,
   },
-  downArrow: {
+  relationLabel: {
+    fontSize: 12,
+  },
+  chevronDown: {
     height: 12,
     width: 12,
     resizeMode: 'contain',
-    position: 'absolute',
-    top: 2,
-    right: 24,
+    marginLeft: 16,
+    marginTop: 2,
   },
   btnSection: {
     justifyContent: 'space-around',
@@ -136,10 +135,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f9fc',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    shadowOffset: { width: 0, height: -4 },
+    shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
     shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowRadius: 2,
     elevation: 4,
   },
   btnIcon: {
@@ -150,10 +149,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text.gray,
   },
-  commentSection: {
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
+  commentsWrapper: {
+    paddingBottom: 50,
   },
   footer: {
     backgroundColor: Colors.background.fullWhite,
@@ -241,7 +238,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class AskDetail extends Component {
+class TripDetail extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -255,35 +252,36 @@ class AskDetail extends Component {
       comment: '',
       modalVisible: false,
       writingComment: false,
-      modalDetail: {},
-      modalType: '',
       isOpen: false,
       notification: false,
       notifierOffset: 0,
       showReturnRides: false,
       showRecurringRides: false,
+      trip: {},
     });
   }
 
   componentWillMount() {
     const { navigation } = this.props;
-    const { notifier } = navigation.state.params;
+    const { notifier, trip } = navigation.state.params;
+    let initialState = { trip };
 
     if (notifier) {
-      this.setState({ notification: true, notifierOffset: 70 });
+      initialState = { ...initialState, ...{ notification: true, notifierOffset: 70 } };
     }
+
+    this.setState(initialState);
   }
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { submit, navigation } = this.props;
-    const { comment } = this.state;
-    const { ask } = navigation.state.params;
+    const { submit } = this.props;
+    const { comment, trip } = this.state;
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        submit({ tripId: ask.id, text: comment }).then(() => {
+        submit({ tripId: trip.id, text: comment }).then(() => {
           this.setState({ comment: '', loading: false, error: '' });
           Keyboard.dismiss();
         }).catch((err) => {
@@ -297,12 +295,12 @@ class AskDetail extends Component {
     }
   }
 
-  onSharePress = (modalType, modalDetail) => {
-    this.setState({ isOpen: true, modalType, modalDetail });
+  onSharePress = () => {
+    this.setState({ isOpen: true });
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.trip.id, type: 'Trip', share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -311,31 +309,30 @@ class AskDetail extends Component {
     this.setState({ isOpen: false });
   }
 
+  onProfilePress = (id) => {
+    const { navigation } = this.props;
+    navigation.navigate('UserProfile', { profileId: id });
+  }
+
   onCommentChange = (text) => {
     this.setState({ comment: text });
   }
 
   onMapPress = () => {
     const { navigation } = this.props;
-    const { ask } = navigation.state.params;
-    const type = ask.type;
+    const { trip } = this.state;
+    const tripType = trip.type;
     const coordinates = {
-      start: ask.TripStart,
-      end: ask.TripEnd,
-      stops: ask.Stops,
+      start: trip.TripStart,
+      end: trip.TripEnd,
+      stops: trip.Stops,
     };
 
-    navigation.navigate('Route', { coordinates, type });
+    navigation.navigate('Route', { coordinates, tripType });
   }
 
   onCloseNotification = () => {
     this.setState({ notification: false, notifierOffset: 0 });
-  }
-
-  onProfilePress = (id) => {
-    const { navigation } = this.props;
-
-    navigation.navigate('UserProfile', { profileId: id });
   }
 
   setModalVisible(visible) {
@@ -350,16 +347,12 @@ class AskDetail extends Component {
     this.setState({ showRecurringRides: show });
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
+  handleBlur = () => {
+    this.setState({ writingComment: false });
   }
 
-  isTripStarted = () => {
-    const { navigation } = this.props;
-    const { ask } = navigation.state.params;
-
-    return Moment(ask.date).tz(getTimezone()).add(ask.duration / 2, 'second').isBefore();
+  handleFocus = () => {
+    this.setState({ writingComment: true });
   }
 
   checkValidation() {
@@ -376,12 +369,25 @@ class AskDetail extends Component {
     };
   }
 
-  handleFocus = () => {
-    this.setState({ writingComment: true });
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   }
 
-  handleBlur = () => {
-    this.setState({ writingComment: false });
+  isTripStarted = () => {
+    const { trip } = this.state;
+
+    return Moment(trip.date).tz(getTimezone()).add(trip.duration / 2, 'second').isBefore();
+  }
+
+  isTripEnded = () => {
+    const { trip } = this.state;
+
+    return Moment(trip.date)
+      .tz(getTimezone())
+      .add(trip.duration, 'second')
+      .add(1, 'day')
+      .isBefore();
   }
 
   renderButton = () => {
@@ -395,15 +401,15 @@ class AskDetail extends Component {
 
   renderModal() {
     const { navigation } = this.props;
-    const { ask } = navigation.state.params;
-    const canCreateExperience = ask.totalComments > 0 && ask.isParticipant;
+    const { trip, modalVisible } = this.state;
+    const canCreateExperience = trip.totalComments > 0 && trip.isParticipant;
 
     return (
       <Modal
         animationType="slide"
         transparent
         onRequestClose={() => this.setState({ modalVisible: false })}
-        visible={this.state.modalVisible}
+        visible={modalVisible}
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
@@ -413,7 +419,7 @@ class AskDetail extends Component {
                 style={styles.action}
                 onPress={() => {
                   this.setState({ modalVisible: false });
-                  navigation.navigate('Experience', { trip: ask });
+                  navigation.navigate('Experience', { trip });
                 }}
               >
                 <Text style={styles.actionLabel}>{trans('trip.create_your_experience')}</Text>
@@ -459,7 +465,7 @@ class AskDetail extends Component {
           <View style={styles.closeWrapper}>
             <TouchableOpacity
               style={styles.closeModal}
-              onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              onPress={() => this.setModalVisible(!modalVisible)}
             >
               <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
             </TouchableOpacity>
@@ -471,13 +477,18 @@ class AskDetail extends Component {
 
   renderExperienceButton = () => {
     const { navigation } = this.props;
-    const { ask } = navigation.state.params;
+    const { trip } = this.state;
 
-    if (ask.totalComments < 1 || !ask.isParticipant || !this.isTripStarted()) return null;
+    if (
+      trip.totalComments < 1 || !trip.isParticipant
+      || !this.isTripStarted() || !this.isTripEnded()
+    ) {
+      return null;
+    }
 
     return (
       <MakeExperience
-        handlePress={() => navigation.navigate('Experience', { trip: ask })}
+        handlePress={() => navigation.navigate('Experience', { trip })}
       />
     );
   }
@@ -492,7 +503,7 @@ class AskDetail extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== 'group'}
+            showGroup
             onNext={this.onShare}
             onClose={this.onClose}
           />
@@ -500,6 +511,7 @@ class AskDetail extends Component {
       </Modal>
     );
   }
+
 
   renderFooter = () => (
     <View style={styles.footer}>
@@ -545,12 +557,12 @@ class AskDetail extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { ask, notifier, notificationMessage } = navigation.state.params;
-    const { error, success, notification, notifierOffset } = this.state;
+    const { notifier, notificationMessage } = navigation.state.params;
+    const { error, success, notification, notifierOffset, trip } = this.state;
 
     let profileImage = null;
-    if (ask.User.avatar) {
-      profileImage = (<Image source={{ uri: ask.User.avatar }} style={styles.profilePic} />);
+    if (trip.User.avatar) {
+      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }
@@ -559,8 +571,8 @@ class AskDetail extends Component {
     let selectedDate = '';
     let tripDate = '';
 
-    ask.Recurring.forEach((trip, index) => {
-      selectedDate = Moment(trip.date).tz(getTimezone());
+    trip.Recurring.forEach((row, index) => {
+      selectedDate = Moment(row.date).tz(getTimezone());
       if (index === 0) {
         tripDate = selectedDate.format('YYYY-MM-DD');
       }
@@ -568,12 +580,12 @@ class AskDetail extends Component {
       markedDates[selectedDate.format('YYYY-MM-DD')] = [
         {
           startingDay: true,
-          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.blue,
+          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
           textColor: '#fff',
         },
         {
           endingDay: true,
-          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.blue,
+          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
           textColor: '#fff',
         },
       ];
@@ -584,7 +596,7 @@ class AskDetail extends Component {
         <FloatingNavbar
           handleBack={this.goBack}
           showShare
-          handleShare={() => this.onSharePress('ask', ask)}
+          handleShare={this.onSharePress}
           offset={notifierOffset}
         />
         {notification && <AppNotification
@@ -594,9 +606,9 @@ class AskDetail extends Component {
           handleClose={this.onCloseNotification}
         />}
         <ScrollView>
-          <DetailHeader trip={ask} handleMapPress={this.onMapPress} />
+          <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
           <TouchableOpacity
-            onPress={() => this.onProfilePress(ask.User.id)}
+            onPress={() => this.onProfilePress(trip.User.id)}
             style={styles.profilePicWrapper}
           >
             {profileImage}
@@ -604,60 +616,60 @@ class AskDetail extends Component {
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>
-                {ask.User.firstName || ask.User.email}
+                {trip.User.firstName || trip.User.email}
               </Text>
-              <Text> {trans('feed.asks_for_a_ride')}</Text>
+              <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
             </Text>
-            <Text style={styles.fromTo}>{ask.TripStart.name} - {ask.TripEnd.name}</Text>
-            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{ask.date}</Date></Text>
+            <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
             {
-              ask.Stops.length > 0 &&
+              trip.Stops.length > 0 &&
               <Text style={[styles.text, styles.lightText]}>
                 <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
-                {ask.Stops.map(place => place.name).join(', ')}
+                {trip.Stops.map(place => place.name).join(', ')}
               </Text>
             }
-            {
-              (ask.ReturnTrip.length > 0 || ask.Recurring.length > 0) &&
-              <View style={[styles.flexRow, styles.btnSection]}>
-                {
-                  ask.ReturnTrip.length > 0 &&
-                  <TouchableOpacity
-                    style={styles.pillBtn}
-                    onPress={() => this.setReturnRidesModalVisibility(true)}
-                  >
-                    <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
-                    <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
-                  </TouchableOpacity>
-                }
-                {
-                  ask.Recurring.length > 0 &&
-                  <TouchableOpacity
-                    style={styles.pillBtn}
-                    onPress={() => this.setRecurringRidesModalVisibility(true)}
-                  >
-                    <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
-                    <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
-                  </TouchableOpacity>
-                }
-              </View>
-            }
+            <View style={[styles.flexRow, styles.btnSection]}>
+              {
+                trip.ReturnTrip.length > 0 &&
+                <TouchableOpacity
+                  style={styles.pillBtn}
+                  onPress={() => this.setReturnRidesModalVisibility(true)}
+                >
+                  <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
+                  <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
+                </TouchableOpacity>
+              }
+              {
+                trip.Recurring.length > 0 &&
+                <TouchableOpacity
+                  style={styles.pillBtn}
+                  onPress={() => this.setRecurringRidesModalVisibility(true)}
+                >
+                  <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
+                  <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
+                </TouchableOpacity>
+              }
+            </View>
             {
               this.state.showReturnRides &&
               <Modal
                 animationType="slide"
                 transparent
-                onRequestClose={() => this.setReturnRidesModalVisibility(false)}
+                onRequestClose={() => this.setState({ returnRidesModalVisible: false })}
                 visible={this.state.returnRidesModalVisible}
               >
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
                   <View style={styles.returnModalContent}>
-                    <ReturnRides avatar={ask.User.avatar} trips={ask.ReturnTrip} type={ask.type} />
+                    <ReturnRides
+                      avatar={trip.User.avatar}
+                      trips={trip.ReturnTrip}
+                      type={trip.type}
+                    />
                     <View style={styles.closeWrapper}>
                       <TouchableOpacity
                         style={styles.closeModal}
-                        onPress={() =>
-                          this.setReturnRidesModalVisibility(false)}
+                        onPress={() => this.setReturnRidesModalVisibility(false)}
                       >
                         <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
                       </TouchableOpacity>
@@ -671,7 +683,7 @@ class AskDetail extends Component {
               <Modal
                 animationType="slide"
                 transparent
-                onRequestClose={() => this.setRecurringRidesModalVisibility(false)}
+                onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
                 visible={this.state.recurringRidesModalVisible}
               >
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
@@ -697,33 +709,34 @@ class AskDetail extends Component {
             }
           </View>
           <View style={styles.userComment}>
-            <Text style={[styles.text]}>{ask.description}</Text>
+            <Text style={[styles.text]}>{trip.description}</Text>
           </View>
           {
-            ask.User.relation.length > 0 &&
+            trip.User.relation.length > 0 &&
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <View style={styles.relationTitle}>
-                <Text>This is how you know {ask.User.firstName}</Text>
-                <Image source={require('@icons/icon_chevron_down.png')} style={styles.downArrow} />
-              </View>
+              <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
               <Relation
                 navigation={navigation}
-                users={ask.User.relation}
+                users={trip.User.relation}
                 avatarSize={45}
               />
             </View>
           }
-          <Toast message={error} type="error" />
-          <Toast message={success} type="success" />
           <View style={styles.dividerWrapper}>
             <View style={styles.horizontalDivider} />
           </View>
-          <TripExperiences title="Experiences!" tripId={ask.id} />
+          <Toast message={error} type="error" />
+          <Toast message={success} type="success" />
+          <TripExperiences title="Experiences!" tripId={trip.id} />
           {this.renderExperienceButton()}
           <View style={styles.dividerWrapper}>
             <View style={styles.horizontalDivider} />
           </View>
-          <AskComment navigation={navigation} onCommentPress={this.onProfilePress} id={ask.id} />
+          <TripComment
+            navigation={navigation}
+            onCommentPress={this.onProfilePress}
+            id={trip.id}
+          />
           <About />
         </ScrollView>
         {this.renderFooter()}
@@ -734,7 +747,7 @@ class AskDetail extends Component {
   }
 }
 
-AskDetail.propTypes = {
+TripDetail.propTypes = {
   share: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
@@ -742,4 +755,4 @@ AskDetail.propTypes = {
   }).isRequired,
 };
 
-export default compose(withShare, submitComment)(AskDetail);
+export default compose(withShare, submitComment)(TripDetail);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import Colors from '@theme/colors';
 import GroupImage from '@components/group/groupImage';
 import ShareIcon from '@icons/ic_share.png';
@@ -140,7 +140,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableWithoutFeedback
-        onPress={() => onPress('group', group)}
+        onPress={() => onPress(FEEDABLE_GROUP, group)}
         style={styles.flex1}
       >
         <View style={styles.flex1}>
@@ -180,10 +180,13 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
         {profileImage}
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => onSharePress('group', group)}>
+        <TouchableOpacity onPress={() => onSharePress(FEEDABLE_GROUP, group)}>
           <Image source={ShareIcon} style={styles.shareIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.readMoreWrapper} onPress={() => onPress('group', group)}>
+        <TouchableOpacity
+          style={styles.readMoreWrapper}
+          onPress={() => onPress(FEEDABLE_GROUP, group)}
+        >
           <Text style={styles.readMore}>{trans('feed.read_more')}</Text>
         </TouchableOpacity>
       </View>

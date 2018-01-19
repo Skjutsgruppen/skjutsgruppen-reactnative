@@ -6,6 +6,7 @@ import ShareIcon from '@icons/ic_share.png';
 import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
+import { FEEDABLE_TRIP } from '@config/constant';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -154,7 +155,7 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableWithoutFeedback
-        onPress={() => onPress('ask', ask)}
+        onPress={() => onPress(FEEDABLE_TRIP, ask)}
         style={styles.flex1}
       >
         <View style={styles.flex1}>
@@ -182,18 +183,18 @@ const Ask = ({ ask, onPress, onSharePress, wrapperStyle }) => {
             <Text style={styles.text}>{ask.description}</Text>
             <View style={styles.commentGradientOverlay} />
           </View>
+          <View style={styles.profilePicWrapper}>
+            {profileImage}
+          </View>
         </View>
       </TouchableWithoutFeedback>
-      <View style={styles.profilePicWrapper}>
-        {profileImage}
-      </View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => onSharePress('ask', ask)}>
+        <TouchableOpacity onPress={() => onSharePress(FEEDABLE_TRIP, ask)}>
           <Image source={ShareIcon} style={styles.icon} />
         </TouchableOpacity>
         <View style={styles.commentIcon}>
           <Text style={styles.commentCout}>{ask.totalComments}</Text>
-          <TouchableOpacity onPress={() => onPress('ask', ask)}>
+          <TouchableOpacity onPress={() => onPress(FEEDABLE_TRIP, ask)}>
             <Image source={CommentIcon} style={styles.icon} />
           </TouchableOpacity>
         </View>
