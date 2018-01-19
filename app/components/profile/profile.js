@@ -366,7 +366,7 @@ class Profile extends Component {
         <View style={styles.activityWrapper}>
           <View>
             <View style={styles.hexagon}>
-              <Text style={styles.experienceCount}>-</Text>
+              <Text style={styles.experienceCount}>{profile.totalExperiences}</Text>
             </View>
             <Text style={styles.activityLabel}>Experiences</Text>
           </View>

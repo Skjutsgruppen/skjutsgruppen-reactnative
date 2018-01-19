@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import Date from '@components/date';
 import CommentIcon from '@icons/ic_comment.png';
 import { trans } from '@lang/i18n';
+import { FEEDABLE_NEWS } from '@config/constant';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -153,7 +154,7 @@ class News extends Component {
     return (
       <View style={[styles.wrapper, wrapperStyle]}>
         <TouchableWithoutFeedback
-          onPress={() => onPress('news', news)}
+          onPress={() => onPress(FEEDABLE_NEWS, news)}
           style={styles.flex1}
         >
           <View style={styles.flex1}>
@@ -184,7 +185,7 @@ class News extends Component {
         <View style={styles.footer}>
           <View style={styles.commentIcon}>
             <Text style={styles.commentCount}>{news.totalComments}</Text>
-            <TouchableOpacity onPress={() => onPress('news', news)}>
+            <TouchableOpacity onPress={() => onPress(FEEDABLE_NEWS, news)}>
               <Image source={CommentIcon} style={styles.icon} />
             </TouchableOpacity>
           </View>

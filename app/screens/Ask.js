@@ -14,10 +14,11 @@ import { Loading, Wrapper, Container } from '@components/common';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import CustomButton from '@components/common/customButton';
-import { submitAsk } from '@services/apollo/trip';
+import { withCreateTrip } from '@services/apollo/trip';
 import Colors from '@theme/colors';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
+import { FEED_TYPE_WANTED } from '@config/constant';
 
 const styles = StyleSheet.create({
   backButtonWrapper: {
@@ -245,15 +246,18 @@ class Ask extends Component {
       photo: photo.photo,
       tripStart: trip.start,
       tripEnd: trip.end,
-      returnTrip: trip.isReturning,
+      returnTrip: trip.isReturning || trip.isReturnTrip,
       dates,
       time: utcTime,
       flexibilityInfo: date.flexibilityInfo,
       share,
+      stops: null,
+      seats: 0,
+      type: FEED_TYPE_WANTED,
     };
 
     try {
-      this.props.submit(rideData).then((res) => {
+      this.props.createTrip(rideData).then((res) => {
         if (share.social.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
@@ -392,7 +396,7 @@ class Ask extends Component {
 }
 
 Ask.propTypes = {
-  submit: PropTypes.func.isRequired,
+  createTrip: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.object,
     navigate: PropTypes.func,
@@ -402,4 +406,4 @@ Ask.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default compose(submitAsk, connect(mapStateToProps))(Ask);
+export default compose(withCreateTrip, connect(mapStateToProps))(Ask);

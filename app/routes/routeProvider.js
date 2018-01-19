@@ -9,9 +9,8 @@ import GroupDetail from '@screens/group/GroupDetail';
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
 
-import OfferDetail from '@screens/OfferDetail';
-import AskDetail from '@screens/AskDetail';
 import NewsDetail from '@screens/NewsDetail';
+import TripDetail from '@screens/TripDetail';
 
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
@@ -115,9 +114,9 @@ export const Routes = {
 
   Tab: { screen: Tab },
   Offer: { screen: Offer },
-  OfferDetail: { screen: OfferDetail, path: 'offer/:id' },
   Ask: { screen: Ask },
-  AskDetail: { screen: AskDetail, path: 'ask/:id' },
+
+  TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },
 
   Group: { screen: Group },

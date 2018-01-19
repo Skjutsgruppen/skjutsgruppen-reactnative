@@ -6,6 +6,7 @@ import ShareIcon from '@icons/ic_share.png';
 import CommentIcon from '@icons/ic_comment.png';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
+import { FEEDABLE_TRIP } from '@config/constant';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -166,7 +167,7 @@ const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableWithoutFeedback
-        onPress={() => onPress('offer', offer)}
+        onPress={() => onPress(FEEDABLE_TRIP, offer)}
         style={styles.flex1}
       >
         <View style={styles.flex1}>
@@ -192,18 +193,18 @@ const Offer = ({ offer, onPress, onSharePress, wrapperStyle }) => {
             <Text style={styles.text}>{offer.description}</Text>
             <View style={styles.commentGradientOverlay} />
           </View>
+          <View style={styles.profilePicWrapper}>
+            {profileImage}
+          </View>
         </View>
       </TouchableWithoutFeedback>
-      <View style={styles.profilePicWrapper}>
-        {profileImage}
-      </View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => onSharePress('offer', offer)}>
+        <TouchableOpacity onPress={() => onSharePress(FEEDABLE_TRIP, offer)}>
           <Image source={ShareIcon} style={styles.shareIcon} />
         </TouchableOpacity>
         <View style={styles.commentIcon}>
           <Text style={styles.commentCout}>{offer.totalComments}</Text>
-          <TouchableOpacity onPress={() => onPress('offer', offer)}>
+          <TouchableOpacity onPress={() => onPress(FEEDABLE_TRIP, offer)}>
             <Image source={CommentIcon} style={styles.commentIcon} />
           </TouchableOpacity>
         </View>
