@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, Linking } from 'react-
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
-import ExpandIcon from '@icons/ic_chevron_down.png';
+import ExpandIcon from '@assets/icons/ic_chevron_down.png';
 import { PUBLIC_TRANSPORT_JOURNEY } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -104,8 +104,8 @@ class PublicTransportItem extends Component {
 
   renderIconByCatCode = (product) => {
     const icon = {
-      3: require('@icons/ic_train.png'),
-      7: require('@icons/ic_bus.png'),
+      3: require('@assets/icons/ic_train.png'),
+      7: require('@assets/icons/ic_bus.png'),
     };
 
     if (product) {

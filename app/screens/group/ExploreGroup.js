@@ -70,8 +70,6 @@ class ExploreGroup extends PureComponent {
   }
 
   render() {
-    const { navigation } = this.props;
-
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
@@ -91,10 +89,10 @@ class ExploreGroup extends PureComponent {
               onPress={this.renderSearchGroup}
               disabled={this.state.searchQuery.length < 1}
             >
-              <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
+              <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
             </TouchableOpacity>
           </View>
-          <ExploreGroupList from={null} filter="popular" navigation={navigation} />
+          <ExploreGroupList from={null} filter="popular" />
         </View>
       </Wrapper>
     );

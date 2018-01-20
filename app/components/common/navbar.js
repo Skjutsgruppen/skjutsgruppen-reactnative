@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Map from '@icons/icon_map.png';
-import ChevronRight from '@icons/icon_chevron_right.png';
+import Map from '@assets/icons/icon_map.png';
+import ChevronRight from '@assets/icons/icon_chevron_right.png';
 import BackButton from '@components/common/backButton';
 
 const styles = StyleSheet.create({

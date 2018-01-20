@@ -374,7 +374,7 @@ class NewsDetail extends Component {
           </View>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <NewsComment navigation={navigation} onCommentPress={this.onProfilePress} id={news.id} />
+          <NewsComment onCommentPress={this.onProfilePress} id={news.id} />
         </ScrollView>
         {this.renderFooter()}
       </View>

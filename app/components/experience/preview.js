@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import CapturedImage from '@components/experience/capturedImage';
-import CameraHead from '@icons/ic_camera_head.png';
+import CameraHead from '@assets/icons/ic_camera_head.png';
 import Button from '@components/experience/button';
 
 const styles = StyleSheet.create({

@@ -41,7 +41,7 @@ class NewNotification extends PureComponent {
   }
 
   renderNotification = () => {
-    const { notifications, navigation, filters } = this.props;
+    const { notifications, filters } = this.props;
 
     return (
       <DataList
@@ -49,7 +49,6 @@ class NewNotification extends PureComponent {
         renderItem={({ item }) => (
           <MesssageItem
             key={item.id}
-            navigation={navigation}
             filters={filters}
             notification={item}
           />

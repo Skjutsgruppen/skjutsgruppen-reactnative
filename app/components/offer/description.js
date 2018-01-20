@@ -102,7 +102,7 @@ class Description extends Component {
       <View>
         <Camera onSelect={res => this.setState({ photo: res.data })} defaultPhoto={photo}>
           <View style={styles.addPhoto}>
-            <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
+            <Image source={require('@assets/icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
             <View>
               <Text style={styles.addPhotoLabel}>Add a photo to your ride</Text>
               <Text style={styles.addPhotoLabelSmall}>Make your ride more visible</Text>

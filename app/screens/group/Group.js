@@ -221,7 +221,7 @@ class Group extends Component {
       <Wrapper bgColor="#eded18">
         <View style={styles.backButtonWrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
+            <Image source={require('@assets/icons/icon_back.png')} style={styles.backIcon} />
             <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
         </View>
