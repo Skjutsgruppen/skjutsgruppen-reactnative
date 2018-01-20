@@ -182,7 +182,7 @@ class Route extends Component {
       j += 1;
       return (
         <View key={j} style={styles.place}>
-          <Image source={require('@icons/icon_stops.png')} style={styles.stopIcon} />
+          <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopIcon} />
           <GooglePlace
             placeholder="Place"
             defaultValue={this.state.stops[i]}
@@ -216,14 +216,14 @@ class Route extends Component {
             onChangeText={end => this.setState({ end })}
           >
             <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
-              <Image source={require('@icons/icon_switcher.png')} style={styles.inputIcon} />
+              <Image source={require('@assets/icons/icon_switcher.png')} style={styles.inputIcon} />
             </TouchableOpacity>
           </GooglePlace>
         </View>
         <View style={styles.stops}>
           <View style={styles.addStop}>
             <TouchableOpacity onPress={this.addStops}>
-              <Image source={require('@icons/icon_add_stop.png')} style={styles.addStopIcon} />
+              <Image source={require('@assets/icons/icon_add_stop.png')} style={styles.addStopIcon} />
             </TouchableOpacity>
             <Text style={styles.stopsLabel}>
               Stops along the way:

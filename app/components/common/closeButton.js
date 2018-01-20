@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 const CloseButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-    <Image source={require('@icons/icon_chevron_down.png')} style={styles.icon} />
+    <Image source={require('@assets/icons/icon_chevron_down.png')} style={styles.icon} />
     <Text style={styles.text}>Close</Text>
   </TouchableOpacity>
 );

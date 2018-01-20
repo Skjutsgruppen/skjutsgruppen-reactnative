@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
-import FileterIcon from '@icons/ic_menu_blue.png';
+import FileterIcon from '@assets/icons/ic_menu_blue.png';
 
 const styles = StyleSheet.create({
   wrapper: {

@@ -53,24 +53,23 @@ class GroupDetail extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
     if (this.state.loading) {
       return (<Loading />);
     }
 
     if (this.isMember()) {
-      return (<Detail
-        refresh={this.refresh}
-        group={this.state.group}
-        navigation={navigation}
-      />);
+      return (
+        <Detail
+          refresh={this.refresh}
+          group={this.state.group}
+        />);
     }
 
-    return (<JoinGroup
-      refresh={this.refresh}
-      group={this.state.group}
-      navigation={navigation}
-    />);
+    return (
+      <JoinGroup
+        refresh={this.refresh}
+        group={this.state.group}
+      />);
   }
 }
 

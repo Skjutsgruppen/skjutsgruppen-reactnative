@@ -6,7 +6,7 @@ import { compose } from 'react-apollo';
 import { Wrapper, Loading } from '@components/common';
 import CloseButton from '@components/common/closeButton';
 import CustomButton from '@components/common/customButton';
-import CheckIcon from '@icons/icon_check_white.png';
+import CheckIcon from '@assets/icons/icon_check_white.png';
 import Colors from '@theme/colors';
 import FriendList from '@components/friendList';
 import { trans } from '@lang/i18n';
@@ -293,7 +293,7 @@ class Share extends Component {
             </View>
           }
           <View style={styles.searchWrapper}>
-            <Image source={require('@icons/icon_search_blue.png')} style={styles.searchIcon} />
+            <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
             <TextInput
               style={styles.searchField}
               placeholder={trans('global.search')}
@@ -318,7 +318,7 @@ class Share extends Component {
             onPress={() => this.setOption('social', 'copy_to_clip')}
           >
             <View style={styles.shareItem}>
-              <Image source={require('@icons/icon_copy.png')} style={styles.copyIcon} />
+              <Image source={require('@assets/icons/icon_copy.png')} style={styles.copyIcon} />
               <View style={styles.shareLabel}>
                 <Text>{trans('global.copy_to_clipboard')}</Text>
                 <Text style={styles.smallText}>{trans('global.paste_wherever_you_want')}</Text>
@@ -338,7 +338,7 @@ class Share extends Component {
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
-                <Image source={require('@icons/icon_facebook.png')} style={styles.shareItemIcon} />
+                <Image source={require('@assets/icons/icon_facebook.png')} style={styles.shareItemIcon} />
               </View>
               <Text>{trans('global.your_fb_timeline')}</Text>
               <View
@@ -356,7 +356,7 @@ class Share extends Component {
           >
             <View style={styles.shareItem}>
               <View style={styles.shareItemIconWrapper}>
-                <Image source={require('@icons/icon_twitter.png')} style={styles.shareItemIcon} />
+                <Image source={require('@assets/icons/icon_twitter.png')} style={styles.shareItemIcon} />
               </View>
               <Text>{trans('global.tweet')}</Text>
               <View

@@ -10,7 +10,6 @@ const Search = ({ navigation }) => {
 
   return (
     <SearchResult
-      navigation={navigation}
       from={from.coordinates}
       to={to.coordinates}
       direction={direction}

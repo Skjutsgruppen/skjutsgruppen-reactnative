@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import DataList from '@components/dataList';
 import { GROUP_FILTER_NEARBY, GROUP_FILTER_NAME, GROUP_FILTER_POPULAR } from '@config/constant';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -207,7 +208,7 @@ class ExploreGroupsResult extends Component {
                   filterType === GROUP_FILTER_NEARBY && styles.activeFilterLabelWrapper,
                 ]}
               >
-                <Image source={require('@icons/icon_location_purple.png')} style={styles.icon} />
+                <Image source={require('@assets/icons/icon_location_purple.png')} style={styles.icon} />
                 <Text style={styles.filterLabel}>Near You</Text>
               </View>
             </TouchableOpacity>
@@ -260,4 +261,4 @@ ExploreGroupsResult.propTypes = {
   }).isRequired,
 };
 
-export default ExploreGroupsResult;
+export default withNavigation(ExploreGroupsResult);

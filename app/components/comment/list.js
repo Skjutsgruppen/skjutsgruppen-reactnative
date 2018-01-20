@@ -5,6 +5,7 @@ import Item from '@components/comment/item';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import RelationModal from '@components/relationModal';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -119,7 +120,6 @@ class List extends Component {
 
   render() {
     const { loading, error, comments } = this.props.comments;
-    const { navigation } = this.props;
 
     if (loading) {
       return <View style={styles.block}><Loading /></View>;
@@ -144,19 +144,14 @@ class List extends Component {
         <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>
         <FlatList
           data={rows}
-          renderItem={
-            ({ item }) =>
-              (
-                <Item
-                  navigation={navigation}
-                  onPress={this.props.onCommentPress}
-                  comment={item}
-                  setModalVisibility={this.setModalVisibility}
-                />
-              )
-          }
+          renderItem={({ item }) => (
+            <Item
+              onPress={this.props.onCommentPress}
+              comment={item}
+              setModalVisibility={this.setModalVisibility}
+            />
+          )}
           keyExtractor={(item, index) => index}
-          onEndReachedThreshold={0}
           ListHeaderComponent={() => this.renderHeader(this.state.loading)}
           ListFooterComponent={this.renderFooter}
         />
@@ -184,4 +179,4 @@ List.propTypes = {
   }).isRequired,
 };
 
-export default List;
+export default withNavigation(List);

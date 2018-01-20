@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import RelationModal from '@components/relationModal';
 import RelationBubbleList from '@components/relationBubbleList';
+import { withNavigation } from 'react-navigation';
 
 class Relation extends Component {
   constructor(props) {
@@ -73,4 +74,4 @@ Relation.defaultProps = {
   style: {},
 };
 
-export default Relation;
+export default withNavigation(Relation);
