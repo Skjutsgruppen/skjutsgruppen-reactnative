@@ -3,8 +3,8 @@ import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 
-import AddIcon from '@icons/ic_add.png';
-import AddIconActive from '@icons/ic_add_active.png';
+import AddIcon from '@assets/icons/ic_add.png';
+import AddIconActive from '@assets/icons/ic_add_active.png';
 
 const styles = StyleSheet.create({
   title: {
@@ -127,7 +127,7 @@ class Add extends Component {
               onPress={this.redirectToGroup}
               style={styles.touchable}
             >
-              <Image source={require('@icons/icon_group.png')} style={styles.groupIcon} />
+              <Image source={require('@assets/icons/icon_group.png')} style={styles.groupIcon} />
               <Text
                 accessibilityLabel="Go to next form"
                 style={styles.actionLabel}
@@ -137,7 +137,7 @@ class Add extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Image source={require('@icons/icon_telescope.png')} style={styles.telescope} />
+        <Image source={require('@assets/icons/icon_telescope.png')} style={styles.telescope} />
         <View style={styles.explore}>
           <Text style={styles.exploreText}>
             Want to explore existing groups?

@@ -5,6 +5,8 @@ import { Loading } from '@components/common';
 import { withGroups } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -144,4 +146,4 @@ Group.propTypes = {
   }).isRequired,
 };
 
-export default withGroups(Group);
+export default compose(withGroups, withNavigation)(Group);

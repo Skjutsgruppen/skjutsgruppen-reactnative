@@ -144,7 +144,7 @@ class Login extends Component {
 
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
+        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Sign in</GreetText>
         <ColoredText color={Colors.text.purple}>
           You can use your cellphone number or e-mail to sign in

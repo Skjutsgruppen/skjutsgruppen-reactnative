@@ -59,7 +59,7 @@ class Method extends Component {
   render() {
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
+        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Thanks for agreeing!</GreetText>
         <ColoredText color={Colors.text.blue}>
           We recommend you sign in with Facebook or Twitter

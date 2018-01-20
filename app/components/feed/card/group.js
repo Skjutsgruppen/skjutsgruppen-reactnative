@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import Colors from '@theme/colors';
 import GroupImage from '@components/group/groupImage';
-import ShareIcon from '@icons/ic_share.png';
+import ShareIcon from '@assets/icons/ic_share.png';
 import { trans } from '@lang/i18n';
 
 const cardHeight = 484;

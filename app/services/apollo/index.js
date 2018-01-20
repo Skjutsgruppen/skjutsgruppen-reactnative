@@ -1,3 +1,3 @@
-import Apollo from './apollo';
+import Apollo from '@services/apollo/apollo';
 
 export default Apollo;

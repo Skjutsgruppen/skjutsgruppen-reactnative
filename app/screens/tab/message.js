@@ -7,8 +7,8 @@ import Group from '@components/message/group';
 import Notification from '@components/message/notification';
 import PropTypes from 'prop-types';
 
-import MessageIcon from '@icons/ic_message.png';
-import MessageIconActive from '@icons/ic_message_active.png';
+import MessageIcon from '@assets/icons/ic_message.png';
+import MessageIconActive from '@assets/icons/ic_message_active.png';
 
 const styles = StyleSheet.create({
   header: {
@@ -86,10 +86,10 @@ class Message extends PureComponent {
         </View>
         <View style={styles.content}>
           <ScrollView>
-            <Notification filters="new" navigation={navigation} />
-            <Ride navigation={navigation} />
-            <Group navigation={navigation} />
-            <Notification filters="old" navigation={navigation} />
+            <Notification filters="new" />
+            <Ride />
+            <Group />
+            <Notification filters="old" />
           </ScrollView>
         </View>
       </Wrapper>

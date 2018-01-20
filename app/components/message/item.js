@@ -22,7 +22,10 @@ import {
   NOTIFICATION_TYPE_EXPERIENCE_VOID,
   NOTIFICATION_TYPE_EXPERIENCE_SHARED,
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
+  NOTIFICATION_TYPE_TRIP_SHARED,
+  NOTIFICATION_TYPE_TRIP_SHARED_GROUP,
 } from '@config/constant';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -378,6 +381,34 @@ class Item extends PureComponent {
     </View>
   );
 
+  tripShared = ({ Notifiable, User, date }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'shared your trip.',
+        date,
+        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable }),
+      });
+    }
+
+    return null;
+  }
+
+  tripSharedGroup = ({ Notifiable, User, date }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        text: 'shared a trip on your group.',
+        date,
+        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable }),
+      });
+    }
+
+    return null;
+  }
+
   comment = ({ notifiable, Notifiable, User, id, createdAt }) => {
     let type = null;
     let params = null;
@@ -551,6 +582,14 @@ class Item extends PureComponent {
       message = this.experiencePublished(notification);
     }
 
+    if (notification.type === NOTIFICATION_TYPE_TRIP_SHARED) {
+      message = this.tripShared(notification);
+    }
+
+    if (notification.type === NOTIFICATION_TYPE_TRIP_SHARED_GROUP) {
+      message = this.tripSharedGroup(notification);
+    }
+
 
     return (
       <View key={notification.id}>
@@ -586,4 +625,5 @@ export default compose(
   withRejectFriendRequest,
   withAcceptExperience,
   withRejectExperience,
+  withNavigation,
 )(Item);

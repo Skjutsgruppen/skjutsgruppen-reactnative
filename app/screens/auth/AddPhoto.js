@@ -5,7 +5,7 @@ import Container from '@components/auth/container';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import { CustomButton } from '@components/common';
 import PropTypes from 'prop-types';
-import { Icons } from '@icons';
+import { Icons } from '@assets/icons';
 
 const styles = StyleSheet.create({
   garderIcon: {
