@@ -6,6 +6,8 @@ import { withTrips } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -151,4 +153,4 @@ Ride.propTypes = {
 };
 
 
-export default withTrips(Ride);
+export default compose(withTrips, withNavigation)(Ride);

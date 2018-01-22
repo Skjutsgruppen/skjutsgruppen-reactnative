@@ -19,6 +19,8 @@ import {
   FEEDABLE_TRIP,
   FEEDABLE_PROFILE,
 } from '@config/constant';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   navBar: {
@@ -344,4 +346,4 @@ SearchResult.defaultProps = {
   direction: '',
 };
 
-export default withShare(SearchResult);
+export default compose(withShare, withNavigation)(SearchResult);

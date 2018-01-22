@@ -9,8 +9,8 @@ import PropTypes from 'prop-types';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
 import Colors from '@theme/colors';
-import FeedIcon from '@icons/ic_feed.png';
-import FeedIconActive from '@icons/ic_feed_active.png';
+import FeedIcon from '@assets/icons/ic_feed.png';
+import FeedIconActive from '@assets/icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
@@ -144,7 +144,7 @@ class Feed extends Component {
   onShare = (share) => {
     this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
       .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
+      .catch((console.warn));
   };
 
   onRefreshClicked = () => {
@@ -191,7 +191,6 @@ class Feed extends Component {
       } else {
         this.setState({ locationError: true });
       }
-      console.warn(error);
     }
   }
 
@@ -226,7 +225,7 @@ class Feed extends Component {
           style={styles.menuIcon}
           onPress={() => this.setFilterVisibility(true)}
         >
-          <Image source={require('@icons/ic_menu.png')} />
+          <Image source={require('@assets/icons/ic_menu.png')} />
         </TouchableOpacity>
       </View>
       {this.renderMap()}

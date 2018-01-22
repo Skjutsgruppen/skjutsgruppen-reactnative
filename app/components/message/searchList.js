@@ -4,12 +4,11 @@ import { withNotificationSearch } from '@services/apollo/notification';
 import MesssageItem from '@components/message/item';
 import DataList from '@components/dataList';
 
-const SearchList = ({ searchMessages, navigation }) => (
+const SearchList = ({ searchMessages }) => (
   <DataList
     data={searchMessages}
     renderItem={({ item }) => (
       <MesssageItem
-        navigation={navigation}
         filters={'filters'}
         notification={item}
         key={item.id}
@@ -31,9 +30,6 @@ const SearchList = ({ searchMessages, navigation }) => (
 );
 
 SearchList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }).isRequired,
   searchMessages: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     error: PropTypes.object,

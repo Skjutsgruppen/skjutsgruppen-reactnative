@@ -498,7 +498,7 @@ export const withFeed = graphql(GET_FEED_QUERY, {
       subscribeToFeed: () => subscribeToMore({
         document: FEED_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
+          if (!subscriptionData.data || !prev.getFeed.rows) {
             return prev;
           }
 

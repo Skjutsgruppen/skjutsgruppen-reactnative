@@ -58,7 +58,7 @@ class Method extends Component {
   render() {
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
+        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
         <GreetText>Welcome back!</GreetText>
 
         <View style={styles.button}>

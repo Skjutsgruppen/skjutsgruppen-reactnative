@@ -279,7 +279,7 @@ class Offer extends Component {
     if (isReturnedTrip) {
       return (
         <View style={styles.returnHeader}>
-          <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+          <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
             Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}

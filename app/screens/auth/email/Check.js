@@ -11,7 +11,7 @@ import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withVerifyCode } from '@services/apollo/auth';
-import { Icons } from '@icons';
+import { Icons } from '@assets/icons';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 

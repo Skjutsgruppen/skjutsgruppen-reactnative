@@ -16,6 +16,7 @@ import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { withNavigation } from 'react-navigation';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 
@@ -314,7 +315,6 @@ class Detail extends PureComponent {
         />}
         <GroupFeedList
           header={header}
-          navigation={navigation}
           groupId={group.id}
         />
         {this.renderCommentForm()}
@@ -345,4 +345,10 @@ Detail.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withShare, withLeaveGroup, submitComment, connect(mapStateToProps))(Detail);
+export default compose(
+  withShare,
+  withLeaveGroup,
+  submitComment,
+  withNavigation,
+  connect(mapStateToProps),
+)(Detail);

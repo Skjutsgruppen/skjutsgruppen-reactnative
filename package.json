@@ -5,7 +5,6 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "devtools": "react-devtools",
     "eslint": "./node_modules/.bin/eslint app --fix",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -52,9 +51,9 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
     "jest": "20.0.4",
-    "react-devtools": "^2.5.0",
     "react-test-renderer": "16.0.0-alpha.12",
-    "redux-devtools-extension": "^2.13.2"
+    "reactotron-react-native": "^1.14.0",
+    "reactotron-redux": "^1.13.0"
   },
   "jest": {
     "preset": "react-native"

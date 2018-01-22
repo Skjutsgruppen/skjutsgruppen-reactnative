@@ -276,7 +276,7 @@ class Ask extends Component {
     if (isReturnedTrip) {
       return (
         <View style={styles.returnHeader}>
-          <Image source={require('@icons/icon_return.png')} style={styles.returnIcon} />
+          <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
             Return ride of your asked ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
@@ -329,7 +329,7 @@ class Ask extends Component {
       <Wrapper bgColor="#eded18" >
         <View style={styles.backButtonWrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Image source={require('@icons/icon_back.png')} style={styles.backIcon} />
+            <Image source={require('@assets/icons/icon_back.png')} style={styles.backIcon} />
             <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
         </View>

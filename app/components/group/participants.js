@@ -12,6 +12,7 @@ import Colors from '@theme/colors';
 import ParticipantsModal from '@components/participantsModal';
 import { Loading } from '@components/common';
 import { withGroupMembers } from '@services/apollo/group';
+import { withNavigation } from 'react-navigation';
 
 const ParticipantsInModal = withGroupMembers(ParticipantsModal);
 
@@ -201,4 +202,4 @@ Participants.propTypes = {
   }).isRequired,
 };
 
-export default Participants;
+export default withNavigation(Participants);

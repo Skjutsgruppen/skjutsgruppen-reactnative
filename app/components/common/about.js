@@ -77,7 +77,7 @@ const About = () => (
     </Text>
     <View style={styles.horizontalDivider} />
     <View style={styles.infoRow}>
-      <Image source={require('@icons/ic_conversation.png')} style={styles.infoRowIcon} />
+      <Image source={require('@assets/icons/ic_conversation.png')} style={styles.infoRowIcon} />
       <View style={{ flex: 1 }}>
         <Text style={styles.infoTitle}>{trans('about.we_believe_in_conversation')}</Text>
         <Text style={styles.text}>
@@ -86,14 +86,14 @@ const About = () => (
       </View>
     </View>
     <View style={styles.infoRow}>
-      <Image source={require('@icons/ic_caution.png')} style={styles.infoRowIcon} />
+      <Image source={require('@assets/icons/ic_caution.png')} style={styles.infoRowIcon} />
       <View style={{ flex: 1 }}>
         <Text style={styles.infoTitle}>{trans('about.be_health_cautious')}</Text>
         <Text style={styles.text}>{trans('about.rideshare_if_you_feel_safe')}</Text>
       </View>
     </View>
     <View style={styles.infoRow}>
-      <Image source={require('@icons/ic_equal.png')} style={styles.infoRowIcon} />
+      <Image source={require('@assets/icons/ic_equal.png')} style={styles.infoRowIcon} />
       <View style={{ flex: 1 }}>
         <Text style={styles.infoTitle}>{trans('about.share_equally_or_offer_rides')}</Text>
         <Text style={styles.text}>

@@ -1,3 +1,3 @@
-import * as reducers from './reducers';
+import * as reducers from '@redux/reducers/reducers';
 
 export default reducers;

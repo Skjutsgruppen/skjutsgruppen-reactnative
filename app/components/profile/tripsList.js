@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import TripItem from '@components/profile/tripsItem';
+import Trip from '@components/feed/card/trip';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 
@@ -14,7 +14,7 @@ class UserTripsList extends Component {
     return (<DataList
       data={trips}
       renderItem={({ item }) => (
-        <TripItem
+        <Trip
           key={item.id}
           trip={item}
           onPress={onPress}
