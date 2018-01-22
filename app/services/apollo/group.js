@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { PROFILE_QUERY } from '@services/apollo/profile';
 
 const SUBMIT_GROUP_QUERY = gql`
 mutation group
@@ -237,6 +239,43 @@ export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
   },
 
 });
+
+const GROUPS_SUBSCRIPTION_QUERY = gql`
+subscription myGroup($userId: Int!){ 
+  myGroup(userId: $userId) { 
+    id
+    name
+    description
+    User {
+      id 
+      firstName 
+      avatar 
+    } 
+    outreach
+    type
+    photo
+    mapPhoto
+    TripStart {
+      name 
+      coordinates 
+    } 
+    TripEnd {
+      name 
+      coordinates
+    } 
+    Stops {
+      name 
+      coordinates
+    } 
+    country 
+    county 
+    municipality 
+    locality 
+    membershipStatus
+    totalParticipants
+  }
+}
+`;
 
 export const FIND_GROUP_QUERY = gql`
 query group($id: Int!){
@@ -633,7 +672,19 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, groups, error, refetch, networkStatus, fetchMore } }) => {
+  props: (
+    {
+      data: {
+        loading,
+        groups,
+        error,
+        refetch,
+        networkStatus,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -642,6 +693,59 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
       count = groups.count;
     }
 
-    return { groups: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
+    return {
+      groups: { loading, rows, count, error, refetch, networkStatus, fetchMore, subscribeToMore },
+      subscribeToNewGroup: param => subscribeToMore({
+        document: GROUPS_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newGroup = subscriptionData.data.myGroup;
+
+          rows = prev.groups.rows.filter((row) => {
+            if (row.id === newGroup.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          rows = [newGroup].concat(rows);
+
+          try {
+            if (!repeated) {
+              const myProfile = client.readQuery(
+                {
+                  query: PROFILE_QUERY,
+                  variables: { id: param.userId },
+                },
+              );
+              myProfile.totalGroups += 1;
+              client.writeQuery(
+                {
+                  query: PROFILE_QUERY,
+                  data: myProfile,
+                  variables: { id: param.userId },
+                },
+              );
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+
+          return {
+            groups: { ...prev.groups, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });

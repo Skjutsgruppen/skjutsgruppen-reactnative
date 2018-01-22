@@ -2,6 +2,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { PROFILE_QUERY } from '@services/apollo/profile';
 
 const EXPERIENCE_QUERY = gql`
 mutation experience(
@@ -219,11 +221,75 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
 }
 `;
 
+const MY_EXPERIENCES_SUBSCRIPTION_QUERY = gql`
+subscription myExperience($userId:Int!){ 
+  myExperience(userId:$userId) { 
+    id
+      createdAt
+      description
+      photo
+      Participants {
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        status
+      }
+      Trip {
+        id 
+        type 
+        description 
+        seats 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        photo 
+        mapPhoto
+        totalComments
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      totalComments
+  }
+}
+`;
+
 export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
   options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
     variables: { id, offset, limit },
   }),
-  props: ({ data: { loading, myExperiences, error, networkStatus, refetch, fetchMore } }) => {
+  props: (
+    {
+      data: {
+        loading,
+        myExperiences,
+        error,
+        networkStatus,
+        refetch,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -231,10 +297,63 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
       rows = myExperiences.rows;
       count = myExperiences.count;
     }
-    return { myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
+    return {
+      myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore },
+      subscribeToNewExperience: param => subscribeToMore({
+        document: MY_EXPERIENCES_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newExperience = subscriptionData.data.myExperience;
+
+          rows = prev.myExperiences.rows.map((row) => {
+            if (row.id === newExperience.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          try {
+            if (!repeated) {
+              const myProfile = client.readQuery(
+                {
+                  query: PROFILE_QUERY,
+                  variables: { id: param.userId },
+                },
+              );
+              myProfile.profile.totalExperiences += 1;
+              client.writeQuery(
+                {
+                  query: PROFILE_QUERY,
+                  data: myProfile,
+                  variables: { id: param.userId },
+                },
+              );
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+          
+
+          rows = [newExperience].concat(rows);
+
+          return {
+            myExperiences: { ...prev.myExperiences, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
-
 
 export const FIND_EXPERIENCE_QUERY = gql`
 query experience($id: Int!){

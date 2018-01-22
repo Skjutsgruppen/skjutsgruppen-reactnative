@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const PROFILE_QUERY = gql`
+export const PROFILE_QUERY = gql`
 query profile($id: Int){
   profile (id: $id){
     id
