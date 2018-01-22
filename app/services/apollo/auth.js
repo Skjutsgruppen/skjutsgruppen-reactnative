@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT, FEED_FILTER_OFFERED } from '@config/constant';
+import { FEED_FILTER_WANTED, FEED_FILTER_OFFERED, PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { profileQuery } from '@services/apollo/profile';
 
 const LOGIN_QUERY = gql`
 mutation login($username: String!, $password:String!) {
@@ -127,7 +129,20 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
   }),
 });
 
-const FRIEND_QUERY = gql`
+const FRIEND_SUBSCRIPTION_QUERY = gql`
+  subscription myFriend($userId: Int!){
+    myFriend(userId: $userId){
+      id
+      email
+      firstName
+      lastName
+      phoneNumber
+      avatar
+    }
+  }
+`;
+
+export const FRIEND_QUERY = gql`
 query friends($id:Int, $limit: Int, $offset: Int){ 
     friends(id:$id, limit: $limit, offset: $offset) { 
       rows {
@@ -149,7 +164,7 @@ export const withFriends = graphql(FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, friends, error, refetch, networkStatus, fetchMore } }) => {
+  props: ({ data: { loading, friends, error, refetch, networkStatus, fetchMore, subscribeToMore } }) => {
     let rows = [];
     let count = 0;
 
@@ -158,7 +173,56 @@ export const withFriends = graphql(FRIEND_QUERY, {
       count = friends.count;
     }
 
-    return { friends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
+    return {
+      friends: { loading, rows, count, error, refetch, networkStatus, fetchMore, subscribeToMore },
+      subscribeToNewFriend: param => subscribeToMore({
+        document: FRIEND_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newFriend = subscriptionData.data.myFriend;
+
+          rows = prev.friends.rows.filter((row) => {
+            if (row.id === newFriend.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          if (!repeated) {
+            const myProfile = client.readQuery(
+              {
+                query: profileQuery,
+                variables: { id: param.userId },
+              },
+            );
+            myProfile.totalFriends += 1;
+            client.writeQuery(
+              {
+                query: profileQuery,
+                data: myProfile,
+                variables: { id: param.userId },
+              },
+            );
+          }
+
+          rows = [newFriend].concat(rows);
+
+          return {
+            friends: { ...prev.friends, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
 
@@ -195,6 +259,62 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     return { bestFriends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });
+
+const GROUPS_SUBSCRIPTION_QUERY = gql`
+subscription myGroup($userId: Int!){ 
+  myGroup(userId: $userId) { 
+    id
+    outreach
+    name
+    description
+    type
+    photo
+    mapPhoto
+    User {
+      id 
+      email 
+      firstName 
+      lastName 
+      avatar 
+      relation { 
+        id 
+        email 
+        firstName 
+        avatar
+      }
+    } 
+    TripStart {
+      name 
+      coordinates 
+    } 
+    TripEnd {
+      name 
+      coordinates
+    } 
+    Stops {
+      name 
+      coordinates
+    } 
+    country 
+    county 
+    municipality 
+    locality 
+    GroupMembers { 
+      id 
+      avatar 
+    } 
+    GroupMembershipRequests {
+      id 
+      status 
+      Member {
+        id 
+        email 
+        firstName 
+      }
+    }
+  }
+}
+`;
 
 const GROUPS_QUERY = gql`
 query groups($id:Int, $limit: Int, $offset: Int){ 
@@ -261,7 +381,19 @@ export const withGroups = graphql(GROUPS_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, groups, error, refetch, networkStatus, fetchMore } }) => {
+  props: (
+    {
+      data: {
+        loading,
+        groups,
+        error,
+        refetch,
+        networkStatus,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -270,7 +402,56 @@ export const withGroups = graphql(GROUPS_QUERY, {
       count = groups.count;
     }
 
-    return { groups: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
+    return {
+      groups: { loading, rows, count, error, refetch, networkStatus, fetchMore, subscribeToMore },
+      subscribeToNewGroup: param => subscribeToMore({
+        document: GROUPS_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newGroup = subscriptionData.data.myGroup;
+
+          rows = prev.groups.rows.filter((row) => {
+            if (row.id === newGroup.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          rows = [newGroup].concat(rows);
+
+          if (!repeated) {
+            const myProfile = client.readQuery(
+              {
+                query: profileQuery,
+                variables: { id: param.userId },
+              },
+            );
+            myProfile.totalGroups += 1;
+            client.writeQuery(
+              {
+                query: profileQuery,
+                data: myProfile,
+                variables: { id: param.userId },
+              },
+            );
+          }
+
+          return {
+            groups: { ...prev.groups, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
 
@@ -434,17 +615,182 @@ export const withTrips = graphql(TRIPS_QUERY, {
             return prev;
           }
 
+          rows = [];
+          count = 0;
+          let repeated = false;
           const newTrip = subscriptionData.data.myTrip;
-          rows = [newTrip].concat(prev.trips.rows);
+
+          rows = prev.trips.rows.filter((row) => {
+            if (row.id === newTrip.id) {
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          rows = [newTrip].concat(rows);
+
+          const activeRides = client.readQuery(
+            {
+              query: TRIPS_QUERY,
+              variables: {
+                id: null,
+                offset: 0,
+                limit: PER_FETCH_LIMIT,
+                type: FEED_FILTER_OFFERED,
+                active: true,
+              },
+            },
+          );
+
+          activeRides.trips.rows.map((row) => {
+            if (row.id === newTrip.id) {
+              repeated = true;
+            }
+
+            return row;
+          });
+
+          if (!repeated) {
+            const myRides = client.readQuery(
+              {
+                query: TRIPS_QUERY,
+                variables: {
+                  id: param.userId,
+                  offset: 0,
+                  limit: PER_FETCH_LIMIT,
+                  type: FEED_FILTER_OFFERED,
+                  active: null,
+                },
+              },
+            );
+
+            myRides.trips.rows.map((row) => {
+              if (row.id === newTrip.id) {
+                repeated = true;
+              }
+
+              return row;
+            });
+          }
+
+          if (!repeated) {
+            const myProfile = client.readQuery(
+              {
+                query: profileQuery,
+                variables: { id: param.userId },
+              },
+            );
+
+            if (newTrip.type === FEED_FILTER_WANTED) {
+              myProfile.profile.totalAsked += 1;
+            } else {
+              myProfile.profile.totalOffered += 1;
+            }
+
+            client.writeQuery(
+              {
+                query: profileQuery,
+                data: myProfile,
+                variables: { id: param.userId },
+              },
+            );
+          }
 
           return {
-            trips: { ...prev.trips, ...{ rows, count: prev.trips.count + 1 } },
+            trips: { ...prev.trips, ...{ rows, count: count + 1 } },
           };
         },
       }),
     };
   },
 });
+
+const MY_EXPERIENCES_SUBSCRIPTION_QUERY = gql`
+subscription myExperience($userId:Int!){ 
+  myExperience(userId:$userId) { 
+    id
+    createdAt
+    description
+    photo
+    Participants {
+      User {
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+      } 
+      status
+    }
+    Trip {
+      id 
+      type 
+      description 
+      seats 
+      parentId
+      User {
+        id 
+        email 
+        firstName 
+        lastName 
+        avatar 
+        relation {
+          id 
+          email 
+          firstName
+          lastName
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      isParticipant
+      duration
+      ReturnTrip {
+        id
+        date
+        TripStart {
+          name
+          coordinates
+        }
+        TripEnd {
+          name
+          coordinates
+        }
+      }
+      Recurring {
+        id
+        date
+      }
+    }
+    User {
+      id 
+      firstName 
+      lastName 
+      email 
+      avatar 
+    } 
+    totalComments
+  }
+}
+`;
 
 const MY_EXPERIENCES_QUERY = gql`
 query myExperiences($id:Int, $limit: Int, $offset: Int,){ 
@@ -538,7 +884,19 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
   options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
     variables: { id, offset, limit },
   }),
-  props: ({ data: { loading, myExperiences, error, networkStatus, refetch, fetchMore } }) => {
+  props: (
+    {
+      data: {
+        loading,
+        myExperiences,
+        error,
+        networkStatus,
+        refetch,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -546,7 +904,56 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
       rows = myExperiences.rows;
       count = myExperiences.count;
     }
-    return { myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
+    return {
+      myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore },
+      subscribeToNewExperience: param => subscribeToMore({
+        document: MY_EXPERIENCES_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newExperience = subscriptionData.data.myExperience;
+
+          rows = prev.myExperiences.rows.map((row) => {
+            if (row.id === newExperience.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          if (!repeated) {
+            const myProfile = client.readQuery(
+              {
+                query: profileQuery,
+                variables: { id: param.userId },
+              },
+            );
+            myProfile.profile.totalExperiences += 1;
+            client.writeQuery(
+              {
+                query: profileQuery,
+                data: myProfile,
+                variables: { id: param.userId },
+              },
+            );
+          }
+
+          rows = [newExperience].concat(rows);
+
+          return {
+            myExperiences: { ...prev.myExperiences, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
 
