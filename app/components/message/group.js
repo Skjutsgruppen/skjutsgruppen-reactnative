@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -98,42 +99,50 @@ const item = (group, navigation) => (
   </TouchableOpacity>
 );
 
-
-const Group = ({ groups, navigation }) => {
-  let render = (<Text style={styles.emptyMessage}>No Group</Text>);
-
-  if (groups.count > 0) {
-    render = groups.rows.map(group => item(group, navigation));
+class Group extends Component {
+  componentWillMount() {
+    const { user, subscribeToNewGroup } = this.props;
+    subscribeToNewGroup({ userId: user.id });
   }
 
-  if (groups.error) {
-    render = (
-      <View style={{ marginTop: 20, marginBottom: 20 }}>
-        <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-        <TouchableOpacity onPress={() => groups.refetch()}>
-          <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-        </TouchableOpacity>
+  render() {
+    const { groups, navigation } = this.props;
+
+    let render = (<Text style={styles.emptyMessage}>No Group</Text>);
+
+    if (groups.count > 0) {
+      render = groups.rows.map(group => item(group, navigation));
+    }
+
+    if (groups.error) {
+      render = (
+        <View style={{ marginTop: 20, marginBottom: 20 }}>
+          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <TouchableOpacity onPress={() => groups.refetch()}>
+            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (groups.loading) {
+      render = (
+        <View style={styles.spacedWrapper}>
+          <Loading />
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          {('Your groups'.toUpperCase())}
+        </Text>
+        {render}
       </View>
     );
   }
-
-  if (groups.loading) {
-    render = (
-      <View style={styles.spacedWrapper}>
-        <Loading />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>
-        {('Your groups'.toUpperCase())}
-      </Text>
-      {render}
-    </View>
-  );
-};
+}
 
 Group.propTypes = {
   groups: PropTypes.shape({
@@ -144,6 +153,12 @@ Group.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  subscribeToNewGroup: PropTypes.func.isRequired,
 };
 
-export default compose(withGroups, withNavigation)(Group);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withGroups, withNavigation, connect(mapStateToProps))(Group);
