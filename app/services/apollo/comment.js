@@ -1,8 +1,34 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEEDABLE_TRIP } from '@config/constant';
 import client from '@services/apollo';
 import { GET_FEED_QUERY } from '@services/apollo/trip';
+import { PROFILE_QUERY } from '@services/apollo/profile';
+
+const increaseCommentCount = (repeated, userId) => {
+  try {
+    if (!repeated) {
+      const myProfile = client.readQuery(
+        {
+          query: PROFILE_QUERY,
+          variables: { id: userId },
+        },
+      );
+
+      myProfile.profile.totalComments += 1;
+
+      client.writeQuery(
+        {
+          query: PROFILE_QUERY,
+          data: myProfile,
+          variables: { id: userId },
+        },
+      );
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription commentAdded($tripId:Int, $groupId:Int, $newsId: Int) {
@@ -72,24 +98,47 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
             return prev;
           }
 
+          rows = [];
+          count = 0;
+
           const newFeedItem = subscriptionData.data.commentAdded;
-          const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+          let repeated = false;
 
-          feeds.getFeed.rows.map((feed) => {
-            if (feed.feedable === 'Trip' && feed.Trip.id === variables.id) {
-              feed.Trip.totalComments += 1;
-              feed.Trip.isParticipant = true;
+          rows = prev.comments.rows.filter((row) => {
+            if (row.id === newFeedItem.id) {
+              repeated = true;
+              return null;
             }
+            count += 1;
 
-            return feed;
+            return row;
           });
 
-          client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+          rows = [newFeedItem].concat(rows);
 
-          rows = [newFeedItem].concat(prev.comments.rows);
+          try {
+            if (!repeated) {
+              const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: FEED_FILTER_EVERYTHING } } });
+
+              feeds.getFeed.rows.map((feed) => {
+                if (feed.feedable === FEEDABLE_TRIP && feed.Trip.id === variables.id) {
+                  feed.Trip.totalComments += 1;
+                  feed.Trip.isParticipant = true;
+                }
+
+                return feed;
+              });
+
+              client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: FEED_FILTER_EVERYTHING } } });
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+
+          increaseCommentCount(repeated, newFeedItem.User.id);
 
           return {
-            comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
+            comments: { ...prev.comments, ...{ rows, count: count + 1 } },
           };
         },
       }),
@@ -134,22 +183,44 @@ export const withNewsComment = graphql(GET_NEWS_COMMENTS_QUERY, {
         }
 
         const newFeedItem = subscriptionData.data.commentAdded;
-        const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+        let rows = [];
+        let count = 0;
+        let repeated = false;
 
-        feeds.getFeed.rows.map((feed) => {
-          if (feed.feedable === 'News' && feed.News.id === props.ownProps.id) {
-            feed.News.totalComments += 1;
+        rows = prev.comments.rows.filter((row) => {
+          if (row.id === newFeedItem.id) {
+            repeated = true;
+            return null;
           }
+          count += 1;
 
-          return feed;
+          return row;
         });
 
-        client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: 'everything' } } });
+        rows = [newFeedItem].concat(rows);
 
-        const rows = [newFeedItem].concat(prev.comments.rows);
+        try {
+          if (!repeated) {
+            const feeds = client.readQuery({ query: GET_FEED_QUERY, variables: { offset: 0, limit: 10, filter: { type: FEED_FILTER_EVERYTHING } } });
+
+            feeds.getFeed.rows.map((feed) => {
+              if (feed.feedable === 'News' && feed.News.id === props.ownProps.id) {
+                feed.News.totalComments += 1;
+              }
+
+              return feed;
+            });
+
+            client.writeQuery({ query: GET_FEED_QUERY, data: feeds, variables: { offset: 0, limit: 10, filter: { type: FEED_FILTER_EVERYTHING } } });
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+
+        increaseCommentCount(repeated, newFeedItem.User.id);
 
         return {
-          comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
+          comments: { ...prev.comments, ...{ rows, count: count + 1 } },
         };
       },
     }),
@@ -197,3 +268,4 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
       }),
     }),
 });
+

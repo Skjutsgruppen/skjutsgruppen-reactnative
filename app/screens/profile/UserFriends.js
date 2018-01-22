@@ -5,6 +5,7 @@ import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -72,7 +73,8 @@ class UserFriends extends Component {
   }
 
   render() {
-    const { id, editable } = this.props.navigation.state.params;
+    const { editable } = this.props.navigation.state.params;
+    const { id } = this.props.navigation.state.params || this.props.user.id;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -91,6 +93,11 @@ UserFriends.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-export default UserFriends;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(UserFriends);

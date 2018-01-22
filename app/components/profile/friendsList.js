@@ -56,6 +56,11 @@ class UserFriendsList extends Component {
     };
   }
 
+  componentWillMount() {
+    const { id, subscribeToNewFriend } = this.props;
+    subscribeToNewFriend({ userId: id });
+  }
+
   setConfirmModalVisibility = (visibility) => {
     this.setState({ confirmModalVisibility: visibility });
   }
@@ -137,6 +142,8 @@ UserFriendsList.propTypes = {
     count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  subscribeToNewFriend: PropTypes.func.isRequired,
   editable: PropTypes.bool,
 };
 
