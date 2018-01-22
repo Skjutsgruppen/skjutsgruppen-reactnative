@@ -92,7 +92,7 @@ class About extends Component {
         <View style={styles.addPhotoWrapper}>
           <Camera onSelect={res => this.setState({ photo: res.data })}>
             <View style={styles.addPhoto}>
-              <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
+              <Image source={require('@assets/icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
               <Text style={styles.addPhotoLabel}>Add a group photo</Text>
             </View>
           </Camera>

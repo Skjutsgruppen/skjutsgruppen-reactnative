@@ -14,6 +14,7 @@ import {
 } from '@config/constant';
 import RelationModal from '@components/relationModal';
 import DataList from '@components/dataList';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -177,4 +178,4 @@ GroupFeed.propTypes = {
   subscribeToGroupFeed: PropTypes.func.isRequired,
 };
 
-export default compose(withShare)(GroupFeed);
+export default compose(withShare, withNavigation)(GroupFeed);

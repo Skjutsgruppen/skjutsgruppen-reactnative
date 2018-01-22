@@ -1,13 +1,12 @@
 /* global __DEV__ */
 
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducers from '@redux/reducers/reducers';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import Apollo from '@services/apollo';
 
-const congifureStore = (initialState = {}) => {
+const congifureStore = (initialState = {}, customStore) => {
   const middlewares = [thunk];
 
   if (__DEV__) {
@@ -20,7 +19,9 @@ const congifureStore = (initialState = {}) => {
     applyMiddleware(...middlewares),
   ];
 
-  const store = createStore(reducers, initialState, composeWithDevTools(...enhancers));
+  const makeStore = (__DEV__ && typeof customStore === 'function') ? customStore : createStore;
+
+  const store = makeStore(reducers, initialState, compose(...enhancers));
 
   return store;
 };

@@ -51,6 +51,8 @@ export const NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED = 'experience_accepted';
 export const NOTIFICATION_TYPE_EXPERIENCE_SHARED = 'experience_shared';
 export const NOTIFICATION_TYPE_EXPERIENCE_VOID = 'experience_void';
 export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
+export const NOTIFICATION_TYPE_TRIP_SHARED = 'trip_shared';
+export const NOTIFICATION_TYPE_TRIP_SHARED_GROUP = 'trip_shared_group';
 
 export const RELATIONSHIP_TYPE_FRIEND = 'friend';
 export const RELATIONSHIP_TYPE_INCOMING = 'incoming';

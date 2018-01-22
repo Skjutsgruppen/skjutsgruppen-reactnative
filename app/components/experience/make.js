@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 
-import Icon from '@icons/ic_make_experience.png';
+import Icon from '@assets/icons/ic_make_experience.png';
 
 const styles = StyleSheet.create({
   wrapper: {

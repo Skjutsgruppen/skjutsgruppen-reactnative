@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FloatingNavbar } from '@components/common';
-import ShareIcon from '@icons/ic_share_white.png';
+import ShareIcon from '@assets/icons/ic_share_white.png';
 import Date from '@components/date';
 import { FEEDABLE_EXPERIENCE } from '@config/constant';
 import Share from '@components/common/share';

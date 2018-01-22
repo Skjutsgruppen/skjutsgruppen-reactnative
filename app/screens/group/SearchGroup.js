@@ -12,7 +12,7 @@ const SearchGroup = ({ navigation }) => {
   return (
     <View>
       <NavBar handleBack={() => navigation.goBack()} />
-      <GroupResult navigation={navigation} keyword={query} />
+      <GroupResult keyword={query} />
     </View>
   );
 };

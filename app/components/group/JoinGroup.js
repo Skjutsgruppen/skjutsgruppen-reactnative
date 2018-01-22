@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { CLOSE_GROUP } from '@config/constant';
+import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import PropTypes from 'prop-types';
 import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import { Wrapper, Loading, FloatingNavbar } from '@components/common';
@@ -13,6 +13,7 @@ import GroupImage from '@components/group/groupImage';
 import Participants from '@components/group/participants';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { withNavigation } from 'react-navigation';
 
 const ParticipantListBubble = withGroupMembers(Participants);
 
@@ -229,7 +230,7 @@ class JoinGroup extends Component {
   }
 
   render() {
-    const { group, navigation } = this.props;
+    const { group } = this.props;
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
@@ -237,28 +238,20 @@ class JoinGroup extends Component {
         <ScrollView>
           <GroupImage group={group} />
           <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
-          <ParticipantListBubble id={group.id} offset={0} navigation={navigation} />
+          <ParticipantListBubble id={group.id} offset={0} />
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
           <Text style={styles.text}>
-            {
-              group.type === 'OpenGroup' && 'Open Group'
-            }
-            {
-              group.type === 'ClosedGroup' && 'Closed Group'
-            }
+            {group.type === OPEN_GROUP && 'Open Group'}
+            {group.type === CLOSE_GROUP && 'Closed Group'}
           </Text>
           <Text style={styles.text}>
-            {
-              group.outreach === 'area' && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')
-            }
-            {
-              group.outreach === 'route' && `${group.TripStart.name} - ${group.TripEnd.name}`
-            }
+            {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
+            {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
           </Text>
           {
             group.Stops.length > 0 &&
             <View style={styles.stopText}>
-              <Image source={require('@icons/icon_stops.png')} style={styles.stopsIcon} />
+              <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
               <Text style={{ color: '#333' }}>
                 Stops in
                 <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
@@ -294,4 +287,9 @@ JoinGroup.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withShare, withJoinGroup, connect(mapStateToProps))(JoinGroup);
+export default compose(
+  withShare,
+  withJoinGroup,
+  withNavigation,
+  connect(mapStateToProps),
+)(JoinGroup);

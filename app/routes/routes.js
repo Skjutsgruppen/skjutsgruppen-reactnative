@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { BackHandler, StatusBar } from 'react-native';
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
-import { AppNavigator } from './routeProvider';
+import { AppNavigator } from '@routes/routeProvider';
 
 class Router extends Component {
   componentWillMount() {

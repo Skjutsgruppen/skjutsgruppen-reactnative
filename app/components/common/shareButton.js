@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import Icon from '@icons/ic_share_white.png';
+import Icon from '@assets/icons/ic_share_white.png';
 
 const styles = StyleSheet.create({
   button: {

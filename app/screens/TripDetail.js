@@ -5,7 +5,6 @@ import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@compone
 import { withShare } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
-import { getTimezone } from '@helpers/device';
 import { withTripExperiences } from '@services/apollo/experience';
 import { compose } from 'react-apollo';
 import { trans } from '@lang/i18n';
@@ -19,8 +18,8 @@ import Share from '@components/common/share';
 import Date from '@components/date';
 import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
-import Moment from 'moment';
 import About from '@components/common/about';
+import { getDate } from '@config';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -377,14 +376,13 @@ class TripDetail extends Component {
   isTripStarted = () => {
     const { trip } = this.state;
 
-    return Moment(trip.date).tz(getTimezone()).add(trip.duration / 2, 'second').isBefore();
+    return getDate(trip.date).add(trip.duration / 2, 'second').isBefore();
   }
 
   isTripEnded = () => {
     const { trip } = this.state;
 
-    return Moment(trip.date)
-      .tz(getTimezone())
+    return getDate(trip.date)
       .add(trip.duration, 'second')
       .add(1, 'day')
       .isBefore();
@@ -522,7 +520,7 @@ class TripDetail extends Component {
             style={styles.moreIconWrapper}
             onPress={() => this.setModalVisible(true)}
           >
-            <Image source={require('@icons/ic_options.png')} style={styles.moreIcon} />
+            <Image source={require('@assets/icons/ic_options.png')} style={styles.moreIcon} />
           </TouchableOpacity>
         }
         <TextInput
@@ -572,9 +570,9 @@ class TripDetail extends Component {
     let tripDate = '';
 
     trip.Recurring.forEach((row, index) => {
-      selectedDate = Moment(row.date).tz(getTimezone());
+      selectedDate = getDate(row.date);
       if (index === 0) {
-        tripDate = selectedDate.format('YYYY-MM-DD');
+        tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
       }
 
       markedDates[selectedDate.format('YYYY-MM-DD')] = [
@@ -636,7 +634,7 @@ class TripDetail extends Component {
                   style={styles.pillBtn}
                   onPress={() => this.setReturnRidesModalVisibility(true)}
                 >
-                  <Image source={require('@icons/ic_return.png')} style={styles.btnIcon} />
+                  <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
                   <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
                 </TouchableOpacity>
               }
@@ -646,7 +644,7 @@ class TripDetail extends Component {
                   style={styles.pillBtn}
                   onPress={() => this.setRecurringRidesModalVisibility(true)}
                 >
-                  <Image source={require('@icons/ic_calender.png')} style={styles.btnIcon} />
+                  <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
                   <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
                 </TouchableOpacity>
               }
@@ -716,7 +714,6 @@ class TripDetail extends Component {
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
               <Relation
-                navigation={navigation}
                 users={trip.User.relation}
                 avatarSize={45}
               />
@@ -733,7 +730,6 @@ class TripDetail extends Component {
             <View style={styles.horizontalDivider} />
           </View>
           <TripComment
-            navigation={navigation}
             onCommentPress={this.onProfilePress}
             id={trip.id}
           />

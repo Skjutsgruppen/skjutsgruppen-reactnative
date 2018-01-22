@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 class Photo extends PureComponent {
   constructor(props) {
     super(props);
@@ -77,14 +76,14 @@ class Photo extends PureComponent {
           >
             <View>
               <Text style={styles.title}>Add a photo to your ride</Text>
-              <Image source={require('@icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
+              <Image source={require('@assets/icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
             </View>
           </Camera>
         </View>
         <Text style={styles.infoText}>
           Make your ride more visible by adding a photo.
         </Text>
-        <Image source={require('@icons/icon_garden.png')} style={styles.gardenIcon} />
+        <Image source={require('@assets/icons/icon_garden.png')} style={styles.gardenIcon} />
         <Text style={[styles.infoText, styles.infoTextWider]}>
           You can add a photo after you have supported the self-sustaining garden.
         </Text>

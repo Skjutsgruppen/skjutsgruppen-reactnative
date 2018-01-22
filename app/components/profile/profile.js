@@ -15,6 +15,7 @@ import {
   RELATIONSHIP_TYPE_INCOMING,
   RELATIONSHIP_TYPE_OUTGOING,
 } from '@config/constant';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -338,7 +339,7 @@ class Profile extends Component {
   )
 
   render() {
-    const { data: { networkStatus, profile, error }, navigation } = this.props;
+    const { data: { networkStatus, profile, error } } = this.props;
 
     if (error) {
       return (
@@ -402,7 +403,6 @@ class Profile extends Component {
             </View>
             <View style={styles.connection}>
               <Relation
-                navigation={navigation}
                 users={profile.relation}
                 avatarSize={45}
               />
@@ -465,5 +465,6 @@ export default compose(
   withCancelFriendRequest,
   withAcceptFriendRequest,
   withRejectFriendRequest,
+  withNavigation,
   connect(mapStateToProps),
 )(Profile);

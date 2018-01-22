@@ -132,7 +132,7 @@ class Email extends Component {
 
     return (
       <Container>
-        <Image source={require('@icons/icon_garden.png')} style={styles.garderIcon} />
+        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} />
         <GreetText>Become a participant</GreetText>
         <ColoredText color={Colors.text.purple}>Confirm your e-mail</ColoredText>
         <Toast message={error} type="error" />
