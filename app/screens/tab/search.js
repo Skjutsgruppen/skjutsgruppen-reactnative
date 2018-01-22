@@ -8,8 +8,8 @@ import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_GROUP } from '@config/constant';
-import SearchIcon from '@icons/ic_search.png';
-import SearchIconActive from '@icons/ic_search_active.png';
+import SearchIcon from '@assets/icons/ic_search.png';
+import SearchIconActive from '@assets/icons/ic_search_active.png';
 import { trans } from '@lang/i18n';
 import ExploreRecentGroup from '@components/group/exploreRecentCard';
 import { withExploreGroup } from '@services/apollo/group';
@@ -254,7 +254,6 @@ class Search extends Component {
   render() {
     const prettyDate = this.formatDates();
     const { filters, direction, dates, markedDates } = this.state;
-    const { navigation } = this.props;
 
     return (
       <View style={styles.container}>
@@ -275,7 +274,7 @@ class Search extends Component {
             <View style={styles.inputWrapper}>
               <View style={styles.divider} />
               <TouchableOpacity onPress={this.switchLocation} style={styles.locationSwitcher}>
-                <Image source={require('@icons/icon_switcher.png')} style={styles.switcherIcon} />
+                <Image source={require('@assets/icons/icon_switcher.png')} style={styles.switcherIcon} />
               </TouchableOpacity>
             </View>
             <View style={styles.inputWrapper}>
@@ -390,7 +389,7 @@ class Search extends Component {
           >
             {trans('search.search')}
           </RoundedButton>
-          <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" navigation={navigation} />
+          <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" />
         </ScrollView>
       </View>
     );

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, Image, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Chevron from '@icons/ic_chevron_white.png';
+import Chevron from '@assets/icons/ic_chevron_white.png';
 
 const styles = StyleSheet.create({
   button: {

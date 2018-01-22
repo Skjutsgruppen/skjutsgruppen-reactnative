@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import GroupItem from '@components/feed/card/group';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
+import { withNavigation } from 'react-navigation';
 
 class SearchGroupResult extends PureComponent {
   redirect = (type, detail) => {
@@ -55,4 +56,4 @@ SearchGroupResult.propTypes = {
   keyword: PropTypes.string.isRequired,
 };
 
-export default SearchGroupResult;
+export default withNavigation(SearchGroupResult);

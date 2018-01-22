@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Ima
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
-import CommentIcon from '@icons/ic_comment.png';
+import CommentIcon from '@assets/icons/ic_comment.png';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_NEWS } from '@config/constant';
 

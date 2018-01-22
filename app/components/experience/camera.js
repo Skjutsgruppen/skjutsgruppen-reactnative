@@ -11,7 +11,7 @@ import Camera from 'react-native-camera';
 import { FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 
-import CameraHead from '@icons/ic_camera_head.png';
+import CameraHead from '@assets/icons/ic_camera_head.png';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({

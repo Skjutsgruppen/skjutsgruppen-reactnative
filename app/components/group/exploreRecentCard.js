@@ -4,6 +4,7 @@ import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import PropTypes from 'prop-types';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   exploreGroup: {
@@ -134,4 +135,4 @@ ExploreRecentGroup.defaultProps = {
   },
 };
 
-export default ExploreRecentGroup;
+export default withNavigation(ExploreRecentGroup);

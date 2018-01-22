@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, NetInfo } from 'react-native';
 import { AppNotification } from '@components/common';
-import NoConnectionIcon from '@icons/ic_no_connection.png';
+import NoConnectionIcon from '@assets/icons/ic_no_connection.png';
 
 class InternetConnection extends Component {
   constructor(props) {

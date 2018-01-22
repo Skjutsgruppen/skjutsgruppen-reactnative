@@ -1,3 +1,3 @@
-import Auth from './auth';
+import Auth from '@services/auth/auth';
 
 export default Auth;

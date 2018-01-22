@@ -9,6 +9,7 @@ import MesssageItem from '@components/message/item';
 import { connect } from 'react-redux';
 import { PER_FETCH_LIMIT } from '@config/constant';
 import { trans } from '@lang/i18n';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   section: {
@@ -80,7 +81,7 @@ class NewNotification extends PureComponent {
   }
 
   renderNotification = () => {
-    const { notifications, navigation, filters } = this.props;
+    const { notifications, filters } = this.props;
 
     let render = (<Text style={styles.emptyMessage}>No Messages</Text>);
     let limitedNotifications = notifications.rows;
@@ -93,7 +94,6 @@ class NewNotification extends PureComponent {
       render = limitedNotifications.map(message => (
         <MesssageItem
           key={message.id}
-          navigation={navigation}
           filters={filters}
           notification={message}
         />
@@ -155,4 +155,4 @@ NewNotification.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withNotification, connect(mapStateToProps))(NewNotification);
+export default compose(withNotification, withNavigation, connect(mapStateToProps))(NewNotification);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import CheckIcon from '@icons/icon_check.png';
+import CheckIcon from '@assets/icons/icon_check.png';
 
 const styles = StyleSheet.create({
   wrapper: {

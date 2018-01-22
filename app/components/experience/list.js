@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import SunIcon from '@icons/ic_camera_head.png';
-import Arrow from '@icons/ic_arrow_experience.png';
+import SunIcon from '@assets/icons/ic_camera_head.png';
+import Arrow from '@assets/icons/ic_arrow_experience.png';
 import { withNavigation } from 'react-navigation';
 import { Loading } from '@components/common';
 

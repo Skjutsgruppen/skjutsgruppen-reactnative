@@ -93,7 +93,7 @@ class GooglePlacesInput extends PureComponent {
 
     if (this.props.currentLocation) {
       return (<TouchableOpacity onPress={this.currentLocation} style={styles.inputIconWrapper}>
-        <Image source={require('@icons/icon_location.png')} style={styles.inputIcon} />
+        <Image source={require('@assets/icons/icon_location.png')} style={styles.inputIcon} />
       </TouchableOpacity>);
     }
 
