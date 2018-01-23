@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 
 import AddIcon from '@assets/icons/ic_add.png';
 import AddIconActive from '@assets/icons/ic_add_active.png';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 16,
+    fontSize: 48,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: Colors.text.purple,
+    textAlign: 'center',
     marginHorizontal: 20,
-    marginTop: 10,
-    marginBottom: 12,
+    marginTop: 48,
+    marginBottom: 24,
   },
   rowWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.background.fullWhite,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     paddingTop: 12,
   },
   row: {
-    borderBottomColor: '#eee',
-    borderBottomWidth: 2,
+    borderBottomColor: Colors.border.lightGray,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   touchable: {
     justifyContent: 'center',
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   actionLabel: {
-    color: '#1ca9e5',
+    color: Colors.text.blue,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -44,28 +46,21 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain',
     alignSelf: 'center',
-    marginTop: 24,
+    marginTop: 16,
   },
   explore: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 24,
     paddingHorizontal: 12,
-
+    marginBottom: 24,
   },
   exploreText: {
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  exploreButton: {
-    width: 100,
-  },
-  exploreButtonText: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginLeft: 2,
+    textAlign: 'center',
+    color: Colors.text.green,
+    marginTop: 16,
   },
 });
 
@@ -95,57 +90,58 @@ class Add extends Component {
 
   render() {
     return (
-      <Wrapper bgColor="#edec38">
-        <Text style={styles.title}>Add</Text>
-        <View style={styles.rowWrapper}>
-          <View style={styles.row}>
-            <TouchableOpacity
-              onPress={this.redirectToOffer}
-              style={styles.touchable}
-            >
-              <Text
-                style={styles.actionLabel}
+      <Wrapper bgColor={Colors.background.cream}>
+        <ScrollView>
+          <Text style={styles.title}>Add</Text>
+          <View style={styles.rowWrapper}>
+            <View style={styles.row}>
+              <TouchableOpacity
+                onPress={this.redirectToOffer}
+                style={styles.touchable}
               >
-                Offer a ride
-              </Text>
+                <Text
+                  accessibilityLabel="Go to next form"
+                  style={styles.actionLabel}
+                >
+                  Offer a ride
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row}>
+              <TouchableOpacity
+                onPress={() => this.redirect('Ask')}
+                style={styles.touchable}
+              >
+                <Text
+                  accessibilityLabel="Go to next form"
+                  style={styles.actionLabel}
+                >
+                  Ask for a ride
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row}>
+              <TouchableOpacity
+                onPress={this.redirectToGroup}
+                style={styles.touchable}
+              >
+                <Image source={require('@assets/icons/icon_group.png')} style={styles.groupIcon} />
+                <Text
+                  accessibilityLabel="Go to next form"
+                  style={styles.actionLabel}
+                >
+                  Add a new group
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.explore}>
+            <Image source={require('@assets/icons/icon_telescope.png')} style={styles.telescope} />
+            <TouchableOpacity onPress={this.redirectToExploreGroup}>
+              <Text style={styles.exploreText}>Explore existing groups</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.row}>
-            <TouchableOpacity
-              onPress={() => this.redirect('Ask')}
-              style={styles.touchable}
-            >
-              <Text
-                style={styles.actionLabel}
-              >
-                Ask for a ride
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.row}>
-            <TouchableOpacity
-              onPress={this.redirectToGroup}
-              style={styles.touchable}
-            >
-              <Image source={require('@assets/icons/icon_group.png')} style={styles.groupIcon} />
-              <Text
-                accessibilityLabel="Go to next form"
-                style={styles.actionLabel}
-              >
-                Add a new group
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Image source={require('@assets/icons/icon_telescope.png')} style={styles.telescope} />
-        <View style={styles.explore}>
-          <Text style={styles.exploreText}>
-            Want to explore existing groups?
-          </Text>
-          <TouchableOpacity onPress={this.redirectToExploreGroup} style={styles.exploreButton}>
-            <Text style={styles.exploreButtonText}>Click here</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </Wrapper>
     );
   }
