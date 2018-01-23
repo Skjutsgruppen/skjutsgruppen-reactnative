@@ -130,7 +130,7 @@ class Feed extends Component {
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('profile', feed.Group.User.id)}>{feed.Group.User.firstName || feed.Group.User.email}
+            <Text style={styles.name} onPress={() => onPressUser('profile', feed.Group.User.id)}>{feed.Group.User.firstName}
             </Text>
             <Text style={styles.commentText}>
               Added <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
@@ -159,7 +159,7 @@ class Feed extends Component {
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName || feed.User.email}
+            <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName}
             </Text>
             {this.renderFeed()}
           </View>
@@ -184,13 +184,13 @@ class Feed extends Component {
 
 Feed.propTypes = {
   feed: PropTypes.shape({
+    ActivityType: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
     User: PropTypes.shape({
       firstName: PropTypes.string,
-      email: PropTypes.string,
-      date: PropTypes.string,
     }),
-    date: PropTypes.string,
-    text: PropTypes.string,
+    date: PropTypes.string.isRequired,
   }).isRequired,
   onPressUser: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,

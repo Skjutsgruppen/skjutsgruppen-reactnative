@@ -124,54 +124,36 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
   {
     rows {
       id
-      outreach
       name
       description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
       type
       photo
       mapPhoto
-      User {
-        id
-        email
-        firstName
-        lastName
-        avatar
-        relation {
-          id,
-          email,
-          firstName
-          avatar
-        }
-      }
       TripStart {
-        name
-        coordinates
-      }
+        name 
+        coordinates 
+      } 
       TripEnd {
-        name
+        name 
         coordinates
-      }
+      } 
       Stops {
-        name
+        name 
         coordinates
-      }
-      country
-      county
-      municipality
-      locality
-      GroupMembers{
-        id
-      }
-      GroupMembershipRequests{
-        id
-        status
-        Member {
-          id
-          email
-          firstName
-        }
-      }
-    } 
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+    }
     count
   }
 }
@@ -204,53 +186,35 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
   searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
     rows {
       id
-      outreach
       name
       description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
       type
       photo
       mapPhoto
-      User {
-        id
-        email
-        firstName
-        lastName
-        avatar
-        relation {
-          id,
-          email,
-          firstName
-          avatar
-        }
-      }
       TripStart {
-        name
-        coordinates
-      }
+        name 
+        coordinates 
+      } 
       TripEnd {
-        name
+        name 
         coordinates
-      }
+      } 
       Stops {
-        name
+        name 
         coordinates
-      }
-      country
-      county
-      municipality
-      locality
-      GroupMembers{
-        id
-      }
-      GroupMembershipRequests{
-        id
-        status
-        Member {
-          id
-          email
-          firstName
-        }
-      }
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
     }
     count
   }
@@ -278,25 +242,17 @@ export const FIND_GROUP_QUERY = gql`
 query group($id: Int!){
   group(id: $id){
       id
-      outreach
       name
       description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
       type
       photo
       mapPhoto
-      User {
-        id 
-        email 
-        firstName 
-        lastName 
-        avatar 
-        relation { 
-          id 
-          email 
-          firstName 
-          avatar
-        }
-      } 
       TripStart {
         name 
         coordinates 
@@ -313,24 +269,13 @@ query group($id: Int!){
       county 
       municipality 
       locality 
-      GroupMembers { 
-        id 
-        avatar 
-      } 
-      GroupMembershipRequests {
-        id 
-        status 
-        Member {
-          id 
-          email 
-          firstName 
-        }
-      }
+      membershipStatus
+      totalParticipants
   }
 }
 `;
 
-export const withFindGroup = graphql(FIND_GROUP_QUERY, {
+export const withGroup = graphql(FIND_GROUP_QUERY, {
   options: ({ id }) => ({
     variables: { id },
   }),
@@ -346,77 +291,51 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       id
       date
       User {
-        id
-        email
-        avatar
-        phoneNumber
-        firstName
-        lastName
-        relation{
-          id
-          firstName
-          lastName
-          avatar
+        id 
+        firstName 
+        avatar 
+        relation {
+          id 
+          firstName 
+          avatar 
         }
-      }
-      rate
-      updatedAt
+      } 
       feedable
       ActivityType {
         type
-        rank
       }
       ... on GroupFeed {
         Group {
           id
-          outreach
           name
           description
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
           type
           photo
           mapPhoto
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              email
-              firstName
-              lastName
-              avatar
-            }
-          }
           TripStart {
-            name
-            coordinates
-          }
+            name 
+            coordinates 
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
+          } 
           Stops {
-            name
+            name 
             coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          GroupMembers {
-            id
-          }
-          GroupMembershipRequests {
-            id
-            status
-            Member {
-              id
-              email
-              firstName
-            }
-          }
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus
+          totalParticipants
         }
       }
       ... on TripFeed {
@@ -425,20 +344,10 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           type 
           description 
           seats 
-          parentId
           User {
             id 
-            email 
             firstName 
-            lastName 
             avatar 
-            relation {
-              id 
-              email 
-              firstName
-              lastName
-              avatar
-            }
           } 
           TripStart {
             name 
@@ -453,28 +362,9 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             coordinates 
           } 
           date 
-          time 
           photo 
           mapPhoto
           totalComments
-          isParticipant
-          duration
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
-          }
-          Recurring {
-            id
-            date
-          }
         }
       }
       ... on CommentFeed {
@@ -485,15 +375,11 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           date
           User {
             id
-            email
             avatar
             firstName
-            lastName
             relation {
               id
-              email
               firstName
-              lastName
               avatar
             }
           }
@@ -505,80 +391,11 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           createdAt
           description
           photo
-          Participants {
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-            } 
-            status
-          }
-          Trip {
-            id 
-            type 
-            description 
-            seats 
-            parentId
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-              relation {
-                id 
-                email 
-                firstName
-                lastName
-                avatar
-              }
-            } 
-            TripStart {
-              name 
-              coordinates
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops { 
-              name 
-              coordinates 
-            } 
-            date 
-            time 
-            photo 
-            mapPhoto
-            totalComments
-            isParticipant
-            duration
-            ReturnTrip {
-              id
-              date
-              TripStart {
-                name
-                coordinates
-              }
-              TripEnd {
-                name
-                coordinates
-              }
-            }
-            Recurring {
-              id
-              date
-            }
-          }
           User {
             id 
             firstName 
-            lastName 
-            email 
             avatar 
           } 
-          totalComments
         }
       }
     }
@@ -592,71 +409,50 @@ subscription groupFeed($groupId: Int!){
     id
     date
     User {
-      id
-      email
-      avatar
-      phoneNumber
-      firstName
-      lastName
-    }
-    rate
-    updatedAt
+      id 
+      firstName 
+      avatar 
+      relation {
+        id 
+        firstName 
+        avatar 
+      }
+    } 
     feedable
     ActivityType {
       type
-      rank
     }
     ... on GroupFeed {
       Group {
         id
-        outreach
         name
         description
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        outreach
         type
         photo
         mapPhoto
-        User {
-          id
-          email
-          firstName
-          lastName
-          avatar
-          relation {
-            id
-            email
-            firstName
-            lastName
-            avatar
-          }
-        }
         TripStart {
-          name
-          coordinates
-        }
+          name 
+          coordinates 
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
+        } 
         Stops {
-          name
+          name 
           coordinates
-        }
-        country
-        county
-        municipality
-        locality
-        GroupMembers {
-          id
-        }
-        GroupMembershipRequests {
-          id
-          status
-          Member {
-            id
-            email
-            firstName
-          }
-        }
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        membershipStatus
       }
     }
     ... on TripFeed {
@@ -665,19 +461,10 @@ subscription groupFeed($groupId: Int!){
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName 
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -692,28 +479,9 @@ subscription groupFeed($groupId: Int!){
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
     }
     ... on CommentFeed {
@@ -724,15 +492,11 @@ subscription groupFeed($groupId: Int!){
         date
         User {
           id
-          email
           avatar
           firstName
-          lastName
           relation {
             id
-            email
             firstName
-            lastName
             avatar
           }
         }
@@ -796,7 +560,6 @@ query groupMembers($id: Int, $limit: Int, $offset: Int){
     rows{
       id
       firstName
-      lastName
       avatar
     }
     count
@@ -819,5 +582,65 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
     }
 
     return { groupMembers: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
+  },
+});
+
+const GROUPS_QUERY = gql`
+query groups($id:Int, $limit: Int, $offset: Int){ 
+  groups(userId:$id, limit: $limit, offset: $offset) { 
+    rows{
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+    }
+    count
+  }
+}
+`;
+
+export const withMyGroups = graphql(GROUPS_QUERY, {
+  options: ({
+    id = null,
+    offset = 0,
+    limit = PER_FETCH_LIMIT,
+  }) => ({ variables: { id, offset, limit } }),
+  props: ({ data: { loading, groups, error, refetch, networkStatus, fetchMore } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (groups) {
+      rows = groups.rows;
+      count = groups.count;
+    }
+
+    return { groups: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });

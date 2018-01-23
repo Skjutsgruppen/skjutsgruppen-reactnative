@@ -7,7 +7,7 @@ import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
-import { withShare } from '@services/apollo/auth';
+import { withShare } from '@services/apollo/share';
 import { trans } from '@lang/i18n';
 import DataList from '@components/dataList';
 import {

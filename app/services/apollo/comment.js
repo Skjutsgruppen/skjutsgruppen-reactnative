@@ -2,7 +2,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
 import client from '@services/apollo';
-import { GET_FEED_QUERY } from '@services/apollo/feed';
+import { GET_FEED_QUERY } from '@services/apollo/trip';
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription commentAdded($tripId:Int, $groupId:Int, $newsId: Int) {
@@ -12,71 +12,17 @@ const COMMENTS_SUBSCRIPTION = gql`
       date
       User {
         id
-        email
         firstName
-        lastName
         avatar
         relation{
           id
           firstName
-          lastName
           avatar
         }
       }
     }
   }
 `;
-
-const GET_GROUP_COMMENTS = gql`
-query getGroupCommentQuery($id: Int!, $offset: Int, $limit: Int) {
-  comments(input : {groupId:$id, offset:$offset, limit:$limit}) {
-    rows {
-      id
-      text
-      date
-      User {
-        id
-        email
-        firstName
-        lastName
-        avatar
-        relation{
-          id
-          firstName
-          lastName
-          avatar
-        }
-      }
-    }
-    count
-  }
-}
-`;
-
-export const withGroupComment = graphql(GET_GROUP_COMMENTS, {
-  name: 'comments',
-  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
-  props: props => ({
-    comments: props.comments,
-    subscribeToNewComments: param => props.comments.subscribeToMore({
-      document: COMMENTS_SUBSCRIPTION,
-      variables: { groupId: param.id },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-
-        const newFeedItem = subscriptionData.data.commentAdded;
-
-        const rows = [newFeedItem].concat(prev.comments.rows);
-
-        return {
-          comments: { ...prev.comments, ...{ rows, count: prev.comments.count + 1 } },
-        };
-      },
-    }),
-  }),
-});
 
 const GET_TRIP_COMMENTS_QUERY = gql`
 query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
@@ -87,14 +33,11 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
       date
       User {
         id
-        email
         firstName
-        lastName
         avatar
         relation {
           id
           firstName
-          lastName
           avatar
         }
       }
@@ -105,20 +48,22 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 `;
 
 export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
-  name: 'comments',
-  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
-  props: ({ comments }) => {
+  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { id, offset, limit },
+  }),
+  props: ({ data }) => {
     let rows = [];
     let count = 0;
-    const { error, fetchMore, loading, networkStatus, variables, subscribeToMore } = comments;
+    const { error, fetchMore, comments, loading, networkStatus, variables, subscribeToMore } = data;
 
-    if (comments.comments) {
-      rows = comments.comments.rows.slice(0).reverse();
-      count = comments.comments.count;
+    if (comments) {
+      rows = comments.rows.slice(0).reverse();
+      count = comments.count;
     }
 
     return {
-      comments: { comments: { rows, count }, fetchMore, loading, error, networkStatus },
+      comments: { rows, count, fetchMore, loading, error, networkStatus },
       subscribeToNewComments: () => subscribeToMore({
         document: COMMENTS_SUBSCRIPTION,
         variables: { tripId: variables.id },
@@ -161,14 +106,11 @@ query getNewsCommentQuery($id: Int!, $offset: Int, $limit: Int) {
       date
       User {
         id
-        email
         firstName
-        lastName
         avatar
         relation {
           id
           firstName
-          lastName
           avatar
         }
       }
