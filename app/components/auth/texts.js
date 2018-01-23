@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 
@@ -29,7 +29,7 @@ export const GreetText = ({ children, style }) => (
 
 GreetText.propTypes = {
   children: PropTypes.node.isRequired,
-  style: View.propTypes.style,
+  style: Text.propTypes.style,
 };
 
 GreetText.defaultProps = {
@@ -43,7 +43,7 @@ export const ColoredText = ({ children, style, color }) => (
 
 ColoredText.propTypes = {
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
-  style: View.propTypes.style,
+  style: Text.propTypes.style,
   color: PropTypes.string.isRequired,
 };
 
