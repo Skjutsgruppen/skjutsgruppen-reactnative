@@ -57,7 +57,7 @@ const Item = ({ comment, onPress, setModalVisibility }) => {
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
           <Text style={styles.name}>
-            {comment.User.firstName || comment.User.email}
+            {comment.User.firstName}
             <Text style={[styles.time, styles.smallText]}> <Date>{comment.date}</Date></Text>
           </Text>
         </View>

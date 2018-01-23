@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withPhoneVerified } from '@services/apollo/profile';
+import { withPhoneVerified } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import SendSMS from 'react-native-sms';
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     margin: 24,
   },
 });
-
 
 class SendText extends Component {
   static navigationOptions = {

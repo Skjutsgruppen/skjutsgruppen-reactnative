@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
-import { withGroups } from '@services/apollo/auth';
+import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
@@ -146,4 +146,4 @@ Group.propTypes = {
   }).isRequired,
 };
 
-export default compose(withGroups, withNavigation)(Group);
+export default compose(withMyGroups, withNavigation)(Group);

@@ -1,25 +1,17 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const profileQuery = gql`
+const PROFILE_QUERY = gql`
 query profile($id: Int){
   profile (id: $id){
     id
     firstName
     lastName
-    emailVerified
-    email
-    phoneVerified
-    phoneNumber
     avatar
     fbId
-    verificationCode
-    phoneVerificationCode
     relation {
       id
-      email
       firstName
-      lastName
       avatar
     }
     totalOffered
@@ -34,7 +26,7 @@ query profile($id: Int){
   }
 }`;
 
-export const withProfile = graphql(profileQuery, {
+export const withProfile = graphql(PROFILE_QUERY, {
   options: ({ id }) => ({
     variables: { id },
     props: ({ profile, networkStatus, error, refetch, loading }) =>
@@ -42,84 +34,30 @@ export const withProfile = graphql(profileQuery, {
   }),
 });
 
-const ownerQuery = gql`
-query profile {
-  profile {
+const ACCOUNT_QUERY = gql`
+query account {
+  account {
     id
     firstName
     lastName
-    emailVerified
     email
-    phoneVerified
     phoneNumber
+    emailVerified
+    phoneVerified
     avatar
     fbId
     verificationCode
     phoneVerificationCode
-    relation {
-      id
-      email
-      firstName
-      lastName
-      avatar
-    }
     totalOffered
     totalAsked
     totalComments
-    relationshipType 
     totalExperiences
-    FriendRequest {
-      id
-      status
-    }
   }
 }`;
 
-export const withOwner = graphql(ownerQuery, {
+export const withAccount = graphql(ACCOUNT_QUERY, {
   options: {
-    props: ({ owner }) => ({ owner }),
+    props: ({ account, networkStatus, error, refetch, loading }) =>
+      ({ account, networkStatus, error, refetch, loading }),
   },
-});
-
-const CHECK_PHONE_VERIFICATION_QUERY = gql`
-mutation  isPhoneVerified {
-    token
-    User {
-      id
-      firstName
-      lastName
-      emailVerified
-      email
-      phoneVerified
-      phoneNumber
-      avatar
-      fbId
-      verificationCode
-      phoneVerificationCode
-      relation {
-        id
-        email
-        firstName
-        lastName
-        avatar
-      }
-      totalOffered
-      totalAsked
-      totalComments
-      relationshipType 
-      totalExperiences
-      FriendRequest {
-        id
-        status
-      }
-    }
-  }
-`;
-
-export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
-  props: ({ mutate }) => ({
-    isPhoneVerified: id => mutate({
-      variables: { id },
-    }),
-  }),
 });

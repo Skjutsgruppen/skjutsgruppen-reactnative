@@ -17,20 +17,10 @@ mutation nearByTrips($from:[Float]!) {
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -45,28 +35,9 @@ mutation nearByTrips($from:[Float]!) {
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
     }
   }

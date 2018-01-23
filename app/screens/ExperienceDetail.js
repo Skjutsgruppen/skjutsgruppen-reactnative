@@ -10,14 +10,15 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import { FloatingNavbar } from '@components/common';
+import { FloatingNavbar, Loading } from '@components/common';
 import ShareIcon from '@assets/icons/ic_share_white.png';
 import Date from '@components/date';
 import { FEEDABLE_EXPERIENCE } from '@config/constant';
 import Share from '@components/common/share';
-import { withShare } from '@services/apollo/auth';
-import { withMoreExperiences } from '@services/apollo/experience';
+import { withShare } from '@services/apollo/share';
+import { withMoreExperiences, withExperience } from '@services/apollo/experience';
 import List from '@components/experience/list';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   viewHeaderImage: {
@@ -88,6 +89,12 @@ class ExperienceDetail extends Component {
     this.setState({ experience });
   }
 
+  componentWillReceiveProps({ experience, loading }) {
+    if (!loading && experience.id) {
+      this.setState({ experience, loading });
+    }
+  }
+
   onSharePress = () => {
     this.setState({ isOpen: true });
   }
@@ -117,6 +124,10 @@ class ExperienceDetail extends Component {
   renderParticipants = () => {
     const { navigation } = this.props;
     const { experience } = this.state;
+    if (!experience.Trip) {
+      return null;
+    }
+
     const going = experience.Participants.filter(row => row.status === 'accepted');
     return going.map((row, index) => {
       let separator = ' ';
@@ -131,7 +142,7 @@ class ExperienceDetail extends Component {
           onPress={() => navigation.navigate('UserProfile', { profileId: row.User.id })}
           style={styles.name}
         >
-          {`${row.User.firstName} ${row.User.lastName}`}
+          {row.User.firstName}
         </Text>
         {separator}
       </Text>);
@@ -156,6 +167,22 @@ class ExperienceDetail extends Component {
     );
   }
 
+  renderTripInfo = () => {
+    const { experience } = this.state;
+    if (!experience.Trip) {
+      return null;
+    }
+
+    return (
+      <Text onPress={this.redirectTrip}>
+        <Text>
+          went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
+          . <Text style={styles.name}>See their trip here</Text>
+        </Text>
+      </Text>
+    );
+  }
+
   render() {
     const { experience } = this.state;
     let image = <View style={styles.viewHeaderImage} />;
@@ -163,6 +190,8 @@ class ExperienceDetail extends Component {
     if (experience.photo) {
       image = (<Image source={{ uri: experience.photo }} style={styles.headerImage} />);
     }
+
+    const { loading } = this.props;
 
     return (
       <View>
@@ -174,14 +203,10 @@ class ExperienceDetail extends Component {
               <Text>Participants</Text>
             </View>
             <View style={styles.block}>
+              {loading && <Loading />}
               <Text>
                 {this.renderParticipants()}
-                <Text onPress={this.redirectTrip}>
-                  <Text>
-                    went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
-                    . <Text style={styles.name}>See their trip here</Text>
-                  </Text>
-                </Text>
+                {this.renderTripInfo()}
               </Text>
             </View>
             <View style={styles.block}>
@@ -206,9 +231,35 @@ class ExperienceDetail extends Component {
 
 ExperienceDetail.propTypes = {
   share: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    experience: PropTypes.shape({
+      Participants: PropTypes.array,
+      Trip: PropTypes.object,
+      User: PropTypes.shape({
+        id: PropTypes.string,
+        firstName: PropTypes.string,
+      }),
+    }),
+  }).isRequired,
+};
+
+const ExperienceWithDetail = compose(withShare, withExperience)(ExperienceDetail);
+
+const ExperienceScreen = ({ navigation }) => {
+  const { experience } = navigation.state.params;
+  return (<ExperienceWithDetail id={experience.id} navigation={navigation} />);
+};
+
+ExperienceScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
 };
 
-export default withShare(ExperienceDetail);
+ExperienceScreen.navigationOptions = {
+  header: null,
+};
+
+export default ExperienceScreen;
