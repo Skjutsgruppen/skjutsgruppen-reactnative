@@ -3,19 +3,18 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
-import { withFindGroup } from '@services/apollo/group';
-import { Loading } from '@components/common';
+import { withGroup } from '@services/apollo/group';
 
 class GroupDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: true, group: {}, refetch: null });
+    this.state = ({ group: {}, refetch: null });
   }
 
   componentWillMount() {
     const { navigation } = this.props;
     const { group } = navigation.state.params;
-    this.setState({ loading: false, group });
+    this.setState({ group });
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
@@ -37,38 +36,28 @@ class GroupDetail extends Component {
     const { user } = this.props;
     const { group } = this.state;
 
-    if (user.id === group.User.id) {
+    if (user.id === group.User.id || group.membershipStatus === 'accepted') {
       return true;
     }
 
-    let isMember = false;
-
-    group.GroupMembers.forEach((member) => {
-      if (member && member.id === user.id) {
-        isMember = true;
-      }
-    });
-
-    return isMember;
+    return false;
   }
 
   render() {
-    if (this.state.loading) {
-      return (<Loading />);
-    }
+    const { group } = this.state;
 
     if (this.isMember()) {
       return (
         <Detail
           refresh={this.refresh}
-          group={this.state.group}
+          group={group}
         />);
     }
 
     return (
       <JoinGroup
         refresh={this.refresh}
-        group={this.state.group}
+        group={group}
       />);
   }
 }
@@ -84,7 +73,7 @@ GroupDetail.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-const GroupWithDetail = withFindGroup(connect(mapStateToProps)(GroupDetail));
+const GroupWithDetail = withGroup(connect(mapStateToProps)(GroupDetail));
 
 const GroupScreen = ({ navigation }) => {
   const { group } = navigation.state.params;

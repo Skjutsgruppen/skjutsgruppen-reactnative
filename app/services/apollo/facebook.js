@@ -12,12 +12,18 @@ mutation getUserByFbId($id: String!) {
       id
       firstName
       lastName
-      emailVerified
       email
-      phoneVerified
       phoneNumber
+      emailVerified
+      phoneVerified
       avatar
       fbId
+      verificationCode
+      phoneVerificationCode
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
     }
   }
 }
@@ -41,12 +47,18 @@ mutation getUserByEmail($email: String!) {
       id
       firstName
       lastName
-      emailVerified
       email
-      phoneVerified
       phoneNumber
+      emailVerified
+      phoneVerified
       avatar
       fbId
+      verificationCode
+      phoneVerificationCode
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
     }
   }
 }
@@ -69,12 +81,18 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       id
       firstName
       lastName
-      emailVerified
       email
-      phoneVerified
       phoneNumber
+      emailVerified
+      phoneVerified
       avatar
       fbId
+      verificationCode
+      phoneVerificationCode
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
     }
   }
 }

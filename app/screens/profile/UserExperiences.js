@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { withMyExperiences } from '@services/apollo/auth';
+import { withMyExperiences } from '@services/apollo/experience';
 import ExperienceList from '@components/profile/experienceList';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';

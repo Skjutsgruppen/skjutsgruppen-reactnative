@@ -7,7 +7,7 @@ import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Relation from '@components/relation';
-import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/auth';
+import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/friend';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { trans } from '@lang/i18n';
 import {
@@ -363,7 +363,7 @@ class Profile extends Component {
     return (
       <View>
         <Image source={{ uri: profile.avatar }} style={styles.profilePic} />
-        <Text style={styles.name}>{profile.firstName} {profile.lastName}</Text>
+        <Text style={styles.name}>{profile.firstName}</Text>
         <View style={styles.activityWrapper}>
           <View>
             <View style={styles.hexagon}>
@@ -450,7 +450,7 @@ Profile.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
   }).isRequired,
   addFriend: PropTypes.func.isRequired,
   cancelFriendRequest: PropTypes.func.isRequired,

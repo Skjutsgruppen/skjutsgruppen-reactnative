@@ -69,12 +69,8 @@ MobileVerified.propTypes = {
     login: PropTypes.bool,
     token: PropTypes.string,
     user: PropTypes.shape({
-      id: PropTypes.number,
-      email: PropTypes.string,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      phoneNumber: PropTypes.string,
-      photo: PropTypes.string,
+      firstName: PropTypes.string.isRequired,
+      avatar: PropTypes.string.isRequired,
     }),
   }).isRequired,
 };

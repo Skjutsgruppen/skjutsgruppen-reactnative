@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Ale
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper } from '@components/common';
-import { withFeed } from '@services/apollo/feed';
-import { withShare } from '@services/apollo/auth';
+import { withFeed } from '@services/apollo/trip';
+import { withShare } from '@services/apollo/share';
 import PropTypes from 'prop-types';
 import Share from '@components/common/share';
 import { compose } from 'react-apollo';
@@ -25,7 +25,6 @@ import {
   FEEDABLE_EXPERIENCE,
   FEED_FILTER_NEARBY,
 } from '@config/constant';
-
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
@@ -163,7 +162,8 @@ class Feed extends Component {
       this.setFilterVisibility(false);
     } else if (type !== filterType) {
       this.setState({ filterType: type }, () => {
-        this.props.feeds.refetch({ offset: 0, filter: { type, from: [longitude, latitude] } });
+        const from = (longitude && longitude) ? [longitude, latitude] : [];
+        this.props.feeds.refetch({ offset: 0, filter: { type, from } });
       });
       this.setFilterVisibility(false);
     }

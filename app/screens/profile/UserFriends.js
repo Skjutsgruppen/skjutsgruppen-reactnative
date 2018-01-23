@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import FriendsList from '@components/profile/friendsList';
-import { withFriends } from '@services/apollo/auth';
+import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import ShareIcon from '@assets/icons/ic_share.png';
@@ -7,6 +7,7 @@ import CommentIcon from '@assets/icons/ic_comment.png';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import TouchableHightlight from '@components/touchableHightlight';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -169,7 +170,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
 
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
-      <TouchableWithoutFeedback
+      <TouchableHightlight
         onPress={() => onPress(FEEDABLE_TRIP, trip)}
         style={styles.flex1}
       >
@@ -191,7 +192,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           <View style={styles.detail}>
             <View>
               <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.username}>{trip.User.firstName || trip.User.email} </Text>
+                <Text style={styles.username}>{trip.User.firstName} </Text>
                 {
                   trip.type === FEED_TYPE_OFFER &&
                   <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
@@ -212,7 +213,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
             {profileImage}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHightlight>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => onSharePress(FEEDABLE_TRIP, trip)}>
           <Image source={ShareIcon} style={styles.shareIcon} />

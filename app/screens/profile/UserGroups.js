@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import GroupsList from '@components/profile/groupsList';
-import { withGroups } from '@services/apollo/auth';
+import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Groups = withGroups(GroupsList);
+const Groups = withMyGroups(GroupsList);
 
 class UserGroups extends Component {
   static navigationOptions = {

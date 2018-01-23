@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Item from '@components/comment/item';
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class List extends Component {
+class List extends PureComponent {
   constructor(props) {
     super(props);
     this.state = ({ loading: false, showFofModal: false, friendsData: [] });
@@ -60,23 +60,21 @@ class List extends Component {
   }
 
   loadMore = () => {
-    const { comments: { comments, fetchMore }, id } = this.props;
+    const { id, comments } = this.props;
+    const { rows, fetchMore } = comments;
+
     this.setState({ loading: true }, () => {
       fetchMore({
-        variables: { id, offset: comments.rows.length },
+        variables: { id, offset: rows.length },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           this.setState({ loading: false });
-          if (!fetchMoreResult || fetchMoreResult.comments.length === 0) {
+          if (!fetchMoreResult || fetchMoreResult.length === 0) {
             return previousResult;
           }
 
-          const prevComments = previousResult.comments;
+          const updatedRows = previousResult.comments.rows.concat(fetchMoreResult.comments.rows);
 
-          const rows = previousResult.comments.rows.concat(fetchMoreResult.comments.rows);
-
-          return {
-            comments: { ...prevComments, ...{ rows } },
-          };
+          return { comments: { ...previousResult.comments, ...{ rows: updatedRows } } };
         },
       });
     });
@@ -104,8 +102,7 @@ class List extends Component {
       );
     }
 
-    const { comments } = this.props.comments;
-    const { rows, count } = comments;
+    const { rows, count } = this.props.comments;
 
     if (rows.length >= count) {
       return null;
@@ -119,7 +116,7 @@ class List extends Component {
   };
 
   render() {
-    const { loading, error, comments } = this.props.comments;
+    const { loading, error, rows, count } = this.props.comments;
 
     if (loading) {
       return <View style={styles.block}><Loading /></View>;
@@ -130,8 +127,6 @@ class List extends Component {
         <View style={styles.block}><Text style={styles.infoText}>{error}</Text></View>
       );
     }
-
-    const { rows, count } = comments;
 
     if (rows && rows.length < 1) {
       return (
@@ -164,10 +159,8 @@ class List extends Component {
 List.propTypes = {
   comments: PropTypes.shape({
     loading: PropTypes.boolean,
-    comments: PropTypes.shape({
-      rows: PropTypes.array,
-      count: PropTypes.number,
-    }),
+    rows: PropTypes.array,
+    count: PropTypes.number,
     fetchMore: PropTypes.func.isRequired,
     error: PropTypes.object,
   }).isRequired,
