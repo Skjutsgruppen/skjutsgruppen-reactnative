@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
-import { withTrips } from '@services/apollo/auth';
+import { withMyTrips } from '@services/apollo/trip';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
@@ -153,4 +153,4 @@ Ride.propTypes = {
 };
 
 
-export default compose(withTrips, withNavigation)(Ride);
+export default compose(withMyTrips, withNavigation)(Ride);

@@ -10,121 +10,68 @@ subscription notification($userId: Int!) {
     User {
       id
       firstName
-      lastName
-      email
       avatar
     }
-    Receiver{
-      id
-      firstName
-    }
-    notifiable
     Notifiable {
       ... on Trip {
-        id
-        tripType:type
-        description
-        seats
-        parentId
+        id 
+        tripTpe:type 
+        description 
+        seats 
         User {
-          id
-          email
-          firstName
-          lastName
-          avatar
-          relation {
-            id
-            email 
-            firstName
-            avatar
-          }
-        }
+          id 
+          firstName 
+          avatar 
+        } 
         TripStart {
-          name
+          name 
           coordinates
-        }
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
-        Stops {
-          name
-          coordinates
-        }
-        date
-        time
-        photo
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        photo 
         mapPhoto
         totalComments
         isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
       ... on Group {
         id
-        outreach
         name
         description
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        outreach
         type
         photo
         mapPhoto
-        User {
-          id
-          email
-          firstName
-          lastName
-          avatar
-          relation {
-            id
-            email
-            firstName
-            lastName
-            avatar
-          }
-        }
         TripStart {
-          name
-          coordinates
-        }
+          name 
+          coordinates 
+        } 
         TripEnd {
-          name
+          name 
           coordinates
-        }
+        } 
         Stops {
-          name
+          name 
           coordinates
-        }
-        country
-        county
-        municipality
-        locality
-        GroupMembers {
-          id
-        }
-        GroupMembershipRequests{
-          id
-          status
-          Member {
-            id
-            email
-            firstName
-          }
-        }
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        membershipStatus
+        totalParticipants
       }
       ... on GroupMembershipRequest {
         id
@@ -133,40 +80,33 @@ subscription notification($userId: Int!) {
           id
           name
           description
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
           type
           photo
           mapPhoto
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              firstName
-              avatar
-            }
-          }
           TripStart {
-            name
-            coordinates
-          }
+            name 
+            coordinates 
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
+          } 
           Stops {
-            name
+            name 
             coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          GroupMembers{
-            id
-          }
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus
+          totalParticipants
         }
       }
       ... on FriendRequest {
@@ -186,35 +126,40 @@ subscription notification($userId: Int!) {
         createdAt
         description
         photo
-        Participants {
-          User {
-            id 
-            email 
-            firstName 
-            lastName 
-            avatar 
-          } 
-          status
-        }
-        Trip {
+        User {
           id 
-          type 
+          firstName 
+          avatar 
+        } 
+      }
+    }
+    read
+    createdAt
+  }
+}
+`;
+
+const NOTIFICATION_QUERY = gql`
+query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
+  notifications (filters:$filters, offset:$offset, limit:$limit) {
+    rows {
+      id
+      type
+      User {
+        id
+        firstName
+        avatar
+      }
+      Notifiable {
+        ... on Trip {
+          id 
+          tripType:type 
           description 
           seats 
-          parentId
           User {
             id 
-            email 
             firstName 
-            lastName 
             avatar 
-            relation {
-              id 
-              email 
-              firstName
-              lastName
-              avatar
-            }
           } 
           TripStart {
             name 
@@ -229,169 +174,42 @@ subscription notification($userId: Int!) {
             coordinates 
           } 
           date 
-          time 
           photo 
           mapPhoto
           totalComments
           isParticipant
-          duration
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
-          }
-          Recurring {
-            id
-            date
-          }
-        }
-        User {
-          id 
-          firstName 
-          lastName 
-          email 
-          avatar 
-        } 
-        totalComments
-      }
-    }
-    read
-    createdAt
-  }
-}
-`;
-
-const NOTIFICATION_QUERY = gql`
-query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: Int) {
-  notifications (filters:$filters, offset:$offset, limit:$limit) {
-    rows {
-      id
-      User {
-        id
-        firstName
-        lastName
-        email
-        avatar
-      }
-      Receiver{
-        id
-        firstName
-      }
-      type
-      notifiable
-      Notifiable {
-        ... on Trip {
-          id
-          tripType:type
-          description
-          seats
-          parentId
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              email 
-              firstName
-              avatar
-            }
-          }
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-          Stops {
-            name
-            coordinates
-          }
-          date
-          time
-          photo
-          mapPhoto
-          totalComments
-          isParticipant
-          duration
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
-          }
-          Recurring {
-            id
-            date
-          }
         }
         ... on Group {
           id
-          outreach
           name
           description
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
           type
           photo
           mapPhoto
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              email
-              firstName
-              lastName
-              avatar
-            }
-          }
           TripStart {
-            name
-            coordinates
-          }
+            name 
+            coordinates 
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
+          } 
           Stops {
-            name
+            name 
             coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          GroupMembers {
-            id
-          }
-          GroupMembershipRequests{
-            id
-            status
-            Member {
-              id
-              email
-              firstName
-            }
-          }
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus 
+          totalParticipants
         }
         ... on GroupMembershipRequest {
           id
@@ -400,40 +218,33 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             id
             name
             description
+            User {
+              id 
+              firstName 
+              avatar 
+            } 
+            outreach
             type
             photo
             mapPhoto
-            User {
-              id
-              email
-              firstName
-              lastName
-              avatar
-              relation {
-                id
-                firstName
-                avatar
-              }
-            }
             TripStart {
-              name
-              coordinates
-            }
+              name 
+              coordinates 
+            } 
             TripEnd {
-              name
+              name 
               coordinates
-            }
+            } 
             Stops {
-              name
+              name 
               coordinates
-            }
-            country
-            county
-            municipality
-            locality
-            GroupMembers{
-              id
-            }
+            } 
+            country 
+            county 
+            municipality 
+            locality 
+            membershipStatus
+            totalParticipants
           }
         }
         ... on FriendRequest {
@@ -453,80 +264,11 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           createdAt
           description
           photo
-          Participants {
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-            } 
-            status
-          }
-          Trip {
-            id 
-            type 
-            description 
-            seats 
-            parentId
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-              relation {
-                id 
-                email 
-                firstName
-                lastName
-                avatar
-              }
-            } 
-            TripStart {
-              name 
-              coordinates
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops { 
-              name 
-              coordinates 
-            } 
-            date 
-            time 
-            photo 
-            mapPhoto
-            totalComments
-            isParticipant
-            duration
-            ReturnTrip {
-              id
-              date
-              TripStart {
-                name
-                coordinates
-              }
-              TripEnd {
-                name
-                coordinates
-              }
-            }
-            Recurring {
-              id
-              date
-            }
-          }
           User {
             id 
             firstName 
-            lastName 
-            email 
             avatar 
           } 
-          totalComments
         }
       }
       read
@@ -650,127 +392,73 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
   searchMessages (keyword: $keyword, offset:$offset, limit:$limit) {
     rows {
       id
+      type
       User {
         id
         firstName
-        lastName
-        email
         avatar
       }
-      Receiver{
-        id
-        firstName
-      }
-      type
-      notifiable
       Notifiable {
         ... on Trip {
-          id
-          tripType:type
-          description
-          seats
-          parentId
+          id 
+          tripType:type 
+          description 
+          seats 
           User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              email 
-              firstName
-              avatar
-            }
-          }
+            id 
+            firstName 
+            avatar 
+          } 
           TripStart {
-            name
+            name 
             coordinates
-          }
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
-          Stops {
-            name
-            coordinates
-          }
-          date
-          time
-          photo
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          photo 
           mapPhoto
           totalComments
           isParticipant
-          duration
-          ReturnTrip {
-            id
-            date
-            TripStart {
-              name
-              coordinates
-            }
-            TripEnd {
-              name
-              coordinates
-            }
-          }
-          Recurring {
-            id
-            date
-          }
         }
         ... on Group {
           id
-          outreach
           name
           description
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
           type
           photo
           mapPhoto
-          User {
-            id
-            email
-            firstName
-            lastName
-            avatar
-            relation {
-              id
-              email
-              firstName
-              lastName
-              avatar
-            }
-          }
           TripStart {
-            name
-            coordinates
-          }
+            name 
+            coordinates 
+          } 
           TripEnd {
-            name
+            name 
             coordinates
-          }
+          } 
           Stops {
-            name
+            name 
             coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          GroupMembers{
-            id
-            avatar
-          }
-          GroupMembershipRequests{
-            id
-            status
-            Member {
-              id
-              email
-              firstName
-            }
-          }
-        }
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus
+          totalParticipants
+          } 
         ... on GroupMembershipRequest {
           id
           gmrStatus:status
@@ -778,40 +466,33 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id
             name
             description
+            User {
+              id 
+              firstName 
+              avatar 
+            } 
+            outreach
             type
             photo
             mapPhoto
-            User {
-              id
-              email
-              firstName
-              lastName
-              avatar
-              relation {
-                id
-                firstName
-                avatar
-              }
-            }
             TripStart {
-              name
-              coordinates
-            }
+              name 
+              coordinates 
+            } 
             TripEnd {
-              name
+              name 
               coordinates
-            }
+            } 
             Stops {
-              name
+              name 
               coordinates
-            }
-            country
-            county
-            municipality
-            locality
-            GroupMembers{
-              id
-            }
+            } 
+            country 
+            county 
+            municipality 
+            locality 
+            membershipStatus
+            totalParticipants
           }
         }
         ... on FriendRequest {
@@ -831,80 +512,11 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           createdAt
           description
           photo
-          Participants {
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-            } 
-            status
-          }
-          Trip {
-            id 
-            type 
-            description 
-            seats 
-            parentId
-            User {
-              id 
-              email 
-              firstName 
-              lastName 
-              avatar 
-              relation {
-                id 
-                email 
-                firstName
-                lastName
-                avatar
-              }
-            } 
-            TripStart {
-              name 
-              coordinates
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops { 
-              name 
-              coordinates 
-            } 
-            date 
-            time 
-            photo 
-            mapPhoto
-            totalComments
-            isParticipant
-            duration
-            ReturnTrip {
-              id
-              date
-              TripStart {
-                name
-                coordinates
-              }
-              TripEnd {
-                name
-                coordinates
-              }
-            }
-            Recurring {
-              id
-              date
-            }
-          }
           User {
             id 
             firstName 
-            lastName 
-            email 
             avatar 
           } 
-          totalComments
         }
       }
       read

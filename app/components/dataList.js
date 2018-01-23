@@ -18,14 +18,6 @@ const styles = StyleSheet.create({
 });
 
 const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) => {
-  if (data.networkStatus === 1 && data.rows.length < 1) {
-    return (
-      <View style={styles.gap}>
-        <Loading />
-      </View>
-    );
-  }
-
   const reload = () => (
     <TouchableOpacity onPress={() => data.refetch()}>
       <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
@@ -37,7 +29,7 @@ const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) =>
     let headerView = null;
 
     if (networkStatus === 1 && rows.length < 1) {
-      headerView = (<Loading />);
+      headerView = (<View style={styles.gap}><Loading /></View>);
     }
 
     const parentHeader = typeof header === 'function' ? header() : header;

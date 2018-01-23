@@ -1,6 +1,272 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED } from '@config/constant';
+
+const FEED_SUBSCRIPTION = gql`
+subscription{
+  feed {
+    id
+    feedable
+    updatedAt
+    ... on GroupFeed {
+      Group {
+        id
+        name
+        description
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        outreach
+        type
+        photo
+        mapPhoto
+        TripStart {
+          name 
+          coordinates 
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops {
+          name 
+          coordinates
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        membershipStatus 
+        totalParticipants
+      }
+    }
+    ... on TripFeed {
+      Trip {
+        id 
+        type 
+        description 
+        seats 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        photo 
+        mapPhoto
+        totalComments
+        isParticipant
+      }
+    }
+    ... on NewsFeed { 
+      News {
+        id 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        title 
+        body 
+        links 
+        photo 
+        visibleFrom 
+        visibleUntil 
+        updatedAt
+        totalComments
+      }
+    }
+    ... on ExperienceFeed{
+      Experience{
+        id
+        createdAt
+        description
+        photo
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+      }
+    }
+  }
+}
+`;
+
+export const GET_FEED_QUERY = gql`
+query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
+  getFeed (offset:$offset, limit:$limit, filter:$filter){
+   totalExperiences
+   rows {
+    id
+    feedable
+    updatedAt
+    ... on GroupFeed {
+      Group {
+        id
+        name
+        description
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        outreach
+        type
+        photo
+        mapPhoto
+        TripStart {
+          name 
+          coordinates 
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops {
+          name 
+          coordinates
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        membershipStatus 
+        totalParticipants
+      }
+    }
+    ... on TripFeed { 
+      Trip {
+        id 
+        type 
+        description 
+        seats 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        photo 
+        mapPhoto
+        totalComments
+        isParticipant
+      }
+    }
+    ... on NewsFeed { 
+      News {
+        id 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        title 
+        body 
+        links 
+        photo 
+        visibleFrom 
+        visibleUntil 
+        updatedAt
+        totalComments
+      }
+    }
+    ... on ExperienceFeed{
+      Experience{
+        id
+        createdAt
+        description
+        photo
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+      }
+    }
+   }
+   count
+  }
+}
+`;
+
+export const withFeed = graphql(GET_FEED_QUERY, {
+  options: {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+    variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: FEED_FILTER_EVERYTHING } },
+  },
+  props: ({
+    data: { loading, getFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  }) => {
+    let totalExperiences = 0;
+    let rows = [];
+    let count = 0;
+
+    if (getFeed) {
+      totalExperiences = getFeed.totalExperiences;
+      rows = getFeed.rows;
+      count = getFeed.count;
+    }
+
+    return {
+      feeds: {
+        loading,
+        totalExperiences,
+        rows,
+        count,
+        fetchMore,
+        refetch,
+        subscribeToMore,
+        networkStatus,
+        error,
+      },
+      subscribeToFeed: () => subscribeToMore({
+        document: FEED_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data || !prev.getFeed.rows) {
+            return prev;
+          }
+
+          const newrows = [subscriptionData.data.feed].concat(prev.getFeed.rows);
+
+          return {
+            getFeed: {
+              ...prev.getFeed,
+              ...{ rows: newrows, count: prev.getFeed.count + 1 },
+            },
+          };
+        },
+      }),
+    };
+  },
+});
 
 const CREATE_TRIP_QUERY = gql`
 mutation createTrip(
@@ -40,15 +306,11 @@ mutation createTrip(
       parentId
       User {
         id 
-        email 
         firstName 
-        lastName 
         avatar 
         relation {
           id 
-          email 
           firstName
-          lastName
           avatar
         }
       } 
@@ -132,9 +394,7 @@ query tripParticipants($id: Int, $offset: Int, $limit: Int) {
   tripParticipants(id:$id, offset:$offset, limit:$limit){
    rows {
     id 
-    email 
     firstName 
-    lastName 
     avatar 
    }
    count
@@ -159,5 +419,197 @@ export const withParticipants = graphql(TRIP_PARTICIPANTS_QUERY, {
     }
 
     return { tripParticipants: { loading, rows, count, networkStatus, error } };
+  },
+});
+
+export const FIND_TRIP_QUERY = gql`
+query trip($id: Int!){
+  trip(id: $id){
+    id 
+    type 
+    description 
+    seats 
+    User {
+      id 
+      firstName 
+      avatar 
+      relation {
+        id 
+        firstName
+        avatar
+      }
+    } 
+    TripStart {
+      name 
+      coordinates
+    } 
+    TripEnd {
+      name 
+      coordinates
+    } 
+    Stops { 
+      name 
+      coordinates 
+    } 
+    date 
+    photo 
+    mapPhoto
+    totalComments
+    isParticipant
+    duration
+    ReturnTrip {
+      id
+      date
+      TripStart {
+        name
+      }
+      TripEnd {
+        name
+      }
+    }
+    Recurring {
+      id
+      date
+    }
+  }
+}
+`;
+
+export const withTrip = graphql(FIND_TRIP_QUERY, {
+  options: ({ id }) => ({
+    variables: { id },
+  }),
+  props: ({ data: { loading, trip = {}, refetch, networkStatus, error } }) => ({
+    loading, trip, refetch, networkStatus, error,
+  }),
+});
+
+const TRIPS_SUBSCRIPTION_QUERY = gql`
+  subscription myTrip($userId: Int!){
+    myTrip(userId:$userId){
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id 
+        firstName 
+        avatar 
+        relation {
+          id 
+          firstName
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      isParticipant
+    }
+  }
+`;
+
+const TRIPS_QUERY = gql`
+query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: Int ){ 
+  trips(input:{userId:$id, type:$type, active:$active}, limit: $limit, offset: $offset) { 
+    rows {
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id 
+        firstName 
+        avatar 
+        relation {
+          id 
+          firstName
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      isParticipant
+    }
+    count
+  }
+}
+`;
+
+export const withMyTrips = graphql(TRIPS_QUERY, {
+  options: (
+    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
+  ) => ({
+    variables: { id, offset, limit, type, active },
+  }),
+  props: (
+    {
+      data: {
+        loading,
+        trips,
+        error,
+        networkStatus,
+        refetch,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
+    let rows = [];
+    let count = 0;
+
+    if (trips) {
+      rows = trips.rows;
+      count = trips.count;
+    }
+
+    return {
+      trips: { loading, rows, count, error, networkStatus, subscribeToMore, refetch, fetchMore },
+      subscribeToNewTrip: param => subscribeToMore({
+        document: TRIPS_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const newTrip = subscriptionData.data.myTrip;
+          rows = [newTrip].concat(prev.trips.rows);
+
+          return {
+            trips: { ...prev.trips, ...{ rows, count: prev.trips.count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });

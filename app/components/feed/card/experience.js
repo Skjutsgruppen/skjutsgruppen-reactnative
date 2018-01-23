@@ -173,7 +173,7 @@ const Experience = ({ experience, onPress, wrapperStyle }) => {
             <View>
               <Text style={[styles.text, styles.lightText]}>
                 <Text style={styles.username}>
-                  {experience.User.firstName || experience.User.email}
+                  {experience.User.firstName}
                 </Text>
                 <Text> shared an experience</Text>
               </Text>

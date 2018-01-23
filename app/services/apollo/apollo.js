@@ -40,6 +40,15 @@ const feedFragmentMatcher = new IntrospectionFragmentMatcher({
             {
               name: 'TripFeed',
             },
+            {
+              name: 'CommentFeed',
+            },
+            {
+              name: 'ExperienceFeed',
+            },
+            {
+              name: 'NewsFeed',
+            },
           ],
         },
       ],

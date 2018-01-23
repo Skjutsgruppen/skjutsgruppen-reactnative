@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Modal, View, ScrollView } from 'react-native';
-import { withTrips, withShare } from '@services/apollo/auth';
+import { withMyTrips } from '@services/apollo/trip';
+import { withShare } from '@services/apollo/share';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Trips = withTrips(TripsList);
+const Trips = withMyTrips(TripsList);
 
 class UserTrips extends Component {
   static navigationOptions = {
