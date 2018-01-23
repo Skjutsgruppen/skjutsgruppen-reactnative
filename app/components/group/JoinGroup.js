@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
-import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import PropTypes from 'prop-types';
@@ -8,7 +7,7 @@ import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import { Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
-import { withShare } from '@services/apollo/auth';
+import { withShare } from '@services/apollo/share';
 import GroupImage from '@components/group/groupImage';
 import Participants from '@components/group/participants';
 import { getToast } from '@config/toast';
@@ -109,7 +108,7 @@ class JoinGroup extends Component {
     super(props);
     this.state = ({
       loading: false,
-      isPending: false,
+      isPending: null,
       group: {},
       requestSent: false,
       modalDetail: {},
@@ -120,16 +119,11 @@ class JoinGroup extends Component {
   }
 
   componentWillMount() {
-    const { group, user } = this.props;
-    let isPending = false;
+    this.updateState(this.props);
+  }
 
-    group.GroupMembershipRequests.forEach((request) => {
-      if (request.Member.id === user.id && request.status === 'pending') {
-        isPending = true;
-      }
-    });
-
-    this.setState({ group, isPending });
+  componentWillReceiveProps(props) {
+    this.updateState(props);
   }
 
   onSharePress = (modalType, modalDetail) => {
@@ -144,6 +138,11 @@ class JoinGroup extends Component {
 
   onClose = () => {
     this.setState({ isOpen: false });
+  }
+
+  updateState = ({ group }) => {
+    const isPending = group.membershipStatus === 'pending';
+    this.setState({ group, isPending });
   }
 
   goBack = () => {
@@ -167,7 +166,7 @@ class JoinGroup extends Component {
   renderButton = () => {
     const { loading, requestSent, isPending, error } = this.state;
 
-    if (loading) {
+    if (loading || isPending === null) {
       return (
         <View style={styles.footer}>
           <View style={styles.msgWrapper}>
@@ -273,23 +272,18 @@ JoinGroup.propTypes = {
   submit: PropTypes.func.isRequired,
   refresh: PropTypes.func.isRequired,
   group: PropTypes.shape({
-    GroupMembershipRequests: PropTypes.array.isRequired,
+    membershipStatus: PropTypes.string,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-  }).isRequired,
   share: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(
   withShare,
   withJoinGroup,
   withNavigation,
-  connect(mapStateToProps),
 )(JoinGroup);

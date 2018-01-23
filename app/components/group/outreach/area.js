@@ -5,7 +5,7 @@ import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
 import { Loading } from '@components/common';
 import { compose } from 'react-apollo';
-import { withCounties, withMunicipalities, withLocalities } from '@services/apollo/auth';
+import { withCounties, withMunicipalities, withLocalities } from '@services/apollo/location';
 import countries from '@config/countries';
 import LocationList from '@components/group/outreach/locationList';
 

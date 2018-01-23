@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { compose } from 'react-apollo';
 import { submitComment, withTripComment } from '@services/apollo/comment';
+import { withShare } from '@services/apollo/share';
+import { withTrip } from '@services/apollo/trip';
+import { withTripExperiences } from '@services/apollo/experience';
 import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@components/common';
-import { withShare } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
-import { withTripExperiences } from '@services/apollo/experience';
-import { compose } from 'react-apollo';
 import { trans } from '@lang/i18n';
 import Comment from '@components/comment/list';
 import Relation from '@components/relation';
@@ -270,6 +271,12 @@ class TripDetail extends Component {
     }
 
     this.setState(initialState);
+  }
+
+  componentWillReceiveProps({ trip, loading }) {
+    if (!loading && trip.id) {
+      this.setState({ trip, loading });
+    }
   }
 
   onSubmit = () => {
@@ -569,25 +576,27 @@ class TripDetail extends Component {
     let selectedDate = '';
     let tripDate = '';
 
-    trip.Recurring.forEach((row, index) => {
-      selectedDate = getDate(row.date);
-      if (index === 0) {
-        tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
-      }
+    if (trip.Recurring) {
+      trip.Recurring.forEach((row, index) => {
+        selectedDate = getDate(row.date);
+        if (index === 0) {
+          tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
+        }
 
-      markedDates[selectedDate.format('YYYY-MM-DD')] = [
-        {
-          startingDay: true,
-          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
-          textColor: '#fff',
-        },
-        {
-          endingDay: true,
-          color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
-          textColor: '#fff',
-        },
-      ];
-    });
+        markedDates[selectedDate.format('YYYY-MM-DD')] = [
+          {
+            startingDay: true,
+            color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
+            textColor: '#fff',
+          },
+          {
+            endingDay: true,
+            color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
+            textColor: '#fff',
+          },
+        ];
+      });
+    }
 
     return (
       <View style={styles.wrapper}>
@@ -614,7 +623,7 @@ class TripDetail extends Component {
           <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
               <Text style={styles.username} onPress={() => { }}>
-                {trip.User.firstName || trip.User.email}
+                {trip.User.firstName}
               </Text>
               <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
             </Text>
@@ -629,7 +638,7 @@ class TripDetail extends Component {
             }
             <View style={[styles.flexRow, styles.btnSection]}>
               {
-                trip.ReturnTrip.length > 0 &&
+                trip.ReturnTrip && trip.ReturnTrip.length > 0 &&
                 <TouchableOpacity
                   style={styles.pillBtn}
                   onPress={() => this.setReturnRidesModalVisibility(true)}
@@ -639,7 +648,7 @@ class TripDetail extends Component {
                 </TouchableOpacity>
               }
               {
-                trip.Recurring.length > 0 &&
+                trip.Recurring && trip.Recurring.length > 0 &&
                 <TouchableOpacity
                   style={styles.pillBtn}
                   onPress={() => this.setRecurringRidesModalVisibility(true)}
@@ -710,7 +719,7 @@ class TripDetail extends Component {
             <Text style={[styles.text]}>{trip.description}</Text>
           </View>
           {
-            trip.User.relation.length > 0 &&
+            trip.User.relation && trip.User.relation.length > 0 &&
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
               <Relation
@@ -751,4 +760,21 @@ TripDetail.propTypes = {
   }).isRequired,
 };
 
-export default compose(withShare, submitComment)(TripDetail);
+const TripWithDetail = compose(withShare, submitComment, withTrip)(TripDetail);
+
+const TripScreen = ({ navigation }) => {
+  const { trip } = navigation.state.params;
+  return (<TripWithDetail id={trip.id} navigation={navigation} />);
+};
+
+TripScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
+
+TripScreen.navigationOptions = {
+  header: null,
+};
+
+export default TripScreen;

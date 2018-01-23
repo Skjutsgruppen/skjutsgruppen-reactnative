@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 class Support extends PureComponent {
   static navigationOptions = {
     header: null,
@@ -91,10 +90,7 @@ class Support extends PureComponent {
 
 Support.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.number,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    photo: PropTypes.string,
+    id: PropTypes.number.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

@@ -46,7 +46,7 @@ const SharedCard = ({ trip, onPress }) => {
   if (trip.type === FEED_TYPE_OFFER) {
     title = (
       <Text style={styles.text}>
-        {trip.User.firstName || trip.User.email}
+        {trip.User.firstName}
         <Text> offers {trip.seats} {trip.seats > 1 ? 'seats' : 'seat'} </Text>
       </Text>
     );
@@ -55,7 +55,7 @@ const SharedCard = ({ trip, onPress }) => {
   if (trip.type === FEED_TYPE_WANTED) {
     title = (
       <Text style={styles.text}>
-        {trip.User.firstName || trip.User.email}
+        {trip.User.firstName}
         <Text> asks for a ride</Text>
       </Text>
     );

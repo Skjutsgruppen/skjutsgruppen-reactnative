@@ -48,9 +48,7 @@ const MemberItem = ({ user, onPress }) => {
     <TouchableOpacity onPress={() => onPress(user.id)} style={styles.wrapper}>
       {profileImage}
       <View style={styles.nameWrapper}>
-        <Text style={styles.name}>
-          {`${user.firstName} ${user.lastName}` || user.email}
-        </Text>
+        <Text style={styles.name}>{user.firstName}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -61,8 +59,6 @@ MemberItem.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
     firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    email: PropTypes.string,
     avatar: PropTypes.string,
   }).isRequired,
 };

@@ -63,9 +63,7 @@ const Friends = ({ friend, onPress }) => {
             {profileImage}
           </TouchableOpacity>
           <Text style={styles.lightText}>
-            <Text style={styles.name}>
-              {friend.firstName || friend.email} {friend.lastName}
-            </Text>
+            <Text style={styles.name}>{friend.firstName}</Text>
           </Text>
         </View>
       </View>
@@ -74,8 +72,8 @@ const Friends = ({ friend, onPress }) => {
 
 Friends.propTypes = {
   friend: PropTypes.shape({
-    rows: PropTypes.array,
-    count: PropTypes.number,
+    firstName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
-import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/auth';
+import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/friend';
 import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
 import {
   FEEDABLE_TRIP,

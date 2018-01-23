@@ -6,13 +6,13 @@ import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
-import { withShare } from '@services/apollo/auth';
+import { withShare } from '@services/apollo/share';
 import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
+import { FEEDABLE_GROUP } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -89,7 +89,17 @@ const styles = StyleSheet.create({
 class Detail extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, leaveLoading: false, error: '', success: '', comment: '', modalDetail: {}, modalType: '', isOpen: false, notification: false, notifierOffset: 0 });
+    this.state = ({
+      group: {},
+      loading: false,
+      leaveLoading: false,
+      error: '',
+      success: '',
+      comment: '',
+      isOpen: false,
+      notification: false,
+      notifierOffset: 0,
+    });
   }
 
   componentWillMount() {
@@ -123,12 +133,13 @@ class Detail extends PureComponent {
     }
   }
 
-  onSharePress = (modalType, modalDetail) => {
-    this.setState({ isOpen: true, modalType, modalDetail });
+  onSharePress = () => {
+    this.setState({ isOpen: true });
   }
 
-  onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? FEEDABLE_GROUP : FEEDABLE_TRIP, share })
+  onShare = (shareObject) => {
+    const { share, group } = this.props;
+    share({ id: group.id, type: FEEDABLE_GROUP, share: shareObject })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -143,13 +154,13 @@ class Detail extends PureComponent {
   }
 
   onPress = () => {
-    const { group, navigation } = this.props;
+    const { navigation, group } = this.props;
+
     navigation.navigate('UserProfile', { profileId: group.User.id });
   }
 
   onMapPress = () => {
-    const { navigation } = this.props;
-    const { group } = navigation.state.params;
+    const { navigation, group } = this.props;
     const coordinates = {
       start: group.TripStart,
       end: group.TripEnd,
@@ -164,12 +175,11 @@ class Detail extends PureComponent {
   }
 
   leaveGroup = () => {
-    const { group, leaveGroup, refresh } = this.props;
-    this.setState(
-      { leaveLoading: true },
-      () => leaveGroup(group.id)
-        .then(refresh)
-        .catch(console.warn),
+    const { leaveGroup, refresh, group } = this.props;
+
+    this.setState({ leaveLoading: true }, () => leaveGroup(group.id)
+      .then(refresh)
+      .catch(console.warn),
     );
   }
 
@@ -188,21 +198,13 @@ class Detail extends PureComponent {
   }
 
   isGroupJoined = () => {
-    const { group, user } = this.props;
+    const { user, group } = this.props;
 
     if (user.id === group.User.id) {
       return false;
     }
 
-    let hasMember = false;
-
-    group.GroupMembers.forEach((member) => {
-      if (member && member.id === user.id) {
-        hasMember = true;
-      }
-    });
-
-    return hasMember;
+    return group.membershipStatus === 'accepted';
   }
 
   goBack = () => {
@@ -233,7 +235,7 @@ class Detail extends PureComponent {
   }
 
   renderCommentForm() {
-    const { error, success } = this.state;
+    const { error, success, loading } = this.state;
 
     return (
       <View style={styles.footer}>
@@ -250,7 +252,7 @@ class Detail extends PureComponent {
             returnKeyType={'done'}
             placeholderTextColor="#666"
             underlineColorAndroid="transparent"
-            editable={!this.state.loading}
+            editable={!loading}
           />
 
           <View style={styles.send}>
@@ -289,7 +291,7 @@ class Detail extends PureComponent {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== 'group'}
+            showGroup
             onNext={this.onShare}
             onClose={this.onClose}
           />
@@ -299,10 +301,10 @@ class Detail extends PureComponent {
   }
 
   render() {
-    const { group, navigation } = this.props;
-    const header = this.header(this.state.leaveLoading);
+    const { navigation, group } = this.props;
+    const { leaveLoading, notification, notifierOffset } = this.state;
+    const header = this.header(leaveLoading);
     const { notifier, notificationMessage } = navigation.state.params;
-    const { notification, notifierOffset } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -319,7 +321,7 @@ class Detail extends PureComponent {
         />
         {this.renderCommentForm()}
         {this.renderShareModal()}
-      </Wrapper >
+      </Wrapper>
     );
   }
 }
@@ -331,7 +333,7 @@ Detail.propTypes = {
   group: PropTypes.shape({
     id: PropTypes.number.isRequired,
     photo: PropTypes.string,
-    GroupMembers: PropTypes.array.isRequired,
+    membershipStatus: PropTypes.string,
     User: PropTypes.object.isRequired,
   }).isRequired,
   user: PropTypes.shape({

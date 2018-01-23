@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { withGroups, withFriends, withBestFriends } from '@services/apollo/auth';
+import { withMyGroups } from '@services/apollo/group';
+import { withFriends, withBestFriends } from '@services/apollo/friend';
 import { compose } from 'react-apollo';
 import { Wrapper, Loading } from '@components/common';
 import CloseButton from '@components/common/closeButton';
@@ -410,4 +411,4 @@ Share.defaultProps = {
   showGroup: true,
 };
 
-export default compose(withGroups, withBestFriends, withFriends)(Share);
+export default compose(withMyGroups, withBestFriends, withFriends)(Share);
