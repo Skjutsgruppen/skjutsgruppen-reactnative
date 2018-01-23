@@ -589,7 +589,32 @@ mutation readNotification($id:Int!) {
 
 export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
   props: ({ mutate }) => ({
-    markRead: id => mutate({ variables: { id } }),
+    markRead: id => mutate(
+      {
+        variables: { id },
+        update: (store) => {
+          const oldNotificationsData = store.readQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'old', offset: 0, limit: NOTIFICATION_FETCH_LIMIT } });
+          const newNotificationsData = store.readQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT } });
+          let rows = [];
+
+          rows = newNotificationsData.notifications.rows.filter((notification) => {
+            if (notification.id === id) {
+              oldNotificationsData.notifications.rows.push(notification);
+              oldNotificationsData.notifications.count += 1;
+
+              return null;
+            }
+
+            return notification;
+          });
+
+          newNotificationsData.notifications.rows = rows;
+          newNotificationsData.notifications.count -= 1;
+
+          store.writeQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'old', offset: 0, limit: NOTIFICATION_FETCH_LIMIT }, data: oldNotificationsData });
+          store.writeQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT }, data: newNotificationsData });
+        },
+      }),
   }),
 });
 
