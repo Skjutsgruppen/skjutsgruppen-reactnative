@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Item from '@components/group/feed/item';
 import { compose } from 'react-apollo';
-import { withShare } from '@services/apollo/auth';
+import { withShare } from '@services/apollo/share';
 import Share from '@components/common/share';
 import {
   FEEDABLE_PROFILE,

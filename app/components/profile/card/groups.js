@@ -103,7 +103,7 @@ const Groups = ({ group, onPress, wrapperStyle }) => {
           <TouchableOpacity onPress={() => onPress('profile', group.User.id)}>{profileImage}</TouchableOpacity>
           <Text style={styles.lightText}>
             <Text style={styles.name}>
-              {group.User.firstName || group.User.email}
+              {group.User.firstName}
             </Text>
             <Text> created a group</Text>
           </Text>
@@ -130,7 +130,7 @@ const Groups = ({ group, onPress, wrapperStyle }) => {
                 </Text>
               }
               <Text style={styles.newGroupInfo}>
-                {group.type} group, {group.GroupMembers.length} {group.GroupMembers.length > 1 ? 'participants' : 'participant'}
+                {group.type} group, {group.totalParticipants} {group.totalParticipants > 1 ? 'participants' : 'participant'}
               </Text>
             </View>
           </View>

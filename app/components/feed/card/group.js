@@ -152,7 +152,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             <View>
               <Text style={[styles.text, styles.lightText]}>
                 <Text style={styles.username}>
-                  {group.User.firstName || group.User.email}
+                  {group.User.firstName}
                 </Text>
                 <Text> {trans('feed.created_a_group')}</Text>
               </Text>
@@ -174,11 +174,11 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             <Text style={styles.text}>{group.description}</Text>
             <View style={styles.commentGradientOverlay} />
           </View>
+          <View style={styles.profilePicWrapper}>
+            {profileImage}
+          </View>
         </View>
       </TouchableWithoutFeedback>
-      <View style={styles.profilePicWrapper}>
-        {profileImage}
-      </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => onSharePress(FEEDABLE_GROUP, group)}>
           <Image source={ShareIcon} style={styles.shareIcon} />
@@ -196,10 +196,18 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
 
 Group.propTypes = {
   group: PropTypes.shape({
-    photo: PropTypes.string,
-    name: PropTypes.string,
-    type: PropTypes.string,
-    user: PropTypes.object,
+    photo: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    User: PropTypes.object.isRequired,
+    outreach: PropTypes.string.isRequired,
+    country: PropTypes.string,
+    county: PropTypes.string,
+    municipality: PropTypes.string,
+    locality: PropTypes.string,
+    TripStart: PropTypes.object.isRequired,
+    TripEnd: PropTypes.object.isRequired,
+    description: PropTypes.string.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,

@@ -85,9 +85,7 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
       Participants {
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
         } 
         status
@@ -97,20 +95,10 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -125,34 +113,13 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
       User {
         id 
         firstName 
-        lastName 
-        email 
         avatar 
       } 
       totalComments
@@ -196,9 +163,7 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
       Participants {
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
         } 
         status
@@ -208,20 +173,10 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -236,34 +191,13 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
       User {
         id 
         firstName 
-        lastName 
-        email 
         avatar 
       } 
       totalComments
@@ -307,9 +241,7 @@ query getExperiences($limit: Int, $offset: Int) {
       Participants {
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
         } 
         status
@@ -319,20 +251,10 @@ query getExperiences($limit: Int, $offset: Int) {
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -347,34 +269,13 @@ query getExperiences($limit: Int, $offset: Int) {
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
       User {
         id 
         firstName 
-        lastName 
-        email 
         avatar 
       } 
       totalComments
@@ -405,4 +306,136 @@ export const withGetExperiences = graphql(GET_EXPERIENCE_QUERY, {
       experiences: { loading, rows, count, fetchMore, networkStatus, error },
     };
   },
+});
+
+const MY_EXPERIENCES_QUERY = gql`
+query myExperiences($id:Int, $limit: Int, $offset: Int,){ 
+  myExperiences(userId:$id, limit: $limit, offset: $offset) { 
+    rows{
+      id
+      createdAt
+      description
+      photo
+      Participants {
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        status
+      }
+      Trip {
+        id 
+        type 
+        description 
+        seats 
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        photo 
+        mapPhoto
+        totalComments
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      totalComments
+    }
+    count
+  }
+}
+`;
+
+export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
+  options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
+    variables: { id, offset, limit },
+  }),
+  props: ({ data: { loading, myExperiences, error, networkStatus, refetch, fetchMore } }) => {
+    let rows = [];
+    let count = 0;
+
+    if (myExperiences) {
+      rows = myExperiences.rows;
+      count = myExperiences.count;
+    }
+    return { myExperiences: { loading, rows, count, error, networkStatus, refetch, fetchMore } };
+  },
+});
+
+
+export const FIND_EXPERIENCE_QUERY = gql`
+query experience($id: Int!){
+  experience(id: $id){
+    id
+    createdAt
+    description
+    photo
+    Participants {
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      status
+    }
+    Trip {
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      photo 
+      mapPhoto
+      totalComments
+    }
+    User {
+      id 
+      firstName 
+      avatar 
+    } 
+  }
+}
+`;
+
+export const withExperience = graphql(FIND_EXPERIENCE_QUERY, {
+  options: ({ id }) => ({
+    variables: { id },
+  }),
+  props: ({ data: { loading, experience = {}, refetch, networkStatus, error } }) => ({
+    loading, experience, refetch, networkStatus, error,
+  }),
 });

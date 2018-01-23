@@ -29,26 +29,17 @@ query search
     rows{
       ...on Group {
         id
-        outreach
         name
         description
-        GroupType: type 
-        photo
-        mapPhoto
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation { 
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
+        outreach
+        type
+        photo
+        mapPhoto
         TripStart {
           name 
           coordinates 
@@ -65,39 +56,18 @@ query search
         county 
         municipality 
         locality 
-        GroupMembers { 
-          id 
-          avatar 
-        } 
-        GroupMembershipRequests {
-          id 
-          status 
-          Member {
-            id 
-            email 
-            firstName 
-          }
-        }
+        membershipStatus 
+        totalParticipants
       }
       ...on Trip {
         id 
         type 
         description 
         seats 
-        parentId
         User {
           id 
-          email 
           firstName 
-          lastName 
           avatar 
-          relation {
-            id 
-            email 
-            firstName
-            lastName
-            avatar
-          }
         } 
         TripStart {
           name 
@@ -112,28 +82,9 @@ query search
           coordinates 
         } 
         date 
-        time 
         photo 
         mapPhoto
         totalComments
-        isParticipant
-        duration
-        ReturnTrip {
-          id
-          date
-          TripStart {
-            name
-            coordinates
-          }
-          TripEnd {
-            name
-            coordinates
-          }
-        }
-        Recurring {
-          id
-          date
-        }
       }
       ...on PublicTransport{
         Routes {
