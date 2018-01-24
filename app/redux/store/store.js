@@ -5,6 +5,7 @@ import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import reducers from '@redux/reducers/reducers';
 import Apollo from '@services/apollo';
+import ScreenTracker from '@redux/screenTracker';
 
 const congifureStore = (initialState = {}, customStore) => {
   const middlewares = [thunk];
@@ -14,6 +15,7 @@ const congifureStore = (initialState = {}, customStore) => {
   }
 
   middlewares.push(Apollo.middleware());
+  middlewares.push(ScreenTracker);
 
   const enhancers = [
     applyMiddleware(...middlewares),
