@@ -12,10 +12,13 @@ import RoundedButton from '@components/common/roundedButton';
 import Input from '@components/common/input';
 import ShareButton from '@components/common/shareButton';
 import ProfilePicture from '@components/common/profilePicture';
+import Avatar from '@components/common/avatar';
 import DetailHeader from '@components/common/detailHeader';
 import SharedCard from '@components/common/sharedCard';
 import AppNotification from '@components/common/appNotification';
 import About from '@components/common/about';
+import CostCard from '@components/common/costCard';
+import ProgressBar from '@components/common/progressBar';
 
 export {
   Loading,
@@ -32,8 +35,11 @@ export {
   RoundedButton,
   Input,
   ProfilePicture,
+  Avatar,
   DetailHeader,
   SharedCard,
   AppNotification,
   About,
+  CostCard,
+  ProgressBar,
 };

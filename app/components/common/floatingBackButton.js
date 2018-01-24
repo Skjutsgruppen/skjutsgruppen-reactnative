@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from '@assets/icons/ic_chevron_left.png';
+import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
   button: {
@@ -12,22 +13,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   iconWrapper: {
-    height: 32,
-    width: 32,
-    borderRadius: 16,
+    height: 42,
+    width: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.fullWhite,
     elevation: 2,
-  },
-  icon: {
-    height: 32,
-    width: 32,
-    resizeMode: 'contain',
   },
 });
 
 const FloatingBackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
     <View style={styles.iconWrapper}>
-      <Image source={Icon} style={styles.icon} />
+      <Image source={Icon} />
     </View>
   </TouchableOpacity>
 );

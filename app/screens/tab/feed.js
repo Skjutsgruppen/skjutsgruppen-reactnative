@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Alert } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Alert, Dimensions } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper } from '@components/common';
@@ -28,16 +29,17 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
+import { Gradients } from '@theme';
 
 const FeedExperience = withGetExperiences(List);
 
 const styles = StyleSheet.create({
   circle: {
     position: 'absolute',
-    top: -75,
-    left: -75,
-    height: 280,
-    width: 280,
+    top: -Dimensions.get('window').width * 0.1,
+    left: -Dimensions.get('window').width * 0.1,
+    height: Dimensions.get('window').width * 0.6,
+    width: Dimensions.get('window').width * 0.6,
     borderRadius: 160,
     backgroundColor: '#02cbf9',
   },
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 16,
-    marginBottom: 24,
+    marginBottom: 12,
   },
   mapWrapper: {
     alignSelf: 'flex-end',
@@ -298,7 +300,7 @@ class Feed extends Component {
   render() {
     return (
       <Wrapper bgColor="#eee" >
-        <View style={styles.circle} />
+        <LinearGradient colors={Gradients.blue} style={styles.circle} />
         {this.renderFeed()}
         {this.renderShareModal()}
         <Filter

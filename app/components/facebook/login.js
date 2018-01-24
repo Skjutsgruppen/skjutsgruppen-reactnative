@@ -14,47 +14,44 @@ class FBLogin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { loading: false };
-    this.onLogin = this.onLogin.bind(this);
   }
 
-  async onLogin(fbUser, { token, user }) {
-    const { profile, token: fbToken } = fbUser;
+  onLogin = async (fb) => {
+    const { profile, token } = fb.fbUser;
     const { setLogin, navigation } = this.props;
     this.setState({ loading: true });
 
-    const hasAccountWithFbid = user && user.fbId === profile.id;
-    const hasAccountWithEmail = user && user.email === profile.email;
-
-    if (hasAccountWithFbid) {
-      setLogin({ token, user }).then(() => navigation.reset('Tab'));
+    if (fb.hasID) {
+      await setLogin(fb.userById);
+      navigation.reset('Tab');
       return;
     }
 
-    if (hasAccountWithEmail) {
+    if (fb.hasEmail) {
       Alert.alert(`User already exist with ${profile.email}`,
         'Would you like to connect with facebook?',
         [
           { text: 'Cancel', onPress: () => this.setState({ loading: false }) },
-          { text: 'OK', onPress: () => this.connect({ profile, fbToken }) },
+          { text: 'OK', onPress: () => this.connect({ profile, token }) },
         ],
       );
       return;
     }
 
     if (this.props.signup) {
-      this.register(fbUser);
+      this.register(fb.fbUser);
     } else {
-      this.signupWithFacebook(() => this.register(fbUser));
+      this.signupWithFacebook(() => this.register(fb.fbUser));
     }
   }
 
-  async connect({ profile, fbToken }) {
+  async connect({ profile, token }) {
     const { facebookConnect, setLogin, navigation } = this.props;
 
     const response = await facebookConnect({
       id: profile.id,
       email: profile.email,
-      token: fbToken,
+      token,
     });
 
     await setLogin({

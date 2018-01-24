@@ -3,17 +3,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
-import { withGetUserByEmail } from '@services/apollo/facebook';
+import { withGetUserByEmail, withgetUserByFbId } from '@services/apollo/facebook';
 import FBLoginView from '@components/facebook/button';
+import FBLink from '@components/facebook/link';
 import { Loading } from '@components/common';
 
 class Connect extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { loading: false, fbUser: {} };
-    this.onLoginFound = this.onLoginFound.bind(this);
-    this.onLogin = this.onLogin.bind(this);
-    this.onPressLogin = this.onPressLogin.bind(this);
   }
 
   onCancel = () => {
@@ -28,38 +26,17 @@ class Connect extends PureComponent {
     this.setState({ loading: false });
   }
 
-  async onLogin(data) {
+  onLogin = async (data) => {
     const fbUser = data.credentials;
     fbUser.profile = data.profile;
-
-    this.setState({ loading: true, fbUser }, async () => {
-      try {
-        const { token, user } = await this.getUserByEmail(fbUser.profile.email);
-        this.setState({ loading: false }, () => {
-          this.props.onLogin(fbUser, { token, user });
-        });
-      } catch (error) {
-        console.warn(error);
-        this.setState({ loading: false });
-      }
-    });
+    this.setState({ loading: true, fbUser }, this.setFBUser);
   }
 
-  async onPressLogin() {
-    const { fbUser } = this.state;
-    this.setState({ loading: true });
-    try {
-      const { token, user } = await this.getUserByEmail(fbUser.profile.email);
-      this.setState({ loading: false }, () => {
-        this.props.onLogin(fbUser, { token, user });
-      });
-    } catch (error) {
-      console.warn(error);
-      this.setState({ loading: false });
-    }
+  onPressLogin = async () => {
+    this.setState({ loading: true }, this.setFBUser);
   }
 
-  async onLoginFound(data) {
+  onLoginFound = async (data) => {
     if (this.props.cache) {
       const fbUser = data.credentials;
       const api = `https://graph.facebook.com/v2.3/${fbUser.userId}?fields=picture,first_name,last_name,email,name&access_token=${fbUser.token}`;
@@ -71,14 +48,36 @@ class Connect extends PureComponent {
     }
   }
 
-  async getUserByEmail(email) {
+  setFBUser = async () => {
+    const { fbUser } = this.state;
+    let userByEmail = {};
+    let userById = {};
+    let hasEmail = true;
+    let hasID = true;
+
     try {
-      const { data } = await this.props.getUserByEmail(email);
-      const { token, User } = data.getUserByEmail;
-      return { token, user: User };
+      const { data } = await this.props.getUserByEmail(fbUser.profile.email);
+      if (data.getUserByEmail) {
+        userByEmail = { token: data.getUserByEmail.token, user: data.getUserByEmail.User };
+      }
     } catch (error) {
-      return {};
+      console.warn('User by email not found');
+      hasEmail = false;
     }
+
+    try {
+      const { data } = await this.props.getUserByFbId(fbUser.userId);
+      if (data.getUserByFbId) {
+        userById = { token: data.getUserByFbId.token, user: data.getUserByFbId.User };
+      }
+    } catch (error) {
+      console.warn('User by FB ID not found');
+      hasID = false;
+    }
+
+    this.setState({ loading: false }, () => this.props.onLogin(
+      { fbUser, userByEmail, userById, hasEmail, hasID },
+    ));
   }
 
   fbLogout = () => {
@@ -99,17 +98,17 @@ class Connect extends PureComponent {
       />);
     }
 
-    if (buttonType === 'connect') {
+    if (buttonType === 'signup') {
       return (<FBLoginView
-        label={'Connect with Facebook'}
+        label={'Sign up with Facebook'}
         onPress={this.onPressLogin}
         profile={fbUser.profile}
       />);
     }
 
-    if (buttonType === 'signup') {
-      return (<FBLoginView
-        label={'Sign up with Facebook'}
+    if (buttonType === 'link') {
+      return (<FBLink
+        label={'Link'}
         onPress={this.onPressLogin}
         profile={fbUser.profile}
       />);
@@ -138,6 +137,7 @@ class Connect extends PureComponent {
 
 Connect.propTypes = {
   getUserByEmail: PropTypes.func.isRequired,
+  getUserByFbId: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
   cache: PropTypes.bool,
   buttonType: PropTypes.string,
@@ -148,4 +148,4 @@ Connect.defaultProps = {
   buttonType: 'login',
 };
 
-export default withGetUserByEmail(Connect);
+export default withgetUserByFbId(withGetUserByEmail(Connect));
