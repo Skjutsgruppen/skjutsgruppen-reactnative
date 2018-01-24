@@ -6,7 +6,7 @@ import Ride from '@components/message/ride';
 import Group from '@components/message/group';
 import Notification from '@components/message/notification';
 import PropTypes from 'prop-types';
-
+import { trans } from '@lang/i18n';
 import MessageIcon from '@assets/icons/ic_message.png';
 import MessageIconActive from '@assets/icons/ic_message_active.png';
 
@@ -65,10 +65,10 @@ class Message extends PureComponent {
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <View style={styles.header}>
-          <Text style={styles.title}>Messages and groups</Text>
+          <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
           <View style={styles.searchInputWrapper}>
             <TextInput
-              placeholder="Search"
+              placeholder={trans('message.search')}
               onFocus={() => navigation.navigate('SearchNotification')}
               underlineColorAndroid="transparent"
               style={styles.searchInput}

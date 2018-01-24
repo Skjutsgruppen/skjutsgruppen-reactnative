@@ -19,8 +19,13 @@ import { withShare } from '@services/apollo/share';
 import { withMoreExperiences, withExperience } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import { compose } from 'react-apollo';
+import CapturedImage from '@components/experience/capturedImage';
+import Button from '@components/experience/button';
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   viewHeaderImage: {
     width: '100%',
     height: 300,
@@ -64,6 +69,27 @@ const styles = StyleSheet.create({
   buttonIcon: {
     marginLeft: 12,
   },
+  notificationWrapper: {
+    height: 75,
+    justifyContent: 'center',
+    backgroundColor: '#F4F2FC',
+    paddingHorizontal: 16,
+    elevation: 5,
+  },
+  notificationText: {
+    color: '#000',
+    textAlign: 'center',
+  },
+  experienceTagActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: '5%',
+    paddingHorizontal: 24,
+    borderColor: Colors.border.lightGray,
+    backgroundColor: Colors.background.fullWhite,
+    borderTopWidth: 1,
+  },
 });
 
 const MoreExperiences = withMoreExperiences(List);
@@ -80,13 +106,15 @@ class ExperienceDetail extends Component {
       modalType: '',
       isOpen: false,
       experience: {},
+      notification: false,
+      experienceTagAccepted: true,
     });
   }
 
   componentWillMount() {
     const { navigation } = this.props;
-    const { experience } = navigation.state.params;
-    this.setState({ experience });
+    const { experience, experienceTagAccepted } = navigation.state.params;
+    this.setState({ experience, notification: !experienceTagAccepted, experienceTagAccepted });
   }
 
   componentWillReceiveProps({ experience, loading }) {
@@ -139,7 +167,7 @@ class ExperienceDetail extends Component {
 
       return (<Text key={row.User.id}>
         <Text
-          onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
+          onPress={() => navigation.navigate('UserProfile', { profileId: row.User.id })}
           style={styles.name}
         >
           {row.User.firstName}
@@ -184,19 +212,30 @@ class ExperienceDetail extends Component {
   }
 
   render() {
-    const { experience } = this.state;
+    const { experience, notification, experienceTagAccepted } = this.state;
+    const { navigation } = this.props;
+    const { notificationMessage } = navigation.state.params;
     let image = <View style={styles.viewHeaderImage} />;
 
     if (experience.photo) {
-      image = (<Image source={{ uri: experience.photo }} style={styles.headerImage} />);
+      if (experienceTagAccepted) {
+        image = (<Image source={{ uri: experience.photo }} style={styles.headerImage} />);
+      } else {
+        image = (<CapturedImage imageURI={experience.photo} />);
+      }
     }
 
     const { loading } = this.props;
 
     return (
-      <View>
-        <FloatingNavbar handleBack={this.goBack} />
-        <ScrollView>
+      <View style={styles.flex}>
+        {!notification && <FloatingNavbar handleBack={this.goBack} />}
+        {notification &&
+          <View style={styles.notificationWrapper}>
+            <Text style={styles.notificationText}>{notificationMessage}</Text>
+          </View>
+        }
+        <ScrollView style={styles.flex}>
           {image}
           <View style={styles.infoSection}>
             <View style={styles.block}>
@@ -214,15 +253,22 @@ class ExperienceDetail extends Component {
                 {experience.description}
               </Text>
             </View>
-            <View style={styles.actions}>
-              <TouchableOpacity onPress={this.onSharePress} style={styles.button}>
-                <Text style={styles.buttonLabel}>Share</Text>
-                <Image source={ShareIcon} style={styles.buttonIcon} />
-              </TouchableOpacity>
-            </View>
+            {
+              experienceTagAccepted &&
+              <View style={styles.actions}>
+                <TouchableOpacity onPress={this.onSharePress} style={styles.button}>
+                  <Text style={styles.buttonLabel}>Share</Text>
+                  <Image source={ShareIcon} style={styles.buttonIcon} />
+                </TouchableOpacity>
+              </View>
+            }
           </View>
-          <MoreExperiences title="Experiences!" exceptId={experience.id} />
+          {experienceTagAccepted && <MoreExperiences title="Experiences!" exceptId={experience.id} />}
         </ScrollView>
+        <View style={styles.experienceTagActions}>
+          <Button label="Yes!" />
+          <Button label="No" />
+        </View>
         {this.renderShareModal()}
       </View>
     );
@@ -238,7 +284,7 @@ ExperienceDetail.propTypes = {
       Participants: PropTypes.array,
       Trip: PropTypes.object,
       User: PropTypes.shape({
-        id: PropTypes.string,
+        id: PropTypes.number,
         firstName: PropTypes.string,
       }),
     }),

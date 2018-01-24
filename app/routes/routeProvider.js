@@ -4,12 +4,13 @@ import Splash from '@screens/Splash';
 import Offer from '@screens/Offer';
 import Ask from '@screens/Ask';
 import Group from '@screens/group/Group';
-import Experience from '@screens/Experience';
+import Experience from '@screens/experience/Experience';
 
 import TripDetail from '@screens/TripDetail';
 import NewsDetail from '@screens/NewsDetail';
 import GroupDetail from '@screens/group/GroupDetail';
-import ExperienceDetail from '@screens/ExperienceDetail';
+import ExperienceDetail from '@screens/experience/ExperienceDetail';
+import ExperienceScreen from '@screens/experience/ExperienceScreen';
 
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
@@ -46,6 +47,8 @@ import Route from '@screens/Route';
 
 import SingleNotification from '@screens/notification/List';
 import SearchNotification from '@screens/notification/Search';
+import ActiveRideList from '@screens/notification/ActiveRideList';
+import ActiveGroupList from '@screens/notification/ActiveGroupList';
 
 import Add from '@screens/tab/add';
 import Feed from '@screens/tab/feed';
@@ -109,7 +112,6 @@ export const Routes = {
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
-  ExperienceDetail: { screen: ExperienceDetail },
 
   SearchGroup: { screen: SearchGroup, path: 'search/:query' },
   ExploreGroup: { screen: ExploreGroup },
@@ -146,7 +148,12 @@ export const Routes = {
   UserExperiences: { screen: UserExperiences },
 
   SingleNotification: { screen: SingleNotification },
+  ActiveRideList: { screen: ActiveRideList },
+  ActiveGroupList: { screen: ActiveGroupList },
   SearchNotification: { screen: SearchNotification },
+
+  ExperienceDetail: { screen: ExperienceDetail },
+  ExperienceScreen: { screen: ExperienceScreen },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

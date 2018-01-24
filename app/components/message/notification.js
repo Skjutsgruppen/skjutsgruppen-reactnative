@@ -70,7 +70,7 @@ class NewNotification extends PureComponent {
 
     return (
       <TouchableOpacity onPress={this.moreNotification} style={styles.more}>
-        <Text style={styles.moreText}>and {remaining} more</Text>
+        <Text style={styles.moreText}>{trans('message.and')} {remaining} {trans('message.more')}</Text>
       </TouchableOpacity>
     );
   }
@@ -83,7 +83,7 @@ class NewNotification extends PureComponent {
   renderNotification = () => {
     const { notifications, filters } = this.props;
 
-    let render = (<Text style={styles.emptyMessage}>No Messages</Text>);
+    let render = (<Text style={styles.emptyMessage}>{trans('message.no_message')}</Text>);
     let limitedNotifications = notifications.rows;
 
     if (limitedNotifications.length > PER_FETCH_LIMIT) {
@@ -127,7 +127,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} MESSAGES
+          {filters.toUpperCase()} {trans('message.messages')}
         </Text>
         {this.renderNotification()}
         {this.loadMore()}
