@@ -169,7 +169,7 @@ class PublicTransportItem extends Component {
     }
 
     return publicTransport.Routes.map((route, index) => {
-      const i = index;
+      const i = `${index}-public-transportation`;
 
       return (
         <TouchableOpacity

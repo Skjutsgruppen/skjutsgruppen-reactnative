@@ -62,7 +62,9 @@ I18n.translations = {
 
 async function loadLocal() {
   const lang = await LangService.getLanguage();
-  I18n.locale = lang;
+  if (lang) {
+    I18n.locale = lang;
+  }
 }
 
 loadLocal();

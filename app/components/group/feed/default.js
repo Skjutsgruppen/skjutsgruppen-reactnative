@@ -125,15 +125,16 @@ class Feed extends Component {
 
     return (
       <View style={styles.Wrapper}>
-        <TouchableOpacity onPress={() => onPressUser('profile', feed.Group.User.id)}>
+        <TouchableOpacity onPress={() => onPressUser('Profile', feed.Group.User.id)}>
           {image}
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('profile', feed.Group.User.id)}>{feed.Group.User.firstName}
+            <Text style={styles.name} onPress={() => onPressUser('Profile', feed.Group.User.id)}>
+              {feed.Group.User.firstName}
             </Text>
             <Text style={styles.commentText}>
-              Added <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
+              Added <Text style={styles.name} onPress={() => onPressUser('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
             </Text>
           </View>
           <Text style={styles.time}><Date>{feed.date}</Date></Text>
@@ -154,12 +155,13 @@ class Feed extends Component {
 
     return (
       <View style={styles.Wrapper}>
-        <TouchableOpacity onPress={() => onPressUser('profile', feed.User.id)}>
+        <TouchableOpacity onPress={() => onPressUser('Profile', feed.User.id)}>
           {image}
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('profile', feed.User.id)}>{feed.User.firstName}
+            <Text style={styles.name} onPress={() => onPressUser('Profile', feed.User.id)}>
+              {feed.User.firstName}
             </Text>
             {this.renderFeed()}
           </View>
