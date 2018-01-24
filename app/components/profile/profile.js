@@ -1,36 +1,43 @@
 import React, { Component } from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Colors from '@theme/colors';
+import { Image, View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { Colors, Gradients } from '@theme';
 import PropTypes from 'prop-types';
-import { Loading } from '@components/common';
+import { Loading, Avatar } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Relation from '@components/relation';
+import ProfileAction from '@components/profile/profileAction';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/friend';
 import Icon from 'react-native-vector-icons/Ionicons';
+import GardenActive from '@assets/icons/ic_garden_profile.png';
+import GardenInactive from '@assets/icons/ic_garden_profile_gray.png';
 import { trans } from '@lang/i18n';
 import {
   RELATIONSHIP_TYPE_FRIEND,
   RELATIONSHIP_TYPE_INCOMING,
   RELATIONSHIP_TYPE_OUTGOING,
+  FEED_FILTER_OFFERED,
+  FEED_FILTER_WANTED,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   profilePic: {
-    height: 80,
-    width: 80,
-    borderRadius: 40,
     alignSelf: 'center',
-    marginVertical: 12,
-    marginHorizontal: 24,
+    marginTop: 54,
+    marginBottom: 24,
   },
   name: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.text.blue,
-    marginBottom: 16,
+    color: Colors.text.black,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  joinedDate: {
     textAlign: 'center',
   },
   activityWrapper: {
@@ -44,19 +51,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   hexagon: {
-    height: 60,
-    width: 60,
+    height: 90,
+    width: 90,
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 6,
   },
-  garden: {
+  experienceCountWrapper: {
+    alignItems: 'center',
+  },
+  sunRay: {
+    height: 22,
     resizeMode: 'contain',
+    marginBottom: 4,
   },
   experienceCount: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#c1ab44',
+    color: Colors.text.pink,
   },
   activityLabel: {
     color: Colors.text.darkGray,
@@ -206,8 +219,12 @@ class Profile extends Component {
       navigation.navigate('UserFriends', { id });
     }
 
-    if (type === 'ride') {
-      navigation.navigate('UserTrips', { userId: id });
+    if (type === FEED_FILTER_WANTED) {
+      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_WANTED });
+    }
+
+    if (type === FEED_FILTER_OFFERED) {
+      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_OFFERED });
     }
 
     if (type === 'experiences') {
@@ -340,6 +357,7 @@ class Profile extends Component {
 
   render() {
     const { data: { networkStatus, profile, error } } = this.props;
+    const supporter = false;
 
     if (error) {
       return (
@@ -361,36 +379,33 @@ class Profile extends Component {
     }
 
     return (
-      <View>
-        <Image source={{ uri: profile.avatar }} style={styles.profilePic} />
+      <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
+        <Avatar
+          notTouchable
+          isSupporter
+          size={145}
+          imageURI={profile.avatar}
+          style={styles.profilePic}
+        />
         <Text style={styles.name}>{profile.firstName}</Text>
+        <Text style={[styles.lightText, styles.joinedDate]}>Joined <Date format="MMM Do YYYY">{profile.createdAt}</Date></Text>
         <View style={styles.activityWrapper}>
-          <View>
-            <View style={styles.hexagon}>
+          <View style={styles.hexagon}>
+            <View style={styles.experienceCountWrapper}>
+              <Image
+                source={require('@assets/icons/ic_camera_head.png')}
+                style={styles.sunRay}
+              />
               <Text style={styles.experienceCount}>{profile.totalExperiences}</Text>
             </View>
             <Text style={styles.activityLabel}>Experiences</Text>
           </View>
-          <View>
+          <View style={styles.hexagon}>
             <Image
-              source={require('@assets/icons/icon_garden_line.png')}
-              style={[styles.hexagon, styles.garden]}
+              source={supporter ? GardenActive : GardenInactive}
+              style={styles.garden}
             />
             <Text style={styles.activityLabel}>Supporter</Text>
-          </View>
-        </View>
-        <View style={styles.activityWrapper}>
-          <View style={styles.activity}>
-            <Text style={styles.count}>{profile.totalOffered}</Text>
-            <Text style={styles.activityLabel}>Offered {'\n'} rides</Text>
-          </View>
-          <View style={styles.activity}>
-            <Text style={styles.count}>{profile.totalAsked}</Text>
-            <Text style={styles.activityLabel}>Asked {'\n'} for rides</Text>
-          </View>
-          <View style={styles.activity}>
-            <Text style={styles.count}>-</Text>
-            <Text style={styles.activityLabel}>Talked {'\n'} about</Text>
           </View>
         </View>
         {!this.isCurrentUser() && this.hasRelation() &&
@@ -410,31 +425,35 @@ class Profile extends Component {
           </View>
         }
         {this.friendRelationButtion()}
-        <View style={styles.listWrapper}>
-          <TouchableOpacity onPress={() => this.redirect('experiences')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} experiences</Text>
-            <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.listWrapper}>
-          <TouchableOpacity onPress={() => this.redirect('ride')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} ride</Text>
-            <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.listWrapper}>
-          <TouchableOpacity onPress={() => this.redirect('groups')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} groups</Text>
-            <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.listWrapper, styles.lastListWrapper]}>
-          <TouchableOpacity onPress={() => this.redirect('friends')} style={styles.list}>
-            <Text style={styles.listLabel}>{this.getPrefix()} friends</Text>
-            <Image source={require('@assets/icons/icon_chevron_right.png')} style={styles.connectionArrow} />
-          </TouchableOpacity>
-        </View>
-      </View>
+        {profile.fbId &&
+          <ProfileAction
+            onPress={() => Linking.openURL(`https://www.facebook.com/${profile.fbId}`)}
+            label="Facebook profile"
+          />}
+        {profile.twitterId && <ProfileAction
+          onPress={() => Linking.openURL(`https://twitter.com//${profile.twitterId}`)}
+          label="Twitter profile"
+        />}
+        <ProfileAction
+          onPress={() => this.redirect(FEED_FILTER_OFFERED)}
+          label={`${profile.totalOffered || 0} offered ${(profile.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
+        />
+        <ProfileAction
+          onPress={() => this.redirect(FEED_FILTER_WANTED)}
+          label={`${profile.totalAsked || 0} ${(profile.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
+        />
+        <ProfileAction
+          label={`${profile.totalComments || 0} ride ${(profile.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
+        />
+        <ProfileAction
+          label={`${profile.totalGroups || 0} ${(profile.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
+          onPress={() => this.redirect('groups')}
+        />
+        <ProfileAction
+          label={`${profile.totalFriends || 0} ${(profile.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
+          onPress={() => this.redirect('friends')}
+        />
+      </LinearGradient>
     );
   }
 }

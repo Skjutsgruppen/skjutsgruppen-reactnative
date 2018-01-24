@@ -72,13 +72,13 @@ class UserFriends extends Component {
   }
 
   render() {
-    const { id } = this.props.navigation.state.params;
+    const { id, editable } = this.props.navigation.state.params;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <NavBar handleBack={this.goBack} />
         <View style={styles.listWrapper}>
-          <Friends id={id} onPress={this.onPress} />
+          <Friends id={id} editable={editable} onPress={this.onPress} />
         </View>
       </Wrapper>
     );

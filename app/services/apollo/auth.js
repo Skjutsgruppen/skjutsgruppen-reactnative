@@ -24,6 +24,7 @@ mutation login($username: String!, $password:String!) {
       totalAsked
       totalComments
       totalExperiences
+      totalFriends
     }
   }
 }
@@ -58,6 +59,7 @@ mutation register($email: String!, $verified:Boolean) {
       totalAsked
       totalComments
       totalExperiences
+      totalFriends
     }  
   }
 }
@@ -106,6 +108,7 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
       totalAsked
       totalComments
       totalExperiences
+      totalFriends
     }
   }
 }
@@ -140,7 +143,8 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
 
 
 const CHECK_PHONE_VERIFICATION_QUERY = gql`
-mutation  isPhoneVerified {
+mutation {
+  isPhoneVerified {
     token
     User {
       id
@@ -160,6 +164,7 @@ mutation  isPhoneVerified {
       totalExperiences
     }
   }
+} 
 `;
 
 export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
@@ -188,6 +193,7 @@ mutation changePassword($oldPassword: String, $newPassword: String){
       totalAsked
       totalComments
       totalExperiences
+      totalFriends
     }
   }
 }
