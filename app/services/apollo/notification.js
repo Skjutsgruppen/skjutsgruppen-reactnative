@@ -138,9 +138,16 @@ subscription notification($userId: Int!) {
           id 
           firstName 
           avatar 
-        } 
+        }
+        Participants {
+          User {
+            id
+          } 
+          status
+        }
       }
     }
+    notifiable
     read
     createdAt
   }
@@ -280,8 +287,15 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             firstName 
             avatar 
           } 
+          Participants {
+            User {
+              id
+            } 
+            status
+          }
         }
       }
+      notifiable
       read
       createdAt
     }
@@ -540,7 +554,13 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id 
             firstName 
             avatar 
-          } 
+          }
+          Participants {
+            User {
+              id
+            } 
+            status
+          }
         }
       }
       read
