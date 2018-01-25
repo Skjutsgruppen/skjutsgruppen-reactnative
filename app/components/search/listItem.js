@@ -50,14 +50,10 @@ const ListItem = ({ onPress, type, image, title, date }) => (
       <Image source={image} style={styles.avatar} />
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>{title}</Text>
-        <Date format="MMM DD HH:mm">{date}</Date>
+        {date && <Date format="MMM DD HH:mm">{date}</Date>}
       </View>
-      {
-        type === FEED_TYPE_OFFER && <View style={[styles.indicator, styles.pink]} />
-      }
-      {
-        type === FEED_TYPE_WANTED && <View style={[styles.indicator, styles.blue]} />
-      }
+      {type === FEED_TYPE_OFFER && <View style={[styles.indicator, styles.pink]} />}
+      {type === FEED_TYPE_WANTED && <View style={[styles.indicator, styles.blue]} />}
     </View>
   </TouchableOpacity>
 );
@@ -71,10 +67,10 @@ ListItem.propTypes = {
 };
 
 ListItem.defaultProps = {
-  type: '',
+  type: null,
   image: {},
-  title: '',
-  date: '',
+  title: null,
+  date: null,
 };
 
 export default ListItem;

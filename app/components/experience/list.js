@@ -5,7 +5,7 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 30,
     marginTop: 30,
-    marginBottom: 16,
+    marginBottom: 6,
   },
   titleWrapper: {
     flexDirection: 'row',
@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   sunIcon: {
+    height: 22,
+    width: 55,
+    resizeMode: 'contain',
     marginBottom: 6,
     marginLeft: 12,
   },
@@ -85,9 +88,12 @@ class List extends PureComponent {
       list = (
         <View style={styles.block}>
           <Text style={styles.msg}>{error.message}</Text>
-          <TouchableOpacity onPress={() => experiences.refetch()}>
+          <TouchableHighlight
+            onPress={() => experiences.refetch()}
+            underlayColor={Colors.background.lightGray}
+          >
             <Text style={styles.msg}>Retry</Text>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
       );
     }
@@ -97,9 +103,14 @@ class List extends PureComponent {
     }
 
     list = rows.map(experience => (
-      <TouchableOpacity key={experience.id} onPress={() => navigation.navigate('ExperienceDetail', { experience })} style={styles.experience}>
+      <TouchableHighlight
+        underlayColor={Colors.background.lightGray}
+        key={experience.id}
+        onPress={() => navigation.navigate('ExperienceDetail', { experience })}
+        style={styles.experience}
+      >
         <Image source={{ uri: experience.photo }} style={styles.image} />
-      </TouchableOpacity>
+      </TouchableHighlight>
     ));
     return (
       <View>
