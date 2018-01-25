@@ -2,6 +2,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { PROFILE_QUERY } from '@services/apollo/profile';
 
 const ADD_FRIEND_QUERY = gql`
 mutation addFriend($id: Int!) {
@@ -52,8 +54,20 @@ export const withCancelFriendRequest = graphql(CANCEL_FRIEND_REQUEST_QUERY, {
   }),
 });
 
+const FRIEND_SUBSCRIPTION_QUERY = gql`
+  subscription myFriend($userId: Int!){
+    myFriend(userId: $userId){
+      id
+      email
+      firstName
+      lastName
+      phoneNumber
+      avatar
+    }
+  }
+`;
 
-const FRIEND_QUERY = gql`
+export const FRIEND_QUERY = gql`
 query friends($id:Int, $limit: Int, $offset: Int){ 
     friends(id:$id, limit: $limit, offset: $offset) { 
       rows {
@@ -72,7 +86,9 @@ export const withFriends = graphql(FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({ variables: { id, offset, limit } }),
-  props: ({ data: { loading, friends, error, refetch, networkStatus, fetchMore } }) => {
+  props: ({
+    data: { loading, friends, error, refetch, networkStatus, fetchMore, subscribeToMore },
+  }) => {
     let rows = [];
     let count = 0;
 
@@ -81,7 +97,60 @@ export const withFriends = graphql(FRIEND_QUERY, {
       count = friends.count;
     }
 
-    return { friends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
+    return {
+      friends: { loading, rows, count, error, refetch, networkStatus, fetchMore, subscribeToMore },
+      subscribeToNewFriend: param => subscribeToMore({
+        document: FRIEND_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const newFriend = subscriptionData.data.myFriend;
+
+          rows = prev.friends.rows.filter((row) => {
+            if (row.id === newFriend.id) {
+              repeated = true;
+              return null;
+            }
+            count += 1;
+
+            return row;
+          });
+
+          try {
+            if (!repeated) {
+              const myProfile = client.readQuery(
+                {
+                  query: PROFILE_QUERY,
+                  variables: { id: param.userId },
+                },
+              );
+              myProfile.profile.totalFriends += 1;
+              client.writeQuery(
+                {
+                  query: PROFILE_QUERY,
+                  data: myProfile,
+                  variables: { id: param.userId },
+                },
+              );
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+
+          rows = [newFriend].concat(rows);
+
+          return {
+            friends: { ...prev.friends, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
   },
 });
 

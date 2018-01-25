@@ -1,6 +1,9 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
+import { NOTIFICATION_FETCH_LIMIT, NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED, PER_FETCH_LIMIT } from '@config/constant';
+import client from '@services/apollo';
+import { PROFILE_QUERY } from '@services/apollo/profile';
+import { FRIEND_QUERY } from '@services/apollo/friend';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
@@ -11,7 +14,10 @@ subscription notification($userId: Int!) {
       id
       firstName
       avatar
+      phoneNumber
+      email
     }
+    notifiable
     Notifiable {
       ... on Trip {
         id 
@@ -149,7 +155,10 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         id
         firstName
         avatar
+        phoneNumber
+        email
       }
+      notifiable
       Notifiable {
         ... on Trip {
           id 
@@ -308,6 +317,49 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           }
 
           const newNotification = subscriptionData.data.notification;
+
+          if (newNotification.type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
+            try {
+              const myProfile = client.readQuery(
+                {
+                  query: PROFILE_QUERY,
+                  variables: { id: param.userId },
+                },
+              );
+
+              myProfile.profile.totalFriends += 1;
+              client.writeQuery(
+                { query: PROFILE_QUERY, data: myProfile, variables: { id: param.userId } },
+              );
+
+              const friends = client.readQuery(
+                {
+                  query: FRIEND_QUERY,
+                  variables: {
+                    id: param.userId,
+                    offset: 0,
+                    limit: PER_FETCH_LIMIT,
+                  },
+                },
+              );
+
+              friends.friends.rows = [newNotification.User].concat(friends.friends.rows);
+              friends.friends.count += 1;
+
+              client.writeQuery({
+                query: FRIEND_QUERY,
+                data: friends,
+                variables: {
+                  id: param.userId,
+                  offset: 0,
+                  limit: PER_FETCH_LIMIT,
+                },
+              });
+            } catch (err) {
+              console.warn(err);
+            }
+          }
+
           const newrows = [newNotification].concat(prev.notifications.rows);
 
           return {
@@ -331,7 +383,32 @@ mutation readNotification($id:Int!) {
 
 export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
   props: ({ mutate }) => ({
-    markRead: id => mutate({ variables: { id } }),
+    markRead: id => mutate(
+      {
+        variables: { id },
+        update: (store) => {
+          const oldNotificationsData = store.readQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'old', offset: 0, limit: NOTIFICATION_FETCH_LIMIT } });
+          const newNotificationsData = store.readQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT } });
+          let rows = [];
+
+          rows = newNotificationsData.notifications.rows.filter((notification) => {
+            if (notification.id === id) {
+              oldNotificationsData.notifications.rows.push(notification);
+              oldNotificationsData.notifications.count += 1;
+
+              return null;
+            }
+
+            return notification;
+          });
+
+          newNotificationsData.notifications.rows = rows;
+          newNotificationsData.notifications.count -= 1;
+
+          store.writeQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'old', offset: 0, limit: NOTIFICATION_FETCH_LIMIT }, data: oldNotificationsData });
+          store.writeQuery({ query: NOTIFICATION_QUERY, variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT }, data: newNotificationsData });
+        },
+      }),
   }),
 });
 
@@ -398,6 +475,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
         firstName
         avatar
       }
+      notifiable
       Notifiable {
         ... on Trip {
           id 

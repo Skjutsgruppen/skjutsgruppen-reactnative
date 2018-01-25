@@ -387,7 +387,7 @@ class Profile extends Component {
           imageURI={profile.avatar}
           style={styles.profilePic}
         />
-        <Text style={styles.name}>{profile.firstName}</Text>
+        <Text style={styles.name}>{profile.firstName} {profile.lastName}</Text>
         <Text style={[styles.lightText, styles.joinedDate]}>Joined <Date format="MMM Do YYYY">{profile.createdAt}</Date></Text>
         <View style={styles.activityWrapper}>
           <View style={styles.hexagon}>

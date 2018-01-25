@@ -28,7 +28,7 @@ class UserTrips extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ isGroup: true, modalDetail: {}, modalType: '', isOpen: false });
+    this.state = ({ isOpen: false, trip: {} });
   }
 
   onPress = (type, detail) => {
@@ -43,12 +43,12 @@ class UserTrips extends Component {
     }
   }
 
-  onSharePress = (isGroup) => {
-    this.setState({ isOpen: true, isGroup: isGroup !== 'group' });
+  onSharePress = (type, trip) => {
+    this.setState({ isOpen: true, trip });
   };
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.trip.id, type: FEEDABLE_TRIP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -72,7 +72,7 @@ class UserTrips extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== 'group'}
+            showGroup
             onNext={this.onShare}
             onClose={this.onClose}
           />

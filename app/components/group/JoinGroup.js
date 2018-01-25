@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { compose } from 'react-apollo';
-import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import PropTypes from 'prop-types';
 import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import { Wrapper, Loading, FloatingNavbar } from '@components/common';
@@ -111,8 +111,6 @@ class JoinGroup extends Component {
       isPending: null,
       group: {},
       requestSent: false,
-      modalDetail: {},
-      modalType: '',
       isOpen: false,
       error: '',
     });
@@ -126,12 +124,12 @@ class JoinGroup extends Component {
     this.updateState(props);
   }
 
-  onSharePress = (modalType, modalDetail) => {
-    this.setState({ isOpen: true, modalType, modalDetail });
+  onSharePress = () => {
+    this.setState({ isOpen: true });
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType === 'group' ? 'Group' : 'Trip', share })
+    this.props.share({ id: this.state.group.id, type: FEEDABLE_GROUP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -219,7 +217,7 @@ class JoinGroup extends Component {
         <ScrollView>
           <Share
             modal
-            showGroup={this.state.modalType !== 'group'}
+            showGroup={false}
             onNext={this.onShare}
             onClose={this.onClose}
           />
