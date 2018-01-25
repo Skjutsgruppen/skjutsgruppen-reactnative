@@ -168,29 +168,12 @@ class Date extends Component {
     return options;
   };
 
-  renderMinutesOptions = () => {
-    const options = [];
-    let i = 0;
-    do {
-      if (i === 0 || i % 15 === 0) {
-        options.push(<Picker.Item
-          key={`minute-${i}`}
-          label={pad(i)}
-          value={pad(i)}
-        />);
-      }
-      i += 1;
-    } while (i < 60);
-
-    return options;
-  };
-
-  renderDuration = () => {
+  renderMinutesOptions = (key) => {
     const options = [];
     let i = 0;
     do {
       options.push(<Picker.Item
-        key={`flexible-${i}`}
+        key={`${key}-${i}`}
         label={pad(i)}
         value={pad(i)}
       />);
@@ -278,7 +261,7 @@ class Date extends Component {
                 label={'Minute'}
                 value={'00'}
               />
-              {this.renderMinutesOptions()}
+              {this.renderMinutesOptions('minute')}
             </Picker>
           </View>
         </View>
@@ -290,7 +273,7 @@ class Date extends Component {
               onValueChange={duration => this.setDuration(duration)}
               selectedValue={pad(flexibilityInfo.duration.toString())}
             >
-              {this.renderDuration()}
+              {this.renderMinutesOptions('flexible')}
             </Picker>
           </View>
           <View style={styles.inputWrapper}>

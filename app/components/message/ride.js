@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
@@ -8,6 +8,8 @@ import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
+import Moment from 'moment';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -79,66 +81,80 @@ const renderPic = (photo) => {
   return profileImage;
 };
 
-const item = (trip, navigation) => (
-  <TouchableOpacity
-    onPress={() => navigation.navigate('TripDetail', { trip })}
-    key={trip.id}
-  >
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {trip.photo ? renderPic(trip.photo) : renderPic(trip.mapPhoto)}
+const item = (trip, navigation) => {
+  if (Moment(trip.date).isAfter()) {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('TripDetail', { trip })}
+        key={trip.id}
+      >
+        <View style={styles.list}>
+          <View style={styles.flexRow}>
+            <View style={styles.profilePicWrapper}>
+              {trip.photo ? renderPic(trip.photo) : renderPic(trip.mapPhoto)}
+            </View>
+            <View>
+              <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+              <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
+            </View>
+          </View>
+          <View>
+            <Image
+              source={require('@assets/icons/icon_chevron_right.png')}
+              style={styles.chevron}
+            />
+          </View>
         </View>
-        <View>
-          <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
-        </View>
-      </View>
-      <View>
-        <Image
-          source={require('@assets/icons/icon_chevron_right.png')}
-          style={styles.chevron}
-        />
-      </View>
-    </View>
-  </TouchableOpacity>
-);
-
-const Ride = ({ trips, navigation }) => {
-  let render = (<Text style={styles.emptyMessage}>No Ride</Text>);
-
-  if (trips.count > 0) {
-    render = trips.rows.map(trip => item(trip, navigation));
-  }
-
-  if (trips.error) {
-    render = (
-      <View style={{ marginTop: 20, marginBottom: 20 }}>
-        <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-        <TouchableOpacity onPress={() => trips.refetch()}>
-          <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     );
   }
 
-  if (trips.loading) {
-    render = (
-      <View style={styles.spacedWrapper}>
-        <Loading />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>
-        {('Your active rides'.toUpperCase())}
-      </Text>
-      {render}
-    </View>
-  );
+  return null;
 };
+
+class Ride extends PureComponent {
+  componentWillMount() {
+    const { subscribeToNewTrip, user } = this.props;
+    subscribeToNewTrip({ userId: user.id });
+  }
+
+  render() {
+    const { trips, navigation } = this.props;
+    let render = (<Text style={styles.emptyMessage}>No Ride</Text>);
+
+    if (trips.count > 0) {
+      render = trips.rows.map(trip => item(trip, navigation));
+    }
+
+    if (trips.error) {
+      render = (
+        <View style={{ marginTop: 20, marginBottom: 20 }}>
+          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <TouchableOpacity onPress={() => trips.refetch()}>
+            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (trips.loading) {
+      render = (
+        <View style={styles.spacedWrapper}>
+          <Loading />
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          {('Your active rides'.toUpperCase())}
+        </Text>
+        {render}
+      </View>
+    );
+  }
+}
 
 Ride.propTypes = {
   trips: PropTypes.shape({
@@ -150,7 +166,12 @@ Ride.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  subscribeToNewTrip: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withMyTrips, withNavigation)(Ride);
+export default compose(withMyTrips, withNavigation, connect(mapStateToProps))(Ride);

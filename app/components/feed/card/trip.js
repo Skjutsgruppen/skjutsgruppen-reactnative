@@ -114,12 +114,12 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           <View style={styles.detail}>
             <View>
               <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.username}>{trip.User.firstName} </Text>
+                <Text style={styles.username}>{trip.User.firstName}</Text>
                 {
                   trip.type === FEED_TYPE_OFFER &&
                   <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
                 }
-                {trip.type === FEED_TYPE_WANTED && trans('feed.asks_for_a_ride')}
+                {trip.type === FEED_TYPE_WANTED && (<Text> {trans('feed.asks_for_a_ride')}</Text>)}
               </Text>
               <Text style={[styles.text, styles.lightText]}>
                 {trip.TripStart.name} - {trip.TripEnd.name}
