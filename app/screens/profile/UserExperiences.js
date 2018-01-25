@@ -5,6 +5,7 @@ import ExperienceList from '@components/profile/experienceList';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -32,7 +33,7 @@ class UserExperience extends PureComponent {
   }
 
   render() {
-    const { userId } = this.props.navigation.state.params;
+    const { userId } = this.props.navigation.state.params || this.props.user.id;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -54,6 +55,11 @@ UserExperience.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-export default UserExperience;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(UserExperience);

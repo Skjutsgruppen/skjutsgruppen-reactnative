@@ -5,6 +5,7 @@ import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { Wrapper, NavBar } from '@components/common';
 import Colors from '@theme/colors';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -39,7 +40,7 @@ class UserGroups extends Component {
   }
 
   render() {
-    const { userId } = this.props.navigation.state.params;
+    const { userId } = this.props.navigation.state.params || this.props.user.id;
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -58,6 +59,11 @@ UserGroups.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-export default UserGroups;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(UserGroups);

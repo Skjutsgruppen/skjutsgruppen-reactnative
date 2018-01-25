@@ -21,6 +21,7 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import About from '@components/common/about';
 import { getDate } from '@config';
+import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -306,7 +307,7 @@ class TripDetail extends Component {
   }
 
   onShare = (share) => {
-    this.props.share({ id: this.state.trip.id, type: 'Trip', share })
+    this.props.share({ id: this.state.trip.id, type: FEEDABLE_TRIP, share })
       .then(() => this.setState({ isOpen: false }))
       .catch(console.warn);
   };
@@ -625,7 +626,11 @@ class TripDetail extends Component {
               <Text style={styles.username} onPress={() => { }}>
                 {trip.User.firstName}
               </Text>
-              <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+              {
+                trip.type === FEED_TYPE_OFFER &&
+                <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+              }
+              {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
             </Text>
             <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
             <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
