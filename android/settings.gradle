@@ -1,4 +1,6 @@
 rootProject.name = 'Skjutsgruppen'
+include ':react-native-fabric'
+project(':react-native-fabric').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fabric/android')
 include ':react-native-google-analytics-bridge'
 project(':react-native-google-analytics-bridge').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-google-analytics-bridge/android')
 include ':react-native-fs'

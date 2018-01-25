@@ -3,6 +3,7 @@ package com.skjutsgruppen;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.smixx.fabric.FabricPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.rnfs.RNFSPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
@@ -35,6 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FabricPackage(),
             new GoogleAnalyticsBridgePackage(),
             new RNFSPackage(),
             new RCTCameraPackage(),

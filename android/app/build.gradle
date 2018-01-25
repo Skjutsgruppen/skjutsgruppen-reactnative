@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 
+apply plugin: 'io.fabric'
+
 project.ext.envConfigFiles = [
     debug: ".env",
     release: ".env.production",
@@ -155,9 +157,17 @@ android {
             }
         }
     }
+    dexOptions {
+     jumboMode true
+   }
+}
+
+repositories {
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
+    compile project(':react-native-fabric')
     compile project(':react-native-google-analytics-bridge')
     compile project(':react-native-fs')
     compile project(':react-native-camera')
@@ -182,6 +192,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-facebook-login')
+    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+      transitive = true;
+    }
 }
 
 // Run this once to be able to run the application with BUCK
