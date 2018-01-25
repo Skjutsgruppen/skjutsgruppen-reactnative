@@ -15,7 +15,7 @@ subscription notification($userId: Int!) {
     Notifiable {
       ... on Trip {
         id 
-        tripTpe:type 
+        tripType:type 
         description 
         seats 
         User {

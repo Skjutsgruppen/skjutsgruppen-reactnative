@@ -82,47 +82,11 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
       createdAt
       description
       photo
-      Participants {
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        status
-      }
-      Trip {
-        id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
-      }
       User {
         id 
         firstName 
         avatar 
       } 
-      totalComments
     }
     count
   }
@@ -160,47 +124,11 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
       createdAt
       description
       photo
-      Participants {
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        status
-      }
-      Trip {
-        id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
-      }
       User {
         id 
         firstName 
         avatar 
       } 
-      totalComments
     }
     count
   }
@@ -238,47 +166,11 @@ query getExperiences($limit: Int, $offset: Int) {
       createdAt
       description
       photo
-      Participants {
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        status
-      }
-      Trip {
-        id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
-      }
       User {
         id 
         firstName 
         avatar 
       } 
-      totalComments
     }
     count
   }
@@ -316,47 +208,11 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
       createdAt
       description
       photo
-      Participants {
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        status
-      }
-      Trip {
-        id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
-      }
       User {
         id 
         firstName 
         avatar 
       } 
-      totalComments
     }
     count
   }

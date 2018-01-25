@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableHighlight, TouchableOpacity, Linking, Platform, UIManager, LayoutAnimation } from 'react-native';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
@@ -32,8 +32,21 @@ const styles = StyleSheet.create({
   touchable: {
     paddingVertical: 12,
   },
+  transportIconWrapper: {
+    paddingVertical: 4,
+    backgroundColor: '#fff',
+    zIndex: 10,
+    marginRight: 16,
+  },
+  expandedTransportIconWrapper: {
+    paddingVertical: 4,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+    width: 45,
+  },
   transportIcon: {
-    marginRight: 18,
     zIndex: 100,
   },
   title: {
@@ -67,11 +80,11 @@ const styles = StyleSheet.create({
   },
   connectorLine: {
     height: '80%',
-    width: StyleSheet.hairlineWidth,
+    width: 1,
     backgroundColor: Colors.background.gray,
     position: 'absolute',
     top: '10%',
-    left: 28,
+    left: 34,
     zIndex: -1,
   },
   lastTransport: {
@@ -79,8 +92,6 @@ const styles = StyleSheet.create({
     width: 10,
     backgroundColor: Colors.background.gray,
     borderRadius: 5,
-    marginRight: 29,
-    marginLeft: 11,
     zIndex: 100,
   },
 });
@@ -89,9 +100,25 @@ class PublicTransportItem extends Component {
   constructor(props) {
     super(props);
 
+    if (Platform.OS === 'android') {
+      if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+      }
+    }
+
     this.state = {
       expanded: false,
     };
+  }
+
+  componentWillUpdate() {
+    const config = {
+      duration: 250,
+      update: {
+        type: 'easeInEaseOut',
+      },
+    };
+    LayoutAnimation.configureNext(config);
   }
 
   handleToggle = () => {
@@ -104,8 +131,15 @@ class PublicTransportItem extends Component {
 
   renderIconByCatCode = (product) => {
     const icon = {
-      3: require('@assets/icons/ic_train.png'),
+      1: require('@assets/icons/ic_train.png'),
+      2: require('@assets/icons/ic_regional_intercity_train.png'),
+      3: require('@assets/icons/ic_express_bus.png'),
+      4: require('@assets/icons/ic_train.png'),
+      5: require('@assets/icons/ic_metro.png'),
+      6: require('@assets/icons/ic_tram.png'),
       7: require('@assets/icons/ic_bus.png'),
+      8: require('@assets/icons/ic_ferry.png'),
+      walk: require('@assets/icons/ic_walk.png'),
     };
 
     if (product) {
@@ -114,14 +148,14 @@ class PublicTransportItem extends Component {
       }
     }
 
-    return icon[7];
+    return icon.walk;
   }
 
   renderTransportIcon = (totalTransports, iconData, index) => {
     if (!this.state.expanded) {
       if (index < 3) {
         return (
-          <View style={{ paddingVertical: 4, backgroundColor: '#fff', zIndex: 10 }}>
+          <View style={styles.transportIconWrapper}>
             {this.renderImage(iconData)}
           </View>
         );
@@ -130,7 +164,7 @@ class PublicTransportItem extends Component {
     }
 
     return (
-      <View style={{ paddingVertical: 4, backgroundColor: '#fff', zIndex: 10 }}>
+      <View style={[styles.transportIconWrapper, styles.expandedTransportIconWrapper]}>
         {
           (index === (totalTransports - 1))
             ? (<View style={styles.lastTransport} />)
@@ -150,47 +184,53 @@ class PublicTransportItem extends Component {
 
     if (Routes.length === 2) {
       return (
-        <TouchableOpacity
+        <TouchableHighlight
           onPress={() => Linking.openURL(publicTransport.url)}
-          style={[styles.flexRow, styles.single]}
+          underlayColor="#f0f0f0"
         >
-          {this.renderImage(Routes[0].Product)}
-          <View>
-            {
-              (Routes[0].type === PUBLIC_TRANSPORT_JOURNEY) &&
-              (<Text style={styles.title}>{Routes[0].Product.name}</Text>)
-            }
-            <Text style={styles.lightText}>
-              <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
-            </Text>
+          <View style={[styles.flexRow, styles.single]}>
+            <View style={styles.transportIconWrapper}>
+              {this.renderImage(Routes[0].Product)}
+            </View>
+            <View>
+              {
+                (Routes[0].type === PUBLIC_TRANSPORT_JOURNEY) &&
+                (<Text style={styles.title}>{Routes[0].Product.name}</Text>)
+              }
+              <Text style={styles.lightText}>
+                <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
+              </Text>
+            </View>
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       );
     }
 
+    let i = 0;
     return publicTransport.Routes.map((route, index) => {
-      const i = `${index}-public-transportation`;
-
+      i += 1;
       return (
-        <TouchableOpacity
+        <TouchableHighlight
           key={i}
           onPress={() => Linking.openURL(publicTransport.url)}
-          style={[styles.flexRow, styles.touchable]}
+          underlayColor="#f0f0f0"
         >
-          {this.renderTransportIcon(Routes.length, route.Product, index)}
-          {
-            this.state.expanded && (
-              <View style={{ flex: 1 }}>
-                <Text style={styles.title}>{route.Point.name}</Text>
-                <Text style={styles.lightText}><Date format="MMM DD">{route.Point.date}</Date>, {route.Point.time}</Text>
-                {
-                  (route.type === PUBLIC_TRANSPORT_JOURNEY) &&
-                  (<Text>{route.Product.name}</Text>)
-                }
-              </View>
-            )
-          }
-        </TouchableOpacity>
+          <View style={[styles.flexRow, styles.touchable]}>
+            {this.renderTransportIcon(Routes.length, route.Product, index)}
+            {
+              this.state.expanded && (
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.title}>{route.Point.name}</Text>
+                  <Text style={styles.lightText}><Date format="MMM DD">{route.Point.date}</Date>, {route.Point.time}</Text>
+                  {
+                    (route.type === PUBLIC_TRANSPORT_JOURNEY) &&
+                    (<Text>{route.Product.name}</Text>)
+                  }
+                </View>
+              )
+            }
+          </View>
+        </TouchableHighlight>
       );
     });
   }
@@ -219,7 +259,7 @@ class PublicTransportItem extends Component {
             >
               <Image
                 source={ExpandIcon}
-                style={[styles.expandIcon, this.state.expanded ? styles.flipped : {}]}
+                style={[styles.expandIcon]}
               />
             </TouchableOpacity>
           )
