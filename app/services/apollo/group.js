@@ -1,8 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
-import client from '@services/apollo';
-import { PROFILE_QUERY } from '@services/apollo/profile';
+import { increaseProfileGroupCount } from '@services/apollo/dataSync';
 
 const SUBMIT_GROUP_QUERY = gql`
 mutation group
@@ -273,6 +272,7 @@ subscription myGroup($userId: Int!){
     locality 
     membershipStatus
     totalParticipants
+    isAdmin
   }
 }
 `;
@@ -581,7 +581,6 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
           }
 
           const newrows = [subscriptionData.data.groupFeed].concat(prev.groupFeed.rows);
-
           return {
             groupFeed: {
               ...prev.groupFeed,
@@ -625,7 +624,7 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
   },
 });
 
-const GROUPS_QUERY = gql`
+export const GROUPS_QUERY = gql`
 query groups($id:Int, $limit: Int, $offset: Int){ 
   groups(userId:$id, limit: $limit, offset: $offset) { 
     rows{
@@ -717,28 +716,10 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 
             return row;
           });
-
           rows = [newGroup].concat(rows);
 
-          try {
-            if (!repeated) {
-              const myProfile = client.readQuery(
-                {
-                  query: PROFILE_QUERY,
-                  variables: { id: param.userId },
-                },
-              );
-              myProfile.totalGroups += 1;
-              client.writeQuery(
-                {
-                  query: PROFILE_QUERY,
-                  data: myProfile,
-                  variables: { id: param.userId },
-                },
-              );
-            }
-          } catch (err) {
-            console.warn(err);
+          if (!repeated) {
+            increaseProfileGroupCount(param.userId, newGroup.id);
           }
 
           return {

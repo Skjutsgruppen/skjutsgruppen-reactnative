@@ -10,6 +10,7 @@ import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Moment from 'moment';
+import { FEED_FILTER_WANTED } from '@config/constant';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -82,7 +83,7 @@ const renderPic = (photo) => {
 };
 
 const item = (trip, navigation) => {
-  if (Moment(trip.date).isAfter()) {
+  if (Moment(trip.date).isAfter() && trip.type !== FEED_FILTER_WANTED) {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('TripDetail', { trip })}
