@@ -2,8 +2,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
-import client from '@services/apollo';
-import { PROFILE_QUERY } from '@services/apollo/profile';
+import { increaseProfileFriendCount } from '@services/apollo/dataSync';
 
 const ADD_FRIEND_QUERY = gql`
 mutation addFriend($id: Int!) {
@@ -122,25 +121,8 @@ export const withFriends = graphql(FRIEND_QUERY, {
             return row;
           });
 
-          try {
-            if (!repeated) {
-              const myProfile = client.readQuery(
-                {
-                  query: PROFILE_QUERY,
-                  variables: { id: param.userId },
-                },
-              );
-              myProfile.profile.totalFriends += 1;
-              client.writeQuery(
-                {
-                  query: PROFILE_QUERY,
-                  data: myProfile,
-                  variables: { id: param.userId },
-                },
-              );
-            }
-          } catch (err) {
-            console.warn(err);
+          if (!repeated) {
+            increaseProfileFriendCount(param.userId);
           }
 
           rows = [newFriend].concat(rows);
