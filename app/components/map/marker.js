@@ -148,7 +148,7 @@ Marker.propTypes = {
 Marker.defaultProps = {
   children: null,
   current: PropTypes.false,
-  tripType: '',
+  tripType: null,
 };
 
 export default Marker;

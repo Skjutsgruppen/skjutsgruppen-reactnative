@@ -64,7 +64,7 @@ class UserFriends extends Component {
   onPress = (userId) => {
     const { navigation } = this.props;
 
-    navigation.navigate('UserProfile', { profileId: userId });
+    navigation.navigate('Profile', { profileId: userId });
   }
 
   goBack = () => {

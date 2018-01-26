@@ -1,12 +1,12 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import Onboarding from '@components/auth/onboarding';
 
-class Splash extends Component {
+class Splash extends PureComponent {
   static navigationOptions = { header: null };
 
   constructor(props) {
@@ -15,42 +15,37 @@ class Splash extends Component {
   }
 
   async componentWillMount() {
-    const { setLogin, setRegister, auth, navigation } = this.props;
+    const { setLogin, setRegister, navigation } = this.props;
     const user = await AuthService.getUser();
-    const token = await AuthService.getToken();
-    const hasUser = await AuthService.hasUser();
-    const isLoggedIn = await AuthService.isLoggedIn();
 
-    if (hasUser && !user.emailVerified) {
+    if (!user) {
+      this.setState({ loading: false });
+      return;
+    }
+
+    const { emailVerified, phoneVerified, phoneNumber } = user;
+    const token = await AuthService.getToken();
+
+    if (!emailVerified) {
       await setRegister({ user, token });
       navigation.reset('CheckMail');
       return;
     }
 
-    if (hasUser && user.emailVerified && user.phoneNumber === null) {
+    if (phoneNumber === null) {
       await setRegister({ user, token });
       navigation.reset('EmailVerified');
       return;
     }
 
-    if (hasUser && !user.phoneVerified) {
+    if (!phoneVerified) {
       await setRegister({ user, token });
       navigation.reset('SendText');
       return;
     }
 
-    if (auth.login) {
-      navigation.reset('Tab');
-      return;
-    }
-
-    if (isLoggedIn) {
-      await setLogin({ user, token });
-      navigation.reset('Tab');
-      return;
-    }
-
-    this.setState({ loading: false });
+    await setLogin({ user, token });
+    navigation.reset('Tab');
   }
 
   render() {

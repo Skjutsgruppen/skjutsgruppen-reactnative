@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 class List extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, showFofModal: false, friendsData: [] });
+    this.state = ({ loading: false, showFoFModal: false, friendsData: [] });
   }
 
   componentWillMount() {
@@ -47,12 +47,12 @@ class List extends PureComponent {
   onPress = (userId) => {
     const { navigation } = this.props;
 
-    this.setState({ showFofModal: false });
-    navigation.navigate('UserProfile', { profileId: userId });
+    this.setState({ showFoFModal: false });
+    navigation.navigate('Profile', { profileId: userId });
   }
 
   setModalVisibility = (show, friendsData) => {
-    this.setState({ showFofModal: show, friendsData });
+    this.setState({ showFoFModal: show, friendsData });
   }
 
   setFriendsData = (data) => {
@@ -86,7 +86,7 @@ class List extends PureComponent {
         users={this.state.friendsData}
         onPress={this.onPress}
         setModalVisibility={this.setModalVisibility}
-        showFofModal={this.state.showFofModal}
+        showFoFModal={this.state.showFoFModal}
       />
     );
   }
@@ -150,7 +150,7 @@ class List extends PureComponent {
           ListHeaderComponent={() => this.renderHeader(this.state.loading)}
           ListFooterComponent={this.renderFooter}
         />
-        {this.state.showFofModal && this.renderModal()}
+        {this.state.showFoFModal && this.renderModal()}
       </View>
     );
   }
