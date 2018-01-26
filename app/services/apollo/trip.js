@@ -1,8 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { FEED_FILTER_WANTED, PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED } from '@config/constant';
-import client from '@services/apollo';
-import { PROFILE_QUERY } from '@services/apollo/profile';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED } from '@config/constant';
+import { increaseProfileTripCount } from './dataSync';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -42,6 +41,7 @@ subscription{
         locality 
         membershipStatus 
         totalParticipants
+        isAdmin
       }
     }
     ... on TripFeed {
@@ -525,7 +525,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
   }
 `;
 
-const TRIPS_QUERY = gql`
+export const TRIPS_QUERY = gql`
 query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: Int ){ 
   trips(input:{userId:$id, type:$type, active:$active}, limit: $limit, offset: $offset) { 
     rows {
@@ -601,92 +601,17 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
 
           rows = prev.trips.rows.filter((row) => {
             if (row.id === newTrip.id) {
+              repeated = true;
               return null;
             }
             count += 1;
 
             return row;
           });
-
           rows = [newTrip].concat(rows);
 
-          try {
-            const activeRides = client.readQuery(
-              {
-                query: TRIPS_QUERY,
-                variables: {
-                  id: null,
-                  offset: 0,
-                  limit: PER_FETCH_LIMIT,
-                  type: FEED_FILTER_OFFERED,
-                  active: true,
-                },
-              },
-            );
-
-            activeRides.trips.rows.map((row) => {
-              if (row.id === newTrip.id) {
-                repeated = true;
-              }
-
-              return row;
-            });
-          } catch (err) {
-            console.warn(err);
-          }
-
-          try {
-            if (!repeated) {
-              const myRides = client.readQuery(
-                {
-                  query: TRIPS_QUERY,
-                  variables: {
-                    id: param.userId,
-                    offset: 0,
-                    limit: PER_FETCH_LIMIT,
-                    type: newTrip.type,
-                    active: null,
-                  },
-                },
-              );
-
-              myRides.trips.rows.map((row) => {
-                if (row.id === newTrip.id) {
-                  repeated = true;
-                }
-
-                return row;
-              });
-            }
-          } catch (err) {
-            console.warn(err);
-          }
-
-          try {
-            if (!repeated) {
-              const myProfile = client.readQuery(
-                {
-                  query: PROFILE_QUERY,
-                  variables: { id: param.userId },
-                },
-              );
-
-              if (newTrip.type === FEED_FILTER_WANTED) {
-                myProfile.profile.totalAsked += 1;
-              } else {
-                myProfile.profile.totalOffered += 1;
-              }
-
-              client.writeQuery(
-                {
-                  query: PROFILE_QUERY,
-                  data: myProfile,
-                  variables: { id: param.userId },
-                },
-              );
-            }
-          } catch (err) {
-            console.warn(err);
+          if (!repeated) {
+            increaseProfileTripCount(param.userId, newTrip.id, newTrip.type);
           }
 
           return {
