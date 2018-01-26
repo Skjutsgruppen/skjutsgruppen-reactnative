@@ -45,7 +45,7 @@ Button.propTypes = {
 Button.defaultProps = {
   profile: {},
   onPress: PropTypes.func.isRequired,
-  label: '',
+  label: null,
 };
 
 

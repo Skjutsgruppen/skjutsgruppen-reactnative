@@ -8,23 +8,20 @@ query profile($id: Int){
     firstName
     lastName
     avatar
-    fbId
     relation {
       id
       firstName
       avatar
     }
+    fbId
     totalOffered
     totalAsked
     totalComments
-    relationshipType 
     totalExperiences
     totalGroups
     totalFriends
-    FriendRequest {
-      id
-      status
-    }
+    relationshipType 
+    friendRequestId
     createdAt
   }
 }`;
@@ -32,8 +29,11 @@ query profile($id: Int){
 export const withProfile = graphql(PROFILE_QUERY, {
   options: ({ id }) => ({
     variables: { id },
-    props: ({ profile, networkStatus, error, refetch, loading }) =>
-      ({ profile, networkStatus, error, refetch, loading }),
+    props: ({ data: { loading, profile = {}, refetch, networkStatus, error } }) => ({
+      data: {
+        loading, profile, refetch, networkStatus, error,
+      },
+    }),
   }),
 });
 
@@ -55,12 +55,18 @@ query account {
     totalAsked
     totalComments
     totalExperiences
+    totalGroups
+    totalFriends
+    relationshipType 
+    friendRequestId
+    createdAt
   }
 }`;
 
 export const withAccount = graphql(ACCOUNT_QUERY, {
-  options: {
-    props: ({ account, networkStatus, error, refetch, loading }) =>
-      ({ account, networkStatus, error, refetch, loading }),
-  },
+  props: ({ data: { loading, account = {}, refetch, networkStatus, error } }) => ({
+    data: {
+      loading, profile: account, refetch, networkStatus, error,
+    },
+  }),
 });
