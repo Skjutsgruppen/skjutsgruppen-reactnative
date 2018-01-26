@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 class GroupFeed extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, modalDetail: {}, modalType: '', isOpen: false, showFofModal: false, friendsData: [] });
+    this.state = ({ loading: false, modalDetail: {}, modalType: '', isOpen: false, showFoFModal: false, friendsData: [] });
   }
 
   componentWillMount() {
@@ -63,7 +63,7 @@ class GroupFeed extends Component {
     }
 
     if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('UserProfile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: detail });
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
@@ -86,7 +86,7 @@ class GroupFeed extends Component {
   }
 
   setModalVisibility = (show, friendsData) => {
-    this.setState({ showFofModal: show, friendsData });
+    this.setState({ showFoFModal: show, friendsData });
   }
 
   setFriendsData = (data) => {
@@ -94,12 +94,13 @@ class GroupFeed extends Component {
   }
 
   renderModal() {
+    console.log(this.state);
     return (
       <RelationModal
         users={this.state.friendsData}
         onPress={this.onPress}
         setModalVisibility={this.setModalVisibility}
-        showFofModal={this.state.showFofModal}
+        showFoFModal={this.state.showFoFModal}
       />
     );
   }
@@ -153,7 +154,7 @@ class GroupFeed extends Component {
           }}
         />
         {this.renderShareModal()}
-        {this.state.showFofModal && this.renderModal()}
+        {this.state.showFoFModal && this.renderModal()}
       </View>
     );
   }

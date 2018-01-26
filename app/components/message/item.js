@@ -277,7 +277,7 @@ class Item extends PureComponent {
         photo: User.avatar,
         text: 'accepted your friend request',
         date,
-        onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
+        onPress: () => this.redirect(id, 'Profile', { profileId: User.id }),
       });
     }
 
@@ -291,7 +291,7 @@ class Item extends PureComponent {
         photo: User.avatar,
         text: 'accepted to tag on an experience',
         date,
-        onPress: () => this.redirect(id, 'UserProfile', { profileId: User.id }),
+        onPress: () => this.redirect(id, 'Profile', { profileId: User.id }),
       });
     }
 

@@ -79,8 +79,8 @@ class Garden extends Component {
     const { logout, navigation } = this.props;
     this.setState({ loading: true }, () => {
       logout()
-        .then(() => navigation.reset('Splash'))
-        .then(() => FBLoginManager.logout(() => { }));
+        .then(() => FBLoginManager.logout(() => { }))
+        .then(() => navigation.reset('Splash'));
     });
   }
 
@@ -148,7 +148,7 @@ class Garden extends Component {
           />
           <ProfileAction
             label="Your profile"
-            onPress={() => this.redirect('Support')}
+            onPress={() => this.redirect('Profile')}
           />
           <ProfileAction
             label="Your support of the garden"

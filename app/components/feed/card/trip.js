@@ -141,7 +141,8 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
         onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
         totalComments={trip.totalComments}
       />
-    </View >);
+    </View>
+  );
 };
 
 Trip.propTypes = {

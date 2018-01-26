@@ -8,18 +8,18 @@ import { withNavigation } from 'react-navigation';
 class Relation extends Component {
   constructor(props) {
     super(props);
-    this.state = { showFofModal: false };
+    this.state = { showFoFModal: false };
   }
 
   onPress = (userId) => {
     const { navigation } = this.props;
 
-    this.setState({ showFofModal: false });
-    navigation.navigate('UserProfile', { profileId: userId });
+    this.setState({ showFoFModal: false });
+    navigation.navigate('Profile', { profileId: userId });
   }
 
   setModalVisibility = (show) => {
-    this.setState({ showFofModal: show });
+    this.setState({ showFoFModal: show });
   }
 
   renderModal() {
@@ -30,7 +30,7 @@ class Relation extends Component {
         users={users}
         onPress={this.onPress}
         setModalVisibility={this.setModalVisibility}
-        showFofModal={this.state.showFofModal}
+        showFoFModal={this.state.showFoFModal}
       />
     );
   }
@@ -53,7 +53,7 @@ class Relation extends Component {
           style={style}
           setModalVisibility={this.setModalVisibility}
         />
-        {this.state.showFofModal && this.renderModal()}
+        {this.state.showFoFModal && this.renderModal()}
       </View>
     );
   }
