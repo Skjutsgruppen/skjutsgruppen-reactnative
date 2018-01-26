@@ -321,7 +321,7 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
           });
 
           if (!repeated) {
-            increaseProfileExperience(param.userId);
+            increaseProfileExperience();
           }
 
           rows = [newExperience].concat(rows);

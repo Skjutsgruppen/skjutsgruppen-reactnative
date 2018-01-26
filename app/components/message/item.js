@@ -27,6 +27,7 @@ import {
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import Date from '@components/date';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -138,9 +139,9 @@ class Item extends PureComponent {
   }
 
   acceptFriendRequest = (id) => {
-    const { acceptFriendRequest, notification } = this.props;
+    const { acceptFriendRequest, notification, user } = this.props;
     this.setState({ loading: true });
-    acceptFriendRequest(id)
+    acceptFriendRequest(id, user.id)
       .then(notification.refetch)
       .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
@@ -592,7 +593,6 @@ class Item extends PureComponent {
       }
     }
 
-
     return profileImage;
   }
 
@@ -672,7 +672,12 @@ Item.propTypes = {
   acceptFriendRequest: PropTypes.func.isRequired,
   acceptExperience: PropTypes.func.isRequired,
   rejectExperience: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
+
+const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(
   withReadNotification,
@@ -683,4 +688,5 @@ export default compose(
   withAcceptExperience,
   withRejectExperience,
   withNavigation,
+  connect(mapStateToProps),
 )(Item);
