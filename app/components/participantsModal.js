@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const ParticipantsModal = ({ groupMembers, onPress, setModalVisibility, showFofModal }) => (
+const ParticipantsModal = ({ groupMembers, onPress, setModalVisibility, showFoFModal }) => (
   <Modal
     animationType="slide"
     transparent
     onRequestClose={() => setModalVisibility(false)}
-    visible={showFofModal}
+    visible={showFoFModal}
   >
     <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.85)', paddingTop: 16 }}>
       <View style={styles.returnModalContent}>
@@ -103,7 +103,7 @@ ParticipantsModal.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,
-  showFofModal: PropTypes.bool.isRequired,
+  showFoFModal: PropTypes.bool.isRequired,
 };
 
 export default ParticipantsModal;

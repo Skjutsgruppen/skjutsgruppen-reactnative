@@ -47,7 +47,7 @@ RoundMarker.propTypes = {
 };
 
 RoundMarker.defaultProps = {
-  type: '',
+  type: null,
   color: null,
 };
 

@@ -61,7 +61,6 @@ class Connect extends PureComponent {
         userByEmail = { token: data.getUserByEmail.token, user: data.getUserByEmail.User };
       }
     } catch (error) {
-      console.warn('User by email not found');
       hasEmail = false;
     }
 
@@ -71,7 +70,6 @@ class Connect extends PureComponent {
         userById = { token: data.getUserByFbId.token, user: data.getUserByFbId.User };
       }
     } catch (error) {
-      console.warn('User by FB ID not found');
       hasID = false;
     }
 

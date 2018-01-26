@@ -139,7 +139,7 @@ class ExperienceDetail extends Component {
 
       return (<Text key={row.User.id}>
         <Text
-          onPress={() => navigation.navigate('UserProfile', { profileId: row.User.id })}
+          onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
           style={styles.name}
         >
           {row.User.firstName}

@@ -32,24 +32,6 @@ class Auth {
   getUser() {
     return this.session.get(this.userKey);
   }
-
-  async hasUser() {
-    const user = await this.getUser();
-    const token = await this.getToken();
-
-    return (token !== null && user !== null);
-  }
-
-  async isLoggedIn() {
-    const token = await this.session.get(this.tokenKey);
-    const user = await this.session.get(this.userKey);
-
-    if (token && user) {
-      return (user.emailVerified && token !== '');
-    }
-
-    return false;
-  }
 }
 
 export default new Auth();
