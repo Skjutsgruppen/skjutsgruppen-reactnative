@@ -26,7 +26,7 @@ class UserGroups extends Component {
     const { navigation } = this.props;
 
     if (type === 'profile') {
-      navigation.navigate('UserProfile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: detail });
     }
 
     if (type === 'group') {

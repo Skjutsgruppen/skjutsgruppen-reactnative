@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
@@ -131,69 +131,63 @@ const styles = StyleSheet.create({
   },
 });
 
-class News extends Component {
-  renderLinks = () => {
-    const { news } = this.props;
-
+const News = ({ news, onPress, wrapperStyle }) => {
+  const renderLinks = () => {
     if (!news.links) return null;
     let i = 0;
     return news.links.map((link) => {
       i += 1;
       return (<Text key={i}>{link}</Text>);
     });
+  };
+
+  let image = null;
+  if (news.photo) {
+    image = (<Image source={{ uri: news.photo }} style={styles.img} />);
   }
 
-  render() {
-    const { news, onPress, wrapperStyle } = this.props;
-    let image = null;
-
-    if (news.photo) {
-      image = (<Image source={{ uri: news.photo }} style={styles.img} />);
-    }
-
-    return (
-      <View style={[styles.wrapper, wrapperStyle]}>
-        <TouchableWithoutFeedback
-          onPress={() => onPress(FEEDABLE_NEWS, news)}
-          style={styles.flex1}
-        >
-          <View style={styles.flex1}>
-            <View style={styles.imgWrapper}>
-              {image}
-            </View>
-            <View style={[styles.offerType, styles.blueBg]}>
-              <Text style={styles.typeText}>{trans('feed.your_movement').toUpperCase()}</Text>
-            </View>
-            <View style={styles.detail}>
-              <View>
-                <Text style={[styles.text, styles.lightText]}>
-                  <Text style={styles.username}>
-                    {trans('feed.your_movement')}
-                  </Text>
+  return (
+    <View style={[styles.wrapper, wrapperStyle]} >
+      <TouchableWithoutFeedback
+        onPress={() => onPress(FEEDABLE_NEWS, news)}
+        style={styles.flex1}
+      >
+        <View style={styles.flex1}>
+          <View style={styles.imgWrapper}>
+            {image}
+          </View>
+          <View style={[styles.offerType, styles.blueBg]}>
+            <Text style={styles.typeText}>{trans('feed.your_movement').toUpperCase()}</Text>
+          </View>
+          <View style={styles.detail}>
+            <View>
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.username}>
+                  {trans('feed.your_movement')}
                 </Text>
-                <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>
-              </View>
-            </View>
-            <View style={styles.comment}>
-              <Text style={styles.text}>{news.body}</Text>
-              {this.renderLinks()}
-              <View style={styles.commentGradientOverlay} />
+              </Text>
+              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-        <View style={styles.newsAvatar} />
-        <View style={styles.footer}>
-          <View style={styles.commentIcon}>
-            <Text style={styles.commentCount}>{news.totalComments}</Text>
-            <TouchableOpacity onPress={() => onPress(FEEDABLE_NEWS, news)}>
-              <Image source={CommentIcon} style={styles.icon} />
-            </TouchableOpacity>
+          <View style={styles.comment}>
+            <Text style={styles.text}>{news.body}</Text>
+            {renderLinks()}
+            <View style={styles.commentGradientOverlay} />
           </View>
         </View>
+      </TouchableWithoutFeedback>
+      <View style={styles.newsAvatar} />
+      <View style={styles.footer}>
+        <View style={styles.commentIcon}>
+          <Text style={styles.commentCount}>{news.totalComments}</Text>
+          <TouchableOpacity onPress={() => onPress(FEEDABLE_NEWS, news)}>
+            <Image source={CommentIcon} style={styles.icon} />
+          </TouchableOpacity>
+        </View>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 News.propTypes = {
   news: PropTypes.shape({

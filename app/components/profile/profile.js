@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import GardenActive from '@assets/icons/ic_garden_profile.png';
 import GardenInactive from '@assets/icons/ic_garden_profile_gray.png';
 import { trans } from '@lang/i18n';
+
 import {
   RELATIONSHIP_TYPE_FRIEND,
   RELATIONSHIP_TYPE_INCOMING,
@@ -185,27 +186,46 @@ const styles = StyleSheet.create({
   },
 });
 
+const ACTION_NONE = 0;
+const ACTION_ACCEPTED = 1;
+const ACTION_REJECTED = 2;
+
 class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ isRequestPending: false });
+    this.state = ({
+      isRequestPending: false,
+      action: ACTION_NONE,
+      user: {},
+      loading: false,
+      refetch: null,
+    });
+  }
+
+  componentWillMount() {
+    if (this.isCurrentUser()) {
+      const { user } = this.props;
+      this.setState({ user });
+    }
+  }
+
+  componentWillReceiveProps({ data }) {
+    const { profile, loading, refetch } = data;
+    if (!loading && profile.id) {
+      this.setState({ user: profile, loading, refetch });
+    }
   }
 
   onPressProfile = (id) => {
     const { navigation } = this.props;
 
-    navigation.navigate('UserProfile', { profileId: id });
-  }
-
-  onRefreshClick = () => {
-    const { data: { refetch } } = this.props;
-    refetch();
+    navigation.navigate('Profile', { profileId: id });
   }
 
   getPrefix = () => {
-    const { data: { profile } } = this.props;
+    const { user } = this.state;
 
-    return this.isCurrentUser() ? 'My' : `${profile.firstName}'s`;
+    return this.isCurrentUser() ? 'My' : `${user.firstName}'s`;
   }
 
   redirect = (type) => {
@@ -233,19 +253,19 @@ class Profile extends Component {
   }
 
   sendRequest = () => {
-    const { id, data: { refetch } } = this.props;
+    const { user } = this.state;
     this.setState({ loading: true }, () => {
-      this.props.addFriend(id)
-        .then(refetch)
+      this.props.addFriend(user.id)
+        .then(this.state.refetch)
         .then(() => this.setState({ isRequestPending: true, loading: false }))
         .catch(() => this.setState({ loading: false }));
     });
   }
 
   cancelRequest = () => {
-    const { data: { profile, refetch } } = this.props;
+    const { user, refetch } = this.state;
     this.setState({ loading: true }, () => {
-      this.props.cancelFriendRequest(profile.FriendRequest.id)
+      this.props.cancelFriendRequest(user.friendRequestId)
         .then(refetch)
         .then(() => this.setState({ isRequestPending: false, loading: false }))
         .catch(() => this.setState({ loading: false }));
@@ -259,8 +279,7 @@ class Profile extends Component {
   }
 
   friendRelationButtion = () => {
-    const { data: { profile } } = this.props;
-    const { loading } = this.state;
+    const { user, loading } = this.state;
 
     if (this.isCurrentUser()) {
       return null;
@@ -270,7 +289,7 @@ class Profile extends Component {
       return (<Loading />);
     }
 
-    if (profile.relationshipType === RELATIONSHIP_TYPE_FRIEND) {
+    if (user.relationshipType === RELATIONSHIP_TYPE_FRIEND) {
       return (
         <View style={styles.disabledBtn}>
           <Text>You are friend.</Text>
@@ -278,11 +297,11 @@ class Profile extends Component {
       );
     }
 
-    if (profile.relationshipType === RELATIONSHIP_TYPE_INCOMING) {
+    if (user.relationshipType === RELATIONSHIP_TYPE_INCOMING) {
       return this.renderAction();
     }
 
-    if (profile.relationshipType === RELATIONSHIP_TYPE_OUTGOING) {
+    if (user.relationshipType === RELATIONSHIP_TYPE_OUTGOING) {
       return (
         <CustomButton
           style={styles.button}
@@ -300,34 +319,66 @@ class Profile extends Component {
         bgColor={Colors.background.green}
         onPress={this.sendRequest}
       >
-        {`Ask to be ${profile.firstName}'s friend`}
+        {`Ask to be ${user.firstName}'s friend`}
       </CustomButton>
     );
   }
 
   hasRelation = () => {
-    const { data: { profile } } = this.props;
-    return profile.relation.length > 0;
+    const { user } = this.state;
+    return user.relation && user.relation.length > 0;
   }
 
   acceptRequest = () => {
-    const { acceptFriendRequest, data: { profile, refetch } } = this.props;
+    const { acceptFriendRequest } = this.props;
+    const { user, refetch } = this.state;
 
     this.setState({ loading: true });
-    acceptFriendRequest(profile.FriendRequest.id)
+    acceptFriendRequest(user.friendRequestId)
       .then(refetch)
-      .then(() => this.setState({ loading: false, action: 1 }))
+      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
   }
 
   rejectRequest = () => {
-    const { rejectFriendRequest, data: { profile, refetch } } = this.props;
+    const { rejectFriendRequest } = this.props;
+    const { user, refetch } = this.state;
 
     this.setState({ loading: true });
-    rejectFriendRequest(profile.FriendRequest.id)
+    rejectFriendRequest(user.friendRequestId)
       .then(refetch)
-      .then(() => this.setState({ loading: false, action: 2 }))
+      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
       .catch(() => this.setState({ loading: false }));
+  }
+
+  fbLink() {
+    const { user } = this.state;
+
+    if (user.fbId && user.fbId !== '') {
+      return (
+        <ProfileAction
+          onPress={() => Linking.openURL(`https://www.facebook.com/${user.fbId}`)}
+          label="Facebook profile"
+        />
+      );
+    }
+
+    return null;
+  }
+
+  twLink() {
+    const { user } = this.state;
+
+    if (user.twitterId && user.twitterId !== '') {
+      return (
+        <ProfileAction
+          onPress={() => Linking.openURL(`https://twitter.com//${user.twitterId}`)}
+          label="Twitter profile"
+        />
+      );
+    }
+
+    return null;
   }
 
   renderAction = () => (
@@ -356,21 +407,22 @@ class Profile extends Component {
   )
 
   render() {
-    const { data: { networkStatus, profile, error } } = this.props;
+    const { networkStatus, error } = this.props.data;
+    const { user } = this.state;
     const supporter = false;
 
     if (error) {
       return (
         <View style={{ marginTop: 100 }}>
           <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          <TouchableOpacity onPress={this.onRefreshClick}>
+          <TouchableOpacity onPress={this.state.refetch}>
             <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
           </TouchableOpacity>
         </View>
       );
     }
 
-    if (networkStatus === 1) {
+    if (!user.id && (networkStatus === 1 || networkStatus === 7)) {
       return (
         <View style={styles.loadingWrapper}>
           <Loading />
@@ -384,11 +436,11 @@ class Profile extends Component {
           notTouchable
           isSupporter
           size={145}
-          imageURI={profile.avatar}
+          imageURI={user.avatar}
           style={styles.profilePic}
         />
-        <Text style={styles.name}>{profile.firstName} {profile.lastName}</Text>
-        <Text style={[styles.lightText, styles.joinedDate]}>Joined <Date format="MMM Do YYYY">{profile.createdAt}</Date></Text>
+        <Text style={styles.name}>{user.firstName} {user.lastName}</Text>
+        <Text style={[styles.lightText, styles.joinedDate]}>Joined <Date format="MMM Do YYYY">{user.createdAt}</Date></Text>
         <View style={styles.activityWrapper}>
           <View style={styles.hexagon}>
             <View style={styles.experienceCountWrapper}>
@@ -396,7 +448,7 @@ class Profile extends Component {
                 source={require('@assets/icons/ic_camera_head.png')}
                 style={styles.sunRay}
               />
-              <Text style={styles.experienceCount}>{profile.totalExperiences}</Text>
+              <Text style={styles.experienceCount}>{user.totalExperiences}</Text>
             </View>
             <Text style={styles.activityLabel}>Experiences</Text>
           </View>
@@ -408,49 +460,45 @@ class Profile extends Component {
             <Text style={styles.activityLabel}>Supporter</Text>
           </View>
         </View>
-        {!this.isCurrentUser() && this.hasRelation() &&
+        {
+          !this.isCurrentUser() && this.hasRelation() &&
           <View>
             <View style={styles.connectionLabel}>
-              <Text style={styles.lightText}>This is how you know {profile.firstName}</Text>
+              <Text style={styles.lightText}>This is how you know {user.firstName}</Text>
               <TouchableOpacity>
                 <Image source={require('@assets/icons/icon_chevron_down.png')} style={styles.chevronDown} />
               </TouchableOpacity>
             </View>
             <View style={styles.connection}>
               <Relation
-                users={profile.relation}
+                users={user.relation}
                 avatarSize={45}
               />
             </View>
           </View>
         }
+
         {this.friendRelationButtion()}
-        {profile.fbId &&
-          <ProfileAction
-            onPress={() => Linking.openURL(`https://www.facebook.com/${profile.fbId}`)}
-            label="Facebook profile"
-          />}
-        {profile.twitterId && <ProfileAction
-          onPress={() => Linking.openURL(`https://twitter.com//${profile.twitterId}`)}
-          label="Twitter profile"
-        />}
+        {this.fbLink()}
+        {this.twLink()}
+
         <ProfileAction
+          label={`${user.totalOffered || 0} offered ${(user.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
           onPress={() => this.redirect(FEED_FILTER_OFFERED)}
-          label={`${profile.totalOffered || 0} offered ${(profile.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
         />
         <ProfileAction
+          label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
           onPress={() => this.redirect(FEED_FILTER_WANTED)}
-          label={`${profile.totalAsked || 0} ${(profile.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
         />
         <ProfileAction
-          label={`${profile.totalComments || 0} ride ${(profile.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
+          label={`${user.totalComments || 0} ride ${(user.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
         />
         <ProfileAction
-          label={`${profile.totalGroups || 0} ${(profile.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
+          label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
           onPress={() => this.redirect('groups')}
         />
         <ProfileAction
-          label={`${profile.totalFriends || 0} ${(profile.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
+          label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
           onPress={() => this.redirect('friends')}
         />
       </LinearGradient>
@@ -461,7 +509,14 @@ class Profile extends Component {
 Profile.propTypes = {
   id: PropTypes.number.isRequired,
   data: PropTypes.shape({
-    profile: PropTypes.object,
+    profile: PropTypes.shape({
+      id: PropTypes.number,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    networkStatus: PropTypes.number.isRequired,
+    refetch: PropTypes.func.isRequired,
+    error: PropTypes.object,
   }).isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.object,
@@ -469,7 +524,9 @@ Profile.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
   }).isRequired,
   addFriend: PropTypes.func.isRequired,
   cancelFriendRequest: PropTypes.func.isRequired,

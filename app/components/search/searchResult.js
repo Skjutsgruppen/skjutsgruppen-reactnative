@@ -115,7 +115,7 @@ class SearchResult extends Component {
     }
 
     if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('UserProfile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: detail });
     }
   };
 

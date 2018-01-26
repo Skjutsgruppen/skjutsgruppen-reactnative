@@ -250,7 +250,7 @@ class NewsDetail extends Component {
   onProfilePress = (id) => {
     const { navigation } = this.props;
 
-    navigation.navigate('UserProfile', { profileId: id });
+    navigation.navigate('Profile', { profileId: id });
   }
 
   onSubmit = () => {

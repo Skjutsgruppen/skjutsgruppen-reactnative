@@ -61,18 +61,18 @@ const styles = StyleSheet.create({
 class Participants extends Component {
   constructor(props) {
     super(props);
-    this.state = { showFofModal: false };
+    this.state = { showFoFModal: false };
   }
 
   onPress = (userId) => {
     const { navigation } = this.props;
 
-    this.setState({ showFofModal: false });
-    navigation.navigate('UserProfile', { profileId: userId });
+    this.setState({ showFoFModal: false });
+    navigation.navigate('Profile', { profileId: userId });
   }
 
   setModalVisibility = (show) => {
-    this.setState({ showFofModal: show });
+    this.setState({ showFoFModal: show });
   }
 
   renderModal() {
@@ -84,7 +84,7 @@ class Participants extends Component {
         offset={0}
         onPress={this.onPress}
         setModalVisibility={this.setModalVisibility}
-        showFofModal={this.state.showFofModal}
+        showFoFModal={this.state.showFoFModal}
       />
     );
   }
@@ -129,7 +129,7 @@ class Participants extends Component {
               </View>
             </View>
           </TouchableOpacity>
-          {this.state.showFofModal && this.renderModal()}
+          {this.state.showFoFModal && this.renderModal()}
         </View>
       );
     }
@@ -181,7 +181,7 @@ class Participants extends Component {
             </View>
           </View>
         </TouchableOpacity>
-        {this.state.showFofModal && this.renderModal()}
+        {this.state.showFoFModal && this.renderModal()}
       </View>
     );
   }

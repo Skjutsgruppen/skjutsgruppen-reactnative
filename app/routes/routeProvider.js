@@ -1,16 +1,18 @@
 import { StackNavigator, TabNavigator } from 'react-navigation';
-
 import Splash from '@screens/Splash';
+
 import Offer from '@screens/Offer';
 import Ask from '@screens/Ask';
-
 import Group from '@screens/group/Group';
+import Experience from '@screens/Experience';
+
+import TripDetail from '@screens/TripDetail';
+import NewsDetail from '@screens/NewsDetail';
 import GroupDetail from '@screens/group/GroupDetail';
+import ExperienceDetail from '@screens/ExperienceDetail';
+
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
-
-import NewsDetail from '@screens/NewsDetail';
-import TripDetail from '@screens/TripDetail';
 
 import OnBoardingFirst from '@screens/auth/onboarding/first';
 import OnBoardingSecond from '@screens/auth/onboarding/second';
@@ -25,35 +27,31 @@ import EmailVerified from '@screens/auth/email/Verified';
 
 import LoginMethod from '@screens/auth/login/Method';
 import LoginViaEmail from '@screens/auth/login/Email';
+import ChangePassword from '@screens/profile/ChangePassword';
 
 import AddPhoto from '@screens/auth/AddPhoto';
 import SendText from '@screens/auth/sms/SendText';
 import MobileVerified from '@screens/auth/sms/MobileVerified';
 import SearchResult from '@screens/Search';
-import UserProfile from '@screens/profile/UserProfile';
-import ChangePassword from '@screens/profile/ChangePassword';
+
+import Profile from '@screens/profile/Profile';
+import EditProfile from '@screens/profile/EditProfile';
 import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
 import UserExperiences from '@screens/profile/UserExperiences';
 
 import Map from '@screens/Map';
+import Route from '@screens/Route';
+
 import SingleNotification from '@screens/notification/List';
 import SearchNotification from '@screens/notification/Search';
-
-import Route from '@screens/Route';
 
 import Add from '@screens/tab/add';
 import Feed from '@screens/tab/feed';
 import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
-import Support from '@screens/tab/support';
 import Garden from '@screens/tab/garden';
-
-import Experience from '@screens/Experience';
-import ExperienceDetail from '@screens/ExperienceDetail';
-
-import EditProfile from '@screens/profile/EditProfile';
 
 const TabRoutes = {
   Feed: {
@@ -103,6 +101,20 @@ const Tab = TabNavigator(TabRoutes,
 export const Routes = {
   Splash: { screen: Splash },
 
+  Offer: { screen: Offer },
+  Ask: { screen: Ask },
+  Experience: { screen: Experience },
+  Group: { screen: Group },
+
+  TripDetail: { screen: TripDetail, path: 'trip/:id' },
+  NewsDetail: { screen: NewsDetail, path: 'news/:id' },
+  GroupDetail: { screen: GroupDetail, path: 'group/:id' },
+  ExperienceDetail: { screen: ExperienceDetail },
+
+  SearchGroup: { screen: SearchGroup, path: 'search/:query' },
+  ExploreGroup: { screen: ExploreGroup },
+  SearchResult: { screen: SearchResult },
+
   OnBoardingFirst: { screen: OnBoardingFirst },
   OnBoardingSecond: { screen: OnBoardingSecond },
   OnBoardingThird: { screen: OnBoardingThird },
@@ -119,36 +131,22 @@ export const Routes = {
 
   LoginMethod: { screen: LoginMethod },
   LoginViaEmail: { screen: LoginViaEmail },
+  ChangePassword: { screen: ChangePassword },
 
   Map: { screen: Map },
   Route: { screen: Route },
-  Experience: { screen: Experience },
 
   Tab: { screen: Tab },
-  Offer: { screen: Offer },
-  Ask: { screen: Ask },
 
-  TripDetail: { screen: TripDetail, path: 'trip/:id' },
-  NewsDetail: { screen: NewsDetail, path: 'news/:id' },
-
-  Group: { screen: Group },
-  GroupDetail: { screen: GroupDetail, path: 'group/:id' },
-  SearchGroup: { screen: SearchGroup, path: 'search/:query' },
-  ExploreGroup: { screen: ExploreGroup },
-
-  SearchResult: { screen: SearchResult },
-
-  UserProfile: { screen: UserProfile },
+  Profile: { screen: Profile },
   EditProfile: { screen: EditProfile },
-  ChangePassword: { screen: ChangePassword },
   UserGroups: { screen: UserGroups },
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
   UserExperiences: { screen: UserExperiences },
+
   SingleNotification: { screen: SingleNotification },
   SearchNotification: { screen: SearchNotification },
-  ExperienceDetail: { screen: ExperienceDetail },
-  Support: { screen: Support },
 };
 
 export const AppNavigator = StackNavigator(Routes, {
