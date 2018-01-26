@@ -2,8 +2,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
-import client from '@services/apollo';
-import { PROFILE_QUERY } from '@services/apollo/profile';
+import { increaseProfileExperience } from '@services/apollo/dataSync';
 
 const EXPERIENCE_QUERY = gql`
 mutation experience(
@@ -322,27 +321,9 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
             return row;
           });
 
-          try {
-            if (!repeated) {
-              const myProfile = client.readQuery(
-                {
-                  query: PROFILE_QUERY,
-                  variables: { id: param.userId },
-                },
-              );
-              myProfile.profile.totalExperiences += 1;
-              client.writeQuery(
-                {
-                  query: PROFILE_QUERY,
-                  data: myProfile,
-                  variables: { id: param.userId },
-                },
-              );
-            }
-          } catch (err) {
-            console.warn(err);
+          if (!repeated) {
+            increaseProfileExperience(param.userId);
           }
-          
 
           rows = [newExperience].concat(rows);
 
