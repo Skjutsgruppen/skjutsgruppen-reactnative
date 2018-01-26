@@ -53,7 +53,7 @@ FBLink.propTypes = {
 FBLink.defaultProps = {
   profile: {},
   onPress: PropTypes.func.isRequired,
-  label: '',
+  label: null,
 };
 
 

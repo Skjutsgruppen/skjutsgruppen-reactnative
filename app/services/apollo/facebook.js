@@ -24,6 +24,7 @@ mutation getUserByFbId($id: String!) {
       totalAsked
       totalComments
       totalExperiences
+      createdAt
     }
   }
 }
@@ -59,6 +60,7 @@ mutation getUserByEmail($email: String!) {
       totalAsked
       totalComments
       totalExperiences
+      createdAt
     }
   }
 }
@@ -93,6 +95,7 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       totalAsked
       totalComments
       totalExperiences
+      createdAt
     }
   }
 }

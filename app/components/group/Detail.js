@@ -150,13 +150,13 @@ class Detail extends PureComponent {
 
   onCommentPress = (id) => {
     const { navigation } = this.props;
-    navigation.navigate('UserProfile', { profileId: id });
+    navigation.navigate('Profile', { profileId: id });
   }
 
   onPress = () => {
     const { navigation, group } = this.props;
 
-    navigation.navigate('UserProfile', { profileId: group.User.id });
+    navigation.navigate('Profile', { profileId: group.User.id });
   }
 
   onMapPress = () => {

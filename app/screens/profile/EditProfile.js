@@ -13,7 +13,7 @@ import Connect from '@components/facebook/connect';
 import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
-import { withProfile } from '@services/apollo/profile';
+import { withAccount } from '@services/apollo/profile';
 import { withUpdateProfile } from '@services/apollo/auth';
 import { withFacebookConnect } from '@services/apollo/facebook';
 
@@ -513,7 +513,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default compose(
-  withProfile,
+  withAccount,
   withUpdateProfile,
   withFacebookConnect,
   connect(mapStateToProps, mapDispatchToProps),

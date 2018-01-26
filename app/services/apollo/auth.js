@@ -5,9 +5,6 @@ const LOGIN_QUERY = gql`
 mutation login($username: String!, $password:String!) {
   login(input : {username: $username, password: $password}) {
     token,
-    status,
-    error,
-    message
     User {
       id
       firstName
@@ -24,7 +21,11 @@ mutation login($username: String!, $password:String!) {
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
       totalFriends
+      relationshipType 
+      friendRequestId
+      createdAt
     }
   }
 }
@@ -40,9 +41,6 @@ const REGISTER_QUERY = gql`
 mutation register($email: String!, $verified:Boolean) {
   register(email: $email, verified:$verified) {
     token,
-    status,
-    error,
-    message
     User {
       id
       firstName
@@ -59,7 +57,11 @@ mutation register($email: String!, $verified:Boolean) {
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
       totalFriends
+      relationshipType 
+      friendRequestId
+      createdAt
     }  
   }
 }
@@ -108,7 +110,11 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
       totalFriends
+      relationshipType 
+      friendRequestId
+      createdAt
     }
   }
 }
@@ -162,6 +168,11 @@ mutation {
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
+      totalFriends
+      relationshipType 
+      friendRequestId
+      createdAt
     }
   }
 } 
@@ -193,7 +204,11 @@ mutation changePassword($oldPassword: String, $newPassword: String){
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
       totalFriends
+      relationshipType 
+      friendRequestId
+      createdAt
     }
   }
 }
