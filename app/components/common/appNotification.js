@@ -39,22 +39,20 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
     return null;
   }
 
-  let imgIcon = null;
+  let imgIcon = image;
+  let imageStyle = { marginRight: 12 };
 
   if (type === 'image') {
     imgIcon = { uri: image };
-  } else {
-    imgIcon = image;
+    imageStyle = { ...styles.image };
   }
 
   return (
     <View style={[styles.wrapper, style]}>
       <View style={styles.content}>
-        <Image source={imgIcon} style={styles.image} />
-        <View>
-          {
-            name !== '' && <Text style={[styles.text, styles.bold]}>{name}</Text>
-          }
+        <Image source={imgIcon} style={imageStyle} />
+        <View style={{ flex: 1 }}>
+          {name !== '' && <Text style={[styles.text, styles.bold]}>{name}</Text>}
           <Text style={styles.text}>{message}</Text>
         </View>
       </View>

@@ -67,7 +67,7 @@ class GroupFeed extends Component {
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      navigation.navigate('ExperienceScreen', { experience: detail });
+      navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
 

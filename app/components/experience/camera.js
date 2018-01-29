@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Image,
-  StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -193,10 +192,6 @@ class Cam extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar
-          animated
-          hidden
-        />
         <FloatingNavbar handleBack={this.props.onBack} />
         <Image source={CameraHead} style={styles.cameraHead} />
         <View style={styles.viewFinder}>

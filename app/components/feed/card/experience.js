@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
 const Experience = ({ experience, onPress, wrapperStyle }) => {
   let image = null;
 
-  if (experience.photo) {
-    image = (<Image source={{ uri: experience.photo }} style={styles.img} />);
+  if (experience.photoUrl) {
+    image = (<Image source={{ uri: experience.photoUrl }} style={styles.img} />);
   }
 
   return (

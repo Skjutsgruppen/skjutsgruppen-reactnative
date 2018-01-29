@@ -42,8 +42,8 @@ class List extends PureComponent {
   }
 
   componentWillMount() {
-    const { subscribeToNewComments, id } = this.props;
-    subscribeToNewComments({ id });
+    const { subscribeToNewComments, id, user } = this.props;
+    subscribeToNewComments({ id, userId: user.id });
   }
 
   componentWillReceiveProps({ comments, ownerId, user }) {
@@ -197,7 +197,6 @@ List.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
 };
-
 const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(withNavigation, connect(mapStateToProps))(List);
