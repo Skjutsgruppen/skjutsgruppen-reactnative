@@ -9,6 +9,7 @@ import Button from '@components/experience/button';
 import { compose } from 'react-apollo';
 import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
 import PropTypes from 'prop-types';
+import Info from '@components/experience/detail/info';
 
 const styles = StyleSheet.create({
   flex: {
@@ -77,27 +78,28 @@ class AcceptExperience extends Component {
   }
 
   redirect = () => {
-    const { navigation } = this.props;
 
-    navigation.goBack();
   }
 
-  experienceTagAction = (status) => {
-    const { id } = this.state.experience;
-    const { refresh, acceptExperience, rejectExperience } = this.props;
+  accept = () => {
+    const { experience } = this.state;
 
-    if (status) {
-      this.setState({ actionLoading: true }, () => acceptExperience(id)
-        .then(refresh)
-        .then(() => this.setState({ actionLoading: false }))
+    const { onAccept, acceptExperience } = this.props;
+
+    this.setState({ actionLoading: true },
+      () => acceptExperience(experience.id)
+        .then(onAccept)
         .catch(() => this.setState({ actionLoading: false })));
-    } else {
-      this.setState({ actionLoading: true }, () => rejectExperience(id)
-        .then(refresh)
-        .then(() => this.setState({ actionLoading: false }))
-        .then(this.redirect())
+  }
+
+  reject = () => {
+    const { experience } = this.state;
+    const { onReject, rejectExperience } = this.props;
+
+    this.setState({ actionLoading: true },
+      () => rejectExperience(experience.id)
+        .then(onReject)
         .catch(() => this.setState({ actionLoading: false })));
-    }
   }
 
   renderTagActionButton = () => {
@@ -112,18 +114,8 @@ class AcceptExperience extends Component {
 
     return (
       <View style={styles.experienceTagActions}>
-        <Button onPress={() => this.experienceTagAction(true)} label="Yes!" />
-        <Button onPress={() => this.experienceTagAction(false)} label="No" />
-      </View>
-    );
-  }
-
-  renderTagRejectedButton = () => {
-    const { navigation } = this.props;
-
-    return (
-      <View style={styles.experienceTagActions}>
-        <Button onPress={navigation.goBack()} label="Proceed" />
+        <Button onPress={this.accept} label="Yes!" />
+        <Button onPress={this.reject} label="No" />
       </View>
     );
   }
@@ -131,22 +123,21 @@ class AcceptExperience extends Component {
   renderParticipants = () => {
     const { navigation } = this.props;
     const { experience } = this.state;
-    if (!experience.Trip) {
+    if (!experience.Participants) {
       return null;
     }
 
-    const going = experience.Participants.filter(row => row.status === 'accepted');
-    return going.map((row, index) => {
+    return experience.Participants.map((row, index) => {
       let separator = ' ';
-      if (index === (going.length - 2)) {
+      if (index === (experience.Participants.length - 2)) {
         separator = ' and ';
-      } else if (index < (going.length - 1)) {
+      } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
       }
 
       return (<Text key={row.User.id}>
         <Text
-          onPress={() => navigation.navigate('UserProfile', { profileId: row.User.id })}
+          onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
           style={styles.name}
         >
           {row.User.firstName}
@@ -158,13 +149,14 @@ class AcceptExperience extends Component {
 
   renderTripInfo = () => {
     const { experience } = this.state;
+    const { navigation } = this.props;
 
-    if (!experience.Trip) {
+    if (!experience.Participants) {
       return null;
     }
 
     return (
-      <Text onPress={this.redirectTrip}>
+      <Text onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
         <Text>
           went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
           . <Text style={styles.name}>See their trip here</Text>
@@ -177,8 +169,8 @@ class AcceptExperience extends Component {
     const { experience } = this.state;
     let image = null;
 
-    if (experience.photo) {
-      image = (<CapturedImage imageURI={experience.photo} />);
+    if (experience.photoUrl) {
+      image = (<CapturedImage imageURI={experience.photoUrl} />);
     }
 
     const { loading } = this.props;
@@ -191,21 +183,7 @@ class AcceptExperience extends Component {
         <ScrollView style={styles.flex}>
           {image}
           <View style={styles.infoSection}>
-            <View style={styles.block}>
-              <Text>Participants</Text>
-            </View>
-            <View style={styles.block}>
-              {loading && <Loading />}
-              <Text>
-                {this.renderParticipants()}
-                {this.renderTripInfo()}
-              </Text>
-            </View>
-            <View style={styles.block}>
-              <Text>
-                {experience.description}
-              </Text>
-            </View>
+            <Info experience={experience} loading={loading} />
           </View>
         </ScrollView>
         {this.renderTagActionButton()}
@@ -222,7 +200,8 @@ AcceptExperience.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
-  refresh: PropTypes.func.isRequired,
+  onAccept: PropTypes.func.isRequired,
+  onReject: PropTypes.func.isRequired,
   experience: PropTypes.shape({
     Participants: PropTypes.array,
     Trip: PropTypes.object,

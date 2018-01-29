@@ -18,12 +18,13 @@ import {
   NOTIFICATION_TYPE_FRIEND_REQUEST,
   NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
-  NOTIFICATION_TYPE_EXPERIENCE_VOID,
+  NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
   NOTIFICATION_TYPE_EXPERIENCE_SHARED,
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
   NOTIFICATION_TYPE_TRIP_SHARED,
   NOTIFICATION_TYPE_TRIP_SHARED_GROUP,
   NOTIFICATION_CHARACTER_COUNT,
+  NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -305,7 +306,7 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceVoid = ({ Notifiable, createdAt }) => {
+  experienceRejected = ({ Notifiable, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
         photo: Notifiable.photo,
@@ -313,6 +314,22 @@ class Item extends PureComponent {
         date: createdAt,
         noAvatarAction: true,
         experience: {},
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+      });
+    }
+
+    return null;
+  }
+
+  experienceRemoved = ({ Notifiable, createdAt, id }) => {
+    if (Notifiable) {
+      return this.item({
+        photo: Notifiable.photo,
+        text: trans('message.one_participant_removed'),
+        date: createdAt,
+        noAvatarAction: true,
+        experience: {},
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
@@ -325,9 +342,10 @@ class Item extends PureComponent {
         userId: User.id,
         photo: Notifiable.photo,
         experience: Notifiable,
+        noAvatarAction: true,
         text: trans('message.your_experience_has_been_published'),
         date: createdAt,
-        onPress: () => this.redirect(id, 'ExperienceScreen', { experience: Notifiable }),
+        onPress: () => this.redirect(id, 'TripDetail', { trip: Notifiable.Trip }),
       });
     }
 
@@ -342,7 +360,7 @@ class Item extends PureComponent {
         photo: User.avatar,
         text: trans('message.shared_experience_with_you'),
         date: createdAt,
-        onPress: () => this.redirect(id, 'ExperienceScreen', { experience: Notifiable }),
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
@@ -367,32 +385,20 @@ class Item extends PureComponent {
       .catch(() => this.setState({ loading: false }));
   }
 
-  experienceTagged = ({ User, Notifiable }) => (
-    <TouchableOpacity
-      onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}
-    >
-      <View style={styles.list}>
-        <View style={styles.flexRow}>
-          <View style={styles.profilePicWrapper}>
-            {this.renderPic(User.avatar, User.id)}
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.bold}>{User.firstName} </Text>
-            <Text style={[styles.bold]}>
-              {trans('message.tagged_you_in_an_experience')}
-            </Text>
-          </View>
-        </View>
-        {this.state.loading ?
-          <Loading /> :
-          this.renderAction(
-            Notifiable.id,
-            this.acceptTagRequest,
-            this.rejectTagRequest,
-          )}
-      </View>
-    </TouchableOpacity>
-  );
+  experienceTagged = ({ Notifiable, User, createdAt, id }) => {
+    if (Notifiable) {
+      return this.item({
+        user: User.firstName,
+        photo: User.avatar,
+        userId: User.id,
+        text: `${trans('message.tagged_you_in_an_experience')}`,
+        date: createdAt,
+        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+      });
+    }
+
+    return null;
+  }
 
   tripShared = ({ Notifiable, User, createdAt }) => {
     let type = null;
@@ -590,7 +596,7 @@ class Item extends PureComponent {
     let profileImage = null;
 
     profileImage = (
-      <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}>
+      <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceDetail', { experience: Notifiable })}>
         <Image source={ExperienceIcon} style={styles.profilePic} />
       </TouchableOpacity>
     );
@@ -638,8 +644,12 @@ class Item extends PureComponent {
       message = this.experienceTagged(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_VOID) {
-      message = this.experienceVoid(notification);
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_REJECTED) {
+      message = this.experienceRejected(notification);
+    }
+
+    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_REMOVED) {
+      message = this.experienceRemoved(notification);
     }
 
     if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_SHARED) {

@@ -67,7 +67,7 @@ const GroupFeedItem = ({ groupFeed, onPress, setModalVisibility }) => {
             onPress={() => onPress(FEEDABLE_EXPERIENCE, groupFeed.Experience)}
             style={styles.experience}
           >
-            <Image source={{ uri: groupFeed.Experience.photo }} style={styles.image} />
+            <Image source={{ uri: groupFeed.experience.photoUrl }} style={styles.image} />
           </TouchableOpacity>
         </View>
       </View>

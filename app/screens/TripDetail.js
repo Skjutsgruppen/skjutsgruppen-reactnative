@@ -21,7 +21,8 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import About from '@components/common/about';
 import { getDate } from '@config';
-import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_PUBLISHED, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
+import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -191,6 +192,21 @@ const styles = StyleSheet.create({
   closeModal: {
     padding: 16,
   },
+  experienceWrapper: {
+    flexDirection: 'row',
+    marginHorizontal: 24,
+    marginVertical: 16,
+  },
+  experienceIconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 48,
+    marginRight: 16,
+  },
+  experienceTitle: {
+    color: Colors.text.blue,
+    fontWeight: 'bold',
+  },
 });
 
 class TripDetail extends Component {
@@ -218,11 +234,14 @@ class TripDetail extends Component {
 
   componentWillMount() {
     const { navigation } = this.props;
-    const { notifier, trip } = navigation.state.params;
+    const { notifier, notificationMessage, trip } = navigation.state.params;
     let initialState = { trip };
 
     if (notifier) {
-      initialState = { ...initialState, ...{ notification: true, notifierOffset: 70 } };
+      initialState = {
+        ...initialState,
+        ...{ notifier, notificationMessage, notification: true, notifierOffset: 70 },
+      };
     }
 
     this.setState(initialState);
@@ -230,7 +249,25 @@ class TripDetail extends Component {
 
   componentWillReceiveProps({ trip, loading }) {
     if (!loading && trip.id) {
-      this.setState({ trip, loading });
+      if (trip.experienceStatus === EXPERIENCE_STATUS_PENDING) {
+        const notifier = {
+          firstName: '',
+          avatar: ExperienceIcon,
+          type: 'icon',
+        };
+
+        const notificationMessage = 'Someone has already created an experience for this ride';
+        this.setState({
+          trip,
+          loading,
+          notificationMessage,
+          notifier,
+          notification: true,
+          notifierOffset: 70,
+        });
+      } else {
+        this.setState({ trip, loading });
+      }
     }
   }
 
@@ -377,6 +414,21 @@ class TripDetail extends Component {
     });
   }
 
+  canCreateExperience = () => {
+    const { trip } = this.state;
+    const { experienceStatus, Participants, isParticipant } = trip;
+
+    if (experienceStatus) {
+      return (
+        Participants.count > 1
+        && isParticipant
+        && experienceStatus === EXPERIENCE_STATUS_CAN_CREATE
+      );
+    }
+
+    return false;
+  }
+
   renderButton = () => {
     const { loading } = this.state;
     const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
@@ -389,7 +441,6 @@ class TripDetail extends Component {
   renderModal() {
     const { navigation } = this.props;
     const { trip, modalVisible } = this.state;
-    const canCreateExperience = trip.totalComments > 0 && trip.isParticipant;
 
     return (
       <Modal
@@ -401,7 +452,7 @@ class TripDetail extends Component {
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
             {
-              canCreateExperience &&
+              this.canCreateExperience() &&
               <TouchableOpacity
                 style={styles.action}
                 onPress={() => {
@@ -466,18 +517,28 @@ class TripDetail extends Component {
     const { navigation } = this.props;
     const { trip } = this.state;
 
-    if (
-      trip.totalComments < 1 || !trip.isParticipant
-      || !this.isTripStarted() || !this.isTripEnded()
-    ) {
-      return null;
+    if (this.canCreateExperience() && this.isTripStarted() && !this.isTripEnded()) {
+      return (
+        <MakeExperience
+          handlePress={() => navigation.navigate('Experience', { trip })}
+        />
+      );
     }
 
-    return (
-      <MakeExperience
-        handlePress={() => navigation.navigate('Experience', { trip })}
-      />
-    );
+    if (trip.experienceStatus === EXPERIENCE_STATUS_PENDING) {
+      return (
+        <View style={styles.experienceWrapper}>
+          <View style={styles.experienceIconWrapper}>
+            <Image source={ExperienceIcon} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text>Someone has already created an experience for this ride.</Text>
+          </View>
+        </View>
+      );
+    }
+
+    return null;
   }
 
   renderShareModal() {
@@ -499,10 +560,34 @@ class TripDetail extends Component {
     );
   }
 
+  renderAppNotification = () => {
+    const { notification, notifier, notificationMessage } = this.state;
+
+    if (notification) {
+      return (
+        <AppNotification
+          image={notifier.avatar}
+          type={notifier.type || 'image'}
+          name={notifier.firstName}
+          message={notificationMessage}
+          handleClose={this.onCloseNotification}
+        />
+      );
+    }
+
+    return null;
+  }
+
   render() {
-    const { navigation } = this.props;
-    const { notifier, notificationMessage } = navigation.state.params;
-    const { error, success, notification, notifierOffset, trip, loading } = this.state;
+    const { error, success, notifierOffset, trip, loading } = this.state;
+
+    if (!trip.User) {
+      return (
+        <View style={styles.wrapper}>
+          <Loading />
+        </View>
+      );
+    }
 
     let profileImage = null;
     if (trip.User.avatar) {
@@ -543,18 +628,13 @@ class TripDetail extends Component {
 
     return (
       <View style={styles.wrapper}>
+        {this.renderAppNotification()}
         <FloatingNavbar
           handleBack={this.goBack}
           showShare
           handleShare={this.onSharePress}
           offset={notifierOffset}
         />
-        {notification && <AppNotification
-          image={notifier.avatar}
-          name={notifier.firstName}
-          message={notificationMessage}
-          handleClose={this.onCloseNotification}
-        />}
         <ScrollView>
           <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
           <TouchableOpacity
@@ -682,7 +762,11 @@ class TripDetail extends Component {
           </View>
           <Toast message={error} type="error" />
           <Toast message={success} type="success" />
-          <TripExperiences title="Experiences!" tripId={trip.id} />
+          {
+            (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
+            <TripExperiences title="Experiences!" tripId={trip.id} />
+          }
+
           {this.renderExperienceButton()}
           <View style={styles.dividerWrapper}>
             <View style={styles.horizontalDivider} />
