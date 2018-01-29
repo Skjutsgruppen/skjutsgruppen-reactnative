@@ -4,6 +4,8 @@ import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
+import { withUnfriend } from '@services/apollo/friend';
+import { Loading } from '@components/common';
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -44,6 +46,13 @@ const styles = StyleSheet.create({
   pinkText: {
     color: Colors.text.pink,
   },
+  errorText: {
+    textAlign: 'center',
+    color: Colors.text.red,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
 });
 
 class UserFriendsList extends Component {
@@ -53,6 +62,9 @@ class UserFriendsList extends Component {
     this.state = {
       confirmModalVisibility: false,
       friend: {},
+      loading: false,
+      refetch: null,
+      error: null,
     };
   }
 
@@ -61,8 +73,15 @@ class UserFriendsList extends Component {
     subscribeToNewFriend({ userId: id });
   }
 
+  componentWillReceiveProps({ friends }) {
+    const { loading, refetch } = friends;
+    if (!loading) {
+      this.setState({ loading, refetch });
+    }
+  }
+
   setConfirmModalVisibility = (visibility) => {
-    this.setState({ confirmModalVisibility: visibility });
+    this.setState({ confirmModalVisibility: visibility, error: null });
   }
 
   handleRemovePress = (friend) => {
@@ -70,9 +89,79 @@ class UserFriendsList extends Component {
     this.setState({ friend });
   }
 
+  removeFriend = () => {
+    const { unfriend } = this.props;
+    const { friend, refetch } = this.state;
+
+    this.setState({ loading: true }, () => {
+      unfriend(friend.id)
+        .then(() => this.setState({ loading: false }))
+        .then(() => this.setConfirmModalVisibility(false))
+        .then(refetch)
+        .catch(error => this.setState({ loading: false, error }));
+    });
+  }
+
+  renderModalContent = () => {
+    const { friend, loading, error } = this.state;
+
+    if (loading) {
+      return (
+        <View style={styles.modalContent}>
+          <Loading />
+        </View>
+        );
+    }
+
+    return (
+      <View style={styles.modalContent}>
+        {error !== null && <Text style={styles.errorText}>Error removing friend!</Text>}
+        <Text style={styles.modalTitle}>
+          Are you sure you want to remove
+          <Text style={styles.boldText}> {friend.firstName} {friend.lastName} </Text>
+          from your friends list?
+        </Text>
+        <View style={styles.modalActionWrapper}>
+          <TouchableHighlight
+            style={styles.modalAction}
+            underlayColor="#f0f0f0"
+            onPress={this.removeFriend}
+          >
+            <Text style={[styles.actionLabel, styles.pinkText]}>
+              {error !== null ? 'Retry' : 'Remove'}
+            </Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.modalAction}
+            underlayColor="#f0f0f0"
+            onPress={() => this.setConfirmModalVisibility(false)}
+          >
+            <Text style={styles.actionLabel}>Cancel</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
+  }
+
+  renderModal() {
+    const { confirmModalVisibility } = this.state;
+
+    return (
+      <Modal
+        transparent
+        visible={confirmModalVisibility}
+        animationType={'fade'}
+        onRequestClose={() => this.setConfirmModalVisibility(false)}
+      >
+        <View style={styles.modalContainer}>
+          {this.renderModalContent()}
+        </View>
+      </Modal>
+    );
+  }
+
   render() {
     const { onPress, friends, editable } = this.props;
-    const { friend } = this.state;
 
     return (
       <View>
@@ -85,6 +174,7 @@ class UserFriendsList extends Component {
               editable={editable}
               onPress={onPress}
               handleRemovePress={(user) => { this.handleRemovePress(user); }}
+              error={this.state.error}
             />
           )}
           fetchMoreOptions={{
@@ -100,37 +190,7 @@ class UserFriendsList extends Component {
             },
           }}
         />
-        <Modal
-          transparent
-          visible={this.state.confirmModalVisibility}
-          animationType={'slide'}
-          onRequestClose={() => this.setConfirmModalVisibility(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                Are you sure you want to remove {friend.firstName} {friend.lastName}
-                from your friends list?
-              </Text>
-              <View style={styles.modalActionWrapper}>
-                <TouchableHighlight
-                  style={styles.modalAction}
-                  underlayColor="#f0f0f0"
-                  onPress={() => this.setConfirmModalVisibility(false)}
-                >
-                  <Text style={[styles.actionLabel, styles.pinkText]}>Confirm</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  style={styles.modalAction}
-                  underlayColor="#f0f0f0"
-                  onPress={() => this.setConfirmModalVisibility(false)}
-                >
-                  <Text style={styles.actionLabel}>Cancel</Text>
-                </TouchableHighlight>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        {this.renderModal()}
       </View>
     );
   }
@@ -142,6 +202,7 @@ UserFriendsList.propTypes = {
     count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  unfriend: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   subscribeToNewFriend: PropTypes.func.isRequired,
   editable: PropTypes.bool,
@@ -151,4 +212,4 @@ UserFriendsList.defaultProps = {
   editable: false,
 };
 
-export default UserFriendsList;
+export default withUnfriend(UserFriendsList);

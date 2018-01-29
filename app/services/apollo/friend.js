@@ -77,7 +77,9 @@ query friends($id:Int, $limit: Int, $offset: Int){
       rows {
         id 
         firstName
+        lastName
         avatar
+        inPhoneContact
       }
       count
      } 
@@ -170,4 +172,15 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     }
     return { bestFriends: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
+});
+
+const UNFRIEND_QUERY = gql`
+  mutation unfriend($id:ID){
+    unfriend(id:$id)
+  }
+`;
+export const withUnfriend = graphql(UNFRIEND_QUERY, {
+  props: ({ mutate }) => ({
+    unfriend: id => mutate({ variables: { id } }),
+  }),
 });
