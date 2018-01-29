@@ -334,6 +334,7 @@ mutation createTrip(
       mapPhoto
       totalComments
       duration
+      url
       ReturnTrip {
         id
         date
@@ -468,10 +469,32 @@ query trip($id: Int!){
       TripEnd {
         name
       }
+      Stops {
+        name
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      }
     }
     Recurring {
       id
       date
+      TripStart {
+        name
+      }
+      TripEnd {
+        name
+      }
+      Stops {
+        name
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      }
     }
   }
 }

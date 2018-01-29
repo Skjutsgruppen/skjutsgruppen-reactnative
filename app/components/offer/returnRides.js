@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_FILTER_WANTED } from '@config/constant';
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReturnRides = ({ avatar, trips, type }) => (
+const ReturnRides = ({ avatar, trips, type, onPress }) => (
   <View style={styles.returnRidesWrapper}>
     <Text style={styles.title}>Return rides:</Text>
     {
@@ -72,10 +72,10 @@ const ReturnRides = ({ avatar, trips, type }) => (
               ]}
             />
           </View>
-          <View style={styles.content}>
+          <TouchableOpacity style={styles.content} onPress={() => onPress(trip.id)}>
             <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
             <Date format="YYYY-MM-DD HH:mm">{trip.date}</Date>
-          </View>
+          </TouchableOpacity>
         </View>
       ))
     }
@@ -89,6 +89,7 @@ ReturnRides.propTypes = {
     date: PropTypes.string,
   })).isRequired,
   type: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 ReturnRides.defaultProps = {

@@ -310,6 +310,7 @@ query group($id: Int!){
       locality 
       membershipStatus
       totalParticipants
+      isAdmin
   }
 }
 `;
