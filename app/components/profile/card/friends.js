@@ -43,6 +43,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  errorLabel: {
+    color: Colors.text.red,
+    fontSize: 16,
+    fontWeight: '500',
+  },
 });
 
 class Friends extends Component {
@@ -81,12 +86,12 @@ class Friends extends Component {
             {profileImage}
             <View style={styles.nameWrapper}>
               <Text style={styles.name}>
-                {friend.firstName}
+                {friend.firstName} {friend.lastName}
               </Text>
             </View>
           </View>
           {
-            editable &&
+            editable && !friend.inPhoneContact &&
             <TouchableOpacity style={styles.action} onPress={() => handleRemovePress(friend)}>
               <Text style={styles.actionLabel}>Remove</Text>
             </TouchableOpacity>
