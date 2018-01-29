@@ -90,7 +90,7 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           rows = [newFeedItem].concat(rows);
 
           if (!repeated) {
-            increaseProfileComment(newFeedItem.User.id);
+            increaseProfileComment();
             increaseFeedCommentCount(variables.id);
           }
 
@@ -157,7 +157,7 @@ export const withNewsComment = graphql(GET_NEWS_COMMENTS_QUERY, {
         rows = [newFeedItem].concat(rows);
 
         if (!repeated) {
-          increaseProfileComment(newFeedItem.User.id);
+          increaseProfileComment();
           increaseFeedCommentCount(param.id);
         }
 

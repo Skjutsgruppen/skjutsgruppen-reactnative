@@ -37,7 +37,7 @@ export const withProfile = graphql(PROFILE_QUERY, {
   }),
 });
 
-const ACCOUNT_QUERY = gql`
+export const ACCOUNT_QUERY = gql`
 query account {
   account {
     id
