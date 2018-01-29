@@ -19,6 +19,8 @@ import AppNotification from '@components/common/appNotification';
 import About from '@components/common/about';
 import CostCard from '@components/common/costCard';
 import ProgressBar from '@components/common/progressBar';
+import CommentBox from '@components/comment/commentBox';
+import Retry from '@components/common/retry';
 
 export {
   Loading,
@@ -42,4 +44,6 @@ export {
   About,
   CostCard,
   ProgressBar,
+  CommentBox,
+  Retry,
 };

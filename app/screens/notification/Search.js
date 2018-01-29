@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, Text, TextInput } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
@@ -7,41 +9,38 @@ import SearchList from '@components/message/searchList';
 
 const styles = StyleSheet.create({
   header: {
-    padding: 24,
+    paddingHorizontal: 24,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
+    marginTop: 42,
   },
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 16,
+    height: 36,
+    marginVertical: 24,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 18,
     overflow: 'hidden',
   },
-  iconWrapper: {
-    height: 36,
-    width: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 18,
-  },
   searchIcon: {
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
     resizeMode: 'contain',
+    marginHorizontal: 16,
+    opacity: 0.5,
   },
   searchInput: {
-    fontSize: 14,
+    fontSize: 15,
     height: 36,
     flex: 1,
-    paddingLeft: 18,
     borderRadius: 18,
+    paddingLeft: 0,
+    marginRight: 16,
   },
   content: {
     flex: 1,
@@ -67,9 +66,13 @@ class MessageSearch extends PureComponent {
   render() {
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Search Messages</Text>
+        <LinearGradient colors={['#fff', '#ededf9']} style={styles.header}>
+          <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
           <View style={styles.searchInputWrapper}>
+            <Image
+              source={require('@assets/icons/ic_search.png')}
+              style={styles.searchIcon}
+            />
             <TextInput
               onChangeText={query => this.setState({ query })}
               placeholder="Search"
@@ -79,18 +82,8 @@ class MessageSearch extends PureComponent {
               autoFocus
               onSubmitEditing={this.searchMessages}
             />
-            <TouchableOpacity
-              style={styles.iconWrapper}
-              onPress={this.searchMessages}
-              disabled={this.state.query.length < 1}
-            >
-              <Image
-                source={require('@assets/icons/icon_search_blue.png')}
-                style={styles.searchIcon}
-              />
-            </TouchableOpacity>
           </View>
-        </View>
+        </LinearGradient>
         <View style={styles.content}>
           {
             this.state.searchQuery.length > 0 &&

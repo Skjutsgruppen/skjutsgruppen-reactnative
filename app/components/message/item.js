@@ -23,11 +23,13 @@ import {
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
   NOTIFICATION_TYPE_TRIP_SHARED,
   NOTIFICATION_TYPE_TRIP_SHARED_GROUP,
+  NOTIFICATION_CHARACTER_COUNT,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import Date from '@components/date';
 import { connect } from 'react-redux';
+import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -36,13 +38,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   lightText: {
     color: Colors.text.gray,
-  },
-  blueText: {
-    color: Colors.text.blue,
   },
   textWrap: {
     flex: 1,
@@ -69,19 +68,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
+  experienceIconWrapper: {
+    width: 46,
+    height: 46,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  experienceIcon: {
+    maxHeight: '100%',
+    maxWidth: '100%',
+    resizeMode: 'contain',
+  },
   profilePicWrapper: {
     flexDirection: 'row',
-    marginRight: 8,
+    marginRight: 16,
   },
   profilePic: {
-    width: 40,
-    height: 40,
+    width: 46,
+    height: 46,
     resizeMode: 'cover',
-    borderRadius: 20,
-    marginRight: 4,
+    borderRadius: 23,
   },
   time: {
     left: 'auto',
+    paddingLeft: 10,
   },
   actions: {
     flexDirection: 'row',
@@ -102,11 +112,6 @@ const styles = StyleSheet.create({
   },
   requestResultIcon: {
     marginTop: 3,
-  },
-  chevron: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
   },
 });
 
@@ -174,7 +179,7 @@ class Item extends PureComponent {
             {this.renderPic(User.avatar, User.id)}
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+            <Text>{User.firstName} </Text>
             <Text>
               wants to be your friend.
             </Text>
@@ -199,7 +204,7 @@ class Item extends PureComponent {
             {this.renderPic(User.avatar, User.id)}
           </View>
           <View style={{ flex: 1 }}>
-            <Text onPress={() => this.redirect(null, 'Profile', { profileId: User.id })} style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+            <Text onPress={() => this.redirect(null, 'Profile', { profileId: User.id })} style={styles.bold}>{User.firstName} </Text>
             <Text>
               wants to participate in your group
               <Text style={styles.bold}> {Notifiable.Group.name} </Text>
@@ -217,35 +222,37 @@ class Item extends PureComponent {
     </TouchableOpacity>
   );
 
-  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.list}>
-        <View style={styles.flexRow}>
-          <View style={styles.profilePicWrapper}>
-            {
-              experience
-                ? this.renderExperiencePic(photo, experience, noAvatarAction)
-                : this.renderPic(photo, userId)
-            }
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text>
+  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date }) => {
+    const { filters } = this.props;
+
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <View style={styles.list}>
+          <View style={styles.flexRow}>
+            <View style={styles.profilePicWrapper}>
+              {
+                experience
+                  ? this.renderExperiencePic(experience, noAvatarAction)
+                  : this.renderPic(photo, userId)
+              }
+            </View>
+            <View style={{ flex: 1 }}>
               {
                 user &&
-                <Text style={[styles.bold, styles.blueText]}>{user}</Text>
+                <Text>{user}</Text>
               }
-            </Text>
-            <Text>
-              {text}
-            </Text>
+              <Text style={[filters === 'new' && styles.bold]}>
+                {text}
+              </Text>
+            </View>
+          </View>
+          <View>
+            {<Text style={styles.time}><Date format="MMM DD">{date}</Date></Text>}
           </View>
         </View>
-        <View>
-          {<Text style={[styles.time, styles.bold]}><Date format="MMM DD">{date}</Date></Text>}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   memberRequest = ({ Notifiable, User, date, id }) => {
     if (Notifiable && Notifiable.gmrStatus === 'pending') {
@@ -370,8 +377,8 @@ class Item extends PureComponent {
             {this.renderPic(User.avatar, User.id)}
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
-            <Text>
+            <Text style={styles.bold}>{User.firstName} </Text>
+            <Text style={[styles.bold]}>
               {trans('message.tagged_you_in_an_experience')}
             </Text>
           </View>
@@ -393,8 +400,8 @@ class Item extends PureComponent {
     if (Notifiable) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
 
-      if (type.length > 17) {
-        type = `${type.slice(0, 17)} ...`;
+      if (type.length > NOTIFICATION_CHARACTER_COUNT) {
+        type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
       }
 
       return this.item({
@@ -450,8 +457,8 @@ class Item extends PureComponent {
       route = 'TripDetail';
       params = { trip: Notifiable, notifier: User, notificationMessage: trans('message.commented_on_this_ride') };
 
-      if (type && type.length > 17) {
-        type = `${type.slice(0, 17)} ...`;
+      if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
+        type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
       }
 
       itemFields = {
@@ -487,8 +494,8 @@ class Item extends PureComponent {
       route = 'TripDetail';
       params = { trip: Notifiable, notifier: User, notificationMessage: 'Shared this trip with you' };
 
-      if (type && type.length > 17) {
-        type = `${type.slice(0, 17)} ...`;
+      if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
+        type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
       }
     }
 
@@ -579,18 +586,21 @@ class Item extends PureComponent {
     return profileImage;
   }
 
-  renderExperiencePic = (photo, Notifiable, noAvatarAction) => {
+  renderExperiencePic = (Notifiable, noAvatarAction) => {
     let profileImage = null;
-    if (photo) {
-      profileImage = (
-        <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}>
-          <Image source={{ uri: photo }} style={styles.profilePic} />
-        </TouchableOpacity>
-      );
 
-      if (noAvatarAction) {
-        profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
-      }
+    profileImage = (
+      <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}>
+        <Image source={ExperienceIcon} style={styles.profilePic} />
+      </TouchableOpacity>
+    );
+
+    if (noAvatarAction) {
+      profileImage = (
+        <View style={styles.experienceIconWrapper}>
+          <Image source={ExperienceIcon} style={styles.experienceIcon} />
+        </View>
+      );
     }
 
     return profileImage;
