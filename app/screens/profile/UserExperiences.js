@@ -24,7 +24,7 @@ class UserExperience extends PureComponent {
 
   onPress = (type, experience) => {
     const { navigation } = this.props;
-    navigation.navigate('ExperienceScreen', { experience });
+    navigation.navigate('ExperienceDetail', { experience });
   }
 
   goBack = () => {

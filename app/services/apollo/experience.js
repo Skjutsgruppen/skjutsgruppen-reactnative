@@ -81,7 +81,9 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
       id
       createdAt
       description
-      photo
+      photoUrl
+      publishedStatus
+      userStatus
       User {
         id 
         firstName 
@@ -95,8 +97,8 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
 
 export const withMoreExperiences = graphql(MORE_EXPERIENCE_QUERY, {
   options: ({ exceptId, offset = 0, limit = PER_FETCH_LIMIT }) => ({
-    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
     variables: ({ offset, limit, exceptId }),
   }),
   props: ({
@@ -123,7 +125,9 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
       id
       createdAt
       description
-      photo
+      photoUrl
+      publishedStatus
+      userStatus
       User {
         id 
         firstName 
@@ -137,8 +141,8 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
 
 export const withTripExperiences = graphql(TRIP_EXPERIENCE_QUERY, {
   options: ({ tripId, offset = 0, limit = PER_FETCH_LIMIT }) => ({
-    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
     variables: ({ offset, limit, tripId }),
   }),
   props: ({
@@ -165,7 +169,9 @@ query getExperiences($limit: Int, $offset: Int) {
       id
       createdAt
       description
-      photo
+      photoUrl
+      publishedStatus
+      userStatus
       User {
         id 
         firstName 
@@ -179,8 +185,8 @@ query getExperiences($limit: Int, $offset: Int) {
 
 export const withGetExperiences = graphql(GET_EXPERIENCE_QUERY, {
   options: ({ offset = 0, limit = PER_FETCH_LIMIT }) => ({
-    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
     variables: ({ offset, limit }),
   }),
   props: ({
@@ -207,7 +213,9 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
       id
       createdAt
       description
-      photo
+      photoUrl
+      publishedStatus
+      userStatus
       User {
         id 
         firstName 
@@ -225,7 +233,9 @@ subscription myExperience($userId:Int!){
     id
       createdAt
       description
-      photo
+      photoUrl
+      publishedStatus
+      userStatus
       Participants {
         User {
           id 
@@ -266,7 +276,6 @@ subscription myExperience($userId:Int!){
         firstName 
         avatar 
       } 
-      totalComments
   }
 }
 `;
@@ -274,6 +283,7 @@ subscription myExperience($userId:Int!){
 export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
   options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
     variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
   }),
   props: (
     {
@@ -341,7 +351,9 @@ query experience($id: Int!){
     id
     createdAt
     description
-    photo
+    photoUrl
+    publishedStatus
+    userStatus
     Participants {
       User {
         id 
@@ -389,8 +401,33 @@ query experience($id: Int!){
 export const withExperience = graphql(FIND_EXPERIENCE_QUERY, {
   options: ({ id }) => ({
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, experience = {}, refetch, networkStatus, error } }) => ({
     loading, experience, refetch, networkStatus, error,
+  }),
+});
+
+const SEND_EXPERIENCE_EMAIL_QUERY = gql`
+mutation sendExperienceEmail($id:ID) {
+  sendExperienceEmail(id:$id)
+}
+`;
+
+export const withSendExperienceEmail = graphql(SEND_EXPERIENCE_EMAIL_QUERY, {
+  props: ({ mutate }) => ({
+    sendExperienceEmail: id => mutate({ variables: { id } }),
+  }),
+});
+
+const DELETE_EXPERIENCE_QUERY = gql`
+mutation removeExperience($id:Int!) {
+  removeExperience(id:$id)
+}
+`;
+
+export const withDeleteExperience = graphql(DELETE_EXPERIENCE_QUERY, {
+  props: ({ mutate }) => ({
+    deleteExperience: id => mutate({ variables: { id } }),
   }),
 });
