@@ -18,7 +18,6 @@ import {
   NOTIFICATION_TYPE_FRIEND_REQUEST,
   NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
-  NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED,
   NOTIFICATION_TYPE_EXPERIENCE_VOID,
   NOTIFICATION_TYPE_EXPERIENCE_SHARED,
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
@@ -26,6 +25,8 @@ import {
   NOTIFICATION_TYPE_TRIP_SHARED_GROUP,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
+import Date from '@components/date';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -157,7 +158,7 @@ class Item extends PureComponent {
   redirect = (id, route, params) => {
     const { navigation, filters, notification, markRead } = this.props;
 
-    if (filters === 'new') {
+    if (id && filters === 'new') {
       markRead(id).then(notification.refetch);
     }
 
@@ -165,75 +166,81 @@ class Item extends PureComponent {
   }
 
   friendRequest = ({ User, Notifiable }) => (
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {this.renderPic(User.avatar)}
+    <TouchableOpacity onPress={() => this.redirect(null, 'Profile', { profileId: User.id })}>
+      <View style={styles.list}>
+        <View style={styles.flexRow}>
+          <View style={styles.profilePicWrapper}>
+            {this.renderPic(User.avatar, User.id)}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+            <Text>
+              wants to be your friend.
+            </Text>
+          </View>
         </View>
-        <Text style={styles.textWrap}>
-          <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
-          <Text>
-            sent you friend request.
-          </Text>
-        </Text>
+        {this.state.loading ?
+          <Loading /> :
+          this.renderAction(
+            Notifiable.id,
+            this.acceptFriendRequest,
+            this.rejectFriendRequest,
+          )}
       </View>
-      {this.state.loading ?
-        <Loading /> :
-        this.renderAction(
-          Notifiable.id,
-          this.acceptFriendRequest,
-          this.rejectFriendRequest,
-        )}
-    </View>
+    </TouchableOpacity>
   );
 
   requestJoinGroup = ({ User, Notifiable }) => (
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {this.renderPic(User.avatar)}
-        </View>
-        <Text style={styles.textWrap}>
-          <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
-          <Text>
-            has requested to join
-            <Text style={styles.bold}> {Notifiable.Group.name} </Text>
-            group
-            <Text style={styles.bold}>
-              {` ${Notifiable.Group.TripStart.name}-${Notifiable.Group.TripEnd.name}`}
+    <TouchableOpacity onPress={() => this.redirect(null, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
+      <View style={styles.list}>
+        <View style={styles.flexRow}>
+          <View style={styles.profilePicWrapper}>
+            {this.renderPic(User.avatar, User.id)}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text onPress={() => this.redirect(null, 'Profile', { profileId: User.id })} style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+            <Text>
+              wants to participate in your group
+              <Text style={styles.bold}> {Notifiable.Group.name} </Text>
             </Text>
-          </Text>
-        </Text>
+          </View>
+        </View>
+        {this.state.loading ?
+          <Loading /> :
+          this.renderAction(
+            Notifiable.id,
+            this.acceptGroupRequest,
+            this.rejectGroupRequest,
+          )}
       </View>
-      {this.state.loading ?
-        <Loading /> :
-        this.renderAction(
-          Notifiable.id,
-          this.acceptGroupRequest,
-          this.rejectGroupRequest,
-        )}
-    </View>
+    </TouchableOpacity>
   );
 
-  item = ({ user, photo, text, onPress }) => (
+  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date }) => (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.list}>
         <View style={styles.flexRow}>
           <View style={styles.profilePicWrapper}>
-            {this.renderPic(photo)}
+            {
+              experience
+                ? this.renderExperiencePic(photo, experience, noAvatarAction)
+                : this.renderPic(photo, userId)
+            }
           </View>
           <View style={{ flex: 1 }}>
             <Text>
               {
                 user &&
-                <Text style={[styles.bold, styles.blueText]}>{user} </Text>
+                <Text style={[styles.bold, styles.blueText]}>{user}</Text>
               }
+            </Text>
+            <Text>
               {text}
             </Text>
           </View>
         </View>
         <View>
-          {/* {<Text style={[styles.time, styles.bold]}>{date}</Text>} */}
+          {<Text style={[styles.time, styles.bold]}><Date format="MMM DD">{date}</Date></Text>}
         </View>
       </View>
     </TouchableOpacity>
@@ -246,6 +253,7 @@ class Item extends PureComponent {
 
     if (Notifiable && Notifiable.gmrStatus === 'accepted') {
       return this.item({
+        userId: User.id,
         photo: User.avatar,
         text: `You have accepted ${User.firstName}'s request to join group "${Notifiable.Group.name}"`,
         date,
@@ -256,27 +264,32 @@ class Item extends PureComponent {
     return null;
   }
 
-  membershipRequestAccepted = ({ Group, User, date, id }) => {
-    if (Group) {
+  membershipRequestAccepted = ({ Notifiable, User, createdAt, id }) => {
+    if (Notifiable) {
       return this.item({
+        userId: User.id,
         user: User.firstName,
         photo: User.avatar,
-        text: `accepted your request to join group "${Group.name}"`,
-        date,
-        onPress: () => this.redirect(id, 'GroupDetail', { group: Group, notifier: User, notificationMessage: 'Added you to this group' }),
+        text: `${trans('message.added_you_to_group')} "${Notifiable.name}"`,
+        date: createdAt,
+        onPress: () => this.redirect(id, 'GroupDetail', {
+          group: Notifiable,
+          notifier: User,
+          notificationMessage: trans('message.added_you_to_this_group'),
+        }),
       });
     }
 
     return null;
   }
 
-  friendRequestAccepted = ({ Notifiable, User, date, id }) => {
+  friendRequestAccepted = ({ Notifiable, User, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        user: User.firstName,
+        userId: User.id,
         photo: User.avatar,
-        text: 'accepted your friend request',
-        date,
+        text: `${trans('message.you_and')} ${User.firstName} ${trans('message.are_now_friends')}`,
+        date: createdAt,
         onPress: () => this.redirect(id, 'Profile', { profileId: User.id }),
       });
     }
@@ -284,56 +297,44 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceAccepted = ({ Notifiable, User, date, id }) => {
+  experienceVoid = ({ Notifiable, createdAt }) => {
     if (Notifiable) {
       return this.item({
-        user: User.firstName,
-        photo: User.avatar,
-        text: 'accepted to tag on an experience',
-        date,
-        onPress: () => this.redirect(id, 'Profile', { profileId: User.id }),
+        photo: Notifiable.photo,
+        text: trans('message.one_participant_said_no'),
+        date: createdAt,
+        noAvatarAction: true,
+        experience: {},
       });
     }
 
     return null;
   }
 
-  experienceVoid = ({ Notifiable, User, date, id }) => {
+  experiencePublished = ({ Notifiable, User, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        user: User.firstName,
-        photo: User.avatar,
-        text: 'One of the participants in your Experience said no, so your Experience is not published',
-        date,
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        userId: User.id,
+        photo: Notifiable.photo,
+        experience: Notifiable,
+        text: trans('message.your_experience_has_been_published'),
+        date: createdAt,
+        onPress: () => this.redirect(id, 'ExperienceScreen', { experience: Notifiable }),
       });
     }
 
     return null;
   }
 
-  experiencePublished = ({ Notifiable, User, date, id }) => {
+  experienceShared = ({ Notifiable, User, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
+        userId: User.id,
         user: User.firstName,
         photo: User.avatar,
-        text: 'Your experience has been published.',
-        date,
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
-      });
-    }
-
-    return null;
-  }
-
-  experienceShared = ({ Notifiable, User, date, id }) => {
-    if (Notifiable) {
-      return this.item({
-        user: User.firstName,
-        photo: User.avatar,
-        text: 'shared an experience.',
-        date,
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        text: trans('message.shared_experience_with_you'),
+        date: createdAt,
+        onPress: () => this.redirect(id, 'ExperienceScreen', { experience: Notifiable }),
       });
     }
 
@@ -359,35 +360,48 @@ class Item extends PureComponent {
   }
 
   experienceTagged = ({ User, Notifiable }) => (
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {this.renderPic(User.avatar)}
+    <TouchableOpacity
+      onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}
+    >
+      <View style={styles.list}>
+        <View style={styles.flexRow}>
+          <View style={styles.profilePicWrapper}>
+            {this.renderPic(User.avatar, User.id)}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
+            <Text>
+              {trans('message.tagged_you_in_an_experience')}
+            </Text>
+          </View>
         </View>
-        <Text style={styles.textWrap}>
-          <Text style={[styles.bold, styles.blueText]}>{User.firstName} </Text>
-          <Text>
-            tagged you in an experience.
-          </Text>
-        </Text>
+        {this.state.loading ?
+          <Loading /> :
+          this.renderAction(
+            Notifiable.id,
+            this.acceptTagRequest,
+            this.rejectTagRequest,
+          )}
       </View>
-      {this.state.loading ?
-        <Loading /> :
-        this.renderAction(
-          Notifiable.id,
-          this.acceptTagRequest,
-          this.rejectTagRequest,
-        )}
-    </View>
+    </TouchableOpacity>
   );
 
-  tripShared = ({ Notifiable, User, date }) => {
+  tripShared = ({ Notifiable, User, createdAt }) => {
+    let type = null;
+
     if (Notifiable) {
+      type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
+
+      if (type.length > 17) {
+        type = `${type.slice(0, 17)} ...`;
+      }
+
       return this.item({
+        userId: User.id,
         user: User.firstName,
         photo: User.avatar,
-        text: 'shared your trip.',
-        date,
+        text: `${type}`,
+        date: createdAt,
         onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable }),
       });
     }
@@ -395,14 +409,15 @@ class Item extends PureComponent {
     return null;
   }
 
-  tripSharedGroup = ({ Notifiable, User, date }) => {
+  tripSharedGroup = ({ Notifiable, User, createdAt }) => {
     if (Notifiable) {
       return this.item({
+        userId: User.id,
         user: User.firstName,
         photo: User.avatar,
-        text: 'shared a trip on your group.',
-        date,
-        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable }),
+        text: trans('message.shared_a_trip_on_your_group'),
+        date: createdAt,
+        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable, notifier: User, notificationMessage: 'Shared this trip on your group.' }),
       });
     }
 
@@ -413,50 +428,75 @@ class Item extends PureComponent {
     let type = null;
     let params = null;
     let route = null;
+    let itemFields = null;
 
     if (notifiable === FEEDABLE_GROUP) {
-      type = `group "${Notifiable.name}"`;
+      type = `${Notifiable.name}`;
       route = 'GroupDetail';
-      params = { group: Notifiable, notifier: User, notificationMessage: 'Commented on this group' };
+      params = { group: Notifiable, notifier: User, notificationMessage: trans('message.commented_on_this_group') };
+      itemFields = {
+        userId: User.id,
+        user: `${type}`,
+        photo: User.avatar,
+        text: `${User.firstName} ${trans('message.left_a_comment')}`,
+        date: createdAt,
+        onPress: () => this.redirect(id, route, params),
+      };
     }
 
     if (notifiable === FEEDABLE_TRIP) {
-      type = `ride ${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
+      type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: User, notificationMessage: 'Commented on this ride' };
+      params = { trip: Notifiable, notifier: User, notificationMessage: trans('message.commented_on_this_ride') };
+
+      if (type && type.length > 17) {
+        type = `${type.slice(0, 17)} ...`;
+      }
+
+      itemFields = {
+        userId: User.id,
+        user: User.firstName,
+        photo: User.avatar,
+        text: `${type}`,
+        date: createdAt,
+        onPress: () => this.redirect(id, route, params),
+      };
     }
 
-    return this.item({
-      user: User.firstName,
-      photo: User.avatar,
-      text: `commented on your ${type}`,
-      date: createdAt,
-      onPress: () => this.redirect(id, route, params),
-    });
+    if (itemFields) {
+      return this.item(itemFields);
+    }
+
+    return null;
   }
 
-  invitation = ({ notifiable, Notifiable, User, date, id }) => {
+  invitation = ({ notifiable, Notifiable, User, createdAt, id }) => {
     let type = null;
     let params = null;
     let route = null;
 
     if (notifiable === FEEDABLE_GROUP) {
-      type = `group "${Notifiable.name}"`;
+      type = `${trans('message.shared_group')} ${Notifiable.name} ${trans('message.to_you')}`;
       route = 'GroupDetail';
-      params = { group: Notifiable };
+      params = { group: Notifiable, notifier: User, notificationMessage: trans('message.shared_this_group_with_you') };
     }
 
     if (notifiable === FEEDABLE_TRIP) {
-      type = `ride "${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}"`;
+      type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable };
+      params = { trip: Notifiable, notifier: User, notificationMessage: 'Shared this trip with you' };
+
+      if (type && type.length > 17) {
+        type = `${type.slice(0, 17)} ...`;
+      }
     }
 
     return this.item({
+      userId: User.id,
       user: User.firstName,
       photo: User.avatar,
-      text: `shared a ${type}`,
-      date,
+      text: `${type}`,
+      date: createdAt,
       onPress: () => this.redirect(id, route, params),
     });
   }
@@ -525,11 +565,33 @@ class Item extends PureComponent {
     return null;
   }
 
-  renderPic = (photo) => {
+  renderPic = (photo, userId) => {
     let profileImage = null;
     if (photo) {
-      profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+      profileImage = (
+        <TouchableOpacity onPress={() => this.redirect(null, 'Profile', { profileId: userId })}>
+          <Image source={{ uri: photo }} style={styles.profilePic} />
+        </TouchableOpacity>
+      );
     }
+
+    return profileImage;
+  }
+
+  renderExperiencePic = (photo, Notifiable, noAvatarAction) => {
+    let profileImage = null;
+    if (photo) {
+      profileImage = (
+        <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceScreen', { experience: Notifiable })}>
+          <Image source={{ uri: photo }} style={styles.profilePic} />
+        </TouchableOpacity>
+      );
+
+      if (noAvatarAction) {
+        profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+      }
+    }
+
 
     return profileImage;
   }
@@ -566,10 +628,6 @@ class Item extends PureComponent {
       message = this.experienceTagged(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED) {
-      message = this.experienceAccepted(notification);
-    }
-
     if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_VOID) {
       message = this.experienceVoid(notification);
     }
@@ -589,7 +647,6 @@ class Item extends PureComponent {
     if (notification.type === NOTIFICATION_TYPE_TRIP_SHARED_GROUP) {
       message = this.tripSharedGroup(notification);
     }
-
 
     return (
       <View key={notification.id}>

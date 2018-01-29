@@ -45,12 +45,16 @@ class GroupDetail extends Component {
 
   render() {
     const { group } = this.state;
+    const { navigation } = this.props;
+    const { notifier, notificationMessage } = navigation.state.params;
 
     if (this.isMember()) {
       return (
         <Detail
           refresh={this.refresh}
           group={group}
+          notifier={notifier}
+          notificationMessage={notificationMessage}
         />);
     }
 

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import { withMyGroups } from '@services/apollo/group';
@@ -8,16 +8,10 @@ import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import ActiveGroupItem from '@components/message/ActiveGroupItem';
+import { PER_FETCH_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
-  lightText: {
-    color: Colors.text.gray,
-  },
-  flexRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   section: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
@@ -27,29 +21,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     color: Colors.text.blue,
     marginHorizontal: 24,
-  },
-  list: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  profilePicWrapper: {
-    flexDirection: 'row',
-    marginRight: 8,
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    resizeMode: 'cover',
-    borderRadius: 20,
-    marginRight: 4,
-  },
-  chevron: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
   },
   emptyMessage: {
     opacity: 0.5,
@@ -66,52 +37,64 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
     textAlign: 'center',
   },
+  more: {
+    height: 24,
+    alignSelf: 'center',
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 16,
+  },
+  moreText: {
+    fontSize: 12,
+    color: '#333',
+  },
 });
-
-const renderPic = (photo) => {
-  let profileImage = null;
-
-  if (photo) {
-    profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
-  }
-
-  return profileImage;
-};
-
-const item = (group, navigation) => (
-  <TouchableOpacity onPress={() => navigation.navigate('GroupDetail', { group })} key={group.id}>
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {group.photo ? renderPic(group.photo) : renderPic(group.mapPhoto)}
-        </View>
-        <View>
-          <Text>{group.name}</Text>
-        </View>
-      </View>
-      <View>
-        <Image
-          source={require('@assets/icons/icon_chevron_right.png')}
-          style={styles.chevron}
-        />
-      </View>
-    </View>
-  </TouchableOpacity>
-);
 
 class Group extends PureComponent {
   componentWillMount() {
     const { user, subscribeToNewGroup } = this.props;
-    subscribeToNewGroup({ userId: user.id });
+    if (user.id) {
+      subscribeToNewGroup({ userId: user.id });
+    }
+  }
+
+  loadMore = () => {
+    const { groups } = this.props;
+    if (groups.loading) return null;
+
+    const remaining = groups.count - PER_FETCH_LIMIT;
+    if (remaining < 1) return null;
+
+    return (
+      <TouchableOpacity onPress={this.moreGroups} style={styles.more}>
+        <Text style={styles.moreText}>{trans('message.and')} {remaining} {trans('message.more')}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  moreGroups = () => {
+    const { navigation } = this.props;
+
+    navigation.navigate('ActiveGroupList');
   }
 
   render() {
-    const { groups, navigation } = this.props;
+    const { groups } = this.props;
 
-    let render = (<Text style={styles.emptyMessage}>No Group</Text>);
+    let render = (<Text style={styles.emptyMessage}>{trans('message.no_group')}</Text>);
+
+
+    let limitedgroups = groups.rows;
+
+    if (limitedgroups.length > PER_FETCH_LIMIT) {
+      limitedgroups = limitedgroups.slice(0, PER_FETCH_LIMIT);
+    }
 
     if (groups.count > 0) {
-      render = groups.rows.map(group => item(group, navigation));
+      render = limitedgroups.map(group => <ActiveGroupItem key={group.id} group={group} />);
     }
 
     if (groups.error) {
@@ -136,9 +119,10 @@ class Group extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {('Your groups'.toUpperCase())}
+          {trans('message.your_groups').toUpperCase()}
         </Text>
         {render}
+        {this.loadMore()}
       </View>
     );
   }
@@ -154,7 +138,7 @@ Group.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
   subscribeToNewGroup: PropTypes.func.isRequired,
 };

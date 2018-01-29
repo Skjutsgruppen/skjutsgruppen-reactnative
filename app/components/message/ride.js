@@ -1,26 +1,18 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import { withMyTrips } from '@services/apollo/trip';
 import PropTypes from 'prop-types';
-import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Moment from 'moment';
-import { FEED_FILTER_WANTED } from '@config/constant';
+import { FEED_FILTER_WANTED, PER_FETCH_LIMIT } from '@config/constant';
+import ActiveRideItem from '@components/message/ActiveRideItem';
 
 const styles = StyleSheet.create({
-  lightText: {
-    color: Colors.text.gray,
-  },
-  flexRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   section: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
@@ -30,29 +22,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     color: Colors.text.blue,
     marginHorizontal: 24,
-  },
-  list: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  profilePicWrapper: {
-    flexDirection: 'row',
-    marginRight: 8,
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    resizeMode: 'cover',
-    borderRadius: 20,
-    marginRight: 4,
-  },
-  chevron: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
   },
   emptyMessage: {
     opacity: 0.5,
@@ -69,62 +38,65 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
     textAlign: 'center',
   },
+  more: {
+    height: 24,
+    alignSelf: 'center',
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 16,
+  },
+  moreText: {
+    fontSize: 12,
+    color: '#333',
+  },
 });
-
-
-const renderPic = (photo) => {
-  let profileImage = null;
-
-  if (photo) {
-    profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
-  }
-
-  return profileImage;
-};
-
-const item = (trip, navigation) => {
-  if (Moment(trip.date).isAfter() && trip.type !== FEED_FILTER_WANTED) {
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('TripDetail', { trip })}
-        key={trip.id}
-      >
-        <View style={styles.list}>
-          <View style={styles.flexRow}>
-            <View style={styles.profilePicWrapper}>
-              {trip.photo ? renderPic(trip.photo) : renderPic(trip.mapPhoto)}
-            </View>
-            <View>
-              <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-              <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
-            </View>
-          </View>
-          <View>
-            <Image
-              source={require('@assets/icons/icon_chevron_right.png')}
-              style={styles.chevron}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  return null;
-};
 
 class Ride extends PureComponent {
   componentWillMount() {
     const { subscribeToNewTrip, user } = this.props;
-    subscribeToNewTrip({ userId: user.id });
+    if (user.id) {
+      subscribeToNewTrip({ userId: user.id });
+    }
   }
 
+  loadMore = () => {
+    const { trips } = this.props;
+    if (trips.loading) return null;
+
+    const remaining = trips.count - PER_FETCH_LIMIT;
+    if (remaining < 1) return null;
+
+    return (
+      <TouchableOpacity onPress={this.moreRides} style={styles.more}>
+        <Text style={styles.moreText}>{trans('message.and')} {remaining} {trans('message.more')}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  moreRides = () => {
+    const { navigation } = this.props;
+
+    navigation.navigate('ActiveRideList');
+  }
+
+  isActiveRide = trip => (Moment(trip.date).isAfter() && trip.type !== FEED_FILTER_WANTED);
+
   render() {
-    const { trips, navigation } = this.props;
-    let render = (<Text style={styles.emptyMessage}>No Ride</Text>);
+    const { trips } = this.props;
+    let render = (<Text style={styles.emptyMessage}>{trans('message.no_ride')}</Text>);
+
+    let limitedTrips = trips.rows;
+
+    if (limitedTrips.length > PER_FETCH_LIMIT) {
+      limitedTrips = limitedTrips.slice(0, PER_FETCH_LIMIT);
+    }
 
     if (trips.count > 0) {
-      render = trips.rows.map(trip => item(trip, navigation));
+      render = limitedTrips.filter(this.isActiveRide)
+        .map(trip => <ActiveRideItem key={trip.id} trip={trip} />);
     }
 
     if (trips.error) {
@@ -152,6 +124,7 @@ class Ride extends PureComponent {
           {('Your active rides'.toUpperCase())}
         </Text>
         {render}
+        {this.loadMore()}
       </View>
     );
   }
@@ -168,7 +141,7 @@ Ride.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
   subscribeToNewTrip: PropTypes.func.isRequired,
 };
