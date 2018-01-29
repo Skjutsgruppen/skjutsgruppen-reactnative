@@ -4,6 +4,8 @@ export const NOTIFICATION_FETCH_LIMIT = 20;
 export const EXPERIENCE_AFTER_CARDS = 3;
 export const EXPERIENCE_FETCH_LIMIT = 5;
 
+export const NOTIFICATION_CHARACTER_COUNT = 25;
+
 export const DEFAULT_COUNTRY_CODE = 'SE';
 export const DEFAULT_LOCALE = 'en';
 

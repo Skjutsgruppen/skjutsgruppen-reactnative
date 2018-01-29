@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { compose } from 'react-apollo';
 import { submitComment, withTripComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip } from '@services/apollo/trip';
 import { withTripExperiences } from '@services/apollo/experience';
-import { Loading, FloatingNavbar, AppNotification, DetailHeader } from '@components/common';
+import { FloatingNavbar, AppNotification, DetailHeader, CommentBox, Loading } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -153,52 +153,6 @@ const styles = StyleSheet.create({
   commentsWrapper: {
     paddingBottom: 50,
   },
-  footer: {
-    backgroundColor: Colors.background.fullWhite,
-    borderTopWidth: 2,
-    borderColor: Colors.border.lightGray,
-  },
-  footerCommentSection: {
-    height: 54,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  footerSocialSection: {
-    height: 42,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
-  },
-  moreIconWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    paddingHorizontal: 24,
-  },
-  moreIcon: {
-    height: 24,
-    width: 24,
-    resizeMode: 'contain',
-  },
-  commentInput: {
-    height: '100%',
-    flex: 1,
-    fontSize: 14,
-    paddingHorizontal: 12,
-    textAlignVertical: 'center',
-  },
-  send: {
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  sendText: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
   modalContent: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.75)',
@@ -280,11 +234,11 @@ class TripDetail extends Component {
     }
   }
 
-  onSubmit = () => {
+  onSubmit = (comment) => {
     this.setState({ loading: true });
     const { submit } = this.props;
-    const { comment, trip } = this.state;
-    const validation = this.checkValidation();
+    const { trip } = this.state;
+    const validation = this.checkValidation(comment);
 
     if (validation.pass()) {
       try {
@@ -362,10 +316,8 @@ class TripDetail extends Component {
     this.setState({ writingComment: true });
   }
 
-  checkValidation() {
+  checkValidation = (comment) => {
     const errors = [];
-    const { comment } = this.state;
-
     if (comment === '') {
       errors.push('COMMENT_REQUIRED');
     }
@@ -547,53 +499,10 @@ class TripDetail extends Component {
     );
   }
 
-
-  renderFooter = () => (
-    <View style={styles.footer}>
-      <View style={styles.footerCommentSection}>
-        {
-          !this.state.writingComment &&
-          <TouchableOpacity
-            style={styles.moreIconWrapper}
-            onPress={() => this.setModalVisible(true)}
-          >
-            <Image source={require('@assets/icons/ic_options.png')} style={styles.moreIcon} />
-          </TouchableOpacity>
-        }
-        <TextInput
-          value={this.state.comment}
-          onChangeText={text => this.onCommentChange(text)}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          placeholderTextColor="#000"
-          placeholder={trans('global.write')}
-          multiline
-          underlineColorAndroid="transparent"
-          autoCorrect={false}
-          autoCapitalize={'none'}
-          returnKeyType={'done'}
-          style={styles.commentInput}
-          editable={!this.state.loading}
-        />
-        {
-          this.state.writingComment &&
-          this.renderButton()
-        }
-      </View>
-      {
-        this.state.writingComment &&
-        <View style={styles.footerSocialSection}>
-          <Text>{trans('trip.a_post_on_your_fb_timeline')}</Text>
-          <Text style={{ marginLeft: 12 }}>{trans('trip.a_tweet')}</Text>
-        </View>
-      }
-    </View>
-  );
-
   render() {
     const { navigation } = this.props;
     const { notifier, notificationMessage } = navigation.state.params;
-    const { error, success, notification, notifierOffset, trip } = this.state;
+    const { error, success, notification, notifierOffset, trip, loading } = this.state;
 
     let profileImage = null;
     if (trip.User.avatar) {
@@ -780,7 +689,11 @@ class TripDetail extends Component {
           />
           <About />
         </ScrollView>
-        {this.renderFooter()}
+        <CommentBox
+          handleSend={this.onSubmit}
+          loading={loading}
+          handleShowOptions={() => this.setModalVisible(true)}
+        />
         {this.renderModal()}
         {this.renderShareModal()}
       </View>
