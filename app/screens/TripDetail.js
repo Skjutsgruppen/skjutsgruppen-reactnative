@@ -396,6 +396,35 @@ class TripDetail extends Component {
       .isBefore();
   }
 
+  redirectToSelectedTripDate = (day) => {
+    const { trip } = this.state;
+    const { navigation } = this.props;
+
+    if (day.dateString === getDate(trip.date).format('YYYY-MM-DD')) {
+      this.setRecurringRidesModalVisibility(false);
+      return;
+    }
+
+    trip.Recurring.forEach((ride) => {
+      if (getDate(ride.date).format('YYYY-MM-DD') === day.dateString) {
+        this.setRecurringRidesModalVisibility(false);
+        navigation.navigate('TripDetail', { trip: ride });
+      }
+    });
+  }
+
+  redirectToSelectedReturnTrip = (id) => {
+    const { trip } = this.state;
+    const { navigation } = this.props;
+
+    trip.ReturnTrip.forEach((ride) => {
+      if (ride.id === id) {
+        this.setReturnRidesModalVisibility(false);
+        navigation.navigate('TripDetail', { trip: ride });
+      }
+    });
+  }
+
   renderButton = () => {
     const { loading } = this.state;
     const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
@@ -677,6 +706,7 @@ class TripDetail extends Component {
                       avatar={trip.User.avatar}
                       trips={trip.ReturnTrip}
                       type={trip.type}
+                      onPress={this.redirectToSelectedReturnTrip}
                     />
                     <View style={styles.closeWrapper}>
                       <TouchableOpacity
@@ -705,6 +735,7 @@ class TripDetail extends Component {
                       markedDates={markedDates}
                       markingType="interactive"
                       hideExtraDays
+                      onDayPress={day => this.redirectToSelectedTripDate(day)}
                     />
                     <View style={styles.closeWrapper}>
                       <TouchableOpacity

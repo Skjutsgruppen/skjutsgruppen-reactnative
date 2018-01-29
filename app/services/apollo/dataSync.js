@@ -1,7 +1,7 @@
 /* eslint no-empty: "error" */
 
 import client from '@services/apollo';
-import { PROFILE_QUERY } from '@services/apollo/profile';
+import { ACCOUNT_QUERY } from '@services/apollo/profile';
 import { TRIPS_QUERY, GET_FEED_QUERY } from '@services/apollo/trip';
 import { GROUPS_QUERY } from '@services/apollo/group';
 import {
@@ -16,22 +16,22 @@ import {
 import { FRIEND_QUERY } from '@services/apollo/friend';
 import { NOTIFICATION_QUERY } from '@services/apollo/notification';
 
-const getProfile = id => client.readQuery(
+const getAccount = () => client.readQuery(
   {
-    query: PROFILE_QUERY, variables: { id },
+    query: ACCOUNT_QUERY,
   });
 
-const setProfile = (id, data) => client.writeQuery(
+const setAccount = data => client.writeQuery(
   {
-    query: PROFILE_QUERY, data, variables: { id },
+    query: ACCOUNT_QUERY, data,
   });
 
-export const increaseProfileComment = (userId) => {
+export const increaseProfileComment = () => {
   try {
-    const myProfile = getProfile(userId);
+    const myAccount = getAccount();
 
-    myProfile.profile.totalComments += 1;
-    setProfile(userId, myProfile);
+    myAccount.account.totalComments += 1;
+    setAccount(myAccount);
   } catch (err) {
     // empty
   }
@@ -67,12 +67,12 @@ export const increaseFeedCommentCount = (id) => {
   }
 };
 
-export const increaseProfileFriendsCount = (userId) => {
+export const increaseProfileFriendsCount = () => {
   try {
-    const myProfile = getProfile(userId);
+    const myAccount = getAccount();
 
-    myProfile.profile.totalFriends += 1;
-    setProfile(userId, myProfile);
+    myAccount.account.totalFriends += 1;
+    setAccount(myAccount);
   } catch (err) {
     // empty
   }
@@ -206,15 +206,15 @@ export const increaseProfileTripCount = (userId, tripId, type) => {
 
   try {
     if (!repeated) {
-      const myProfile = getProfile(userId);
+      const myAccount = getAccount();
 
       if (type === FEED_FILTER_WANTED) {
-        myProfile.profile.totalAsked += 1;
+        myAccount.account.totalAsked += 1;
       } else {
-        myProfile.profile.totalOffered += 1;
+        myAccount.account.totalOffered += 1;
       }
 
-      setProfile(userId, myProfile);
+      setAccount(myAccount);
     }
   } catch (err) {
     // empty
@@ -262,34 +262,61 @@ export const increaseProfileGroupCount = (userId, groupId) => {
 
   try {
     if (!repeated) {
-      const myProfile = getProfile(userId);
+      const myAccount = getAccount();
 
-      myProfile.profile.totalGroups += 1;
-      setProfile(userId, myProfile);
+      myAccount.account.totalGroups += 1;
+      setAccount(myAccount);
     }
   } catch (err) {
     // error
   }
 };
 
-export const increaseProfileExperience = (userId) => {
+export const increaseProfileExperience = () => {
   try {
-    const myProfile = getProfile(userId);
+    const myAccount = getAccount();
 
-    myProfile.profile.totalExperiences += 1;
-    setProfile(userId, myProfile);
+    myAccount.account.totalExperiences += 1;
+    setAccount(myAccount);
   } catch (err) {
     // empty
   }
 };
 
-export const increaseProfileFriendCount = (userId) => {
+export const increaseProfileFriendCount = () => {
   try {
-    const myProfile = getProfile(userId);
+    const myAccount = getAccount();
 
-    myProfile.profile.totalFriends += 1;
-    setProfile(userId, myProfile);
+    myAccount.account.totalFriends += 1;
+    setAccount(myAccount);
   } catch (err) {
     // empty
+  }
+};
+
+export const updateProfileFriendCount = (userId, apollo) => {
+  try {
+    apollo.readQuery(
+      {
+        query: FRIEND_QUERY,
+        variables: {
+          id: userId,
+          offset: 0,
+          limit: PER_FETCH_LIMIT,
+        },
+      },
+    );
+  } catch (err) {
+    try {
+      const myAccount = apollo.readQuery(
+        { query: ACCOUNT_QUERY },
+      );
+      myAccount.account.totalFriends += 1;
+      apollo.writeQuery(
+        { query: ACCOUNT_QUERY, data: myAccount },
+      );
+    } catch (e) {
+      // empty
+    }
   }
 };
