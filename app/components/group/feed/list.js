@@ -94,7 +94,6 @@ class GroupFeed extends Component {
   }
 
   renderModal() {
-    console.log(this.state);
     return (
       <RelationModal
         users={this.state.friendsData}
