@@ -134,7 +134,7 @@ class Feed extends Component {
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      navigation.navigate('ExperienceDetail', { experience: detail });
+      navigation.navigate('ExperienceScreen', { experience: detail });
     }
   };
 
