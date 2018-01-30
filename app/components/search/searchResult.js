@@ -3,13 +3,14 @@ import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView } from 'rea
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
-import { Wrapper, FloatingNavbar } from '@components/common';
+import { Wrapper, FloatingNavbar, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
 import { withShare } from '@services/apollo/share';
 import { trans } from '@lang/i18n';
 import DataList from '@components/dataList';
+import NoResult from '@components/search/noResult';
 import {
   FEED_TYPE_OFFER,
   FEED_TYPE_PUBLIC_TRANSPORT,
@@ -73,6 +74,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.gray,
     marginRight: 16,
     justifyContent: 'center',
+  },
+  button: {
+    width: '60%',
+    paddingHorizontal: 16,
+    marginTop: 32,
   },
 });
 
@@ -147,6 +153,12 @@ class SearchResult extends Component {
     this.refetch();
   }
 
+  redirect = (page) => {
+    const { navigation } = this.props;
+
+    navigation.navigate(page);
+  }
+
   refetch = () => {
     const { filters } = this.state;
     const { from, to, dates, search } = this.props;
@@ -178,7 +190,7 @@ class SearchResult extends Component {
 
   switchResultsStyle = style => this.setState({ resultsStyle: style });
 
-  renderHeader = () => (
+  renderListType = () => (
     <View style={styles.switchViewWrapper}>
       <TouchableOpacity
         style={[styles.viewSwitcher, this.state.resultsStyle === 'card' ? styles.selected : {}]}
@@ -196,12 +208,23 @@ class SearchResult extends Component {
   );
 
   renderSearchResult = () => {
-    const { from, to, filters, dates, search } = this.props;
+    const { from, fromObj, toObj, direction, to, filters, dates, search } = this.props;
+    const namePlace = `${fromObj.name} - ${toObj.name || this.prettify(direction)}`;
+
+    if (!search.loading && search.count === 0) {
+      return (
+        <NoResult
+          filters={filters}
+          search={search}
+          renderRoundButton={this.renderRoundButton}
+          namePlace={namePlace}
+        />
+      );
+    }
 
     return (
       <DataList
         data={search}
-        header={this.renderHeader}
         renderItem={({ item }) => (
           <SearchItem
             key={item.id}
@@ -246,10 +269,19 @@ class SearchResult extends Component {
     );
   }
 
+  renderRoundButton = (redirectPage, text) => (
+    <RoundedButton
+      bgColor={Colors.background.pink}
+      onPress={() => this.redirect(redirectPage)}
+      style={styles.button}
+    >{text}</RoundedButton>
+  )
+
   render() {
-    const { fromObj: from, toObj: to, direction, filters, navigation } = this.props;
+    const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
 
     const prettyDate = this.formatDates();
+
     return (
       <Wrapper bgColor={Colors.background.lightBlueWhite}>
         <FloatingNavbar handleBack={() => navigation.goBack()} />
@@ -300,6 +332,7 @@ class SearchResult extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        {search.count > 0 && this.renderListType()}
         {this.renderSearchResult()}
         {this.renderShareModal()}
       </Wrapper>
