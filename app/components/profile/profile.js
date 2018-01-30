@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   hexagon: {
     height: 90,
-    width: 90,
+    width: 100,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     color: Colors.text.pink,
   },
   activityLabel: {
+    fontSize: 14,
     color: Colors.text.darkGray,
     textAlign: 'center',
     marginVertical: 8,
@@ -250,6 +251,10 @@ class Profile extends Component {
     if (type === 'experiences') {
       navigation.navigate('UserExperiences', { userId: id });
     }
+
+    if (type === 'conversation') {
+      navigation.navigate('UserConversation');
+    }
   }
 
   sendRequest = () => {
@@ -409,7 +414,6 @@ class Profile extends Component {
   render() {
     const { networkStatus, error } = this.props.data;
     const { user } = this.state;
-    const supporter = false;
 
     if (error) {
       return (
@@ -434,7 +438,7 @@ class Profile extends Component {
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
         <Avatar
           notTouchable
-          isSupporter
+          isSupporter={user.isSupporter}
           size={145}
           imageURI={user.avatar}
           style={styles.profilePic}
@@ -454,10 +458,10 @@ class Profile extends Component {
           </View>
           <View style={styles.hexagon}>
             <Image
-              source={supporter ? GardenActive : GardenInactive}
+              source={user.isSupporter ? GardenActive : GardenInactive}
               style={styles.garden}
             />
-            <Text style={styles.activityLabel}>Supporter</Text>
+            <Text style={styles.activityLabel}>{user.isSupporter ? 'Supporter' : 'Not supporting'}</Text>
           </View>
         </View>
         {
@@ -490,9 +494,13 @@ class Profile extends Component {
           label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
           onPress={() => this.redirect(FEED_FILTER_WANTED)}
         />
-        <ProfileAction
-          label={`${user.totalComments || 0} ride ${(user.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
-        />
+        {
+          this.isCurrentUser() &&
+          <ProfileAction
+            label={`${user.totalComments || 0} ride ${(user.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
+            onPress={() => this.redirect('conversation')}
+          />
+        }
         <ProfileAction
           label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
           onPress={() => this.redirect('groups')}
