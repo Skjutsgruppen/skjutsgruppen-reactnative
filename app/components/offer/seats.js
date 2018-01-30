@@ -43,9 +43,7 @@ const styles = StyleSheet.create({
 class Seats extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      seat: '1',
-    };
+    this.state = { seat: '' };
   }
 
   componentWillMount() {
@@ -91,7 +89,7 @@ Seats.propTypes = {
 };
 
 Seats.defaultProps = {
-  defaultSeat: 0,
+  defaultSeat: '3',
 };
 
 export default Seats;
