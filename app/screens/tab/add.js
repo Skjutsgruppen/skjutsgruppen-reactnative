@@ -74,14 +74,6 @@ class Add extends Component {
   redirect = (page) => {
     const { navigation } = this.props;
     navigation.navigate(page);
-  };
-
-  redirectToOffer = () => {
-    this.redirect('Offer');
-  }
-
-  redirectToGroup = () => {
-    this.redirect('Group');
   }
 
   redirectToExploreGroup = () => {
@@ -96,7 +88,7 @@ class Add extends Component {
           <View style={styles.rowWrapper}>
             <View style={styles.row}>
               <TouchableOpacity
-                onPress={this.redirectToOffer}
+                onPress={() => this.redirect('Offer')}
                 style={styles.touchable}
               >
                 <Text
@@ -122,7 +114,7 @@ class Add extends Component {
             </View>
             <View style={styles.row}>
               <TouchableOpacity
-                onPress={this.redirectToGroup}
+                onPress={() => this.redirect('Group')}
                 style={styles.touchable}
               >
                 <Image source={require('@assets/icons/icon_group.png')} style={styles.groupIcon} />
