@@ -1,7 +1,7 @@
 /* eslint no-empty: "error" */
 
 import client from '@services/apollo';
-import { ACCOUNT_QUERY } from '@services/apollo/profile';
+import { PROFILE_QUERY, ACCOUNT_QUERY } from '@services/apollo/profile';
 import { TRIPS_QUERY, GET_FEED_QUERY } from '@services/apollo/trip';
 import { GROUPS_QUERY } from '@services/apollo/group';
 import {
@@ -283,18 +283,7 @@ export const increaseProfileExperience = () => {
   }
 };
 
-export const increaseProfileFriendCount = () => {
-  try {
-    const myAccount = getAccount();
-
-    myAccount.account.totalFriends += 1;
-    setAccount(myAccount);
-  } catch (err) {
-    // empty
-  }
-};
-
-export const updateProfileFriendCount = (userId, apollo) => {
+export const updateProfileFriendCount = (userId, apollo, decrease = false) => {
   try {
     apollo.readQuery(
       {
@@ -311,7 +300,13 @@ export const updateProfileFriendCount = (userId, apollo) => {
       const myAccount = apollo.readQuery(
         { query: ACCOUNT_QUERY },
       );
-      myAccount.account.totalFriends += 1;
+
+      if (decrease) {
+        myAccount.account.totalFriends -= 1;
+      } else {
+        myAccount.account.totalFriends += 1;
+      }
+
       apollo.writeQuery(
         { query: ACCOUNT_QUERY, data: myAccount },
       );
@@ -320,3 +315,95 @@ export const updateProfileFriendCount = (userId, apollo) => {
     }
   }
 };
+
+export const updateFriendshipStatus = (friendId, status, apollo) => {
+  try {
+    if (apollo) {
+      const friendProfile = apollo.readQuery({ query: PROFILE_QUERY, variables: { id: friendId } });
+      friendProfile.profile.relationshipType = status;
+
+      apollo.writeQuery({ query: PROFILE_QUERY, data: friendProfile, variables: { id: friendId } });
+    } else {
+      const friendProfile = client.readQuery({ query: PROFILE_QUERY, variables: { id: friendId } });
+      friendProfile.profile.relationshipType = status;
+
+      client.writeQuery({ query: PROFILE_QUERY, data: friendProfile, variables: { id: friendId } });
+    }
+  } catch (err) {
+    // empty
+  }
+};
+
+export const removeNotification = (notificationId, apollo) => {
+  try {
+    const myNotifications = apollo.readQuery({
+      query: NOTIFICATION_QUERY,
+      variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+    });
+
+    myNotifications.notifications.rows.filter(row => row.id === notificationId);
+    myNotifications.notifications.count -= 1;
+
+    apollo.writeQuery({
+      query: NOTIFICATION_QUERY,
+      variables: { filters: 'new', offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+      data: myNotifications,
+    });
+  } catch (err) {
+    // empty
+  }
+};
+
+export const updateOtherProfileFriendCount = (friendId, apollo, decrease = false) => {
+  try {
+    apollo.readQuery(
+      {
+        query: FRIEND_QUERY,
+        variables: {
+          id: friendId,
+          offset: 0,
+          limit: PER_FETCH_LIMIT,
+        },
+      },
+    );
+  } catch (err) {
+    try {
+      if (apollo) {
+        const friendProfile = apollo.readQuery({
+          query: PROFILE_QUERY,
+          variables: { id: friendId },
+        });
+        if (decrease) {
+          friendProfile.profile.totalFriends -= 1;
+        } else {
+          friendProfile.profile.totalFriends += 1;
+        }
+
+        apollo.writeQuery({
+          query: PROFILE_QUERY,
+          data: friendProfile,
+          variables: { id: friendId },
+        });
+      } else {
+        const friendProfile = client.readQuery({
+          query: PROFILE_QUERY,
+          variables: { id: friendId },
+        });
+        if (decrease) {
+          friendProfile.profile.totalFriends -= 1;
+        } else {
+          friendProfile.profile.totalFriends += 1;
+        }
+
+        client.writeQuery({
+          query: PROFILE_QUERY,
+          data: friendProfile,
+          variables: { id: friendId },
+        });
+      }
+    } catch (e) {
+      // empty
+    }
+  }
+};
+
