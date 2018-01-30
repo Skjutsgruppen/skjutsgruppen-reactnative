@@ -264,8 +264,9 @@ class Profile extends Component {
 
   cancelRequest = () => {
     const { user, refetch } = this.state;
+
     this.setState({ loading: true }, () => {
-      this.props.cancelFriendRequest(user.friendRequestId)
+      this.props.cancelFriendRequest(user.friendRequestId, user.id, true)
         .then(refetch)
         .then(() => this.setState({ isRequestPending: false, loading: false }))
         .catch(() => this.setState({ loading: false }));
@@ -332,9 +333,10 @@ class Profile extends Component {
   acceptRequest = () => {
     const { acceptFriendRequest } = this.props;
     const { user, refetch } = this.state;
+    const currentUser = this.props.user;
 
     this.setState({ loading: true });
-    acceptFriendRequest(user.friendRequestId)
+    acceptFriendRequest(user.friendRequestId, currentUser.id, user.id, true)
       .then(refetch)
       .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
@@ -345,7 +347,7 @@ class Profile extends Component {
     const { user, refetch } = this.state;
 
     this.setState({ loading: true });
-    rejectFriendRequest(user.friendRequestId)
+    rejectFriendRequest(user.friendRequestId, user.id, true)
       .then(refetch)
       .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
       .catch(() => this.setState({ loading: false }));

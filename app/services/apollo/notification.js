@@ -1,10 +1,17 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { NOTIFICATION_FETCH_LIMIT, NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED } from '@config/constant';
+import {
+  RELATIONSHIP_TYPE_FRIEND,
+  NOTIFICATION_FETCH_LIMIT,
+  NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
+  NOTIFICATION_TYPE_FRIEND_REQUEST,
+  RELATIONSHIP_TYPE_INCOMING,
+} from '@config/constant';
 import {
   increaseProfileFriendsCount,
   increaseProfileFriend,
   updateNewNotificationToOld,
+  updateFriendshipStatus,
 } from '@services/apollo/dataSync';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
@@ -18,6 +25,9 @@ subscription notification($userId: Int!) {
       avatar
       phoneNumber
       email
+    }
+    Receiver{
+      id
     }
     notifiable
     Notifiable {
@@ -166,6 +176,9 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         avatar
         phoneNumber
         email
+      }
+      Receiver{
+        id
       }
       notifiable
       Notifiable {
@@ -337,6 +350,11 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           if (newNotification.type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
             increaseProfileFriendsCount(param.userId);
             increaseProfileFriend(param.userId, newNotification.User);
+            updateFriendshipStatus(newNotification.Receiver.id, RELATIONSHIP_TYPE_FRIEND);
+          }
+
+          if (newNotification.type === NOTIFICATION_TYPE_FRIEND_REQUEST) {
+            updateFriendshipStatus(newNotification.User.id, RELATIONSHIP_TYPE_INCOMING);
           }
 
           const newrows = [newNotification].concat(prev.notifications.rows);
