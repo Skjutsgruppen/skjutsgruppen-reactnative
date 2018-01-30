@@ -110,7 +110,7 @@ class UserFriendsList extends Component {
         <View style={styles.modalContent}>
           <Loading />
         </View>
-        );
+      );
     }
 
     return (
