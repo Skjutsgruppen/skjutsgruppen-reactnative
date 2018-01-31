@@ -47,7 +47,7 @@ const GroupFeedItem = ({ groupFeed, onPress, setModalVisibility }) => {
 
   if (groupFeed.feedable === FEEDABLE_TRIP) {
     return (
-      <View>
+      <View style={{ alignItems: 'flex-start' }}>
         {defaultText}
         <SharedCard
           trip={groupFeed.Trip}

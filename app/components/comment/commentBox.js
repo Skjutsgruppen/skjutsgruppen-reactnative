@@ -127,7 +127,7 @@ class CommentBox extends PureComponent {
       return (
         <TouchableOpacity
           style={styles.iconWrapper}
-          onPress={handleShowCalender}
+          onPress={() => handleShowCalender(true)}
         >
           <Image source={require('@assets/icons/ic_calender.png')} style={styles.moreIcon} />
         </TouchableOpacity>
