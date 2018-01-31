@@ -48,7 +48,6 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 
 export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({
-    notifyOnNetworkStatusChange: true,
     variables: { id, offset, limit },
   }),
   props: ({ data }) => {

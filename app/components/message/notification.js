@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Loading } from '@components/common';
+import { StyleSheet, View, Text } from 'react-native';
+import { Loading, Retry } from '@components/common';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -10,11 +10,13 @@ import { connect } from 'react-redux';
 import { PER_FETCH_LIMIT } from '@config/constant';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
+import LoadeMore from '@components/message/loadMore';
 
 const styles = StyleSheet.create({
   section: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
+    paddingVertical: 16,
   },
   sectionTitle: {
     fontSize: 12,
@@ -30,20 +32,6 @@ const styles = StyleSheet.create({
   spacedWrapper: {
     paddingHorizontal: 24,
     paddingVertical: 14,
-  },
-  more: {
-    height: 24,
-    alignSelf: 'center',
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 16,
-  },
-  moreText: {
-    fontSize: 12,
-    color: '#333',
   },
   errorText: {
     fontSize: 16,
@@ -68,11 +56,7 @@ class NewNotification extends PureComponent {
     const remaining = notifications.count - PER_FETCH_LIMIT;
     if (remaining < 1) return null;
 
-    return (
-      <TouchableOpacity onPress={this.moreNotification} style={styles.more}>
-        <Text style={styles.moreText}>{trans('message.and')} {remaining} {trans('message.more')}</Text>
-      </TouchableOpacity>
-    );
+    return <LoadeMore onPress={this.moreNotification} remainingCount={remaining} />;
   }
 
   moreNotification = () => {
@@ -101,14 +85,7 @@ class NewNotification extends PureComponent {
     }
 
     if (notifications.error) {
-      render = (
-        <View style={{ marginTop: 20, marginBottom: 20 }}>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          <TouchableOpacity onPress={() => notifications.refetch()}>
-            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-          </TouchableOpacity>
-        </View>
-      );
+      render = <Retry onPress={() => notifications.refetch()} />;
     }
 
     if (notifications.loading) {
@@ -127,7 +104,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} {trans('message.messages')}
+          {filters.toUpperCase()} { filters !== 'new' && trans('message.messages')}
         </Text>
         {this.renderNotification()}
         {this.loadMore()}

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -7,7 +7,7 @@ import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withShare } from '@services/apollo/share';
-import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
+import { AppNotification, Wrapper, Loading, FloatingNavbar, CommentBox } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
@@ -50,40 +50,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.text.darkGray,
   },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: '100%',
-  },
-  footerContent: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f3ed',
-    borderTopWidth: 2,
-    borderColor: '#cececf',
-    paddingVertical: 9,
-    paddingLeft: 24,
-    paddingRight: 12,
-  },
-  msgInput: {
-    flex: 1,
-    backgroundColor: '#fff',
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#b1abab',
-    paddingHorizontal: 12,
-  },
-  send: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 0.25,
-  },
-  sendText: {
-    color: '#00aeef',
-    fontWeight: 'bold',
-  },
 });
 
 class Detail extends PureComponent {
@@ -111,11 +77,10 @@ class Detail extends PureComponent {
     }
   }
 
-  onSubmit = () => {
+  onSubmit = (comment) => {
     this.setState({ loading: true });
     const { submit, group } = this.props;
-    const { comment } = this.state;
-    const validation = this.checkValidation();
+    const validation = this.checkValidation(comment);
 
     if (validation.pass()) {
       try {
@@ -183,9 +148,8 @@ class Detail extends PureComponent {
     );
   }
 
-  checkValidation() {
+  checkValidation = (comment) => {
     const errors = [];
-    const { comment } = this.state;
 
     if (comment === '') {
       errors.push('Comment is required.');
@@ -221,46 +185,6 @@ class Detail extends PureComponent {
         {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
         <MapToggle handlePress={this.onMapPress} />
       </View>);
-  }
-
-  renderButton = () => {
-    const { loading } = this.state;
-    if (loading) {
-      return (<View style={styles.loadingWrapper}><Loading /></View>);
-    }
-    return (
-      <TouchableOpacity onPress={this.onSubmit}>
-        <Text style={styles.sendText}> Send</Text>
-      </TouchableOpacity>);
-  }
-
-  renderCommentForm() {
-    const { error, success, loading } = this.state;
-
-    return (
-      <View style={styles.footer}>
-        <Toast message={error} type="error" />
-        <Toast message={success} type="success" />
-        <View style={styles.footerContent}>
-          <TextInput
-            onChangeText={comment => this.setState({ comment })}
-            value={this.state.comment}
-            style={styles.msgInput}
-            placeholder="Write something..."
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            returnKeyType={'done'}
-            placeholderTextColor="#666"
-            underlineColorAndroid="transparent"
-            editable={!loading}
-          />
-
-          <View style={styles.send}>
-            {this.renderButton()}
-          </View>
-        </View>
-      </View>
-    );
   }
 
   renderLeaveButton = leaveLoading => (
@@ -302,7 +226,7 @@ class Detail extends PureComponent {
 
   render() {
     const { navigation, group } = this.props;
-    const { leaveLoading, notification, notifierOffset } = this.state;
+    const { leaveLoading, notification, notifierOffset, loading, error, success } = this.state;
     const header = this.header(leaveLoading);
     const { notifier, notificationMessage } = navigation.state.params;
 
@@ -319,7 +243,13 @@ class Detail extends PureComponent {
           header={header}
           groupId={group.id}
         />
-        {this.renderCommentForm()}
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
+        <CommentBox
+          handleSend={this.onSubmit}
+          loading={loading}
+          hasCalender
+        />
         {this.renderShareModal()}
       </Wrapper>
     );
