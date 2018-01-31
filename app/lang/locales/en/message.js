@@ -1,6 +1,6 @@
 export const message = {
-  messages_and_group: 'Messages and groups',
-  search: 'Search',
+  messages_and_group: 'Messages & groups',
+  search: 'Search messages',
   no_message: 'No Messages',
   no_ride: 'No Ride',
   your_active_rides: 'YOUR ACTIVE RIDES',

@@ -18,13 +18,13 @@ const styles = StyleSheet.create({
   },
   profilePicWrapper: {
     flexDirection: 'row',
-    marginRight: 8,
+    marginRight: 16,
   },
   profilePic: {
-    width: 40,
-    height: 40,
+    width: 46,
+    height: 46,
     resizeMode: 'cover',
-    borderRadius: 20,
+    borderRadius: 23,
     marginRight: 4,
   },
   chevron: {
@@ -54,12 +54,6 @@ const ActiveGroupItem = ({ group, navigation }) => (
         <View>
           <Text>{group.name}</Text>
         </View>
-      </View>
-      <View>
-        <Image
-          source={require('@assets/icons/icon_chevron_right.png')}
-          style={styles.chevron}
-        />
       </View>
     </View>
   </TouchableOpacity>

@@ -4,7 +4,12 @@ import Date from '@components/date';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 
+import { Colors } from '@theme';
+
 const styles = StyleSheet.create({
+  lightText: {
+    color: Colors.text.gray,
+  },
   flexRow: {
     flex: 1,
     flexDirection: 'row',
@@ -19,13 +24,13 @@ const styles = StyleSheet.create({
   },
   profilePicWrapper: {
     flexDirection: 'row',
-    marginRight: 8,
+    marginRight: 16,
   },
   profilePic: {
-    width: 40,
-    height: 40,
+    width: 46,
+    height: 46,
     resizeMode: 'cover',
-    borderRadius: 20,
+    borderRadius: 23,
     marginRight: 4,
   },
   chevron: {
@@ -66,12 +71,6 @@ const ActiveRideItem = ({ trip, navigation }) => {
             <Text>{tripName}</Text>
             <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
           </View>
-        </View>
-        <View>
-          <Image
-            source={require('@assets/icons/icon_chevron_right.png')}
-            style={styles.chevron}
-          />
         </View>
       </View>
     </TouchableOpacity>
