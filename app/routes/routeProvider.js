@@ -41,6 +41,7 @@ import UserGroups from '@screens/profile/UserGroups';
 import UserFriends from '@screens/profile/UserFriends';
 import UserTrips from '@screens/profile/UserTrips';
 import UserExperiences from '@screens/profile/UserExperiences';
+import UserConversation from '@screens/profile/UserConversation';
 
 import Map from '@screens/Map';
 import Route from '@screens/Route';
@@ -147,6 +148,7 @@ export const Routes = {
   UserFriends: { screen: UserFriends },
   UserTrips: { screen: UserTrips },
   UserExperiences: { screen: UserExperiences },
+  UserConversation: { screen: UserConversation },
 
   SingleNotification: { screen: SingleNotification },
   ActiveRideList: { screen: ActiveRideList },
