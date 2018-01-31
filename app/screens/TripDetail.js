@@ -514,6 +514,7 @@ class TripDetail extends Component {
     const markedDates = {};
     let selectedDate = '';
     let tripDate = '';
+    let tripColor = '';
 
     if (trip.Recurring) {
       trip.Recurring.forEach((row, index) => {
@@ -522,15 +523,18 @@ class TripDetail extends Component {
           tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
         }
 
+        tripColor = (row.type === FEED_TYPE_WANTED) ?
+          Colors.background.blue : Colors.background.pink;
+
         markedDates[selectedDate.format('YYYY-MM-DD')] = [
           {
             startingDay: true,
-            color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
+            color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
             textColor: '#fff',
           },
           {
             endingDay: true,
-            color: selectedDate.isBefore() ? Colors.background.gray : Colors.background.pink,
+            color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
             textColor: '#fff',
           },
         ];
