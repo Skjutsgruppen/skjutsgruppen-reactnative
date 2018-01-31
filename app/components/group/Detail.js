@@ -1,10 +1,19 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableWithoutFeedback, ScrollView, Keyboard } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Keyboard,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
-import { withGroupFeed } from '@services/apollo/group';
+import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withShare } from '@services/apollo/share';
 import { AppNotification, Wrapper, Loading, FloatingNavbar, CommentBox } from '@components/common';
@@ -17,8 +26,12 @@ import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
+import GroupCalendar from '@components/group/groupCalendar';
+
 
 const GroupFeedList = withGroupFeed(GroupFeed);
+const Calendar = withGroupTrips(GroupCalendar);
 
 const styles = StyleSheet.create({
   leaveButton: {
@@ -50,6 +63,68 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.text.darkGray,
   },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width: '100%',
+  },
+  footerContent: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 60,
+    backgroundColor: '#f3f3ed',
+    borderTopWidth: 2,
+    borderColor: '#cececf',
+    paddingVertical: 9,
+    paddingLeft: 24,
+    paddingRight: 12,
+  },
+  msgInput: {
+    flex: 1,
+    backgroundColor: '#fff',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#b1abab',
+    paddingHorizontal: 12,
+  },
+  send: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 0.25,
+  },
+  sendText: {
+    color: '#00aeef',
+    fontWeight: 'bold',
+  },
+  calendarIcon: {
+    paddingRight: 10,
+  },
+  groupCalendarContent: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#f6f9fc',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 2,
+    elevation: 4,
+  },
+  actionLabel: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: Colors.text.blue,
+  },
+  closeWrapper: {
+    backgroundColor: Colors.background.fullWhite,
+  },
+  closeModal: {
+    padding: 16,
+  },
 });
 
 class Detail extends PureComponent {
@@ -65,6 +140,8 @@ class Detail extends PureComponent {
       isOpen: false,
       notification: false,
       notifierOffset: 0,
+      showCalendar: false,
+      groupTrips: [],
     });
   }
 
@@ -137,6 +214,17 @@ class Detail extends PureComponent {
 
   onCloseNotification = () => {
     this.setState({ notification: false, notifierOffset: 0 });
+  }
+
+  setCalendarVisibilty = (show) => {
+    this.setState({ showCalendar: show });
+  }
+
+  redirectToSelectedTripDate = (trip) => {
+    const { navigation } = this.props;
+    this.setCalendarVisibilty(false);
+
+    navigation.navigate('TripDetail', { trip });
   }
 
   leaveGroup = () => {
@@ -249,8 +337,32 @@ class Detail extends PureComponent {
           handleSend={this.onSubmit}
           loading={loading}
           hasCalender
+          handleShowCalender={this.setCalendarVisibilty}
         />
         {this.renderShareModal()}
+        {
+          this.state.showCalendar &&
+          <Modal
+            animationType="slide"
+            transparent
+            onRequestClose={() => this.setState({ showCalendar: false })}
+            visible={this.state.showCalendar}
+          >
+            <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+              <View style={styles.groupCalendarContent}>
+                <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
+                <View style={styles.closeWrapper}>
+                  <TouchableOpacity
+                    style={styles.closeModal}
+                    onPress={() => this.setCalendarVisibilty(false)}
+                  >
+                    <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        }
       </Wrapper>
     );
   }
