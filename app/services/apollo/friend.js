@@ -1,8 +1,15 @@
 
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
-import { increaseProfileFriendCount, updateProfileFriendCount } from '@services/apollo/dataSync';
+import { RELATIONSHIP_TYPE_FRIEND, PER_FETCH_LIMIT } from '@config/constant';
+import {
+  updateFriendshipStatus,
+  removeNotification,
+  increaseProfileFriendsCount,
+  updateProfileFriendCount,
+  updateOtherProfileFriendCount,
+} from '@services/apollo/dataSync';
+
 
 const ADD_FRIEND_QUERY = gql`
 mutation addFriend($id: Int!) {
@@ -16,7 +23,6 @@ export const withAddFriend = graphql(ADD_FRIEND_QUERY, {
   }),
 });
 
-
 const ACCEPT_FRIEND_REQUEST_QUERY = gql`
 mutation acceptFriendRequest($id: Int!) {
   acceptFriendRequest(id :$id)
@@ -25,10 +31,15 @@ mutation acceptFriendRequest($id: Int!) {
 
 export const withAcceptFriendRequest = graphql(ACCEPT_FRIEND_REQUEST_QUERY, {
   props: ({ mutate }) => ({
-    acceptFriendRequest: (id, userId) => mutate({
+    acceptFriendRequest: (id, userId, friendId, remove = false) => mutate({
       variables: { id },
       update: (store) => {
         updateProfileFriendCount(userId, store);
+        updateFriendshipStatus(friendId, RELATIONSHIP_TYPE_FRIEND, store);
+        updateOtherProfileFriendCount(friendId, store);
+        if (remove) {
+          removeNotification(id, store);
+        }
       },
     }),
   }),
@@ -42,7 +53,15 @@ mutation rejectFriendRequest($id: Int!) {
 
 export const withRejectFriendRequest = graphql(REJECT_FRIEND_REQUEST_QUERY, {
   props: ({ mutate }) => ({
-    rejectFriendRequest: id => mutate({ variables: { id } }),
+    rejectFriendRequest: (id, userId, remove = false) => mutate({
+      variables: { id },
+      update: (store) => {
+        updateFriendshipStatus(userId, null, store);
+        if (remove) {
+          removeNotification(id, store);
+        }
+      },
+    }),
   }),
 });
 
@@ -54,7 +73,15 @@ mutation cancelFriendRequest($id: Int!) {
 
 export const withCancelFriendRequest = graphql(CANCEL_FRIEND_REQUEST_QUERY, {
   props: ({ mutate }) => ({
-    cancelFriendRequest: id => mutate({ variables: { id } }),
+    cancelFriendRequest: (id, userId, remove = false) => mutate({
+      variables: { id, userId },
+      update: (store) => {
+        updateFriendshipStatus(userId, null, store);
+        if (remove) {
+          removeNotification(id, store);
+        }
+      },
+    }),
   }),
 });
 
@@ -62,11 +89,10 @@ const FRIEND_SUBSCRIPTION_QUERY = gql`
   subscription myFriend($userId: Int!){
     myFriend(userId: $userId){
       id
-      email
       firstName
       lastName
-      phoneNumber
       avatar
+      inPhoneContact
     }
   }
 `;
@@ -129,7 +155,7 @@ export const withFriends = graphql(FRIEND_QUERY, {
           });
 
           if (!repeated) {
-            increaseProfileFriendCount();
+            increaseProfileFriendsCount();
           }
 
           rows = [newFriend].concat(rows);
@@ -181,6 +207,21 @@ const UNFRIEND_QUERY = gql`
 `;
 export const withUnfriend = graphql(UNFRIEND_QUERY, {
   props: ({ mutate }) => ({
-    unfriend: id => mutate({ variables: { id } }),
+    unfriend: id => mutate({
+      variables: { id },
+      update: (store) => {
+        updateProfileFriendCount(null, store, true);
+        updateFriendshipStatus(id, null, store);
+        updateOtherProfileFriendCount(id, store, true);
+      },
+      refetchQueries: [
+        {
+          query: FRIEND_QUERY, variables: { id, offset: 0, limit: PER_FETCH_LIMIT },
+        },
+        {
+          query: FRIEND_QUERY, variables: { id: null, offset: 0, limit: PER_FETCH_LIMIT },
+        },
+      ],
+    }),
   }),
 });

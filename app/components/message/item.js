@@ -146,7 +146,7 @@ class Item extends PureComponent {
   acceptFriendRequest = (id) => {
     const { acceptFriendRequest, notification, user } = this.props;
     this.setState({ loading: true });
-    acceptFriendRequest(id, user.id)
+    acceptFriendRequest(id, user.id, notification.User.id)
       .then(notification.refetch)
       .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));
@@ -155,7 +155,7 @@ class Item extends PureComponent {
   rejectFriendRequest = (id) => {
     const { rejectFriendRequest, notification } = this.props;
     this.setState({ loading: true });
-    rejectFriendRequest(id)
+    rejectFriendRequest(id, notification.User.id)
       .then(notification.refetch)
       .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
       .catch(() => this.setState({ loading: false }));
