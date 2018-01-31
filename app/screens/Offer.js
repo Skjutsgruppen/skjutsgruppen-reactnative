@@ -92,7 +92,7 @@ class Offer extends Component {
           text: '',
           photo: null,
         },
-        seat: '1',
+        seat: '3',
         time: '00:00',
         flexibilityInfo: {
           duration: 0,
@@ -103,7 +103,7 @@ class Offer extends Component {
       description: {},
       trip: {},
       dates: [],
-      seat: 1,
+      seat: 3,
       share: {},
       activeTab: 1,
       disabledTabs: [2, 3, 4, 5],
@@ -173,7 +173,7 @@ class Offer extends Component {
   }
 
   onSeatNext = (seat) => {
-    if (seat === '' || parseInt(seat, 10) < 1) {
+    if (seat === '' || parseInt(seat, 10) < 1 || isNaN(parseInt(seat, 10))) {
       this.setState({ error: getToast(['SEAT_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
