@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     left: -Dimensions.get('window').width * 0.1,
     height: Dimensions.get('window').width * 0.6,
     width: Dimensions.get('window').width * 0.6,
-    borderRadius: 160,
+    borderRadius: (Dimensions.get('window').width * 0.6) / 2,
     backgroundColor: '#02cbf9',
   },
   header: {

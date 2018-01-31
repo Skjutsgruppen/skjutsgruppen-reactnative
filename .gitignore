@@ -53,8 +53,11 @@ fastlane/Preview.html
 fastlane/screenshots
 
 .history/
+.vscode/
 .env
 .env.production
 *.swp
 *.swo
 *.swm
+
+create.js

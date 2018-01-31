@@ -90,6 +90,7 @@ const Tab = TabNavigator(TabRoutes,
       },
       tabStyle: {
         height: 60,
+        opacity: 1,
       },
       style: {
         backgroundColor: 'white',

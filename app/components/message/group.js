@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Colors from '@theme/colors';
-import { Loading } from '@components/common';
+import { Loading, Retry } from '@components/common';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
@@ -10,11 +10,13 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import ActiveGroupItem from '@components/message/ActiveGroupItem';
 import { PER_FETCH_LIMIT } from '@config/constant';
+import LoadeMore from '@components/message/loadMore';
 
 const styles = StyleSheet.create({
   section: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
+    paddingVertical: 16,
   },
   sectionTitle: {
     fontSize: 12,
@@ -68,11 +70,7 @@ class Group extends PureComponent {
     const remaining = groups.count - PER_FETCH_LIMIT;
     if (remaining < 1) return null;
 
-    return (
-      <TouchableOpacity onPress={this.moreGroups} style={styles.more}>
-        <Text style={styles.moreText}>{trans('message.and')} {remaining} {trans('message.more')}</Text>
-      </TouchableOpacity>
-    );
+    return <LoadeMore onPress={this.moreGroups} remainingCount={remaining} />;
   }
 
   moreGroups = () => {
@@ -98,14 +96,7 @@ class Group extends PureComponent {
     }
 
     if (groups.error) {
-      render = (
-        <View style={{ marginTop: 20, marginBottom: 20 }}>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          <TouchableOpacity onPress={() => groups.refetch()}>
-            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-          </TouchableOpacity>
-        </View>
-      );
+      render = <Retry onPress={() => groups.refetch()} />;
     }
 
     if (groups.loading) {
