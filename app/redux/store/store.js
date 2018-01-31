@@ -6,8 +6,18 @@ import thunk from 'redux-thunk';
 import reducers from '@redux/reducers/reducers';
 import Apollo from '@services/apollo';
 import ScreenTracker from '@redux/screenTracker';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'
 
-const congifureStore = (initialState = {}, customStore) => {
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: ['nav'],
+};
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+const congifureStore = (initialState = {}) => {
   const middlewares = [thunk];
 
   if (__DEV__) {
@@ -21,11 +31,11 @@ const congifureStore = (initialState = {}, customStore) => {
     applyMiddleware(...middlewares),
   ];
 
-  const makeStore = (__DEV__ && typeof customStore === 'function') ? customStore : createStore;
+  const store = createStore(persistedReducer, initialState, compose(...enhancers));
 
-  const store = makeStore(reducers, initialState, compose(...enhancers));
+  const persistor = persistStore(store);
 
-  return store;
+  return { persistor, store };
 };
 
 export default congifureStore;
