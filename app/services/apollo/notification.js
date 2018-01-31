@@ -149,12 +149,6 @@ subscription notification($userId: Int!) {
           firstName 
           avatar 
         }
-        Participants {
-          User {
-            id
-          } 
-          status
-        }
       }
     }
     notifiable
@@ -300,12 +294,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             firstName 
             avatar 
           } 
-          Participants {
-            User {
-              id
-            } 
-            status
-          }
         }
       }
       notifiable
@@ -572,12 +560,6 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id 
             firstName 
             avatar 
-          }
-          Participants {
-            User {
-              id
-            } 
-            status
           }
         }
       }

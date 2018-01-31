@@ -1,5 +1,6 @@
 export const PER_FETCH_LIMIT = 10;
 export const NOTIFICATION_FETCH_LIMIT = 20;
+export const CONVERSATION_FETCH_LIMIT = 20;
 
 export const EXPERIENCE_AFTER_CARDS = 3;
 export const EXPERIENCE_FETCH_LIMIT = 5;
