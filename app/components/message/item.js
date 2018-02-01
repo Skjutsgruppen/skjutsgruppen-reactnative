@@ -179,8 +179,8 @@ class Item extends PureComponent {
             {this.renderPic(User.avatar, User.id)}
           </View>
           <View style={{ flex: 1 }}>
-            <Text>{User.firstName} </Text>
-            <Text>
+            <Text style={styles.bold}>{User.firstName} </Text>
+            <Text style={styles.bold}>
               wants to be your friend.
             </Text>
           </View>
@@ -205,9 +205,9 @@ class Item extends PureComponent {
           </View>
           <View style={{ flex: 1 }}>
             <Text onPress={() => this.redirect(null, 'Profile', { profileId: User.id })} style={styles.bold}>{User.firstName} </Text>
-            <Text>
+            <Text style={styles.bold}>
               wants to participate in your group
-              <Text style={styles.bold}> {Notifiable.Group.name} </Text>
+              <Text> {Notifiable.Group.name} </Text>
             </Text>
           </View>
         </View>
@@ -236,10 +236,10 @@ class Item extends PureComponent {
                   : this.renderPic(photo, userId)
               }
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={[{ flex: 1 }]}>
               {
                 user &&
-                <Text>{user}</Text>
+                <Text style={[filters === 'new' && styles.bold]}>{user}</Text>
               }
               <Text style={[filters === 'new' && styles.bold]}>
                 {text}
@@ -247,7 +247,7 @@ class Item extends PureComponent {
             </View>
           </View>
           <View>
-            {<Text style={styles.time}><Date format="MMM DD">{date}</Date></Text>}
+            {<Text style={[filters === 'new' && styles.bold, styles.time]}><Date calendarTime>{date}</Date></Text>}
           </View>
         </View>
       </TouchableOpacity>
