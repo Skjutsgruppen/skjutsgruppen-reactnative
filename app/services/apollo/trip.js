@@ -463,6 +463,7 @@ query trip($id: Int!){
     ReturnTrip {
       id
       date
+      type
       TripStart {
         name
       }
@@ -481,6 +482,7 @@ query trip($id: Int!){
     Recurring {
       id
       date
+      type
       TripStart {
         name
       }
