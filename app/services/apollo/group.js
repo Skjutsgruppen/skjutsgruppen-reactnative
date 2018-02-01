@@ -731,3 +731,54 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     };
   },
 });
+
+const GROUP_TRIPS_QUERY = gql`
+  query groupTrips($id: Int){
+    groupTrips(groupId: $id){
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id 
+        firstName 
+        avatar 
+        relation {
+          id 
+          firstName
+          avatar
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops { 
+        name 
+        coordinates 
+      } 
+      date 
+      time 
+      photo 
+      mapPhoto
+      totalComments
+      isParticipant
+    }
+  }
+`;
+
+export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
+  {
+    options: ({ id }) => ({
+      notifyOnNetworkStatusChange: true,
+      variables: { id },
+    }),
+    props: ({ data: { loading, groupTrips = [], refetch, networkStatus, error } }) => ({
+      loading, groupTrips, refetch, networkStatus, error,
+    }),
+  },
+);
