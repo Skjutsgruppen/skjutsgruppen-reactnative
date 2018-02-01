@@ -9,8 +9,11 @@ import {
   GROUP_FEED_TYPE_COMMENT,
   GROUP_FEED_TYPE_SHARE,
   CLOSE_GROUP,
+  FEED_FILTER_WANTED,
+  FEEDABLE_TRIP,
 } from '@config/constant';
 import RelationBubbleList from '@components/relationBubbleList';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -49,6 +52,25 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     marginTop: 2,
     fontSize: 12,
+  },
+  indicator: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    position: 'absolute',
+    top: 0,
+    right: 16,
+  },
+  pinkBg: {
+    backgroundColor: Colors.background.pink,
+  },
+  blueBg: {
+    backgroundColor: Colors.background.blue,
+  },
+  profilePicWrapper: {
+    width: 48,
+    height: 48,
+    marginRight: 16,
   },
 });
 
@@ -113,12 +135,32 @@ class Feed extends Component {
     );
   }
 
+  renderProfilePic() {
+    const { feed } = this.props;
+
+    if (feed.feedable === FEEDABLE_TRIP) {
+      return (
+        <View>
+          <Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />
+          <View
+            style={[
+              styles.indicator,
+              (feed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
+            ]}
+          />
+        </View>
+      );
+    }
+
+    return (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
+  }
+
   renderClosedGroup() {
     const { feed, onPressUser } = this.props;
     let image = null;
 
     if (feed.Group.User.avatar) {
-      image = (<Image source={{ uri: feed.Group.User.avatar }} style={styles.profilePic} />);
+      image = this.renderProfilePic();
     } else {
       image = (<View style={styles.imgIcon} />);
     }
@@ -148,7 +190,7 @@ class Feed extends Component {
 
     let image = null;
     if (feed.User.avatar) {
-      image = (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
+      image = this.renderProfilePic();
     } else {
       image = (<View style={styles.imgIcon} />);
     }

@@ -6,6 +6,8 @@ import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/consta
 
 const styles = StyleSheet.create({
   wrapper: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     marginLeft: 84,
     marginRight: 36,
     marginBottom: 8,
