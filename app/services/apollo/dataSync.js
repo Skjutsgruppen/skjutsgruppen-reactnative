@@ -125,10 +125,10 @@ export const updateNewNotificationToOld = (id, apollo) => {
         oldNotificationsData.notifications.rows.push(notification);
         oldNotificationsData.notifications.count += 1;
 
-        return null;
+        return false;
       }
 
-      return notification;
+      return true;
     });
 
     newNotificationsData.notifications.rows = rows;

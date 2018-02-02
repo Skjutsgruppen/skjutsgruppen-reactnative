@@ -1,18 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import {
-  RELATIONSHIP_TYPE_FRIEND,
-  NOTIFICATION_FETCH_LIMIT,
-  NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
-  NOTIFICATION_TYPE_FRIEND_REQUEST,
-  RELATIONSHIP_TYPE_INCOMING,
-} from '@config/constant';
-import {
-  increaseProfileFriendsCount,
-  increaseProfileFriend,
-  updateNewNotificationToOld,
-  updateFriendshipStatus,
-} from '@services/apollo/dataSync';
+import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
+import { updateNewNotificationToOld } from '@services/apollo/dataSync';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
@@ -309,6 +298,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
   options: ({ filters, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { filters, offset, limit },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({
     data: { loading, notifications, fetchMore, refetch, subscribeToMore, networkStatus, error },
@@ -334,17 +324,6 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           }
 
           const newNotification = subscriptionData.data.notification;
-
-          if (newNotification.type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
-            increaseProfileFriendsCount(param.userId);
-            increaseProfileFriend(param.userId, newNotification.User);
-            updateFriendshipStatus(newNotification.Receiver.id, RELATIONSHIP_TYPE_FRIEND);
-          }
-
-          if (newNotification.type === NOTIFICATION_TYPE_FRIEND_REQUEST) {
-            updateFriendshipStatus(newNotification.User.id, RELATIONSHIP_TYPE_INCOMING);
-          }
-
           const newrows = [newNotification].concat(prev.notifications.rows);
 
           return {
