@@ -310,14 +310,14 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
           let repeated = false;
           const newExperience = subscriptionData.data.myExperience;
 
-          rows = prev.myExperiences.rows.map((row) => {
+          rows = prev.myExperiences.rows.filter((row) => {
             if (row.id === newExperience.id) {
               repeated = true;
-              return null;
+              return false;
             }
             count += 1;
 
-            return row;
+            return true;
           });
 
           if (!repeated) {
