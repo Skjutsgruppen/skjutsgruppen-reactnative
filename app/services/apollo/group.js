@@ -1,7 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
-import { increaseProfileGroupCount } from '@services/apollo/dataSync';
 
 const SUBMIT_GROUP_QUERY = gql`
 mutation group
@@ -168,6 +167,7 @@ export const withExploreGroup = graphql(EXPLORE_GROUPS_QUERY, {
       offset,
       limit,
     },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, exploreGroups, refetch, fetchMore, networkStatus, error } }) => {
     let rows = [];
@@ -318,6 +318,7 @@ query group($id: Int!){
 export const withGroup = graphql(FIND_GROUP_QUERY, {
   options: ({ id }) => ({
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, group = {}, refetch, networkStatus, error } }) => ({
     loading, group, refetch, networkStatus, error,
@@ -611,6 +612,7 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
   options: ({ id, offset, limit = 10 }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { id, limit, offset },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, groupMembers, fetchMore, refetch, networkStatus, error } }) => {
     let rows = [];
@@ -671,7 +673,12 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => ({ variables: { id, offset, limit } }),
+  }) => (
+    {
+      variables: { id, offset, limit },
+      fetchPolicy: 'cache-and-network',
+    }
+  ),
   props: (
     {
       data: {
@@ -705,23 +712,17 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 
           rows = [];
           count = 0;
-          let repeated = false;
           const newGroup = subscriptionData.data.myGroup;
 
           rows = prev.groups.rows.filter((row) => {
             if (row.id === newGroup.id) {
-              repeated = true;
-              return null;
+              return false;
             }
             count += 1;
 
-            return row;
+            return true;
           });
           rows = [newGroup].concat(rows);
-
-          if (!repeated) {
-            increaseProfileGroupCount(param.userId, newGroup.id);
-          }
 
           return {
             groups: { ...prev.groups, ...{ rows, count: count + 1 } },
