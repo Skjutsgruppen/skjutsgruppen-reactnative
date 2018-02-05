@@ -23,6 +23,7 @@ import About from '@components/common/about';
 import { getDate } from '@config';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_PUBLISHED, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
+import { connect } from 'react-redux';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -207,6 +208,20 @@ const styles = StyleSheet.create({
     color: Colors.text.blue,
     fontWeight: 'bold',
   },
+  indicator: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+  pinkBg: {
+    backgroundColor: Colors.background.pink,
+  },
+  blueBg: {
+    backgroundColor: Colors.background.blue,
+  },
 });
 
 class TripDetail extends Component {
@@ -333,6 +348,13 @@ class TripDetail extends Component {
     this.setState({ notification: false, notifierOffset: 0 });
   }
 
+  onReport = () => {
+    const { navigation } = this.props;
+    const { trip } = this.state;
+    this.setModalVisible(false);
+    navigation.navigate('Report', { data: trip, type: FEEDABLE_TRIP });
+  }
+
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
@@ -439,7 +461,7 @@ class TripDetail extends Component {
   }
 
   renderModal() {
-    const { navigation } = this.props;
+    const { navigation, user } = this.props;
     const { trip, modalVisible } = this.state;
 
     return (
@@ -494,11 +516,15 @@ class TripDetail extends Component {
               <Text style={styles.actionLabel}>{trans('trip.embeded_with_html')}</Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.report_this_ride')}</Text>
-            </TouchableOpacity>
+            {
+              user.id !== trip.User.id &&
+              <TouchableOpacity
+                style={styles.action}
+                onPress={this.onReport}
+              >
+                <Text style={styles.actionLabel}>{trans('trip.report_this_ride')}</Text>
+              </TouchableOpacity>
+            }
           </View>
           <View style={styles.closeWrapper}>
             <TouchableOpacity
@@ -576,6 +602,28 @@ class TripDetail extends Component {
     }
 
     return null;
+  }
+
+  renderTripCard = () => {
+    const { trip } = this.state;
+
+    return (
+      <View key={trip.id} style={styles.card}>
+        <View style={styles.profilePicWrapper}>
+          <Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />
+          <View
+            style={[
+              styles.indicator,
+              (trip.type === FEED_TYPE_WANTED) ? styles.blueBg : styles.pinkBg,
+            ]}
+          />
+        </View>
+        <TouchableOpacity style={styles.content}>
+          <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+          <Date format="YYYY-MM-DD HH:mm">{trip.date}</Date>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   render() {
@@ -789,9 +837,19 @@ TripDetail.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-const TripWithDetail = compose(withShare, submitComment, withTrip)(TripDetail);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+const TripWithDetail = compose(
+  withShare,
+  submitComment,
+  withTrip,
+  connect(mapStateToProps),
+)(TripDetail);
 
 const TripScreen = ({ navigation }) => {
   const { trip } = navigation.state.params;
