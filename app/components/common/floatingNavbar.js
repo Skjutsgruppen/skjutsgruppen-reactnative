@@ -12,15 +12,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     height: 60,
     paddingHorizontal: 16,
+  },
+  floated: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     zIndex: 10,
   },
+  fixed: {
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 10,
+  },
   title: {
     fontWeight: 'bold',
-    color: Colors.text.purple,
+    color: '#707070',
     backgroundColor: 'transparent',
   },
   changeButton: {
@@ -48,6 +54,7 @@ const styles = StyleSheet.create({
 const FloatingNavbar = (
   {
     style,
+    transparent,
     handleBack,
     title,
     showShare,
@@ -59,7 +66,13 @@ const FloatingNavbar = (
     offset,
   }) =>
   (
-    <View style={[styles.wrapper, style, offset && { top: offset }]}>
+    <View style={[
+      styles.wrapper,
+      style,
+      transparent ? styles.floated : styles.fixed,
+      offset && { top: offset },
+    ]}
+    >
       <FloatingBackButton onPress={handleBack} />
       {
         (title !== '') &&
@@ -92,6 +105,7 @@ const FloatingNavbar = (
 
 FloatingNavbar.propTypes = {
   style: View.propTypes.style,
+  transparent: PropTypes.bool,
   handleBack: PropTypes.func,
   showShare: PropTypes.bool,
   showChange: PropTypes.bool,
@@ -105,6 +119,7 @@ FloatingNavbar.propTypes = {
 
 FloatingNavbar.defaultProps = {
   style: {},
+  transparent: true,
   handleBack: () => { },
   showShare: false,
   showChange: false,
