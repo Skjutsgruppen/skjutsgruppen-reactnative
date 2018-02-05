@@ -632,7 +632,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
 
             return true;
           });
-          rows = [newTrip].concat(rows);      
+          rows = [newTrip].concat(rows);
 
           return {
             trips: { ...prev.trips, ...{ rows, count: count + 1 } },
