@@ -22,7 +22,7 @@ const GhostButton = ({ style, label, color, onPress }) => (
   <TouchableHighlight
     onPress={onPress}
     style={[styles.button, style]}
-    underlayColor={Colors.background.lightGray}
+    underlayColor={Colors.background.mutedPink}
   >
     <View>
       <Text style={[styles.label, color ? { color } : {}]}>{label}</Text>

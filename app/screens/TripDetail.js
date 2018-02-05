@@ -633,6 +633,7 @@ class TripDetail extends Component {
           handleBack={this.goBack}
           showShare
           handleShare={this.onSharePress}
+          transparent
           offset={notifierOffset}
         />
         <ScrollView>
