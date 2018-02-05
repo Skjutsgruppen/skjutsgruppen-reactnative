@@ -39,67 +39,62 @@ const styles = StyleSheet.create({
   },
 });
 
-const ConfirmModal = (props) => {
-  const {
-    loading,
-    style,
-    visible,
-    message,
-    onRequestClose,
-    confirmLabel,
-    denyLabel,
-    onConfirm,
-    onDeny,
-    confrimTextColor,
-    denyTextColor,
-  } = props;
-
-  return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType={'fade'}
-      onRequestClose={onRequestClose}
-    >
-      <View style={[styles.backdrop, style]}>
-        <View style={[styles.content, loading && { width: 100 }]}>
-          {loading && (<View style={{ paddingBottom: 25 }}><Loading /></View>)}
-          {
-            !loading &&
-            <View>
-              <Text style={styles.message}>{message}</Text>
-              <View style={styles.actions}>
-                <GhostButton
-                  label={confirmLabel}
-                  onPress={onConfirm}
-                  color={confrimTextColor}
-                />
-                <View style={styles.verticalDivider} />
-                <GhostButton
-                  label={denyLabel}
-                  onPress={onDeny}
-                  color={denyTextColor}
-                />
-              </View>
+const ConfirmModal = ({
+  loading,
+  style,
+  visible,
+  message,
+  onRequestClose,
+  confirmLabel,
+  denyLabel,
+  onConfirm,
+  onDeny,
+  confrimTextColor,
+  denyTextColor,
+}) => (
+  <Modal
+    transparent
+    visible={visible}
+    animationType={'fade'}
+    onRequestClose={onRequestClose}
+  >
+    <View style={[styles.backdrop, style]}>
+      <View style={[styles.content, loading && { width: 100 }]}>
+        {loading && (<View style={{ paddingBottom: 25 }}><Loading /></View>)}
+        {
+          !loading &&
+          <View>
+            <Text style={styles.message}>{message}</Text>
+            <View style={styles.actions}>
+              <GhostButton
+                label={confirmLabel}
+                onPress={onConfirm}
+                color={confrimTextColor}
+              />
+              <View style={styles.verticalDivider} />
+              <GhostButton
+                label={denyLabel}
+                onPress={onDeny}
+                color={denyTextColor}
+              />
             </View>
-          }
-        </View>
+          </View>
+        }
       </View>
-    </Modal>
-  );
-};
+    </View>
+  </Modal>
+);
 
 ConfirmModal.propTypes = {
   loading: PropTypes.bool.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  onDeny: PropTypes.func.isRequired,
+  style: View.propTypes.style,
+  visible: PropTypes.bool,
   message: PropTypes.node.isRequired,
   onRequestClose: PropTypes.func.isRequired,
-
-  visible: PropTypes.bool,
-  style: View.propTypes.style,
-  confirmLabel: PropTypes.string,
-  denyLabel: PropTypes.string,
+  confirmLabel: PropTypes.string.isRequired,
+  denyLabel: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  onDeny: PropTypes.func.isRequired,
   confrimTextColor: PropTypes.string,
   denyTextColor: PropTypes.string,
 };

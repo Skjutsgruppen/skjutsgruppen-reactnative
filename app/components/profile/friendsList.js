@@ -1,51 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
 import { withUnfriend } from '@services/apollo/friend';
-import { Loading } from '@components/common';
+import { SearchBar, ConfirmModal } from '@components/common';
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    borderRadius: 12,
-    backgroundColor: Colors.background.fullWhite,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 18,
-    lineHeight: 28,
-    color: Colors.text.black,
-  },
-  modalActionWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    marginTop: 12,
-  },
-  modalAction: {
-    width: '40%',
-    padding: 12,
-    borderRadius: 4,
-  },
-  actionLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  pinkText: {
-    color: Colors.text.pink,
-  },
   errorText: {
     textAlign: 'center',
     color: Colors.text.red,
@@ -102,61 +64,28 @@ class UserFriendsList extends Component {
     });
   }
 
-  renderModalContent = () => {
-    const { friend, loading, error } = this.state;
-
-    if (loading) {
-      return (
-        <View style={styles.modalContent}>
-          <Loading />
-        </View>
-      );
-    }
-
-    return (
-      <View style={styles.modalContent}>
-        {error !== null && <Text style={styles.errorText}>Error removing friend!</Text>}
-        <Text style={styles.modalTitle}>
-          Are you sure you want to remove
-          <Text style={styles.boldText}> {friend.firstName} {friend.lastName} </Text>
-          from your friends list?
-        </Text>
-        <View style={styles.modalActionWrapper}>
-          <TouchableHighlight
-            style={styles.modalAction}
-            underlayColor="#f0f0f0"
-            onPress={this.removeFriend}
-          >
-            <Text style={[styles.actionLabel, styles.pinkText]}>
-              {error !== null ? 'Retry' : 'Remove'}
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.modalAction}
-            underlayColor="#f0f0f0"
-            onPress={() => this.setConfirmModalVisibility(false)}
-          >
-            <Text style={styles.actionLabel}>Cancel</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    );
-  }
-
   renderModal() {
-    const { confirmModalVisibility } = this.state;
+    const { confirmModalVisibility, friend, loading, error } = this.state;
+    const message = (
+      <Text>
+        Are you sure you want to remove
+        <Text style={styles.boldText}> {friend.firstName} {friend.lastName} </Text>
+        from your friends list?
+      </Text>
+    );
 
     return (
-      <Modal
-        transparent
+      <ConfirmModal
+        loading={loading}
         visible={confirmModalVisibility}
-        animationType={'fade'}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
-      >
-        <View style={styles.modalContainer}>
-          {this.renderModalContent()}
-        </View>
-      </Modal>
+        message={message}
+        confirmLabel={error !== null ? 'Retry' : 'Yes'}
+        denyLabel="No"
+        onConfirm={this.removeFriend}
+        onDeny={() => this.setConfirmModalVisibility(false)}
+        confrimTextColor={Colors.text.blue}
+      />
     );
   }
 
@@ -167,6 +96,7 @@ class UserFriendsList extends Component {
       <View>
         <DataList
           data={friends}
+          header={() => <SearchBar placeholder="Search" style={{ marginTop: 48, marginBottom: 30 }} />}
           renderItem={({ item }) => (
             <Friends
               key={item.id}

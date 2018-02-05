@@ -3,14 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import FriendsList from '@components/profile/friendsList';
 import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
     flex: 1,
-    backgroundColor: Colors.background.lightGray,
     paddingBottom: 12,
   },
   lightText: {
@@ -77,8 +76,12 @@ class UserFriends extends Component {
     const { id } = this.props.navigation.state.params || this.props.user.id;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <FloatingNavbar
+          handleBack={this.goBack}
+          transparent={false}
+          title="Friends"
+        />
         <View style={styles.listWrapper}>
           <Friends id={id} editable={editable} onPress={this.onPress} />
         </View>
