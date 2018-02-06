@@ -6,6 +6,8 @@ import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import RelationModal from '@components/relationModal';
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -36,12 +38,30 @@ const styles = StyleSheet.create({
 class List extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, showFoFModal: false, friendsData: [] });
+    this.state = ({ loading: false, showFoFModal: false, friendsData: [], commentsRow: [] });
   }
 
   componentWillMount() {
     const { subscribeToNewComments, id } = this.props;
     subscribeToNewComments({ id });
+  }
+
+  componentWillReceiveProps({ comments, ownerId, user }) {
+    const uniqueUsers = [user.id, ownerId];
+    let newItem = {};
+
+    const commentsRow = comments.rows.map((item) => {
+      newItem = item;
+      if (uniqueUsers.indexOf(item.User.id) > -1) {
+        newItem = { ...item, showRelation: false };
+      } else {
+        uniqueUsers.push(item.User.id);
+        newItem = { ...item, showRelation: true };
+      }
+      return newItem;
+    });
+
+    this.setState({ commentsRow });
   }
 
   onPress = (userId) => {
@@ -116,10 +136,12 @@ class List extends PureComponent {
   };
 
   render() {
-    const { loading, error, rows, count } = this.props.comments;
+    const { comments, onCommentPress } = this.props;
+    const { error, rows, count, networkStatus } = comments;
+    const { commentsRow } = this.state;
 
-    if (loading) {
-      return <View style={styles.block}><Loading /></View>;
+    if (networkStatus === 1 && rows.length < 1) {
+      return (<View style={styles.block}><Loading /></View>);
     }
 
     if (error) {
@@ -138,10 +160,10 @@ class List extends PureComponent {
       <View style={{ marginTop: 24 }}>
         <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>
         <FlatList
-          data={rows}
+          data={commentsRow}
           renderItem={({ item }) => (
             <Item
-              onPress={this.props.onCommentPress}
+              onPress={onCommentPress}
               comment={item}
               setModalVisibility={this.setModalVisibility}
             />
@@ -157,6 +179,10 @@ class List extends PureComponent {
 }
 
 List.propTypes = {
+  ownerId: PropTypes.number.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
   comments: PropTypes.shape({
     loading: PropTypes.boolean,
     rows: PropTypes.array,
@@ -172,4 +198,6 @@ List.propTypes = {
   }).isRequired,
 };
 
-export default withNavigation(List);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withNavigation, connect(mapStateToProps))(List);

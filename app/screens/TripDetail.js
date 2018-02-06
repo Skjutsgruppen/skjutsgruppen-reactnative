@@ -690,6 +690,7 @@ class TripDetail extends Component {
           <TripComment
             onCommentPress={this.onProfilePress}
             id={trip.id}
+            ownerId={trip.User.id}
           />
           <About />
         </ScrollView>
