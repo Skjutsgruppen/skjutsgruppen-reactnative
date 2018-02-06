@@ -208,7 +208,7 @@ class Feed extends Component {
             {this.renderFeed()}
           </View>
           <Text style={styles.time}><Date>{feed.date}</Date></Text>
-          {this.renderRelation()}
+          {false && this.renderRelation()}
         </View>
       </View>
     );
