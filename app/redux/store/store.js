@@ -8,6 +8,14 @@ import Apollo from '@services/apollo';
 import ScreenTracker from '@redux/screenTracker';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import {
+  createReactNavigationReduxMiddleware,
+} from 'react-navigation-redux-helpers';
+
+const NavMiddleware = createReactNavigationReduxMiddleware(
+  'root',
+  state => state.nav,
+);
 
 const persistConfig = {
   key: 'root',
@@ -26,6 +34,7 @@ const congifureStore = (initialState = {}) => {
 
   middlewares.push(Apollo.middleware());
   middlewares.push(ScreenTracker);
+  middlewares.push(NavMiddleware);
 
   const enhancers = [
     applyMiddleware(...middlewares),

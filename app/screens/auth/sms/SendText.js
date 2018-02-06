@@ -84,7 +84,7 @@ class SendText extends Component {
               token: data.isPhoneVerified.token,
               user: data.isPhoneVerified.User,
             }).then(() => {
-              navigation.reset('MobileVerified');
+              navigation.replace('MobileVerified');
             }).catch(console.warn);
           }
         }).catch(console.warn);

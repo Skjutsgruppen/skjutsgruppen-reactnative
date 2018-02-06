@@ -37,7 +37,7 @@ class AddPhoto extends Component {
         <CustomButton
           style={styles.button}
           bgColor={Colors.background.green}
-          onPress={() => this.props.navigation.reset('SendText')}
+          onPress={() => this.props.navigation.replace('SendText')}
         >
           Next
         </CustomButton>
