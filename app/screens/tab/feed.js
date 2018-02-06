@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Alert, Dimensions } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
-import { Wrapper } from '@components/common';
+import { Wrapper, Circle } from '@components/common';
 import { withFeed } from '@services/apollo/trip';
 import { withShare } from '@services/apollo/share';
 import PropTypes from 'prop-types';
@@ -29,7 +28,6 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
-import { Gradients } from '@theme';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -47,6 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    overflow: 'visible',
   },
   menuWrapper: {
     flexDirection: 'row',
@@ -290,17 +289,15 @@ class Feed extends Component {
   }
 
   renderMap = () => (
-    <View style={styles.mapWrapper} >
-      <TouchableOpacity onPress={this.redirectToMap} style={styles.mapWrapper}>
-        <Image source={Map} style={styles.mapImg} />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={this.redirectToMap} style={styles.mapWrapper}>
+      <Image source={Map} style={styles.mapImg} />
+    </TouchableOpacity>
   );
 
   render() {
     return (
-      <Wrapper bgColor="#eee" >
-        <LinearGradient colors={Gradients.blue} style={styles.circle} />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <Circle />
         {this.renderFeed()}
         {this.renderShareModal()}
         <Filter
