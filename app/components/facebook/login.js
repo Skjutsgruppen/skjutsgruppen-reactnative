@@ -23,7 +23,7 @@ class FBLogin extends PureComponent {
 
     if (fb.hasID) {
       await setLogin(fb.userById);
-      navigation.reset('Tab');
+      navigation.replace('Tab');
       return;
     }
 
@@ -59,7 +59,7 @@ class FBLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
-    navigation.reset('Tab');
+    navigation.replace('Tab');
   }
 
   async register({ profile, token: fbToken }) {
@@ -90,9 +90,9 @@ class FBLogin extends PureComponent {
       });
 
       if (profile.verified) {
-        navigation.reset('EmailVerified');
+        navigation.replace('EmailVerified');
       } else {
-        navigation.reset('CheckMail');
+        navigation.replace('CheckMail');
       }
     } catch (error) {
       console.warn(error, error.graphQLErrors[0].code);

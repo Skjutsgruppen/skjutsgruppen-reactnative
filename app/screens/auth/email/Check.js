@@ -60,7 +60,7 @@ class Check extends Component {
   componentWillMount() {
     const { auth, navigation } = this.props;
     if (auth.login) {
-      navigation.reset('Tab');
+      navigation.replace('Tab');
     }
   }
 
@@ -81,9 +81,9 @@ class Check extends Component {
             setUser(user).then(() => {
               this.setState({ loading: false, error: '' }, () => {
                 if (user.phoneNumber && !user.phoneVerified) {
-                  navigation.reset('SendText');
+                  navigation.replace('SendText');
                 } else {
-                  navigation.reset('EmailVerified');
+                  navigation.replace('EmailVerified');
                 }
               });
             });
@@ -129,7 +129,7 @@ class Check extends Component {
   reset = () => {
     const { logout, navigation } = this.props;
 
-    logout().then(() => navigation.reset('Splash'));
+    logout().then(() => navigation.replace('Splash'));
   }
 
   renderButton = () => {

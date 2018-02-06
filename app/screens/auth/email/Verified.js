@@ -73,7 +73,7 @@ class Verified extends Component {
   componentWillMount() {
     const { auth, navigation } = this.props;
     if (auth.login) {
-      navigation.reset('Tab');
+      navigation.replace('Tab');
     }
 
     this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', countryCode: getCountryDialCode(), phone: getPhoneNumber() });
@@ -110,7 +110,7 @@ class Verified extends Component {
                 });
             });
             updateUser({ token, user: User }).then(() => {
-              navigation.reset('SendText');
+              navigation.replace('SendText');
             });
           }).catch((err) => {
             this.setState({ loading: false, error: getToast(err) });
