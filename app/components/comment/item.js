@@ -64,21 +64,23 @@ const Item = ({ comment, onPress, setModalVisibility }) => {
         <View>
           <Text style={styles.commentText}>{comment.text}</Text>
         </View>
-        <View style={styles.commentRelation}>
-          {comment.User.relation.length > 2
-            ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
-            : (comment.User.relation.length >= 1)
-            && (<Text style={styles.smallText}>You are friends!</Text>)
-          }
-          <View>
-            <RelationBubbleList
-              users={comment.User.relation}
-              avatarSize={avatarSize}
-              style={{ marginHorizontal: 0 }}
-              setModalVisibility={setModalVisibility}
-            />
+        {comment.showRelation &&
+          <View style={styles.commentRelation}>
+            {comment.User.relation.length > 2
+              ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
+              : (comment.User.relation.length >= 1)
+              && (<Text style={styles.smallText}>You are friends!</Text>)
+            }
+            <View>
+              <RelationBubbleList
+                users={comment.User.relation}
+                avatarSize={avatarSize}
+                style={{ marginHorizontal: 0 }}
+                setModalVisibility={setModalVisibility}
+              />
+            </View>
           </View>
-        </View>
+        }
       </View>
     </View>
   );
@@ -88,7 +90,6 @@ Item.propTypes = {
   comment: PropTypes.shape({
     User: PropTypes.shape({
       firstName: PropTypes.string,
-      email: PropTypes.string,
       date: PropTypes.string,
     }),
     date: PropTypes.string,
