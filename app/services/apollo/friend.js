@@ -1,13 +1,10 @@
 
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { RELATIONSHIP_TYPE_FRIEND, PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT } from '@config/constant';
 import {
   updateFriendshipStatus,
   removeNotification,
-  increaseProfileFriendsCount,
-  updateProfileFriendCount,
-  updateOtherProfileFriendCount,
 } from '@services/apollo/dataSync';
 
 
@@ -34,9 +31,6 @@ export const withAcceptFriendRequest = graphql(ACCEPT_FRIEND_REQUEST_QUERY, {
     acceptFriendRequest: (id, userId, friendId, remove = false) => mutate({
       variables: { id },
       update: (store) => {
-        updateProfileFriendCount(userId, store);
-        updateFriendshipStatus(friendId, RELATIONSHIP_TYPE_FRIEND, store);
-        updateOtherProfileFriendCount(friendId, store);
         if (remove) {
           removeNotification(id, store);
         }
@@ -76,7 +70,6 @@ export const withCancelFriendRequest = graphql(CANCEL_FRIEND_REQUEST_QUERY, {
     cancelFriendRequest: (id, userId, remove = false) => mutate({
       variables: { id, userId },
       update: (store) => {
-        updateFriendshipStatus(userId, null, store);
         if (remove) {
           removeNotification(id, store);
         }
@@ -117,7 +110,10 @@ export const withFriends = graphql(FRIEND_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => ({ variables: { id, offset, limit } }),
+  }) => ({
+    variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
+  }),
   props: ({
     data: { loading, friends, error, refetch, networkStatus, fetchMore, subscribeToMore },
   }) => {
@@ -141,22 +137,16 @@ export const withFriends = graphql(FRIEND_QUERY, {
 
           rows = [];
           count = 0;
-          let repeated = false;
           const newFriend = subscriptionData.data.myFriend;
 
           rows = prev.friends.rows.filter((row) => {
             if (row.id === newFriend.id) {
-              repeated = true;
-              return null;
+              return false;
             }
             count += 1;
 
-            return row;
+            return true;
           });
-
-          if (!repeated) {
-            increaseProfileFriendsCount();
-          }
 
           rows = [newFriend].concat(rows);
 
@@ -187,7 +177,10 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => ({ variables: { id, offset, limit } }),
+  }) => ({
+    variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
+  }),
   props: ({ data: { loading, bestFriends, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
@@ -209,11 +202,6 @@ export const withUnfriend = graphql(UNFRIEND_QUERY, {
   props: ({ mutate }) => ({
     unfriend: id => mutate({
       variables: { id },
-      update: (store) => {
-        updateProfileFriendCount(null, store, true);
-        updateFriendshipStatus(id, null, store);
-        updateOtherProfileFriendCount(id, store, true);
-      },
       refetchQueries: [
         {
           query: FRIEND_QUERY, variables: { id, offset: 0, limit: PER_FETCH_LIMIT },

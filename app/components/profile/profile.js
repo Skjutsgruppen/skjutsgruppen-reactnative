@@ -14,6 +14,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import GardenActive from '@assets/icons/ic_garden_profile.png';
 import GardenInactive from '@assets/icons/ic_garden_profile_gray.png';
 import { trans } from '@lang/i18n';
+import AuthService from '@services/auth';
+import AuthAction from '@redux/actions/auth';
+import _isEqual from 'lodash/isEqual';
 
 import {
   RELATIONSHIP_TYPE_FRIEND,
@@ -204,15 +207,26 @@ class Profile extends Component {
   }
 
   componentWillMount() {
+    const { subscribeToUpdatedProfile, id } = this.props;
+
     if (this.isCurrentUser()) {
       const { user } = this.props;
       this.setState({ user });
     }
+
+    subscribeToUpdatedProfile({ id });
   }
 
   componentWillReceiveProps({ data }) {
     const { profile, loading, refetch } = data;
+    const { setUser } = this.props;
+    const { user } = this.state;
+
     if (!loading && profile.id) {
+      if (this.isCurrentUser() && !_isEqual(profile, user)) {
+        setUser(profile);
+      }
+
       this.setState({ user: profile, loading, refetch });
     }
   }
@@ -542,9 +556,17 @@ Profile.propTypes = {
   cancelFriendRequest: PropTypes.func.isRequired,
   rejectFriendRequest: PropTypes.func.isRequired,
   acceptFriendRequest: PropTypes.func.isRequired,
+  subscribeToUpdatedProfile: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
+
+const mapDispatchToProps = dispatch => ({
+  setUser: user => AuthService.setUser(user)
+    .then(() => dispatch(AuthAction.user(user)))
+    .catch(error => console.warn(error)),
+});
 
 export default compose(
   withAddFriend,
@@ -552,5 +574,5 @@ export default compose(
   withAcceptFriendRequest,
   withRejectFriendRequest,
   withNavigation,
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
 )(Profile);
