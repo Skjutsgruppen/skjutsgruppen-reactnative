@@ -29,7 +29,7 @@ class MobileVerified extends Component {
 
   onEnter = () => {
     const { navigation } = this.props;
-    navigation.reset('Tab');
+    navigation.replace('Tab');
   }
 
   render() {
