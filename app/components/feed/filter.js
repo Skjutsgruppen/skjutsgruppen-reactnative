@@ -63,7 +63,7 @@ Action.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-const Filter = ({ showModal, onCloseModal, onPress }) => (
+const Filter = ({ showModal, onCloseModal, onPress, map }) => (
   <Modal
     animationType="slide"
     transparent
@@ -76,9 +76,13 @@ const Filter = ({ showModal, onCloseModal, onPress }) => (
         <Action label={trans('feed.everything')} onPress={() => onPress(FEED_FILTER_EVERYTHING)} />
         <Action label={trans('feed.offered_rides')} onPress={() => onPress(FEED_FILTER_OFFERED)} />
         <Action label={trans('feed.rides_that_are_asked_for')} onPress={() => onPress(FEED_FILTER_WANTED)} />
-        <Action label={trans('feed.close_to_you')} onPress={() => onPress(FEED_FILTER_NEARBY)} />
-        <Action label={trans('feed.news')} onPress={() => onPress(FEED_FILTER_NEWS)} />
-        <Action label="Experience" onPress={() => onPress(FEED_FILTER_EXPERIENCE)} />
+        {!map &&
+          <View>
+            <Action label={trans('feed.close_to_you')} onPress={() => onPress(FEED_FILTER_NEARBY)} />
+            <Action label={trans('feed.news')} onPress={() => onPress(FEED_FILTER_NEWS)} />
+            <Action label="Experience" onPress={() => onPress(FEED_FILTER_EXPERIENCE)} />
+          </View>
+        }
       </View>
       <View style={styles.closeWrapper}>
         <TouchableOpacity
@@ -96,6 +100,11 @@ Filter.propTypes = {
   showModal: PropTypes.bool.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onPress: PropTypes.func.isRequired,
+  map: PropTypes.bool,
+};
+
+Filter.defaultProps = {
+  map: false,
 };
 
 export default Filter;

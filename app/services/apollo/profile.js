@@ -70,7 +70,7 @@ export const withProfile = graphql(PROFILE_QUERY, {
         if (!subscriptionData.data) {
           return prev;
         }
-        
+
         const { updatedProfile } = subscriptionData.data;
 
         return {

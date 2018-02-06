@@ -9,6 +9,10 @@ import Marker from '@components/map/marker';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import Navigation from '@components/map/navigation';
+import { getDistanceFromLatLonInKm } from '@services/map-directions';
+import { FEED_FILTER_EVERYTHING } from '@config/constant';
+import Filter from '@components/feed/filter';
+import moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -31,6 +35,14 @@ const styles = StyleSheet.create({
   },
 });
 
+/* avoid pagination and render all trips
+   Totos:
+    smooth marker rendering
+    random markers are not showing when redenring
+    multiple api call abort previous request.
+*/
+const DISTANCE_GAP = 1500000000;
+
 class Map extends PureComponent {
   static navigationOptions = {
     header: null,
@@ -40,16 +52,29 @@ class Map extends PureComponent {
     this.state = ({
       latitude: '',
       longitude: '',
+      filterOpen: false,
+      filterType: FEED_FILTER_EVERYTHING,
+      region: {
+        latitude: '',
+        longitude: '',
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      },
       locationError: false,
       currentLocation: false,
       trips: [],
       error: '',
+      from: 0,
+      to: DISTANCE_GAP,
     });
+    this.region = {};
   }
 
   componentWillMount() {
     const { latitude, longitude } = getCountryLocation();
-    this.setState({ latitude, longitude, loading: true });
+    const { region } = this.state;
+    const updatedRegion = { ...region, ...{ latitude, longitude } };
+    this.setState({ latitude, longitude, region: updatedRegion, loading: true });
   }
 
   componentDidMount() {
@@ -66,34 +91,45 @@ class Map extends PureComponent {
     navigation.navigate('TripDetail', { trip: Trip });
   }
 
+  onRegionChange = async (region) => {
+    const { longitude, latitude } = this.state;
+    const distance = getDistanceFromLatLonInKm(
+      latitude,
+      longitude,
+      region.latitude,
+      region.longitude,
+    );
+
+    if (distance > this.state.to) {
+      this.setState(
+        { from: this.state.to, to: this.state.to + DISTANCE_GAP, region, loading: false },
+        this.fetchTripMap,
+      );
+    }
+
+    this.region = region;
+  }
+
+  onFilterChange = (type) => {
+    if (type !== this.state.filterType) {
+      this.setState({ filterType: type, filterOpen: false, loading: true }, this.fetchTripMap);
+    }
+  }
+
   async getLocation() {
     try {
-      const res = await getCurrentLocation();
+      const { latitude, longitude } = await getCurrentLocation();
+      const { region } = this.state;
+
+      const updatedRegion = { ...region, ...{ latitude, longitude } };
+
       this.setState({
-        latitude: res.latitude,
-        longitude: res.longitude,
+        latitude,
+        longitude,
         currentLocation: true,
+        region: updatedRegion,
         locationError: false,
-      }, async () => {
-        const trips = await this.fetchTripMap();
-
-        if (!this.ismounted) {
-          return;
-        }
-
-        this.setState({ trips, loading: false }, () => {
-          const coordinate = [];
-
-          trips.forEach((row) => {
-            coordinate.push({
-              latitude: row.coordinate.lat,
-              longitude: row.coordinate.lng,
-            });
-          });
-
-          this.fitMap(coordinate);
-        });
-      });
+      }, this.fetchTripMap);
     } catch (error) {
       if (!this.state.currentLocation) {
         this.setState({ locationError: true });
@@ -102,34 +138,53 @@ class Map extends PureComponent {
     }
   }
 
+  getUniqueTrips = (data) => {
+    let newTrips = [];
+    let found = false;
+    const { trips } = this.state;
+    const uniqueTrips = data.filter((row) => {
+      found = false;
+      trips.forEach((trip) => {
+        if (trip.id === row.id) {
+          found = true;
+        }
+      });
+      return !found;
+    });
+
+    newTrips = uniqueTrips.map((trip) => {
+      const { startPoint, Routable, id } = trip;
+      return {
+        id,
+        coordinate: {
+          lng: startPoint[0],
+          lat: startPoint[1],
+        },
+        trip: Routable,
+      };
+    });
+
+    return trips.concat(newTrips);
+  }
+
   handleBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
   }
 
-  fitMap(coordinates) {
-    if (coordinates.length < 1) return;
-
-    this.mapView.fitToCoordinates(coordinates, {
-      edgePadding: {
-        right: Math.ceil(width / 2),
-        bottom: Math.ceil(height / 2),
-        left: Math.ceil(width / 2),
-        top: Math.ceil(height / 2),
-      },
-      animation: false,
-    });
-  }
-
   async fetchTripMap() {
-    const { data } = await this.props.getMapTrips([this.state.longitude, this.state.latitude]);
+    const { from, to, longitude, latitude, filterType } = this.state;
+    const { data } = await this.props.getMapTrips([longitude, latitude], from, to, filterType);
 
-    let trips = [];
+    if (data.nearByTrips && data.nearByTrips.length > 0) {
+      if (!this.ismounted) {
+        return;
+      }
 
-    if (data.nearByTrips) {
-      trips = data.nearByTrips.map((trip) => {
-        const { startPoint, Routable } = trip;
+      const trips = data.nearByTrips.map((trip) => {
+        const { startPoint, Routable, id } = trip;
         return {
+          id,
           coordinate: {
             lng: startPoint[0],
             lat: startPoint[1],
@@ -137,28 +192,30 @@ class Map extends PureComponent {
           trip: Routable,
         };
       });
-    }
 
-    return trips;
+      this.setState({
+        trips,
+        loading: false,
+        region: { ...this.state.region, ...this.region },
+      });
+    }
   }
 
   renderCurrentLocation = () => {
-    if (!this.state.currentLocation) {
+    const { currentLocation, latitude, longitude } = this.state;
+    if (!currentLocation) {
       return null;
     }
 
-    return (<Marker
-      onPress={(e) => {
-        e.stopPropagation();
-      }}
-      coordinate={{
-        latitude: this.state.latitude,
-        longitude: this.state.longitude,
-      }}
-      image={this.props.user.avatar}
-      count={0}
-      current
-    />);
+    return (
+      <Marker
+        onPress={e => e.stopPropagation()}
+        coordinate={{ latitude, longitude }}
+        image={this.props.user.avatar}
+        count={0}
+        current
+      />
+    );
   }
 
   renderError = () => {
@@ -193,7 +250,7 @@ class Map extends PureComponent {
       };
       return (
         <Marker
-          key={row.trip.id}
+          key={`${row.trip.id}-${moment().unix()}`}
           onPress={(e) => {
             e.stopPropagation();
             this.onMarkerPress(row.trip);
@@ -216,7 +273,10 @@ class Map extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navigation onPressBack={this.handleBack} />
+        <Navigation
+          onPressBack={this.handleBack}
+          onPressFilter={() => this.setState({ filterOpen: true })}
+        />
         <MapView
           ref={(c) => { this.mapView = c; }}
           cacheEnabled
@@ -224,12 +284,8 @@ class Map extends PureComponent {
           loadingIndicatorColor="#666666"
           loadingBackgroundColor="#eeeeee"
           style={styles.map}
-          region={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }}
+          region={this.state.region}
+          onRegionChange={this.onRegionChange}
         >
           {this.renderTrip()}
           {this.renderCurrentLocation()}
@@ -238,6 +294,13 @@ class Map extends PureComponent {
           {this.renderError()}
           {loading && <View><Loading /><Text>Fetching data...</Text></View>}
         </View>
+        <Filter
+          map
+          selected={this.state.filterType}
+          onPress={this.onFilterChange}
+          showModal={this.state.filterOpen}
+          onCloseModal={() => this.setState({ filterOpen: false })}
+        />
       </View>
     );
   }
