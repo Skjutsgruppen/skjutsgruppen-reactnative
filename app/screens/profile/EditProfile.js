@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
 import { Wrapper, FloatingNavbar, Loading } from '@components/common';
 import { connect } from 'react-redux';
 import { Colors } from '@theme';
@@ -14,8 +14,10 @@ import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
 import { withAccount } from '@services/apollo/profile';
-import { withUpdateProfile } from '@services/apollo/auth';
+import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withFacebookConnect } from '@services/apollo/facebook';
+import SendSMS from 'react-native-sms';
+import { SMS_NUMBER } from '@config';
 
 const AvailableLanguages = {
   en: 'English',
@@ -110,6 +112,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 400,
   },
+  awaitingVerification: {
+    color: Colors.text.green,
+    lineHeight: 28,
+  },
+  resendVerification: {
+    lineHeight: 28,
+    color: Colors.text.blue,
+  },
 });
 
 class EditProfile extends Component {
@@ -128,12 +138,18 @@ class EditProfile extends Component {
       profileImage: null,
       uploadedImage: null,
       loading: false,
+      emailVerificationLoading: false,
+      phoneVerificationLoading: false,
       firstNameLoading: false,
       lastNameLoading: false,
       linked: false,
       error: '',
       success: '',
       language: 'en',
+      totalFriends: null,
+      newEmail: null,
+      newPhoneNumber: null,
+      phoneVerificationCode: null,
     };
   }
 
@@ -142,7 +158,15 @@ class EditProfile extends Component {
       this.setState({ language: language || I18n.locale });
     });
 
-    const { firstName, lastName, avatar, phoneNumber, email, fbId } = this.props.user;
+    const {
+      firstName,
+      lastName,
+      avatar,
+      phoneNumber,
+      email,
+      fbId,
+      totalFriends,
+    } = this.props.user;
     let linked = false;
 
     if (fbId) {
@@ -156,7 +180,17 @@ class EditProfile extends Component {
       phoneNumber,
       email,
       linked,
+      totalFriends,
     });
+  }
+
+  componentWillReceiveProps({ data }) {
+    const { loading, profile } = data;
+    const { email, phoneNumber, totalFriends, newEmail, newPhoneNumber } = profile;
+
+    if (!loading) {
+      this.setState({ email, phoneNumber, totalFriends, newEmail, newPhoneNumber });
+    }
   }
 
   onLogin = async (fb) => {
@@ -291,6 +325,68 @@ class EditProfile extends Component {
     if (type === 'password') {
       navigation.navigate('ChangePassword');
     }
+
+    if (type === 'email') {
+      navigation.navigate('ChangeEmail');
+    }
+
+    if (type === 'phone') {
+      navigation.navigate('ChangePhoneNumber');
+    }
+  }
+
+  resendEmailVerification = () => {
+    this.setState({ emailVerificationLoading: true });
+    const { resendEmailVerification } = this.props;
+    const { newEmail } = this.state;
+
+    try {
+      resendEmailVerification(newEmail).then(() => {
+        this.setState({ emailVerificationLoading: false });
+      }).catch(() => {
+        this.setState({ emailVerificationLoading: false });
+      });
+    } catch (err) {
+      this.setState({ emailVerificationLoading: false });
+    }
+  }
+
+  verifiyPhoneNumber = () => {
+    const { phoneVerificationCode } = this.state;
+    Clipboard.setString(phoneVerificationCode);
+
+    SendSMS.send({
+      body: phoneVerificationCode,
+      recipients: [SMS_NUMBER],
+      successTypes: ['sent', 'queued'],
+    }, () => { });
+  }
+
+  renderEmailVerificationButton = () => {
+    const { emailVerificationLoading } = this.state;
+
+    if (emailVerificationLoading) {
+      return (<Loading />);
+    }
+
+    return (<Text
+      onPress={this.resendEmailVerification}
+      style={styles.resendVerification}
+    >Resend Verification</Text>);
+  }
+
+  renderPhoneVerificationButton = () => {
+    const { phoneVerificationLoading } = this.state;
+    const { navigation } = this.props;
+
+    if (phoneVerificationLoading) {
+      return (<Loading />);
+    }
+
+    return (<Text
+      onPress={() => navigation.navigate('ChangePhoneNumber', { verifyPreviousNumber: true })}
+      style={styles.resendVerification}
+    >Verify Phone Number</Text>);
   }
 
   renderFacebookConnect = () => {
@@ -328,6 +424,7 @@ class EditProfile extends Component {
       </View>
     );
   }
+
   renderInfoEdit = () => {
     const { firstName, lastName, firstNameLoading, lastNameLoading } = this.state;
 
@@ -378,15 +475,35 @@ class EditProfile extends Component {
     );
   }
 
-  renderList({ count, title, info, status, subtext, redirect }) {
+  renderList({
+    count,
+    title,
+    awaitingVerification,
+    sendVerification,
+    info,
+    status,
+    subtext,
+    redirect,
+  }) {
     return (
       <View style={styles.row}>
         <View>
           <Text style={styles.text}>
-            {count && `${count} `}{title} {status && (<Text style={styles.bold}> - {status}</Text>)}
+            {count && `${count}`}{title} {status && (<Text style={styles.bold}> - {status}</Text>)}
           </Text>
           {info && <Text style={styles.text}>{info}</Text>}
-          {subtext && <Text style={[styles.text, styles.lightText]}> {subtext}</Text>}
+          {awaitingVerification &&
+            <Text style={styles.awaitingVerification}>{awaitingVerification}</Text>
+          }
+          {sendVerification &&
+            ((sendVerification === 'email')
+              && this.renderEmailVerificationButton())
+          }
+          {sendVerification &&
+            ((sendVerification === 'phone')
+              && this.renderPhoneVerificationButton())
+          }
+          {subtext && <Text style={[styles.text, styles.lightText]}>{subtext}</Text>}
         </View>
         {
           redirect &&
@@ -394,7 +511,7 @@ class EditProfile extends Component {
             <Text style={styles.actionLabel}>Change</Text>
           </TouchableOpacity>
         }
-      </View>
+      </View >
     );
   }
 
@@ -405,20 +522,12 @@ class EditProfile extends Component {
       email,
       linked,
       uploadedImage,
+      totalFriends,
+      newEmail,
+      newPhoneNumber,
     } = this.state;
 
     const profilePicture = uploadedImage || { uri: profileImage };
-
-
-    const { data } = this.props;
-
-    if (data.loading) {
-      return (
-        <View style={styles.loadingWrapper}>
-          <Loading />
-        </View>
-      );
-    }
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
@@ -435,16 +544,22 @@ class EditProfile extends Component {
           </View>
           {
             this.renderList({
-              title: 'Email',
+              title: 'E-mail',
               info: email,
+              awaitingVerification: newEmail,
+              sendVerification: newEmail ? 'email' : null,
               subtext: 'Not visible for other participants',
+              redirect: 'email',
             })
           }
           {
             this.renderList({
               title: 'Phone',
               info: phoneNumber,
+              awaitingVerification: newPhoneNumber,
+              sendVerification: newPhoneNumber ? 'phone' : null,
               subtext: 'Not visible for other participants',
+              redirect: 'phone',
             })
           }
           <View style={styles.row}>
@@ -460,8 +575,8 @@ class EditProfile extends Component {
           </View>
           {
             this.renderList({
-              count: data.profile.totalFriends,
-              title: (data.profile.totalFriends <= 1) ? 'friend' : 'friends',
+              count: `${totalFriends} `,
+              title: (totalFriends <= 1) ? 'friend' : 'friends',
               subtext: 'Visible for other participants',
               redirect: 'friends',
             })
@@ -492,8 +607,10 @@ EditProfile.propTypes = {
     lastName: PropTypes.string,
     avatar: PropTypes.string,
     phoneNumber: PropTypes.string,
+    newPhoneNumber: PropTypes.string,
     email: PropTypes.string,
     fbId: PropTypes.string,
+    totalFriends: PropTypes.number,
   }).isRequired,
   setUser: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
@@ -501,7 +618,9 @@ EditProfile.propTypes = {
     profile: PropTypes.shape({
       totalFriends: PropTypes.number,
     }),
+    refetch: PropTypes.func,
   }).isRequired,
+  resendEmailVerification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -516,5 +635,7 @@ export default compose(
   withAccount,
   withUpdateProfile,
   withFacebookConnect,
+  withResendEmailVerification,
+  withRegeneratePhoneVerification,
   connect(mapStateToProps, mapDispatchToProps),
 )(EditProfile);

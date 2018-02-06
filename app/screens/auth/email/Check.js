@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withVerifyCode } from '@services/apollo/auth';
+import { withVerifyEmail, withResendEmailVerification } from '@services/apollo/auth';
 import { Icons } from '@assets/icons';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -40,6 +40,11 @@ const styles = StyleSheet.create({
   button: {
     marginHorizontal: 24,
   },
+  resendVerification: {
+    color: Colors.text.blue,
+    textAlign: 'center',
+    paddingVertical: 20,
+  },
 });
 
 class Check extends Component {
@@ -49,7 +54,7 @@ class Check extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ code: '', loading: false, error: '' });
+    this.state = ({ verificationCode: '', loading: false, resendVerificationLoading: false, error: '', success: '' });
   }
 
   componentWillMount() {
@@ -61,18 +66,18 @@ class Check extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { verifyCode, navigation, setUser, auth } = this.props;
-    const { code } = this.state;
+    const { verifyEmail, navigation, setUser, auth } = this.props;
+    const { verificationCode } = this.state;
 
     const validation = this.checkValidation();
 
     if (validation.pass()) {
       try {
-        verifyCode(code).then(({ data }) => {
-          const { status } = data.verifyCode;
+        verifyEmail(auth.user.email, verificationCode).then(({ data }) => {
+          const { code } = data.verifyEmail;
           const user = auth.user;
           user.emailVerified = true;
-          if (status) {
+          if (code === 'EMAIL_VERIFICATION_SUCCESS') {
             setUser(user).then(() => {
               this.setState({ loading: false, error: '' }, () => {
                 if (user.phoneNumber && !user.phoneVerified) {
@@ -94,11 +99,24 @@ class Check extends Component {
     }
   }
 
+  resendVerificationCode = () => {
+    this.setState({ resendVerificationLoading: true });
+    const { resendEmailVerification, auth } = this.props;
+
+    try {
+      resendEmailVerification(auth.user.email).then(() => {
+        this.setState({ resendVerificationLoading: false, success: getToast(['EMAIL_VERIFICATION_CODE_RESENT']) });
+      });
+    } catch (err) {
+      this.setState({ resendVerificationLoading: false, error: getToast(['ERROR_RESENDING_EMAIL_VERIFICATION']) });
+    }
+  }
+
   checkValidation() {
     const errors = [];
-    const { code } = this.state;
+    const { verificationCode } = this.state;
 
-    if (code === '') {
+    if (verificationCode === '') {
       errors.push('EMAIL_VERIFICATION_CODE_REQUIRED');
     }
 
@@ -132,8 +150,23 @@ class Check extends Component {
     );
   }
 
+  renderResendVerification = () => {
+    const { resendVerificationLoading } = this.state;
+
+    if (resendVerificationLoading) {
+      return <Loading />;
+    }
+
+    return (
+      <Text
+        style={styles.resendVerification}
+        onPress={this.resendVerificationCode}
+      >Resend Verification Code</Text>
+    );
+  }
+
   render() {
-    const { error } = this.state;
+    const { error, success } = this.state;
 
     return (
       <Container>
@@ -144,15 +177,16 @@ class Check extends Component {
           <Text style={{ color: '#663c6d' }}> {`'${this.props.auth.user.email}'`} </Text>
           <Text>and enter confirmation code below</Text>
         </ColoredText>
-
+        <Toast message={success} type="success" />
         <Toast message={error} type="error" />
         <Input
-          onChangeText={code => this.setState({ code })}
+          onChangeText={verificationCode => this.setState({ verificationCode })}
           placeholder="Verification code"
           returnKeyType="send"
           onSubmitEditing={this.onSubmit}
         />
         {this.renderButton()}
+        {this.renderResendVerification()}
         <Text style={styles.grayText}>You can not proceed without confirming your e-mail</Text>
         <BackButton onPress={this.reset} />
       </Container>
@@ -161,7 +195,8 @@ class Check extends Component {
 }
 
 Check.propTypes = {
-  verifyCode: PropTypes.func.isRequired,
+  verifyEmail: PropTypes.func.isRequired,
+  resendEmailVerification: PropTypes.func.isRequired,
   auth: PropTypes.shape({
     user: PropTypes.object,
     login: PropTypes.bool,
@@ -182,5 +217,11 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.warn(error)),
 });
 
-export default compose(withVerifyCode, connect(mapStateToProps, mapDispatchToProps))(Check);
+export default compose(
+  withVerifyEmail,
+  withResendEmailVerification,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ))(Check);
 
