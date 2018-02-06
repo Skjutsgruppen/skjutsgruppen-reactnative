@@ -1,7 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED } from '@config/constant';
-import { increaseProfileTripCount } from './dataSync';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -505,6 +504,7 @@ query trip($id: Int!){
 export const withTrip = graphql(FIND_TRIP_QUERY, {
   options: ({ id }) => ({
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, trip = {}, refetch, networkStatus, error } }) => ({
     loading, trip, refetch, networkStatus, error,
@@ -597,6 +597,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
     { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
   ) => ({
     variables: { id, offset, limit, type, active },
+    fetchPolicy: 'cache-and-network',
   }),
   props: (
     { data: { loading, trips, error, networkStatus, refetch, fetchMore, subscribeToMore } },
@@ -621,23 +622,17 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
 
           rows = [];
           count = 0;
-          let repeated = false;
           const newTrip = subscriptionData.data.myTrip;
 
           rows = prev.trips.rows.filter((row) => {
             if (row.id === newTrip.id) {
-              repeated = true;
-              return null;
+              return false;
             }
             count += 1;
 
-            return row;
+            return true;
           });
-          rows = [newTrip].concat(rows);
-
-          if (!repeated) {
-            increaseProfileTripCount(param.userId, newTrip.id, newTrip.type);
-          }
+          rows = [newTrip].concat(rows);      
 
           return {
             trips: { ...prev.trips, ...{ rows, count: count + 1 } },
