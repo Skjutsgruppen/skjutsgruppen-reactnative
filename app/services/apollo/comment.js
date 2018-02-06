@@ -49,6 +49,7 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
 export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({
     variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data }) => {
     let rows = [];
@@ -79,17 +80,16 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           rows = prev.comments.rows.filter((row) => {
             if (row.id === newFeedItem.id) {
               repeated = true;
-              return null;
+              return false;
             }
             count += 1;
 
-            return row;
+            return true;
           });
 
           rows = [newFeedItem].concat(rows);
 
           if (!repeated) {
-            increaseProfileComment();
             increaseFeedCommentCount(variables.id);
           }
 
@@ -146,11 +146,11 @@ export const withNewsComment = graphql(GET_NEWS_COMMENTS_QUERY, {
         rows = prev.comments.rows.filter((row) => {
           if (row.id === newFeedItem.id) {
             repeated = true;
-            return null;
+            return false;
           }
           count += 1;
 
-          return row;
+          return true;
         });
 
         rows = [newFeedItem].concat(rows);
