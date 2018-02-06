@@ -8,6 +8,7 @@ export const ApiToastCode = {
   VALIDATION_ERROR: 'Invalid input',
   TRIP_NOT_FOUND: 'Trip not found',
   INVALID_VERIFICATION_CODE: 'Verification code is invalid',
+  INVALID_EMAIL_VERIFICATION_CODE: 'Verification code is invalid',
   USER_NOT_FOUND: 'User not found',
   ERROR_SHARE_FAILED: 'Error share failed',
   FEED_SHARE_SUCCESS: 'Feed share failed',
@@ -32,7 +33,6 @@ export const ApiToastCode = {
   ALREADY_GROUP_MEMBER: 'Already a group member',
   GROUP_NOT_FOUND: 'Group not found',
   ERROR_JOINING_GROUP: 'Error joining group',
-  // GROUP_JOIN_SUCCESS: 'Successfully joined the group',
   ERROR_CREATING_GROUP_MEMBERSHIP: 'Error creating group membership',
   NOTIFICATION_CREATE_FAILED: 'Notification creation failed',
   JOIN_GROUP_REQUEST_SENT: 'Join group request sent',
@@ -50,6 +50,8 @@ export const ApiToastCode = {
   PHONE_NUMBER_REQUIRED: 'Phone number required to sync contact',
   USER_UPDATE_FAILED: 'Could not update user',
   EMAIL_VERIFIED: 'Email verified',
+  EMAIL_VERIFICATION_CODE_EXPIRED: 'Your verification code has expired, please resend a new verification code.',
+  EMAIL_NOT_AVAILABLE: 'Email not available',
 };
 
 export const AppToastCode = {
@@ -82,4 +84,8 @@ export const AppToastCode = {
   PASSWORD_SHORT: 'New password too short, should be atleast 5 characters.',
   PROFILE_UPDATED: 'Profile successfully updated.',
   GROUP_PHOTO_REQUIRED: 'Group photo is required',
+  EMAIL_VERIFICATION_CODE_RESENT: 'Verification code resent.',
+  ERROR_RESENDING_EMAIL_VERIFICATION: 'Error sending verification code! Please Retry.',
+  EMAIL_SUCCESSFULLY_CHANGED: 'Your e-mail has been updated. Please check your e-mail and click the link to verify.',
+  PHONE_NUMBER_SUCCESSFULLY_CHANGED: 'Your phone number has been updated. Please verify your new phone number to set it as a default phone number.',
 };
