@@ -2,6 +2,7 @@ import Loading from '@components/common/loading';
 import Error from '@components/common/error';
 import Wrapper from '@components/common/wrapper';
 import Container from '@components/common/container';
+import Circle from '@components/common/circle';
 import Radio from '@components/common/radio';
 import FeedContainer from '@components/common/feedContainer';
 import FloatingNavbar from '@components/common/floatingNavbar';
@@ -27,6 +28,7 @@ export {
   Error,
   Wrapper,
   Container,
+  Circle,
   FeedContainer,
   Radio,
   NavBar,
