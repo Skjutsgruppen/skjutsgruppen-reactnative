@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
 import GooglePlace from '@components/googlePlace';
 import PropTypes from 'prop-types';
-import { RoundedButton } from '@components/common';
-import Colors from '@theme/colors';
+import LinearGradient from 'react-native-linear-gradient';
+import { Circle, RoundedButton } from '@components/common';
+import { Colors, Gradients } from '@theme';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,32 +18,26 @@ import { withExploreGroup } from '@services/apollo/group';
 const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
 
 const styles = StyleSheet.create({
-  circle: {
-    height: 250,
-    width: 250,
-    borderRadius: 125,
-    backgroundColor: Colors.background.blue,
-    position: 'absolute',
-    top: -50,
-    left: -80,
-  },
-  container: {
+  wrapper: {
     flex: 1,
     backgroundColor: Colors.background.lightBlueWhite,
-    paddingTop: 24,
   },
   title: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    paddingHorizontal: 24,
-    marginTop: 12,
+    paddingHorizontal: 20,
+    marginTop: '10%',
+    marginBottom: '5%',
   },
   scrollArea: {
     flex: 1,
     height: 300,
     backgroundColor: Colors.background.fullWhite,
     marginTop: 24,
+  },
+  content: {
+    backgroundColor: 'red',
   },
   locationWrapper: {
     marginTop: 16,
@@ -256,140 +251,142 @@ class Search extends Component {
     const { filters, direction, dates, markedDates } = this.state;
 
     return (
-      <View style={styles.container}>
-        <View style={styles.circle} />
-        <Text style={styles.title}>Search</Text>
-        <ScrollView keyboardShouldPersistTaps="handled" style={styles.scrollArea}>
-          <View style={styles.locationWrapper}>
-            <View style={styles.inputWrapper}>
-              <GooglePlace
-                defaultValue={this.state.from}
-                currentLocation
-                placeholder={trans('search.from_where_i_am_now')}
-                onChangeText={from => this.setState({ from })}
-                style={styles.input}
-              />
-              <Text style={styles.inputLabel}>{trans('global.from')}</Text>
+      <View style={styles.wrapper}>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <Circle />
+          <Text style={styles.title}>Search</Text>
+          <LinearGradient colors={Gradients.white} style={styles.content}>
+            <View style={styles.locationWrapper}>
+              <View style={styles.inputWrapper}>
+                <GooglePlace
+                  defaultValue={this.state.from}
+                  currentLocation
+                  placeholder={trans('search.from_where_i_am_now')}
+                  onChangeText={from => this.setState({ from })}
+                  style={styles.input}
+                />
+                <Text style={styles.inputLabel}>{trans('global.from')}</Text>
+              </View>
+              <View style={styles.inputWrapper}>
+                <View style={styles.divider} />
+                <TouchableOpacity onPress={this.switchLocation} style={styles.locationSwitcher}>
+                  <Image source={require('@assets/icons/icon_switcher.png')} style={styles.switcherIcon} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.inputWrapper}>
+                <GooglePlace
+                  placeholder={trans('global.destination')}
+                  defaultValue={this.state.to}
+                  onChangeText={to => this.setState({ to })}
+                  style={styles.input}
+                />
+                <Text style={styles.inputLabel}>{trans('global.to')}</Text>
+              </View>
             </View>
-            <View style={styles.inputWrapper}>
-              <View style={styles.divider} />
-              <TouchableOpacity onPress={this.switchLocation} style={styles.locationSwitcher}>
-                <Image source={require('@assets/icons/icon_switcher.png')} style={styles.switcherIcon} />
+            <Text style={styles.label}>{trans('search.or_choose')}:</Text>
+            <View style={styles.locationSuggestions}>
+              <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
+                <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
+                <Text style={styles.suggestionText}>{trans('global.north')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
+                <Text style={styles.suggestionText}>{trans('global.south')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
+                <Text style={styles.suggestionText}>{trans('global.east')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
+                <Text style={styles.suggestionText}>{trans('global.west')}</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.inputWrapper}>
-              <GooglePlace
-                placeholder={trans('global.destination')}
-                defaultValue={this.state.to}
-                onChangeText={to => this.setState({ to })}
-                style={styles.input}
-              />
-              <Text style={styles.inputLabel}>{trans('global.to')}</Text>
+            <View style={styles.dateRow}>
+              <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
+              <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+                <Text style={styles.changeButton}>{trans('search.change')}</Text>
+              </TouchableOpacity>
             </View>
-          </View>
-          <Text style={styles.label}>{trans('search.or_choose')}:</Text>
-          <View style={styles.locationSuggestions}>
-            <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>{trans('global.north')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>{trans('global.south')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>{trans('global.east')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-              <Text style={styles.suggestionText}>{trans('global.west')}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.dateRow}>
-            <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
-            <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-              <Text style={styles.changeButton}>{trans('search.change')}</Text>
-            </TouchableOpacity>
-          </View>
 
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.modalVisible}
-            style={{ backgroundColor: '#f00', padding: 50 }}
-            onRequestClose={() => { }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                this.setModalVisible(!this.state.modalVisible);
-              }}
-              style={styles.closeModal}
+            <Modal
+              animationType="slide"
+              transparent={false}
+              visible={this.state.modalVisible}
+              style={{ backgroundColor: '#f00', padding: 50 }}
+              onRequestClose={() => { }}
             >
-              <Icon
-                name={'ios-close'}
-                size={32}
-                style={{ color: Colors.text.darkCyan }}
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible);
+                }}
+                style={styles.closeModal}
+              >
+                <Icon
+                  name={'ios-close'}
+                  size={32}
+                  style={{ color: Colors.text.darkCyan }}
+                />
+              </TouchableOpacity>
+              <Calendar
+                firstDay={1}
+                onDayPress={this.onSelectDay}
+                markedDates={markedDates}
+                markingType="interactive"
+                minDate={Moment(new Date()).format('YYYY-MM-DD')}
+                hideExtraDays
+                style={{
+                  justifyContent: 'center',
+                }}
               />
-            </TouchableOpacity>
-            <Calendar
-              firstDay={1}
-              onDayPress={this.onSelectDay}
-              markedDates={markedDates}
-              markingType="interactive"
-              minDate={Moment(new Date()).format('YYYY-MM-DD')}
-              hideExtraDays
-              style={{
-                justifyContent: 'center',
-              }}
-            />
-          </Modal>
-          <Text style={styles.label}>{trans('search.show_results_from')}</Text>
-          <View style={styles.resultsFrom}>
-            <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
-              style={[
-                styles.suggestion,
-                filters.indexOf(FEED_TYPE_OFFER) > -1 && styles.selected,
-              ]}
+            </Modal>
+            <Text style={styles.label}>{trans('search.show_results_from')}</Text>
+            <View style={styles.resultsFrom}>
+              <TouchableOpacity
+                onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
+                style={[
+                  styles.suggestion,
+                  filters.indexOf(FEED_TYPE_OFFER) > -1 && styles.selected,
+                ]}
+              >
+                <Text style={styles.suggestionText}>{trans('search.offered')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
+                style={[
+                  styles.suggestion,
+                  filters.indexOf(FEED_TYPE_WANTED) > -1 && styles.selected,
+                ]}
+              >
+                <Text style={styles.suggestionText}>{trans('search.asked_for')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
+                style={[
+                  styles.suggestion,
+                  filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
+                ]}
+              >
+                <Text style={styles.suggestionText}>{trans('search.public_transport')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.onFilterSelect(FEED_TYPE_GROUP)}
+                style={[
+                  styles.suggestion,
+                  filters.indexOf(FEED_TYPE_GROUP) > -1 && styles.selected,
+                ]}
+              >
+                <Text style={styles.suggestionText}>{trans('search.groups')}</Text>
+              </TouchableOpacity>
+            </View>
+            <RoundedButton
+              bgColor={Colors.background.pink}
+              style={styles.searchBtn}
+              onPress={this.renderSearch}
             >
-              <Text style={styles.suggestionText}>{trans('search.offered')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
-              style={[
-                styles.suggestion,
-                filters.indexOf(FEED_TYPE_WANTED) > -1 && styles.selected,
-              ]}
-            >
-              <Text style={styles.suggestionText}>{trans('search.asked_for')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
-              style={[
-                styles.suggestion,
-                filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
-              ]}
-            >
-              <Text style={styles.suggestionText}>{trans('search.public_transport')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_GROUP)}
-              style={[
-                styles.suggestion,
-                filters.indexOf(FEED_TYPE_GROUP) > -1 && styles.selected,
-              ]}
-            >
-              <Text style={styles.suggestionText}>{trans('search.groups')}</Text>
-            </TouchableOpacity>
-          </View>
-          <RoundedButton
-            bgColor={Colors.background.pink}
-            style={styles.searchBtn}
-            onPress={this.renderSearch}
-          >
-            {trans('search.search')}
-          </RoundedButton>
-          <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" />
+              {trans('search.search')}
+            </RoundedButton>
+            <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" />
+          </LinearGradient>
         </ScrollView>
       </View>
     );
