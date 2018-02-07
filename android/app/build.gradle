@@ -183,9 +183,9 @@ dependencies {
         exclude group: 'com.google.android.gms', module: 'play-services-base'
         exclude group: 'com.google.android.gms', module: 'play-services-maps'
     }
-    compile 'com.google.android.gms:play-services-base:11.+'
-    compile 'com.google.android.gms:play-services-maps:11.+'
-    compile 'com.google.android.gms:play-services-location:+'
+    compile 'com.google.android.gms:play-services-base:10.+'
+    compile 'com.google.android.gms:play-services-maps:10.+'
+    compile 'com.google.android.gms:play-services-location:10.+'
 
     compile project(':react-native-contacts')
     compile project(':react-native-vector-icons')
@@ -199,6 +199,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
       transitive = true;
     }
+    compile project(':react-native-fcm')
+    compile 'com.google.firebase:firebase-core:10.0.1'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -207,3 +209,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'
