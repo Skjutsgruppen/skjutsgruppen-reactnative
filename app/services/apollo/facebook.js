@@ -10,21 +10,25 @@ mutation getUserByFbId($id: String!) {
     message
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
       createdAt
+      isSupporter
     }
   }
 }
@@ -46,21 +50,25 @@ mutation getUserByEmail($email: String!) {
     message
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
       createdAt
+      isSupporter
     }
   }
 }
@@ -81,21 +89,25 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
     message
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
       createdAt
+      isSupporter
     }
   }
 }

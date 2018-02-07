@@ -1,12 +1,17 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import CustomButton from '@components/common/customButton';
+import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
+import SectionLabel from '@components/add/sectionLabel';
+import { withNavigation } from 'react-navigation';
+import Trip from '@components/feed/card/trip';
+import Group from '@components/feed/card/group';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingHorizontal: 24,
+    paddingVertical: 75,
   },
   title: {
     fontSize: 16,
@@ -50,51 +55,60 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     marginVertical: 24,
   },
+  footer: {
+    paddingHorizontal: 20,
+    paddingVertical: '5%',
+  },
+  button: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
+  },
 });
 
-const Completed = ({ url, text, isCliped, onButtonPress, isReturnedTrip, onMakeReturnRide }) => (
+const Completed = ({ detail, type, navigation, isReturnedTrip, onMakeReturnRide }) => (
   <View style={styles.wrapper}>
-    <Text style={styles.title}>Your {text} is published.</Text>
-    <Image source={require('@assets/celebration.png')} style={styles.image} />
-    <Text style={[styles.text, styles.bold]}>Its now searchable, well done.!</Text>
-    <Text style={styles.text}>This is the unique address to your {text}:</Text>
-    <Text selectable style={styles.uniqueAddress}>{url}</Text>
-    {isCliped && <Text style={[styles.text, styles.italic]}>
-      (Its copied to your clipboard so you can paste it wherever you want)
-    </Text>}
-    <View style={styles.buttonWrapper}>
+    <SectionLabel label="Published" />
+    {
+      (type === FEEDABLE_TRIP) &&
+      <Trip
+        onPress={() => navigation.navigate('TripDetail', { trip: detail })}
+        trip={detail}
+      />
+    }
 
-      {
-        isReturnedTrip ?
-          (<View>
-            <Text style={[styles.text, styles.blueText, styles.bold]}>
-              You have choosen to make an return ride connected to this ride.
-            </Text>
-            <CustomButton onPress={onMakeReturnRide} bgColor={Colors.background.darkCyan}>
-              Make return ride
-            </CustomButton>
-            <TouchableOpacity onPress={onButtonPress}>
-              <Text style={[styles.text, styles.textUnderlined]}>
-                I do not want to make a return ride
-              </Text>
-            </TouchableOpacity>
-          </View>)
-          :
-          (
-            <CustomButton onPress={onButtonPress} bgColor={Colors.background.darkCyan}>
-              {`See your ${text}`}
-            </CustomButton>
-          )
-      }
-    </View>
+    {
+      (type === FEEDABLE_GROUP) &&
+      <Group
+        onPress={() => navigation.navigate('GroupDetail', { group: detail })}
+        group={detail}
+      />
+    }
+
+    {
+      isReturnedTrip &&
+      <View style={styles.footer}>
+        <RoundedButton
+          onPress={onMakeReturnRide}
+          bgColor={Colors.background.pink}
+          style={styles.button}
+        >
+          Add return ride
+        </RoundedButton>
+      </View>
+    }
   </View>
 );
 
 Completed.propTypes = {
-  onButtonPress: PropTypes.func.isRequired,
-  isCliped: PropTypes.bool.isRequired,
-  url: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  detail: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  type: PropTypes.oneOf([FEEDABLE_TRIP, FEEDABLE_GROUP]).isRequired,
   isReturnedTrip: PropTypes.bool,
   onMakeReturnRide: PropTypes.func,
 };
@@ -104,4 +118,4 @@ Completed.defaultProps = {
   onMakeReturnRide: () => { },
 };
 
-export default Completed;
+export default withNavigation(Completed);

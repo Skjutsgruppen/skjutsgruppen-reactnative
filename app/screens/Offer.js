@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, Clipboard } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
-import Tab from '@components/tab';
 import Description from '@components/offer/description';
 import Trip from '@components/offer/trip';
 import Date from '@components/offer/date';
 import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
-import { Loading, Wrapper, Container } from '@components/common';
+import { Loading, Wrapper, FloatingNavbar, ProgressBar } from '@components/common';
 import { withCreateTrip } from '@services/apollo/trip';
 import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import Colors from '@theme/colors';
+import { Colors } from '@theme';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
-import { FEED_TYPE_OFFER } from '@config/constant';
+import { FEED_TYPE_OFFER, FEEDABLE_TRIP } from '@config/constant';
+
+import { GlobalStyles } from '@theme/styles';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -28,7 +29,15 @@ const styles = StyleSheet.create({
     margin: 12,
     textAlign: 'center',
   },
+  progress: {
+    paddingHorizontal: 20,
+    marginTop: 75,
+  },
+  stepsCount: {
+    marginTop: 10,
+  },
   returnHeader: {
+    marginTop: 70,
     paddingHorizontal: 24,
     paddingVertical: 10,
   },
@@ -44,11 +53,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
     lineHeight: 20,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
   },
   title: {
     fontSize: 16,
@@ -105,7 +109,7 @@ class Offer extends Component {
       dates: [],
       seat: 3,
       share: {},
-      activeTab: 1,
+      activeStep: 1,
       disabledTabs: [2, 3, 4, 5],
       completedTabs: [],
       loading: false,
@@ -142,7 +146,7 @@ class Offer extends Component {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(1);
       delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ description, completedTabs, disabledTabs, activeTab: 2, error: '' });
+      this.setState({ description, completedTabs, disabledTabs, activeStep: 2, error: '' });
     }
   };
 
@@ -155,7 +159,7 @@ class Offer extends Component {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(2);
       delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ trip, completedTabs, disabledTabs, activeTab: 3, error: '' });
+      this.setState({ trip, completedTabs, disabledTabs, activeStep: 3, error: '' });
     }
   };
 
@@ -168,7 +172,7 @@ class Offer extends Component {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(3);
       delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ date, completedTabs, disabledTabs, activeTab: 4, error: '' });
+      this.setState({ date, completedTabs, disabledTabs, activeStep: 4, error: '' });
     }
   }
 
@@ -179,7 +183,7 @@ class Offer extends Component {
       const { completedTabs, disabledTabs } = this.state;
       completedTabs.push(4);
       delete disabledTabs[disabledTabs.indexOf(4)];
-      this.setState({ seat, completedTabs, disabledTabs, activeTab: 5, error: '' });
+      this.setState({ seat, completedTabs, disabledTabs, activeStep: 5, error: '' });
     }
   };
 
@@ -192,16 +196,11 @@ class Offer extends Component {
         share,
         completedTabs,
         disabledTabs,
-        activeTab: 6,
+        activeStep: 6,
         loading: true,
       },
       this.createTrip,
     );
-  };
-
-  onButtonPress = () => {
-    const { navigate } = this.props.navigation;
-    navigate('Feed', { refetch: true });
   };
 
   onMakeReturnRide = () => {
@@ -218,10 +217,7 @@ class Offer extends Component {
           stops: (this.state.trip.stops.length > 0)
             ? this.state.trip.stops.reverse()
             : this.state.defaultTrip.stops,
-          description: {
-            text: this.state.description.text,
-            photo: this.state.description.photo,
-          },
+          description: this.state.description,
           seat: this.state.seat,
           time: this.state.date.time,
           flexibilityInfo: this.state.date.flexibilityInfo,
@@ -288,109 +284,101 @@ class Offer extends Component {
       );
     }
 
-    return (<Text style={styles.mainTitle}>Offer a ride</Text>);
+    return null;
   }
 
   renderFinish() {
-    const { loading, offer, share, error } = this.state;
+    const { loading, offer, error, trip } = this.state;
 
     if (loading) {
-      return (<Loading />);
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Loading />
+        </View>
+      );
     }
 
     if (error !== '') {
-      return (<View>
-        <Toast message={error} type="error" />
-        <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
-          Try Again
-        </CustomButton>
-      </View>);
+      return (
+        <View style={{ marginTop: 100 }}>
+          <Toast message={error} type="error" />
+          <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
+            Try Again
+          </CustomButton>
+        </View>
+      );
     }
 
-    return (<Completed
-      url={offer.url}
-      text="ride"
-      isCliped={share.social.indexOf('copy_to_clip') > -1}
-      onButtonPress={this.onButtonPress}
-      isReturnedTrip={this.state.trip.isReturning}
-      onMakeReturnRide={this.onMakeReturnRide}
-    />);
+    return (
+      <Completed
+        detail={offer}
+        type={FEEDABLE_TRIP}
+        isReturnedTrip={trip.isReturning}
+        onMakeReturnRide={this.onMakeReturnRide}
+      />
+    );
   }
 
   render() {
     const {
-      activeTab,
-      completedTabs,
-      disabledTabs,
+      activeStep,
       isReturnedTrip,
       defaultTrip,
       error,
     } = this.state;
     const { navigation } = this.props;
-    return (
-      <Wrapper bgColor="#eded18">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.title}>Back</Text>
-        </TouchableOpacity>
-        <Container bgColor="#f3f3ed">
-          {this.header()}
-          <View style={styles.tabContainer}>
-            <Tab
-              label="Description"
-              disabled={disabledTabs.indexOf(1) > -1}
-              complete={completedTabs.indexOf(1) > -1}
-              active={activeTab === 1}
-            />
-            <Tab
-              label="Trip"
-              disabled={disabledTabs.indexOf(2) > -1}
-              complete={completedTabs.indexOf(2) > -1}
-              active={activeTab === 2}
-            />
-            <Tab
-              label="Date"
-              disabled={disabledTabs.indexOf(3) > -1}
-              complete={completedTabs.indexOf(3) > -1}
-              active={activeTab === 3}
-            />
-            <Tab
-              label="Seats"
-              disabled={disabledTabs.indexOf(4) > -1}
-              complete={completedTabs.indexOf(4) > -1}
-              active={activeTab === 4}
-            />
-            <Tab
-              label="Share"
-              disabled={disabledTabs.indexOf(5) > -1}
-              complete={completedTabs.indexOf(5) > -1}
-              active={activeTab === 5}
-            />
-          </View>
 
-          <View>
-            <Toast message={error} type="error" />
-            {(activeTab === 1) && <Description
-              onNext={this.onDescriptionNext}
-              defaultValue={defaultTrip.description}
-            />}
-            {(activeTab === 2) && <Trip
-              isReturnTrip={isReturnedTrip}
-              start={defaultTrip.start}
-              end={defaultTrip.end}
-              stops={defaultTrip.stops}
-              onNext={this.onTripNext}
-              isOffer
-            />}
-            {(activeTab === 3) && <Date
-              onNext={this.onDateNext}
-              defaultTime={defaultTrip.time}
-              defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
-            />}
-            {(activeTab === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
-            {(activeTab === 5) && <Share onNext={this.onShareAndPublishNext} />}
-            {(activeTab === 6) && this.renderFinish()}
-          </View>
-        </Container>
+    const progressAmount = (activeStep / 6) * 100;
+    return (
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <FloatingNavbar
+          handleBack={() => navigation.goBack()}
+          title="Offer a ride"
+        />
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {this.header()}
+          {
+            this.state.activeStep <= 5 &&
+            <View style={styles.progress}>
+              <ProgressBar amount={progressAmount} />
+              <Text style={[
+                styles.stepsCount,
+                GlobalStyles.TextStyles.bold,
+                GlobalStyles.TextStyles.light,
+                activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
+              ]}
+              >
+                <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 5
+                {
+                  activeStep === 5 &&
+                  <Text>, well done!</Text>
+                }
+              </Text>
+            </View>
+          }
+
+          <Toast message={error} type="error" />
+          {(activeStep === 1) && <Description
+            onNext={this.onDescriptionNext}
+            defaultValue={defaultTrip.description}
+          />}
+          {(activeStep === 2) && <Trip
+            isReturnTrip={isReturnedTrip}
+            start={defaultTrip.start}
+            end={defaultTrip.end}
+            stops={defaultTrip.stops}
+            onNext={this.onTripNext}
+            isOffer
+          />}
+          {(activeStep === 3) && <Date
+            onNext={this.onDateNext}
+            defaultTime={defaultTrip.time}
+            defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
+          />}
+          {(activeStep === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
+          {(activeStep === 5) && <Share onNext={this.onShareAndPublishNext} />}
+          {(activeStep === 6) && this.renderFinish()}
+        </ScrollView>
       </Wrapper>
     );
   }

@@ -77,26 +77,18 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           const newFeedItem = subscriptionData.data.commentAdded;
           let repeated = false;
 
-          rows = prev.comments.rows.filter((row) => {
-            if (row.id === newFeedItem.id) {
-              repeated = true;
-              return false;
-            }
-            count += 1;
-
-            return true;
-          });
-
-          rows = [newFeedItem].concat(rows);
+          const found = prev.comments.rows.filter(row => row.id === newFeedItem.id);
+          repeated = found.length > 0;
+          let prevComment = prev.comments;
 
           if (!repeated) {
+            rows = [newFeedItem].concat(prevComment.rows);
             increaseProfileComment();
             increaseFeedCommentCount(id, (newFeedItem.User.id === userId));
+            prevComment = { ...prevComment, ...{ rows, count: prevComment.count + 1 } };
           }
 
-          return {
-            comments: { ...prev.comments, ...{ rows, count: count + 1 } },
-          };
+          return { comments: prevComment };
         },
       }),
     };
@@ -178,16 +170,16 @@ mutation createComment(
 ) 
 {
   createComment( 
-      tripId: $tripId
-      groupId: $groupId
-      newsId: $newsId
-      text: $text
+    tripId: $tripId
+    groupId: $groupId
+    newsId: $newsId
+    text: $text
   )
   {
-      tripId
-      groupId
-      newsId
-      text
+    tripId
+    groupId
+    newsId
+    text
   }
 }
 `;
