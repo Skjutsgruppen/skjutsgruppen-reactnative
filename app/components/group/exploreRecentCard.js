@@ -77,7 +77,7 @@ class ExploreRecentGroup extends PureComponent {
   }
 
   render() {
-    const { exploreGroups: { count, rows, loading } } = this.props;
+    const { style, exploreGroups: { count, rows, loading } } = this.props;
 
     if (count === 0) {
       return null;
@@ -90,7 +90,7 @@ class ExploreRecentGroup extends PureComponent {
     const group = rows[0];
 
     return (
-      <View style={styles.exploreGroup}>
+      <View style={[styles.exploreGroup, style]}>
         <Text style={styles.exploreGroupTitle}>{trans('search.explore_groups')}</Text>
         <TouchableOpacity onPress={this.redirectToExploreGroup}>
           <View style={styles.exploreIcon} />
@@ -118,6 +118,7 @@ class ExploreRecentGroup extends PureComponent {
 }
 
 ExploreRecentGroup.propTypes = {
+  style: View.propTypes.style,
   exploreGroups: PropTypes.shape({
     count: PropTypes.number.isRequired,
     rows: PropTypes.arrayOf(PropTypes.shape()),
@@ -129,6 +130,7 @@ ExploreRecentGroup.propTypes = {
 };
 
 ExploreRecentGroup.defaultProps = {
+  style: {},
   exploreGroups: {
     rows: [],
     loading: true,
