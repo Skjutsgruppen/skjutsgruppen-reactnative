@@ -165,11 +165,14 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <Footer
-        onSharePress={() => onSharePress(FEEDABLE_GROUP, group)}
-        onCommentPress={() => onPress(FEEDABLE_GROUP, group)}
-        hasReadMore
-      />
+      {
+        typeof onSharePress === 'function' &&
+        <Footer
+          onSharePress={() => onSharePress(FEEDABLE_GROUP, group)}
+          onCommentPress={() => onPress(FEEDABLE_GROUP, group)}
+          hasReadMore
+        />
+      }
     </View>
   );
 };
@@ -196,7 +199,7 @@ Group.propTypes = {
 };
 
 Group.defaultProps = {
-  onSharePress: () => { },
+  onSharePress: null,
   min: false,
   wrapperStyle: {},
 };

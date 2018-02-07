@@ -15,14 +15,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const ProgressBar = ({ amount, style }) => {
-  let color = Colors.background.pink;
+const ProgressBar = ({ amount, style, color }) => {
+  let progressColor = color;
   if (amount === 100) {
-    color = Colors.background.yellowGreen;
+    progressColor = Colors.background.yellowGreen;
   }
   return (
     <View style={[styles.container, style]}>
-      <View style={[styles.bar, { width: `${amount}%`, backgroundColor: color }]} />
+      <View style={[styles.bar, { width: `${amount}%`, backgroundColor: progressColor }]} />
     </View>
   );
 };
@@ -30,10 +30,12 @@ const ProgressBar = ({ amount, style }) => {
 ProgressBar.propTypes = {
   amount: PropTypes.number.isRequired,
   style: View.propTypes.style,
+  color: PropTypes.string,
 };
 
 ProgressBar.defaultProps = {
   style: {},
+  color: Colors.background.pink,
 };
 
 export default ProgressBar;

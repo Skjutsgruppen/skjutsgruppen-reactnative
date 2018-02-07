@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
   searchContent: {
     padding: 24,
     backgroundColor: Colors.background.fullWhite,
+    overflow: 'visible',
+    elevation: 10,
   },
   bold: {
     fontWeight: 'bold',
@@ -53,6 +55,9 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginTop: 12,
     justifyContent: 'center',
+  },
+  arrowContainer: {
+    marginTop: 24,
   },
   selected: {
     backgroundColor: Colors.background.blue,
@@ -98,7 +103,14 @@ class SearchResult extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { filters: [], modalDetail: {}, modalType: '', isOpen: false, resultsStyle: 'card' };
+    this.state = {
+      filters: [],
+      modalDetail: {},
+      modalType: '',
+      isOpen: false,
+      resultsStyle: 'card',
+      arrowX: 0,
+    };
   }
 
   componentWillMount() {
@@ -151,6 +163,11 @@ class SearchResult extends Component {
 
     this.setState({ filters });
     this.refetch();
+  }
+
+  setArrowOffset = (x, width) => {
+    const xOffset = x + 20 + (width / 2);
+    this.setState({ arrowX: xOffset });
   }
 
   redirect = (page) => {
@@ -284,9 +301,9 @@ class SearchResult extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.lightBlueWhite}>
-        <FloatingNavbar handleBack={() => navigation.goBack()} />
+        <FloatingNavbar handleBack={() => navigation.goBack()} style={{ elevation: 15 }} />
         <View style={styles.searchContent}>
-          <View style={{ marginLeft: 40 }}>
+          <View style={{ marginLeft: 50 }}>
             <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
             <Text style={styles.time}>{prettyDate.join(', ')}</Text>
           </View>
@@ -311,16 +328,24 @@ class SearchResult extends Component {
               <Text style={styles.whiteText}>{trans('search.asked_for')}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
-              style={[
-                styles.suggestion,
-                filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
-              ]}
+            <View
+              style={{ overflow: 'visible' }}
+              onLayout={
+                event => (
+                  this.setArrowOffset(event.nativeEvent.layout.x, event.nativeEvent.layout.width)
+                )
+              }
             >
-              <Text style={styles.whiteText}>{trans('search.public_transport')}</Text>
-            </TouchableOpacity>
-
+              <TouchableOpacity
+                onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
+                style={[
+                  styles.suggestion,
+                  filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
+                ]}
+              >
+                <Text style={styles.whiteText}>{trans('search.public_transport')}</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
               onPress={() => this.onFilterSelect(FEED_TYPE_GROUP)}
               style={[
@@ -333,6 +358,15 @@ class SearchResult extends Component {
           </View>
         </View>
         {search.count > 0 && this.renderListType()}
+        {
+          (
+            !search.loading &&
+            filters.length === 1 &&
+            (this.state.filters.indexOf(FEED_TYPE_OFFER) > -1)) &&
+            <View style={[styles.arrowContainer, { paddingLeft: this.state.arrowX }]}>
+              <Image source={require('@assets/icons/ic_arrow_up.png')} style={styles.arrow} />
+            </View>
+        }
         {this.renderSearchResult()}
         {this.renderShareModal()}
       </Wrapper>

@@ -6,7 +6,6 @@ import { TRIPS_QUERY, GET_FEED_QUERY } from '@services/apollo/trip';
 import { GROUPS_QUERY } from '@services/apollo/group';
 import {
   FEEDABLE_TRIP,
-  FEEDABLE_NEWS,
   PER_FETCH_LIMIT,
   FEED_FILTER_WANTED,
   FEED_FILTER_EVERYTHING,
@@ -65,10 +64,6 @@ export const increaseFeedCommentCount = (id, isOwner = false) => {
         if (isOwner) {
           feed.Trip.isParticipant = true;
         }
-      }
-
-      if (feed.feedable === FEEDABLE_NEWS && feed.News.id === id) {
-        feed.News.totalComments += 1;
       }
 
       return feed;

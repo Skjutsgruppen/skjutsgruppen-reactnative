@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableWithoutFeedback, Image } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { withMyGroups } from '@services/apollo/group';
 import { withFriends, withBestFriends } from '@services/apollo/friend';
 import { compose } from 'react-apollo';
-import { Wrapper, Loading } from '@components/common';
+import { Loading, RoundedButton } from '@components/common';
 import CloseButton from '@components/common/closeButton';
-import CustomButton from '@components/common/customButton';
-import CheckIcon from '@assets/icons/icon_check_white.png';
 import Colors from '@theme/colors';
 import FriendList from '@components/friendList';
 import { trans } from '@lang/i18n';
+import SectionLabel from '@components/add/sectionLabel';
+import ShareItem from '@components/common/shareItem';
 
 const styles = StyleSheet.create({
+  list: {
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingTop: 24,
+    marginTop: 16,
+  },
+  wrapper: {
+    paddingTop: 16,
+  },
   navBar: {
     flexDirection: 'row',
     height: 40,
@@ -28,40 +37,16 @@ const styles = StyleSheet.create({
     width: 54,
   },
   listWrapper: {
-    paddingBottom: 64,
-    backgroundColor: '#fff',
-    borderColor: '#e0e0e0',
-    borderBottomWidth: 2,
-  },
-  infoTextWrapper: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    backgroundColor: Colors.background.cream,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 12,
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  text: {
-    width: 300,
-    textAlign: 'center',
-    lineHeight: 18,
-    fontWeight: 'bold',
-    color: Colors.text.gray,
-    alignSelf: 'center',
+    flex: 1,
+    paddingTop: 16,
+    paddingBottom: 40,
+    backgroundColor: Colors.background.fullWhite,
   },
   searchWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 6,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
   },
   searchIcon: {
     width: 20,
@@ -73,104 +58,27 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
-  socialWrapper: {
-    paddingVertical: 10,
-  },
-  copyIcon: {
-    resizeMode: 'contain',
-    height: 30,
-    width: 30,
-    marginRight: 10,
-  },
-  shareCategory: {
-    borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
-    backgroundColor: '#ffffff',
-    paddingVertical: 10,
-  },
   shareCategoryTitle: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#1ca9e5',
     marginHorizontal: 24,
-    marginTop: 24,
     marginBottom: 12,
   },
-  borderedRow: {
-    borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  shareItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    backgroundColor: '#ffffff',
-  },
-  defaultSelectedIcon: {
-    width: 28,
-    height: 28,
-    backgroundColor: '#00aeef',
-    marginRight: 10,
-    borderRadius: 15,
-  },
-  shareItemIconWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 28,
-    height: 28,
-    backgroundColor: '#00aeef',
-    marginRight: 10,
-    borderRadius: 15,
-  },
-  shareItemIcon: {
-    height: 16,
-    resizeMode: 'contain',
-  },
-  smallText: {
-    fontSize: 11,
-    opacity: 0.7,
-  },
-  shareToggle: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#999',
-    marginLeft: 'auto',
-  },
-  shareToggleGray: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: Colors.border.gray,
-    backgroundColor: Colors.border.gray,
-    marginLeft: 'auto',
-  },
-  shareToggleActive: {
-    backgroundColor: '#a27ba8',
-    borderColor: '#a27ba8',
-  },
-  checkIcon: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.background.gray,
+    paddingVertical: '2%',
+    paddingHorizontal: 20,
   },
   button: {
-    padding: 8,
-    marginVertical: 32,
-    marginHorizontal: 24,
-  },
-  profilePic: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    marginRight: 12,
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
+    marginHorizontal: 20,
   },
 });
 
@@ -221,16 +129,6 @@ class Share extends Component {
     return this.isModal() ? 'Share' : 'Next';
   }
 
-  renderPic = (photo) => {
-    let profileImage = null;
-
-    if (photo) {
-      profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
-    }
-
-    return profileImage;
-  }
-
   renderGroups() {
     const { groups } = this.props;
 
@@ -243,28 +141,18 @@ class Share extends Component {
     }
 
     return (
-      <View>
-        <Text style={styles.shareCategoryTitle}>Groups</Text>
+      <View style={styles.list}>
+        <Text style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</Text>
         {
           groups.rows.map(group => group && (
-            <View key={group.id} style={styles.borderedRow}>
-              <TouchableWithoutFeedback
-                onPress={() => this.setOption('groups', group.id)}
-              >
-                <View style={styles.shareItem}>
-                  {this.renderPic(group.photo)}
-                  <Text>{group.name}</Text>
-                  <View
-                    style={[styles.shareToggle, this.hasOption('groups', group.id) ? styles.shareToggleActive : {}]}
-                  >
-                    {
-                      this.hasOption('groups', group.id) &&
-                      <Image source={CheckIcon} style={styles.checkIcon} />
-                    }
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+            <ShareItem
+              key={group.id}
+              imageSource={{ uri: group.User.avatar }}
+              hasPhoto
+              selected={this.hasOption('groups', group.id)}
+              label={group.name}
+              onPress={() => this.setOption('groups', group.id)}
+            />
           ))
         }
       </View>
@@ -272,10 +160,10 @@ class Share extends Component {
   }
 
   render() {
-    const { friends, bestFriends } = this.props;
+    const { friends, bestFriends, labelColor } = this.props;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
+      <View style={styles.wrapper}>
         {
           this.isModal() &&
           <View style={styles.navBar}>
@@ -284,104 +172,69 @@ class Share extends Component {
             <View style={styles.map} />
           </View>
         }
+        {!this.isModal() &&
+          <SectionLabel label={trans('global.invite_and_publish')} color={labelColor} />
+        }
+        <View style={styles.searchWrapper}>
+          <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchField}
+            placeholder={trans('global.search')}
+          />
+        </View>
         <View style={styles.listWrapper}>
           {!this.isModal() &&
-            <View style={styles.infoTextWrapper}>
-              <Text style={styles.title}> {trans('global.invite_and_publish')}</Text>
-              <Text style={styles.text}>
-                {trans('global.participants_who_are_part_of_movement')}
-              </Text>
-            </View>
-          }
-          <View style={styles.searchWrapper}>
-            <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchField}
-              placeholder={trans('global.search')}
+            <ShareItem
+              readOnly
+              selected={this.hasOption('social', 'copy_to_clip')}
+              label={trans('global.publish_to_whole_movement')}
+              onPress={() => {}}
             />
-          </View>
-          {!this.isModal() &&
-            <TouchableWithoutFeedback
-              onPress={() => this.setOption('social', 'whole_movement')}
-            >
-              <View style={styles.shareItem}>
-                <View style={styles.defaultSelectedIcon} />
-                <Text style={styles.shareLabel}>{trans('global.publish_to_whole_movement')}</Text>
-                <View
-                  style={styles.shareToggleGray}
-                >
-                  <Image source={CheckIcon} style={styles.checkIcon} />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
           }
-          <TouchableWithoutFeedback
+          <ShareItem
+            imageSource={require('@assets/icons/ic_copy.png')}
+            selected={this.hasOption('social', 'copy_to_clip')}
+            label={trans('global.copy_to_clipboard')}
             onPress={() => this.setOption('social', 'copy_to_clip')}
-          >
-            <View style={styles.shareItem}>
-              <Image source={require('@assets/icons/icon_copy.png')} style={styles.copyIcon} />
-              <View style={styles.shareLabel}>
-                <Text>{trans('global.copy_to_clipboard')}</Text>
-                <Text style={styles.smallText}>{trans('global.paste_wherever_you_want')}</Text>
-              </View>
-              <View
-                style={[styles.shareToggle, this.hasOption('social', 'copy_to_clip') ? styles.shareToggleActive : {}]}
-              >
-                {
-                  this.hasOption('social', 'copy_to_clip') &&
-                  <Image source={CheckIcon} style={styles.checkIcon} />
-                }
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
+          />
+          <ShareItem
+            imageSource={require('@assets/icons/ic_facebook.png')}
+            selected={this.hasOption('social', 'facebook')}
+            label={trans('global.your_fb_timeline')}
             onPress={() => this.setOption('social', 'facebook')}
-          >
-            <View style={styles.shareItem}>
-              <View style={styles.shareItemIconWrapper}>
-                <Image source={require('@assets/icons/icon_facebook.png')} style={styles.shareItemIcon} />
-              </View>
-              <Text>{trans('global.your_fb_timeline')}</Text>
-              <View
-                style={[styles.shareToggle, this.hasOption('social', 'facebook') ? styles.shareToggleActive : {}]}
-              >
-                {
-                  this.hasOption('social', 'facebook') &&
-                  <Image source={CheckIcon} style={styles.checkIcon} />
-                }
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
+          />
+          <ShareItem
+            imageSource={require('@assets/icons/ic_twitter.png')}
+            selected={this.hasOption('social', 'tweet')}
+            label={trans('global.tweet')}
             onPress={() => this.setOption('social', 'tweet')}
-          >
-            <View style={styles.shareItem}>
-              <View style={styles.shareItemIconWrapper}>
-                <Image source={require('@assets/icons/icon_twitter.png')} style={styles.shareItemIcon} />
-              </View>
-              <Text>{trans('global.tweet')}</Text>
-              <View
-                style={[styles.shareToggle, this.hasOption('social', 'tweet') ? styles.shareToggleActive : {}]}
-              >
-                {
-                  this.hasOption('social', 'tweet') &&
-                  <Image source={CheckIcon} style={styles.checkIcon} />
-                }
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-          <FriendList loading={friends.loading} friends={friends.rows} total={friends.count} title="Friends" setOption={this.setOption} selected={this.state.friends} />
-          <FriendList loading={bestFriends.loading} friends={bestFriends.rows} total={bestFriends.count} title="Best Friends" setOption={this.setOption} selected={this.state.friends} />
+          />
+          <FriendList
+            loading={bestFriends.loading}
+            friends={bestFriends.rows}
+            total={bestFriends.count}
+            title="Recent"
+            setOption={this.setOption}
+            selected={this.state.friends}
+          />
+          <FriendList
+            loading={friends.loading}
+            friends={friends.rows}
+            total={friends.count}
+            title="Friends"
+            setOption={this.setOption}
+            selected={this.state.friends}
+          />
           {this.showGroup() && this.renderGroups()}
+          <RoundedButton
+            onPress={this.onNext}
+            bgColor={Colors.background.pink}
+            style={styles.button}
+          >
+            {trans('global.share')}
+          </RoundedButton>
         </View>
-        <CustomButton
-          onPress={this.onNext}
-          bgColor="#38ad9e"
-          style={styles.button}
-        >
-          {trans('global.share')}
-        </CustomButton>
-      </Wrapper>
+      </View>
     );
   }
 }
@@ -403,12 +256,14 @@ Share.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
   }).isRequired,
+  labelColor: PropTypes.string,
 };
 
 Share.defaultProps = {
   onClose: () => { },
   modal: false,
   showGroup: true,
+  labelColor: null,
 };
 
 export default compose(withMyGroups, withBestFriends, withFriends)(Share);

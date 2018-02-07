@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
+import CycleIcon from '@assets/icons/ic_cycle.png';
 import {
   FEED_TYPE_OFFER,
   FEED_TYPE_PUBLIC_TRANSPORT,
@@ -12,14 +13,18 @@ import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   wrapper: {
-    padding: '20%',
+    padding: '10%',
     alignItems: 'center',
+    zIndex: 1,
   },
   text: {
     fontSize: 16,
     lineHeight: 32,
     marginVertical: 16,
     textAlign: 'center',
+  },
+  lightText: {
+    color: Colors.text.gray,
   },
   italic: {
     fontStyle: 'italic',
@@ -94,7 +99,8 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.text}>No search results</Text>
+      <Image source={CycleIcon} />
+      <Text style={[styles.text, styles.lightText]}>No search results.</Text>
       {renderRoundButton('Add', 'Add ride')}
     </View>
   );
