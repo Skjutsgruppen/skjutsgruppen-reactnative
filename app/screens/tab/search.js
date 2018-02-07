@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
-import GooglePlace from '@components/googlePlace';
+import PlaceInput from '@components/search/place/placeInput';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { Circle, RoundedButton } from '@components/common';
@@ -57,8 +57,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     flex: 1,
-    height: 1,
-    backgroundColor: Colors.background.lightGray,
   },
   switcherIcon: {
     alignSelf: 'center',
@@ -258,7 +256,7 @@ class Search extends Component {
           <LinearGradient colors={Gradients.white} style={styles.content}>
             <View style={styles.locationWrapper}>
               <View style={styles.inputWrapper}>
-                <GooglePlace
+                <PlaceInput
                   defaultValue={this.state.from}
                   currentLocation
                   placeholder={trans('search.from_where_i_am_now')}
@@ -274,7 +272,7 @@ class Search extends Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.inputWrapper}>
-                <GooglePlace
+                <PlaceInput
                   placeholder={trans('global.destination')}
                   defaultValue={this.state.to}
                   onChangeText={to => this.setState({ to })}
@@ -283,24 +281,26 @@ class Search extends Component {
                 <Text style={styles.inputLabel}>{trans('global.to')}</Text>
               </View>
             </View>
-            <Text style={styles.label}>{trans('search.or_choose')}:</Text>
-            <View style={styles.locationSuggestions}>
-              <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-                <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-                <Text style={styles.suggestionText}>{trans('global.north')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-                <Text style={styles.suggestionText}>{trans('global.south')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-                <Text style={styles.suggestionText}>{trans('global.east')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-                <Text style={styles.suggestionText}>{trans('global.west')}</Text>
-              </TouchableOpacity>
-            </View>
+            {false &&
+              <View style={styles.locationSuggestions}>
+                <Text style={styles.label}>{trans('search.or_choose')}:</Text>
+                <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
+                  <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
+                  <Text style={styles.suggestionText}>{trans('global.north')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
+                  <Text style={styles.suggestionText}>{trans('global.south')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
+                  <Text style={styles.suggestionText}>{trans('global.east')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
+                  <Text style={styles.suggestionText}>{trans('global.west')}</Text>
+                </TouchableOpacity>
+              </View>
+            }
             <View style={styles.dateRow}>
               <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
               <TouchableOpacity onPress={() => this.setModalVisible(true)}>

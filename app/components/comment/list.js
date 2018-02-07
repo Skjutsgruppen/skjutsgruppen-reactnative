@@ -136,7 +136,7 @@ class List extends PureComponent {
   };
 
   render() {
-    const { comments, onCommentPress } = this.props;
+    const { comments, onCommentPress, showCount } = this.props;
     const { error, rows, count, networkStatus } = comments;
     const { commentsRow } = this.state;
 
@@ -158,7 +158,7 @@ class List extends PureComponent {
 
     return (
       <View style={{ marginTop: 24 }}>
-        <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>
+        {showCount && <Text style={styles.infoText}>{count} {count > 1 ? 'comments' : 'comment'}</Text>}
         <FlatList
           data={commentsRow}
           renderItem={({ item }) => (
@@ -196,7 +196,13 @@ List.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  showCount: PropTypes.bool,
 };
+
+List.defaultProps = {
+  showCount: false,
+};
+
 const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(withNavigation, connect(mapStateToProps))(List);

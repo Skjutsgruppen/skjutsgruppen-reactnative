@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, Image } from 'react-native';
+import { StyleSheet, ScrollView, Text, Image } from 'react-native';
 import { Wrapper, Circle } from '@components/common';
 import PropTypes from 'prop-types';
 
@@ -9,12 +9,22 @@ import { withExploreGroup } from '@services/apollo/group';
 import Starter from '@components/add/starter';
 
 import { Colors } from '@theme';
-import { StartStyles } from '@theme/styles/add';
 
 import AddIcon from '@assets/icons/ic_add.png';
 import AddIconActive from '@assets/icons/ic_add_active.png';
 
 const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.text.white,
+    marginHorizontal: 20,
+    marginTop: '15%',
+    marginBottom: '5%',
+  },
+});
 
 class Add extends Component {
   static navigationOptions = {
@@ -37,7 +47,7 @@ class Add extends Component {
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ScrollView>
           <Circle />
-          <Text style={StartStyles.title}>Add</Text>
+          <Text style={styles.title}>Add</Text>
           <Starter
             onPress={() => this.redirect('Offer')}
             label="Offer a ride"

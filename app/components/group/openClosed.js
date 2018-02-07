@@ -1,41 +1,35 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
-import Radio from '@components/common/radio';
+import Radio from '@components/add/radio';
 import Colors from '@theme/colors';
-import CustomButton from '@components/common/customButton';
+import { RoundedButton } from '@components/common';
+import SectionLabel from '@components/add/sectionLabel';
 import { OPEN_GROUP, CLOSE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 24,
+  wrapper: {
+    paddingTop: '5%',
+  },
+  radioRow: {
+    paddingHorizontal: 20,
+    paddingVertical: '5%',
+  },
+  radio: {
     marginBottom: 24,
-    marginTop: 12,
-    textAlign: 'center',
   },
-  text: {
-    color: '#777',
-    lineHeight: 20,
-    textAlign: 'center',
-    marginHorizontal: '20%',
-    marginBottom: 32,
+  infoText: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    lineHeight: 24,
+    color: Colors.text.gray,
   },
-  radioWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    marginHorizontal: '20%',
-  },
-  buttonWrapper: {
-    padding: 8,
-    margin: 24,
-  },
-  note: {
-    fontSize: 12,
-    lineHeight: 16,
+  button: {
+    alignSelf: 'center',
+    width: '50%',
+    marginTop: '15%',
+    marginBottom: 80,
+    marginHorizontal: 20,
   },
 });
 
@@ -64,28 +58,32 @@ class OpenClosed extends Component {
     const { type } = this.state;
 
     return (
-      <View>
-        <Text style={styles.title}>Open / Closed</Text>
-        <Text style={styles.text}>
-          Is your group open for everyone to join (recommended) or
-          do you wish to moderate everyone who wants to join (you will then need to accept
-          them to the group).
-        </Text>
-        <View style={styles.radioWrapper}>
-          <Radio onPress={this.onPressOpen} label="OpenGroup" checked={type === OPEN_GROUP} />
-          <Radio onPress={this.onPressClosed} label="ClosedGroup" checked={type === CLOSE_GROUP} />
+      <View style={styles.wrapper}>
+        <SectionLabel label="Is your group open or closed?" />
+        <View style={styles.radioRow}>
+          <Radio
+            active={type === OPEN_GROUP}
+            label="Open (recommended)"
+            onPress={this.onPressOpen}
+            style={styles.radio}
+          />
+          <Radio
+            active={type === CLOSE_GROUP}
+            label="Closed"
+            onPress={this.onPressClosed}
+          />
         </View>
-        <CustomButton
-          onPress={this.onNext}
-          bgColor={Colors.background.darkCyan}
-          style={styles.buttonWrapper}
-        >
-          Next
-        </CustomButton>
-        <Text style={[styles.text, styles.note]}>
-          * Please note that rides published in a closed group still will be
+        <Text style={styles.infoText}>
+          Please note that rides published in a closed group still will be
           searchable and joinable for everyone in the movement.
         </Text>
+        <RoundedButton
+          onPress={this.onNext}
+          bgColor={Colors.background.pink}
+          style={styles.button}
+        >
+          Next
+        </RoundedButton>
       </View>
     );
   }

@@ -308,16 +308,10 @@ mutation createTrip(
       type 
       description 
       seats 
-      parentId
       User {
         id 
         firstName 
         avatar 
-        relation {
-          id 
-          firstName
-          avatar
-        }
       } 
       TripStart {
         name 
@@ -332,28 +326,10 @@ mutation createTrip(
         coordinates 
       } 
       date 
-      time 
       photo 
       mapPhoto
       totalComments
-      duration
-      url
-      ReturnTrip {
-        id
-        date
-        TripStart {
-          name
-          coordinates
-        }
-        TripEnd {
-          name
-          coordinates
-        }
-      }
-      Recurring {
-        id
-        date
-      }
+      isParticipant
   }
 }
 `;

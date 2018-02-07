@@ -136,11 +136,14 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableHightlight>
-      <Footer
-        onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
-        onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
-        totalComments={trip.totalComments}
-      />
+      {
+        typeof onSharePress === 'function' &&
+        <Footer
+          onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
+          onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
+          totalComments={trip.totalComments}
+        />
+      }
     </View>
   );
 };
@@ -153,12 +156,13 @@ Trip.propTypes = {
     user: PropTypes.object,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onSharePress: PropTypes.func.isRequired,
+  onSharePress: PropTypes.func,
   wrapperStyle: View.propTypes.style,
 };
 
 Trip.defaultProps = {
   wrapperStyle: {},
+  onSharePress: null,
 };
 
 export default Trip;
