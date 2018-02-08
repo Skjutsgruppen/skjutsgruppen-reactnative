@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View, Text, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
 import { FEEDABLE_TRIP } from '@config/constant';
 import Date from '@components/date';
-import { Avatar } from '@components/common';
+import Avatar from '@components/common/avatar';
 import { Colors } from '@theme';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 
@@ -30,16 +30,34 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 16,
   },
+  seats: {
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.pink,
+  },
+  seatsText: {
+    fontSize: 12,
+    color: Colors.text.white,
+  },
 });
 
-const ListItem = ({ trip, onPress, onExperiencePress }) => (
+const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indicatorColor }) => (
   <TouchableHighlight
     onPress={() => onPress(FEEDABLE_TRIP, trip)}
     style={styles.wrapper}
     underlayColor={Colors.background.mutedPink}
   >
     <View style={styles.flexRow}>
-      <Avatar imageURI={trip.User.avatar} size={46} onPress={() => onPress(trip.User.id)} />
+      <Avatar
+        imageURI={trip.User.avatar}
+        size={46}
+        onPress={() => onPress(trip.User.id)}
+        showIndicator={showIndicator}
+        indicatorColor={indicatorColor}
+      />
       <View style={styles.infoWrapper}>
         <Text>
           {trip.TripStart.name} - {trip.TripEnd.name}
@@ -48,6 +66,11 @@ const ListItem = ({ trip, onPress, onExperiencePress }) => (
           <Date format="MMM DD, HH:mm">{trip.date}</Date>
         </Text>
       </View>
+      {
+        seats ?
+          <View style={styles.seats}><Text style={styles.seatsText}>{seats}</Text></View>
+          : null
+      }
       {trip.experienceStatus !== 'canCreate' && trip.experienceStatus === 'published'
         && <TouchableOpacity
           onPress={() => onExperiencePress(trip.ownerExperience)}
@@ -74,6 +97,15 @@ ListItem.propTypes = {
     date: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  seats: PropTypes.number,
+  showIndicator: PropTypes.bool,
+  indicatorColor: PropTypes.string,
+};
+
+ListItem.defaultProps = {
+  seats: null,
+  showIndicator: false,
+  indicatorColor: 'trasparent',
 };
 
 export default ListItem;

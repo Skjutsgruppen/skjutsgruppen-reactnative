@@ -14,4 +14,5 @@ export const about = {
   you_are_awesome: 'You are awesome se',
   the_movement_is_self_regulating: 'The movement is self-regulating, since we’re all the movement together. No “leader” is in charge over your conversation. You’re in charge. Comment as much as you like as long as you keep to the Participant agreement. se',
   we_made_this_together: 'We made this together! se',
+  this_app_is_enabled: 'This app is enabled by participants of the movement, our non-profit association and the Region of Vastra Gotaland, Sweden se',
 };

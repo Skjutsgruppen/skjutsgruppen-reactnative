@@ -3,7 +3,6 @@ import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { BackHandler, ToastAndroid, Platform } from 'react-native';
-import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import { AppNavigator } from '@routes/routeProvider';
 import {
   createReduxBoundAddListener,
