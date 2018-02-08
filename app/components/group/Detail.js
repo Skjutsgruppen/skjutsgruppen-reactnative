@@ -244,11 +244,11 @@ class Detail extends PureComponent {
     this.setState({ showCalendar: show });
   }
 
-  redirectToSelectedTripDate = (trip) => {
-    const { navigation } = this.props;
+  redirectToSelectedTripDate = (date) => {
+    const { navigation, group } = this.props;
     this.setCalendarVisibilty(false);
 
-    navigation.navigate('TripDetail', { trip });
+    navigation.navigate('SharedTrip', { date, id: group.id });
   }
 
   leaveGroup = () => {

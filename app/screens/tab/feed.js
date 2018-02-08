@@ -114,15 +114,12 @@ class Feed extends Component {
   }
 
   componentWillMount() {
-    const { feeds, subscribeToFeed, screenProps, navigation } = this.props;
+    const { feeds, subscribeToFeed, navigation } = this.props;
     const { params } = navigation.state;
 
     navigation.setParams({ scrollToTop: this.scrollToTop });
 
     navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
-
-    const { filterType } = screenProps.feed;
-    this.setState({ filterType });
 
     if (params && typeof params.refetch !== 'undefined') {
       feeds.refetch();
@@ -384,11 +381,6 @@ Feed.propTypes = {
     }).isRequired,
   }).isRequired,
   subscribeToFeed: PropTypes.func.isRequired,
-  screenProps: PropTypes.shape({
-    feed: PropTypes.shape({
-      filterType: PropTypes.string,
-    }),
-  }).isRequired,
 };
 
 export default compose(withShare, withFeed)(Feed);

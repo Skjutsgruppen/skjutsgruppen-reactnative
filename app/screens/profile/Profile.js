@@ -1,4 +1,5 @@
 import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Wrapper, Container } from '@components/common';
@@ -10,6 +11,22 @@ import ToolBar from '@components/utils/toolbar';
 const ProfileComponent = withProfile(ProfileDetail);
 const Account = withAccount(ProfileDetail);
 
+const styles = StyleSheet.create({
+  changeButton: {
+    height: 30,
+    minWidth: 115,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.pink,
+    borderRadius: 15,
+    paddingHorizontal: 12,
+  },
+  whiteText: {
+    color: Colors.text.white,
+    backgroundColor: 'transparent',
+  },
+});
+
 const Profile = ({ navigation, user }) => {
   let userId = user.id;
   let isUserProfile = false;
@@ -20,8 +37,25 @@ const Profile = ({ navigation, user }) => {
     isUserProfile = true;
   }
 
+  const rightComponent = () => {
+    if (isUserProfile) {
+      return null;
+    }
+
+    return (
+      <TouchableOpacity style={styles.changeButton} onPress={() => navigation.navigate('EditProfile')}>
+        <Text style={styles.whiteText}>{'Change'.toUpperCase()}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <Wrapper bgColor={Colors.background.cream}>
+      <ToolBar
+        transparent
+        right={rightComponent}
+      />
+
       <Container style={{ backgroundColor: Colors.background.fullWhite }} >
         {isUserProfile ? <ProfileComponent id={userId} /> : <Account id={userId} />}
       </Container>
@@ -29,9 +63,9 @@ const Profile = ({ navigation, user }) => {
   );
 };
 
-Profile.navigationOptions = ({ navigation, title }) => ({
-  header: (<ToolBar transparent navigation={navigation} title={title} />),
-});
+Profile.navigationOptions = {
+  header: null,
+};
 
 Profile.propTypes = {
   user: PropTypes.shape({
