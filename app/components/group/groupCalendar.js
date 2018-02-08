@@ -8,10 +8,10 @@ import Colors from '@theme/colors';
 import { getDate } from '@config';
 
 const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
-  const checkAndRedirect = (day) => {
+  const checkAndRedirect = (date) => {
     groupTrips.forEach((trip) => {
-      if (getDate(trip.date).format('YYYY-MM-DD') === day.dateString) {
-        handleDayPress(trip);
+      if (getDate(trip.date).format('YYYY-MM-DD') === date) {
+        handleDayPress(date);
       }
     });
   };
@@ -38,7 +38,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
         markingType={'period'}
         current={tripDate}
         markedDates={markedDates}
-        onDayPress={checkAndRedirect}
+        onDayPress={day => checkAndRedirect(day.dateString)}
       />
     </View>
   );

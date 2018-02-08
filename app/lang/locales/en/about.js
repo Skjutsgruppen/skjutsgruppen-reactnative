@@ -4,7 +4,7 @@ export const about = {
   we_are_getting_closer_to_each_other: 'We’re getting closer to each other.',
   we_are_going_same_direction: 'When we’re going the same direction we offer our spare seats to each other in buses, boats, cars, bicycles and hot air balloons.',
   we_share_the_costs_of_our_ride: 'We share the costs of our rides equally or offer rides for free, because friends don’t make money of friends.',
-  thank_you_for_being_a_part: 'Thank you for being a part of this Insert_First_Name!',
+  thank_you_for_being_a_part: 'Thank you for being a part of this',
   we_believe_in_conversation: 'We believe in conversation',
   good_time_digitally: 'Thanks to you we have a good time both here digitally and in the vehicle.',
   be_health_cautious: 'Be healthy cautious',
@@ -14,4 +14,5 @@ export const about = {
   you_are_awesome: 'You are awesome',
   the_movement_is_self_regulating: 'The movement is self-regulating, since we’re all the movement together. No “leader” is in charge over your conversation. You’re in charge. Comment as much as you like as long as you keep to the Participant agreement.',
   we_made_this_together: 'We made this together!',
+  this_app_is_enabled: 'This app is enabled by participants of the movement, our non-profit association and the Region of Vastra Gotaland, Sweden',
 };
