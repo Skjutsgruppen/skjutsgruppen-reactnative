@@ -5,6 +5,7 @@ class Auth {
     this.session = Session;
     this.userKey = 'auth_skjuts_user';
     this.tokenKey = 'auth_skjuts_token';
+    this.phoneVerificationCodeKey = 'auth_skjuts_phoneVerificationCode';
   }
 
   async logout() {
@@ -31,6 +32,14 @@ class Auth {
 
   getUser() {
     return this.session.get(this.userKey);
+  }
+
+  setPhoneVerification(phoneVerificationCode) {
+    return this.session.set(this.phoneVerificationCodeKey, phoneVerificationCode);
+  }
+
+  getPhoneVerification() {
+    return this.session.get(this.phoneVerificationCodeKey);
   }
 }
 

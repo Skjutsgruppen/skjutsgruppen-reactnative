@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withUpdateProfile } from '@services/apollo/auth';
+import { withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { Icons } from '@assets/icons';
 import Phone from '@components/phone';
 import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
@@ -81,7 +81,13 @@ class Verified extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { updateProfile, updateUser, navigation } = this.props;
+    const {
+      updateProfile,
+      updateUser,
+      navigation,
+      regeneratePhoneVerification,
+      setPhoneVerificationCode,
+    } = this.props;
     const { firstName, lastName, countryCode, phone, password } = this.state;
 
     const validation = this.checkValidation();
@@ -97,6 +103,12 @@ class Verified extends Component {
         })
           .then(({ data }) => {
             const { token, User } = data.updateUser;
+            regeneratePhoneVerification(User.phoneNumber).then((verification) => {
+              setPhoneVerificationCode(verification.data.regeneratePhoneVerification)
+                .catch((err) => {
+                  this.setState({ loading: false, error: getToast(err) });
+                });
+            });
             updateUser({ token, user: User }).then(() => {
               navigation.reset('SendText');
             });
@@ -238,15 +250,33 @@ Verified.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
   updateUser: PropTypes.func.isRequired,
+  regeneratePhoneVerification: PropTypes.func.isRequired,
+  setPhoneVerificationCode: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ auth: state.auth });
+const mapStateToProps = state => (
+  {
+    auth: state.auth,
+    phoneVerificationCode: state.auth.phoneVerification,
+  }
+);
+
 const mapDispatchToProps = dispatch => ({
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.warn(error)),
+  setPhoneVerificationCode: code => AuthService.setPhoneVerification(code)
+    .then(() => dispatch(AuthAction.phoneVerification(code)))
+    .catch(error => console.warn(error)),
 });
 
-export default compose(withUpdateProfile, connect(mapStateToProps, mapDispatchToProps))(Verified);
+export default compose(
+  withUpdateProfile,
+  withRegeneratePhoneVerification,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+)(Verified);
