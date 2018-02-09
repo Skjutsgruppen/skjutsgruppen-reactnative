@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, StyleSheet, Image, Clipboard } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import { CustomButton, Loading } from '@components/common';
+import { CustomButton } from '@components/common';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -10,7 +10,6 @@ import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withPhoneVerified } from '@services/apollo/auth';
-import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
@@ -63,40 +62,12 @@ class SendText extends Component {
     clearInterval(this.interval);
   }
 
-  onSubmit = () => {
-    this.setState({ loading: true });
-    const { navigation, isPhoneVerified, setLogin } = this.props;
-    const { user } = this.state;
-
-    try {
-      isPhoneVerified(user.id).then(({ data }) => {
-        if (data.isPhoneVerified.User.phoneVerified) {
-          setLogin({
-            token: data.isPhoneVerified.token,
-            user: data.isPhoneVerified.User,
-          }).then(() => {
-            navigation.reset('MobileVerified');
-          }).catch((err) => {
-            this.setState({ loading: false, error: getToast(err) });
-          });
-        } else {
-          this.setState({ warning: getToast(['PHONE_NUMBER_NOT_VERIFIED']), error: '', success: '' });
-        }
-        this.setState({ loading: false });
-      }).catch((err) => {
-        this.setState({ loading: false, error: getToast(err) });
-      });
-    } catch (err) {
-      this.setState({ loading: false, error: getToast(err) });
-    }
-  }
-
   onSubmitSendText = () => {
-    const { user } = this.state;
-    Clipboard.setString(user.phoneVerificationCode);
+    const { phoneVerificationCode } = this.props;
+    Clipboard.setString(phoneVerificationCode);
 
     SendSMS.send({
-      body: user.phoneVerificationCode,
+      body: phoneVerificationCode,
       recipients: [SMS_NUMBER],
       successTypes: ['sent', 'queued'],
     }, () => { });
@@ -133,24 +104,9 @@ class SendText extends Component {
     </CustomButton>
   );
 
-  renderButton = () => {
-    if (this.state.loading) {
-      return (<Loading />);
-    }
-
-    return (
-      <CustomButton
-        style={styles.button}
-        bgColor={Colors.background.green}
-        onPress={this.onSubmit}
-      >
-        Check Verification
-      </CustomButton>
-    );
-  }
-
   render() {
     const { user, error, warning, success } = this.state;
+    const { phoneVerificationCode } = this.props;
 
     return (
       <Container>
@@ -165,7 +121,7 @@ class SendText extends Component {
           from the phone your are seeing this on right now - to our number.
         </ColoredText>
         <ColoredText color={Colors.text.blue}>Your code:</ColoredText>
-        <Text style={styles.code}>{user.phoneVerificationCode}</Text>
+        <Text style={styles.code}>{phoneVerificationCode}</Text>
         <ColoredText color={Colors.text.green}>
           The text message cost the same as an ordinary text message with
           you service provider.
@@ -188,10 +144,11 @@ SendText.propTypes = {
   setLogin: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerification });
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
 export default compose(withPhoneVerified,
-  connect(null, mapDispatchToProps))(SendText);
+  connect(mapStateToProps, mapDispatchToProps))(SendText);

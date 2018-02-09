@@ -85,22 +85,23 @@ const ACCOUNT_SUBSCRIPTION_QUERY = gql`
 subscription updatedAccount($id: Int) {
   updatedAccount(userId: $id) {
     id
+    email
+    newEmail
+    avatar
+    phoneNumber
+    newPhoneNumber
     firstName
     lastName
-    email
-    phoneNumber
     emailVerified
-    phoneVerified
-    avatar
-    fbId
     verificationCode
-    phoneVerificationCode
+    phoneVerified
     totalOffered
     totalAsked
     totalComments
     totalExperiences
     totalGroups
     totalFriends
+    fbId      
     relationshipType 
     friendRequestId
     createdAt
@@ -112,22 +113,23 @@ export const ACCOUNT_QUERY = gql`
 query account {
   account {
     id
+    email
+    newEmail
+    avatar
+    phoneNumber
+    newPhoneNumber
     firstName
     lastName
-    email
-    phoneNumber
     emailVerified
-    phoneVerified
-    avatar
-    fbId
     verificationCode
-    phoneVerificationCode
+    phoneVerified
     totalOffered
     totalAsked
     totalComments
     totalExperiences
     totalGroups
     totalFriends
+    fbId      
     relationshipType 
     friendRequestId
     createdAt

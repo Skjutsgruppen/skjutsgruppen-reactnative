@@ -28,6 +28,9 @@ import EmailVerified from '@screens/auth/email/Verified';
 import LoginMethod from '@screens/auth/login/Method';
 import LoginViaEmail from '@screens/auth/login/Email';
 import ChangePassword from '@screens/profile/ChangePassword';
+import ChangeEmail from '@screens/profile/ChangeEmail';
+import ChangePhoneNumber from '@screens/profile/ChangePhoneNumber';
+
 
 import AddPhoto from '@screens/auth/AddPhoto';
 import SendText from '@screens/auth/sms/SendText';
@@ -136,6 +139,8 @@ export const Routes = {
   LoginMethod: { screen: LoginMethod },
   LoginViaEmail: { screen: LoginViaEmail },
   ChangePassword: { screen: ChangePassword },
+  ChangeEmail: { screen: ChangeEmail },
+  ChangePhoneNumber: { screen: ChangePhoneNumber },
 
   Map: { screen: Map },
   Route: { screen: Route },
