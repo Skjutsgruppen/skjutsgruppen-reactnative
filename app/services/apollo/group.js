@@ -242,37 +242,40 @@ export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
 const GROUPS_SUBSCRIPTION_QUERY = gql`
 subscription myGroup($userId: Int!){ 
   myGroup(userId: $userId) { 
-    id
-    name
-    description
-    User {
-      id 
-      firstName 
-      avatar 
-    } 
-    outreach
-    type
-    photo
-    mapPhoto
-    TripStart {
-      name 
-      coordinates 
-    } 
-    TripEnd {
-      name 
-      coordinates
-    } 
-    Stops {
-      name 
-      coordinates
-    } 
-    country 
-    county 
-    municipality 
-    locality 
-    membershipStatus
-    totalParticipants
-    isAdmin
+    Group {
+      id
+      name
+      description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
+      type
+      photo
+      mapPhoto
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+    }
+    remove
   }
 }
 `;
@@ -553,6 +556,7 @@ subscription groupFeed($groupId: Int!){
 export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
   options: ({ groupId }) => ({
     variables: { offset: 0, limit: PER_FETCH_LIMIT, groupId },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({
     data: { loading, groupFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
@@ -597,6 +601,19 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
   },
 });
 
+const GROUP_MEMBERS_SUBSCRIPTION_QUERY = gql`
+subscription updatedGroupMember($groupId: Int){
+  updatedGroupMember(groupId: $groupId){
+    User {
+      id
+      firstName
+      avatar
+    }
+    remove
+  }
+}
+`;
+
 const GROUP_MEMBRES_QUERY = gql`
 query groupMembers($id: Int, $limit: Int, $offset: Int){
   groupMembers(id: $id, limit: $limit, offset: $offset){
@@ -616,7 +633,9 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
     variables: { id, limit, offset },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { loading, groupMembers, fetchMore, refetch, networkStatus, error } }) => {
+  props: ({
+    data: { loading, groupMembers, fetchMore, refetch, networkStatus, error, subscribeToMore } },
+  ) => {
     let rows = [];
     let count = 0;
 
@@ -625,7 +644,31 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
       count = groupMembers.count;
     }
 
-    return { groupMembers: { loading, rows, count, fetchMore, refetch, networkStatus, error } };
+    return {
+      groupMembers: { loading, rows, count, fetchMore, refetch, networkStatus, error },
+      subscribeToUpdatedGroupMember: param => subscribeToMore({
+        document: GROUP_MEMBERS_SUBSCRIPTION_QUERY,
+        variables: { groupId: param.id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const { updatedGroupMember } = subscriptionData.data;
+          const { User, remove } = updatedGroupMember;
+
+          if (!remove) {
+            rows = [User].concat(prev.groupMembers.rows);
+            count += 1;
+          } else {
+            rows = prev.groupMembers.rows.filter(row => row.id !== User.id);
+            count -= 1;
+          }
+
+          return { groupMembers: { ...prev.groupMembers, ...{ rows, count } } };
+        },
+      }),
+    };
   },
 });
 
@@ -675,12 +718,10 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => (
-    {
-      variables: { id, offset, limit },
-      fetchPolicy: 'cache-and-network',
-    }
-  ),
+  }) => ({
+    variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
+  }),
   props: (
     {
       data: {
@@ -715,6 +756,7 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
           rows = [];
           count = 0;
           const newGroup = subscriptionData.data.myGroup;
+          const { Group, remove } = newGroup;
 
           rows = prev.groups.rows.filter((row) => {
             if (row.id === newGroup.id) {
@@ -724,10 +766,17 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 
             return true;
           });
-          rows = [newGroup].concat(rows);
+
+          if (remove) {
+            rows = prev.groups.rows.filter(row => row.id !== Group.id);
+            count -= 1;
+          } else {
+            rows = [Group].concat(rows);
+            count += 1;
+          }
 
           return {
-            groups: { ...prev.groups, ...{ rows, count: count + 1 } },
+            groups: { ...prev.groups, ...{ rows, count } },
           };
         },
       }),
