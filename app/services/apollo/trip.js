@@ -96,7 +96,9 @@ subscription{
         id
         createdAt
         description
-        photo
+        photoUrl
+        publishedStatus
+        userStatus
         User {
           id 
           firstName 
@@ -203,7 +205,9 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         id
         createdAt
         description
-        photo
+        photoUrl
+        publishedStatus
+        userStatus
         User {
           id 
           firstName 
@@ -219,7 +223,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
 
 export const withFeed = graphql(GET_FEED_QUERY, {
   options: {
-    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: FEED_FILTER_EVERYTHING } },
   },
@@ -406,8 +409,8 @@ query tripParticipants($id: Int, $offset: Int, $limit: Int) {
 
 export const withParticipants = graphql(TRIP_PARTICIPANTS_QUERY, {
   options: ({ id }) => ({
-    fetchPolicy: 'cache-and-network',
     variables: { id, offset: 0, limit: PER_FETCH_LIMIT },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({
     data: { loading, tripParticipants, networkStatus, error },
@@ -459,6 +462,15 @@ query trip($id: Int!){
     totalComments
     isParticipant
     duration
+    experienceStatus
+    flexibilityInfo {
+      duration
+      unit
+      type
+    }
+    Participants {
+      count
+    }
     ReturnTrip {
       id
       date

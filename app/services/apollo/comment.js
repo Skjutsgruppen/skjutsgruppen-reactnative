@@ -54,7 +54,7 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
   props: ({ data }) => {
     let rows = [];
     let count = 0;
-    const { error, fetchMore, comments, loading, networkStatus, variables, subscribeToMore } = data;
+    const { error, fetchMore, comments, loading, networkStatus, subscribeToMore } = data;
 
     if (comments) {
       rows = comments.rows.slice(0).reverse();
@@ -63,9 +63,9 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
 
     return {
       comments: { rows, count, fetchMore, loading, error, networkStatus },
-      subscribeToNewComments: () => subscribeToMore({
+      subscribeToNewComments: ({ id, userId }) => subscribeToMore({
         document: COMMENTS_SUBSCRIPTION,
-        variables: { tripId: variables.id },
+        variables: { tripId: id },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
             return prev;
@@ -90,7 +90,8 @@ export const withTripComment = graphql(GET_TRIP_COMMENTS_QUERY, {
           rows = [newFeedItem].concat(rows);
 
           if (!repeated) {
-            increaseFeedCommentCount(variables.id);
+            increaseProfileComment();
+            increaseFeedCommentCount(id, (newFeedItem.User.id === userId));
           }
 
           return {
@@ -130,9 +131,9 @@ export const withNewsComment = graphql(GET_NEWS_COMMENTS_QUERY, {
   options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({ variables: { id, offset, limit } }),
   props: props => ({
     comments: props.comments,
-    subscribeToNewComments: param => props.comments.subscribeToMore({
+    subscribeToNewComments: ({ id, userId }) => props.comments.subscribeToMore({
       document: COMMENTS_SUBSCRIPTION,
-      variables: { newsId: param.id },
+      variables: { newsId: id },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return prev;
@@ -157,7 +158,7 @@ export const withNewsComment = graphql(GET_NEWS_COMMENTS_QUERY, {
 
         if (!repeated) {
           increaseProfileComment();
-          increaseFeedCommentCount(param.id);
+          increaseFeedCommentCount(id, (newFeedItem.User.id === userId));
         }
 
         return {

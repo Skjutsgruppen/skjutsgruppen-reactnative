@@ -48,7 +48,7 @@ const Preview = ({ error, loading, image, onNext, reTry }) => {
       <View style={styles.msgWrapper}>
         <Text style={styles.msg} > All done!</Text>
         <Text style={styles.msg} >
-          When one more participant confirm the experience it will be published.
+          When all tagged participants confirm the experience it will be published.
         </Text>
       </View>
       <View style={styles.actions}>

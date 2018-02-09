@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '@theme/colors';
 import { FloatingBackButton, ShareButton } from '@components/common';
 
@@ -35,6 +36,10 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     backgroundColor: 'transparent',
   },
+  more: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+  },
   spacer: {
     width: 54,
   },
@@ -47,8 +52,10 @@ const FloatingNavbar = (
     title,
     showShare,
     showChange,
+    showMore,
     handleShare,
     handleChangePress,
+    handleShowMore,
     offset,
   }) =>
   (
@@ -68,7 +75,17 @@ const FloatingNavbar = (
         </TouchableOpacity>
       }
       {
-        (!showShare && !showChange) && <View style={styles.spacer} />
+        showMore &&
+        <TouchableOpacity style={styles.more} onPress={handleShowMore}>
+          <Icon
+            name="ios-more"
+            size={48}
+            style={{ color: '#fff' }}
+          />
+        </TouchableOpacity>
+      }
+      {
+        (!showShare && !showChange && !showMore) && <View style={styles.spacer} />
       }
     </View>
   );
@@ -78,8 +95,10 @@ FloatingNavbar.propTypes = {
   handleBack: PropTypes.func,
   showShare: PropTypes.bool,
   showChange: PropTypes.bool,
+  showMore: PropTypes.bool,
   handleShare: PropTypes.func,
   handleChangePress: PropTypes.func,
+  handleShowMore: PropTypes.func,
   title: PropTypes.string,
   offset: PropTypes.number,
 };
@@ -89,8 +108,10 @@ FloatingNavbar.defaultProps = {
   handleBack: () => { },
   showShare: false,
   showChange: false,
+  showMore: false,
   handleShare: () => { },
   handleChangePress: () => { },
+  handleShowMore: () => { },
   title: '',
   offset: 0,
 };

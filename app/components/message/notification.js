@@ -43,9 +43,11 @@ const styles = StyleSheet.create({
 
 class NewNotification extends PureComponent {
   componentWillMount() {
-    const { subscribeToNotification, user, filters } = this.props;
+    const { subscribeToNotification, user, filters, notifications } = this.props;
+
     if (filters === 'new') {
       subscribeToNotification({ userId: user.id });
+      notifications.startPolling(15000);
     }
   }
 
@@ -88,7 +90,7 @@ class NewNotification extends PureComponent {
       render = <Retry onPress={() => notifications.refetch()} />;
     }
 
-    if (notifications.loading) {
+    if (notifications.loading && notifications.networkStatus !== 6) {
       render = (
         <View style={styles.spacedWrapper}>
           <Loading />
@@ -104,7 +106,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {filters.toUpperCase()} { filters !== 'new' && trans('message.messages')}
+          {filters.toUpperCase()} {filters !== 'new' && trans('message.messages')}
         </Text>
         {this.renderNotification()}
         {this.loadMore()}

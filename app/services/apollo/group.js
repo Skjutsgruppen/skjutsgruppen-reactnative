@@ -431,7 +431,9 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           id
           createdAt
           description
-          photo
+          photoUrl
+          publishedStatus
+          userStatus
           User {
             id 
             firstName 
