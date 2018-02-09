@@ -10,7 +10,6 @@ import TripDetail from '@screens/TripDetail';
 import NewsDetail from '@screens/NewsDetail';
 import GroupDetail from '@screens/group/GroupDetail';
 import ExperienceDetail from '@screens/experience/ExperienceDetail';
-import ExperienceScreen from '@screens/experience/ExperienceScreen';
 
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
@@ -114,6 +113,7 @@ export const Routes = {
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
+  ExperienceDetail: { screen: ExperienceDetail },
 
   SearchGroup: { screen: SearchGroup, path: 'search/:query' },
   ExploreGroup: { screen: ExploreGroup },
@@ -154,9 +154,6 @@ export const Routes = {
   ActiveRideList: { screen: ActiveRideList },
   ActiveGroupList: { screen: ActiveGroupList },
   SearchNotification: { screen: SearchNotification },
-
-  ExperienceDetail: { screen: ExperienceDetail },
-  ExperienceScreen: { screen: ExperienceScreen },
 };
 
 export const AppNavigator = StackNavigator(Routes, {

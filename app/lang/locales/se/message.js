@@ -25,4 +25,5 @@ export const message = {
   to_you: 'to you. se',
   shared_this_group_with_you: 'Shared this group with you se',
   shared_this_trip_with_you: 'Shared this trip with you se',
+  one_participant_removed: 'One of the participants deleted the experience, so your experience is unpublished se',
 };
