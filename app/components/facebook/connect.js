@@ -14,7 +14,8 @@ class Connect extends PureComponent {
     this.state = { loading: false, fbUser: {} };
   }
 
-  onCancel = () => {
+  onCancel = (e) => {
+    console.warn(e);
     this.setState({ loading: false });
   }
 

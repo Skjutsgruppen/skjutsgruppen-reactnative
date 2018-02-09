@@ -18,7 +18,8 @@ import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
   FEED_FILTER_EVERYTHING,
-  EXPERIENCE_AFTER_CARDS,
+  EXPERIENCE_FIRST_CARDS,
+  EXPERIENCE_REPEAT_CARDS,
   EXPERIENCE_FETCH_LIMIT,
   FEEDABLE_PROFILE,
   FEEDABLE_NEWS,
@@ -133,7 +134,7 @@ class Feed extends Component {
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      navigation.navigate('ExperienceScreen', { experience: detail });
+      navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
 
@@ -199,6 +200,16 @@ class Feed extends Component {
     this.props.navigation.navigate('Map');
   };
 
+  experienceAfterCards = (index) => {
+    if (this.isFirstLimitCard(index)) {
+      return EXPERIENCE_FIRST_CARDS;
+    }
+
+    return EXPERIENCE_REPEAT_CARDS;
+  }
+
+  isFirstLimitCard = index => index < EXPERIENCE_FIRST_CARDS;
+
   renderShareModal() {
     return (
       <Modal
@@ -235,20 +246,31 @@ class Feed extends Component {
 
   renderExperience = (index) => {
     const { totalExperiences } = this.props.feeds;
-    const indexPlusOne = index + 1;
-    const isRenderable = (indexPlusOne % EXPERIENCE_AFTER_CARDS === 0);
-    const offset = ((indexPlusOne / EXPERIENCE_AFTER_CARDS) - 1) * EXPERIENCE_FETCH_LIMIT;
+
+    let indexPlusOne = index + 1;
+    let deductor = 1;
+
+    if (!this.isFirstLimitCard(index)) {
+      indexPlusOne -= EXPERIENCE_FIRST_CARDS;
+      deductor = 0;
+    }
+
+    const isRenderable = (indexPlusOne % this.experienceAfterCards(index) === 0);
+    const offset = (indexPlusOne / this.experienceAfterCards(index)) - deductor;
     const isLimitNotExceeded = totalExperiences > offset;
     const isEverythingFilter = this.state.filterType === FEED_FILTER_EVERYTHING;
 
 
     if (isLimitNotExceeded && isRenderable && isEverythingFilter) {
       return (
-        <FeedExperience
-          title="Experiences"
-          offset={offset}
-          limit={EXPERIENCE_FETCH_LIMIT}
-        />);
+        <View>
+          <FeedExperience
+            title="Experiences"
+            offset={offset * EXPERIENCE_FETCH_LIMIT}
+            limit={EXPERIENCE_FETCH_LIMIT}
+          />
+        </View>
+      );
     }
 
     return null;

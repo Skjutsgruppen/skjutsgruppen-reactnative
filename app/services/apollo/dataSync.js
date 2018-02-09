@@ -12,19 +12,34 @@ import {
   FEED_FILTER_EVERYTHING,
   NOTIFICATION_FETCH_LIMIT,
   FEED_FILTER_OFFERED,
+  NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
+  NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
 } from '@config/constant';
 import { FRIEND_QUERY } from '@services/apollo/friend';
 import { NOTIFICATION_QUERY } from '@services/apollo/notification';
 
-const getAccount = () => client.readQuery(
-  {
-    query: ACCOUNT_QUERY,
-  });
+const isRemovableNotificationType = (type) => {
+  const types = [
+    NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
+    NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
+  ];
 
-const setAccount = data => client.writeQuery(
-  {
-    query: ACCOUNT_QUERY, data,
-  });
+  return types.indexOf(type) > -1;
+};
+
+/* const isRemovableWhenTookAction = (type) => {
+  const types = [
+    NOTIFICATION_TYPE_MEMBERSHIP_REQUEST,
+    NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
+    NOTIFICATION_TYPE_FRIEND_REQUEST,
+  ];
+
+  return types.indexOf(type) > -1;
+}; */
+
+const getAccount = () => client.readQuery({ query: ACCOUNT_QUERY });
+
+const setAccount = data => client.writeQuery({ query: ACCOUNT_QUERY, data });
 
 export const increaseProfileComment = () => {
   try {
@@ -37,7 +52,7 @@ export const increaseProfileComment = () => {
   }
 };
 
-export const increaseFeedCommentCount = (id) => {
+export const increaseFeedCommentCount = (id, isOwner = false) => {
   try {
     const feeds = client.readQuery({
       query: GET_FEED_QUERY,
@@ -47,7 +62,9 @@ export const increaseFeedCommentCount = (id) => {
     feeds.getFeed.rows.map((feed) => {
       if (feed.feedable === FEEDABLE_TRIP && feed.Trip.id === id) {
         feed.Trip.totalComments += 1;
-        feed.Trip.isParticipant = true;
+        if (isOwner) {
+          feed.Trip.isParticipant = true;
+        }
       }
 
       if (feed.feedable === FEEDABLE_NEWS && feed.News.id === id) {
@@ -121,7 +138,7 @@ export const updateNewNotificationToOld = (id, apollo) => {
     let rows = [];
 
     rows = newNotificationsData.notifications.rows.filter((notification) => {
-      if (notification.id === id) {
+      if (notification.id === id && !isRemovableNotificationType(notification.type)) {
         oldNotificationsData.notifications.rows.push(notification);
         oldNotificationsData.notifications.count += 1;
 

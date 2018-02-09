@@ -2,8 +2,14 @@ export const PER_FETCH_LIMIT = 10;
 export const NOTIFICATION_FETCH_LIMIT = 20;
 export const CONVERSATION_FETCH_LIMIT = 20;
 
-export const EXPERIENCE_AFTER_CARDS = 3;
+export const EXPERIENCE_FIRST_CARDS = 2;
+export const EXPERIENCE_REPEAT_CARDS = 5;
 export const EXPERIENCE_FETCH_LIMIT = 5;
+
+export const EXPERIENCE_STATUS_PENDING = 'pending';
+export const EXPERIENCE_STATUS_DELETED = 'deleted';
+export const EXPERIENCE_STATUS_PUBLISHED = 'published';
+export const EXPERIENCE_STATUS_CAN_CREATE = 'canCreate';
 
 export const NOTIFICATION_CHARACTER_COUNT = 25;
 
@@ -50,10 +56,11 @@ export const NOTIFICATION_TYPE_FRIEND_REQUEST = 'friend_request';
 export const NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = 'friend_request_accepted';
 
 export const NOTIFICATION_TYPE_EXPERIENCE_TAGGED = 'experience_tagged';
-export const NOTIFICATION_TYPE_EXPERIENCE_ACCEPTED = 'experience_accepted';
 export const NOTIFICATION_TYPE_EXPERIENCE_SHARED = 'experience_shared';
-export const NOTIFICATION_TYPE_EXPERIENCE_VOID = 'experience_void';
+export const NOTIFICATION_TYPE_EXPERIENCE_REJECTED = 'experience_rejected';
+export const NOTIFICATION_TYPE_EXPERIENCE_REMOVED = 'experience_removed';
 export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
+
 export const NOTIFICATION_TYPE_TRIP_SHARED = 'trip_shared';
 export const NOTIFICATION_TYPE_TRIP_SHARED_GROUP = 'trip_shared_group';
 

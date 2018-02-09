@@ -12,8 +12,6 @@ subscription notification($userId: Int!) {
       id
       firstName
       avatar
-      phoneNumber
-      email
     }
     Receiver{
       id
@@ -132,12 +130,17 @@ subscription notification($userId: Int!) {
         id
         createdAt
         description
-        photo
+        photoUrl
+        publishedStatus
+        Trip{
+          id
+        }
+        userStatus
         User {
           id 
           firstName 
           avatar 
-        }
+        } 
       }
     }
     notifiable
@@ -157,8 +160,6 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         id
         firstName
         avatar
-        phoneNumber
-        email
       }
       Receiver{
         id
@@ -277,7 +278,12 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           id
           createdAt
           description
-          photo
+          photoUrl
+          publishedStatus
+          Trip{
+            id
+          }
+          userStatus
           User {
             id 
             firstName 
@@ -300,8 +306,17 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
     variables: { filters, offset, limit },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({
-    data: { loading, notifications, fetchMore, refetch, subscribeToMore, networkStatus, error },
+  props: ({ data:
+    {
+      loading,
+      notifications,
+      fetchMore,
+      refetch,
+      subscribeToMore,
+      networkStatus,
+      error,
+      startPolling,
+    },
   }) => {
     let rows = [];
     let count = 0;
@@ -313,7 +328,15 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 
     return {
       notifications: {
-        loading, rows, count, fetchMore, refetch, subscribeToMore, networkStatus, error,
+        loading,
+        rows,
+        count,
+        fetchMore,
+        refetch,
+        subscribeToMore,
+        networkStatus,
+        error,
+        startPolling,
       },
       subscribeToNotification: param => subscribeToMore({
         document: NOTIFICATION_SUBSCRIPTION,
@@ -534,12 +557,17 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           id
           createdAt
           description
-          photo
+          photoUrl
+          publishedStatus
+          Trip{
+            id
+          }
+          userStatus
           User {
             id 
             firstName 
             avatar 
-          }
+          } 
         }
       }
       read
