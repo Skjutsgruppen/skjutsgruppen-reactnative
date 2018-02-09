@@ -7,25 +7,27 @@ mutation login($username: String!, $password:String!) {
     token,
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
       totalGroups
       totalFriends
+      fbId      
       relationshipType 
       friendRequestId
       createdAt
+      isSupporter
     }
   }
 }
@@ -43,26 +45,28 @@ mutation register($email: String!, $verified:Boolean) {
     token,
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
       totalGroups
       totalFriends
+      fbId      
       relationshipType 
       friendRequestId
       createdAt
-    }  
+      isSupporter
+    }
   }
 }
 `;
@@ -73,18 +77,53 @@ export const userRegister = graphql(REGISTER_QUERY, {
   }),
 });
 
-const VERIFICATION_CODE_QUERY = gql`
-mutation verifyCode($code:String!) {
-  verifyCode(code:$code) {
-      status
-      message
+const VERIFICATION_EMAIL_QUERY = gql`
+mutation verifyEmail($email:String!, $code:String!) {
+  verifyEmail(email: $email, code:$code) {
+    code
+    User {
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      relationshipType 
+      friendRequestId
+      createdAt
+      isSupporter
+    }
   }
 }
 `;
 
-export const withVerifyCode = graphql(VERIFICATION_CODE_QUERY, {
+export const withVerifyEmail = graphql(VERIFICATION_EMAIL_QUERY, {
   props: ({ mutate }) => ({
-    verifyCode: code => mutate({ variables: { code } }),
+    verifyEmail: (email, code) => mutate({ variables: { email, code } }),
+  }),
+});
+
+const RESEND_EMAIL_VERIFICATION_QUERY = gql`
+mutation resendEmailVerification($email:String){
+  resendEmailVerification(email:$email)
+}
+`;
+
+export const withResendEmailVerification = graphql(RESEND_EMAIL_VERIFICATION_QUERY, {
+  props: ({ mutate }) => ({
+    resendEmailVerification: email => mutate({ variables: { email } }),
   }),
 });
 
@@ -96,25 +135,27 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
     token,
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
       totalGroups
       totalFriends
+      fbId      
       relationshipType 
       friendRequestId
       createdAt
+      isSupporter
     }
   }
 }
@@ -154,25 +195,27 @@ mutation {
     token
     User {
       id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
       firstName
       lastName
-      email
-      phoneNumber
       emailVerified
-      phoneVerified
-      avatar
-      fbId
       verificationCode
-      phoneVerificationCode
+      phoneVerified
       totalOffered
       totalAsked
       totalComments
       totalExperiences
       totalGroups
       totalFriends
+      fbId      
       relationshipType 
       friendRequestId
       createdAt
+      isSupporter
     }
   }
 } 
@@ -184,33 +227,21 @@ export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
   }),
 });
 
+const REGENERATE_PHONE_VERIFICATION_QUERY = gql`
+mutation regeneratePhoneVerification($phoneNumber: String){
+  regeneratePhoneVerification(phoneNumber: $phoneNumber)
+}
+`;
+
+export const withRegeneratePhoneVerification = graphql(REGENERATE_PHONE_VERIFICATION_QUERY, {
+  props: ({ mutate }) => ({
+    regeneratePhoneVerification: phoneNumber => mutate({ variables: { phoneNumber } }),
+  }),
+});
+
 const CHANGE_PASSWORD_QUERY = gql`
 mutation changePassword($oldPassword: String, $newPassword: String){
-  changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
-    token,
-    User {
-      id
-      firstName
-      lastName
-      email
-      phoneNumber
-      emailVerified
-      phoneVerified
-      avatar
-      fbId
-      verificationCode
-      phoneVerificationCode
-      totalOffered
-      totalAsked
-      totalComments
-      totalExperiences
-      totalGroups
-      totalFriends
-      relationshipType 
-      friendRequestId
-      createdAt
-    }
-  }
+  changePassword(oldPassword: $oldPassword, newPassword: $newPassword)
 }
 `;
 
@@ -218,6 +249,85 @@ export const withChangePassword = graphql(CHANGE_PASSWORD_QUERY, {
   props: ({ mutate }) => ({
     changePassword: (oldPassword, newPassword) => mutate({
       variables: { oldPassword, newPassword },
+    }),
+  }),
+});
+
+const CHANGE_EMAIL_QUERY = gql`
+mutation changeEmail($email: String!){
+  changeEmail(email: $email){
+    code
+    User{
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      relationshipType 
+      friendRequestId
+      createdAt
+      isSupporter
+    }
+  }
+}
+`;
+
+export const withChangeEmail = graphql(CHANGE_EMAIL_QUERY, {
+  props: ({ mutate }) => ({
+    changeEmail: email => mutate({
+      variables: { email },
+    }),
+  }),
+});
+
+const CHANGE_PHONE_NUMBER = gql`
+mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
+  changePhoneNumber(phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber){
+    code
+    User {
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalComments
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      relationshipType 
+      friendRequestId
+      createdAt
+      isSupporter
+    }
+  }
+}`;
+
+export const withChangePhoneNumber = graphql(CHANGE_PHONE_NUMBER, {
+  props: ({ mutate }) => ({
+    changePhoneNumber: (phoneCountryCode, phoneNumber) => mutate({
+      variables: { phoneCountryCode, phoneNumber },
     }),
   }),
 });
