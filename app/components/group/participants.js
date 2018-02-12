@@ -64,6 +64,11 @@ class Participants extends Component {
     this.state = { showFoFModal: false };
   }
 
+  componentWillMount() {
+    const { subscribeToUpdatedGroupMember, id } = this.props;
+    subscribeToUpdatedGroupMember({ id });
+  }
+
   onPress = (userId) => {
     const { navigation } = this.props;
 
@@ -200,6 +205,7 @@ Participants.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  subscribeToUpdatedGroupMember: PropTypes.func.isRequired,
 };
 
 export default withNavigation(Participants);
