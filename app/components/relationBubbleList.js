@@ -24,36 +24,44 @@ const styles = StyleSheet.create({
 
 const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) => {
   const userBubbleLength = 3;
+  let i = 0;
+  const userPhotos = () => users.map((user, index) => {
+    if (index > (userBubbleLength - 1)) return null;
+    let image = null;
+    i += 1;
+    if (user.avatar) {
+      image = (
+        <Image
+          key={i}
+          source={{ uri: user.avatar }}
+          style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
+        />
+      );
+    } else {
+      image = (
+        <Image
+          key={i}
+          source={PlaceHolder}
+          style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
+        />
+      );
+    }
+
+    return [
+      image, ((index + 1) !== users.length) && <Image
+        key={i}
+        source={require('@assets/icons/icon_arrow_fat.png')}
+        style={[styles.arrow, { height: avatarSize / 4, width: avatarSize / 4 }]}
+      />,
+    ];
+  });
 
   return (
     <TouchableOpacity
       onPress={() => setModalVisibility(true, users)}
       style={[styles.participantWrapper, { marginVertical: avatarSize / 3 }, style]}
     >
-      {users.map((user, index) => {
-        if (index > (userBubbleLength - 1)) return null;
-        let image = null;
-
-        if (user.avatar) {
-          image = (<Image
-            source={{ uri: user.avatar }}
-            style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
-          />);
-        } else {
-          image = (<Image
-            source={PlaceHolder}
-            style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
-          />);
-        }
-
-        return [
-          image,
-          ((index + 1) !== users.length) && <Image
-            source={require('@assets/icons/icon_arrow_fat.png')}
-            style={[styles.arrow, { height: avatarSize / 4, width: avatarSize / 4 }]}
-          />,
-        ];
-      })}
+      {userPhotos}
       {(users.length > userBubbleLength) &&
         (
           <View

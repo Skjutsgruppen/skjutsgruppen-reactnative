@@ -3,16 +3,18 @@ import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
+import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
   wrapper: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    marginLeft: 84,
-    marginRight: 36,
+    flex: 1,
     marginBottom: 8,
+  },
+  card: {
+    maxWidth: 300,
     backgroundColor: '#f6f9fc',
     padding: 10,
+    marginTop: 16,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
     shadowOpacity: 0.15,
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
   img: {
     width: '100%',
     height: 120,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     borderRadius: 12,
     marginBottom: 8,
   },
@@ -31,9 +33,15 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     opacity: 0.75,
   },
+  date: {
+    marginTop: 8,
+    textAlign: 'right',
+    width: '100%',
+    color: Colors.text.gray,
+  },
 });
 
-const SharedCard = ({ trip, onPress }) => {
+const SharedCard = ({ trip, onPress, date }) => {
   let image = null;
 
   if (trip.mapPhoto) {
@@ -67,14 +75,19 @@ const SharedCard = ({ trip, onPress }) => {
     <View style={styles.wrapper}>
       <TouchableOpacity
         onPress={() => onPress(FEEDABLE_TRIP, trip)}
+        style={styles.card}
       >
-        <View>
+        <View style={{ width: '100%' }}>
           {image}
           {title}
           <Text style={styles.text}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Date format="MMM DD HH:mm" style={styles.text}>{trip.date}</Date>
+          <Date calendarTime style={styles.text}>{trip.date}</Date>
         </View>
       </TouchableOpacity>
+      {
+        date &&
+        <Date calendarTime style={styles.date}>{date}</Date>
+      }
     </View>
   );
 };
@@ -91,6 +104,11 @@ SharedCard.propTypes = ({
     date: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
+  date: PropTypes.string,
 });
+
+SharedCard.defaultProps = {
+  date: null,
+};
 
 export default SharedCard;

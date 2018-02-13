@@ -113,6 +113,15 @@ class ExperienceDetailScreen extends Component {
 }
 
 ExperienceDetailScreen.propTypes = {
+  experience: PropTypes.shape({
+    photo: PropTypes.string,
+    User: PropTypes.shape({
+      id: PropTypes.number,
+      firstName: PropTypes.string,
+    }),
+  }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  refetch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
     experience: PropTypes.shape({
@@ -123,7 +132,6 @@ ExperienceDetailScreen.propTypes = {
       }),
     }),
   }).isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

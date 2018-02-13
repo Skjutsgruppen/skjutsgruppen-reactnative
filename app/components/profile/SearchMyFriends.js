@@ -103,6 +103,11 @@ SearchMyFriends.propTypes = {
   onPress: PropTypes.func.isRequired,
   queryString: PropTypes.string.isRequired,
   handleRemovePress: PropTypes.func.isRequired,
+  unfriend: PropTypes.bool,
+};
+
+SearchMyFriends.defaultProps = {
+  unfriend: false,
 };
 
 export default SearchMyFriends;

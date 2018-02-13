@@ -15,6 +15,8 @@ export const isWithinAWeek = dateTime => moment(new Date(dateTime)).isAfter(mome
 
 export const isBeforeAWeek = dateTime => moment(new Date(dateTime)).isBefore(moment().subtract(7, 'days'));
 
+export const isDifferentYear = dateTime => (moment(new Date(dateTime)).format('YYYY') !== moment().format('YYYY'));
+
 const DateView = ({ children, format, calendarTime, ...rest }) => {
   let autoFormat = 'MMM Do';
   let defaultFormat = format;
@@ -24,11 +26,15 @@ const DateView = ({ children, format, calendarTime, ...rest }) => {
   }
 
   if (isWithinAWeek(children) && !isToday(children)) {
-    autoFormat = 'ddd';
+    autoFormat = 'dddd HH:mm';
   }
 
   if (isBeforeAWeek(children)) {
     autoFormat = 'MMM DD';
+  }
+
+  if (isBeforeAWeek(children) && isDifferentYear(children)) {
+    autoFormat = 'MMM DD, YYYY';
   }
 
   if (calendarTime) {
