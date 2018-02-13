@@ -87,7 +87,7 @@ const Info = ({ loading, experience, navigation }) => {
 
 
   const renderTripInfo = () => {
-    if (!experience.Participants) {
+    if (!experience.Trip) {
       return null;
     }
 
@@ -124,25 +124,25 @@ const Info = ({ loading, experience, navigation }) => {
               if (index < (maxImage - 1)) {
                 return (
                   <Image
+                    key={User.id}
                     source={{ uri: User.avatar }}
                     style={[
                       styles.profilePic,
                       index > 0 && { left: (index * imageSize) - (margin * index) },
                       { zIndex },
                     ]}
-                    key={User.id}
                   />
                 );
               }
 
               return (
                 <View
+                  key={User.id}
                   style={[
                     styles.remainingCount,
                     index > 0 && { left: (index * imageSize) - (margin * index) },
                     { zIndex },
                   ]}
-                  key={User.id}
                 >
                   <Text style={styles.count}>
                     +{(participants.length + 1) - maxImage}

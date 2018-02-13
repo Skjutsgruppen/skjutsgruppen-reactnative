@@ -26,6 +26,7 @@ class AddPhoto extends Component {
   };
 
   render() {
+    const { navigation } = this.props;
     return (
       <Container>
         <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
@@ -37,7 +38,7 @@ class AddPhoto extends Component {
         <CustomButton
           style={styles.button}
           bgColor={Colors.background.green}
-          onPress={() => this.props.navigation.replace('SendText')}
+          onPress={() => navigation.replace('SendText')}
         >
           Next
         </CustomButton>
@@ -48,7 +49,7 @@ class AddPhoto extends Component {
 
 AddPhoto.propTypes = {
   navigation: PropTypes.shape({
-    reset: PropTypes.func,
+    replace: PropTypes.func,
   }).isRequired,
 };
 

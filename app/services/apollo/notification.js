@@ -304,7 +304,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
   options: ({ filters, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { filters, offset, limit },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
   }),
   props: ({ data:
     {
