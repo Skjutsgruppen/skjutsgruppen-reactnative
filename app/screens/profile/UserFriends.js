@@ -60,30 +60,20 @@ class UserFriends extends Component {
     header: null,
   };
 
-  onPress = (userId) => {
-    const { navigation } = this.props;
-
-    navigation.navigate('Profile', { profileId: userId });
-  }
-
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   render() {
-    const { editable } = this.props.navigation.state.params;
-    const { id } = this.props.navigation.state.params || this.props.user.id;
+    const { id, username } = this.props.navigation.state.params || this.props.user.id;
+    const { navigation } = this.props;
+    const title = username || this.props.user.firstName;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <FloatingNavbar
-          handleBack={this.goBack}
+          handleBack={() => navigation.goBack()}
           transparent={false}
-          title="Friends"
+          title={`${title}'s Friends`}
         />
         <View style={styles.listWrapper}>
-          <Friends id={id} editable={editable} onPress={this.onPress} />
+          <Friends id={id} />
         </View>
       </Wrapper>
     );
@@ -98,6 +88,7 @@ UserFriends.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
   }).isRequired,
 };
 

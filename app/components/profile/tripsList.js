@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { ListSearchBar } from '@components/common';
 import DataList from '@components/dataList';
 import ListItem from '@components/profile/listItem';
-import TripsListSearch from '@components/profile/TripsListSearch';
+import ListSearchModal from '@components/profile/ListSearchModal';
 import { withNavigation } from 'react-navigation';
+import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
 
 class UserTripsList extends PureComponent {
   constructor(props) {
@@ -26,14 +27,28 @@ class UserTripsList extends PureComponent {
     this.setState({ isOpen: false });
   }
 
-  onExperienceModalPress = (experience) => {
+  onPress = (type, detail) => {
+    const { navigation } = this.props;
+
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('TripDetail', { trip: detail });
+    }
+
+    if (type === FEEDABLE_PROFILE) {
+      navigation.navigate('Profile', { profileId: detail });
+    }
+
+    this.onClose();
+  }
+
+  onExperienceIconPress = (experience) => {
     const { navigation } = this.props;
     this.onClose();
     navigation.navigate('ExperienceDetail', { experience });
   }
 
-  renderSearchModal() {
-    const { onPress, id, type } = this.props;
+  renderSearchModal = () => {
+    const { id, type } = this.props;
 
     return (
       <Modal
@@ -41,29 +56,40 @@ class UserTripsList extends PureComponent {
         onRequestClose={() => this.setState({ isOpen: false })}
         animationType="slide"
       >
-        <TripsListSearch
+        <ListSearchModal
           id={id}
           type={type}
-          onPress={onPress}
+          onPress={this.onPress}
           onClose={this.onClose}
-          onExperienceModalPress={this.onExperienceModalPress}
+          onExperienceIconPress={this.onExperienceIconPress}
+          searchCategory="trips"
         />
       </Modal>
     );
   }
 
+  renderListSearch = () => {
+    const { trips } = this.props;
+
+    if (trips.count > 0) {
+      return (<ListSearchBar onSearchPress={this.onSearchPress} />);
+    }
+
+    return null;
+  }
+
   renderDataList = () => {
-    const { trips, onPress } = this.props;
+    const { trips } = this.props;
 
     return (
       <DataList
         data={trips}
-        header={trips.count > 0 && <ListSearchBar onSearchPress={this.onSearchPress} />}
+        header={this.renderListSearch}
         renderItem={({ item }) => (
           <ListItem
             trip={item}
-            onPress={onPress}
-            onExperiencePress={this.onExperienceModalPress}
+            onPress={this.onPress}
+            onExperiencePress={this.onExperienceIconPress}
           />
         )}
         fetchMoreOptions={{
@@ -93,7 +119,6 @@ class UserTripsList extends PureComponent {
 
 UserTripsList.propTypes = {
   id: PropTypes.number.isRequired,
-  onPress: PropTypes.func.isRequired,
   trips: PropTypes.shape({
     rows: PropTypes.array,
     count: PropTypes.number,
