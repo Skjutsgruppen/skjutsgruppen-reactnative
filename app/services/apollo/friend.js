@@ -28,11 +28,11 @@ mutation acceptFriendRequest($id: Int!) {
 
 export const withAcceptFriendRequest = graphql(ACCEPT_FRIEND_REQUEST_QUERY, {
   props: ({ mutate }) => ({
-    acceptFriendRequest: (id, userId, friendId, remove = false) => mutate({
+    acceptFriendRequest: (id, bundleId, userId, friendId, remove = false) => mutate({
       variables: { id },
       update: (store) => {
         if (remove) {
-          removeNotification(id, store);
+          removeNotification(bundleId, store);
         }
       },
     }),
@@ -47,12 +47,12 @@ mutation rejectFriendRequest($id: Int!) {
 
 export const withRejectFriendRequest = graphql(REJECT_FRIEND_REQUEST_QUERY, {
   props: ({ mutate }) => ({
-    rejectFriendRequest: (id, userId, remove = false) => mutate({
+    rejectFriendRequest: (id, bundleId, userId, remove = false) => mutate({
       variables: { id },
       update: (store) => {
         updateFriendshipStatus(userId, null, store);
         if (remove) {
-          removeNotification(id, store);
+          removeNotification(bundleId, store);
         }
       },
     }),
