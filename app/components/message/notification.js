@@ -90,7 +90,7 @@ class NewNotification extends PureComponent {
       render = <Retry onPress={() => notifications.refetch()} />;
     }
 
-    if (notifications.loading && notifications.networkStatus !== 6) {
+    if (notifications.loading && notifications.row < 1) {
       render = (
         <View style={styles.spacedWrapper}>
           <Loading />
