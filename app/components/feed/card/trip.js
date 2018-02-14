@@ -129,7 +129,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
                 {
                   trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
                   <Text style={{ fontSize: 13, color: Colors.text.gray }}>
-                    {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' +' : ' -'}
+                    {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
                     {trip.flexibilityInfo.duration}
                     {trip.flexibilityInfo.unit}
                   </Text>
