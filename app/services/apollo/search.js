@@ -121,6 +121,7 @@ export const withSearch = graphql(SEARCH, {
       offset: 0,
       limit: PER_FETCH_LIMIT,
     },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, search, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
