@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight, Image } from 'react-native';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
+
+import RemoveIcon from '@assets/icons/ic_cross.png';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -10,14 +12,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wrapper: {
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 8,
-    marginHorizontal: 12,
-    marginTop: 12,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
   },
   friend: {
     flex: 1,
-    padding: 12,
+    marginRight: 12,
+    paddingVertical: 10,
   },
   imgIcon: {
     height: 55,
@@ -32,16 +34,15 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    color: Colors.text.blue,
+    fontWeight: '500',
   },
   action: {
+    height: 48,
+    width: 48,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 12,
-  },
-  actionLabel: {
-    color: Colors.text.blue,
-    fontSize: 16,
-    fontWeight: '500',
   },
   errorLabel: {
     color: Colors.text.red,
@@ -69,7 +70,7 @@ class Friends extends Component {
 
     if (friend.avatar) {
       profileImage = (
-        <Avatar imageURI={friend.avatar} size={55} onPress={() => onPress(friend.id)} />
+        <Avatar imageURI={friend.avatar} size={46} onPress={() => onPress(friend.id)} />
       );
     } else {
       profileImage = (<View style={styles.imgIcon} />);
@@ -79,7 +80,7 @@ class Friends extends Component {
       <TouchableHighlight
         onPress={() => onPress(friend.id)}
         style={styles.wrapper}
-        underlayColor="#f0f0f0"
+        underlayColor={Colors.background.mutedPink}
       >
         <View style={styles.flexRow}>
           <View style={[styles.friend, styles.flexRow]}>
@@ -92,9 +93,13 @@ class Friends extends Component {
           </View>
           {
             editable && !friend.inPhoneContact &&
-            <TouchableOpacity style={styles.action} onPress={() => handleRemovePress(friend)}>
-              <Text style={styles.actionLabel}>Remove</Text>
-            </TouchableOpacity>
+            <TouchableHighlight
+              style={styles.action}
+              onPress={() => handleRemovePress(friend)}
+              underlayColor={Colors.background.mutedPink}
+            >
+              <Image source={RemoveIcon} />
+            </TouchableHighlight>
           }
         </View>
       </TouchableHighlight>
