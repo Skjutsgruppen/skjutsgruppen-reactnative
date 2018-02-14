@@ -17,7 +17,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const DataList = ({ data, header, noResultText, fetchMoreOptions, innerRef, ...props }) => {
+const DataList = (
+  {
+    data, shouldRefresh, header, noResultText, fetchMoreOptions, innerRef, ...props
+  },
+) => {
   const reload = () => (
     <TouchableOpacity onPress={() => data.refetch()}>
       <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
@@ -40,6 +44,14 @@ const DataList = ({ data, header, noResultText, fetchMoreOptions, innerRef, ...p
         {headerView}
       </View>
     );
+  };
+
+  const shouldRefetch = () => {
+    if (!shouldRefresh) {
+      return () => { };
+    }
+
+    return data.refetch();
   };
 
   const renderFooter = () => {
@@ -84,7 +96,7 @@ const DataList = ({ data, header, noResultText, fetchMoreOptions, innerRef, ...p
       data={data.rows}
       keyExtractor={item => item.id}
       refreshing={data.networkStatus === 4 || data.networkStatus === 2}
-      onRefresh={() => data.refetch()}
+      onRefresh={() => shouldRefetch()}
       onEndReachedThreshold={0.8}
       ListHeaderComponent={renderHeader}
       ListFooterComponent={renderFooter}
@@ -110,6 +122,7 @@ DataList.propTypes = {
   }),
   noResultText: PropTypes.string,
   innerRef: PropTypes.func,
+  shouldRefresh: PropTypes.bool,
 };
 
 DataList.defaultProps = {
@@ -117,6 +130,7 @@ DataList.defaultProps = {
   fetchMoreOptions: {},
   noResultText: 'No result found.',
   innerRef: () => { },
+  shouldRefresh: true,
 };
 
 export default DataList;

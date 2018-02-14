@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -628,7 +628,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
       id = null,
       offset = 0,
       limit = PER_FETCH_LIMIT,
-      type = FEED_FILTER_OFFERED,
+      type = null,
       active = true,
       queryString = null,
       applyQueryString = false,

@@ -5,7 +5,7 @@ import { submitComment, withTripComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip } from '@services/apollo/trip';
 import { withTripExperiences } from '@services/apollo/experience';
-import { FloatingNavbar, AppNotification, DetailHeader, CommentBox, Loading } from '@components/common';
+import { FloatingNavbar, AppNotification, DetailHeader, Loading } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -21,12 +21,17 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import About from '@components/common/about';
 import { getDate } from '@config';
-import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_PUBLISHED, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
+import { FEED_FILTER_OFFERED, FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_PUBLISHED, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { connect } from 'react-redux';
+import { withSearch } from '@services/apollo/search';
+import SuggestedRidesList from '@components/ask/suggestedRidesList';
+import AskCommentBox from '@components/ask/commentBox';
+import OfferCommentBox from '@components/offer/commentBox';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
+const SuggestedRides = withSearch(SuggestedRidesList);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -210,6 +215,7 @@ class TripDetail extends Component {
       showReturnRides: false,
       showRecurringRides: false,
       trip: {},
+      showSuggestedRides: false,
     });
   }
 
@@ -274,6 +280,12 @@ class TripDetail extends Component {
     }
   }
 
+  onOffer = () => {
+    const { navigation } = this.props;
+    Keyboard.dismiss();
+    navigation.navigate('Offer');
+  }
+
   onSharePress = () => {
     this.setState({ isOpen: true });
   }
@@ -291,10 +303,6 @@ class TripDetail extends Component {
   onProfilePress = (id) => {
     const { navigation } = this.props;
     navigation.navigate('Profile', { profileId: id });
-  }
-
-  onCommentChange = (text) => {
-    this.setState({ comment: text });
   }
 
   onMapPress = () => {
@@ -321,6 +329,8 @@ class TripDetail extends Component {
     navigation.navigate('Report', { data: trip, type: FEEDABLE_TRIP });
   }
 
+  onCommentBoxBlur = comment => this.setState({ comment });
+
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
@@ -333,12 +343,8 @@ class TripDetail extends Component {
     this.setState({ showRecurringRides: show });
   }
 
-  handleBlur = () => {
-    this.setState({ writingComment: false });
-  }
-
-  handleFocus = () => {
-    this.setState({ writingComment: true });
+  setSuggestedRidesVisibility = (show, comment = '') => {
+    this.setState({ showSuggestedRides: show, comment });
   }
 
   checkValidation = (comment) => {
@@ -570,8 +576,54 @@ class TripDetail extends Component {
     return null;
   }
 
+  renderCommentBox = () => {
+    const { trip, loading } = this.state;
+
+    if (trip.type === FEED_FILTER_OFFERED) {
+      return (
+        <OfferCommentBox
+          loading={loading}
+          handleShowOptions={() => this.setModalVisible(true)}
+          handleSend={this.onSubmit}
+        />
+      );
+    }
+
+    return (
+      <AskCommentBox
+        loading={loading}
+        handleShowOptions={() => this.setModalVisible(true)}
+        onSuggest={this.setSuggestedRidesVisibility}
+        handleSend={this.onSubmit}
+        onOffer={this.onOffer}
+        onBlur={this.onCommentBoxBlur}
+      />
+    );
+  }
+
+  renderRideSuggestions = () => {
+    const { trip, comment, showSuggestedRides } = this.state;
+
+    return (
+      <Modal
+        visible={showSuggestedRides}
+        onRequestClose={() => this.setSuggestedRidesVisibility(false)}
+        animationType="slide"
+      >
+        <SuggestedRides
+          from={trip.TripStart.coordinates}
+          to={trip.TripEnd.coordinates}
+          filters={[FEED_FILTER_OFFERED]}
+          tripId={trip.id}
+          onSubmit={this.setSuggestedRidesVisibility}
+          defaultText={comment}
+        />
+      </Modal>
+    );
+  }
+
   render() {
-    const { error, success, notifierOffset, trip, loading } = this.state;
+    const { error, success, notifierOffset, trip } = this.state;
 
     if (!trip.User) {
       return (
@@ -759,13 +811,10 @@ class TripDetail extends Component {
           />
           <About />
         </ScrollView>
-        <CommentBox
-          handleSend={this.onSubmit}
-          loading={loading}
-          handleShowOptions={() => this.setModalVisible(true)}
-        />
+        {this.renderCommentBox()}
         {this.renderModal()}
         {this.renderShareModal()}
+        {this.renderRideSuggestions()}
       </View>
     );
   }
