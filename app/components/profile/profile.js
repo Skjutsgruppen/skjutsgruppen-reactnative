@@ -244,22 +244,23 @@ class Profile extends Component {
   }
 
   redirect = (type) => {
+    const { user } = this.state;
     const { navigation, id } = this.props;
 
     if (type === 'groups') {
-      navigation.navigate('UserGroups', { userId: id });
+      navigation.navigate('UserGroups', { userId: id, username: user.firstName });
     }
 
     if (type === 'friends') {
-      navigation.navigate('UserFriends', { id });
+      navigation.navigate('UserFriends', { id, username: user.firstName });
     }
 
     if (type === FEED_FILTER_WANTED) {
-      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_WANTED });
+      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_WANTED, username: user.firstName });
     }
 
     if (type === FEED_FILTER_OFFERED) {
-      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_OFFERED });
+      navigation.navigate('UserTrips', { userId: id, type: FEED_FILTER_OFFERED, username: user.firstName });
     }
 
     if (type === 'experiences') {
@@ -267,7 +268,7 @@ class Profile extends Component {
     }
 
     if (type === 'conversation') {
-      navigation.navigate('UserConversation');
+      navigation.navigate('UserConversation', { username: user.firstName });
     }
   }
 
@@ -524,6 +525,10 @@ class Profile extends Component {
         <ProfileAction
           label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
           onPress={() => this.redirect('friends')}
+        />
+        <ProfileAction
+          title={`Participant number ${user.id}`}
+          label=""
         />
       </LinearGradient>
     );
