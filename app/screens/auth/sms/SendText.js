@@ -142,6 +142,11 @@ SendText.propTypes = {
   }).isRequired,
   isPhoneVerified: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
+  phoneVerificationCode: PropTypes.string,
+};
+
+SendText.defaultProps = {
+  phoneVerificationCode: null,
 };
 
 const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerification });

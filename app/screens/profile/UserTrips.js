@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { withMyTrips } from '@services/apollo/trip';
-import { withShare } from '@services/apollo/share';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
-import Share from '@components/common/share';
-import { compose } from 'react-apollo';
 import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   listWrapper: {
     flex: 1,
-    backgroundColor: Colors.background.lightGray,
     paddingBottom: 12,
   },
 });
@@ -28,7 +24,7 @@ class UserTrips extends Component {
 
   constructor(props) {
     super(props);
-    this.state = ({ isOpen: false, trip: {} });
+    this.state = ({ trip: {} });
   }
 
   onPress = (type, detail) => {
@@ -43,42 +39,9 @@ class UserTrips extends Component {
     }
   }
 
-  onSharePress = (type, trip) => {
-    this.setState({ isOpen: true, trip });
-  };
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.trip.id, type: FEEDABLE_TRIP, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
-  }
-
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
-  }
-
-  renderShareModal() {
-    return (
-      <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
-        animationType="slide"
-      >
-        <ScrollView>
-          <Share
-            modal
-            showGroup
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
-      </Modal>
-    );
   }
 
   render() {
@@ -86,25 +49,26 @@ class UserTrips extends Component {
     const { type } = this.props.navigation.state.params;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <FloatingNavbar
+          handleBack={this.goBack}
+          transparent={false}
+          title={`${type} Rides`}
+        />
         <View style={styles.listWrapper}>
           <Trips
             id={userId}
             type={type}
             active={null}
             onPress={this.onPress}
-            onSharePress={this.onSharePress}
           />
         </View>
-        {this.renderShareModal()}
       </Wrapper>
     );
   }
 }
 
 UserTrips.propTypes = {
-  share: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.object,
     navigate: PropTypes.func,
@@ -117,4 +81,4 @@ UserTrips.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withShare, connect(mapStateToProps))(UserTrips);
+export default connect(mapStateToProps)(UserTrips);

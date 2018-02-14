@@ -559,15 +559,35 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
       mapPhoto
       totalComments
       isParticipant
+      experienceStatus
+      ownerExperience {
+        id
+        createdAt
+        description
+        photoUrl
+        publishedStatus
+        Trip{
+          id
+        }
+        userStatus
+        User {
+          id 
+          firstName 
+          avatar 
+        }
+      }
+      Participants{
+        count
+      }
     }
   }
 `;
 
 export const TRIPS_QUERY = gql`
-query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: Int ){ 
-  trips(input:{userId:$id, type:$type, active:$active}, limit: $limit, offset: $offset) { 
+query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, $limit: Int, $offset: Int, $applyQueryString: Boolean ){ 
+  trips(input:{userId:$id, type:$type, active:$active, queryString: $queryString, applyQueryString: $applyQueryString}, limit: $limit, offset: $offset) { 
     rows {
-      id 
+      id
       type 
       description 
       seats 
@@ -580,7 +600,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: 
           firstName
           avatar
         }
-      } 
+      }
       TripStart {
         name 
         coordinates
@@ -599,6 +619,26 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: 
       mapPhoto
       totalComments
       isParticipant
+      experienceStatus
+      ownerExperience {
+        id
+        createdAt
+        description
+        photoUrl
+        publishedStatus
+        Trip{
+          id
+        }
+        userStatus
+        User {
+          id 
+          firstName 
+          avatar 
+        }
+      }
+      Participants{
+        count
+      }
     }
     count
   }
@@ -607,10 +647,18 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $limit: Int, $offset: 
 
 export const withMyTrips = graphql(TRIPS_QUERY, {
   options: (
-    { id = null, offset = 0, limit = PER_FETCH_LIMIT, type = FEED_FILTER_OFFERED, active = true },
+    {
+      id = null,
+      offset = 0,
+      limit = PER_FETCH_LIMIT,
+      type = FEED_FILTER_OFFERED,
+      active = true,
+      queryString = null,
+      applyQueryString = false,
+    },
   ) => ({
-    variables: { id, offset, limit, type, active },
-    fetchPolicy: 'cache-and-network',
+    variables: { id, offset, limit, type, active, queryString, applyQueryString },
+    fetchPolicy: applyQueryString ? 'network-only' : 'cache-and-network',
   }),
   props: (
     { data: { loading, trips, error, networkStatus, refetch, fetchMore, subscribeToMore } },
