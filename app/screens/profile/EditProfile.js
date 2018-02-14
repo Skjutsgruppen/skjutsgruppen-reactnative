@@ -319,7 +319,7 @@ class EditProfile extends Component {
     const { navigation, user: { id } } = this.props;
 
     if (type === 'friends') {
-      navigation.navigate('UserFriends', { id, editable: true });
+      navigation.navigate('UserFriends', { id });
     }
 
     if (type === 'password') {

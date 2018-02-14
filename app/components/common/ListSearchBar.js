@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     height: 22,
     resizeMode: 'contain',
     marginHorizontal: 16,
-    opacity: 0.5,
+    opacity: 1,
   },
   searchPlaceholder: {
     opacity: 0.65,

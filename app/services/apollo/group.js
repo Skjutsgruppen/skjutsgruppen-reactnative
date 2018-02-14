@@ -680,8 +680,8 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
 });
 
 export const GROUPS_QUERY = gql`
-query groups($id:Int, $limit: Int, $offset: Int){ 
-  groups(userId:$id, limit: $limit, offset: $offset) { 
+query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){ 
+  groups(userId:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) { 
     rows{
       id
       outreach
@@ -725,23 +725,26 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
+    applyQueryString = false,
+    queryString = null,
   }) =>
     ({
-      variables: { id, offset, limit },
+      variables: { id, offset, limit, applyQueryString, queryString },
       fetchPolicy: 'cache-and-network',
     }),
-  props: ({
-    data:
-  {
-    loading,
-    groups,
-    error,
-    refetch,
-    networkStatus,
-    fetchMore,
-    subscribeToMore,
-  },
-  }) => {
+  props: (
+    { data:
+      {
+        loading,
+        groups,
+        error,
+        refetch,
+        networkStatus,
+        fetchMore,
+        subscribeToMore,
+      },
+    },
+  ) => {
     let rows = [];
     let count = 0;
 
