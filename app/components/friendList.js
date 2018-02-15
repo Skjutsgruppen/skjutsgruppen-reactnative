@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Loading } from '@components/common';
-import CheckIcon from '@assets/icons/icon_check_white.png';
+import ShareItem from '@components/common/shareItem';
 import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   shareCategoryTitle: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#1ca9e5',
     marginHorizontal: 24,
-    marginTop: 24,
     marginBottom: 12,
   },
-  borderedRow: {
-    borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
+  list: {
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingTop: 24,
+    marginTop: 16,
   },
   shareItem: {
     flexDirection: 'row',
@@ -73,43 +74,19 @@ const FriendList = ({ title, loading, friends, setOption, selected, disabled }) 
   const hasOption = key => selected.indexOf(key) > -1;
   const hasDisabled = key => disabled.indexOf(key) > -1;
 
-  const renderPic = (avatar) => {
-    let profileImage = null;
-
-    if (avatar) {
-      profileImage = (<Image source={{ uri: avatar }} style={styles.profilePic} />);
-    }
-
-    return profileImage;
-  };
-
   return (
-    <View>
-      <Text style={styles.shareCategoryTitle}>{title}</Text>
+    <View style={styles.list}>
+      <Text style={styles.shareCategoryTitle}>{title.toUpperCase()}</Text>
       {
         filteredFriends.map(friend => (
-          <View key={friend.id} style={styles.borderedRow}>
-            <TouchableWithoutFeedback
-              onPress={() => !hasDisabled(friend.id) && setOption('friends', friend.id)}
-            >
-              <View style={styles.shareItem}>
-                {renderPic(friend.avatar)}
-                <Text>{friend.firstName || friend.email}</Text>
-                <View
-                  style={[
-                    styles.shareToggle,
-                    hasOption(friend.id) && styles.shareToggleActive,
-                    hasDisabled(friend.id) && styles.shareToggleGray,
-                  ]}
-                >
-                  {
-                    hasOption(friend.id) &&
-                    <Image source={CheckIcon} style={styles.checkIcon} />
-                  }
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
+          <ShareItem
+            key={friend.id}
+            imageSource={{ uri: friend.avatar }}
+            hasPhoto
+            selected={hasOption(friend.id)}
+            label={friend.firstName || friend.email}
+            onPress={() => !hasDisabled(friend.id) && setOption('friends', friend.id)}
+          />
         ))
       }
     </View>

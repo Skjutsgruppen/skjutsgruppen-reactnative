@@ -3,7 +3,10 @@ import { StyleSheet, Text, View, Picker } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
-import CustomButton from '@components/common/customButton';
+import { GlobalStyles } from '@theme/styles';
+import SectionLabel from '@components/add/sectionLabel';
+import Radio from '@components/add/radio';
+import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { FLEXIBILITY_UNITS, FLEXIBILITY_TYPES } from '@config/constant';
 
@@ -13,17 +16,21 @@ function pad(n, width = 2, padString = '0') {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 12,
-    marginBottom: 16,
-    marginTop: 12,
-    textAlign: 'center',
+  wrapper: {
+    paddingTop: 16,
+    paddingBottom: 50,
+  },
+  info: {
+    marginHorizontal: 20,
+    lineHeight: 24,
+  },
+  radioRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: '7%',
   },
   recurringRide: {
-    paddingHorizontal: 24,
     marginBottom: 24,
     paddingBottom: 24,
     borderBottomWidth: 2,
@@ -34,13 +41,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1ca9e5',
     marginBottom: 6,
-  },
-  text: {
-    fontSize: 12,
-    color: '#777777',
-  },
-  textRight: {
-    textAlign: 'right',
   },
   flexibleInput: {
     textAlign: 'center',
@@ -61,7 +61,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   button: {
-    margin: 24,
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
+    marginHorizontal: 20,
   },
 });
 
@@ -71,7 +75,7 @@ class Date extends Component {
     this.state = {
       markedDates: {},
       dates: [],
-      flexible: '00',
+      isFlexible: false,
       flexibilityInfo: {
         duration: 0,
         unit: 'minute',
@@ -83,7 +87,7 @@ class Date extends Component {
 
   componentWillMount() {
     const { defaultTime: time, defaultFlexibilityInfo: flexibilityInfo } = this.props;
-    this.setState({ time, flexibilityInfo });
+    this.setState({ time, flexibilityInfo, isFlexible: flexibilityInfo.duration > 0 });
   }
 
   onNext = () => {
@@ -151,6 +155,12 @@ class Date extends Component {
     this.setState({ flexibilityInfo });
   }
 
+  handleFlexibilityChange = (flexibility) => {
+    this.setState({
+      isFlexible: flexibility,
+    });
+  }
+
   renderHoursOptions = () => {
     const options = [];
     let i = 0;
@@ -206,12 +216,12 @@ class Date extends Component {
   }
 
   render() {
-    const { time, flexibilityInfo } = this.state;
+    const { time, isFlexible, flexibilityInfo } = this.state;
     const [h, m] = time.split(':');
 
     return (
-      <View>
-        <Text style={styles.title}>Date</Text>
+      <View style={styles.wrapper}>
+        <SectionLabel label="Date" color={Colors.text.blue} />
         <View style={{
           backgroundColor: '#fff',
           borderBottomColor: '#ccc',
@@ -230,16 +240,16 @@ class Date extends Component {
           />
         </View>
         <View style={styles.recurringRide}>
-          <Text style={styles.recurringTitle}>Recurring ride?</Text>
-          <Text style={styles.text}>
+          <SectionLabel label="Recurring ride?" color={Colors.text.blue} />
+          <Text style={[GlobalStyles.TextStyles.light, styles.info]}>
             Place more blue balls in the calendar the dates you are doing this trip
             again (click on balls to remove).</Text>
         </View>
-
-        <Text style={styles.title}>Time</Text>
+        <SectionLabel label="Time" color={Colors.text.blue} />
         <View style={styles.inputContainer}>
           <View style={styles.inputWrapper}>
             <Picker
+              mode="dropdown"
               onValueChange={e => this.setTime(e, 'hour')}
               selectedValue={h}
             >
@@ -252,6 +262,7 @@ class Date extends Component {
           </View>
           <View style={styles.inputWrapper}>
             <Picker
+              mode="dropdown"
               onValueChange={e => this.setTime(e, 'minute')}
               selectedValue={m}
             >
@@ -263,41 +274,62 @@ class Date extends Component {
             </Picker>
           </View>
         </View>
-
-        <Text style={styles.title}>How Flexible are you?</Text>
-        <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <Picker
-              onValueChange={duration => this.setDuration(duration)}
-              selectedValue={pad(flexibilityInfo.duration.toString())}
-            >
-              {this.renderMinutesOptions('flexible')}
-            </Picker>
-          </View>
-          <View style={styles.inputWrapper}>
-            <Picker
-              onValueChange={unit => this.setUnit(unit)}
-              selectedValue={flexibilityInfo.unit}
-            >
-              {this.renderUnit()}
-            </Picker>
-          </View>
-          <View style={styles.inputWrapper}>
-            <Picker
-              onValueChange={type => this.setType(type)}
-              selectedValue={flexibilityInfo.type}
-            >
-              {this.renderType()}
-            </Picker>
-          </View>
+        <View style={styles.radioRow}>
+          <Radio
+            active={!isFlexible}
+            label="Exact time"
+            onPress={() => this.handleFlexibilityChange(false)}
+            color="blue"
+          />
+          <Radio
+            active={isFlexible}
+            label="Flexible time"
+            onPress={() => this.handleFlexibilityChange(true)}
+            color="blue"
+          />
         </View>
-        <CustomButton
+        {
+          isFlexible &&
+          <View style={styles.inputContainer}>
+            <View style={[styles.inputWrapper, { justifyContent: 'center', alignItems: 'center' }]}>
+              <Text>I can go</Text>
+            </View>
+            <View style={styles.inputWrapper}>
+              <Picker
+                mode="dropdown"
+                onValueChange={duration => this.setDuration(duration)}
+                selectedValue={pad(flexibilityInfo.duration.toString())}
+              >
+                {this.renderMinutesOptions('flexible')}
+              </Picker>
+            </View>
+            <View style={styles.inputWrapper}>
+              <Picker
+                mode="dropdown"
+                onValueChange={unit => this.setUnit(unit)}
+                selectedValue={flexibilityInfo.unit}
+              >
+                {this.renderUnit()}
+              </Picker>
+            </View>
+            <View style={styles.inputWrapper}>
+              <Picker
+                mode="dropdown"
+                onValueChange={type => this.setType(type)}
+                selectedValue={flexibilityInfo.type}
+              >
+                {this.renderType()}
+              </Picker>
+            </View>
+          </View>
+        }
+        <RoundedButton
           onPress={this.onNext}
-          bgColor={Colors.background.darkCyan}
+          bgColor={Colors.background.pink}
           style={styles.button}
         >
           Next
-        </CustomButton>
+        </RoundedButton>
       </View>
     );
   }

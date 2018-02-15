@@ -1,20 +1,41 @@
 import React from 'react';
-import { View, TouchableHighlight, Text } from 'react-native';
+import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { Colors } from '@theme';
 import { GlobalStyles } from '@theme/styles';
-import { StartStyles } from '@theme/styles/add';
+
+const styles = StyleSheet.create({
+  block: {
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    padding: '8%',
+    marginHorizontal: 20,
+    marginBottom: '8%',
+    elevation: 4,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+  },
+  label: {
+    color: Colors.text.blue,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+});
 
 const Starter = ({ label, info, style, onPress }) => (
   <TouchableHighlight
     onPress={onPress}
-    style={[StartStyles.block, style]}
+    style={[styles.block, style]}
     underlayColor="#f0f0f0"
   >
     <View>
       <Text
         accessibilityLabel="Go to next form"
-        style={StartStyles.label}
+        style={styles.label}
       >
         {label}
       </Text>
@@ -23,7 +44,7 @@ const Starter = ({ label, info, style, onPress }) => (
         <Text
           style={[
             GlobalStyles.TextStyles.textCenter,
-            GlobalStyles.TextStyles.lightText,
+            GlobalStyles.TextStyles.light,
           ]}
         >
           {info}

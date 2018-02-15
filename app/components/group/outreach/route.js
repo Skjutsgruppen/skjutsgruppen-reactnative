@@ -1,113 +1,78 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import GooglePlace from '@components/googlePlace';
+import { StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
+import PlaceInput from '@components/search/place/placeInput';
 import Colors from '@theme/colors';
 import CustomButton from '@components/common/customButton';
+import SectionLabel from '@components/add/sectionLabel';
+
+import DragIcon from '@assets/icons/ic_drag.png';
+import AddIcon from '@assets/icons/ic_add_pink.png';
+import CrossIcon from '@assets/icons/ic_cross_pink.png';
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 24,
-    marginTop: 24,
-    marginBottom: 12,
-    textAlign: 'center',
-
+  wrapper: {
+    paddingTop: '5%',
   },
-  label: {
-    color: '#999999',
-    marginBottom: 6,
-    marginTop: 12,
-    marginHorizontal: 24,
-    fontWeight: 'bold',
+  stops: {
+    paddingHorizontal: 4,
+    marginBottom: 24,
   },
-  inputWrapper: {
+  stop: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: '#fff',
-    paddingRight: 0,
+    marginTop: 20,
   },
-  inputIconWrapper: {
-    height: 50,
+  index: {
     width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute',
+    left: 56,
+    zIndex: 2,
   },
-  inputIcon: {
-    width: 18,
-    height: 18,
+  indexText: {
+    color: Colors.text.pink,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  iconWrapper: {
+    height: 60,
+    width: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  icon: {
+    maxWidth: '100%',
     resizeMode: 'contain',
   },
-  input: {
-    marginBottom: 12,
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    backgroundColor: '#ffffff',
+  addStopWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addStop: {
+    flex: 1,
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.background.fullWhite,
+    borderBottomWidth: 1,
+    borderColor: Colors.border.lightGray,
+  },
+  addStopIcon: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+    marginLeft: 15,
+    marginRight: 23,
   },
   buttonWrapper: {
     padding: 8,
     marginBottom: 32,
     marginHorizontal: 24,
-  },
-  stops: {
-    paddingHorizontal: 24,
-    marginBottom: 24,
-  },
-  addStop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-    marginTop: 12,
-  },
-  addStopIcon: {
-    width: 24,
-    resizeMode: 'contain',
-    marginRight: 10,
-  },
-  place: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 6,
-    marginTop: 12,
-  },
-  stopIcon: {
-    width: 16,
-    height: 48,
-    resizeMode: 'contain',
-    marginRight: 10,
-  },
-  removeStopIcon: {
-    height: 24,
-    width: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.background.blue,
-    borderRadius: 2,
-    overflow: 'hidden',
-    marginLeft: 12,
-    marginTop: 12,
-  },
-  minusText: {
-    color: Colors.text.white,
-    fontSize: 28,
-    lineHeight: 28,
-    paddingBottom: 7,
-  },
-  stopsLabel: {
-    color: '#777777',
-    lineHeight: 18,
-  },
-  stopsInfo: {
-    marginTop: 4,
-    marginLeft: 26,
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#777777',
-  },
-  bold: {
-    fontWeight: 'bold',
   },
 });
 
@@ -181,16 +146,26 @@ class Route extends Component {
     return stops.map((s, i) => {
       j += 1;
       return (
-        <View key={j} style={styles.place}>
-          <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopIcon} />
-          <GooglePlace
+        <View key={j} style={styles.stop}>
+          <View style={styles.iconWrapper}>
+            <Image source={DragIcon} style={[styles.icon, styles.drag]} />
+          </View>
+          <View style={styles.index}>
+            <Text style={styles.indexText}>{j}</Text>
+          </View>
+          <PlaceInput
             placeholder="Place"
+            height={60}
+            inputStyle={{ paddingLeft: 68 }}
             defaultValue={this.state.stops[i]}
             onChangeText={(stop) => { this.onChangeText(i, stop); }}
           />
-          {j > 1 ? (<TouchableOpacity onPress={() => this.removeStop(i)}>
-            <View style={styles.removeStopIcon}><Text style={styles.minusText}>-</Text></View>
-          </TouchableOpacity>) : null}
+          <TouchableOpacity
+            onPress={() => this.removeStop(i)}
+            style={[styles.iconWrapper, styles.remove]}
+          >
+            <Image source={CrossIcon} />
+          </TouchableOpacity>
         </View>
       );
     });
@@ -198,45 +173,34 @@ class Route extends Component {
 
   render() {
     return (
-      <View>
-        <Text style={styles.title}>Specific stretch</Text>
-        <Text style={styles.label}>From</Text>
-        <GooglePlace
+      <View style={styles.wrapper}>
+        <SectionLabel label="From" />
+        <PlaceInput
           placeholder="Start here"
           currentLocation
           defaultValue={this.state.start}
           onChangeText={start => this.setState({ start })}
           style={{ marginBottom: 32 }}
         />
-        <Text style={styles.label}>To</Text>
-        <View style={[styles.inputWrapper, { zIndex: 8 }]}>
-          <GooglePlace
-            placeholder="Destination"
-            defaultValue={this.state.end}
-            onChangeText={end => this.setState({ end })}
-          >
-            <TouchableOpacity onPress={this.switchLocation} style={styles.inputIconWrapper}>
-              <Image source={require('@assets/icons/icon_switcher.png')} style={styles.inputIcon} />
-            </TouchableOpacity>
-          </GooglePlace>
-        </View>
         <View style={styles.stops}>
-          <View style={styles.addStop}>
-            <TouchableOpacity onPress={this.addStops}>
-              <Image source={require('@assets/icons/icon_add_stop.png')} style={styles.addStopIcon} />
-            </TouchableOpacity>
-            <Text style={styles.stopsLabel}>
-              Stops along the way:
-            </Text>
-          </View>
-          <View>
-            {this.renderStops()}
-            <Text style={styles.stopsInfo}>
-              You can add as many stops as you want as long as
-              you would like to pick up people there.
-            </Text>
+          {this.renderStops()}
+          <View style={styles.addStopWrapper}>
+            <View style={styles.iconWrapper} />
+            <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
+              <View style={styles.addStop}>
+                <Image source={AddIcon} style={styles.addStopIcon} />
+                <Text>Add stop</Text>
+              </View>
+            </TouchableHighlight>
+            <View style={styles.iconWrapper} />
           </View>
         </View>
+        <SectionLabel label="To" />
+        <PlaceInput
+          placeholder="Destination"
+          defaultValue={this.state.end}
+          onChangeText={end => this.setState({ end })}
+        />
         <View style={styles.buttonWrapper}>
           <CustomButton
             onPress={this.onNext}

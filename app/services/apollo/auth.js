@@ -24,8 +24,6 @@ mutation login($username: String!, $password:String!) {
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -62,8 +60,6 @@ mutation register($email: String!, $verified:Boolean) {
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -100,8 +96,6 @@ mutation verifyEmail($email:String!, $code:String!) {
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -152,8 +146,6 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -212,8 +204,6 @@ mutation {
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -276,8 +266,6 @@ mutation changeEmail($email: String!){
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }
@@ -316,8 +304,6 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       totalGroups
       totalFriends
       fbId      
-      relationshipType 
-      friendRequestId
       createdAt
       isSupporter
     }

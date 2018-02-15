@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { trans } from '@lang/i18n';
-import Colors from '@theme/colors';
+import { Colors, Gradients } from '@theme';
 import { Loading } from '@components/common';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
@@ -93,7 +94,7 @@ class ExploreRecentGroup extends PureComponent {
       <View style={[styles.exploreGroup, style]}>
         <Text style={styles.exploreGroupTitle}>{trans('search.explore_groups')}</Text>
         <TouchableOpacity onPress={this.redirectToExploreGroup}>
-          <View style={styles.exploreIcon} />
+          <LinearGradient colors={Gradients.pink} style={styles.exploreIcon} />
         </TouchableOpacity>
         <View style={styles.exploreFooter}>
           <View style={{ width: '60%' }}>

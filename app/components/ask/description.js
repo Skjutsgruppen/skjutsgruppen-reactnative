@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import CustomButtom from '@components/common/customButton';
+import AddPhoto from '@components/add/photo';
+import CommentBox from '@components/add/commentBox';
+import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
@@ -49,17 +51,20 @@ const styles = StyleSheet.create({
 
   },
   infoText: {
-    paddingHorizontal: 32,
-    paddingVertical: 24,
-    textAlign: 'center',
-    lineHeight: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    lineHeight: 24,
+    color: Colors.text.gray,
   },
   bold: {
     fontWeight: 'bold',
   },
   button: {
-    marginVertical: 24,
-    marginHorizontal: 24,
+    alignSelf: 'center',
+    width: '50%',
+    marginTop: '15%',
+    marginBottom: 80,
+    marginHorizontal: 20,
   },
 });
 
@@ -67,12 +72,12 @@ const styles = StyleSheet.create({
 class Description extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' };
+    this.state = { text: '', photo: null };
   }
 
   componentWillMount() {
-    const { text } = this.props.defaultDescription;
-    this.setState({ text });
+    const { text, photo } = this.props.defaultDescription;
+    this.setState({ text, photo });
   }
 
   onNext = () => {
@@ -81,54 +86,38 @@ class Description extends Component {
   }
 
   render() {
-    const { avatar } = this.props.user;
-    let profile = null;
-
-    if (avatar) {
-      profile = (<Image source={{ uri: avatar }} style={styles.profilePic} />);
-    }
+    const { photo } = this.state;
 
     return (
       <View>
-
-        {profile}
-
-        <Text style={styles.title}> Description</Text>
-        <View>
-          <TextInput
-            style={styles.textarea}
-            multiline
-            numberOfLines={4}
-            onChangeText={text => this.setState({ text })}
-            underlineColorAndroid="transparent"
-            defaultValue={this.state.text}
-          />
-        </View>
+        <AddPhoto onSelect={res => this.setState({ photo: res.data })} iconColor="blue" defaultPhoto={photo} />
+        <CommentBox
+          label="Comment"
+          onChangeText={text => this.setState({ text })}
+          value={this.state.text}
+          labelColor={Colors.text.blue}
+        />
         <Text style={styles.infoText}>
-          This is the most important part of our movement!
-          <Text style={styles.bold}> We love to talk to each other! </Text>
-          Write about who you are and where are you going. You can also include what
-          vehicle you have, if you offer your seats for free or if you want to share the
-          costs equally.
+          Write about who you are and where you are going.
+          You can also include what vehicle you have,
+          if you offer your seats for free or want to share the costs equally.
         </Text>
-        <CustomButtom
+        <RoundedButton
           onPress={this.onNext}
-          bgColor={Colors.background.darkCyan}
+          bgColor={Colors.background.pink}
           style={styles.button}
         >
           Next
-        </CustomButtom>
+        </RoundedButton>
       </View>
     );
   }
 }
 
 Description.propTypes = {
-  user: PropTypes.shape({
-    avatar: PropTypes.string,
-  }).isRequired,
   defaultDescription: PropTypes.shape({
     text: PropTypes.string,
+    photo: PropTypes.string,
   }),
   onNext: PropTypes.func.isRequired,
 };
@@ -136,6 +125,7 @@ Description.propTypes = {
 Description.defaultProps = {
   defaultDescription: {
     text: '',
+    photo: null,
   },
 };
 
