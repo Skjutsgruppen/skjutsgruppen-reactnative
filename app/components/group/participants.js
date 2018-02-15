@@ -22,12 +22,9 @@ const margin = 12;
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     height: imageSize,
     marginHorizontal: 16,
     marginVertical: 12,
-    alignSelf: 'center',
   },
   profilePic: {
     width: imageSize,
