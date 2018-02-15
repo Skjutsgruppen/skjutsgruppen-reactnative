@@ -2,7 +2,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT } from '@config/constant';
 
-const SUBMIT_GROUP_QUERY = gql`
+const CREATE_GROUP_QUERY = gql`
 mutation group
 (
     $outreach: GroupOutreachEnum!
@@ -36,34 +36,41 @@ mutation group
         share : $share
       }) 
     {
-      outreach
-      url
+      id
       name
       description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
+      type
       photo
       mapPhoto
-      country
-      county
-      municipality
-      locality
       TripStart {
-        name
-        coordinates
-      }
+        name 
+        coordinates 
+      } 
       TripEnd {
-        name
+        name 
         coordinates
-      }
+      } 
       Stops {
-        name
+        name 
         coordinates
-      }
-      type
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
     }
 }
 `;
 
-export const submitGroup = graphql(SUBMIT_GROUP_QUERY, {
+export const submitGroup = graphql(CREATE_GROUP_QUERY, {
   props: ({ mutate }) => (
     {
       submit: (
@@ -718,23 +725,23 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => ({
-    variables: { id, offset, limit },
-    fetchPolicy: 'cache-and-network',
-  }),
-  props: (
-    {
-      data: {
-        loading,
-        groups,
-        error,
-        refetch,
-        networkStatus,
-        fetchMore,
-        subscribeToMore,
-      },
-    },
-  ) => {
+  }) =>
+    ({
+      variables: { id, offset, limit },
+      fetchPolicy: 'cache-and-network',
+    }),
+  props: ({
+    data:
+  {
+    loading,
+    groups,
+    error,
+    refetch,
+    networkStatus,
+    fetchMore,
+    subscribeToMore,
+  },
+  }) => {
     let rows = [];
     let count = 0;
 

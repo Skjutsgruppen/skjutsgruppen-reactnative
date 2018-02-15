@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   button: {
+    flexDirection: 'row',
     height: 48,
     borderRadius: 24,
     alignItems: 'center',
@@ -12,6 +13,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   text: {
+    flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 16,

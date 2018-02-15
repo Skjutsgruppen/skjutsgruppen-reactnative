@@ -83,8 +83,6 @@ class UserTripsList extends PureComponent {
   }
 
   render() {
-    const { trips } = this.props;
-
     return (
       <View>
         {this.renderDataList()}
