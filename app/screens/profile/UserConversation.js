@@ -1,19 +1,18 @@
 import React, { PureComponent } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Modal } from 'react-native';
 import { withConversation } from '@services/apollo/profile';
-import { FloatingNavbar, Wrapper } from '@components/common';
+import { FloatingNavbar, Wrapper, ListSearchBar } from '@components/common';
 import Colors from '@theme/colors';
 import DataList from '@components/dataList';
-import ConversationItem from '@components/profile/card/conversation';
+import ListItem from '@components/profile/listItem';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 import PropTypes from 'prop-types';
+import ListSearchModal from '@components/profile/ListSearchModal';
 
 const styles = StyleSheet.create({
   listWrapper: {
     flex: 1,
-    backgroundColor: Colors.background.white,
     paddingBottom: 12,
-    paddingTop: 60,
   },
 });
 
@@ -21,6 +20,19 @@ class UserConversation extends PureComponent {
   static navigationOptions = {
     header: null,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = { isOpen: false };
+  }
+
+  onSearchPress = () => {
+    this.setState({ isOpen: true });
+  };
+
+  onClose = () => {
+    this.setState({ isOpen: false });
+  }
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
@@ -32,6 +44,13 @@ class UserConversation extends PureComponent {
     if (type === FEEDABLE_GROUP) {
       navigation.navigate('GroupDetail', { group: detail });
     }
+    this.onClose();
+  }
+
+  onExperienceIconPress = (experience) => {
+    const { navigation } = this.props;
+    this.onClose();
+    navigation.navigate('ExperienceDetail', { experience });
   }
 
   goBack = () => {
@@ -39,17 +58,52 @@ class UserConversation extends PureComponent {
     navigation.goBack();
   }
 
-  render() {
+  renderSearchModal = () => (
+    <Modal
+      visible={this.state.isOpen}
+      onRequestClose={() => this.setState({ isOpen: false })}
+      animationType="slide"
+    >
+      <ListSearchModal
+        onPress={this.onPress}
+        onClose={this.onClose}
+        onExperienceIconPress={this.onExperienceIconPress}
+        searchCategory="conversations"
+      />
+    </Modal>
+  )
+
+  renderListSearch = () => {
     const { conversations } = this.props;
 
+    if (conversations.count > 0) {
+      return (<ListSearchBar onSearchPress={this.onSearchPress} />);
+    }
+
+    return null;
+  }
+
+  render() {
+    const { conversations } = this.props;
+    const { username } = this.props.navigation.state.params;
+
     return (
-      <Wrapper bgColor={Colors.background.white}>
-        <FloatingNavbar handleBack={this.goBack} />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <FloatingNavbar
+          handleBack={this.goBack}
+          transparent={false}
+          title={`Rides ${username} talked about`}
+        />
         <View style={styles.listWrapper}>
           <DataList
             data={conversations}
+            header={this.renderListSearch}
             renderItem={({ item }) =>
-              <ConversationItem conversation={item} onPress={this.onPress} />
+              (<ListItem
+                trip={item}
+                onPress={this.onPress}
+                onExperiencePress={this.onExperienceIconPress}
+              />)
             }
             fetchMoreOptions={{
               variables: { offset: conversations.rows.length },
@@ -66,6 +120,7 @@ class UserConversation extends PureComponent {
               },
             }}
           />
+          {this.renderSearchModal()}
         </View>
       </Wrapper>
     );
@@ -75,6 +130,7 @@ class UserConversation extends PureComponent {
 UserConversation.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    state: PropTypes.object,
     goBack: PropTypes.func,
   }).isRequired,
   conversations: PropTypes.shape({
