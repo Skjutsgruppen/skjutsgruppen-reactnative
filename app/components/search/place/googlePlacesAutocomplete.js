@@ -17,7 +17,7 @@ import { Wrapper } from '@components/common';
 import { FiltersWrapper, Filter } from '@components/search/filter';
 import { Colors } from '@theme';
 import LocationIcon from '@assets/icons/ic_location.png';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import { Loading } from '@components/common/index';
 import Place from '@components/search/place/place';
 
