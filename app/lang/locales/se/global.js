@@ -14,7 +14,7 @@ export const global = {
   copy_to_clipboard: 'Copy to clipboard se',
   paste_wherever_you_want: 'Paste wherever you want se',
   your_fb_timeline: 'Your Facebook Timeline se',
-  publish_to_whole_movement: 'Publish to the whole movement se',
+  publish_to_whole_movement: 'Share with the movement se',
   participants_who_are_part_of_movement: 'Participants who are part of the movement will be automatically added to the group when yo invite them. Others who are not participants yet will get a link. se',
   share_with: 'Share with se',
   invite_and_publish: 'Invite & Publish se',

@@ -102,8 +102,6 @@ subscription updatedAccount($id: Int) {
     totalGroups
     totalFriends
     fbId      
-    relationshipType 
-    friendRequestId
     createdAt
     isSupporter
   }
@@ -130,8 +128,6 @@ query account {
     totalGroups
     totalFriends
     fbId      
-    relationshipType 
-    friendRequestId
     createdAt
     isSupporter
   }

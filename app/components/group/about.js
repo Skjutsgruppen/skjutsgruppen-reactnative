@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Colors from '@theme/colors';
-import CustomButton from '@components/common/customButton';
-import Camera from '@components/camera';
+import { RoundedButton } from '@components/common';
+import AddPhoto from '@components/add/photo';
+import CommentBox from '@components/add/commentBox';
 import { GROUP_NAME_LIMIT } from '@config/constant';
 
 const styles = StyleSheet.create({
@@ -65,11 +66,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     marginBottom: 24,
   },
-  buttonWrapper: {
-    padding: 8,
-    marginBottom: 48,
-    marginTop: 12,
-    marginHorizontal: 24,
+  button: {
+    alignSelf: 'center',
+    width: '50%',
+    marginTop: '15%',
+    marginBottom: 80,
+    marginHorizontal: 20,
   },
 });
 
@@ -88,50 +90,25 @@ class About extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}>About</Text>
-        <View style={styles.addPhotoWrapper}>
-          <Camera onSelect={res => this.setState({ photo: res.data })}>
-            <View style={styles.addPhoto}>
-              <Image source={require('@assets/icons/icon_add_photo.png')} style={styles.addPhotoIcon} />
-              <Text style={styles.addPhotoLabel}>Add a group photo</Text>
-            </View>
-          </Camera>
-        </View>
-        <View>
-          <Text style={styles.label}>Name of the group</Text>
-          <View>
-            <TextInput
-              style={styles.input}
-              onChangeText={name => this.setState({ name })}
-              underlineColorAndroid="transparent"
-              maxLength={GROUP_NAME_LIMIT}
-            />
-          </View>
-          <Text style={styles.text}>
-            Examples: “The soccer group” or “We who commute together”
-            or what ever you like :)
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.label}>Description</Text>
-          <View>
-            <TextInput
-              style={styles.textarea}
-              multiline
-              numberOfLines={4}
-              onChangeText={description => this.setState({ description })}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-        </View>
-        <Text style={styles.text}>Describe the purpose of the group.</Text>
-        <CustomButton
+        <AddPhoto onSelect={res => this.setState({ photo: res.data })} />
+        <CommentBox
+          label="Name of the group"
+          onChangeText={name => this.setState({ name })}
+          value={this.state.name}
+          maxLength={GROUP_NAME_LIMIT}
+        />
+        <CommentBox
+          label="What is your group about?"
+          onChangeText={description => this.setState({ description })}
+          value={this.state.description}
+        />
+        <RoundedButton
           onPress={this.onNext}
-          bgColor={Colors.background.darkCyan}
-          style={styles.buttonWrapper}
+          bgColor={Colors.background.pink}
+          style={styles.button}
         >
           Next
-        </CustomButton>
+        </RoundedButton>
       </View>
     );
   }

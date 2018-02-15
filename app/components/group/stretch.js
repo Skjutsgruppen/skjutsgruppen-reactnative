@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Colors from '@theme/colors';
-import Radio from '@components/common/radio';
-import CustomButton from '@components/common/customButton';
+import SectionLabel from '@components/add/sectionLabel';
+import Radio from '@components/add/radio';
+import { RoundedButton } from '@components/common';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 
 const styles = StyleSheet.create({
+  wrapper: {
+    paddingTop: '5%',
+  },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -23,14 +27,18 @@ const styles = StyleSheet.create({
     marginHorizontal: '20%',
     marginBottom: 24,
   },
-  radioWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    marginHorizontal: '20%',
+  radioRow: {
+    paddingHorizontal: 20,
+    paddingVertical: '5%',
   },
-  buttonWrapper: {
-    marginTop: 32,
+  radio: {
+    marginBottom: 24,
+  },
+  button: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
     marginHorizontal: 20,
   },
 });
@@ -58,21 +66,28 @@ class Stretch extends Component {
   render() {
     const { outreach } = this.state;
     return (
-      <View>
-        <Text style={styles.title}>Stretch</Text>
-        <Text style={styles.text}>
-          Do your group have a specific stretch, good for commuting from point A to point B, or are
-          you going different stretches?
-        </Text>
-        <View style={styles.radioWrapper}>
-          <Radio onPress={this.setRouteType} label="Specific stretch" checked={outreach === STRETCH_TYPE_ROUTE} />
-          <Radio onPress={this.setAreaType} label="Different stretches" checked={outreach === STRETCH_TYPE_AREA} />
+      <View style={styles.wrapper}>
+        <SectionLabel label="Recurring ride?" />
+        <View style={styles.radioRow}>
+          <Radio
+            active={outreach === STRETCH_TYPE_ROUTE}
+            label="Specific stretch"
+            onPress={this.setRouteType}
+            style={styles.radio}
+          />
+          <Radio
+            active={outreach === STRETCH_TYPE_AREA}
+            label="Going to or from different places"
+            onPress={this.setAreaType}
+          />
         </View>
-        <View style={styles.buttonWrapper}>
-          <CustomButton onPress={this.onPress} bgColor={Colors.background.darkCyan}>
-            Next
-          </CustomButton>
-        </View>
+        <RoundedButton
+          onPress={this.onPress}
+          bgColor={Colors.background.pink}
+          style={styles.button}
+        >
+          Next
+        </RoundedButton>
       </View>
     );
   }
