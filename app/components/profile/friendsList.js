@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Modal } from 'react-native';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
 import { withUnfriend } from '@services/apollo/friend';
-import { SearchBar, ConfirmModal } from '@components/common';
+import { ConfirmModal, ListSearchBar } from '@components/common';
+import ListSearchModal from '@components/profile/ListSearchModal';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -27,6 +30,8 @@ class UserFriendsList extends Component {
       loading: false,
       refetch: null,
       error: null,
+      isSearchModalOpen: false,
+      unfriend: false,
     };
   }
 
@@ -40,6 +45,20 @@ class UserFriendsList extends Component {
     if (!loading) {
       this.setState({ loading, refetch });
     }
+  }
+
+  onSearchPress = () => {
+    this.setState({ isSearchModalOpen: true });
+  };
+
+  onClose = () => {
+    this.setState({ isSearchModalOpen: false });
+  }
+
+  onPress = (userId) => {
+    const { navigation } = this.props;
+    this.onClose();
+    navigation.navigate('Profile', { profileId: userId });
   }
 
   setConfirmModalVisibility = (visibility) => {
@@ -57,7 +76,8 @@ class UserFriendsList extends Component {
 
     this.setState({ loading: true }, () => {
       unfriend(friend.id)
-        .then(() => this.setState({ loading: false }))
+        .then(() => this.setState({ loading: false, unfriend: true }))
+        .then(() => this.setState({ unfriend: false }))
         .then(() => this.setConfirmModalVisibility(false))
         .then(refetch)
         .catch(error => this.setState({ loading: false, error }));
@@ -89,20 +109,50 @@ class UserFriendsList extends Component {
     );
   }
 
+  renderListSearch = () => {
+    const { friends } = this.props;
+
+    if (friends.count > 0) {
+      return (<ListSearchBar onSearchPress={this.onSearchPress} />);
+    }
+
+    return null;
+  }
+
+  renderSearchModal = () => {
+    const { id } = this.props;
+
+    return (
+      <Modal
+        visible={this.state.isSearchModalOpen}
+        onRequestClose={() => this.setState({ isSearchModalOpen: false })}
+        animationType="slide"
+      >
+        <ListSearchModal
+          id={id}
+          onPress={this.onPress}
+          onClose={this.onClose}
+          searchCategory="friends"
+          handleRemovePress={this.handleRemovePress}
+          unfriend={this.state.unfriend}
+        />
+      </Modal>
+    );
+  }
+
   render() {
-    const { onPress, friends, editable } = this.props;
+    const { friends } = this.props;
 
     return (
       <View>
         <DataList
           data={friends}
-          header={() => <SearchBar placeholder="Search" style={{ marginTop: 48, marginBottom: 30 }} />}
+          header={this.renderListSearch}
           renderItem={({ item }) => (
             <Friends
               key={item.id}
               friend={item}
-              editable={editable}
-              onPress={onPress}
+              onPress={this.onPress}
               handleRemovePress={(user) => { this.handleRemovePress(user); }}
               error={this.state.error}
             />
@@ -121,25 +171,23 @@ class UserFriendsList extends Component {
           }}
         />
         {this.renderModal()}
+        {this.renderSearchModal()}
       </View>
     );
   }
 }
 
 UserFriendsList.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
   friends: PropTypes.shape({
     rows: PropTypes.array,
     count: PropTypes.number,
   }).isRequired,
-  onPress: PropTypes.func.isRequired,
   unfriend: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   subscribeToNewFriend: PropTypes.func.isRequired,
-  editable: PropTypes.bool,
 };
 
-UserFriendsList.defaultProps = {
-  editable: false,
-};
-
-export default withUnfriend(UserFriendsList);
+export default compose(withNavigation, withUnfriend)(UserFriendsList);

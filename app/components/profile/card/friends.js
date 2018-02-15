@@ -65,7 +65,7 @@ class Friends extends Component {
   }
 
   render() {
-    const { friend, onPress, handleRemovePress, editable } = this.props;
+    const { friend, onPress, handleRemovePress } = this.props;
     let profileImage = null;
 
     if (friend.avatar) {
@@ -92,7 +92,7 @@ class Friends extends Component {
             </View>
           </View>
           {
-            editable && !friend.inPhoneContact &&
+            !friend.inPhoneContact &&
             <TouchableHighlight
               style={styles.action}
               onPress={() => handleRemovePress(friend)}
@@ -114,11 +114,6 @@ Friends.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   handleRemovePress: PropTypes.func.isRequired,
-  editable: PropTypes.bool,
-};
-
-Friends.defaultProps = {
-  editable: false,
 };
 
 export default Friends;

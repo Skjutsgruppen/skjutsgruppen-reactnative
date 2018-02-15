@@ -91,8 +91,8 @@ const FRIEND_SUBSCRIPTION_QUERY = gql`
 `;
 
 export const FRIEND_QUERY = gql`
-query friends($id:Int, $limit: Int, $offset: Int){ 
-    friends(id:$id, limit: $limit, offset: $offset) { 
+query friends($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){ 
+    friends(id:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) { 
       rows {
         id 
         firstName
@@ -110,10 +110,13 @@ export const withFriends = graphql(FRIEND_QUERY, {
     id = null,
     offset = 0,
     limit = PER_FETCH_LIMIT,
-  }) => ({
-    variables: { id, offset, limit },
-    fetchPolicy: 'cache-and-network',
-  }),
+    queryString = null,
+    applyQueryString = false,
+  }) =>
+    ({
+      variables: { id, offset, limit, queryString, applyQueryString },
+      fetchPolicy: 'cache-and-network',
+    }),
   props: ({
     data: { loading, friends, error, refetch, networkStatus, fetchMore, subscribeToMore },
   }) => {

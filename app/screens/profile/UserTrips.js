@@ -5,7 +5,7 @@ import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
 import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
-import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_PROFILE, FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
@@ -27,40 +27,34 @@ class UserTrips extends Component {
     this.state = ({ trip: {} });
   }
 
-  onPress = (type, detail) => {
-    const { navigation } = this.props;
-
-    if (type === FEEDABLE_TRIP) {
-      navigation.navigate('TripDetail', { trip: detail });
-    }
-
-    if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('Profile', { profileId: detail });
-    }
-  }
-
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
   }
 
   render() {
-    const { userId } = this.props.navigation.state.params || this.props.user.id;
+    const { userId, username } = this.props.navigation.state.params || this.props.user.id;
     const { type } = this.props.navigation.state.params;
+    let NavigationTitle = '';
+
+    if (type === FEED_FILTER_OFFERED) {
+      NavigationTitle = `${username}'s Offered Rides`;
+    } else if (type === FEED_FILTER_WANTED) {
+      NavigationTitle = `Rides ${username} asked for`;
+    }
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <FloatingNavbar
           handleBack={this.goBack}
           transparent={false}
-          title={`${type} Rides`}
+          title={NavigationTitle}
         />
         <View style={styles.listWrapper}>
           <Trips
             id={userId}
             type={type}
             active={null}
-            onPress={this.onPress}
           />
         </View>
       </Wrapper>

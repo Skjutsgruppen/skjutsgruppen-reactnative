@@ -162,73 +162,60 @@ export const withAccount = graphql(ACCOUNT_QUERY, {
 });
 
 const CONVERSATION_QUERY = gql`
-  query conversations ($offset: Int, $limit: Int) {
-    conversations (offset: $offset, limit: $limit) {
+  query conversations ($queryString: String, $applyQueryString: Boolean,$offset: Int, $limit: Int) {
+    conversations (queryString: $queryString, applyQueryString: $applyQueryString, offset: $offset, limit: $limit) {
       rows {
         id
-        text
-        date
-        Commentable{
-          ... on Trip {
+        type 
+        description 
+        seats 
+        User {
+          id 
+          firstName 
+          avatar 
+          relation {
             id 
-            type 
-            description 
-            seats 
-            User {
-              id 
-              firstName 
-              avatar 
-            } 
-            TripStart {
-              name 
-              coordinates
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops { 
-              name 
-              coordinates 
-            } 
-            date 
-            photo 
-            mapPhoto
-            totalComments
-            isParticipant
+            firstName
+            avatar
           }
-          ... on Group {
+        }
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
+        mapPhoto
+        totalComments
+        isParticipant
+        experienceStatus
+        ownerExperience {
+          id
+          createdAt
+          description
+          photoUrl
+          publishedStatus
+          Trip{
             id
-            name
-            description
-            User {
-              id 
-              firstName 
-              avatar 
-            } 
-            outreach
-            type
-            photo
-            mapPhoto
-            TripStart {
-              name 
-              coordinates 
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops {
-              name 
-              coordinates
-            } 
-            country 
-            county 
-            municipality 
-            locality 
-            membershipStatus 
-            totalParticipants
           }
+          userStatus
+          User {
+            id 
+            firstName 
+            avatar 
+          }
+        }
+        Participants{
+          count
         }
       }
       count
@@ -237,10 +224,21 @@ const CONVERSATION_QUERY = gql`
 `;
 
 export const withConversation = graphql(CONVERSATION_QUERY, {
-  options: ({ offset = 0, limit = CONVERSATION_FETCH_LIMIT }) => ({
-    notifyOnNetworkStatusChange: true,
-    variables: { offset, limit },
-  }),
+  options: ({
+    queryString = null,
+    applyQueryString = false,
+    offset = 0,
+    limit = CONVERSATION_FETCH_LIMIT,
+  }) =>
+    ({
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        queryString,
+        applyQueryString,
+        offset,
+        limit,
+      },
+    }),
   props: ({ data: { loading, conversations, refetch, networkStatus, fetchMore, error } }) => {
     let rows = [];
     let count = 0;
