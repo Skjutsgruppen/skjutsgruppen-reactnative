@@ -9,6 +9,7 @@ import Colors from '@theme/colors';
 import Share from '@components/common/share';
 import { withShare } from '@services/apollo/share';
 import GroupImage from '@components/group/groupImage';
+import GroupMap from '@components/group/groupMap';
 import Participants from '@components/group/participants';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -88,7 +89,6 @@ const styles = StyleSheet.create({
   participateButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '50%',
     height: 45,
     borderRadius: 24,
     paddingHorizontal: 24,
@@ -138,6 +138,17 @@ class JoinGroup extends Component {
     this.setState({ isOpen: false });
   }
 
+  onMapPress = () => {
+    const { navigation, group } = this.props;
+    const coordinates = {
+      start: group.TripStart,
+      end: group.TripEnd,
+      stops: group.Stops,
+    };
+
+    navigation.navigate('Route', { coordinates });
+  }
+
   updateState = ({ group }) => {
     const isPending = group.membershipStatus === 'pending';
     this.setState({ group, isPending });
@@ -163,6 +174,7 @@ class JoinGroup extends Component {
 
   renderButton = () => {
     const { loading, requestSent, isPending, error } = this.state;
+    const { group } = this.props;
 
     if (loading || isPending === null) {
       return (
@@ -201,7 +213,10 @@ class JoinGroup extends Component {
           style={styles.participateButton}
           onPress={this.joinGroup}
         >
-          <Text style={styles.buttonText}>Participate</Text>
+          <Text style={styles.buttonText}>
+            {group.type === OPEN_GROUP && 'Participate'}
+            {group.type === CLOSE_GROUP && 'Ask to participate'}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -234,6 +249,11 @@ class JoinGroup extends Component {
         <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('group', group)} />
         <ScrollView>
           <GroupImage group={group} />
+          {
+            (group.photo && group.mapPhoto) &&
+            <GroupMap group={group} onMapPress={this.onMapPress} />
+          }
+
           <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
           <ParticipantListBubble id={group.id} offset={0} />
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
