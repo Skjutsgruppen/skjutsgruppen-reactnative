@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import GroupsList from '@components/profile/groupsList';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 
@@ -22,31 +22,23 @@ class UserGroups extends Component {
     header: null,
   };
 
-  onPress = (type, detail) => {
-    const { navigation } = this.props;
-
-    if (type === 'profile') {
-      navigation.navigate('Profile', { profileId: detail });
-    }
-
-    if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
-    }
-  }
-
   goBack = () => {
     const { navigation } = this.props;
     navigation.goBack();
   }
 
   render() {
-    const { userId } = this.props.navigation.state.params || this.props.user.id;
+    const { userId, username } = this.props.navigation.state.params || this.props.user.id;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper bgColor={Colors.background.creme}>
+        <FloatingNavbar
+          handleBack={this.goBack}
+          transparent={false}
+          title={`${username}'s Group`}
+        />
         <View style={styles.listWrapper}>
-          <Groups id={userId} onPress={this.onPress} />
+          <Groups id={userId} />
         </View>
       </Wrapper>
     );
