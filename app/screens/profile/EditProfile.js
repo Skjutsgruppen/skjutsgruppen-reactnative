@@ -247,7 +247,7 @@ class EditProfile extends Component {
     this.setState({ language });
     LangService.setLanguage(language).then(() => {
       I18n.locale = language;
-      navigation.reset('Tab');
+      navigation.replace('Tab');
     });
   }
 

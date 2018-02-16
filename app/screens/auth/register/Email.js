@@ -59,7 +59,7 @@ class Email extends Component {
   componentWillMount() {
     const { auth, navigation } = this.props;
     if (auth.login) {
-      navigation.reset('Tab');
+      navigation.replace('Tab');
     }
   }
 
@@ -81,7 +81,7 @@ class Email extends Component {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
             this.setState({ loading: false, error: '' }, () => {
-              navigation.reset('CheckMail');
+              navigation.replace('CheckMail');
             });
           });
         }).catch((err) => {

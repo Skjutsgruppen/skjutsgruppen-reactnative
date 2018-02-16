@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import { BackHandler } from 'react-native';
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import { AppNavigator } from '@routes/routeProvider';
+import {
+  createReduxBoundAddListener,
+} from 'react-navigation-redux-helpers';
 
 class Router extends Component {
   componentWillMount() {
@@ -38,43 +41,13 @@ class Router extends Component {
     return true;
   }
 
-
-  addNavigationHelpers = (navigation) => {
-    const original = addNavigationHelpers(navigation);
-    let debounce;
-    return {
-      ...original,
-
-      reset: (routeName, params, action) => {
-        const resetAction = NavigationActions.reset({
-          index: 0,
-          key: null,
-          actions: [NavigationActions.navigate({ routeName, params, action })],
-        });
-        navigation.dispatch(resetAction);
-      },
-
-      navigateWithDebounce: (routeName, params, action) => {
-        const func = () => {
-          clearTimeout(debounce);
-          debounce = setTimeout(() => {
-            navigation.dispatch(NavigationActions.navigate({
-              routeName,
-              params,
-              action,
-            }));
-          }, 100);
-        };
-        return func();
-      },
-    };
-  };
-
   render() {
+    const addListener = createReduxBoundAddListener('root');
     const { dispatch, nav } = this.props;
-    const navigation = this.addNavigationHelpers({
+    const navigation = addNavigationHelpers({
       dispatch,
       state: nav,
+      addListener,
     });
 
     return (

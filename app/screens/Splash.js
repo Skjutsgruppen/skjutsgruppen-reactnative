@@ -28,24 +28,24 @@ class Splash extends PureComponent {
 
     if (!emailVerified) {
       await setRegister({ user, token });
-      navigation.reset('CheckMail');
+      navigation.replace('CheckMail');
       return;
     }
 
     if (phoneNumber === null) {
       await setRegister({ user, token });
-      navigation.reset('EmailVerified');
+      navigation.replace('EmailVerified');
       return;
     }
 
     if (!phoneVerified) {
       await setRegister({ user, token });
-      navigation.reset('SendText');
+      navigation.replace('SendText');
       return;
     }
 
     await setLogin({ user, token });
-    navigation.reset('Tab');
+    navigation.replace('Tab');
   }
 
   render() {

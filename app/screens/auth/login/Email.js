@@ -58,7 +58,7 @@ class Login extends Component {
     const { auth, navigation } = this.props;
 
     if (auth.login) {
-      navigation.reset('Tab');
+      navigation.replace('Tab');
     }
   }
 
@@ -74,15 +74,15 @@ class Login extends Component {
         const { User, token } = data.login;
         if (!User.emailVerified) {
           setRegister({ token, user: User }).then(() => {
-            navigation.reset('CheckMail');
+            navigation.replace('CheckMail');
           });
         } else if (!User.phoneVerified) {
           setRegister({ token, user: User }).then(() => {
-            navigation.reset('SendText');
+            navigation.replace('SendText');
           });
         } else {
           setLogin({ token, user: User }).then(() => {
-            navigation.reset('Tab');
+            navigation.replace('Tab');
           });
         }
       } catch (err) {
