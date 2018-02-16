@@ -140,13 +140,24 @@ class JoinGroup extends Component {
 
   onMapPress = () => {
     const { navigation, group } = this.props;
-    const coordinates = {
-      start: group.TripStart,
-      end: group.TripEnd,
-      stops: group.Stops,
-    };
 
-    navigation.navigate('Route', { coordinates });
+    if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
+      const coordinates = { area: group.areaCoordinates };
+
+      navigation.navigate('Area', { coordinates });
+    }
+
+    if (group.outreach === STRETCH_TYPE_ROUTE) {
+      const coordinates = {
+        start: group.TripStart,
+        end: group.TripEnd,
+        stops: group.Stops,
+      };
+
+      navigation.navigate('Route', { coordinates });
+    }
+
+    return null;
   }
 
   updateState = ({ group }) => {

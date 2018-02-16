@@ -21,7 +21,7 @@ import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP } from '@config/constant';
+import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -203,13 +203,24 @@ class Detail extends PureComponent {
 
   onMapPress = () => {
     const { navigation, group } = this.props;
-    const coordinates = {
-      start: group.TripStart,
-      end: group.TripEnd,
-      stops: group.Stops,
-    };
 
-    navigation.navigate('Route', { coordinates });
+    if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
+      const coordinates = { area: group.areaCoordinates };
+
+      navigation.navigate('Area', { coordinates });
+    }
+
+    if (group.outreach === STRETCH_TYPE_ROUTE) {
+      const coordinates = {
+        start: group.TripStart,
+        end: group.TripEnd,
+        stops: group.Stops,
+      };
+
+      navigation.navigate('Route', { coordinates });
+    }
+
+    return null;
   }
 
   onCloseNotification = () => {
