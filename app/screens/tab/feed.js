@@ -82,6 +82,17 @@ class Feed extends Component {
     header: null,
     tabBarLabel: 'Feed',
     tabBarIcon: ({ focused }) => <Image source={focused ? FeedIconActive : FeedIcon} />,
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      if (scene.focused) {
+        const navigationInRoute = scene.route;
+        if (!!navigationInRoute
+          && !!navigationInRoute.params
+          && !!navigationInRoute.params.scrollToTop) {
+          navigationInRoute.params.scrollToTop();
+        }
+      }
+      jumpToIndex(0);
+    },
   };
 
   constructor(props) {
@@ -99,11 +110,18 @@ class Feed extends Component {
       currentLocation: false,
       totalExperiences: 0,
     });
+
+    this.feedList = null;
   }
 
   componentWillMount() {
-    const { params } = this.props.navigation.state;
-    const { feeds, subscribeToFeed, screenProps } = this.props;
+    const { feeds, subscribeToFeed, screenProps, navigation } = this.props;
+    const { params } = navigation.state;
+
+    navigation.setParams({ scrollToTop: this.scrollToTop });
+
+    navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
+
     const { filterType } = screenProps.feed;
     this.setState({ filterType });
 
@@ -113,7 +131,6 @@ class Feed extends Component {
     this.currentLocation();
     subscribeToFeed();
   }
-
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
@@ -173,6 +190,19 @@ class Feed extends Component {
 
   setFilterVisibility = (visibility) => {
     this.setState({ filterOpen: visibility });
+  }
+
+  tabEvent = (e, type) => {
+    if (this.feedList && type === 'didBlur') {
+      this.setState({ filterType: FEED_FILTER_EVERYTHING });
+    }
+  }
+
+  scrollToTop = () => {
+    if (this.feedList) {
+      this.props.feeds.refetch();
+      this.feedList.scrollToOffset({ offset: 0, animated: true });
+    }
   }
 
   async currentLocation() {
@@ -292,6 +322,7 @@ class Feed extends Component {
 
     return (
       <DataList
+        innerRef={(list) => { this.feedList = list; }}
         data={feeds}
         header={this.renderHeader}
         renderItem={this.renderItem}
