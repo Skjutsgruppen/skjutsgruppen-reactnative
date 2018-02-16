@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import Item from '@components/comment/item';
 import { Loading } from '@components/common';
@@ -8,6 +8,9 @@ import RelationModal from '@components/relationModal';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import { trans } from '@lang/i18n';
+import { withDeleteComment } from '@services/apollo/comment';
+import ConfirmModal from '@components/common/confirmModal';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -33,12 +36,67 @@ const styles = StyleSheet.create({
   block: {
     paddingVertical: 24,
   },
+  horizontalDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border.lightGray,
+  },
+  closeWrapper: {
+    borderRadius: 12,
+    marginHorizontal: 16,
+    backgroundColor: Colors.background.fullWhite,
+  },
+  closeModal: {
+    padding: 16,
+  },
+  actionsWrapper: {
+    marginTop: 'auto',
+    marginHorizontal: 16,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 24,
+  },
+  action: {
+    padding: 16,
+  },
+  actionLabel: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: Colors.text.blue,
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
 });
+
+const Action = ({ label, onPress }) => (
+  <View style={styles.horizontalDivider} >
+    <TouchableOpacity style={styles.action} onPress={onPress}>
+      <Text style={styles.actionLabel}>{label}</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+Action.propTypes = {
+  label: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
 
 class List extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, showFoFModal: false, friendsData: [], commentsRow: [] });
+    this.state = ({
+      loading: false,
+      showFoFModal: false,
+      friendsData: [],
+      commentsRow: [],
+      isLongPressModalOpen: false,
+      isOwner: false,
+      commentId: null,
+      showConfirm: false,
+      deleting: false,
+    });
   }
 
   componentWillMount() {
@@ -62,6 +120,14 @@ class List extends PureComponent {
     });
 
     this.setState({ commentsRow });
+  }
+
+  onCommentLongPress = (isOwner, commentId) => {
+    this.setState({ isLongPressModalOpen: true, isOwner, commentId });
+  }
+
+  onCommentLongPressClose = () => {
+    this.setState({ isLongPressModalOpen: false });
   }
 
   onPress = (userId) => {
@@ -100,6 +166,50 @@ class List extends PureComponent {
     });
   };
 
+  deleteComment = () => {
+    const { deleteComment } = this.props;
+    const { commentId } = this.state;
+
+    this.setState({ deleting: true }, () => {
+      deleteComment({ id: commentId })
+        .then(() => {
+          this.setState({ deleting: false, showConfirm: false, isLongPressModalOpen: false });
+        })
+        .catch((err) => {
+          this.setState({ deleting: false, showConfirm: false, isLongPressModalOpen: false });
+          console.warn(err);
+        });
+    });
+  }
+
+  renderCommentLongPressModal() {
+    const { isOwner } = this.state;
+
+    return (
+      <Modal
+        visible={this.state.isLongPressModalOpen}
+        onRequestClose={() => this.setState({ isLongPressModalOpen: false })}
+        transparent
+        animationType="slide"
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.actionsWrapper}>
+            {isOwner && <Action label="Delete comment" onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />}
+            {!isOwner && <Action label="Report comment" onPress={() => { }} />}
+          </View>
+          <View style={styles.closeWrapper}>
+            <TouchableOpacity
+              style={styles.closeModal}
+              onPress={this.onCommentLongPressClose}
+            >
+              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
   renderModal() {
     return (
       <RelationModal
@@ -135,6 +245,22 @@ class List extends PureComponent {
     );
   };
 
+  renderConfirmModal = () => {
+    const { deleting, showConfirm } = this.state;
+    const message = <Text>Are you sure you want to delete this comment?</Text>;
+
+    return (
+      <ConfirmModal
+        visible={showConfirm}
+        loading={deleting}
+        onDeny={() => this.setState({ showConfirm: false })}
+        onConfirm={this.deleteComment}
+        message={message}
+        onRequestClose={() => this.setState({ showConfirm: false })}
+      />
+    );
+  }
+
   render() {
     const { comments, onCommentPress, showCount } = this.props;
     const { error, rows, count, networkStatus } = comments;
@@ -166,6 +292,8 @@ class List extends PureComponent {
               onPress={onCommentPress}
               comment={item}
               setModalVisibility={this.setModalVisibility}
+              onCommentLongPress={this.onCommentLongPress}
+              renderCommentLongPressModal={this.renderCommentLongPressModal}
             />
           )}
           keyExtractor={(item, index) => index}
@@ -173,6 +301,8 @@ class List extends PureComponent {
           ListFooterComponent={this.renderFooter}
         />
         {this.state.showFoFModal && this.renderModal()}
+        {this.renderCommentLongPressModal()}
+        {this.renderConfirmModal()}
       </View>
     );
   }
@@ -197,6 +327,7 @@ List.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   showCount: PropTypes.bool,
+  deleteComment: PropTypes.func.isRequired,
 };
 
 List.defaultProps = {
@@ -205,4 +336,4 @@ List.defaultProps = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withNavigation, connect(mapStateToProps))(List);
+export default compose(withNavigation, withDeleteComment, connect(mapStateToProps))(List);
