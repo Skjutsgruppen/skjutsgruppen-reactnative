@@ -5,7 +5,7 @@ import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
 import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
-import { FEEDABLE_TRIP, FEEDABLE_PROFILE, FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
+import { FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({

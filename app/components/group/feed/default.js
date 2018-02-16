@@ -11,16 +11,20 @@ import {
   CLOSE_GROUP,
   FEED_FILTER_WANTED,
   FEEDABLE_TRIP,
+  FEEDABLE_EXPERIENCE,
 } from '@config/constant';
 import RelationBubbleList from '@components/relationBubbleList';
 import Colors from '@theme/colors';
+import { SharedCard } from '@components/common';
 
 const styles = StyleSheet.create({
   Wrapper: {
-    width: '100%',
-    flexDirection: 'row',
-    padding: 16,
+    flex: 1,
+    maxWidth: 300,
     backgroundColor: '#fff',
+    paddingLeft: 10,
+    paddingRight: 20,
+    paddingBottom: 16,
   },
   profilePic: {
     height: 48,
@@ -43,15 +47,14 @@ const styles = StyleSheet.create({
     color: '#1db0ed',
     lineHeight: 20,
     fontWeight: 'bold',
-    paddingRight: 4,
   },
   commentText: {
     lineHeight: 20,
   },
   time: {
-    opacity: 0.6,
     marginTop: 2,
     fontSize: 12,
+    color: Colors.text.gray,
   },
   indicator: {
     height: 16,
@@ -72,6 +75,26 @@ const styles = StyleSheet.create({
     height: 48,
     marginRight: 16,
   },
+  experience: {
+    width: 220,
+    marginTop: 16,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 60,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 10,
+    shadowOpacity: 0.15,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 12,
+  },
 });
 
 class Feed extends Component {
@@ -80,7 +103,10 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
         <View>
-          <Text style={styles.commentText}>Started the group</Text>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} Started the group
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
       );
     }
@@ -88,7 +114,10 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP) {
       return (
         <View>
-          <Text style={styles.commentText}>Joined the group</Text>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} Joined the group
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
       );
     }
@@ -96,25 +125,28 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
       return (
         <View>
-          <Text style={styles.commentText}>Left the group</Text>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} Left the group
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
       );
     }
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
       return (
-        <View style={{ width: '100%' }}>
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()}
+            <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+          </Text>
           <Text style={styles.commentText}>{feed.Comment.text}</Text>
         </View>
       );
     }
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
-      return (
-        <View>
-          <Text style={styles.commentText}>Shared a {feed.feedable} </Text>
-        </View>
-      );
+      return this.renderSharedCard();
     }
 
     return null;
@@ -156,7 +188,7 @@ class Feed extends Component {
   }
 
   renderClosedGroup() {
-    const { feed, onPressUser } = this.props;
+    const { feed, onPress } = this.props;
     let image = null;
 
     if (feed.Group.User.avatar) {
@@ -167,49 +199,110 @@ class Feed extends Component {
 
     return (
       <View style={styles.Wrapper}>
-        <TouchableOpacity onPress={() => onPressUser('Profile', feed.Group.User.id)}>
+        <TouchableOpacity onPress={() => onPress('Profile', feed.Group.User.id)}>
           {image}
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('Profile', feed.Group.User.id)}>
+            <Text style={styles.name} onPress={() => onPress('Profile', feed.Group.User.id)}>
               {feed.Group.User.firstName}
             </Text>
             <Text style={styles.commentText}>
-              Added <Text style={styles.name} onPress={() => onPressUser('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
+              Added <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
             </Text>
           </View>
-          <Text style={styles.time}><Date>{feed.date}</Date></Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
       </View>
     );
   }
 
-  renderOpenGroup() {
-    const { feed, onPressUser } = this.props;
-
-    let image = null;
-    if (feed.User.avatar) {
-      image = this.renderProfilePic();
-    } else {
-      image = (<View style={styles.imgIcon} />);
-    }
+  renderUsername = () => {
+    const { feed, onPress } = this.props;
 
     return (
-      <View style={styles.Wrapper}>
-        <TouchableOpacity onPress={() => onPressUser('Profile', feed.User.id)}>
-          {image}
-        </TouchableOpacity>
-        <View style={styles.content}>
-          <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPressUser('Profile', feed.User.id)}>
-              {feed.User.firstName}
+      <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>
+        {feed.User.firstName}
+      </Text>
+    );
+  }
+
+  renderSharedCard() {
+    const { feed, onPress } = this.props;
+
+    if (feed.feedable === FEEDABLE_TRIP) {
+      if (feed.Trip.User.id === feed.User.id) {
+        return (
+          <View>
+            <Text style={styles.commentText}>
+              {this.renderUsername()} <Text style={styles.commentText}>{feed.Trip.type === FEED_FILTER_WANTED ? 'asks for a ride' : 'offers a ride'}</Text>
             </Text>
-            {this.renderFeed()}
+            <Text>{feed.Trip.description}</Text>
+            <SharedCard
+              trip={feed.Trip}
+              onPress={onPress}
+              date={feed.date}
+            />
           </View>
-          <Text style={styles.time}><Date>{feed.date}</Date></Text>
-          {false && this.renderRelation()}
+        );
+      }
+
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} <Text style={styles.commentText}>shared <Text style={styles.name}>{`${feed.Trip.User.firstName}'s`}</Text> {feed.feedable === FEEDABLE_TRIP ? 'ride' : feed.feedable}: </Text>
+          </Text>
+          <SharedCard
+            trip={feed.Trip}
+            onPress={onPress}
+            date={feed.date}
+          />
         </View>
+      );
+    }
+
+    if (feed.feedable === FEEDABLE_EXPERIENCE) {
+      let i = 1;
+      const participants = feed.Experience.Participants.map((participant, index) => {
+        let separator = '';
+        i += 1;
+        if (index === feed.Experience.Participants.length - 1) {
+          separator = ' and ';
+        } else if (index !== 0) {
+          separator = ', ';
+        }
+        return (
+          <Text key={i}>{separator}
+            <Text style={styles.name}>{participant.User.firstName}</Text>
+          </Text>
+        );
+      });
+      return (
+        <View>
+          <Text>
+            {participants} had an Experience <Text style={styles.time}>
+              <Date calendarTime>{feed.date}</Date></Text>
+          </Text>
+          <View style={styles.experience}>
+            <TouchableOpacity
+              key={feed.Experience.id}
+              onPress={() => onPress(FEEDABLE_EXPERIENCE, feed.Experience)}
+            >
+              <Image source={{ uri: feed.Experience.photoUrl }} style={styles.image} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    return null;
+  }
+
+  renderOpenGroup() {
+    return (
+      <View style={styles.Wrapper}>
+        {this.renderFeed()}
+        {false && this.renderRelation()}
       </View>
     );
   }
@@ -219,10 +312,10 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
-      return (<View>{this.renderClosedGroup()}</View>);
+      return this.renderClosedGroup();
     }
 
-    return (<View>{this.renderOpenGroup()}</View>);
+    return this.renderOpenGroup();
   }
 }
 
@@ -236,7 +329,7 @@ Feed.propTypes = {
     }),
     date: PropTypes.string.isRequired,
   }).isRequired,
-  onPressUser: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,
 };
 

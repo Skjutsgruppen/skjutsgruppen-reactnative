@@ -67,6 +67,11 @@ class GroupDetail extends Component {
 }
 
 GroupDetail.propTypes = {
+  group: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  refetch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
