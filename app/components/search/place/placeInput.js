@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Countries from '@config/countries';
 import _find from 'lodash/find';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   inputWrapper: {
@@ -41,6 +42,17 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     flex: 1,
     justifyContent: 'center',
+  },
+  closeWrapper: {
+    backgroundColor: Colors.background.fullWhite,
+  },
+  close: {
+    padding: 16,
+  },
+  closeLabel: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: Colors.text.blue,
   },
 });
 
@@ -108,9 +120,14 @@ class PlacesInput extends PureComponent {
           minLength={2}
           onPress={this.onPress}
         />
-        <TouchableHighlight onPress={() => this.setState({ showModal: false })}>
-          <Text>Close</Text>
-        </TouchableHighlight>
+        <View style={styles.closeWrapper}>
+          <TouchableHighlight
+            style={styles.close}
+            onPress={() => this.setState({ showModal: false })}
+          >
+            <Text style={styles.closeLabel}>{trans('global.cancel')}</Text>
+          </TouchableHighlight>
+        </View>
       </Modal>
     );
   }

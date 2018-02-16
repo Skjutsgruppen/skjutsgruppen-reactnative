@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) => {
+const DataList = ({ data, header, noResultText, fetchMoreOptions, refer, ...props }) => {
   const reload = () => (
     <TouchableOpacity onPress={() => data.refetch()}>
       <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 
   const renderHeader = () => {
@@ -79,6 +79,7 @@ const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) =>
 
   return (
     <FlatList
+      ref={refer}
       {...props}
       data={data.rows}
       keyExtractor={item => item.id}
