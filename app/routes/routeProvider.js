@@ -47,6 +47,7 @@ import UserConversation from '@screens/profile/UserConversation';
 
 import Map from '@screens/Map';
 import Route from '@screens/Route';
+import Area from '@screens/Area';
 
 import SingleNotification from '@screens/notification/List';
 import SearchNotification from '@screens/notification/Search';
@@ -147,6 +148,7 @@ export const Routes = {
 
   Map: { screen: Map },
   Route: { screen: Route },
+  Area: { screen: Area },
 
   Tab: { screen: Tab },
 
