@@ -341,6 +341,7 @@ class Detail extends PureComponent {
         <GroupFeedList
           header={header}
           groupId={group.id}
+          isAdmin={group.isAdmin}
         />
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />
