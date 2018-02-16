@@ -95,21 +95,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
-  relationLabelWrapper: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginBottom: 6,
-  },
-  relationLabel: {
-    fontSize: 12,
-  },
-  chevronDown: {
-    height: 12,
-    width: 12,
-    resizeMode: 'contain',
-    marginLeft: 16,
-    marginTop: 2,
-  },
   btnSection: {
     justifyContent: 'space-around',
     paddingVertical: 24,
@@ -152,9 +137,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text.gray,
   },
-  commentsWrapper: {
-    paddingBottom: 50,
-  },
   modalContent: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.75)',
@@ -188,6 +170,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   closeWrapper: {
+    borderRadius: 12,
+    marginHorizontal: 16,
     backgroundColor: Colors.background.fullWhite,
   },
   closeModal: {
@@ -203,24 +187,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 48,
     marginRight: 16,
-  },
-  experienceTitle: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
-  indicator: {
-    height: 16,
-    width: 16,
-    borderRadius: 8,
-    position: 'absolute',
-    top: 0,
-    right: 0,
-  },
-  pinkBg: {
-    backgroundColor: Colors.background.pink,
-  },
-  blueBg: {
-    backgroundColor: Colors.background.blue,
   },
 });
 
@@ -602,28 +568,6 @@ class TripDetail extends Component {
     }
 
     return null;
-  }
-
-  renderTripCard = () => {
-    const { trip } = this.state;
-
-    return (
-      <View key={trip.id} style={styles.card}>
-        <View style={styles.profilePicWrapper}>
-          <Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />
-          <View
-            style={[
-              styles.indicator,
-              (trip.type === FEED_TYPE_WANTED) ? styles.blueBg : styles.pinkBg,
-            ]}
-          />
-        </View>
-        <TouchableOpacity style={styles.content}>
-          <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Date format="YYYY-MM-DD HH:mm">{trip.date}</Date>
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   render() {
