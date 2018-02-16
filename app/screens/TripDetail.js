@@ -792,6 +792,10 @@ class TripDetail extends Component {
 }
 
 TripDetail.propTypes = {
+  trip: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  loading: PropTypes.bool.isRequired,
   share: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({

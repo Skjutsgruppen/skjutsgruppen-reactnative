@@ -449,6 +449,14 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             firstName 
             avatar 
           } 
+          Participants {
+            User {
+              id 
+              firstName 
+              avatar 
+            } 
+            status
+          }
         }
       }
     }

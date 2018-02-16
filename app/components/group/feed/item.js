@@ -1,81 +1,90 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Feed from '@components/group/feed/default';
-import { SharedCard } from '@components/common';
-import { GROUP_FEED_TYPE_SHARE, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE } from '@config/constant';
+import { FEEDABLE_TRIP, FEED_FILTER_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginLeft: 60,
-    marginBottom: 8,
+    flexDirection: 'row',
+    paddingLeft: 20,
+    paddingVertical: 16,
   },
-  experience: {
-    width: 250,
-    margin: 16,
-    paddingHorizontal: 12,
-    paddingTop: 12,
-    paddingBottom: 60,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 10,
-    shadowOpacity: 0.15,
+  profilePicWrapper: {
+    width: 48,
+    height: 48,
+    marginRight: 14,
   },
-  image: {
-    width: '100%',
-    height: 220,
-    resizeMode: 'cover',
-    borderRadius: 12,
+  profilePic: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    marginRight: 14,
+  },
+  indicator: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    position: 'absolute',
+    top: 0,
+    right: -2,
+  },
+  pinkBg: {
+    backgroundColor: Colors.background.pink,
+  },
+  blueBg: {
+    backgroundColor: Colors.background.blue,
+  },
+  commentText: {
+    lineHeight: 20,
+    alignItems: 'flex-end',
+  },
+  time: {
+    maxWidth: 300,
+    textAlign: 'right',
+    color: Colors.text.gray,
   },
 });
 
-const GroupFeedItem = ({ groupFeed, onPress, setModalVisibility }) => {
-  const defaultText = (
-    <Feed
-      feed={groupFeed}
-      onPressUser={onPress}
-      setModalVisibility={setModalVisibility}
-    />
-  );
+class GroupFeedItem extends PureComponent {
+  renderProfilePic() {
+    const { groupFeed, onPress } = this.props;
 
-  if (groupFeed.ActivityType.type !== GROUP_FEED_TYPE_SHARE) {
-    return defaultText;
+    if (groupFeed.feedable === FEEDABLE_TRIP) {
+      return (
+        <View style={styles.profilePicWrapper}>
+          <TouchableOpacity onPress={() => onPress('Profile', groupFeed.User.id)}>
+            <Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />
+          </TouchableOpacity>
+          <View
+            style={[
+              styles.indicator,
+              (groupFeed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
+            ]}
+          />
+        </View>
+      );
+    }
+
+    return (<Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />);
   }
 
-  if (groupFeed.feedable === FEEDABLE_TRIP) {
+  render() {
+    const { groupFeed, onPress, setModalVisibility } = this.props;
+
     return (
-      <View style={{ alignItems: 'flex-start' }}>
-        {defaultText}
-        <SharedCard
-          trip={groupFeed.Trip}
+      <View style={styles.wrapper}>
+        {this.renderProfilePic()}
+        <Feed
+          feed={groupFeed}
           onPress={onPress}
+          setModalVisibility={setModalVisibility}
         />
       </View>
     );
   }
-
-  if (groupFeed.feedable === FEEDABLE_EXPERIENCE) {
-    return (
-      <View>
-        <Feed feed={groupFeed} onPressUser={onPress} setModalVisibility={setModalVisibility} />
-        <View style={styles.wrapper}>
-          <TouchableOpacity
-            key={groupFeed.Experience.id}
-            onPress={() => onPress(FEEDABLE_EXPERIENCE, groupFeed.Experience)}
-            style={styles.experience}
-          >
-            <Image source={{ uri: groupFeed.experience.photoUrl }} style={styles.image} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-  return null;
-};
+}
 
 GroupFeedItem.propTypes = ({
   groupFeed: PropTypes.shape({
