@@ -76,7 +76,7 @@ class FeedItem extends PureComponent {
   }
 
   render() {
-    const { feed, onPress, setModalVisibility, onCommentLongPress } = this.props;
+    const { feed, onPress, onCommentLongPress } = this.props;
 
     return (
       <View style={styles.wrapper}>
@@ -84,7 +84,6 @@ class FeedItem extends PureComponent {
         <Info
           feed={feed}
           onPress={onPress}
-          setModalVisibility={setModalVisibility}
           onCommentLongPress={onCommentLongPress}
         />
       </View>
@@ -106,7 +105,6 @@ FeedItem.propTypes = ({
     updatedAt: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  setModalVisibility: PropTypes.func.isRequired,
   onCommentLongPress: PropTypes.func.isRequired,
 });
 

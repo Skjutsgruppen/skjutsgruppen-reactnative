@@ -37,25 +37,22 @@ class Relation extends Component {
 
   render() {
     const { users, avatarSize, style } = this.props;
-    if (!users || users.length < 1) {
-      return null;
+
+    if (users && users.length > 0) {
+      return (
+        <View>
+          <RelationBubbleList
+            users={users}
+            avatarSize={avatarSize}
+            style={style}
+            setModalVisibility={this.setModalVisibility}
+          />
+          {this.state.showFoFModal && this.renderModal()}
+        </View>
+      );
     }
 
-    if (users.length < 1) {
-      return null;
-    }
-
-    return (
-      <View>
-        <RelationBubbleList
-          users={users}
-          avatarSize={avatarSize}
-          style={style}
-          setModalVisibility={this.setModalVisibility}
-        />
-        {this.state.showFoFModal && this.renderModal()}
-      </View>
-    );
+    return null;
   }
 }
 

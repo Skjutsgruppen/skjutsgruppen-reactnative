@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
@@ -12,7 +12,6 @@ import {
   FEEDABLE_TRIP,
   REPORT_COMMENT_TYPE,
 } from '@config/constant';
-import RelationModal from '@components/relationModal';
 import DataList from '@components/dataList';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -88,7 +87,7 @@ Action.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-class FeedList extends Component {
+class FeedList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = ({
@@ -96,8 +95,6 @@ class FeedList extends Component {
       shareable: {},
       shareableType: '',
       showShareModal: false,
-      showFoFModal: false,
-      friendsData: [],
       isLongPressModalOpen: false,
       isOwner: false,
       comment: {},
@@ -147,14 +144,6 @@ class FeedList extends Component {
     navigation.navigate('Report', { data: this.state.comment, type: REPORT_COMMENT_TYPE });
   }
 
-  setModalVisibility = (show, friendsData) => {
-    this.setState({ showFoFModal: show, friendsData });
-  }
-
-  setFriendsData = (data) => {
-    this.setState({ friendsData: data });
-  }
-
   deleteComment = () => {
     const { deleteComment } = this.props;
     const { comment } = this.state;
@@ -169,17 +158,6 @@ class FeedList extends Component {
           console.warn(err);
         });
     });
-  }
-
-  renderModal() {
-    return (
-      <RelationModal
-        users={this.state.friendsData}
-        onPress={this.onPress}
-        setModalVisibility={this.setModalVisibility}
-        showFoFModal={this.state.showFoFModal}
-      />
-    );
   }
 
   renderConfirmModal = () => {
@@ -262,7 +240,6 @@ class FeedList extends Component {
               onSharePress={(shareableType, shareable) =>
                 this.setState({ showShareModal: true, shareableType, shareable })}
               feed={item}
-              setModalVisibility={this.setModalVisibility}
               onCommentLongPress={this.onCommentLongPress}
             />
           )}
@@ -280,7 +257,6 @@ class FeedList extends Component {
           }}
         />
         {this.renderShareModal()}
-        {this.state.showFoFModal && this.renderModal()}
         {this.renderCommentLongPressModal()}
         {this.renderConfirmModal()}
       </View>

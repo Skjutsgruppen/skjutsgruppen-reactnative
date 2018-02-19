@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
 import GroupsList from '@components/profile/groupsList';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
-
-const styles = StyleSheet.create({
-  listWrapper: {
-    flex: 1,
-    backgroundColor: Colors.background.lightGray,
-    paddingBottom: 12,
-  },
-});
 
 const Groups = withMyGroups(GroupsList);
 
@@ -31,15 +22,13 @@ class UserGroups extends Component {
     const { userId, username } = this.props.navigation.state.params || this.props.user.id;
 
     return (
-      <Wrapper bgColor={Colors.background.creme}>
+      <Wrapper bgColor={Colors.background.mutedBlue}>
         <FloatingNavbar
           handleBack={this.goBack}
           transparent={false}
           title={`${username}'s Group`}
         />
-        <View style={styles.listWrapper}>
-          <Groups id={userId} />
-        </View>
+        <Groups id={userId} />
       </Wrapper>
     );
   }

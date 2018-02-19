@@ -80,8 +80,8 @@ class Garden extends Component {
     this.setState({ loading: true }, () => {
       logout()
         .then(() => FBLoginManager.logout(() => { }))
-        .then(() => navigation.popToTop('Splash'))
-        .catch(() => navigation.popToTop('Splash'));
+        .then(() => navigation.replace('Splash'))
+        .catch(() => navigation.replace('Splash'));
     });
   }
 
