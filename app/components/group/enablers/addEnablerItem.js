@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
 import Radio from '@components/add/radio';
-import RemoveIcon from '@assets/icons/ic_cross.png';
 
 const styles = StyleSheet.create({
   flexRow: {
