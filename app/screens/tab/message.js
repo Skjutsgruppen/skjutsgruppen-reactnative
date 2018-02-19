@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Image, Text, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
+import { Heading } from '@components/utils/texts';
 import { Wrapper } from '@components/common';
 import Ride from '@components/message/ride';
 import Group from '@components/message/group';
@@ -18,8 +19,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
     marginTop: 42,
   },
   searchInputWrapper: {
@@ -45,6 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingLeft: 0,
     marginRight: 16,
+    fontFamily: 'sfuiTextRegular',
   },
   content: {
     backgroundColor: Colors.background.fullWhite,
@@ -128,7 +128,7 @@ class Message extends Component {
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
           <LinearGradient colors={Gradients.headerWhite} style={styles.header}>
-            <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
+            <Heading style={styles.title}>{trans('message.messages_and_group')}</Heading>
             <View style={styles.searchInputWrapper}>
               <Image
                 source={require('@assets/icons/ic_search.png')}

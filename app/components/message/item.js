@@ -24,6 +24,7 @@ import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import Date from '@components/date';
 import { connect } from 'react-redux';
+import { AppText } from '@components/utils/texts';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 
 const styles = StyleSheet.create({
@@ -45,6 +46,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: Colors.background.fullWhite,
+  },
+  textContent: {
+    flex: 1,
+    marginRight: 12,
   },
   section: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -170,16 +175,24 @@ class Item extends PureComponent {
             <View style={styles.profilePicWrapper}>
               {this.renderPic([Notifiers[0].avatar])}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiers[0].firstName} </Text>
-              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>
+            <View style={styles.textContent}>
+              <AppText
+                fontVariation={filters === 'new' ? 'semibold' : null}
+                numberOfLines={1}
+                ellipsizeMode={'tail'}
+              >
+                {Notifiers[0].firstName}
+              </AppText>
+              <AppText
+                fontVariation={filters === 'new' ? 'semibold' : null}
+                numberOfLines={1}
+                ellipsizeMode={'tail'}
+              >
                 wants to be your friend.
-              </Text>
+              </AppText>
             </View>
             <View>
-              <Text>
-                <Date calenderTime>{createdAt}</Date>
-              </Text>
+              <AppText fontVariation={'semibold'}><Date calenderTime>{createdAt}</Date></AppText>
             </View>
           </View>
         </View>
@@ -197,9 +210,16 @@ class Item extends PureComponent {
             <View style={styles.profilePicWrapper}>
               {this.renderPic([User.avatar])}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text onPress={() => this.redirect(id, ids, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiable.Group.name}</Text>
-              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>Participation request</Text>
+            <View style={styles.textContent}>
+              <AppText
+                fontVariation={filters === 'new' ? 'semibold' : null}
+                onPress={() => this.redirect(id, ids, 'Profile', { profileId: User.id })}
+                numberOfLines={1}
+                ellipsizeMode={'tail'}
+              >
+                {Notifiable.Group.name}
+              </AppText>
+              <AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode={'tail'}>Participation request</AppText>
             </View>
           </View>
           {this.state.loading ?
@@ -239,24 +259,30 @@ class Item extends PureComponent {
                   : this.renderPic(photo, userId)
               }
             </View>
-            <View style={[{ flex: 1 }]}>
+            <View style={styles.textContent}>
               {
                 user &&
-                <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{user}</Text>
+                <AppText
+                  fontVariation={filters === 'new' ? 'semibold' : null}
+                  numberOfLines={1}
+                  ellipsizeMode={'tail'}
+                >
+                  {user}
+                </AppText>
               }
               {
                 ellipsize ?
-                  (<Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>
+                  (<AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode={'tail'}>
                     {text}
-                  </Text>) :
-                  (<Text style={[filters === 'new' && styles.bold]}>
+                  </AppText>) :
+                  (<AppText fontVariation={filters === 'new' ? 'semibold' : null}>
                     {text}
-                  </Text>)
+                  </AppText>)
               }
             </View>
           </View>
           <View>
-            {<Text style={[filters === 'new' && styles.bold, styles.time]}><Date calendarTime>{date}</Date></Text>}
+            {<AppText fontVariation={filters === 'new' ? 'semibold' : null}><Date calendarTime>{date}</Date></AppText>}
           </View>
         </View>
       </TouchableOpacity>
@@ -593,7 +619,7 @@ class Item extends PureComponent {
             style={styles.requestResultIcon}
           />
           <View>
-            <Text style={styles.requestResultLabel}>Accepted</Text>
+            <AppText style={styles.requestResultLabel}>Accepted</AppText>
           </View>
         </View>
       );

@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
 import { GlobalStyles } from '@theme/styles';
+import { Heading, AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   block: {
@@ -18,11 +19,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   label: {
-    color: Colors.text.blue,
-    fontSize: 16,
-    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
   },
 });
 
@@ -33,22 +30,27 @@ const Starter = ({ label, info, style, onPress }) => (
     underlayColor="#f0f0f0"
   >
     <View>
-      <Text
+      <Heading
         accessibilityLabel="Go to next form"
+        size={24}
+        color={Colors.text.blue}
+        fontVariation="bold"
         style={styles.label}
       >
         {label}
-      </Text>
+      </Heading>
       {
         info &&
-        <Text
+        <AppText
+          size={15}
+          color={Colors.text.gray}
           style={[
             GlobalStyles.TextStyles.textCenter,
-            GlobalStyles.TextStyles.light,
+            { marginTop: 12 },
           ]}
         >
           {info}
-        </Text>
+        </AppText>
       }
     </View>
   </TouchableHighlight>
