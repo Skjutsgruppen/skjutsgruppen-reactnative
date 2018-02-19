@@ -70,19 +70,17 @@ const Item = ({ user, comment, onPress, setModalVisibility, onCommentLongPress }
           </View>
           {comment.showRelation &&
             <View style={styles.commentRelation}>
-              {comment.User.relation.length > 2
+              {comment.User.relation.relation.length > 2
                 ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
-                : (comment.User.relation.length >= 1)
+                : (comment.User.relation.relation.length >= 1)
                 && (<Text style={styles.smallText}>You are friends!</Text>)
               }
-              <View>
-                <RelationBubbleList
-                  users={comment.User.relation}
-                  avatarSize={avatarSize}
-                  style={{ marginHorizontal: 0 }}
-                  setModalVisibility={setModalVisibility}
-                />
-              </View>
+              <RelationBubbleList
+                users={comment.User.relation}
+                avatarSize={avatarSize}
+                style={{ marginHorizontal: 0 }}
+                setModalVisibility={() => onPress(comment.User.id)}
+              />
             </View>
           }
         </View>

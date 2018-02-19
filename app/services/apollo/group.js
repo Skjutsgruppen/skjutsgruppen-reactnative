@@ -351,9 +351,12 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
         firstName 
         avatar 
         relation {
-          id 
-          firstName
-          avatar 
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       } 
       feedable
@@ -435,9 +438,12 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             avatar
             firstName
             relation {
-              id
-              firstName
-              avatar
+              path{
+                id
+                firstName
+                avatar
+              }
+              areFriends
             }
           }
         }
@@ -480,9 +486,12 @@ subscription groupFeed($groupId: Int!){
       firstName 
       avatar 
       relation {
-        id 
-        firstName 
-        avatar 
+        path{
+          id
+          firstName
+          avatar
+        }
+        areFriends
       }
     } 
     feedable
@@ -564,9 +573,12 @@ subscription groupFeed($groupId: Int!){
           avatar
           firstName
           relation {
-            id
-            firstName
-            avatar
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
           }
         }
       }
@@ -821,9 +833,12 @@ const GROUP_TRIPS_QUERY = gql`
         firstName 
         avatar 
         relation {
-          id 
-          firstName
-          avatar
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       } 
       TripStart {

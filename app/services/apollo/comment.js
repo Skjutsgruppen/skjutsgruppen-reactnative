@@ -13,10 +13,13 @@ const COMMENTS_SUBSCRIPTION = gql`
         id
         firstName
         avatar
-        relation{
-          id
-          firstName
-          avatar
+        relation {
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       }
     }
@@ -35,9 +38,12 @@ query getTripCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         firstName
         avatar
         relation {
-          id
-          firstName
-          avatar
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       }
     }
@@ -107,9 +113,12 @@ query getNewsCommentQuery($id: Int!, $offset: Int, $limit: Int) {
         firstName
         avatar
         relation {
-          id
-          firstName
-          avatar
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       }
     }

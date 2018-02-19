@@ -10,9 +10,12 @@ subscription updatedProfile($id: Int){
     lastName
     avatar
     relation {
-      id
-      firstName
-      avatar
+      path{
+        id
+        firstName
+        avatar
+      }
+      areFriends
     }
     fbId
     totalOffered
@@ -36,9 +39,12 @@ query profile($id: Int){
     lastName
     avatar
     relation {
-      id
-      firstName
-      avatar
+      path{
+        id
+        firstName
+        avatar
+      }
+      areFriends
     }
     fbId
     totalOffered
@@ -174,9 +180,12 @@ const CONVERSATION_QUERY = gql`
           firstName 
           avatar 
           relation {
-            id 
-            firstName
-            avatar
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
           }
         }
         TripStart {

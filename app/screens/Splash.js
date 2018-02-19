@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import Onboarding from '@components/auth/onboarding';
+import AppLoading from '@components/appLoading';
 
 class Splash extends PureComponent {
   static navigationOptions = { header: null };
@@ -50,12 +51,15 @@ class Splash extends PureComponent {
 
   render() {
     const { navigation } = this.props;
+    if (this.state.loading) {
+      return (<AppLoading />);
+    }
 
     return (
       <Onboarding
         handleLogin={() => navigation.navigate('LoginMethod')}
         handleRegister={() => navigation.navigate('OnBoardingFirst')}
-        loading={this.state.loading}
+        loading={false}
       />
     );
   }

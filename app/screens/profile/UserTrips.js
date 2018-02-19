@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { withMyTrips } from '@services/apollo/trip';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
@@ -7,13 +6,6 @@ import { Wrapper, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import { FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
 import { connect } from 'react-redux';
-
-const styles = StyleSheet.create({
-  listWrapper: {
-    flex: 1,
-    paddingBottom: 12,
-  },
-});
 
 const Trips = withMyTrips(TripsList);
 
@@ -50,13 +42,11 @@ class UserTrips extends Component {
           transparent={false}
           title={NavigationTitle}
         />
-        <View style={styles.listWrapper}>
-          <Trips
-            id={userId}
-            type={type}
-            active={null}
-          />
-        </View>
+        <Trips
+          id={userId}
+          type={type}
+          active={null}
+        />
       </Wrapper>
     );
   }

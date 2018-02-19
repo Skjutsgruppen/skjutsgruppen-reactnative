@@ -3,11 +3,9 @@ import { Image, View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import PropTypes from 'prop-types';
-import { Loading, Avatar } from '@components/common';
-import CustomButton from '@components/common/customButton';
+import { Loading, Avatar, RoundedButton } from '@components/common';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
-import Relation from '@components/relation';
 import ProfileAction from '@components/profile/profileAction';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/friend';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,7 +15,7 @@ import { trans } from '@lang/i18n';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import _isEqual from 'lodash/isEqual';
-
+import FOF from '@components/Fof';
 import {
   RELATIONSHIP_TYPE_FRIEND,
   RELATIONSHIP_TYPE_INCOMING,
@@ -51,9 +49,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     marginVertical: 12,
   },
-  activity: {
-    alignItems: 'center',
-  },
   hexagon: {
     height: 90,
     width: 100,
@@ -81,26 +76,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 8,
   },
-  count: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text.green,
-    marginVertical: 6,
-  },
-  connectionLabel: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginTop: 12,
-  },
   lightText: {
     color: Colors.text.gray,
-  },
-  chevronDown: {
-    height: 14,
-    width: 14,
-    resizeMode: 'contain',
-    marginLeft: 6,
-    marginTop: 2,
   },
   connection: {
     flexDirection: 'row',
@@ -108,24 +85,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 12,
   },
-  connectionPic: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-  },
-  withArrow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  connectionArrow: {
-    height: 12,
-    width: 12,
-    marginHorizontal: 2,
-  },
   button: {
-    marginHorizontal: 24,
+    alignSelf: 'center',
+    marginHorizontal: 20,
     marginTop: 16,
-    marginBottom: 48,
+    maxWidth: 260,
+  },
+  verticalDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    marginHorizontal: 20,
+    marginTop: 48,
   },
   actions: {
     flexDirection: 'row',
@@ -146,41 +116,15 @@ const styles = StyleSheet.create({
   actionButtonAccept: {
     backgroundColor: Colors.background.green,
   },
-  actionLable: {
+  actionLabel: {
     marginLeft: 6,
     color: Colors.text.white,
-  },
-  listWrapper: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
-  },
-  lastListWrapper: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  list: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 24,
-  },
-  listLabel: {
-    color: Colors.text.darkGray,
   },
   loadingWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 400,
-  },
-  disabledBtn: {
-    margin: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: Colors.background.lightGray,
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.5,
-    borderRadius: 8,
   },
   errorText: {
     fontSize: 16,
@@ -299,7 +243,7 @@ class Profile extends Component {
     return user.id === id;
   }
 
-  friendRelationButtion = () => {
+  friendRelationButton = () => {
     const { user, loading } = this.state;
 
     if (this.isCurrentUser()) {
@@ -311,11 +255,7 @@ class Profile extends Component {
     }
 
     if (user.relationshipType === RELATIONSHIP_TYPE_FRIEND) {
-      return (
-        <View style={styles.disabledBtn}>
-          <Text>You are friend.</Text>
-        </View>
-      );
+      return null;
     }
 
     if (user.relationshipType === RELATIONSHIP_TYPE_INCOMING) {
@@ -324,30 +264,25 @@ class Profile extends Component {
 
     if (user.relationshipType === RELATIONSHIP_TYPE_OUTGOING) {
       return (
-        <CustomButton
+        <RoundedButton
           style={styles.button}
           bgColor={Colors.background.red}
           onPress={this.cancelRequest}
         >
           Cancel friend request
-        </CustomButton>
+        </RoundedButton>
       );
     }
 
     return (
-      <CustomButton
+      <RoundedButton
         style={styles.button}
-        bgColor={Colors.background.green}
+        bgColor={Colors.background.pink}
         onPress={this.sendRequest}
       >
-        {`Ask to be ${user.firstName}'s friend`}
-      </CustomButton>
+        Friend request
+      </RoundedButton>
     );
-  }
-
-  hasRelation = () => {
-    const { user } = this.state;
-    return user.relation && user.relation.length > 0;
   }
 
   acceptRequest = () => {
@@ -394,9 +329,22 @@ class Profile extends Component {
     if (user.twitterId && user.twitterId !== '') {
       return (
         <ProfileAction
-          onPress={() => Linking.openURL(`https://twitter.com//${user.twitterId}`)}
+          onPress={() => Linking.openURL(`https://twitter.com/${user.twitterId}`)}
           label="Twitter profile"
         />
+      );
+    }
+
+    return null;
+  }
+
+  renderRelation = () => {
+    const { user } = this.state;
+    if (!this.isCurrentUser() && user.relation) {
+      return (
+        <View style={styles.connection}>
+          <FOF relation={user.relation} viewee={user} />
+        </View>
       );
     }
 
@@ -413,7 +361,7 @@ class Profile extends Component {
           name="ios-checkmark"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLable}>Accept</Text>
+        /><Text style={styles.actionLabel}>Accept</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={this.rejectRequest}
@@ -423,7 +371,7 @@ class Profile extends Component {
           name="ios-close"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLable}>Reject</Text>
+        /><Text style={styles.actionLabel}>Reject</Text>
       </TouchableOpacity>
     </View>
   )
@@ -481,28 +429,11 @@ class Profile extends Component {
             <Text style={styles.activityLabel}>{user.isSupporter ? 'Supporter' : 'Not supporting'}</Text>
           </View>
         </View>
-        {
-          !this.isCurrentUser() && this.hasRelation() &&
-          <View>
-            <View style={styles.connectionLabel}>
-              <Text style={styles.lightText}>This is how you know {user.firstName}</Text>
-              <TouchableOpacity>
-                <Image source={require('@assets/icons/icon_chevron_down.png')} style={styles.chevronDown} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.connection}>
-              <Relation
-                users={user.relation}
-                avatarSize={45}
-              />
-            </View>
-          </View>
-        }
-
-        {this.friendRelationButtion()}
+        {this.friendRelationButton()}
+        <View style={styles.verticalDivider} />
+        {this.renderRelation()}
         {this.fbLink()}
         {this.twLink()}
-
         <ProfileAction
           label={`${user.totalOffered || 0} offered ${(user.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
           onPress={() => this.redirect(FEED_FILTER_OFFERED)}
