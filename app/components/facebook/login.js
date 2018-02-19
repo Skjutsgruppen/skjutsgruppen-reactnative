@@ -9,6 +9,8 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/connect';
 import { Loading } from '@components/common';
+import { withNavigation } from 'react-navigation';
+import { withContactSync } from '@services/apollo/contact';
 
 class FBLogin extends PureComponent {
   constructor(props) {
@@ -18,11 +20,12 @@ class FBLogin extends PureComponent {
 
   onLogin = async (fb) => {
     const { profile, token } = fb.fbUser;
-    const { setLogin, navigation } = this.props;
+    const { setLogin, navigation, syncContacts } = this.props;
     this.setState({ loading: true });
 
     if (fb.hasID) {
       await setLogin(fb.userById);
+      syncContacts();
       navigation.replace('Tab');
       return;
     }
@@ -46,7 +49,7 @@ class FBLogin extends PureComponent {
   }
 
   async connect({ profile, token }) {
-    const { facebookConnect, setLogin, navigation } = this.props;
+    const { facebookConnect, setLogin, navigation, syncContacts } = this.props;
 
     const response = await facebookConnect({
       id: profile.id,
@@ -59,6 +62,7 @@ class FBLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
+    syncContacts();
     navigation.replace('Tab');
   }
 
@@ -146,6 +150,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default compose(
-  userRegister, withUpdateProfile, withFacebookConnect,
+  userRegister, withUpdateProfile, withFacebookConnect, withNavigation, withContactSync,
   connect(null, mapDispatchToProps),
 )(FBLogin);

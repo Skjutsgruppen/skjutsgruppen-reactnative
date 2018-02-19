@@ -62,7 +62,7 @@ class Method extends Component {
         <GreetText>Welcome back!</GreetText>
 
         <View style={styles.button}>
-          <FBLogin navigation={this.props.navigation} />
+          <FBLogin />
         </View>
 
         <CustomButton
