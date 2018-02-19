@@ -54,6 +54,14 @@ subscription{
           id 
           firstName 
           avatar 
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         } 
         TripStart {
           name 
@@ -132,7 +140,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         } 
         outreach
         type
@@ -169,6 +185,14 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id 
           firstName 
           avatar 
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         } 
         TripStart {
           name 
@@ -223,7 +247,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         } 
       }
     }
@@ -429,9 +461,12 @@ query trip($id: Int!){
       firstName 
       avatar 
       relation {
-        id 
-        firstName
-        avatar
+          path{
+          id
+          firstName
+          avatar
+        }
+        areFriends
       }
     } 
     TripStart {
@@ -525,9 +560,12 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         firstName 
         avatar 
         relation {
-          id 
-          firstName
-          avatar
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       } 
       TripStart {
@@ -585,9 +623,12 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         firstName 
         avatar 
         relation {
-          id 
-          firstName
-          avatar
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
         }
       }
       TripStart {
@@ -705,6 +746,14 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
           firstName
           lastName
           avatar
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         }
         rate
         updatedAt
@@ -806,6 +855,14 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
         firstName
         lastName
         avatar
+        relation {
+          path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
+        }
       }
       rate
       updatedAt

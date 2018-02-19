@@ -12,7 +12,6 @@ import ListSearchModal from '@components/profile/ListSearchModal';
 const styles = StyleSheet.create({
   listWrapper: {
     flex: 1,
-    paddingBottom: 12,
   },
 });
 

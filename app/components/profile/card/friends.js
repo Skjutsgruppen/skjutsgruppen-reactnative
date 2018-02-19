@@ -65,7 +65,7 @@ class Friends extends Component {
   }
 
   render() {
-    const { friend, onPress, handleRemovePress } = this.props;
+    const { friend, onPress, handleRemovePress, removeFriendOption } = this.props;
     let profileImage = null;
 
     if (friend.avatar) {
@@ -92,7 +92,7 @@ class Friends extends Component {
             </View>
           </View>
           {
-            !friend.inPhoneContact &&
+            !friend.inPhoneContact && removeFriendOption &&
             <TouchableHighlight
               style={styles.action}
               onPress={() => handleRemovePress(friend)}

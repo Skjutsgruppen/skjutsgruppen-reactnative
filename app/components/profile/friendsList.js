@@ -9,6 +9,7 @@ import { ConfirmModal, ListSearchBar } from '@components/common';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -141,7 +142,7 @@ class UserFriendsList extends Component {
   }
 
   render() {
-    const { friends } = this.props;
+    const { friends, id, user } = this.props;
 
     return (
       <View>
@@ -151,9 +152,10 @@ class UserFriendsList extends Component {
           renderItem={({ item }) => (
             <Friends
               key={item.id}
+              removeFriendOption={id === user.id}
               friend={item}
               onPress={this.onPress}
-              handleRemovePress={(user) => { this.handleRemovePress(user); }}
+              handleRemovePress={(friend) => { this.handleRemovePress(friend); }}
               error={this.state.error}
             />
           )}
@@ -190,4 +192,6 @@ UserFriendsList.propTypes = {
   subscribeToNewFriend: PropTypes.func.isRequired,
 };
 
-export default compose(withNavigation, withUnfriend)(UserFriendsList);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withNavigation, withUnfriend, connect(mapStateToProps))(UserFriendsList);

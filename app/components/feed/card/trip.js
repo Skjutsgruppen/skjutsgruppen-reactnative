@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-import Colors from '@theme/colors';
+import { Colors, Gradients } from '@theme';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, FLEXIBILITY_EARLIER_TYPE } from '@config/constant';
 import TouchableHighlight from '@components/touchableHighlight';
+import LinearGradient from 'react-native-linear-gradient';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -70,7 +71,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    marginHorizontal: 24,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
   text: {
     lineHeight: 20,
@@ -139,7 +141,10 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           </View>
           <View style={styles.comment}>
             <Text style={[styles.text, styles.commentText]}>{trip.description}</Text>
-            <View style={styles.commentGradientOverlay} />
+            <LinearGradient
+              colors={Gradients.transparentWhite}
+              style={styles.commentGradientOverlay}
+            />
           </View>
           <View style={styles.profilePicWrapper}>
             {profileImage}
