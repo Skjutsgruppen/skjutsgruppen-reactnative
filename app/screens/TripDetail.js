@@ -608,7 +608,8 @@ class TripDetail extends Component {
           tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
         }
 
-        tripColor = (row.type === FEED_TYPE_WANTED) ? Colors.background.blue : Colors.background.pink;
+        tripColor = (row.type === FEED_TYPE_WANTED) ?
+          Colors.background.blue : Colors.background.pink;
         markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
       });
     }

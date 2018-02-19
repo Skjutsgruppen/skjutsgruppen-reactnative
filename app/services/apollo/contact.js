@@ -1,14 +1,41 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { InteractionManager } from 'react-native';
+import Contacts from 'react-native-contacts';
 
 const SYNC_CONTACTS = gql`
-mutation syncContacts($contactList:[String]) {
+mutation syncContacts($contactList:[ContactsInput]) {
     sync(contactList:$contactList)
 }
 `;
 
-export const withContacts = graphql(SYNC_CONTACTS, {
+export const withContactSync = graphql(SYNC_CONTACTS, {
   props: ({ mutate }) => ({
-    syncContacts: contactList => mutate({ variables: { contactList } }),
+    syncContacts: () => {
+      InteractionManager.runAfterInteractions(() => {
+        Contacts.getAll((err, contacts) => {
+          if (err === 'denied') {
+            console.warn(err);
+          } else {
+            const contactList = [];
+            contacts.forEach(
+              (contact) => {
+                if (contact.phoneNumbers.length > 0) {
+                  const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
+
+                  contact.phoneNumbers.forEach(phoneBook =>
+                    contactList.push({
+                      name: contactName,
+                      phoneNumber: phoneBook.number,
+                    }),
+                  );
+                }
+              },
+            );
+            mutate({ variables: { contactList } });
+          }
+        });
+      });
+    },
   }),
 });
