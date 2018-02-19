@@ -693,7 +693,7 @@ Item.propTypes = {
   acceptExperience: PropTypes.func.isRequired,
   rejectExperience: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
 };
 
