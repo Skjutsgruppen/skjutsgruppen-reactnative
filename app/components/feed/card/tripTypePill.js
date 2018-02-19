@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   offerType: {
@@ -26,17 +27,16 @@ const styles = StyleSheet.create({
   blue: {
     backgroundColor: Colors.background.blue,
   },
-  typeText: {
-    color: Colors.text.white,
-    fontSize: 12,
-    fontWeight: '500',
-    backgroundColor: 'transparent',
-  },
 });
 
 const TripTypePill = ({ color, label }) => (
   <View style={[styles.offerType, styles[color]]}>
-    <Text style={styles.typeText}>{label}</Text>
+    <AppText
+      color={Colors.text.white}
+      size={12}
+    >
+      {label}
+    </AppText>
   </View>
 );
 

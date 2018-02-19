@@ -183,9 +183,9 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({
-      variables: { id, offset, limit },
-      fetchPolicy: 'cache-and-network',
-    }),
+    variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
+  }),
   props: ({ data: { loading, bestFriends, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
