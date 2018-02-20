@@ -66,6 +66,7 @@ mutation group
       locality 
       membershipStatus
       totalParticipants
+      isAdmin
     }
 }
 `;
@@ -160,6 +161,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       locality 
       membershipStatus
       totalParticipants
+      isAdmin
     }
     count
   }
@@ -223,6 +225,7 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
       locality 
       membershipStatus
       totalParticipants
+      isAdmin
     }
     count
   }
@@ -388,6 +391,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           locality 
           membershipStatus
           totalParticipants
+          isAdmin
         }
       }
       ... on TripFeed {
@@ -516,6 +520,7 @@ subscription groupFeed($groupId: Int!){
         locality 
         membershipStatus
         totalParticipants
+        isAdmin
       }
     }
     ... on TripFeed {

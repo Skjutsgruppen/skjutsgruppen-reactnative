@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import {
@@ -16,6 +16,7 @@ import {
 import RelationBubbleList from '@components/relationBubbleList';
 import Colors from '@theme/colors';
 import { SharedCard } from '@components/common';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -308,14 +309,25 @@ class Feed extends Component {
   }
 
   render() {
-    const { feed } = this.props;
+    const { feed, onCommentLongPress, user } = this.props;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
       return this.renderClosedGroup();
     }
 
-    return this.renderOpenGroup();
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
+      return (<TouchableWithoutFeedback
+        onLongPress={() => onCommentLongPress({
+          isOwner: (feed.User.id === user.id),
+          commentId: feed.Comment.id,
+        })}
+      >
+        {this.renderOpenGroup()}
+      </TouchableWithoutFeedback>);
+    }
+
+    return (<View>{this.renderOpenGroup()}</View>);
   }
 }
 
@@ -331,6 +343,12 @@ Feed.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,
+  onCommentLongPress: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
 };
 
-export default Feed;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(Feed);
