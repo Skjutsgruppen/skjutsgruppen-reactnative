@@ -247,7 +247,7 @@ class Trip extends Component {
         />
         {!isReturnTrip &&
           <View style={styles.returnSection}>
-            <SectionLabel label="Are You making a return ride?" color={Colors.text.blue} />
+            <SectionLabel label="Are you making a return ride?" color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.radioRow}>
               <Radio
                 active={isReturning}

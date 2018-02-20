@@ -113,10 +113,7 @@ class Date extends Component {
       delete newDates[selectedDate];
       this.setState({ markedDates: newDates });
     } else {
-      newDates[selectedDate] = [
-        { startingDay: true, color: '#1ca9e5', textColor: '#fff' },
-        { endingDay: true, color: '#1ca9e5', textColor: '#fff' },
-      ];
+      newDates[selectedDate] = { startingDay: true, textColor: 'white', color: Colors.background.blue, endingDay: true };
       this.setState({ markedDates: newDates });
     }
   };
@@ -234,7 +231,7 @@ class Date extends Component {
             firstDay={1}
             onDayPress={this.onSelectDay}
             markedDates={this.state.markedDates}
-            markingType="interactive"
+            markingType={'period'}
             minDate={Moment(new Date()).format('YYYY-MM-DD')}
             hideExtraDays
           />

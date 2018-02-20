@@ -22,7 +22,6 @@ import { GlobalStyles } from '@theme/styles';
 const styles = StyleSheet.create({
   progress: {
     paddingHorizontal: 20,
-    marginTop: 75,
   },
   stepsCount: {
     marginTop: 10,
@@ -302,6 +301,7 @@ class Ask extends Component {
         <FloatingNavbar
           handleBack={() => navigation.goBack()}
           title="Ask a ride"
+          transparent={false}
         />
         <Container bgColor="transparent">
           {this.header()}
