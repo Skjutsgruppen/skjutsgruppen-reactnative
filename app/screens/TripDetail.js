@@ -608,21 +608,8 @@ class TripDetail extends Component {
           tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
         }
 
-        tripColor = (row.type === FEED_TYPE_WANTED) ?
-          Colors.background.blue : Colors.background.pink;
-
-        markedDates[selectedDate.format('YYYY-MM-DD')] = [
-          {
-            startingDay: true,
-            color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
-            textColor: '#fff',
-          },
-          {
-            endingDay: true,
-            color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
-            textColor: '#fff',
-          },
-        ];
+        tripColor = (row.type === FEED_TYPE_WANTED) ? Colors.background.blue : Colors.background.pink;
+        markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
       });
     }
 
@@ -727,7 +714,7 @@ class TripDetail extends Component {
                     <Calendar
                       current={tripDate}
                       markedDates={markedDates}
-                      markingType="interactive"
+                      markingType={'period'}
                       hideExtraDays
                       onDayPress={day => this.redirectToSelectedTripDate(day)}
                     />
@@ -793,7 +780,7 @@ class TripDetail extends Component {
 
 TripDetail.propTypes = {
   trip: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
   share: PropTypes.func.isRequired,

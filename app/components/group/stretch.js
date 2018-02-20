@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
-import Colors from '@theme/colors';
 import SectionLabel from '@components/add/sectionLabel';
 import Radio from '@components/add/radio';
-import { RoundedButton } from '@components/common';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
+import Route from '@components/group/outreach/route';
+import Area from '@components/group/outreach/area';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -34,33 +34,26 @@ const styles = StyleSheet.create({
   radio: {
     marginBottom: 24,
   },
-  button: {
-    width: 200,
-    alignSelf: 'center',
-    marginTop: '10%',
-    marginBottom: 50,
-    marginHorizontal: 20,
-  },
 });
 
-class Stretch extends Component {
+class Stretch extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { outreach: STRETCH_TYPE_ROUTE };
   }
 
-  onPress = () => {
+  onNext = (trip) => {
     const { onNext } = this.props;
     const { outreach } = this.state;
-    onNext(outreach);
+    onNext({ outreach, trip });
   }
 
-  setRouteType = () => {
-    this.setState({ outreach: STRETCH_TYPE_ROUTE });
-  }
+  renderOutReach = () => {
+    if (this.state.outreach === STRETCH_TYPE_ROUTE) {
+      return (<Route onNext={this.onNext} />);
+    }
 
-  setAreaType = () => {
-    this.setState({ outreach: STRETCH_TYPE_AREA });
+    return (<Area onNext={this.onNext} />);
   }
 
   render() {
@@ -72,22 +65,16 @@ class Stretch extends Component {
           <Radio
             active={outreach === STRETCH_TYPE_ROUTE}
             label="Specific stretch"
-            onPress={this.setRouteType}
+            onPress={() => this.setState({ outreach: STRETCH_TYPE_ROUTE })}
             style={styles.radio}
           />
           <Radio
             active={outreach === STRETCH_TYPE_AREA}
             label="Going to or from different places"
-            onPress={this.setAreaType}
+            onPress={() => this.setState({ outreach: STRETCH_TYPE_AREA })}
           />
         </View>
-        <RoundedButton
-          onPress={this.onPress}
-          bgColor={Colors.background.pink}
-          style={styles.button}
-        >
-          Next
-        </RoundedButton>
+        {this.renderOutReach()}
       </View>
     );
   }

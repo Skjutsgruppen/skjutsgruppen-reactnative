@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) => {
+const DataList = ({ data, header, noResultText, fetchMoreOptions, innerRef, ...props }) => {
   const reload = () => (
     <TouchableOpacity onPress={() => data.refetch()}>
       <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 
   const renderHeader = () => {
@@ -79,6 +79,7 @@ const DataList = ({ data, header, noResultText, fetchMoreOptions, ...props }) =>
 
   return (
     <FlatList
+      ref={innerRef}
       {...props}
       data={data.rows}
       keyExtractor={item => item.id}
@@ -108,13 +109,14 @@ DataList.propTypes = {
     updateQuery: PropTypes.func.isRequired,
   }),
   noResultText: PropTypes.string,
+  innerRef: PropTypes.func,
 };
 
 DataList.defaultProps = {
   header: null,
   fetchMoreOptions: {},
   noResultText: 'No result found.',
-
+  innerRef: () => { },
 };
 
 export default DataList;

@@ -30,6 +30,7 @@ const CommentBox = ({ label, style, inputStyle, value, onChangeText, labelColor,
     <TextInput
       style={[styles.textarea, inputStyle]}
       multiline
+      placeholder="Write"
       numberOfLines={4}
       onChangeText={onChangeText}
       underlineColorAndroid="transparent"

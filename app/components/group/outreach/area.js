@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Picker } from 'react-native';
 import Colors from '@theme/colors';
-import CustomButton from '@components/common/customButton';
-import { Loading } from '@components/common';
+import { Loading, RoundedButton } from '@components/common';
 import { compose } from 'react-apollo';
 import { withCounties, withMunicipalities, withLocalities } from '@services/apollo/location';
 import countries from '@config/countries';
 import LocationList from '@components/group/outreach/locationList';
+import { DEFAULT_COUNTRY_CODE } from '@config/constant';
+import SectionLabel from '@components/add/sectionLabel';
 
 const Municipality = withMunicipalities(LocationList);
 const Locality = withLocalities(LocationList);
-
 const styles = StyleSheet.create({
   title: {
     fontSize: 16,
@@ -61,13 +61,20 @@ const styles = StyleSheet.create({
     color: '#777',
     fontStyle: 'italic',
   },
+  button: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
+    marginHorizontal: 20,
+  },
 });
 
 class Area extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      country: 'SE',
+      country: DEFAULT_COUNTRY_CODE,
       county: null,
       municipality: null,
       locality: null,
@@ -150,15 +157,14 @@ class Area extends Component {
     );
   }
 
-
   renderAddress = () => {
-    if (this.state.country !== 'SE') {
+    if (this.state.country !== DEFAULT_COUNTRY_CODE) {
       return (
         <View>
           <Text style={styles.infoText}>
-            {`We don't have counties, municipalities and places for the
-            country you have choosen. Would you like to help us with adding this?
-            E-mail us at samarbeta@skjutsgruppen.nu and we'll do this together`}
+            We do not have counties, municipalities and places for the country you have choosen.
+            Would you like to help us with adding this?
+            E-mail us at samarbeta@skjutsgruppen.nu and we will do this together
           </Text>
         </View>
       );
@@ -167,15 +173,15 @@ class Area extends Component {
     return (
       <View>
         <View>
-          <Text style={styles.label}>County, <Text style={styles.optional}>optional</Text></Text>
+          <SectionLabel label="County" />
           {this.renderCounties()}
         </View>
         <View>
-          <Text style={styles.label}>Municipality</Text>
+          <SectionLabel label="Municipality" />
           {this.renderMunicipality()}
         </View>
         <View>
-          <Text style={styles.label}>Locality, <Text style={styles.optional}>optional</Text></Text>
+          <SectionLabel label="Locality" />
           {this.renderLocality()}
         </View>
       </View>
@@ -184,10 +190,8 @@ class Area extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}>Area Different stretchs</Text>
-        <Text style={styles.text}>This groups is based in:</Text>
         <View>
-          <Text style={styles.label}>Country</Text>
+          <SectionLabel label="Country" />
           <Picker
             style={styles.input}
             selectedValue={this.state.country}
@@ -199,13 +203,13 @@ class Area extends Component {
 
         {this.renderAddress()}
 
-        <CustomButton
+        <RoundedButton
           onPress={this.onNext}
-          bgColor={Colors.background.darkCyan}
-          style={styles.buttonWrapper}
+          bgColor={Colors.background.pink}
+          style={styles.button}
         >
           Next
-        </CustomButton>
+        </RoundedButton>
       </View>
     );
   }

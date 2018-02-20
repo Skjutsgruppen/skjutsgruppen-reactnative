@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Clipboard } from 'react-native';
 import Stretch from '@components/group/stretch';
-import OutReach from '@components/group/outreach';
 import About from '@components/group/about';
 import OpenClosed from '@components/group/openClosed';
 import PropTypes from 'prop-types';
@@ -21,7 +20,6 @@ import { FEEDABLE_GROUP } from '@config/constant';
 const styles = StyleSheet.create({
   progress: {
     paddingHorizontal: 20,
-    marginTop: 75,
   },
   stepsCount: {
     marginTop: 10,
@@ -51,7 +49,7 @@ class Group extends Component {
       type: '',
       share: {},
       activeStep: 1,
-      disabledTabs: [2, 3, 4, 5],
+      disabledTabs: [2, 3, 4],
       completedTabs: [],
       loading: false,
       group: {},
@@ -59,17 +57,8 @@ class Group extends Component {
     };
   }
 
-  onStrechNext = (outreach) => {
-    const { completedTabs, disabledTabs } = this.state;
-    completedTabs.push(1);
-    delete disabledTabs[disabledTabs.indexOf(1)];
-    this.setState({ outreach, completedTabs, disabledTabs, activeStep: 2 });
-  };
-
-  onOutReachNext = (trip) => {
-    const { outreach } = this.state;
+  onStrechNext = ({ outreach, trip }) => {
     let { area, route } = this.state;
-
     let error = 0;
     if (outreach === 'area') {
       if (trip.country === '') {
@@ -97,9 +86,9 @@ class Group extends Component {
 
     if (error === 0) {
       const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(2);
-      delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ route, area, completedTabs, disabledTabs, activeStep: 3, error: '' });
+      completedTabs.push(1);
+      delete disabledTabs[disabledTabs.indexOf(1)];
+      this.setState({ outreach, route, area, completedTabs, disabledTabs, activeStep: 2, error: '' });
     }
   };
 
@@ -112,25 +101,25 @@ class Group extends Component {
       this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
     } else {
       const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(3);
-      delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ about, completedTabs, disabledTabs, activeStep: 4, error: '' });
+      completedTabs.push(2);
+      delete disabledTabs[disabledTabs.indexOf(2)];
+      this.setState({ about, completedTabs, disabledTabs, activeStep: 3, error: '' });
     }
   };
 
   onTypeNext = (type) => {
     const { completedTabs, disabledTabs } = this.state;
-    completedTabs.push(4);
-    delete disabledTabs[disabledTabs.indexOf(4)];
-    this.setState({ type, completedTabs, disabledTabs, activeStep: 5 });
+    completedTabs.push(3);
+    delete disabledTabs[disabledTabs.indexOf(3)];
+    this.setState({ type, completedTabs, disabledTabs, activeStep: 4 });
   };
 
   onShareAndPublishNext = (share) => {
     const { completedTabs, disabledTabs } = this.state;
-    completedTabs.push(5);
-    delete disabledTabs[disabledTabs.indexOf(5)];
+    completedTabs.push(4);
+    delete disabledTabs[disabledTabs.indexOf(4)];
     this.setState({
-      share, completedTabs, disabledTabs, activeStep: 6, loading: true,
+      share, completedTabs, disabledTabs, activeStep: 5, loading: true,
     }, this.createGroup);
   };
 
@@ -210,19 +199,19 @@ class Group extends Component {
         />
         <Container bgColor="transparent">
           {
-            this.state.activeStep <= 5 &&
+            this.state.activeStep <= 4 &&
             <View style={styles.progress}>
               <ProgressBar amount={progressAmount} />
               <Text style={[
                 styles.stepsCount,
                 GlobalStyles.TextStyles.bold,
                 GlobalStyles.TextStyles.light,
-                activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
+                activeStep === 4 ? GlobalStyles.TextStyles.pink : {},
               ]}
               >
-                <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 5
+                <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 4
                 {
-                  activeStep === 5 &&
+                  activeStep === 4 &&
                   <Text>, well done!</Text>
                 }
               </Text>
@@ -230,15 +219,10 @@ class Group extends Component {
           }
           <Toast message={error} type="error" />
           {(activeStep === 1) && <Stretch onNext={this.onStrechNext} />}
-          {(activeStep === 2) &&
-            <OutReach
-              onNext={this.onOutReachNext}
-              outreach={this.state.outreach}
-            />}
-          {(activeStep === 3) && <About onNext={this.onAboutNext} />}
-          {(activeStep === 4) && <OpenClosed onNext={this.onTypeNext} />}
-          {(activeStep === 5) && <Share showGroup={false} onNext={this.onShareAndPublishNext} />}
-          {(activeStep === 6) && this.renderFinish()}
+          {(activeStep === 2) && <About onNext={this.onAboutNext} />}
+          {(activeStep === 3) && <OpenClosed onNext={this.onTypeNext} />}
+          {(activeStep === 4) && <Share showGroup={false} onNext={this.onShareAndPublishNext} />}
+          {(activeStep === 5) && this.renderFinish()}
         </Container>
       </Wrapper>
     );
