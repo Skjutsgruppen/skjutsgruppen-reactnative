@@ -32,7 +32,6 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
     if (user.avatar) {
       image = (
         <Image
-          key={i}
           source={{ uri: user.avatar }}
           style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
         />
@@ -40,20 +39,24 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
     } else {
       image = (
         <Image
-          key={i}
           source={PlaceHolder}
           style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
         />
       );
     }
 
-    return [
-      image, ((index + 1) !== users.length) && <Image
-        key={i}
-        source={require('@assets/icons/icon_arrow_fat.png')}
-        style={[styles.arrow, { height: avatarSize / 4, width: avatarSize / 4 }]}
-      />,
-    ];
+    return (
+      <View key={i}>
+        {image}
+        {
+          ((index + 1) !== users.length) &&
+          <Image
+            source={require('@assets/icons/icon_arrow_fat.png')}
+            style={[styles.arrow, { height: avatarSize / 4, width: avatarSize / 4 }]}
+          />
+        }
+      </View>
+    );
   });
 
   return (
@@ -61,16 +64,14 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
       onPress={() => setModalVisibility(true, users)}
       style={[styles.participantWrapper, { marginVertical: avatarSize / 3 }, style]}
     >
-      {userPhotos}
+      {userPhotos()}
       {(users.length > userBubbleLength) &&
         (
           <View
-            style={
-              [
-                styles.remainingBubbleCount,
-                { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 },
-              ]
-            }
+            style={[
+              styles.remainingBubbleCount,
+              { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 },
+            ]}
           >
             <Text style={styles.remainingCount}>+{users.length - userBubbleLength}</Text>
           </View>

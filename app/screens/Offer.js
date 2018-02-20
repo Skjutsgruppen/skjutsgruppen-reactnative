@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
   },
   progress: {
     paddingHorizontal: 20,
-    marginTop: 75,
   },
   stepsCount: {
     marginTop: 10,
@@ -334,6 +333,7 @@ class Offer extends Component {
         <FloatingNavbar
           handleBack={() => navigation.goBack()}
           title="Offer a ride"
+          transparent={false}
         />
         <ScrollView keyboardShouldPersistTaps="handled">
           {this.header()}

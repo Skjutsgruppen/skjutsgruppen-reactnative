@@ -113,10 +113,7 @@ class Date extends Component {
       delete newDates[selectedDate];
       this.setState({ markedDates: newDates });
     } else {
-      newDates[selectedDate] = [
-        { startingDay: true, color: '#1ca9e5', textColor: '#fff' },
-        { endingDay: true, color: '#1ca9e5', textColor: '#fff' },
-      ];
+      newDates[selectedDate] = { startingDay: true, textColor: 'white', color: Colors.background.blue, endingDay: true };
       this.setState({ markedDates: newDates });
     }
   };
@@ -234,16 +231,16 @@ class Date extends Component {
             firstDay={1}
             onDayPress={this.onSelectDay}
             markedDates={this.state.markedDates}
-            markingType="interactive"
+            markingType={'period'}
             minDate={Moment(new Date()).format('YYYY-MM-DD')}
             hideExtraDays
           />
         </View>
         <View style={styles.recurringRide}>
-          <SectionLabel label="Recurring ride?" color={Colors.text.blue} />
+          <SectionLabel label="Is this a recurring ride?" color={Colors.text.blue} />
           <Text style={[GlobalStyles.TextStyles.light, styles.info]}>
-            Place more blue balls in the calendar the dates you are doing this trip
-            again (click on balls to remove).</Text>
+            Place more balls in the calendar if you are doing this ride again
+            (and click on the balls to remove them as well).</Text>
         </View>
         <SectionLabel label="Time" color={Colors.text.blue} />
         <View style={styles.inputContainer}>

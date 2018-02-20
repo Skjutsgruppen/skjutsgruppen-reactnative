@@ -13,8 +13,12 @@ const styles = StyleSheet.create({
 });
 
 
-const Container = ({ children, bgColor }) => (
-  <ScrollView keyboardShouldPersistTaps="handled" style={[styles.wrapper, { backgroundColor: bgColor }]}>
+const Container = ({ children, bgColor, ...props }) => (
+  <ScrollView
+    keyboardShouldPersistTaps="handled"
+    style={[styles.wrapper, { backgroundColor: bgColor }]}
+    {...props}
+  >
     {children}
   </ScrollView>
 );

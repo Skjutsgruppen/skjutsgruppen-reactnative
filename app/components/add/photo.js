@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     backgroundColor: Colors.background.gray,
     padding: 24,
-    overflow: 'hidden',
   },
   image: {
     height: 180,

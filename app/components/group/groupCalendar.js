@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { FEED_TYPE_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
 import { getDate } from '@config';
-import Loading from '@components/common/loading';
 
 const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   const checkAndRedirect = (day) => {
@@ -28,28 +27,15 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
     if (index === 0) {
       tripDate = selectedDate.format('YYYY-MM-DD');
     }
-    tripColor = (trip.type === FEED_TYPE_WANTED) ?
-      Colors.background.blue : Colors.background.pink;
-
-    markedDates[selectedDate.format('YYYY-MM-DD')] = [
-      {
-        startingDay: true,
-        color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
-        textColor: '#fff',
-      },
-      {
-        endingDay: true,
-        color: selectedDate.isBefore() ? Colors.background.gray : tripColor,
-        textColor: '#fff',
-      },
-    ];
+    tripColor = (trip.type === FEED_TYPE_WANTED) ? Colors.background.blue : Colors.background.pink;
+    markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
   });
 
   return (
     <View>
-      {loading && <Loading />}
       <Calendar
-        markingType="interactive"
+        displayLoadingIndicator={loading}
+        markingType={'period'}
         current={tripDate}
         markedDates={markedDates}
         onDayPress={checkAndRedirect}
