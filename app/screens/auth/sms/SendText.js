@@ -13,6 +13,7 @@ import { withPhoneVerified } from '@services/apollo/auth';
 import Toast from '@components/toast';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
+import { withContactSync } from '@services/apollo/contact';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -74,7 +75,7 @@ class SendText extends Component {
   }
 
   setPolling() {
-    const { navigation, isPhoneVerified, setLogin } = this.props;
+    const { navigation, isPhoneVerified, setLogin, syncContacts } = this.props;
     const { user } = this.state;
     this.interval = setInterval(() => {
       try {
@@ -84,6 +85,7 @@ class SendText extends Component {
               token: data.isPhoneVerified.token,
               user: data.isPhoneVerified.User,
             }).then(() => {
+              syncContacts();
               navigation.replace('MobileVerified');
             }).catch(console.warn);
           }
@@ -143,6 +145,7 @@ SendText.propTypes = {
   isPhoneVerified: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   phoneVerificationCode: PropTypes.string,
+  syncContacts: PropTypes.func.isRequired,
 };
 
 SendText.defaultProps = {
@@ -155,5 +158,5 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
-export default compose(withPhoneVerified,
+export default compose(withPhoneVerified, withContactSync,
   connect(mapStateToProps, mapDispatchToProps))(SendText);

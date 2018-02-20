@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
+import { withContactSync } from '@services/apollo/contact';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
@@ -64,7 +65,7 @@ class Login extends Component {
 
   onSubmit = async () => {
     this.setState({ loading: true });
-    const { submit, setLogin, setRegister, navigation } = this.props;
+    const { submit, setLogin, setRegister, navigation, syncContacts } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
@@ -81,9 +82,11 @@ class Login extends Component {
             navigation.replace('SendText');
           });
         } else {
-          setLogin({ token, user: User }).then(() => {
-            navigation.replace('Tab');
-          });
+          setLogin({ token, user: User })
+            .then(() => {
+              navigation.replace('Tab');
+              syncContacts();
+            });
         }
       } catch (err) {
         this.setState({ loading: false, error: getToast(err) });
@@ -120,7 +123,6 @@ class Login extends Component {
       errors,
     };
   }
-
 
   renderButton = () => {
     const { loading } = this.state;
@@ -210,4 +212,8 @@ const mapDispatchToProps = dispatch => ({
     .then(() => dispatch(AuthAction.register({ user, token }))),
 });
 
-export default compose(userLogin, connect(mapStateToProps, mapDispatchToProps))(Login);
+export default compose(
+  userLogin,
+  withContactSync,
+  connect(mapStateToProps, mapDispatchToProps),
+)(Login);
