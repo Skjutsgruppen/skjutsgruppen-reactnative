@@ -26,8 +26,8 @@ class Seats extends Component {
   }
 
   componentWillMount() {
-    const seat = this.props.defaultSeat;
-    this.setState({ seat });
+    const { defaultValue } = this.props;
+    this.setState({ seat: defaultValue });
   }
 
   onNext = () => {
@@ -61,11 +61,11 @@ class Seats extends Component {
 
 Seats.propTypes = {
   onNext: PropTypes.func.isRequired,
-  defaultSeat: PropTypes.string,
+  defaultValue: PropTypes.string,
 };
 
 Seats.defaultProps = {
-  defaultSeat: '3',
+  defaultValue: '3',
 };
 
 export default Seats;

@@ -182,7 +182,7 @@ class CommentBox extends PureComponent {
         >
           <Text style={styles.actionText}>Comment</Text>
         </TouchableOpacity>
-      </View >
+      </View>
     );
   }
 
