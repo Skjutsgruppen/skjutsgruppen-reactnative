@@ -77,6 +77,7 @@ subscription notification($userId: Int!) {
         locality 
         membershipStatus
         totalParticipants
+        isAdmin
       }
       ... on GroupMembershipRequest {
         id
@@ -112,6 +113,7 @@ subscription notification($userId: Int!) {
           locality 
           membershipStatus
           totalParticipants
+          isAdmin
         }
       }
       ... on FriendRequest {
@@ -225,6 +227,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           locality 
           membershipStatus 
           totalParticipants
+          isAdmin
         }
         ... on GroupMembershipRequest {
           id
@@ -504,6 +507,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           locality 
           membershipStatus
           totalParticipants
+          isAdmin
           } 
         ... on GroupMembershipRequest {
           id
@@ -539,6 +543,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             locality 
             membershipStatus
             totalParticipants
+            isAdmin
           }
         }
         ... on FriendRequest {

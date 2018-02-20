@@ -71,7 +71,7 @@ class GroupFeedItem extends PureComponent {
   }
 
   render() {
-    const { groupFeed, onPress, setModalVisibility } = this.props;
+    const { groupFeed, onPress, setModalVisibility, onCommentLongPress } = this.props;
 
     return (
       <View style={styles.wrapper}>
@@ -80,6 +80,7 @@ class GroupFeedItem extends PureComponent {
           feed={groupFeed}
           onPress={onPress}
           setModalVisibility={setModalVisibility}
+          onCommentLongPress={onCommentLongPress}
         />
       </View>
     );
@@ -101,6 +102,7 @@ GroupFeedItem.propTypes = ({
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,
+  onCommentLongPress: PropTypes.func.isRequired,
 });
 
 export default GroupFeedItem;

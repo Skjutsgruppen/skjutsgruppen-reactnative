@@ -192,14 +192,27 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
         groupId = null,
         newsId = null,
         text,
-      }) => mutate({
-        variables: {
-          tripId,
-          groupId,
-          newsId,
-          text,
-        },
-      }),
+      }) =>
+        mutate({
+          variables: {
+            tripId,
+            groupId,
+            newsId,
+            text,
+          },
+        }),
     }),
 });
 
+const DELETE_COMMENT_QUERY = gql`
+mutation deleteComment($id: Int){
+  deleteComment(id: $id)
+}
+`;
+
+export const withDeleteComment = graphql(DELETE_COMMENT_QUERY, {
+  props: ({ mutate }) => (
+    {
+      deleteComment: ({ id }) => mutate({ variables: { id } }),
+    }),
+});
