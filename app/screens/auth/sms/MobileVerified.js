@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
+import { withContactSync } from '@services/apollo/contact';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -28,7 +30,8 @@ class MobileVerified extends Component {
   };
 
   onEnter = () => {
-    const { navigation } = this.props;
+    const { navigation, syncContacts } = this.props;
+    syncContacts();
     navigation.replace('Tab');
   }
 
@@ -65,6 +68,7 @@ MobileVerified.propTypes = {
   navigation: PropTypes.shape({
     reset: PropTypes.func,
   }).isRequired,
+  syncContacts: PropTypes.func.isRequired,
   auth: PropTypes.shape({
     login: PropTypes.bool,
     token: PropTypes.string,
@@ -84,4 +88,7 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.warn(error)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MobileVerified);
+export default compose(
+  withContactSync,
+  connect(mapStateToProps, mapDispatchToProps),
+)(MobileVerified);
