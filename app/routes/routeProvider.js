@@ -59,6 +59,8 @@ import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
 import Garden from '@screens/tab/garden';
 
+import Report from '@screens/modal/Report';
+
 const TabRoutes = {
   Feed: {
     screen: Feed,
@@ -105,6 +107,7 @@ const Tab = TabNavigator(TabRoutes,
     },
   },
 );
+
 export const Routes = {
   Splash: { screen: Splash },
 
@@ -159,11 +162,16 @@ export const Routes = {
   ActiveRideList: { screen: ActiveRideList },
   ActiveGroupList: { screen: ActiveGroupList },
   SearchNotification: { screen: SearchNotification },
+
+  Report: { screen: Report },
 };
 
-export const AppNavigator = StackNavigator(Routes, {
-  initialRouteName: 'Splash',
-});
+export const AppNavigator = StackNavigator(
+  Routes,
+  {
+    initialRouteName: 'Splash',
+  },
+);
 
 export const navReducer = (state, action) => {
   const newState = AppNavigator.router.getStateForAction(action, state);

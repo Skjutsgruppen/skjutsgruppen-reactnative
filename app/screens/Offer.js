@@ -99,7 +99,7 @@ class Offer extends Component {
         time: '00:00',
         flexibilityInfo: {
           duration: 0,
-          unit: 'minute',
+          unit: 'minutes',
           type: 'later',
         },
       },
