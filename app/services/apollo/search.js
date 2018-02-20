@@ -58,6 +58,7 @@ query search
         locality 
         membershipStatus 
         totalParticipants
+        isAdmin
       }
       ...on Trip {
         id 

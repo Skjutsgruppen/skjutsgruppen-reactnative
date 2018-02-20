@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import RelationBubbleList from '@components/relationBubbleList';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   commentWrapper: {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Item = ({ comment, onPress, setModalVisibility }) => {
+const Item = ({ user, comment, onPress, setModalVisibility, onCommentLongPress }) => {
   let image = null;
 
   if (comment.User.avatar) {
@@ -52,37 +53,41 @@ const Item = ({ comment, onPress, setModalVisibility }) => {
   const avatarSize = 24;
 
   return (
-    <View style={styles.commentWrapper}>
-      <TouchableOpacity onPress={() => onPress(comment.User.id)}>{image}</TouchableOpacity>
-      <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-          <Text style={styles.name}>
-            {comment.User.firstName}
-            <Text style={[styles.time, styles.smallText]}> <Date>{comment.date}</Date></Text>
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.commentText}>{comment.text}</Text>
-        </View>
-        {comment.showRelation &&
-          <View style={styles.commentRelation}>
-            {comment.User.relation.length > 2
-              ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
-              : (comment.User.relation.length >= 1)
-              && (<Text style={styles.smallText}>You are friends!</Text>)
-            }
-            <View>
-              <RelationBubbleList
-                users={comment.User.relation}
-                avatarSize={avatarSize}
-                style={{ marginHorizontal: 0 }}
-                setModalVisibility={setModalVisibility}
-              />
-            </View>
+    <TouchableWithoutFeedback
+      onLongPress={() => onCommentLongPress(user.id === comment.User.id, comment.id)}
+    >
+      <View style={styles.commentWrapper}>
+        <TouchableOpacity onPress={() => onPress(comment.User.id)}>{image}</TouchableOpacity>
+        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+            <Text style={styles.name}>
+              {comment.User.firstName}
+              <Text style={[styles.time, styles.smallText]}> <Date>{comment.date}</Date></Text>
+            </Text>
           </View>
-        }
+          <View>
+            <Text style={styles.commentText}>{comment.text}</Text>
+          </View>
+          {comment.showRelation &&
+            <View style={styles.commentRelation}>
+              {comment.User.relation.length > 2
+                ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
+                : (comment.User.relation.length >= 1)
+                && (<Text style={styles.smallText}>You are friends!</Text>)
+              }
+              <View>
+                <RelationBubbleList
+                  users={comment.User.relation}
+                  avatarSize={avatarSize}
+                  style={{ marginHorizontal: 0 }}
+                  setModalVisibility={setModalVisibility}
+                />
+              </View>
+            </View>
+          }
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -97,7 +102,13 @@ Item.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   setModalVisibility: PropTypes.func.isRequired,
+  onCommentLongPress: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
 };
 
-export default Item;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(Item);
 

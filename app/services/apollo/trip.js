@@ -150,6 +150,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         locality 
         membershipStatus 
         totalParticipants
+        isAdmin
       }
     }
     ... on TripFeed { 
