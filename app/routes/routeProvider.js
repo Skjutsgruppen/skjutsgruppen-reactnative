@@ -79,7 +79,7 @@ const TabRoutes = {
 
 const Tab = TabNavigator(TabRoutes,
   {
-    lazy: true,
+    swipeEnabled: true,
     animationEnabled: false,
     tabBarPosition: 'bottom',
     tabBarOptions: {

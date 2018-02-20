@@ -96,6 +96,7 @@ class About extends Component {
           onChangeText={name => this.setState({ name })}
           value={this.state.name}
           maxLength={GROUP_NAME_LIMIT}
+          multiline={false}
         />
         <CommentBox
           label="What is your group about?"

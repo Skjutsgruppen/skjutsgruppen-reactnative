@@ -844,7 +844,7 @@ const GROUP_TRIPS_QUERY = gql`
 export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
   {
     options: ({ id }) => ({
-      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-and-network',
       variables: { id },
     }),
     props: ({ data: { loading, groupTrips = [], refetch, networkStatus, error } }) => ({

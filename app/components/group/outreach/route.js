@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
 import PlaceInput from '@components/search/place/placeInput';
 import Colors from '@theme/colors';
-import CustomButton from '@components/common/customButton';
+import { RoundedButton } from '@components/common';
 import SectionLabel from '@components/add/sectionLabel';
-
 import DragIcon from '@assets/icons/ic_drag.png';
 import AddIcon from '@assets/icons/ic_add_pink.png';
 import CrossIcon from '@assets/icons/ic_cross_pink.png';
@@ -69,10 +68,12 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 23,
   },
-  buttonWrapper: {
-    padding: 8,
-    marginBottom: 32,
-    marginHorizontal: 24,
+  button: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
+    marginHorizontal: 20,
   },
 });
 
@@ -182,6 +183,7 @@ class Route extends Component {
           onChangeText={start => this.setState({ start })}
           style={{ marginBottom: 32 }}
         />
+        <SectionLabel label="Stops In" />
         <View style={styles.stops}>
           {this.renderStops()}
           <View style={styles.addStopWrapper}>
@@ -201,14 +203,13 @@ class Route extends Component {
           defaultValue={this.state.end}
           onChangeText={end => this.setState({ end })}
         />
-        <View style={styles.buttonWrapper}>
-          <CustomButton
-            onPress={this.onNext}
-            bgColor={Colors.background.darkCyan}
-          >
-            Next
-          </CustomButton>
-        </View>
+        <RoundedButton
+          onPress={this.onNext}
+          bgColor={Colors.background.pink}
+          style={styles.button}
+        >
+          Next
+        </RoundedButton>
       </View>
     );
   }

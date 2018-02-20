@@ -223,17 +223,20 @@ class Trip extends Component {
         />
         {
           isOffer &&
-          <View style={styles.stops}>
-            {this.renderStops()}
-            <View style={styles.addStopWrapper}>
-              <View style={styles.iconWrapper} />
-              <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
-                <View style={styles.addStop}>
-                  <Image source={AddIcon} style={styles.addStopIcon} />
-                  <Text>Add stop</Text>
-                </View>
-              </TouchableHighlight>
-              <View style={styles.iconWrapper} />
+          <View>
+            <SectionLabel label="Stops In" color={isOffer ? Colors.text.pink : Colors.text.blue} />
+            <View style={styles.stops}>
+              {this.renderStops()}
+              <View style={styles.addStopWrapper}>
+                <View style={styles.iconWrapper} />
+                <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
+                  <View style={styles.addStop}>
+                    <Image source={AddIcon} style={styles.addStopIcon} />
+                    <Text>Add stop</Text>
+                  </View>
+                </TouchableHighlight>
+                <View style={styles.iconWrapper} />
+              </View>
             </View>
           </View>
         }
@@ -247,7 +250,7 @@ class Trip extends Component {
         />
         {!isReturnTrip &&
           <View style={styles.returnSection}>
-            <SectionLabel label="Are You making a return ride?" color={Colors.text.blue} />
+            <SectionLabel label="Are you making a return ride?" color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.radioRow}>
               <Radio
                 active={isReturning}
