@@ -302,6 +302,7 @@ query group($id: Int!){
       type
       photo
       mapPhoto
+      areaCoordinates
       TripStart {
         name 
         coordinates 

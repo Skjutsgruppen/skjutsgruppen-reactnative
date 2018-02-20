@@ -26,6 +26,7 @@ class Route extends PureComponent {
   componentWillMount() {
     const { navigation } = this.props;
     const { coordinates } = navigation.state.params;
+
     this.setState({
       initialRegion: {
         longitude: coordinates.start.coordinates[0],
