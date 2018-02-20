@@ -82,6 +82,12 @@ class About extends Component {
     this.state = { name: '', description: '', photo: '' };
   }
 
+  componentWillMount() {
+    const { defaultValue } = this.props;
+    const { name, description, photo } = defaultValue;
+    this.setState({ name, description, photo });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
@@ -97,6 +103,7 @@ class About extends Component {
           value={this.state.name}
           maxLength={GROUP_NAME_LIMIT}
           multiline={false}
+          showTextCount
         />
         <CommentBox
           label="What is your group about?"
@@ -117,6 +124,11 @@ class About extends Component {
 
 About.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultValue: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    photo: PropTypes.string,
+  }).isRequired,
 };
 
 export default About;

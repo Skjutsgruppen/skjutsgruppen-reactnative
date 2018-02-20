@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class Trip extends Component {
+class Route extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -111,7 +111,6 @@ class Trip extends Component {
         countryCode: '',
         coordinates: [],
       },
-      isReturnTrip: false,
       end: {
         name: '',
         countryCode: '',
@@ -124,14 +123,31 @@ class Trip extends Component {
       }],
       stopsCount: 1,
       isReturning: true,
+      hideReturnTripOption: false,
+      currentLocationSelected: '',
     };
   }
 
   componentWillMount() {
-    const { start, end, stops, isReturnTrip } = this.props;
-    const isReturning = (!isReturnTrip === true);
+    const { defaultValue, hideReturnTripOption } = this.props;
+    const { start, end, currentLocationSelected = '', isReturning } = defaultValue;
+    let { stops } = defaultValue;
+    let stopsCount = stops.length;
 
-    this.setState({ start, end, stops, isReturnTrip, isReturning });
+    if (stopsCount === 0) {
+      stopsCount = 1;
+      stops = this.state.stops;
+    }
+
+    this.setState({
+      start,
+      end,
+      stops,
+      stopsCount,
+      currentLocationSelected,
+      hideReturnTripOption,
+      isReturning,
+    });
   }
 
   onNext = () => {
@@ -143,12 +159,32 @@ class Trip extends Component {
       stops = state.stops.filter(k => k.coordinates && k.coordinates.length);
     }
 
-    onNext({ ...state, ...{ stops } });
+    const value = { ...state, ...{ stops } };
+    onNext(value);
   };
 
-  onChangeText = (i, stop) => {
-    this.setStops(i, stop, this.state.stopsCount);
+  onChangeText = (i, { place }) => {
+    this.setStops(i, place, this.state.stopsCount);
   };
+
+  setEndPlace = ({ place, source }) => {
+    let { currentLocationSelected } = this.state;
+
+    if (source === 'currentLocation') {
+      currentLocationSelected = 'end';
+    } else if (currentLocationSelected === 'end' && source !== 'currentLocation') {
+      currentLocationSelected = '';
+    }
+
+    currentLocationSelected = source === 'currentLocation' ? 'end' : currentLocationSelected;
+    this.setState({ end: place, currentLocationSelected });
+  }
+
+  setStartPlace = ({ place, source }) => {
+    let { currentLocationSelected } = this.state;
+    currentLocationSelected = source === 'currentLocation' ? 'start' : currentLocationSelected;
+    this.setState({ start: place, currentLocationSelected });
+  }
 
   setStops = (count, stop, stopsCount) => {
     const { stops } = this.state;
@@ -161,27 +197,29 @@ class Trip extends Component {
   };
 
   removeStop = (count) => {
-    const { stops } = this.state;
+    const { stops, stopsCount } = this.state;
 
     delete stops[count];
 
-    this.setState({ stops, stopsCount: this.state.stopsCount - 1 });
+    this.setState({ stops, stopsCount: stopsCount - 1 });
   }
 
   addStops = () => {
-    this.setStops(this.state.stopsCount, {}, this.state.stopsCount + 1);
+    let { stopsCount } = this.state;
+    stopsCount = isNaN(stopsCount) ? 0 : stopsCount;
+    this.setStops(stopsCount, {}, stopsCount + 1);
   };
 
-  switchLocation = () => {
-    const { start, end } = this.state;
-    this.setState({ start: end, end: start });
-  };
+  currentLocation = (type) => {
+    const { currentLocationSelected } = this.state;
+    return (type === currentLocationSelected || currentLocationSelected === '');
+  }
 
   renderStops() {
     const { stops } = this.state;
     let j = 0;
 
-    return stops.map((s, i) => {
+    return stops.map((place, i) => {
       j += 1;
       return (
         <View key={j} style={styles.stop}>
@@ -193,7 +231,9 @@ class Trip extends Component {
           </View>
           <PlaceInput
             placeholder="Place"
+            currentLocation={false}
             height={60}
+            defaultValue={place}
             inputStyle={{ paddingLeft: 68 }}
             label="Stop"
             onChangeText={(stop) => { this.onChangeText(i, stop); }}
@@ -210,16 +250,17 @@ class Trip extends Component {
   }
   render() {
     const { isOffer } = this.props;
-    const { start, end, isReturning, isReturnTrip } = this.state;
+    const { start, end, isReturning, hideReturnTripOption } = this.state;
     return (
       <View style={styles.wrapper}>
         <SectionLabel label="From" color={isOffer ? Colors.text.pink : Colors.text.blue} />
         <PlaceInput
-          placeholder="Start here"
+          placeholder="From"
+          label="To"
           inputStyle={{ paddingLeft: 20 }}
-          label="From"
-          onChangeText={place => this.setState({ start: place })}
+          currentLocation={this.currentLocation('start')}
           defaultValue={start}
+          onChangeText={this.setStartPlace}
         />
         {
           isOffer &&
@@ -245,10 +286,11 @@ class Trip extends Component {
           placeholder="Destination"
           label="To"
           inputStyle={{ paddingLeft: 20 }}
-          onChangeText={place => this.setState({ end: place })}
+          currentLocation={this.currentLocation('end')}
           defaultValue={end}
+          onChangeText={this.setEndPlace}
         />
-        {!isReturnTrip &&
+        {!hideReturnTripOption &&
           <View style={styles.returnSection}>
             <SectionLabel label="Are you making a return ride?" color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.radioRow}>
@@ -283,31 +325,32 @@ class Trip extends Component {
   }
 }
 
-Trip.propTypes = {
+Route.propTypes = {
   onNext: PropTypes.func.isRequired,
-  start: PropTypes.shape({
-    name: PropTypes.string,
-    countryCode: PropTypes.string,
-    coordinates: PropTypes.array,
-  }).isRequired,
-  end: PropTypes.shape({
-    name: PropTypes.string,
-    countryCode: PropTypes.string,
-    coordinates: PropTypes.array,
-  }).isRequired,
-  stops: PropTypes.arrayOf(
-    PropTypes.shape({
+  defaultValue: PropTypes.shape({
+    start: PropTypes.shape({
       name: PropTypes.string,
       countryCode: PropTypes.string,
       coordinates: PropTypes.array,
-    })),
-  isReturnTrip: PropTypes.bool.isRequired,
+    }).isRequired,
+    end: PropTypes.shape({
+      name: PropTypes.string,
+      countryCode: PropTypes.string,
+      coordinates: PropTypes.array,
+    }).isRequired,
+    stops: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        countryCode: PropTypes.string,
+        coordinates: PropTypes.array,
+      })),
+  }).isRequired,
+  hideReturnTripOption: PropTypes.bool.isRequired,
   isOffer: PropTypes.bool,
 };
 
-Trip.defaultProps = {
+Route.defaultProps = {
   isOffer: false,
-  stops: [{ name: '', countryCode: '', coordinates: [] }],
 };
 
-export default Trip;
+export default Route;
