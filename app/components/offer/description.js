@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 
-class Description extends Component {
+class Description extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { text: '', photo: null };
@@ -45,14 +45,16 @@ class Description extends Component {
 
   render() {
     const { photo } = this.state;
+    const { isOffer } = this.props;
 
     return (
       <View>
-        <AddPhoto onSelect={res => this.setState({ photo: res.data })} defaultPhoto={photo} />
+        <AddPhoto onSelect={res => this.setState({ photo: res.data })} iconColor={isOffer ? 'pink' : 'blue'} defaultPhoto={photo} />
         <CommentBox
           label="Comment"
           onChangeText={text => this.setState({ text })}
           value={this.state.text}
+          labelColor={isOffer ? Colors.text.pink : Colors.text.blue}
         />
         <Text style={styles.infoText}>
           Write about who you are and where you’re going.
@@ -76,15 +78,13 @@ Description.propTypes = {
   defaultValue: PropTypes.shape({
     photo: PropTypes.string,
     text: PropTypes.string,
-  }),
+  }).isRequired,
   onNext: PropTypes.func.isRequired,
+  isOffer: PropTypes.bool,
 };
 
 Description.defaultProps = {
-  defaultValue: {
-    photo: null,
-    text: '',
-  },
+  isOffer: false,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

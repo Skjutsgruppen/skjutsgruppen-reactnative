@@ -82,6 +82,7 @@ const TabRoutes = {
 
 const Tab = TabNavigator(TabRoutes,
   {
+    lazy: true,
     swipeEnabled: true,
     animationEnabled: false,
     tabBarPosition: 'bottom',
@@ -150,7 +151,13 @@ export const Routes = {
   Route: { screen: Route },
   Area: { screen: Area },
 
-  Tab: { screen: Tab },
+  Tab: {
+    screen: Tab,
+    headerMode: 'none',
+    navigationOptions: {
+      header: null,
+    },
+  },
 
   Profile: { screen: Profile },
   EditProfile: { screen: EditProfile },
@@ -168,8 +175,7 @@ export const Routes = {
   Report: { screen: Report },
 };
 
-export const AppNavigator = StackNavigator(
-  Routes,
+export const AppNavigator = StackNavigator(Routes,
   {
     initialRouteName: 'Splash',
   },

@@ -76,6 +76,7 @@ export const AppToastCode = {
   DESCRIPTION_REQUIRED: 'Description is required',
   DATE_REQUIRED: 'Date is required.',
   TIME_REQUIRED: 'Time is required.',
+  INVALID_TIME: 'Time must be greater than current time',
   PASSWORD_UPDATED: 'Password successfully updated.',
   ENTER_NEW_PASSWORD: 'Please enter new password.',
   ENTER_OLD_PASSWORD: 'Please enter old password.',

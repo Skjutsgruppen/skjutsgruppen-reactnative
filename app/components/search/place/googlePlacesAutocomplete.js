@@ -154,9 +154,12 @@ class GooglePlacesAutocomplete extends Component {
       let response = await fetch(getPlaceByLatlngURL(latitude, longitude));
       response = await response.json();
       this.props.onPress({
-        name: response.results[0].address_components[0].long_name,
-        countryCode: response.results[0].address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-        coordinates: [longitude, latitude],
+        place: {
+          name: response.results[0].address_components[0].long_name,
+          countryCode: response.results[0].address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
+          coordinates: [longitude, latitude],
+        },
+        source: 'currentLocation',
       });
     } catch (error) {
       console.warn(error);
@@ -171,9 +174,12 @@ class GooglePlacesAutocomplete extends Component {
         if (response.status === 'OK' && this.isComponentMounted === true) {
           const details = response.result;
           this.props.onPress({
-            name: details.address_components[0].long_name,
-            countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-            coordinates: [details.geometry.location.lng, details.geometry.location.lat],
+            place: {
+              name: details.address_components[0].long_name,
+              countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
+              coordinates: [details.geometry.location.lng, details.geometry.location.lat],
+            },
+            source: 'googlePlaceAPI',
           });
         }
       },
@@ -271,6 +277,7 @@ class GooglePlacesAutocomplete extends Component {
     return (
       <View style={defaultStyles.inputWrapper}>
         <TextInput
+          autoFocus
           style={defaultStyles.textInput}
           value={text}
           clearButtonMode="while-editing"
@@ -311,12 +318,12 @@ class GooglePlacesAutocomplete extends Component {
   }
 
   render() {
-    const { direction } = this.props;
+    const { direction, currentLocation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         {this.renderTextInput()}
         {direction && this.renderDirectionOption()}
-        {this.renderCurrentLocationOption()}
+        {currentLocation && this.renderCurrentLocationOption()}
         {this.renderSearchResult()}
       </Wrapper>
     );
@@ -325,17 +332,18 @@ class GooglePlacesAutocomplete extends Component {
 
 GooglePlacesAutocomplete.propTypes = {
   direction: PropTypes.bool,
+  currentLocation: PropTypes.bool,
   textInputProps: PropTypes.shape({}),
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   minLength: PropTypes.number,
-
 };
 
 GooglePlacesAutocomplete.defaultProps = {
   direction: false,
   minLength: 2,
   textInputProps: {},
+  currentLocation: false,
 };
 
 export default GooglePlacesAutocomplete;

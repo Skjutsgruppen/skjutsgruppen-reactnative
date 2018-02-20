@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import SectionLabel from '@components/add/sectionLabel';
 import Radio from '@components/add/radio';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
-import Route from '@components/group/outreach/route';
+import Route from '@components/offer/route';
 import Area from '@components/group/outreach/area';
 
 const styles = StyleSheet.create({
@@ -39,7 +39,15 @@ const styles = StyleSheet.create({
 class Stretch extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { outreach: STRETCH_TYPE_ROUTE };
+    this.state = {
+      outreach: STRETCH_TYPE_ROUTE, route: {}, area: {},
+    };
+  }
+
+  componentWillMount() {
+    const { defaultValue } = this.props;
+    const { route, area, outreach } = defaultValue;
+    this.setState({ route, area, outreach });
   }
 
   onNext = (trip) => {
@@ -49,11 +57,12 @@ class Stretch extends PureComponent {
   }
 
   renderOutReach = () => {
-    if (this.state.outreach === STRETCH_TYPE_ROUTE) {
-      return (<Route onNext={this.onNext} />);
+    const { route, area, outreach } = this.state;
+    if (outreach === STRETCH_TYPE_ROUTE) {
+      return (<Route isOffer hideReturnTripOption defaultValue={route} onNext={this.onNext} />);
     }
 
-    return (<Area onNext={this.onNext} />);
+    return (<Area defaultValue={area} onNext={this.onNext} />);
   }
 
   render() {
@@ -82,6 +91,11 @@ class Stretch extends PureComponent {
 
 Stretch.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultValue: PropTypes.shape({
+    route: PropTypes.object,
+    area: PropTypes.object,
+    outreach: PropTypes.string,
+  }).isRequired,
 };
 
 export default Stretch;

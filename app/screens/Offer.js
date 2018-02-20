@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, Clipboard } from 'react-native';
+import { StyleSheet, View, Text, Image, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Description from '@components/offer/description';
-import Trip from '@components/offer/trip';
+import Route from '@components/offer/route';
 import Date from '@components/offer/date';
 import Seats from '@components/offer/seats';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
-import { Loading, Wrapper, FloatingNavbar, ProgressBar } from '@components/common';
+import { Loading, Wrapper, ProgressBar, Container } from '@components/common';
 import { withCreateTrip } from '@services/apollo/trip';
 import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
@@ -18,8 +18,10 @@ import { Colors } from '@theme';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
 import { FEED_TYPE_OFFER, FEEDABLE_TRIP } from '@config/constant';
-
+import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
+import _reverse from 'lodash/reverse';
+import ToolBar from '@components/utils/toolbar';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -36,9 +38,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   returnHeader: {
-    marginTop: 70,
     paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingVertical: 16,
   },
   returnIcon: {
     width: 50,
@@ -72,7 +73,11 @@ class Offer extends Component {
     this.state = {
       isReturnedTrip: false,
       parentId: null,
-      defaultTrip: {
+      description: {
+        text: '',
+        photo: null,
+      },
+      route: {
         start: {
           name: '',
           countryCode: '',
@@ -90,12 +95,10 @@ class Offer extends Component {
             coordinates: [],
           },
         ],
-        dates: [],
-        description: {
-          text: '',
-          photo: null,
-        },
-        seat: '3',
+        isReturning: true,
+      },
+      date: {
+        days: [],
         time: '00:00',
         flexibilityInfo: {
           duration: 0,
@@ -103,16 +106,11 @@ class Offer extends Component {
           type: 'later',
         },
       },
-      description: {},
-      trip: {},
-      dates: [],
-      seat: 3,
+      seat: '3',
       share: {},
       activeStep: 1,
-      disabledTabs: [2, 3, 4, 5],
-      completedTabs: [],
       loading: false,
-      offer: {},
+      trip: {},
       error: '',
     };
   }
@@ -121,146 +119,178 @@ class Offer extends Component {
     const { params } = this.props.navigation.state;
 
     if (params && typeof params.isReturnedTrip !== 'undefined') {
+      const { parentId, trip } = params;
+      const { description, route, date, seat } = trip;
+
       this.setState({
         isReturnedTrip: true,
-        parentId: params.parentId,
-        defaultTrip: {
-          start: params.defaultTrip.start,
-          end: params.defaultTrip.end,
-          dates: params.defaultTrip.dates,
-          stops: params.defaultTrip.stops,
-          description: params.defaultTrip.description,
-          seat: params.defaultTrip.seat,
-          time: params.defaultTrip.time,
-          flexibilityInfo: params.defaultTrip.flexibilityInfo,
+        returnText: `${route.end.name} on ${date.days.join(', ')}`,
+        parentId,
+        description,
+        route: {
+          start: route.end,
+          end: route.start,
+          stops: _reverse(route.stops),
+          isReturning: route.isReturning,
         },
+        date: {
+          days: [],
+          time: date.time,
+          flexibilityInfo: date.flexibilityInfo,
+        },
+        seat,
       });
     }
+    this.container = null;
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { activeStep, loading } = this.state;
+    const { navigation } = this.props;
+
+    if (activeStep === 1) {
+      Alert.alert(
+        '',
+        'Are you sure You want to exit this screen?',
+        [
+          { text: 'Cancel', onPress: () => { }, style: 'cancel' },
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ],
+        { cancelable: true },
+      );
+      return true;
+    }
+
+    if (activeStep === 6) {
+      return loading;
+    }
+
+    if (activeStep > 1) {
+      this.setState({ activeStep: activeStep - 1 }, this.scrollToTop);
+      return true;
+    }
+
+    return false;
+  };
 
   onDescriptionNext = (description) => {
     if (description.text === '') {
-      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(1);
-      delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ description, completedTabs, disabledTabs, activeStep: 2, error: '' });
+      this.setState({ description, activeStep: 2, error: '' }, this.scrollToTop);
     }
   };
 
-  onTripNext = (trip) => {
-    if (trip.start.coordinates.length === 0) {
-      this.setState({ error: getToast(['FROM_REQUIRED']) });
-    } else if (trip.end.coordinates.length === 0) {
-      this.setState({ error: getToast(['TO_REQUIRED']) });
+  onRouteNext = (route) => {
+    if (route.start.coordinates.length === 0) {
+      this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
+    } else if (route.end.coordinates.length === 0) {
+      this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(2);
-      delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ trip, completedTabs, disabledTabs, activeStep: 3, error: '' });
+      this.setState({ route, activeStep: 3, error: '' }, this.scrollToTop);
     }
   };
 
   onDateNext = (date) => {
-    if (date.dates.length < 1) {
-      this.setState({ error: getToast(['DATE_REQUIRED']) });
+    if (date.days.length < 1) {
+      this.setState({ error: getToast(['DATE_REQUIRED']) }, this.scrollToTop);
     } else if (date.time === '00:00') {
-      this.setState({ error: getToast(['TIME_REQUIRED']) });
+      this.setState({ error: getToast(['TIME_REQUIRED']) }, this.scrollToTop);
+    } else if (!this.isValidDateTime(date)) {
+      this.setState({ error: getToast(['INVALID_TIME']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(3);
-      delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ date, completedTabs, disabledTabs, activeStep: 4, error: '' });
+      this.setState({ date, activeStep: 4, error: '' }, this.scrollToTop);
     }
   }
 
   onSeatNext = (seat) => {
     if (seat === '' || parseInt(seat, 10) < 1 || isNaN(parseInt(seat, 10))) {
-      this.setState({ error: getToast(['SEAT_REQUIRED']) });
+      this.setState({ error: getToast(['SEAT_REQUIRED']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(4);
-      delete disabledTabs[disabledTabs.indexOf(4)];
-      this.setState({ seat, completedTabs, disabledTabs, activeStep: 5, error: '' });
+      this.setState({ seat, activeStep: 5, error: '' });
     }
   };
 
   onShareAndPublishNext = (share) => {
-    const { completedTabs, disabledTabs } = this.state;
-    completedTabs.push(5);
-    delete disabledTabs[disabledTabs.indexOf(5)];
-    this.setState(
-      {
-        share,
-        completedTabs,
-        disabledTabs,
-        activeStep: 6,
-        loading: true,
-      },
-      this.createTrip,
+    this.setState({
+      share,
+      activeStep: 6,
+      loading: true,
+    }, this.createTrip,
     );
   };
 
   onMakeReturnRide = () => {
-    const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
+    const { description, route, date, seat, trip } = this.state;
+    navigation.replace('Offer', {
+      isReturnedTrip: true,
+      parentId: trip.id,
+      trip: { description, route, date, seat },
+    });
+  }
 
-    if (this.state.trip.isReturning) {
-      navigate('Offer', {
-        isReturnedTrip: true,
-        parentId: this.state.offer.id,
-        defaultTrip: {
-          start: this.state.trip.end,
-          end: this.state.trip.start,
-          dates: this.state.date.dates,
-          stops: (this.state.trip.stops.length > 0)
-            ? this.state.trip.stops.reverse()
-            : this.state.defaultTrip.stops,
-          description: this.state.description,
-          seat: this.state.seat,
-          time: this.state.date.time,
-          flexibilityInfo: this.state.date.flexibilityInfo,
-        },
-      });
-    } else {
-      navigate('Feed', { refetch: true });
+  isValidDateTime = (date) => {
+    if (
+      date.days.length === 1
+      && isToday(date.days[0])
+      && !isFuture(`${date.days[0]} ${date.time}`)
+    ) {
+      return false;
     }
+
+    return true;
+  }
+
+  scrollToTop = () => {
+    Keyboard.dismiss();
+    setTimeout(() => {
+      this.container.scrollTo({ x: 0, y: 0, animated: true });
+    }, 0);
   }
 
   createTrip() {
-    const { description, trip, date, seat, share, parentId } = this.state;
+    const { description, route, date, seat, share, parentId } = this.state;
     let utcTime = '';
     const dates = [];
 
-    date.dates.forEach((tripDate) => {
+    date.days.forEach((tripDate) => {
       const dateTime = this.convertToGMT(tripDate, date.time).split(' ');
       utcTime = dateTime[1];
       dates.push(dateTime[0]);
     });
 
-    const rideData = {
+    const tripData = {
       parentId,
       description: description.text,
-      tripStart: trip.start,
-      tripEnd: trip.end,
       photo: description.photo,
-      stops: trip.stops,
-      returnTrip: trip.isReturning || trip.isReturnTrip,
+      tripStart: route.start,
+      tripEnd: route.end,
+      stops: route.stops,
+      returnTrip: route.isReturning,
       dates,
       time: utcTime,
-      seats: seat,
       flexibilityInfo: date.flexibilityInfo,
+      seats: seat,
       share,
       type: FEED_TYPE_OFFER,
     };
 
     try {
-      this.props.createTrip(rideData).then((res) => {
+      this.props.createTrip(tripData).then((res) => {
         if (share.social.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
 
-        this.setState({ loading: false, offer: res.data.createTrip });
+        this.setState({ loading: false, trip: res.data.createTrip });
       });
     } catch (error) {
       console.warn(error);
@@ -269,15 +299,15 @@ class Offer extends Component {
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
-  header() {
-    const { isReturnedTrip } = this.state;
+  renderReturnRideText() {
+    const { isReturnedTrip, returnText } = this.state;
     if (isReturnedTrip) {
       return (
         <View style={styles.returnHeader}>
           <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
-            Return ride of your offered ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
+            Return ride of your offered ride to {returnText}
           </Text>
         </View>
       );
@@ -287,7 +317,7 @@ class Offer extends Component {
   }
 
   renderFinish() {
-    const { loading, offer, error, trip } = this.state;
+    const { loading, trip, error, route, isReturnedTrip } = this.state;
 
     if (loading) {
       return (
@@ -310,11 +340,35 @@ class Offer extends Component {
 
     return (
       <Completed
-        detail={offer}
+        detail={trip}
         type={FEEDABLE_TRIP}
-        isReturnedTrip={trip.isReturning}
+        isReturnedTrip={isReturnedTrip ? false : route.isReturning}
         onMakeReturnRide={this.onMakeReturnRide}
       />
+    );
+  }
+
+  renderProgress = () => {
+    const { activeStep } = this.state;
+    const progressAmount = (activeStep / 6) * 100;
+    if (activeStep > 5) {
+      return null;
+    }
+
+    return (
+      <View style={styles.progress}>
+        <ProgressBar amount={progressAmount} />
+        <Text style={[
+          styles.stepsCount,
+          GlobalStyles.TextStyles.bold,
+          GlobalStyles.TextStyles.light,
+          activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
+        ]}
+        >
+          <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 5
+          {activeStep === 5 && <Text>, well done!</Text>}
+        </Text>
+      </View>
     );
   }
 
@@ -322,63 +376,44 @@ class Offer extends Component {
     const {
       activeStep,
       isReturnedTrip,
-      defaultTrip,
+      description,
+      route,
+      date,
+      seat,
       error,
     } = this.state;
-    const { navigation } = this.props;
 
-    const progressAmount = (activeStep / 6) * 100;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <FloatingNavbar
-          handleBack={() => navigation.goBack()}
+        <ToolBar
           title="Offer a ride"
-          transparent={false}
+          onBack={this.onBackButtonPress}
         />
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {this.header()}
+        <Toast message={error} type="error" />
+        <Container
+          innerRef={(ref) => { this.container = ref; }}
+          style={{ backgroundColor: 'transparent' }}
+        >
+          {this.renderReturnRideText()}
+          {this.renderProgress()}
           {
-            this.state.activeStep <= 5 &&
-            <View style={styles.progress}>
-              <ProgressBar amount={progressAmount} />
-              <Text style={[
-                styles.stepsCount,
-                GlobalStyles.TextStyles.bold,
-                GlobalStyles.TextStyles.light,
-                activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
-              ]}
-              >
-                <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 5
-                {
-                  activeStep === 5 &&
-                  <Text>, well done!</Text>
-                }
-              </Text>
-            </View>
+            (activeStep === 1) &&
+            <Description isOffer defaultValue={description} onNext={this.onDescriptionNext} />
           }
-
-          <Toast message={error} type="error" />
-          {(activeStep === 1) && <Description
-            onNext={this.onDescriptionNext}
-            defaultValue={defaultTrip.description}
-          />}
-          {(activeStep === 2) && <Trip
-            isReturnTrip={isReturnedTrip}
-            start={defaultTrip.start}
-            end={defaultTrip.end}
-            stops={defaultTrip.stops}
-            onNext={this.onTripNext}
-            isOffer
-          />}
-          {(activeStep === 3) && <Date
-            onNext={this.onDateNext}
-            defaultTime={defaultTrip.time}
-            defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
-          />}
-          {(activeStep === 4) && <Seats onNext={this.onSeatNext} defaultSeat={defaultTrip.seat} />}
-          {(activeStep === 5) && <Share onNext={this.onShareAndPublishNext} />}
+          {
+            (activeStep === 2) &&
+            <Route
+              defaultValue={route}
+              hideReturnTripOption={isReturnedTrip}
+              onNext={this.onRouteNext}
+              isOffer
+            />
+          }
+          {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
+          {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
+          {(activeStep === 5) && <Share isOffer onNext={this.onShareAndPublishNext} />}
           {(activeStep === 6) && this.renderFinish()}
-        </ScrollView>
+        </Container>
       </Wrapper>
     );
   }

@@ -60,7 +60,7 @@ class PlacesInput extends PureComponent {
   constructor(props) {
     super(props);
     this.state = ({
-      value: {
+      place: {
         name: '',
         countryCode: '',
         coordinates: [],
@@ -71,12 +71,12 @@ class PlacesInput extends PureComponent {
 
   componentWillMount() {
     const { defaultValue } = this.props;
-    this.setState({ value: defaultValue });
+    this.setState({ place: defaultValue });
   }
 
-  onPress = (value) => {
-    this.setState({ value, showModal: false }, () => {
-      this.props.onChangeText(value);
+  onPress = ({ place, source }) => {
+    this.setState({ place, showModal: false }, () => {
+      this.props.onChangeText({ place, source });
     });
   }
 
@@ -86,16 +86,16 @@ class PlacesInput extends PureComponent {
   }
 
   getPlaceName = () => {
-    const { value } = this.state;
+    const { place } = this.state;
     const { placeholder } = this.props;
 
-    if (value.name) {
+    if (place.name) {
       return (
         <View>
           <Text>
-            {value.name}
+            {place.name}
           </Text>
-          <Text style={{ color: Colors.text.gray }}>{this.getCountryName(value.countryCode)}</Text>
+          <Text style={{ color: Colors.text.gray }}>{this.getCountryName(place.countryCode)}</Text>
         </View>
       );
     }
@@ -104,7 +104,7 @@ class PlacesInput extends PureComponent {
   }
 
   renderModal() {
-    const { placeholder, label } = this.props;
+    const { placeholder, label, direction, currentLocation } = this.props;
     return (
       <Modal
         visible={this.state.showModal}
@@ -119,6 +119,8 @@ class PlacesInput extends PureComponent {
           label={label}
           minLength={2}
           onPress={this.onPress}
+          direction={direction}
+          currentLocation={currentLocation}
         />
         <View style={styles.closeWrapper}>
           <TouchableHighlight
@@ -163,6 +165,8 @@ PlacesInput.propTypes = {
   height: PropTypes.number,
   label: PropTypes.string,
   inputStyle: TouchableHighlight.propTypes.style,
+  direction: PropTypes.bool,
+  currentLocation: PropTypes.bool,
 };
 
 PlacesInput.defaultProps = {
@@ -170,6 +174,8 @@ PlacesInput.defaultProps = {
   height: 60,
   label: '',
   inputStyle: {},
+  direction: false,
+  currentLocation: false,
 };
 
 export default PlacesInput;
