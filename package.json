@@ -31,6 +31,7 @@
     "react-native-google-analytics-bridge": "^5.5.0",
     "react-native-i18n": "^2.0.9",
     "react-native-image-picker": "^0.26.7",
+    "react-native-keyboard-aware-scroll-view": "^0.4.3",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-maps": "^0.19",
     "react-native-sms": "^1.5.1",

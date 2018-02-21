@@ -9,7 +9,7 @@ import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Moment from 'moment';
-import { FEED_FILTER_WANTED, PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT } from '@config/constant';
 import ActiveRideItem from '@components/message/ActiveRideItem';
 import LoadeMore from '@components/message/loadMore';
 
@@ -80,10 +80,11 @@ class Ride extends PureComponent {
     navigation.navigate('ActiveRideList');
   }
 
-  isActiveRide = trip => (Moment(trip.date).isAfter() && trip.type !== FEED_FILTER_WANTED);
+  isActiveRide = trip => (Moment(trip.date).isAfter());
 
   render() {
     const { trips } = this.props;
+
     let render = (<Text style={styles.emptyMessage}>{trans('message.no_ride')}</Text>);
 
     let limitedTrips = trips.rows;
