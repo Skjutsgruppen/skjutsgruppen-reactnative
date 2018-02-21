@@ -88,4 +88,5 @@ export const AppToastCode = {
   ERROR_RESENDING_EMAIL_VERIFICATION: 'Error sending verification code! Please Retry.',
   EMAIL_SUCCESSFULLY_CHANGED: 'Your e-mail has been updated. Please check your e-mail and click the link to verify.',
   PHONE_NUMBER_SUCCESSFULLY_CHANGED: 'Your phone number has been updated. Please verify your new phone number to set it as a default phone number.',
+  SELECT_ONE_RIDE: 'Please select on ride to suggest.',
 };
