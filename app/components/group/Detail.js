@@ -16,7 +16,7 @@ import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withShare } from '@services/apollo/share';
-import { AppNotification, Wrapper, Loading, FloatingNavbar, CommentBox } from '@components/common';
+import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
 import GroupImage from '@components/group/groupImage';
@@ -28,6 +28,7 @@ import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import GroupCalendar from '@components/group/groupCalendar';
+import CommentBox from '@components/group/commentBox';
 
 
 const GroupFeedList = withGroupFeed(GroupFeed);
@@ -227,6 +228,18 @@ class Detail extends PureComponent {
     this.setState({ notification: false, notifierOffset: 0 });
   }
 
+  onOffer = () => {
+    const { navigation } = this.props;
+    Keyboard.dismiss();
+    navigation.navigate('Offer');
+  }
+
+  onAsk = () => {
+    const { navigation } = this.props;
+    Keyboard.dismiss();
+    navigation.navigate('Ask');
+  }
+
   setCalendarVisibilty = (show) => {
     this.setState({ showCalendar: show });
   }
@@ -350,6 +363,8 @@ class Detail extends PureComponent {
           loading={loading}
           hasCalender
           handleShowCalender={this.setCalendarVisibilty}
+          onOffer={this.onOffer}
+          onAsk={this.onAsk}
         />
         {this.renderShareModal()}
         {
