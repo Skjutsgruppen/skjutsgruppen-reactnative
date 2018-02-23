@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, ViewPropTypes, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 
@@ -24,7 +24,7 @@ const ModalAction = ({ style, label, onPress }) => (
 );
 
 ModalAction.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
 };

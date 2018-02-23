@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableHighlight, Image, Dimensions } from 'react-native';
+import { StyleSheet, ViewPropTypes, TouchableHighlight, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEEDABLE_EXPERIENCE } from '@config/constant';
@@ -53,7 +53,7 @@ Experience.propTypes = {
     id: PropTypes.number,
     body: PropTypes.string,
   }).isRequired,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 

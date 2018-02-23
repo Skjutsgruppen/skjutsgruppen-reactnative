@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, View, Text } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 
@@ -31,7 +31,7 @@ const GhostButton = ({ style, label, color, onPress }) => (
 );
 
 GhostButton.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   label: PropTypes.string.isRequired,
   color: PropTypes.string,
   onPress: PropTypes.func.isRequired,

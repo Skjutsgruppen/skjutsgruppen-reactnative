@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Radio from '@components/add/radio';
@@ -35,20 +35,21 @@ const ShareItem = ({
   label,
   onPress,
   style,
-}) => (
-  <TouchableHighlight onPress={onPress} underlayColor="#f5f5f5">
-    <View style={[styles.shareItem, style]}>
-      {
-        imageSource &&
-        <View style={styles.imageContainer}>
-          <Image source={imageSource} style={hasPhoto ? styles.image : {}} />
-        </View>
-      }
-      <Text>{label}</Text>
-      <Radio active={selected} readOnly={readOnly} color="blue" onPress={onPress} style={styles.radio} />
-    </View>
-  </TouchableHighlight>
-);
+}) =>
+  (
+    <TouchableHighlight onPress={onPress} underlayColor="#f5f5f5">
+      <View style={[styles.shareItem, style]}>
+        {
+          imageSource &&
+          <View style={styles.imageContainer}>
+            <Image source={imageSource} style={hasPhoto ? styles.image : {}} />
+          </View>
+        }
+        <Text>{label}</Text>
+        <Radio active={selected} readOnly={readOnly} color="blue" onPress={onPress} style={styles.radio} />
+      </View>
+    </TouchableHighlight>
+  );
 
 ShareItem.propTypes = {
   imageSource: PropTypes.oneOfType([
@@ -62,7 +63,7 @@ ShareItem.propTypes = {
   selected: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 ShareItem.defaultProps = {
   key: null,

@@ -170,7 +170,10 @@ class Offer extends Component {
     }
 
     if (activeStep === 6) {
-      return loading;
+      if (!loading) {
+        navigation.goBack();
+      }
+      return true;
     }
 
     if (activeStep > 1) {
@@ -330,7 +333,6 @@ class Offer extends Component {
     if (error !== '') {
       return (
         <View style={{ marginTop: 100 }}>
-          <Toast message={error} type="error" />
           <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
             Try Again
           </CustomButton>
@@ -411,7 +413,7 @@ class Offer extends Component {
           }
           {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
           {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-          {(activeStep === 5) && <Share isOffer onNext={this.onShareAndPublishNext} />}
+          {(activeStep === 5) && <Share type={FEEDABLE_TRIP} onNext={this.onShareAndPublishNext} />}
           {(activeStep === 6) && this.renderFinish()}
         </Container>
       </Wrapper>

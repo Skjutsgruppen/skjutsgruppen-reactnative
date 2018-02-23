@@ -260,7 +260,7 @@ class Search extends Component {
                   defaultValue={this.state.from}
                   currentLocation
                   placeholder={trans('search.from_where_i_am_now')}
-                  onChangeText={from => this.setState({ from })}
+                  onChangeText={({ place }) => this.setState({ from: place })}
                   style={styles.input}
                 />
                 <Text style={styles.inputLabel}>{trans('global.from')}</Text>
@@ -275,7 +275,7 @@ class Search extends Component {
                 <PlaceInput
                   placeholder={trans('global.destination')}
                   defaultValue={this.state.to}
-                  onChangeText={to => this.setState({ to })}
+                  onChangeText={({ place }) => this.setState({ to: place })}
                   style={styles.input}
                 />
                 <Text style={styles.inputLabel}>{trans('global.to')}</Text>

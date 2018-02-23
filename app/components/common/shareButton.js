@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, ViewPropTypes, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from '@assets/icons/ic_share_white.png';
 
@@ -24,7 +24,7 @@ const ShareButton = ({ style, onPress }) => (
 );
 
 ShareButton.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 

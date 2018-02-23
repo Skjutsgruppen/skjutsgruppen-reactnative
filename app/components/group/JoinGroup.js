@@ -111,7 +111,7 @@ class JoinGroup extends Component {
       isPending: null,
       group: {},
       requestSent: false,
-      isOpen: false,
+      showShareModal: false,
       error: '',
     });
   }
@@ -122,20 +122,6 @@ class JoinGroup extends Component {
 
   componentWillReceiveProps(props) {
     this.updateState(props);
-  }
-
-  onSharePress = () => {
-    this.setState({ isOpen: true });
-  }
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.group.id, type: FEEDABLE_GROUP, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
   }
 
   onMapPress = () => {
@@ -234,20 +220,19 @@ class JoinGroup extends Component {
   }
 
   renderShareModal() {
+    const { showShareModal, group } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup={false}
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={FEEDABLE_GROUP}
+          detail={group}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -257,7 +242,11 @@ class JoinGroup extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
-        <FloatingNavbar handleBack={this.goBack} showShare handleShare={() => this.onSharePress('group', group)} />
+        <FloatingNavbar
+          handleBack={this.goBack}
+          showShare
+          handleShare={() => this.setState({ showShareModal: true })}
+        />
         <ScrollView>
           <GroupImage group={group} />
           {
@@ -307,9 +296,7 @@ JoinGroup.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
-  share: PropTypes.func.isRequired,
 };
-
 
 export default compose(
   withShare,

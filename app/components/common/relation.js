@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import ProfilePicture from '@components/common/profilePicture';
 
@@ -47,7 +47,7 @@ Relation.propTypes = {
   ).isRequired,
   size: PropTypes.number.isRequired,
   arrowSize: PropTypes.number,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 Relation.defaultProps = {
