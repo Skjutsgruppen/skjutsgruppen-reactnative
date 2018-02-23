@@ -315,6 +315,13 @@ subscription myGroup($userId: Int!){
         firstName
         avatar
       }
+      Location {
+        id
+        interval
+        duration
+        timeFraction
+        locationCoordinates
+      }
     }
     remove
   }
@@ -322,7 +329,7 @@ subscription myGroup($userId: Int!){
 `;
 
 export const GROUPS_SUBSCRIPTION = gql`
-  subscription groupUpdated($id: Int!) {
+  subscription onGroupUpdated($id: Int!) {
     groupUpdated (groupId: $id){
       id
       name
@@ -372,8 +379,19 @@ export const GROUPS_SUBSCRIPTION = gql`
       countryCode
       hasCreatorLeft
       isDeleted
-    }
+      Location {
+        id
+        User {
+          id
+          avatar
+        }
+        interval
+        duration
+        timeFraction
+        locationCoordinates
+      }
   }
+}
 `;
 
 export const FIND_GROUP_QUERY = gql`
@@ -427,7 +445,18 @@ query group($id: Int!){
     countryCode
     hasCreatorLeft
     isDeleted
-  }
+    Location {
+      id
+      User {
+        id
+        avatar
+      }
+      interval
+      duration
+      timeFraction
+      locationCoordinates
+    }
+}
 }
 `;
 
@@ -479,6 +508,13 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       ActivityType {
         type
       }
+      ... on LocationFeed {
+        id
+        Location {
+          locationCoordinates
+          interval
+        }
+      }
       ... on GroupFeed {
         Enabler {
           id 
@@ -522,6 +558,13 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id
             firstName
             avatar
+          }
+          Location {
+            id
+            interval
+            duration
+            timeFraction
+            locationCoordinates
           }
         }
       }
@@ -627,6 +670,13 @@ subscription groupFeed($groupId: Int!){
       ActivityType {
         type
       }
+      ... on LocationFeed {
+        id
+        Location {
+          locationCoordinates
+          interval
+        }
+      }
       ... on GroupFeed {
         Enabler {
           id
@@ -670,6 +720,13 @@ subscription groupFeed($groupId: Int!){
             id 
             firstName
             avatar
+          }
+          Location {
+            id
+            interval
+            duration
+            timeFraction
+            locationCoordinates
           }
         }
       }
@@ -1195,6 +1252,16 @@ mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
 }
 `;
 
+export const GROUP_PARTICIPANT_IDS_QUERY = gql`
+query groupMembers($id: Int){
+  groupMembers(id: $id){
+    rows{
+      memberId
+    }
+  }
+}
+`;
+
 export const withGroupsInMunicipality = graphql(GROUPS_IN_MUNICIPALITY_QUERY, {
   props: ({ mutate }) => (
     {
@@ -1630,4 +1697,20 @@ export const withNearByGroups = graphql(NEAR_BY_GROUPS_QUERY, {
       networkStatus,
       fetchMore,
     } }) => ({ loading, nearByGroups, error, refetch, networkStatus, fetchMore }),
+});
+
+export const withGroupParticipantIds = graphql(GROUP_PARTICIPANT_IDS_QUERY, {
+  options: ({ id }) => ({
+    variables: { id },
+    fetchPolicy: 'cache-and-network',
+  }),
+  props: ({ data: { loading, groupMembers, refetch, networkStatus, error } }) => ({
+    data: {
+      loading,
+      groupMemberIds: groupMembers ? groupMembers.rows.map(m => m.memberId) : [],
+      refetch,
+      networkStatus,
+      error,
+    },
+  }),
 });

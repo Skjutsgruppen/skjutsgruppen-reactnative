@@ -14,6 +14,7 @@ import {
   addGroup as addGroupEn,
   setting as settingEn,
   about as aboutEn,
+  interval as intervalEn,
 } from '@lang/locales/en';
 import {
   global as globalSe,
@@ -27,6 +28,7 @@ import {
   addGroup as addGroupSe,
   setting as settingSe,
   about as aboutSe,
+  interval as intervalSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -44,6 +46,7 @@ I18n.translations = {
     addGroup: addGroupEn,
     setting: settingEn,
     about: aboutEn,
+    interval: intervalEn,
   },
   se: {
     global: globalSe,
@@ -57,6 +60,7 @@ I18n.translations = {
     addGroup: addGroupSe,
     setting: settingSe,
     about: aboutSe,
+    interval: intervalSe,
   },
 };
 

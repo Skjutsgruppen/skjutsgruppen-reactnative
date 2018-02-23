@@ -4145,6 +4145,10 @@ react-native-modal@3.1.0:
     prop-types "15.5.10"
     react-native-animatable "^1.2.3"
 
+react-native-pie@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-pie/-/react-native-pie-0.4.0.tgz#655f81378f27c8a8b1602913ce2b42cb6e35ad96"
+
 react-native-safe-area-view@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.7.0.tgz#38f5ab9368d6ef9e5d18ab64212938af3ec39421"
