@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
 import PropTypes from 'prop-types';
@@ -14,12 +14,17 @@ import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import Filter from '@components/feed/filter';
 import moment from 'moment';
 
+import Colors from '@theme/colors';
+
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const styles = StyleSheet.create({
+  lightText: {
+    color: Colors.text.gray,
+  },
   container: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
@@ -28,10 +33,26 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-  itemContainer: {
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
     backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    position: 'absolute',
+    borderRadius: 8,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    shadowOpacity: 0.15,
+  },
+  tryAgain: {
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  loadingWraper: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   loadingWrapper: {
     flex: 1,

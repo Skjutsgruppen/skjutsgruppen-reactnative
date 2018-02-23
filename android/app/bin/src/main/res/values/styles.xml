@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.ReactNative.AppCompat.Light.NoActionBar.FullScreen">
+    
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">#141414</item>
+        <item name="android:textSize">16dip</item>
+    </style>
+
+</resources>
