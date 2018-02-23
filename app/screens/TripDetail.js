@@ -5,7 +5,7 @@ import { submitComment, withTripComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip } from '@services/apollo/trip';
 import { withTripExperiences } from '@services/apollo/experience';
-import { FloatingNavbar, AppNotification, DetailHeader, Loading } from '@components/common';
+import { Container, AppNotification, DetailHeader, Loading, ShareButton } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -28,6 +28,7 @@ import { withSearch } from '@services/apollo/search';
 import SuggestedRidesList from '@components/ask/suggestedRidesList';
 import AskCommentBox from '@components/ask/commentBox';
 import OfferCommentBox from '@components/offer/commentBox';
+import ToolBar from '@components/utils/toolbar';
 
 const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
@@ -196,10 +197,6 @@ const styles = StyleSheet.create({
 });
 
 class TripDetail extends Component {
-  static navigationOptions = {
-    header: null,
-  };
-
   constructor(props) {
     super(props);
     this.state = ({
@@ -214,13 +211,17 @@ class TripDetail extends Component {
       notifierOffset: 0,
       showReturnRides: false,
       showRecurringRides: false,
-      trip: {},
       showSuggestedRides: false,
+      trip: {},
     });
   }
 
   componentWillMount() {
     const { navigation } = this.props;
+    navigation.setParams({
+      right: () => <ShareButton onPress={() => this.setState({ isOpen: true })} />,
+    });
+
     const { notifier, notificationMessage, trip } = navigation.state.params;
     let initialState = { trip };
 
@@ -284,10 +285,6 @@ class TripDetail extends Component {
     const { navigation } = this.props;
     Keyboard.dismiss();
     navigation.navigate('Offer');
-  }
-
-  onSharePress = () => {
-    this.setState({ isOpen: true });
   }
 
   onShare = (share) => {
@@ -661,14 +658,8 @@ class TripDetail extends Component {
     return (
       <View style={styles.wrapper}>
         {this.renderAppNotification()}
-        <FloatingNavbar
-          handleBack={this.goBack}
-          showShare
-          handleShare={this.onSharePress}
-          transparent
-          offset={notifierOffset}
-        />
-        <ScrollView>
+        <ToolBar transparent offset={notifierOffset} />
+        <Container>
           <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
           <TouchableOpacity
             onPress={() => this.onProfilePress(trip.User.id)}
@@ -810,7 +801,7 @@ class TripDetail extends Component {
             ownerId={trip.User.id}
           />
           <About />
-        </ScrollView>
+        </Container>
         {this.renderCommentBox()}
         {this.renderModal()}
         {this.renderShareModal()}

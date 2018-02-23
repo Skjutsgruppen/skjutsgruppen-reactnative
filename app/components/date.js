@@ -17,6 +17,8 @@ export const isBeforeAWeek = dateTime => moment(new Date(dateTime)).isBefore(mom
 
 export const isDifferentYear = dateTime => (moment(new Date(dateTime)).format('YYYY') !== moment().format('YYYY'));
 
+export const isFuture = dateTime => moment(new Date(dateTime)).isAfter(moment());
+
 const DateView = ({ children, format, calendarTime, ...rest }) => {
   let autoFormat = 'MMM Do';
   let defaultFormat = format;

@@ -36,8 +36,12 @@ const styles = StyleSheet.create({
 class OpenClosed extends Component {
   constructor(props) {
     super(props);
+    this.state = { type: OPEN_GROUP };
+  }
 
-    this.state = { type: 'OpenGroup' };
+  componentWillMount() {
+    const { defaultValue } = this.props;
+    this.setState({ type: defaultValue });
   }
 
   onNext = () => {
@@ -91,6 +95,7 @@ class OpenClosed extends Component {
 
 OpenClosed.propTypes = {
   onNext: PropTypes.func.isRequired,
+  defaultValue: PropTypes.string.isRequired,
 };
 
 export default OpenClosed;
