@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Wrapper, FloatingNavbar } from '@components/common';
+import { Wrapper, Container } from '@components/common';
 import Colors from '@theme/colors';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile, withAccount } from '@services/apollo/profile';
+import ToolBar from '@components/utils/toolbar';
 
 const ProfileComponent = withProfile(ProfileDetail);
 const Account = withAccount(ProfileDetail);
@@ -22,23 +22,16 @@ const Profile = ({ navigation, user }) => {
 
   return (
     <Wrapper bgColor={Colors.background.cream}>
-      <FloatingNavbar
-        handleBack={() => navigation.goBack()}
-        showChange={!isUserProfile}
-        handleChangePress={() => navigation.navigate('EditProfile')}
-      />
-      <View style={{ flex: 1, backgroundColor: Colors.background.fullWhite }}>
-        <ScrollView>
-          {isUserProfile ? <ProfileComponent id={userId} /> : <Account id={userId} />}
-        </ScrollView>
-      </View>
+      <Container style={{ backgroundColor: Colors.background.fullWhite }} >
+        {isUserProfile ? <ProfileComponent id={userId} /> : <Account id={userId} />}
+      </Container>
     </Wrapper>
   );
 };
 
-Profile.navigationOptions = {
-  header: null,
-};
+Profile.navigationOptions = ({ navigation, title }) => ({
+  header: (<ToolBar transparent navigation={navigation} title={title} />),
+});
 
 Profile.propTypes = {
   user: PropTypes.shape({

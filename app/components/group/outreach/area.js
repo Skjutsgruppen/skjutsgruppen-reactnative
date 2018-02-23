@@ -81,6 +81,12 @@ class Area extends Component {
     };
   }
 
+  componentWillMount() {
+    const { defaultValue } = this.props;
+    const { country, county, municipality, locality } = defaultValue;
+    this.setState({ country, county, municipality, locality });
+  }
+
   onNext = () => {
     const { onNext } = this.props;
     onNext(this.state);
@@ -219,6 +225,12 @@ Area.propTypes = {
   onNext: PropTypes.func.isRequired,
   countyLoading: PropTypes.bool.isRequired,
   counties: PropTypes.arrayOf(PropTypes.object).isRequired,
+  defaultValue: PropTypes.shape({
+    country: PropTypes.string,
+    county: PropTypes.number,
+    municipality: PropTypes.number,
+    locality: PropTypes.number,
+  }).isRequired,
 };
 
 export default compose(withCounties)(Area);

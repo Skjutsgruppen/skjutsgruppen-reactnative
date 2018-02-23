@@ -1,36 +1,51 @@
-import React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import React, { PureComponent } from 'react';
+import { View, Animated } from 'react-native';
 import PropTypes from 'prop-types';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { withNavigation } from 'react-navigation';
 
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    paddingTop: 12,
-    marginTop: 12,
-  },
-});
-
-
-const Container = ({ children, bgColor, ...props }) => (
-  <ScrollView
-    keyboardShouldPersistTaps="handled"
-    style={[styles.wrapper, { backgroundColor: bgColor }]}
-    {...props}
-  >
-    {children}
-  </ScrollView>
+const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
+  KeyboardAwareScrollView,
 );
+
+class Container extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.animatedValue = new Animated.Value(0);
+  }
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ animatedValue: this.animatedValue });
+  }
+
+  render() {
+    const { children, style, navigation, ...rest } = this.props;
+    return (
+      <AnimatedKeyboardAwareScrollView
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        style={[{ flex: 1 }, style]}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])}
+        scrollEventThrottle={5}
+        {...rest}
+      >
+        {children}
+      </AnimatedKeyboardAwareScrollView>
+    );
+  }
+}
 
 Container.propTypes = {
   children: PropTypes.node.isRequired,
-  bgColor: PropTypes.string,
+  style: View.propTypes.style,
+  navigation: PropTypes.shape({
+    setParams: PropTypes.func,
+  }).isRequired,
 };
 
 Container.defaultProps = {
   bgColor: '#fff',
+  style: {},
 };
 
-
-export default Container;
+export default withNavigation(Container);

@@ -160,7 +160,7 @@ class Share extends Component {
   }
 
   render() {
-    const { friends, bestFriends, labelColor } = this.props;
+    const { friends, bestFriends, isOffer } = this.props;
 
     return (
       <View style={styles.wrapper}>
@@ -173,7 +173,7 @@ class Share extends Component {
           </View>
         }
         {!this.isModal() &&
-          <SectionLabel label={trans('global.invite_and_publish')} color={labelColor} />
+          <SectionLabel label={trans('global.invite_and_publish')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
         }
         <View style={styles.searchWrapper}>
           <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
@@ -188,7 +188,7 @@ class Share extends Component {
               readOnly
               selected={this.hasOption('social', 'copy_to_clip')}
               label={trans('global.publish_to_whole_movement')}
-              onPress={() => {}}
+              onPress={() => { }}
             />
           }
           <ShareItem
@@ -256,14 +256,14 @@ Share.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
   }).isRequired,
-  labelColor: PropTypes.string,
+  isOffer: PropTypes.bool,
 };
 
 Share.defaultProps = {
   onClose: () => { },
   modal: false,
   showGroup: true,
-  labelColor: null,
+  isOffer: false,
 };
 
 export default compose(withMyGroups, withBestFriends, withFriends)(Share);
