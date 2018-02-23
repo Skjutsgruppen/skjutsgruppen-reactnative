@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
@@ -72,7 +72,7 @@ AppNotification.propTypes = {
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string,
   message: PropTypes.string.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   handleClose: PropTypes.func,
 };
 

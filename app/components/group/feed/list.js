@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Modal, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Item from '@components/group/feed/item';
@@ -92,9 +92,9 @@ class GroupFeed extends Component {
     super(props);
     this.state = ({
       loading: false,
-      modalDetail: {},
-      modalType: '',
-      isOpen: false,
+      shareable: {},
+      shareableType: '',
+      showShareModal: false,
       showFoFModal: false,
       friendsData: [],
       isLongPressModalOpen: false,
@@ -138,21 +138,6 @@ class GroupFeed extends Component {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
-
-  onSharePress = (modalType, modalDetail) => {
-    this.setState({ isOpen: true, modalType, modalDetail });
-  };
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
-  }
-
 
   setModalVisibility = (show, friendsData) => {
     this.setState({ showFoFModal: show, friendsData });
@@ -236,20 +221,19 @@ class GroupFeed extends Component {
   }
 
   renderShareModal() {
+    const { showShareModal, shareable, shareableType } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup={this.state.modalType !== 'group'}
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={shareableType}
+          detail={shareable}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -265,7 +249,8 @@ class GroupFeed extends Component {
           renderItem={({ item }) => (
             <Item
               onPress={this.onPress}
-              onSharePress={this.onSharePress}
+              onSharePress={(shareableType, shareable) =>
+                this.setState({ showShareModal: true, shareableType, shareable })}
               groupFeed={item}
               setModalVisibility={this.setModalVisibility}
               onCommentLongPress={this.onCommentLongPress}
@@ -295,7 +280,6 @@ class GroupFeed extends Component {
 
 GroupFeed.propTypes = {
   isAdmin: PropTypes.bool,
-  share: PropTypes.func.isRequired,
   groupId: PropTypes.number.isRequired,
   groupFeed: PropTypes.shape({
     loading: PropTypes.boolean,

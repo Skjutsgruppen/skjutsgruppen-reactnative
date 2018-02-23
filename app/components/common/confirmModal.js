@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Modal } from 'react-native';
+import { StyleSheet, View, Text, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading, GhostButton } from '@components/common';
 import Colors from '@theme/colors';
@@ -87,7 +87,7 @@ const ConfirmModal = ({
 
 ConfirmModal.propTypes = {
   loading: PropTypes.bool.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   visible: PropTypes.bool,
   message: PropTypes.node.isRequired,
   onRequestClose: PropTypes.func.isRequired,

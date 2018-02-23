@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 
@@ -28,7 +28,7 @@ const Container = ({ children, style }) => (
 
 Container.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 Container.defaultProps = {

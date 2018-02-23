@@ -6,6 +6,7 @@ import PlaceInput from '@components/search/place/placeInput';
 import Colors from '@theme/colors';
 import Radio from '@components/add/radio';
 import SectionLabel from '@components/add/sectionLabel';
+import _pullAt from 'lodash/pullAt';
 
 import DragIcon from '@assets/icons/ic_drag.png';
 import AddIcon from '@assets/icons/ic_add_pink.png';
@@ -196,11 +197,9 @@ class Route extends PureComponent {
     this.setState({ isReturning });
   };
 
-  removeStop = (count) => {
+  removeStop = (key) => {
     const { stops, stopsCount } = this.state;
-
-    delete stops[count];
-
+    _pullAt(stops, key);
     this.setState({ stops, stopsCount: stopsCount - 1 });
   }
 
@@ -255,8 +254,8 @@ class Route extends PureComponent {
       <View style={styles.wrapper}>
         <SectionLabel label="From" color={isOffer ? Colors.text.pink : Colors.text.blue} />
         <PlaceInput
-          placeholder="From"
-          label="To"
+          placeholder="Start here"
+          label="From"
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('start')}
           defaultValue={start}

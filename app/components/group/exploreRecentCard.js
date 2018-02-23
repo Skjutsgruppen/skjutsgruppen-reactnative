@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ViewPropTypes } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { trans } from '@lang/i18n';
 import { Colors, Gradients } from '@theme';
@@ -119,7 +119,7 @@ class ExploreRecentGroup extends PureComponent {
 }
 
 ExploreRecentGroup.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   exploreGroups: PropTypes.shape({
     count: PropTypes.number.isRequired,
     rows: PropTypes.arrayOf(PropTypes.shape()),

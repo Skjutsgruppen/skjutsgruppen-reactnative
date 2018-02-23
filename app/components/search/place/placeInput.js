@@ -74,6 +74,10 @@ class PlacesInput extends PureComponent {
     this.setState({ place: defaultValue });
   }
 
+  componentWillReceiveProps({ defaultValue }) {
+    this.setState({ place: defaultValue });
+  }
+
   onPress = ({ place, source }) => {
     this.setState({ place, showModal: false }, () => {
       this.props.onChangeText({ place, source });

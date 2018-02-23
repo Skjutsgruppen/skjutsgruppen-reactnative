@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import RelationModal from '@components/relationModal';
 import RelationBubbleList from '@components/relationBubbleList';
@@ -65,7 +65,7 @@ Relation.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   avatarSize: PropTypes.number,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 Relation.defaultProps = {
