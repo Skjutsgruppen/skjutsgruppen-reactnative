@@ -184,20 +184,23 @@ class FOF extends PureComponent {
     );
   }
 
-  bundledName = row => row.map((user) => {
-    const { navigation } = this.props;
+  bundledName = (row) => {
+    const name = row.map((user, index) => {
+      const { navigation } = this.props;
+      return ([
+        <Text
+          key={user.id}
+          onPress={() => navigation.navigate('Profile', { profileId: user.id })}
+          style={styles.username}
+        >
+          {user.firstName}
+        </Text>,
+        (index < (row.length - 1)) ? ' and ' : '',
+      ]);
+    });
 
-    return ([
-      <Text
-        key={user.id}
-        onPress={() => navigation.navigate('Profile', { profileId: user.id })}
-        style={styles.username}
-      >
-        {user.firstName}
-      </Text>,
-      ' who knows ',
-    ]);
-  });
+    return ([name, ' who knows ']);
+  }
 
   detail = () => {
     const { relation, viewee, navigation } = this.props;
@@ -256,6 +259,7 @@ class FOF extends PureComponent {
           key={item[1].id}
           onPress={() => navigation.navigate('Profile', { profileId: item[1].id })}
           underlayColor={Colors.background.mutedBlue}
+          style={styles.shifted}
         >
           <Image source={{ uri: item[1].avatar }} style={styles.bunddledAvatar} />
         </TouchableHighlight>,

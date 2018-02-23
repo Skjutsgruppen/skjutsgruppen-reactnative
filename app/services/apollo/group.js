@@ -68,6 +68,8 @@ mutation group
       totalParticipants
       isAdmin
       url
+      muted
+      unreadNotificationCount
     }
 }
 `;
@@ -326,6 +328,8 @@ query group($id: Int!){
       membershipStatus
       totalParticipants
       isAdmin
+      muted
+      unreadNotificationCount
   }
 }
 `;
@@ -757,6 +761,8 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
       membershipStatus
       totalParticipants
       isAdmin
+      muted
+      unreadNotificationCount
     }
     count
   }
@@ -876,6 +882,8 @@ const GROUP_TRIPS_QUERY = gql`
       totalFeeds
       isParticipant
       seats
+      muted
+      unreadNotificationCount
     }
   }
 `;

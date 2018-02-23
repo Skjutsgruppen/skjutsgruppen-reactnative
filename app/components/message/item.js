@@ -18,6 +18,7 @@ import {
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
   NOTIFICATION_CHARACTER_COUNT,
   NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
+  NOTIFICATION_TYPE_FRIEND_JOINED_MOVEMENT,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -170,8 +171,8 @@ class Item extends PureComponent {
               {this.renderPic([Notifiers[0].avatar])}
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[filters === 'new' && styles.bold]}>{Notifiers[0].firstName} </Text>
-              <Text style={[filters === 'new' && styles.bold]}>
+              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiers[0].firstName} </Text>
+              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>
                 wants to be your friend.
               </Text>
             </View>
@@ -197,11 +198,8 @@ class Item extends PureComponent {
               {this.renderPic([User.avatar])}
             </View>
             <View style={{ flex: 1 }}>
-              <Text onPress={() => this.redirect(id, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]}>{User.firstName} </Text>
-              <Text style={[filters === 'new' && styles.bold]}>
-                wants to participate in your group
-                <Text> {Notifiable.Group.name} </Text>
-              </Text>
+              <Text onPress={() => this.redirect(id, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiable.Group.name}</Text>
+              <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>Participation request</Text>
             </View>
           </View>
           {this.state.loading ?
@@ -217,7 +215,7 @@ class Item extends PureComponent {
     );
   }
 
-  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date }) => {
+  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date, ellipsize = true }) => {
     const { filters } = this.props;
 
     return (
@@ -234,11 +232,17 @@ class Item extends PureComponent {
             <View style={[{ flex: 1 }]}>
               {
                 user &&
-                <Text style={[filters === 'new' && styles.bold]}>{user}</Text>
+                <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{user}</Text>
               }
-              <Text style={[filters === 'new' && styles.bold]}>
-                {text}
-              </Text>
+              {
+                ellipsize ?
+                  (<Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>
+                    {text}
+                  </Text>) :
+                  (<Text style={[filters === 'new' && styles.bold]}>
+                    {text}
+                  </Text>)
+              }
             </View>
           </View>
           <View>
@@ -291,8 +295,9 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         photo: [Notifiers[0].avatar],
-        text: `${trans('message.you_and')} ${Notifiers[0].firstName} ${trans('message.are_now_friends')}`,
+        text: `${trans('message.you_and')} ${Notifiers[0].firstName}\n${trans('message.are_now_friends')}`,
         date: createdAt,
+        ellipsize: false,
         onPress: () => this.redirect(id, 'Profile', { profileId: Notifiers[0].id }),
       });
     }
@@ -493,7 +498,7 @@ class Item extends PureComponent {
 
   tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
     const route = 'TripDetail';
-    const params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: 'Bundled notifications' };
+    const params = { trip: Notifiable };
     const plus = Notifiers.length - 1;
 
     return this.item({
@@ -510,16 +515,30 @@ class Item extends PureComponent {
 
   groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
     const route = 'GroupDetail';
-    const params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Bundled notifications' };
+    const params = { group: Notifiable };
     const plus = Notifiers.length - 1;
 
     return this.item({
       userId: Notifiers[0],
-      user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+      user: `${Notifiable.name}`,
       photo: (plus > 0) ?
         [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
         [Notifiers[plus].avatar],
-      text: `${Notifiable.name}`,
+      text: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+      date: createdAt,
+      onPress: () => this.redirect(id, route, params),
+    });
+  }
+
+  friendJoinedMovement = ({ Notifiers, createdAt, id }) => {
+    const route = 'Profile';
+    const params = { profileId: Notifiers[0].id };
+
+    return this.item({
+      userId: Notifiers[0].id,
+      user: `${Notifiers[0].firstName}`,
+      photo: [Notifiers[0].avatar],
+      text: 'just joined the movement',
       date: createdAt,
       onPress: () => this.redirect(id, route, params),
     });
@@ -661,6 +680,10 @@ class Item extends PureComponent {
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED) {
       message = this.experiencePublished(notification);
+    }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_JOINED_MOVEMENT) {
+      message = this.friendJoinedMovement(notification);
     }
 
     return (

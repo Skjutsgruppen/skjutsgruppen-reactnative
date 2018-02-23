@@ -493,6 +493,8 @@ query trip($id: Int!){
     duration
     experienceStatus
     isAdmin    
+    muted
+    unreadNotificationCount
     flexibilityInfo {
       duration
       unit
@@ -674,6 +676,8 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       Participants{
         count
       }
+      muted
+      unreadNotificationCount
     }
     count
   }
