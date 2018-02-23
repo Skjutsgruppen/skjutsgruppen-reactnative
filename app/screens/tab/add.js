@@ -56,7 +56,7 @@ class Add extends Component {
           <Starter
             onPress={() => this.redirect('Ask')}
             label="Ask for a ride"
-            info="5 steps"
+            info="4 steps"
           />
           <Starter
             onPress={() => this.redirect('Group')}

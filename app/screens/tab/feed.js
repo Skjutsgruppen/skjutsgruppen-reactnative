@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
 
 class Feed extends Component {
   static navigationOptions = {
-    header: null,
     tabBarLabel: 'Feed',
     tabBarIcon: ({ focused }) => <Image source={focused ? FeedIconActive : FeedIcon} />,
     tabBarOnPress: ({ scene, jumpToIndex }) => {

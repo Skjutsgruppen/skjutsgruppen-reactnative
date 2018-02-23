@@ -22,23 +22,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const CommentBox = ({ label, style, inputStyle, value, onChangeText, labelColor, ...props }) => (
-  <View style={[styles.wrapper, style]}>
-    <Text style={[styles.label, GlobalStyles.TextStyles.bold, { color: labelColor }]}>
-      {label}
-    </Text>
-    <TextInput
-      style={[styles.textarea, inputStyle]}
-      multiline
-      placeholder="Write"
-      numberOfLines={4}
-      onChangeText={onChangeText}
-      underlineColorAndroid="transparent"
-      defaultValue={value}
-      {...props}
-    />
-  </View>
-);
+const CommentBox = (
+  { label, style, inputStyle, value, onChangeText, showTextCount, labelColor, ...props },
+) =>
+  (
+    <View style={[styles.wrapper, style]}>
+      <Text style={[styles.label, GlobalStyles.TextStyles.bold, { color: labelColor }]}>
+        {label}
+      </Text>
+      <TextInput
+        style={[styles.textarea, inputStyle]}
+        multiline
+        placeholder="Write"
+        numberOfLines={4}
+        onChangeText={onChangeText}
+        underlineColorAndroid="transparent"
+        defaultValue={value}
+        {...props}
+      />
+      {showTextCount && <Text style={{ color: Colors.text.gray, textAlign: 'right', paddingHorizontal: 20 }}>{value.length}/22</Text>}
+    </View>
+  );
 
 CommentBox.propTypes = {
   label: PropTypes.string.isRequired,
@@ -48,6 +52,7 @@ CommentBox.propTypes = {
   value: PropTypes.string,
   onChangeText: PropTypes.func.isRequired,
   labelColor: PropTypes.string,
+  showTextCount: PropTypes.bool,
 };
 CommentBox.defaultProps = {
   info: null,
@@ -55,6 +60,7 @@ CommentBox.defaultProps = {
   inputStyle: {},
   value: '',
   labelColor: Colors.text.pink,
+  showTextCount: false,
 };
 
 export default CommentBox;

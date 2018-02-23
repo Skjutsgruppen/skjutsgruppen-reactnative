@@ -4,28 +4,22 @@ import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   toastSuccess: {
-    paddingVertical: 18,
+    paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 4,
     backgroundColor: 'rgba(43, 156, 72, 0.7)',
-    marginBottom: 24,
-    marginHorizontal: 16,
   },
   toastError: {
-    paddingVertical: 18,
+    paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 4,
     backgroundColor: 'rgba(173, 43, 43, 0.7)',
-    marginBottom: 24,
-    marginHorizontal: 16,
   },
   toastWarning: {
-    paddingVertical: 18,
+    paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 4,
     backgroundColor: 'rgba(173, 97, 43, 0.6)',
-    marginBottom: 24,
-    marginHorizontal: 16,
   },
   msg: {
     color: '#fff',

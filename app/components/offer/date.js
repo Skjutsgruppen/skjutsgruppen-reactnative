@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { FLEXIBILITY_UNITS, FLEXIBILITY_TYPES } from '@config/constant';
-
+import TimePicker from '@components/utils/timePicker';
 import { GlobalStyles } from '@theme/styles';
 
 import SectionLabel from '@components/add/sectionLabel';
@@ -67,9 +67,9 @@ class Date extends Component {
     super(props);
     this.state = {
       markedDates: {},
-      dates: [],
+      days: [],
+      time: '00:00',
       isFlexible: false,
-      flexible: '00 minutes later',
       flexibilityInfo: {
         duration: 0,
         unit: 'minutes',
@@ -79,26 +79,27 @@ class Date extends Component {
   }
 
   componentWillMount() {
-    const { defaultTime: time, defaultFlexibilityInfo: flexibilityInfo } = this.props;
-    this.setState({ time, flexibilityInfo });
+    const { defaultValue } = this.props;
+    this.setState(defaultValue);
   }
 
   onNext = () => {
     const { onNext } = this.props;
     const state = this.state;
     const markedDates = { ...state.markedDates };
-    const dates = [];
+    const days = [];
 
     Object.keys(markedDates).forEach((day) => {
-      dates.push(day);
+      days.push(day);
     });
 
-    state.dates = dates;
+    state.days = days;
     onNext(state);
   };
 
   onSelectDay = (date) => {
     const { markedDates } = this.state;
+    const { isOffer } = this.props;
     const selectedDate = date.dateString;
 
     const newDates = { ...markedDates };
@@ -106,29 +107,15 @@ class Date extends Component {
       delete newDates[selectedDate];
       this.setState({ markedDates: newDates });
     } else {
-      newDates[selectedDate] = { startingDay: true, textColor: 'white', color: Colors.background.pink, endingDay: true };
+      newDates[selectedDate] = { startingDay: true, textColor: 'white', color: isOffer ? Colors.text.pink : Colors.text.blue, endingDay: true };
       this.setState({ markedDates: newDates });
     }
   };
 
-  setTime = (input, type) => {
-    const { time } = this.state;
-    let [h, m] = time.split(':');
-    if (type === 'hour') {
-      h = input;
-    }
-
-    if (type === 'minute') {
-      m = input;
-    }
-
-    this.setState({ time: `${h}:${m}` });
-  };
-
-
   setDuration = (duration) => {
     const { flexibilityInfo } = this.state;
     flexibilityInfo.duration = parseInt(duration, 10);
+
     this.setState({ flexibilityInfo });
   }
 
@@ -144,12 +131,6 @@ class Date extends Component {
     flexibilityInfo.type = type;
 
     this.setState({ flexibilityInfo });
-  }
-
-  handleFlexibilityChange = (flexibility) => {
-    this.setState({
-      isFlexible: flexibility,
-    });
   }
 
   renderHoursOptions = () => {
@@ -208,11 +189,10 @@ class Date extends Component {
 
   render() {
     const { time, isFlexible, flexibilityInfo } = this.state;
-    const [h, m] = time.split(':');
-
+    const { isOffer } = this.props;
     return (
       <View style={styles.wrapper}>
-        <SectionLabel label="Date" />
+        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Date" />
         <Calendar
           firstDay={1}
           onDayPress={this.onSelectDay}
@@ -222,43 +202,30 @@ class Date extends Component {
           hideExtraDays
         />
         <View style={styles.section}>
-          <SectionLabel label="Is this a recurring ride?" />
+          <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Is this a recurring ride?" />
           <Text style={[GlobalStyles.TextStyles.light, styles.info]}>
             Place more balls in the calendar if you are doing this ride again
             (and click on the balls to remove them as well).</Text>
         </View>
-        <SectionLabel label="Time" />
+        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Time" />
         <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <Picker
-              mode="dropdown"
-              onValueChange={e => this.setTime(e, 'hour')}
-              selectedValue={h}
-            >
-              <Picker.Item
-                label={'Hour'}
-                value={'00'}
-              />
-              {this.renderHoursOptions()}
-            </Picker>
-          </View>
-          <View style={styles.inputWrapper}>
-            <Picker
-              mode="dropdown"
-              onValueChange={e => this.setTime(e, 'minute')}
-              selectedValue={m}
-            >
-              <Picker.Item
-                label={'Minute'}
-                value={'00'}
-              />
-              {this.renderMinutesOptions('minute')}
-            </Picker>
+          <View style={[styles.inputWrapper, { paddingLeft: 20, height: 60 }]}>
+            <TimePicker defaultTime={time} onChange={value => this.setState({ time: value })} />
           </View>
         </View>
         <View style={styles.radioRow}>
-          <Radio active={!isFlexible} label="Exact time" onPress={() => this.handleFlexibilityChange(false)} />
-          <Radio active={isFlexible} label="Flexible time" onPress={() => this.handleFlexibilityChange(true)} />
+          <Radio
+            active={!isFlexible}
+            label="Exact time"
+            onPress={() => this.setState({ isFlexible: false })}
+            color={isOffer ? 'pink' : 'blue'}
+          />
+          <Radio
+            active={isFlexible}
+            label="Flexible time"
+            onPress={() => this.setState({ isFlexible: true })}
+            color={isOffer ? 'pink' : 'blue'}
+          />
         </View>
         {
           isFlexible &&
@@ -297,7 +264,7 @@ class Date extends Component {
         }
         <RoundedButton
           onPress={this.onNext}
-          bgColor={Colors.background.pink}
+          bgColor={Colors.text.pink}
           style={styles.button}
         >
           Next
@@ -309,21 +276,20 @@ class Date extends Component {
 
 Date.propTypes = {
   onNext: PropTypes.func.isRequired,
-  defaultTime: PropTypes.string,
-  defaultFlexibilityInfo: PropTypes.shape({
-    duration: PropTypes.number,
-    type: PropTypes.string,
-    unit: PropTypes.string,
-  }),
+  defaultValue: PropTypes.shape({
+    time: PropTypes.string,
+    days: PropTypes.array,
+    flexibilityInfo: PropTypes.shape({
+      duration: PropTypes.number,
+      type: PropTypes.string,
+      unit: PropTypes.string,
+    }),
+  }).isRequired,
+  isOffer: PropTypes.bool,
 };
 
 Date.defaultProps = {
-  defaultTime: '00:00',
-  defaultFlexibilityInfo: {
-    duration: 0,
-    type: 'minutes',
-    unit: 'later',
-  },
+  isOffer: false,
 };
 
 export default Date;

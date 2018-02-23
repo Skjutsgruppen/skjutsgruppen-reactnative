@@ -1,25 +1,35 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, Clipboard } from 'react-native';
-import PropTypes from 'prop-types';
-import Description from '@components/ask/description';
-import Trip from '@components/offer/trip';
-import Date from '@components/ask/date';
-import Share from '@components/common/share';
-import Completed from '@components/common/completed';
+import { StyleSheet, View, Text, Image, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { Loading, Wrapper, Container, FloatingNavbar, ProgressBar } from '@components/common';
+import PropTypes from 'prop-types';
+import Description from '@components/offer/description';
+import Route from '@components/offer/route';
+import Date from '@components/offer/date';
+import Share from '@components/common/share';
+import Completed from '@components/common/completed';
+import { Loading, Wrapper, ProgressBar, Container } from '@components/common';
+import { withCreateTrip } from '@services/apollo/trip';
+import CustomButton from '@components/common/customButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import CustomButton from '@components/common/customButton';
-import { withCreateTrip } from '@services/apollo/trip';
-import Colors from '@theme/colors';
+import { Colors } from '@theme';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
 import { FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
+import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
+import _reverse from 'lodash/reverse';
+import ToolBar from '@components/utils/toolbar';
 
 const styles = StyleSheet.create({
+  mainTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1ca9e5',
+    margin: 12,
+    textAlign: 'center',
+  },
   progress: {
     paddingHorizontal: 20,
   },
@@ -27,9 +37,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   returnHeader: {
-    marginTop: 70,
     paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingVertical: 16,
   },
   returnIcon: {
     width: 50,
@@ -44,12 +53,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
-  mainTitle: {
+  title: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1ca9e5',
-    margin: 12,
-    textAlign: 'center',
+    color: '#ffffff',
+    paddingHorizontal: 10,
+    paddingTop: 20,
   },
 });
 
@@ -60,11 +69,14 @@ class Ask extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       isReturnedTrip: false,
       parentId: null,
-      defaultTrip: {
+      description: {
+        text: '',
+        photo: null,
+      },
+      route: {
         start: {
           name: '',
           countryCode: '',
@@ -75,161 +87,199 @@ class Ask extends Component {
           countryCode: '',
           coordinates: [],
         },
-        dates: [],
+        stops: [
+          {
+            name: '',
+            countryCode: '',
+            coordinates: [],
+          },
+        ],
+        isReturning: true,
+      },
+      date: {
+        days: [],
         time: '00:00',
-        description: {
-          text: '',
-          photo: null,
-        },
         flexibilityInfo: {
           duration: 0,
-          unit: 'minute',
+          unit: 'minutes',
           type: 'later',
         },
       },
-      description: {},
-      trip: {},
-      dates: [],
       share: {},
       activeStep: 1,
-      disabledTabs: [2, 3, 4],
-      completedTabs: [],
       loading: false,
-      ask: {},
+      trip: {},
       error: '',
     };
   }
 
   componentWillMount() {
     const { params } = this.props.navigation.state;
+
     if (params && typeof params.isReturnedTrip !== 'undefined') {
+      const { parentId, trip } = params;
+      const { description, route, date } = trip;
+
       this.setState({
         isReturnedTrip: true,
-        parentId: params.parentId,
-        defaultTrip: {
-          start: params.defaultTrip.start,
-          end: params.defaultTrip.end,
-          dates: params.defaultTrip.dates,
-          description: params.defaultTrip.description,
-          time: params.defaultTrip.time,
-          flexibilityInfo: params.defaultTrip.flexibilityInfo,
+        returnText: `${route.end.name} on ${date.days.join(', ')}`,
+        parentId,
+        description,
+        route: {
+          start: route.end,
+          end: route.start,
+          stops: _reverse(route.stops),
+          isReturning: route.isReturning,
+        },
+        date: {
+          days: [],
+          time: date.time,
+          flexibilityInfo: date.flexibilityInfo,
         },
       });
     }
+    this.container = null;
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { activeStep, loading } = this.state;
+    const { navigation } = this.props;
+
+    if (activeStep === 1) {
+      Alert.alert(
+        '',
+        'Are you sure You want to exit this screen?',
+        [
+          { text: 'Cancel', onPress: () => { }, style: 'cancel' },
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ],
+        { cancelable: true },
+      );
+      return true;
+    }
+
+    if (activeStep === 5) {
+      return loading;
+    }
+
+    if (activeStep > 1) {
+      this.setState({ activeStep: activeStep - 1 }, this.scrollToTop);
+      return true;
+    }
+
+    return false;
+  };
 
   onDescriptionNext = (description) => {
     if (description.text === '') {
-      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(1);
-      delete disabledTabs[disabledTabs.indexOf(1)];
-      this.setState({ description, completedTabs, disabledTabs, activeStep: 2, error: '' });
+      this.setState({ description, activeStep: 2, error: '' }, this.scrollToTop);
     }
-  }
+  };
 
-  onTripNext = (trip) => {
-    if (trip.start.coordinates.length === 0) {
-      this.setState({ error: getToast(['FROM_REQUIRED']) });
-    } else if (trip.end.coordinates.length === 0) {
-      this.setState({ error: getToast(['TO_REQUIRED']) });
+  onRouteNext = (route) => {
+    if (route.start.coordinates.length === 0) {
+      this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
+    } else if (route.end.coordinates.length === 0) {
+      this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(3);
-      delete disabledTabs[disabledTabs.indexOf(2)];
-      this.setState({ trip, completedTabs, disabledTabs, activeStep: 3, error: '' });
+      this.setState({ route, activeStep: 3, error: '' }, this.scrollToTop);
     }
-  }
+  };
 
   onDateNext = (date) => {
-    if (date.dates.length < 1) {
-      this.setState({ error: getToast(['DATE_REQUIRED']) });
+    if (date.days.length < 1) {
+      this.setState({ error: getToast(['DATE_REQUIRED']) }, this.scrollToTop);
     } else if (date.time === '00:00') {
-      this.setState({ error: getToast(['TIME_REQUIRED']) });
+      this.setState({ error: getToast(['TIME_REQUIRED']) }, this.scrollToTop);
+    } else if (!this.isValidDateTime(date)) {
+      this.setState({ error: getToast(['INVALID_TIME']) }, this.scrollToTop);
     } else {
-      const { completedTabs, disabledTabs } = this.state;
-      completedTabs.push(4);
-      delete disabledTabs[disabledTabs.indexOf(3)];
-      this.setState({ date, completedTabs, disabledTabs, activeStep: 4, error: '' });
+      this.setState({ date, activeStep: 4, error: '' }, this.scrollToTop);
     }
   }
 
   onShareAndPublishNext = (share) => {
-    const { completedTabs, disabledTabs } = this.state;
-    completedTabs.push(5);
-    delete disabledTabs[disabledTabs.indexOf(5)];
-    this.setState(
-      {
-        share,
-        completedTabs,
-        disabledTabs,
-        activeStep: 5,
-        loading: true,
-      },
-      this.createTrip,
+    this.setState({
+      share,
+      activeStep: 5,
+      loading: true,
+    }, this.createTrip,
     );
   };
 
-  onButtonPress = () => {
-    const { navigate } = this.props.navigation;
-    navigate('Feed', { refetch: true });
-  };
-
   onMakeReturnRide = () => {
-    const { navigate } = this.props.navigation;
-    if (this.state.trip.isReturning) {
-      navigate('Ask', {
-        isReturnedTrip: true,
-        parentId: this.state.ask.id,
-        defaultTrip: {
-          end: this.state.trip.start,
-          start: this.state.trip.end,
-          dates: this.state.date.dates,
-          description: this.state.description,
-          time: this.state.date.time,
-          flexibilityInfo: this.state.date.flexibilityInfo,
-        },
-      });
-    } else {
-      navigate('Feed', { refetch: true });
+    const { navigation } = this.props;
+    const { description, route, date, trip } = this.state;
+    navigation.replace('Ask', {
+      isReturnedTrip: true,
+      parentId: trip.id,
+      trip: { description, route, date },
+    });
+  }
+
+  isValidDateTime = (date) => {
+    if (
+      date.days.length === 1
+      && isToday(date.days[0])
+      && !isFuture(`${date.days[0]} ${date.time}`)
+    ) {
+      return false;
     }
+
+    return true;
+  }
+
+  scrollToTop = () => {
+    Keyboard.dismiss();
+    setTimeout(() => {
+      this.container.scrollTo({ x: 0, y: 0, animated: true });
+    }, 0);
   }
 
   createTrip() {
-    const { description, trip, date, share, parentId } = this.state;
+    const { description, route, date, share, parentId } = this.state;
     let utcTime = '';
     const dates = [];
 
-    date.dates.forEach((tripDate) => {
+    date.days.forEach((tripDate) => {
       const dateTime = this.convertToGMT(tripDate, date.time).split(' ');
       utcTime = dateTime[1];
       dates.push(dateTime[0]);
     });
 
-    const rideData = {
+    const tripData = {
       parentId,
       description: description.text,
       photo: description.photo,
-      tripStart: trip.start,
-      tripEnd: trip.end,
-      returnTrip: trip.isReturning || trip.isReturnTrip,
+      tripStart: route.start,
+      tripEnd: route.end,
+      stops: null,
+      returnTrip: route.isReturning,
       dates,
       time: utcTime,
       flexibilityInfo: date.flexibilityInfo,
-      share,
-      stops: null,
       seats: 0,
+      share,
       type: FEED_TYPE_WANTED,
     };
 
     try {
-      this.props.createTrip(rideData).then((res) => {
+      this.props.createTrip(tripData).then((res) => {
         if (share.social.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
 
-        this.setState({ loading: false, ask: res.data.createTrip });
+        this.setState({ loading: false, trip: res.data.createTrip });
       });
     } catch (error) {
       console.warn(error);
@@ -238,24 +288,25 @@ class Ask extends Component {
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
-  header() {
-    const { isReturnedTrip } = this.state;
+  renderReturnRideText() {
+    const { isReturnedTrip, returnText } = this.state;
     if (isReturnedTrip) {
       return (
         <View style={styles.returnHeader}>
           <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
           <Text style={styles.mainTitle}>Return ride</Text>
           <Text style={styles.returnText}>
-            Return ride of your asked ride to {this.state.defaultTrip.end.name} on {this.state.defaultTrip.dates.join(', ')}
+            Return ride of your asked ride to {returnText}
           </Text>
         </View>
       );
     }
+
     return null;
   }
 
   renderFinish() {
-    const { loading, ask, error, trip } = this.state;
+    const { loading, trip, error, route, isReturnedTrip } = this.state;
 
     if (loading) {
       return (
@@ -278,11 +329,36 @@ class Ask extends Component {
 
     return (
       <Completed
-        detail={ask}
+        detail={trip}
         type={FEEDABLE_TRIP}
-        isReturnedTrip={trip.isReturning}
+        isReturnedTrip={isReturnedTrip ? false : route.isReturning}
         onMakeReturnRide={this.onMakeReturnRide}
       />
+    );
+  }
+
+
+  renderProgress = () => {
+    const { activeStep } = this.state;
+    const progressAmount = (activeStep / 5) * 100;
+    if (activeStep > 4) {
+      return null;
+    }
+
+    return (
+      <View style={styles.progress}>
+        <ProgressBar amount={progressAmount} color={Colors.background.blue} />
+        <Text style={[
+          styles.stepsCount,
+          GlobalStyles.TextStyles.bold,
+          GlobalStyles.TextStyles.light,
+          activeStep === 4 ? GlobalStyles.TextStyles.blue : {},
+        ]}
+        >
+          <Text style={GlobalStyles.TextStyles.blue}>Step {activeStep}</Text> of 4
+          {activeStep === 4 && <Text>, well done!</Text>}
+        </Text>
+      </View>
     );
   }
 
@@ -290,57 +366,39 @@ class Ask extends Component {
     const {
       activeStep,
       isReturnedTrip,
-      defaultTrip,
+      description,
+      route,
+      date,
       error,
     } = this.state;
-    const { navigation } = this.props;
-    const progressAmount = (activeStep / 6) * 100;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <FloatingNavbar
-          handleBack={() => navigation.goBack()}
+        <ToolBar
           title="Ask for a ride"
-          transparent={false}
+          onBack={this.onBackButtonPress}
         />
-        <Container bgColor="transparent">
-          {this.header()}
+        <Toast message={error} type="error" />
+        <Container
+          innerRef={(ref) => { this.container = ref; }}
+          style={{ backgroundColor: 'transparent' }}
+        >
+          {this.renderReturnRideText()}
+          {this.renderProgress()}
           {
-            this.state.activeStep <= 4 &&
-            <View style={styles.progress}>
-              <ProgressBar amount={progressAmount} color={Colors.background.blue} />
-              <Text style={[
-                styles.stepsCount,
-                GlobalStyles.TextStyles.bold,
-                GlobalStyles.TextStyles.light,
-                activeStep === 4 ? GlobalStyles.TextStyles.blue : {},
-              ]}
-              >
-                <Text style={GlobalStyles.TextStyles.blue}>Step {activeStep}</Text> of 4
-                {activeStep === 4 && <Text>, well done!</Text>}
-              </Text>
-            </View>
+            (activeStep === 1) &&
+            <Description defaultValue={description} onNext={this.onDescriptionNext} />
           }
-          <Toast message={error} type="error" />
-          {(activeStep === 1) && <Description
-            onNext={this.onDescriptionNext}
-            defaultDescription={defaultTrip.description}
-          />}
-          {(activeStep === 2) && <Trip
-            isReturnTrip={isReturnedTrip}
-            start={defaultTrip.start}
-            end={defaultTrip.end}
-            onNext={this.onTripNext}
-          />}
-          {(activeStep === 3) && <Date
-            onNext={this.onDateNext}
-            defaultTime={defaultTrip.time}
-            defaultFlexibilityInfo={defaultTrip.flexibilityInfo}
-          />}
-          {(activeStep === 4) && <Share
-            onNext={this.onShareAndPublishNext}
-            labelColor={Colors.text.blue}
-          />}
+          {
+            (activeStep === 2) &&
+            <Route
+              defaultValue={route}
+              hideReturnTripOption={isReturnedTrip}
+              onNext={this.onRouteNext}
+            />
+          }
+          {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
+          {(activeStep === 4) && <Share onNext={this.onShareAndPublishNext} />}
           {(activeStep === 5) && this.renderFinish()}
         </Container>
       </Wrapper>

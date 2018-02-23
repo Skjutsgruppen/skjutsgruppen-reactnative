@@ -11,7 +11,8 @@ import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: 75,
+    marginTop: 20,
+    marginBottom: 75,
   },
   title: {
     fontSize: 16,

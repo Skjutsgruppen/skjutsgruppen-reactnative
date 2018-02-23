@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { BackHandler } from 'react-native';
+import { BackHandler, ToastAndroid, Platform } from 'react-native';
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import { AppNavigator } from '@routes/routeProvider';
 import {
@@ -10,12 +10,21 @@ import {
 } from 'react-navigation-redux-helpers';
 
 class Router extends Component {
+  constructor(props) {
+    super(props);
+    this.lastBackButtonPress = null;
+  }
+
   componentWillMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
   }
 
   shouldCloseApp = (nav) => {
@@ -25,7 +34,14 @@ class Router extends Component {
       return nav.routes.every(this.shouldCloseApp);
     }
 
-    return true;
+    if (this.lastBackButtonPress + 3000 >= new Date().getTime()) {
+      BackHandler.exitApp();
+      return true;
+    }
+
+    ToastAndroid.show('Press back button again to exit app.', ToastAndroid.SHORT);
+    this.lastBackButtonPress = new Date().getTime();
+    return false;
   };
 
   goBack = () => this.props.dispatch(NavigationActions.back());
@@ -53,7 +69,6 @@ class Router extends Component {
     return (
       <AppNavigator
         navigation={navigation}
-        screenProps={{ feed: { filterType: FEED_FILTER_EVERYTHING } }}
       />
     );
   }
