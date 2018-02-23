@@ -134,6 +134,7 @@ GroupDetail.defaultProps = {
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  subscribeToGroup: PropTypes.func.isRequired,
 };
 
 

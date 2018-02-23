@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
+
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withFriends, withBestFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
@@ -14,10 +15,11 @@ import ShareItem from '@components/common/shareItem';
 import { connect } from 'react-redux';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE } from '@config/constant';
 import SendSMS from 'react-native-sms';
-import { withShare } from '@services/apollo/share';
+import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
+import { FEEDABLE_LOCATION } from '../../config/constant';
 
 const styles = StyleSheet.create({
   list: {
@@ -112,8 +114,10 @@ class Share extends Component {
       selectedFriends: [],
       selectedContacts: [],
       selectedGroups: [],
+      selectedTripParticipants: [],
       friendsList: [],
       friendsListSearch: [],
+      participantsList: [],
       contactsList: [],
       contactsListSearch: [],
       searchQuery: '',
@@ -122,7 +126,8 @@ class Share extends Component {
   }
 
   componentWillMount() {
-    const { friends, defaultValue: { offeredUser, groups, friends: defaultFriends } } = this.props;
+    const { friends,
+      defaultValue: { offeredUser, groups, friends: defaultFriends }, detail, user } = this.props;
     const { friendsList } = this.state;
 
     if (friends && !friends.loading) {
@@ -141,7 +146,11 @@ class Share extends Component {
       this.setState({ selectedGroups: groups.map(id => id) });
     }
 
-    this.setState({ friendsList });
+    this.setState({
+      participantsList: detail.Participants.rows.filter(participant => user.id !== participant.id),
+      friendsList,
+      selectedGroups: groups || [],
+    });
   }
 
   componentWillReceiveProps({ contacts }) {
@@ -206,6 +215,7 @@ class Share extends Component {
 
     const obj = {};
     obj[type] = data;
+
     this.setState(obj);
 
     return true;
@@ -213,14 +223,22 @@ class Share extends Component {
 
   submitShare = async () => {
     const {
+      share,
+      detail,
+      type,
+      storeUnregisteredParticipants,
+      location,
+      shareLocation,
+      startTrackingLocation,
+    } = this.props;
+    const {
       social,
       selectedFriends: friends,
       selectedGroups: groups,
       selectedContacts: contacts,
+      selectedTripParticipants: tripParticipants,
     } = this.state;
-
     const shareInput = { social, friends, groups };
-    const { share, detail, type, storeUnregisteredParticipants } = this.props;
     const { name, Trip, TripStart, TripEnd, id } = detail;
     let smsBody = '';
 
@@ -237,20 +255,26 @@ class Share extends Component {
     }
 
     try {
-      if (social.length > 0 || friends.length > 0 || groups.length > 0) {
-        await share({ id, type, share: shareInput });
-      }
-
-      if (contacts.length > 0) {
-        if (type === FEEDABLE_GROUP) {
-          storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
+      if (location.tripId && tripParticipants.length > 0) {
+        const obj = { ...location, users: tripParticipants.concat(friends) };
+        startTrackingLocation();
+        await shareLocation(obj);
+      } else {
+        if (social.length > 0 || friends.length > 0 || groups.length > 0) {
+          await share({ id, type, share: shareInput });
         }
 
-        SendSMS.send({
-          body: smsBody,
-          recipients: contacts,
-          successTypes: ['sent', 'queued'],
-        }, () => { });
+        if (contacts.length > 0) {
+          if (type === FEEDABLE_GROUP) {
+            storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
+          }
+
+          SendSMS.send({
+            body: smsBody,
+            recipients: contacts,
+            successTypes: ['sent', 'queued'],
+          }, () => { });
+        }
       }
       this.onClose();
     } catch (error) {
@@ -268,8 +292,12 @@ class Share extends Component {
     return this.props.modal;
   }
 
+  showRideParticipants() {
+    return this.props.type === FEEDABLE_LOCATION;
+  }
+
   showGroup() {
-    return this.props.type !== FEEDABLE_GROUP;
+    return this.props.type !== FEEDABLE_GROUP && this.props.type !== FEEDABLE_LOCATION;
   }
 
   buttonText() {
@@ -349,8 +377,10 @@ class Share extends Component {
     const {
       friendsListSearch,
       contactsListSearch,
+      participantsList,
       selectedContacts,
       selectedFriends,
+      selectedTripParticipants,
       friendsList,
       contactsList,
       searchQuery,
@@ -390,6 +420,15 @@ class Share extends Component {
           hasPhoto
         />
       }
+      {this.showRideParticipants() &&
+        <FriendList
+          title="PARTICIPANTS IN THIS RIDE"
+          rows={participantsList}
+          defaultAvatar
+          setOption={id => this.setOption('selectedTripParticipants', id)}
+          selected={selectedTripParticipants}
+        />
+      }
       {!this.isModal() &&
         <ShareItem
           readOnly
@@ -413,7 +452,6 @@ class Share extends Component {
           label={trans('global.your_fb_timeline')}
           onPress={() => this.setOption('social', 'facebook')}
           color="blue"
-
         />}
       {this.hasTwitter() &&
         <ShareItem
@@ -439,23 +477,33 @@ class Share extends Component {
         selected={selectedFriends}
         readOnlyUserId={offeredUser ? offeredUser.id : null}
       />
-      <FriendList
-        loading={friends.loading}
-        rows={contactsList}
-        defaultAvatar
-        setOption={id => this.setOption('selectedContacts', id)}
-        selected={selectedContacts}
-      />
+      {!this.showRideParticipants() &&
+        <FriendList
+          loading={friends.loading}
+          rows={contactsList}
+          defaultAvatar
+          setOption={id => this.setOption('selectedContacts', id)}
+          selected={selectedContacts}
+        />
+      }
     </View>);
   }
 
   renderButton = () => {
     const { loading } = this.state;
-    const { type } = this.props;
+    const { type, location } = this.props;
+    let duration = '';
+
+    if ((location.duration / 60) < 1) duration = `${location.duration} minutes`;
+    if ((location.duration / 60) >= 1) duration = `${location.duration / 60} hours`;
 
     if (loading) {
       return (<Loading />);
     }
+
+    let buttonText = trans('global.share');
+    if (type === FEEDABLE_GROUP) buttonText = trans('global.add_and_publish_button');
+    if (type === FEEDABLE_LOCATION) buttonText = `${trans('global.share_location_for')} ${duration}`;
 
     return (
       <RoundedButton
@@ -463,13 +511,17 @@ class Share extends Component {
         bgColor={Colors.background.pink}
         style={styles.button}
       >
-        {type === FEEDABLE_GROUP ? trans('global.add_and_publish_button') : trans('global.share')}
+        {buttonText}
       </RoundedButton>
     );
   }
 
   render() {
     const { labelColor, type } = this.props;
+
+    let sectionLabel = trans('global.invite_and_publish');
+    if (type === FEEDABLE_GROUP) sectionLabel = trans('global.add_and_publish');
+    if (type === FEEDABLE_LOCATION) sectionLabel = trans('global.share_live_location_with');
 
     return (
       <View style={styles.wrapper}>
@@ -492,7 +544,7 @@ class Share extends Component {
             </View>
           }
           {!this.isModal() &&
-            <SectionLabel label={type === FEEDABLE_GROUP ? trans('global.add_and_publish') : trans('global.invite_and_publish')} color={labelColor} />
+            <SectionLabel label={sectionLabel} color={labelColor} />
           }
           <SearchBar
             placeholder="Search contacts"
@@ -517,7 +569,9 @@ Share.propTypes = {
   detail: PropTypes.shape({
     id: PropTypes.number,
   }),
-  type: PropTypes.oneOf([FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE]),
+  location: PropTypes.shape(),
+  shareLocation: PropTypes.func,
+  type: PropTypes.oneOf([FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION]),
   onClose: PropTypes.func,
   onNext: PropTypes.func,
   groups: PropTypes.shape({
@@ -552,6 +606,7 @@ Share.propTypes = {
     }),
   }),
   storeUnregisteredParticipants: PropTypes.func.isRequired,
+  startTrackingLocation: PropTypes.func,
 };
 
 Share.defaultProps = {
@@ -562,6 +617,9 @@ Share.defaultProps = {
   onNext: null,
   detail: null,
   defaultValue: { groups: [], offeredUser: {} },
+  location: {},
+  shareLocation: null,
+  startTrackingLocation: null,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -571,5 +629,6 @@ export default compose(withMyGroups,
   withFriends,
   withContactFriends,
   withShare,
+  withShareLocation,
   withAddUnregisteredParticipants,
   connect(mapStateToProps))(Share);

@@ -1,21 +1,43 @@
+/* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
 import { FEED_TYPE_WANTED, FEED_TYPE_OFFER, FEED_FILTER_EVERYTHING } from '@config/constant';
-import Navigation from '@components/map/navigation';
-import TripMarker from '@components/map/roundMarker';
 import Marker from '@components/map/marker';
+import Navigation from '@components/map/navigation';
 import { withNavigation } from 'react-navigation';
 import moment from 'moment';
-import { withGroupTrips } from '@services/apollo/group';
+import { withGroup, withGroupTrips, withGroupParticipantIds } from '@services/apollo/group';
+import { withLocationSharedToSpecificResource, withStopSpecific } from '@services/apollo/share';
 import Filter from '@components/feed/filter';
+import TripMarker from '@components/map/roundMarker';
+import ShareLocation from '@components/common/shareLocation';
+import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
+import GeoLocation from '@services/location/geoLocation';
+import { withUpdateLocation } from '@services/apollo/location';
+import { withTrip } from '@services/apollo/trip';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const DURATION = 10;
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+const ShareLocationWithData = compose(withStopSpecific, withGroupParticipantIds)(ShareLocation);
 
 class RouteMap extends PureComponent {
   static navigationOptions = {
@@ -38,39 +60,65 @@ class RouteMap extends PureComponent {
       loading: false,
       error: '',
       filterType: FEED_FILTER_EVERYTHING,
+      info: {},
+      sharedLocations: [],
+      myPosition: {},
     });
   }
 
   componentWillMount() {
-    const { navigation } = this.props;
-    const { coordinates } = navigation.state.params;
+    const { navigation, group, trip, user } = this.props;
+    const { data, subscribeToLocationShared } = this.props.locationSharedToSpecificResource;
+    const { __typename } = navigation.state.params.info;
+    let info = {};
+
+    if (__typename === 'Group') info = group;
+    else if (__typename === 'Trip') info = trip;
+
+    subscribeToLocationShared({ userId: user.id, groupId: group.id });
 
     this.setState({
+      info,
+      myPosition: {
+        latitude: info.Location.locationCoordinates ? info.Location.locationCoordinates[1] : null,
+        longitude: info.Location.locationCoordinates ? info.Location.locationCoordinates[0] : null,
+      },
       initialRegion: {
-        longitude: coordinates.start.coordinates[0],
-        latitude: coordinates.start.coordinates[1],
+        longitude: info.TripStart.coordinates[0],
+        latitude: info.TripStart.coordinates[1],
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
       origin: {
-        longitude: coordinates.start.coordinates[0],
-        latitude: coordinates.start.coordinates[1],
+        longitude: info.TripStart.coordinates[0],
+        latitude: info.TripStart.coordinates[1],
       },
       destination: {
-        longitude: coordinates.end.coordinates[0],
-        latitude: coordinates.end.coordinates[1],
+        longitude: info.TripEnd.coordinates[0],
+        latitude: info.TripEnd.coordinates[1],
       },
-      stops: coordinates.stops,
+      stops: info.Stops,
+      sharedLocations: data,
     });
+
+    this.currentLocation();
   }
 
   componentDidMount() {
     this.fetchPolygon();
   }
 
-  componentWillReceiveProps({ groupTrips }) {
-    this.setState({ trips: groupTrips });
+  componentWillReceiveProps({ group, groupTrips, trip, locationSharedToSpecificResource }) {
+    const sharedLocations = locationSharedToSpecificResource.data ?
+      locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
+
+    this.setState({
+      trips: groupTrips,
+      info: group.id ? group : trip,
+      sharedLocations,
+    });
   }
+
 
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
@@ -81,6 +129,46 @@ class RouteMap extends PureComponent {
     if (type !== this.state.filterType) {
       this.setState({ filterType: type, filterOpen: false, loading: true }, this.fetchTripsByType);
     }
+  }
+
+  currentLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          myPosition: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          },
+        });
+      },
+      () => {
+        Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
+      },
+      { timeout: 20000, maximumAge: 1000 },
+    );
+  };
+
+  startTrackingLocation = () => {
+    const { updateLocation } = this.props;
+    const { info } = this.state;
+    const { __typename } = info;
+
+    GeoLocation.listenToLocationUpdate(__typename, info.id, (position) => {
+      updateLocation([position.coords.longitude, position.coords.latitude]);
+      this.setState({
+        myPosition: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      });
+    });
+  }
+
+  stopTrackingLocation = () => {
+    const { info } = this.state;
+    const { __typename } = info;
+
+    GeoLocation.stopListeningToLocationUpdate(__typename, info.id);
   }
 
   async fetchTripsByType() {
@@ -117,7 +205,8 @@ class RouteMap extends PureComponent {
   }
 
   fitMap = () => {
-    if (this.state.waypoints.length < 1) return;
+    if (!this.mapView || !(this.state.waypoints && this.state.waypoints.length > 0)) return;
+
     try {
       this.mapView.fitToCoordinates(this.state.waypoints, {
         edgePadding: {
@@ -133,39 +222,61 @@ class RouteMap extends PureComponent {
     }
   }
 
-  handleBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
+  gotoRegion = (coordinates) => {
+    const region = {
+      longitude: coordinates[0],
+      latitude: coordinates[1],
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    };
+
+    this.mapView.animateToRegion(region, DURATION);
   }
 
-  renderTrips = () => {
-    let coordinate = {};
-    const { trips } = this.state;
+  renderLiveLocations = () => {
+    const { sharedLocations, info, myPosition } = this.state;
+    let markers = [];
 
-    if (trips.length > 0) {
-      return trips.map((trip) => {
-        coordinate = {
-          latitude: trip.TripStart.coordinates[1],
-          longitude: trip.TripStart.coordinates[0],
+    if (sharedLocations.length > 0) {
+      markers = sharedLocations.map((location) => {
+        const coordinate = {
+          latitude: location.locationCoordinates[1],
+          longitude: location.locationCoordinates[0],
         };
 
         return (
           <Marker
-            key={`${trip.id}-${moment().unix()}`}
+            key={`${location.id}-${moment().unix()}`}
             onPress={(e) => {
               e.stopPropagation();
-              this.onMarkerPress(trip);
             }}
             coordinate={coordinate}
-            image={trip.User.avatar}
-            count={trip.seats}
-            tripType={trip.type}
+            image={location.User.avatar}
           />
         );
       });
     }
 
-    return null;
+    if (myPosition.latitude &&
+      myPosition.longitude &&
+      info.Location.locationCoordinates &&
+      info.Location.locationCoordinates.length > 0) {
+      const coordinate = {
+        latitude: myPosition.latitude,
+        longitude: myPosition.longitude,
+      };
+      markers.push(
+        <Marker
+          key={`${myPosition.id}-${moment().unix()}`}
+          onPress={(e) => {
+            e.stopPropagation();
+          }}
+          coordinate={coordinate}
+          image={info.User.avatar}
+        />);
+    }
+
+    return markers;
   }
 
   renderStops = () => {
@@ -197,10 +308,14 @@ class RouteMap extends PureComponent {
   }
 
   render() {
-    const { origin, destination, initialRegion, waypoints } = this.state;
+    const { loading, locationSharedToSpecificResource } = this.props;
+    const { origin, destination, initialRegion, waypoints, info } = this.state;
+    const { __typename } = info;
+
+    if (loading || locationSharedToSpecificResource.loading) return null;
 
     return (
-      <View style={StyleSheet.absoluteFill}>
+      <View style={styles.container}>
         <Navigation
           arrowBackIcon
           onPressBack={this.handleBack}
@@ -208,7 +323,7 @@ class RouteMap extends PureComponent {
         />
         <MapView
           initialRegion={initialRegion}
-          style={StyleSheet.absoluteFill}
+          style={styles.map}
           ref={(c) => { this.mapView = c; }}
           onMapReady={this.fitMap}
           cacheEnabled
@@ -219,7 +334,7 @@ class RouteMap extends PureComponent {
           <MapView.Marker.Animated coordinate={destination}>
             <TripMarker type="destination" />
           </MapView.Marker.Animated>
-          {this.renderTrips()}
+          {this.renderLiveLocations()}
           {this.renderStops()}
           <MapView.Polyline
             strokeWidth={5}
@@ -234,6 +349,16 @@ class RouteMap extends PureComponent {
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setState({ filterOpen: false })}
         />
+        <ShareLocationWithData
+          locationSharedToSpecificResource={locationSharedToSpecificResource}
+          id={info.id}
+          type={__typename}
+          detail={info}
+          gotoRegion={this.gotoRegion}
+          myPosition={this.myPosition}
+          startTrackingLocation={this.startTrackingLocation}
+          stopTrackingLocation={this.stopTrackingLocation}
+        />
       </View>
     );
   }
@@ -243,16 +368,65 @@ RouteMap.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  groupTrips: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  loading: PropTypes.bool.isRequired,
+  group: PropTypes.shape(),
+  trip: PropTypes.shape(),
+  groupTrips: PropTypes.arrayOf(PropTypes.shape()),
+  locationSharedToSpecificResource: PropTypes.shape({
+    data: PropTypes.arrayOf(PropTypes.shape()),
+    subscribeToLocationShared: PropTypes.func,
+  }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
+  updateLocation: PropTypes.func.isRequired,
 };
 
-const RenderRouteMap = withGroupTrips(RouteMap);
-const Route = ({ navigation }) => (
-  <RenderRouteMap
-    id={navigation.state.params.id}
-    navigation={navigation}
-  />
-);
+RouteMap.defaultProps = {
+  trip: {},
+  group: {},
+  groupTrips: [],
+};
+
+const mapStateToProps = state => ({ user: state.auth.user });
+
+const RenderGroupRouteMap = compose(
+  withLocationSharedToSpecificResource,
+  withGroup,
+  withUpdateLocation,
+  withGroupTrips, connect(mapStateToProps))(RouteMap);
+
+const RenderTripRouteMap = compose(
+  withLocationSharedToSpecificResource,
+  withTrip,
+  withUpdateLocation,
+  connect(mapStateToProps))(RouteMap);
+
+const Route = ({ navigation }) => {
+  const { id, __typename } = navigation.state.params.info;
+
+  if (__typename === 'Group') {
+    return (
+      <RenderGroupRouteMap
+        resourceId={id}
+        resourceType={__typename}
+        id={id}
+        navigation={navigation}
+      />
+    );
+  } else if (__typename === 'Trip') {
+    return (
+      <RenderTripRouteMap
+        resourceId={id}
+        resourceType={__typename}
+        id={id}
+        navigation={navigation}
+      />
+    );
+  }
+
+  return null;
+};
 
 Route.navigationOptions = {
   header: null,

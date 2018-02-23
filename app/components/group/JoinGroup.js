@@ -159,11 +159,6 @@ class JoinGroup extends Component {
     this.setState({ group, isPending });
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   joinGroup = () => {
     const { group } = this.state;
     const { submit, refresh } = this.props;

@@ -78,6 +78,7 @@
             <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+        <service android:name="GeoLocationService"/>
 
         <service android:name="com.evollu.react.fcm.InstanceIdService" android:exported="false">
             <intent-filter>
