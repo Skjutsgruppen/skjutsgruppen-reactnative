@@ -31,6 +31,7 @@ import OfferCommentBox from '@components/offer/commentBox';
 import ToolBar from '@components/utils/toolbar';
 import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
+import { withMute, withUnmute } from '@services/apollo/mute';
 
 const TripExperiences = withTripExperiences(List);
 const SuggestedRides = withSearch(SuggestedRidesList);
@@ -209,7 +210,7 @@ class TripDetail extends Component {
       error: '',
       success: '',
       comment: '',
-      showActionModal: false,
+      showActionOption: false,
       writingComment: false,
       showShareModal: false,
       notification: false,
@@ -316,18 +317,47 @@ class TripDetail extends Component {
     this.setState({ notification: false, notifierOffset: 0 });
   }
 
+  onMute = (unit, type = null) => {
+    const { trip } = this.state;
+    const { mute, refetch } = this.props;
+    const data = {
+      mutable: 'Trip',
+      mutableId: trip.id,
+    };
+
+    this.showActionModal(false);
+
+    if (unit === 'forever') {
+      data.forever = true;
+    } else {
+      const date = getDate();
+      const from = date.format();
+      const to = date.add(unit, type).format();
+      data.from = from;
+      data.to = to;
+    }
+    mute(data).then(refetch);
+  }
+
+  onUnmute = () => {
+    const { trip } = this.state;
+    const { unmute, refetch } = this.props;
+
+    this.showActionModal(false);
+    unmute({
+      mutable: 'Trip',
+      mutableId: trip.id,
+    }).then(refetch);
+  }
+
   onReport = () => {
     const { navigation } = this.props;
     const { trip } = this.state;
-    this.setModalVisible(false);
+    this.showActionModal(false);
     navigation.navigate('Report', { data: { Trip: trip }, type: FEEDABLE_TRIP });
   }
 
   onCommentBoxBlur = comment => this.setState({ comment });
-
-  setModalVisible(visible) {
-    this.setState({ showActionModal: visible });
-  }
 
   setReturnRidesModalVisibility = (show) => {
     this.setState({ showReturnRides: show });
@@ -339,6 +369,10 @@ class TripDetail extends Component {
 
   setSuggestedRidesVisibility = (show, comment = '') => {
     this.setState({ showSuggestedRides: show, comment });
+  }
+
+  showActionModal(visible) {
+    this.setState({ showActionOption: visible });
   }
 
   checkValidation = (comment) => {
@@ -676,14 +710,14 @@ class TripDetail extends Component {
 
   renderActionModal() {
     const { navigation, user } = this.props;
-    const { trip, showActionModal } = this.state;
+    const { trip, showActionOption } = this.state;
 
     return (
       <Modal
         animationType="slide"
         transparent
-        onRequestClose={() => this.setState({ showActionModal: false })}
-        visible={showActionModal}
+        onRequestClose={() => this.setState({ showActionOption: false })}
+        visible={showActionOption}
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
@@ -692,7 +726,7 @@ class TripDetail extends Component {
                 <TouchableOpacity
                   style={styles.action}
                   onPress={() => {
-                    this.setState({ showActionModal: false });
+                    this.setState({ showActionOption: false });
                     navigation.navigate('Experience', { trip });
                   }}
                 >
@@ -708,23 +742,39 @@ class TripDetail extends Component {
               <Text style={styles.actionLabel}>{trans('trip.share_your_live_location')} </Text>
             </TouchableOpacity>
             <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.mute_two_hours')}</Text>
-            </TouchableOpacity>
-            <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.mute_one_day')}</Text>
-            </TouchableOpacity>
-            <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.mute_forever')}</Text>
-            </TouchableOpacity>
+            {
+              trip.muted ?
+                (
+                  <TouchableOpacity
+                    style={styles.action}
+                    onPress={this.onUnmute}
+                  >
+                    <Text style={styles.actionLabel}>{trans('trip.unmute')}</Text>
+                  </TouchableOpacity>
+                ) :
+                (<View>
+                  <TouchableOpacity
+                    style={styles.action}
+                    onPress={() => this.onMute(2, 'hours')}
+                  >
+                    <Text style={styles.actionLabel}>{trans('trip.mute_two_hours')}</Text>
+                  </TouchableOpacity>
+                  <View style={styles.horizontalDivider} />
+                  <TouchableOpacity
+                    style={styles.action}
+                    onPress={() => this.onMute(1, 'day')}
+                  >
+                    <Text style={styles.actionLabel}>{trans('trip.mute_one_day')}</Text>
+                  </TouchableOpacity>
+                  <View style={styles.horizontalDivider} />
+                  <TouchableOpacity
+                    style={styles.action}
+                    onPress={() => this.onMute('forever')}
+                  >
+                    <Text style={styles.actionLabel}>{trans('trip.mute_forever')}</Text>
+                  </TouchableOpacity>
+                </View>)
+            }
             <View style={styles.horizontalDivider} />
             <TouchableOpacity
               style={styles.action}
@@ -745,7 +795,7 @@ class TripDetail extends Component {
           <View style={styles.closeWrapper}>
             <TouchableOpacity
               style={styles.closeModal}
-              onPress={() => this.setModalVisible(!showActionModal)}
+              onPress={() => this.showActionModal(!showActionOption)}
             >
               <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
             </TouchableOpacity>
@@ -826,7 +876,7 @@ class TripDetail extends Component {
       return (
         <OfferCommentBox
           loading={loading}
-          handleShowOptions={() => this.setModalVisible(true)}
+          handleShowOptions={() => this.showActionModal(true)}
           handleSend={this.onSubmit}
         />
       );
@@ -835,7 +885,7 @@ class TripDetail extends Component {
     return (
       <AskCommentBox
         loading={loading}
-        handleShowOptions={() => this.setModalVisible(true)}
+        handleShowOptions={() => this.showActionModal(true)}
         onSuggest={this.setSuggestedRidesVisibility}
         handleSend={this.onSubmit}
         onOffer={this.onOffer}
@@ -891,8 +941,11 @@ TripDetail.propTypes = {
   trip: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  refetch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   submit: PropTypes.func.isRequired,
+  mute: PropTypes.func.isRequired,
+  unmute: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
@@ -907,6 +960,8 @@ const TripWithDetail = compose(
   withShare,
   submitComment,
   withTrip,
+  withMute,
+  withUnmute,
   connect(mapStateToProps),
 )(TripDetail);
 

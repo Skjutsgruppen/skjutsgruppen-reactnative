@@ -14,7 +14,9 @@ import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
-import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
+import { withShare } from '@services/apollo/share';
+import { withMute, withUnmute } from '@services/apollo/mute';
+import { AppNotification, Wrapper, Loading, FloatingNavbar, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
@@ -26,6 +28,7 @@ import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import GroupCalendar from '@components/group/groupCalendar';
+import { getDate } from '@config';
 import CommentBox from '@components/group/commentBox';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
@@ -151,11 +154,11 @@ class Detail extends PureComponent {
       success: '',
       comment: '',
       showShareModal: false,
+      showAction: false,
       notification: false,
       notifierOffset: 0,
       showCalendar: false,
       groupTrips: [],
-      modalVisibility: false,
     });
   }
 
@@ -240,16 +243,42 @@ class Detail extends PureComponent {
 
   onReport = () => {
     const { navigation, group } = this.props;
-    this.setModalVisible(false);
+    this.setState({ showAction: false });
     navigation.navigate('Report', { data: { Group: group }, type: FEEDABLE_GROUP });
+  }
+
+  onMute = (unit, type = null) => {
+    const { group, mute, refresh } = this.props;
+    const data = {
+      mutable: 'Group',
+      mutableId: group.id,
+    };
+
+    this.setState({ showAction: false });
+
+    if (unit === 'forever') {
+      data.forever = true;
+    } else {
+      const date = getDate();
+      const from = date.format();
+      const to = date.add(unit, type).format();
+      data.from = from;
+      data.to = to;
+    }
+    mute(data).then(refresh);
+  }
+
+  onUnmute = () => {
+    const { group, refresh } = this.props;
+    this.setState({ showAction: false });
+    this.props.unmute({
+      mutable: 'Group',
+      mutableId: group.id,
+    }).then(refresh);
   }
 
   setCalendarVisibilty = (show) => {
     this.setState({ showCalendar: show });
-  }
-
-  setModalVisible = (show) => {
-    this.setState({ modalVisibility: show });
   }
 
   redirectToSelectedTripDate = (date) => {
@@ -325,42 +354,6 @@ class Detail extends PureComponent {
     </View>
   );
 
-  renderModal = () => {
-    const { modalVisibility } = this.state;
-    const { user, group } = this.props;
-
-    return (
-      <Modal
-        animationType="slide"
-        transparent
-        onRequestClose={() => this.setState({ modalVisibility: false })}
-        visible={modalVisibility}
-      >
-        <View style={styles.modalContent}>
-          <View style={styles.actionsWrapper}>
-            {
-              user.id !== group.User.id &&
-              <TouchableOpacity
-                style={styles.action}
-                onPress={this.onReport}
-              >
-                <Text style={styles.actionLabel}>{trans('group.report_this_group')}</Text>
-              </TouchableOpacity>
-            }
-          </View>
-          <View style={styles.closeWrapper}>
-            <TouchableOpacity
-              style={styles.closeModal}
-              onPress={() => this.setModalVisible(!modalVisibility)}
-            >
-              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  }
-
   renderShareModal() {
     const { showShareModal, group } = this.state;
     return (
@@ -407,6 +400,40 @@ class Detail extends PureComponent {
     );
   }
 
+  renderMuteOptions = () => {
+    const { group, user } = this.props;
+    let actions = [];
+
+    if (group.muted) {
+      actions = actions.concat([<ModalAction label={trans('trip.unmute')} onPress={this.onUnmute} key="unmute" />]);
+    } else {
+      actions = actions.concat([
+        <ModalAction label="Mute for 24 hours" onPress={() => this.onMute(24, 'hours')} key="mute_24_hours" />,
+        <ModalAction label="Mute 1 week" onPress={() => this.onMute(1, 'week')} key="mute_1_week" />,
+        <ModalAction label="Mute forever" onPress={() => this.onMute('forever')} key="mute_forever" />,
+      ]);
+    }
+
+    if (user.id !== group.User.id) {
+      actions = actions.concat([
+        <ModalAction label={trans('group.report_this_group')} onPress={this.onReport} key="report" />,
+      ]);
+    }
+
+    return actions;
+  };
+
+  renderOptionsModal = () => (
+    <ActionModal
+      transparent
+      visible={this.state.showAction}
+      onRequestClose={() => this.setState({ showAction: false })}
+      animationType="slide"
+    >
+      {this.renderMuteOptions()}
+    </ActionModal>
+  );
+
   render() {
     const { navigation, group } = this.props;
     const { leaveLoading, notification, notifierOffset, loading, error, success } = this.state;
@@ -436,14 +463,37 @@ class Detail extends PureComponent {
           handleSend={this.onSubmit}
           loading={loading}
           hasCalender
+          handleShowOptions={() => this.setState({ showAction: true })}
           handleShowCalender={this.setCalendarVisibilty}
           onOffer={this.onOffer}
           onAsk={this.onAsk}
-          handleShowOptions={() => this.setModalVisible(true)}
         />
-        {this.renderModal()}
         {this.renderShareModal()}
         {this.renderCalendarModal()}
+        {this.renderOptionsModal()}
+        {
+          this.state.showCalendar &&
+          <Modal
+            animationType="slide"
+            transparent
+            onRequestClose={() => this.setState({ showCalendar: false })}
+            visible={this.state.showCalendar}
+          >
+            <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+              <View style={styles.groupCalendarContent}>
+                <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
+                <View style={styles.closeWrapper}>
+                  <TouchableOpacity
+                    style={styles.closeModal}
+                    onPress={() => this.setCalendarVisibilty(false)}
+                  >
+                    <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        }
       </Wrapper>
     );
   }
@@ -452,6 +502,8 @@ class Detail extends PureComponent {
 Detail.propTypes = {
   leaveGroup: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
+  mute: PropTypes.func.isRequired,
+  unmute: PropTypes.func.isRequired,
   group: PropTypes.shape({
     id: PropTypes.number.isRequired,
     photo: PropTypes.string,
@@ -473,5 +525,7 @@ export default compose(
   withLeaveGroup,
   submitComment,
   withNavigation,
+  withMute,
+  withUnmute,
   connect(mapStateToProps),
 )(Detail);

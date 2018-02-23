@@ -2,6 +2,11 @@ import React from 'react';
 import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { compose } from 'react-apollo';
+
+import { Colors } from '@theme';
+import { withResetMute } from '@services/apollo/mute';
+import { getDate } from '@config';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -32,6 +37,25 @@ const styles = StyleSheet.create({
     height: 16,
     resizeMode: 'contain',
   },
+  muteWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 'auto',
+  },
+  muteCountWrapper: {
+    height: 32,
+    minWidth: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.background.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    paddingHorizontal: 4,
+  },
+  whiteText: {
+    color: Colors.text.white,
+    fontSize: 14,
+  },
 });
 
 const renderPic = (photo) => {
@@ -44,26 +68,48 @@ const renderPic = (photo) => {
   return profileImage;
 };
 
-const ActiveGroupItem = ({ group, navigation }) => (
-  <TouchableOpacity onPress={() => navigation.navigate('GroupDetail', { group })} key={group.id}>
-    <View style={styles.list}>
-      <View style={styles.flexRow}>
-        <View style={styles.profilePicWrapper}>
-          {group.photo ? renderPic(group.photo) : renderPic(group.mapPhoto)}
-        </View>
-        <View>
-          <Text>{group.name}</Text>
+const ActiveGroupItem = ({ group, navigation, resetMute }) => {
+  const navigateToGroupDetail = () => {
+    if (group.muted) {
+      resetMute({ mutable: 'Group', mutableId: group.id, from: getDate().format() });
+    }
+    navigation.navigate('GroupDetail', { group });
+  };
+
+  return (
+    <TouchableOpacity onPress={navigateToGroupDetail} key={group.id}>
+      <View style={styles.list}>
+        <View style={styles.flexRow}>
+          <View style={styles.profilePicWrapper}>
+            {group.photo ? renderPic(group.photo) : renderPic(group.mapPhoto)}
+          </View>
+          <View>
+            <Text>{group.name}</Text>
+          </View>
+          {
+            group.muted &&
+            (<View style={styles.muteWrapper}>
+              <Image source={require('@assets/icons/ic_mute.png')} />
+              {
+                group.unreadNotificationCount > 0 &&
+                <View style={styles.muteCountWrapper}>
+                  <Text style={styles.whiteText}>{group.unreadNotificationCount}</Text>
+                </View>
+              }
+            </View>)
+          }
         </View>
       </View>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+}
 
 ActiveGroupItem.propTypes = {
   group: PropTypes.shape().isRequired,
+  resetMute: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
 };
 
-export default withNavigation(ActiveGroupItem);
+export default compose(withResetMute, withNavigation)(ActiveGroupItem);
