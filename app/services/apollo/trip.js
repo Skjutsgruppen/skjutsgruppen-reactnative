@@ -331,6 +331,7 @@ mutation createTrip(
       mapPhoto
       totalComments
       isParticipant
+      url
   }
 }
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { ProgressBar } from '@components/common';
 import { Colors } from '@theme';
@@ -62,7 +62,7 @@ CostCard.propTypes = {
   title: PropTypes.string.isRequired,
   coveredPercentage: PropTypes.number.isRequired,
   totalCost: PropTypes.string.isRequired,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
 };
 
 CostCard.defaultProps = {

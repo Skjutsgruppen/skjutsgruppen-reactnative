@@ -1,5 +1,5 @@
 import React, { PureComponent, Children } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -39,7 +39,7 @@ class FiltersWrapper extends PureComponent {
 }
 
 FiltersWrapper.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   title: PropTypes.string,
   children: PropTypes.node.isRequired,
 };

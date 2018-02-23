@@ -1,5 +1,5 @@
 import React, { PureComponent, Children } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
@@ -92,7 +92,7 @@ class ActionModal extends PureComponent {
 
 ActionModal.propTypes = {
   children: PropTypes.node.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   transparent: PropTypes.bool,
   visible: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
@@ -27,7 +27,7 @@ const Retry = ({ onPress, style }) => (
 
 Retry.propTypes = {
   onPress: PropTypes.func.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 Retry.defaultProps = {

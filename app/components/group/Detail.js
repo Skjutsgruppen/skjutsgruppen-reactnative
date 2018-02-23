@@ -6,7 +6,6 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  ScrollView,
   Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -15,7 +14,6 @@ import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
-import { withShare } from '@services/apollo/share';
 import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/group/feed/list';
@@ -29,7 +27,6 @@ import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import GroupCalendar from '@components/group/groupCalendar';
 import CommentBox from '@components/group/commentBox';
-
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 const Calendar = withGroupTrips(GroupCalendar);
@@ -138,7 +135,7 @@ class Detail extends PureComponent {
       error: '',
       success: '',
       comment: '',
-      isOpen: false,
+      showShareModal: false,
       notification: false,
       notifierOffset: 0,
       showCalendar: false,
@@ -174,21 +171,6 @@ class Detail extends PureComponent {
     } else {
       this.setState({ loading: false, error: getToast(validation.errors) });
     }
-  }
-
-  onSharePress = () => {
-    this.setState({ isOpen: true });
-  }
-
-  onShare = (shareObject) => {
-    const { share, group } = this.props;
-    share({ id: group.id, type: FEEDABLE_GROUP, share: shareObject })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
   }
 
   onCommentPress = (id) => {
@@ -318,20 +300,19 @@ class Detail extends PureComponent {
   );
 
   renderShareModal() {
+    const { showShareModal, group } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={FEEDABLE_GROUP}
+          detail={group}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -396,7 +377,6 @@ class Detail extends PureComponent {
 }
 
 Detail.propTypes = {
-  share: PropTypes.func.isRequired,
   leaveGroup: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   group: PropTypes.shape({
@@ -417,7 +397,6 @@ Detail.propTypes = {
 const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(
-  withShare,
   withLeaveGroup,
   submitComment,
   withNavigation,
