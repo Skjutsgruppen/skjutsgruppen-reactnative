@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
@@ -37,7 +37,7 @@ const CapturedImage = ({ imageURI, style }) => (
 
 CapturedImage.propTypes = {
   imageURI: PropTypes.string.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 CapturedImage.defaultProps = {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { compose } from 'react-apollo';
 import { submitComment, withTripComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
@@ -206,7 +206,7 @@ class TripDetail extends Component {
       comment: '',
       modalVisible: false,
       writingComment: false,
-      isOpen: false,
+      showShareModal: false,
       notification: false,
       notifierOffset: 0,
       showReturnRides: false,
@@ -219,7 +219,7 @@ class TripDetail extends Component {
   componentWillMount() {
     const { navigation } = this.props;
     navigation.setParams({
-      right: () => <ShareButton onPress={() => this.setState({ isOpen: true })} />,
+      right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} />,
     });
 
     const { notifier, notificationMessage, trip } = navigation.state.params;
@@ -287,16 +287,6 @@ class TripDetail extends Component {
     navigation.navigate('Offer');
   }
 
-  onShare = (share) => {
-    this.props.share({ id: this.state.trip.id, type: FEEDABLE_TRIP, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
-  }
-
   onProfilePress = (id) => {
     const { navigation } = this.props;
     navigation.navigate('Profile', { profileId: id });
@@ -354,11 +344,6 @@ class TripDetail extends Component {
       pass: () => (errors.length === 0),
       errors,
     };
-  }
-
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
   }
 
   isTripStarted = () => {
@@ -537,20 +522,19 @@ class TripDetail extends Component {
   }
 
   renderShareModal() {
+    const { showShareModal, trip } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={FEEDABLE_TRIP}
+          detail={trip}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -816,7 +800,6 @@ TripDetail.propTypes = {
     id: PropTypes.number,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
-  share: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

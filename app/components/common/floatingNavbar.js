@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '@theme/colors';
@@ -104,7 +104,7 @@ const FloatingNavbar = (
   );
 
 FloatingNavbar.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   transparent: PropTypes.bool,
   handleBack: PropTypes.func,
   showShare: PropTypes.bool,

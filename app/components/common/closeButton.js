@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, ViewPropTypes, Image } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -28,7 +28,7 @@ const CloseButton = ({ style, onPress }) => (
 );
 
 CloseButton.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 

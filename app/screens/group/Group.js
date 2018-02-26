@@ -112,7 +112,10 @@ class Group extends Component {
     }
 
     if (activeStep === 5) {
-      return loading;
+      if (!loading) {
+        navigation.goBack();
+      }
+      return true;
     }
 
     if (activeStep > 1) {
@@ -229,7 +232,6 @@ class Group extends Component {
     if (error !== '') {
       return (
         <View style={{ marginTop: 100 }}>
-          <Toast message={error} type="error" />
           <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
             Try Again
           </CustomButton>
@@ -288,8 +290,7 @@ class Group extends Component {
           {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
           {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
           {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
-          {(activeStep === 4) &&
-            <Share isOffer showGroup={false} onNext={this.onShareAndPublish} />}
+          {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
           {(activeStep === 5) && this.renderFinish()}
         </Container>
       </Wrapper>

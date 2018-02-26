@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Map from '@assets/icons/icon_map.png';
@@ -58,7 +58,7 @@ const NavBar = ({ style, handleBack, title, onMapPress }) => (
 );
 
 NavBar.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   handleBack: PropTypes.func,
   title: PropTypes.string,
   onMapPress: PropTypes.func,

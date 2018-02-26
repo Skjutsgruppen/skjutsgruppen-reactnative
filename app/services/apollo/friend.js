@@ -168,6 +168,7 @@ query bestFriends($id:Int, $limit: Int, $offset: Int,){
       rows {
         id 
         firstName
+        lastName
         avatar
       }
       count

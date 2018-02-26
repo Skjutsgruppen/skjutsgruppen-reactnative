@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
@@ -194,7 +194,7 @@ News.propTypes = {
     id: PropTypes.number,
     body: PropTypes.string,
   }).isRequired,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 

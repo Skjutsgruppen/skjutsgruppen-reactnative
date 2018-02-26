@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  ViewPropTypes,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -23,7 +24,7 @@ if (TouchableComponent !== TouchableNativeFeedback) {
   TouchableComponent.canUseNativeForeground = () => false;
 }
 
-class TouchableHightlight extends React.Component {
+class TouchableHighlight extends React.Component {
   static SelectableBackground = TouchableComponent.SelectableBackground;
   static SelectableBackgroundBorderless = TouchableComponent.SelectableBackgroundBorderless;
   static Ripple = TouchableComponent.Ripple;
@@ -79,17 +80,17 @@ class TouchableHightlight extends React.Component {
     );
   }
 }
-TouchableHightlight.propTypes = {
+TouchableHighlight.propTypes = {
   children: PropTypes.node.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   foreground: PropTypes.bool,
   fallback: PropTypes.string,
 };
 
-TouchableHightlight.defaultProps = {
+TouchableHighlight.defaultProps = {
   style: {},
   foreground: true,
   fallback: '',
 };
 
-export default TouchableHightlight;
+export default TouchableHighlight;

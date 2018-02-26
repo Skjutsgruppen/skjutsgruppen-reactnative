@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableHighlight, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { withMyGroups } from '@services/apollo/group';
 import { withFriends, withBestFriends } from '@services/apollo/friend';
+import { withContactFriends } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
-import { Loading, RoundedButton } from '@components/common';
-import CloseButton from '@components/common/closeButton';
+import { Loading, RoundedButton, SearchBar } from '@components/common';
 import Colors from '@theme/colors';
+import RecentFriendList from '@components/recentFriendList';
 import FriendList from '@components/friendList';
 import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
+import { connect } from 'react-redux';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE } from '@config/constant';
+import SendSMS from 'react-native-sms';
+import { withShare } from '@services/apollo/share';
 
 const styles = StyleSheet.create({
   list: {
@@ -20,18 +25,20 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   wrapper: {
-    paddingTop: 16,
+    flex: 1,
+    backgroundColor: Colors.background.mutedBlue,
   },
   navBar: {
     flexDirection: 'row',
     height: 40,
-    paddingHorizontal: 24,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   pageTitle: {
     fontWeight: 'bold',
-    color: Colors.text.purple,
+    color: Colors.text.gray,
+    fontSize: 18,
   },
   map: {
     width: 54,
@@ -42,59 +49,127 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     backgroundColor: Colors.background.fullWhite,
   },
-  searchWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 6,
-  },
-  searchIcon: {
-    width: 20,
-    resizeMode: 'contain',
-  },
-  searchField: {
-    height: 45,
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 16,
-  },
   shareCategoryTitle: {
     fontSize: 12,
     color: '#1ca9e5',
     marginHorizontal: 24,
     marginBottom: 12,
   },
+  header: {
+    backgroundColor: Colors.background.mutedBlue,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+  },
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.background.gray,
-    paddingVertical: '2%',
+    backgroundColor: Colors.background.mutedBlue,
     paddingHorizontal: 20,
+    elevation: 15,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    paddingTop: '5%',
+    paddingBottom: '5%',
   },
   button: {
     width: 200,
     alignSelf: 'center',
-    marginTop: '10%',
-    marginBottom: 50,
     marginHorizontal: 20,
+  },
+  closeIcon: {
+    height: 48,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    transform: [
+      { rotate: '-90deg' },
+    ],
   },
 });
 
 class Share extends Component {
   constructor(props) {
     super(props);
-    this.state = { social: [], friends: [], groups: [] };
+    this.state = {
+      social: ['copy_to_clip'],
+      friends: [],
+      contactIds: [],
+      contactIdCheck: [],
+      contacts: [],
+      friendsList: [],
+      friendsListSearch: [],
+      contactsList: [],
+      contactsListSearch: [],
+      groups: [],
+      searchQuery: '',
+      loading: false,
+    };
+  }
+
+  componentWillMount() {
+    const { friends } = this.props;
+    const { friendsList } = this.state;
+
+    if (friends && !friends.loading) {
+      friends.rows.forEach((friend) => {
+        friendsList.push(friend);
+      });
+    }
+
+    this.setState({ friendsList });
+  }
+
+  componentWillReceiveProps({ contacts }) {
+    const { contactsList, contactIdCheck } = this.state;
+
+    if (contacts && !contacts.loading) {
+      contacts.rows.forEach((contact, index) => {
+        if (contactIdCheck.indexOf(contact.phoneNumber) < 0) {
+          contactIdCheck.push(contact.phoneNumber);
+          contactsList.push({
+            id: `contact-${index}`,
+            name: contact.name,
+            phoneNumber: contact.phoneNumber,
+          });
+        }
+      });
+    }
+
+    this.setState({ contactsList, contactIdCheck });
   }
 
   onNext = () => {
     const { onNext } = this.props;
-    onNext(this.state);
+    this.setState({ loading: true });
+
+    if (typeof onNext === 'function') {
+      const { social, friends, groups } = this.state;
+      onNext({ social, friends, groups });
+    } else {
+      this.submitShare(this.state);
+    }
   }
 
   onClose = () => {
     this.props.onClose();
+  }
+
+  onChangeSearchQuery = (searchQuery) => {
+    this.setState({ searchQuery });
+    const { friendsList, contactsList } = this.state;
+    const friendsListSearch = friendsList.filter(
+      ({ firstName, lastName }) => (((firstName + lastName)
+        .toLowerCase()))
+        .includes(searchQuery.toLowerCase()),
+    );
+
+    const contactsListSearch = contactsList.filter(
+      contact => (((contact.name).toLowerCase())).includes(searchQuery.toLowerCase()),
+    );
+
+    this.setState({ friendsListSearch, contactsListSearch });
   }
 
   setOption = (type, value) => {
@@ -111,6 +186,64 @@ class Share extends Component {
     this.setState(obj);
   }
 
+  setContactOption = (id, contactObj) => {
+    const { contactIds } = this.state;
+    let { contacts } = this.state;
+
+    if (contactIds.indexOf(id) > -1) {
+      contactIds.splice(contactIds.indexOf(id), 1);
+      contacts = contacts.filter((contact) => {
+        if (contact.id === id) {
+          return false;
+        }
+
+        return true;
+      });
+    } else {
+      contactIds.push(id);
+      contacts.push(contactObj);
+    }
+
+    this.setState({ contactIds, contacts });
+  }
+
+  submitShare = async ({ social, friends, groups, contacts }) => {
+    const shareInput = { social, friends, groups };
+    const recipients = contacts.map(contact => contact.phoneNumber);
+    const { share, detail, type } = this.props;
+    const { name, Trip, TripStart, TripEnd, id } = detail;
+    let smsBody = '';
+
+    if (type === FEEDABLE_GROUP) {
+      smsBody = `I want to share group ${name} with you.`;
+    }
+
+    if (type === FEEDABLE_TRIP) {
+      smsBody = `I want to share trip ${TripStart.name} - ${TripEnd.name} with you`;
+    }
+
+    if (type === FEEDABLE_EXPERIENCE) {
+      smsBody = `I want to share an experience with you between ${Trip.TripStart.name} - ${Trip.TripEnd.name}.`;
+    }
+
+    try {
+      if (social.length > 0 || friends.length > 0 || groups.length > 0) {
+        await share({ id, type, share: shareInput });
+      }
+
+      if (recipients.length > 0) {
+        SendSMS.send({
+          body: smsBody,
+          recipients,
+          successTypes: ['sent', 'queued'],
+        }, () => { });
+      }
+      this.onClose();
+    } catch (error) {
+      this.onClose();
+    }
+  }
+
   hasOption = (type, key) => {
     const data = this.state[type];
 
@@ -122,7 +255,7 @@ class Share extends Component {
   }
 
   showGroup() {
-    return this.props.showGroup;
+    return this.props.type !== FEEDABLE_GROUP;
   }
 
   buttonText() {
@@ -131,10 +264,6 @@ class Share extends Component {
 
   renderGroups() {
     const { groups } = this.props;
-
-    if (groups.loading) {
-      return (<Loading />);
-    }
 
     if (groups.rows.length === 0) {
       return null;
@@ -159,80 +288,130 @@ class Share extends Component {
     );
   }
 
+  renderList = () => {
+    const { bestFriends, friends, contacts, user } = this.props;
+
+    if (this.state.searchQuery.length > 0) {
+      return (<View style={styles.listWrapper}>
+        <FriendList
+          friendsLoading={friends.loading}
+          contactsLoading={contacts.loading}
+          title="Your Friends"
+          friends={this.state.friendsListSearch}
+          contacts={this.state.contactsListSearch}
+          setOption={this.setOption}
+          selectedFriends={this.state.friends}
+          selectedContacts={this.state.contactIds}
+          setContactOption={this.setContactOption}
+        />
+      </View>);
+    }
+
+    return (<View style={styles.listWrapper}>
+      {!this.isModal() &&
+        <ShareItem
+          readOnly
+          selected={this.hasOption('social', 'copy_to_clip')}
+          label={trans('global.publish_to_whole_movement')}
+          onPress={() => { }}
+        />
+      }
+      <ShareItem
+        imageSource={require('@assets/icons/ic_copy.png')}
+        selected={this.hasOption('social', 'copy_to_clip')}
+        label={trans('global.copy_to_clipboard')}
+        onPress={() => this.setOption('social', 'copy_to_clip')}
+      />
+      {user.fbId &&
+        <ShareItem
+          imageSource={require('@assets/icons/ic_facebook.png')}
+          selected={this.hasOption('social', 'facebook')}
+          label={trans('global.your_fb_timeline')}
+          onPress={() => this.setOption('social', 'facebook')}
+        />}
+      {user.twitterId &&
+        <ShareItem
+          imageSource={require('@assets/icons/ic_twitter.png')}
+          selected={this.hasOption('social', 'tweet')}
+          label={trans('global.tweet')}
+          onPress={() => this.setOption('social', 'tweet')}
+        />}
+      <RecentFriendList
+        loading={bestFriends.loading}
+        friends={bestFriends.rows}
+        total={bestFriends.count}
+        title="Recent"
+        setOption={this.setOption}
+        selected={this.state.friends}
+      />
+      {this.showGroup() && this.renderGroups()}
+      <FriendList
+        friendsLoading={friends.loading}
+        contactsLoading={contacts.loading}
+        title="Your Friends"
+        friends={this.state.friendsList}
+        contacts={this.state.contactsList}
+        setOption={this.setOption}
+        setContactOption={this.setContactOption}
+        selectedFriends={this.state.friends}
+        selectedContacts={this.state.contactIds}
+      />
+    </View>);
+  }
+
+  renderButton = () => {
+    const { loading } = this.state;
+
+    if (loading) {
+      return (<Loading />);
+    }
+
+    return (
+      <RoundedButton
+        onPress={this.onNext}
+        bgColor={Colors.background.pink}
+        style={styles.button}
+      >
+        {trans('global.share')}
+      </RoundedButton>
+    );
+  }
+
   render() {
-    const { friends, bestFriends, isOffer } = this.props;
+    const { labelColor } = this.props;
 
     return (
       <View style={styles.wrapper}>
-        {
-          this.isModal() &&
-          <View style={styles.navBar}>
-            <CloseButton onPress={this.onClose} />
-            <Text style={styles.pageTitle} >{trans('global.share_with')}</Text>
-            <View style={styles.map} />
-          </View>
-        }
-        {!this.isModal() &&
-          <SectionLabel label={trans('global.invite_and_publish')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
-        }
-        <View style={styles.searchWrapper}>
-          <Image source={require('@assets/icons/icon_search_blue.png')} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchField}
-            placeholder={trans('global.search')}
+        <View style={styles.header}>
+          {
+            this.isModal() &&
+            <View style={styles.navBar}>
+              <TouchableHighlight
+                style={styles.closeIcon}
+                underlayColor="#f5f5f5"
+                onPress={this.onClose}
+              >
+                <Image source={require('@assets/icons/ic_back.png')} />
+              </TouchableHighlight>
+              <Text style={styles.pageTitle} >{trans('global.share_with')}</Text>
+              <View style={styles.map} />
+            </View>
+          }
+          {!this.isModal() &&
+            <SectionLabel label={trans('global.invite_and_publish')} color={labelColor} />
+          }
+          <SearchBar
+            placeholder="Search contacts"
+            onChange={this.onChangeSearchQuery}
+            defaultValue={this.state.searchQuery}
+            onPressClose={() => this.setState({ searchQuery: '' })}
           />
         </View>
-        <View style={styles.listWrapper}>
-          {!this.isModal() &&
-            <ShareItem
-              readOnly
-              selected={this.hasOption('social', 'copy_to_clip')}
-              label={trans('global.publish_to_whole_movement')}
-              onPress={() => { }}
-            />
-          }
-          <ShareItem
-            imageSource={require('@assets/icons/ic_copy.png')}
-            selected={this.hasOption('social', 'copy_to_clip')}
-            label={trans('global.copy_to_clipboard')}
-            onPress={() => this.setOption('social', 'copy_to_clip')}
-          />
-          <ShareItem
-            imageSource={require('@assets/icons/ic_facebook.png')}
-            selected={this.hasOption('social', 'facebook')}
-            label={trans('global.your_fb_timeline')}
-            onPress={() => this.setOption('social', 'facebook')}
-          />
-          <ShareItem
-            imageSource={require('@assets/icons/ic_twitter.png')}
-            selected={this.hasOption('social', 'tweet')}
-            label={trans('global.tweet')}
-            onPress={() => this.setOption('social', 'tweet')}
-          />
-          <FriendList
-            loading={bestFriends.loading}
-            friends={bestFriends.rows}
-            total={bestFriends.count}
-            title="Recent"
-            setOption={this.setOption}
-            selected={this.state.friends}
-          />
-          <FriendList
-            loading={friends.loading}
-            friends={friends.rows}
-            total={friends.count}
-            title="Friends"
-            setOption={this.setOption}
-            selected={this.state.friends}
-          />
-          {this.showGroup() && this.renderGroups()}
-          <RoundedButton
-            onPress={this.onNext}
-            bgColor={Colors.background.pink}
-            style={styles.button}
-          >
-            {trans('global.share')}
-          </RoundedButton>
+        <ScrollView>
+          {this.renderList()}
+        </ScrollView>
+        <View style={styles.footer}>
+          {this.renderButton()}
         </View>
       </View>
     );
@@ -240,14 +419,18 @@ class Share extends Component {
 }
 
 Share.propTypes = {
+  share: PropTypes.func.isRequired,
+  detail: PropTypes.shape({
+    id: PropTypes.number,
+  }),
+  type: PropTypes.oneOf([FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE]),
   onClose: PropTypes.func,
-  onNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func,
   groups: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
   }).isRequired,
   modal: PropTypes.bool,
-  showGroup: PropTypes.bool,
   friends: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
@@ -256,14 +439,32 @@ Share.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
   }).isRequired,
-  isOffer: PropTypes.bool,
+  contacts: PropTypes.shape({
+    name: PropTypes.string,
+    phoneNumber: PropTypes.string,
+  }).isRequired,
+  labelColor: PropTypes.string,
+  user: PropTypes.shape({
+    fbId: PropTypes.string,
+    twitterId: PropTypes.string,
+  }).isRequired,
 };
 
 Share.defaultProps = {
   onClose: () => { },
   modal: false,
-  showGroup: true,
-  isOffer: false,
+  type: '',
+  labelColor: Colors.text.pink,
+  onNext: null,
+  detail: null,
 };
 
-export default compose(withMyGroups, withBestFriends, withFriends)(Share);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+
+export default compose(withMyGroups,
+  withBestFriends,
+  withFriends,
+  withContactFriends,
+  withShare,
+  connect(mapStateToProps))(Share);
