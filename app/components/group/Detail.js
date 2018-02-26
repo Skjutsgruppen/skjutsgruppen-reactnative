@@ -16,7 +16,7 @@ import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
-import GroupFeed from '@components/group/feed/list';
+import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
 import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
@@ -334,8 +334,9 @@ class Detail extends PureComponent {
         />}
         <GroupFeedList
           header={header}
-          groupId={group.id}
+          id={group.id}
           isAdmin={group.isAdmin}
+          type={FEEDABLE_GROUP}
         />
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />

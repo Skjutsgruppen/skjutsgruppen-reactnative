@@ -5,7 +5,7 @@ import Colors from '@theme/colors';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
-import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, FLEXIBILITY_EARLIER_TYPE } from '@config/constant';
 import TouchableHighlight from '@components/touchableHighlight';
 
 const cardHeight = 484;
@@ -124,7 +124,17 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
               <Text style={[styles.text, styles.lightText]}>
                 {trip.TripStart.name} - {trip.TripEnd.name}
               </Text>
-              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
+              <Text style={[styles.text, styles.lightText]}>
+                <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
+                {
+                  trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
+                  <Text>
+                    {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' +' : ' -'}
+                    {trip.flexibilityInfo.duration}
+                    {trip.flexibilityInfo.unit}
+                  </Text>
+                }
+              </Text>
             </View>
           </View>
           <View style={styles.comment}>

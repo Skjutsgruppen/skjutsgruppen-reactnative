@@ -342,7 +342,7 @@ export const withGroup = graphql(FIND_GROUP_QUERY, {
 
 export const GROUP_FEED_QUERY = gql`
 query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
-  groupFeed(offset: $offset, limit: $limit, groupId: $groupId){
+  feeds: groupFeed(offset: $offset, limit: $limit, groupId: $groupId){
     rows {
       id
       date
@@ -352,7 +352,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
         avatar 
         relation {
           id 
-          firstName 
+          firstName
           avatar 
         }
       } 
@@ -576,23 +576,23 @@ subscription groupFeed($groupId: Int!){
 `;
 
 export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
-  options: ({ groupId }) => ({
-    variables: { offset: 0, limit: PER_FETCH_LIMIT, groupId },
+  options: ({ id }) => ({
+    variables: { offset: 0, limit: PER_FETCH_LIMIT, groupId: id },
     fetchPolicy: 'cache-and-network',
   }),
   props: ({
-    data: { loading, groupFeed, fetchMore, refetch, subscribeToMore, networkStatus, error },
+    data: { loading, feeds, fetchMore, refetch, subscribeToMore, networkStatus, error },
   }) => {
     let rows = [];
     let count = 0;
 
-    if (groupFeed) {
-      rows = groupFeed.rows;
-      count = groupFeed.count;
+    if (feeds) {
+      rows = feeds.rows;
+      count = feeds.count;
     }
 
     return {
-      groupFeed: {
+      feeds: {
         loading,
         rows,
         count,
@@ -602,19 +602,19 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
         networkStatus,
         error,
       },
-      subscribeToGroupFeed: ({ groupId }) => subscribeToMore({
+      subscribeToNewFeed: ({ id }) => subscribeToMore({
         document: GROUP_FEED_SUBSCRIPTION,
-        variables: { groupId },
+        variables: { groupId: id },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
             return prev;
           }
 
-          const newrows = [subscriptionData.data.groupFeed].concat(prev.groupFeed.rows);
+          const newrows = [subscriptionData.data.groupFeed].concat(prev.feeds.rows);
           return {
-            groupFeed: {
-              ...prev.groupFeed,
-              ...{ rows: newrows, count: prev.groupFeed.count + 1 },
+            feeds: {
+              ...prev.feeds,
+              ...{ rows: newrows, count: prev.feeds.count + 1 },
             },
           };
         },
