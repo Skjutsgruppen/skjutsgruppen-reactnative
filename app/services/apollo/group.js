@@ -843,6 +843,7 @@ const GROUP_TRIPS_QUERY = gql`
       mapPhoto
       totalComments
       isParticipant
+      seats
     }
   }
 `;
