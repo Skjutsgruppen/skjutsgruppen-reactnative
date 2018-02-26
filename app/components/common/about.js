@@ -4,6 +4,8 @@ import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
 import Curves from '@assets/curves.png';
 import HRVLogo from '@assets/HRV_logo.png';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const About = () => (
+const About = ({ user }) => (
   <View style={styles.wrapper}>
     <Image source={Curves} style={styles.curves} />
     <Text style={styles.heading}>{trans('about.you_are_a_part_of_ride_sharing_movement')}</Text>
@@ -73,7 +75,7 @@ const About = () => (
     <Text style={styles.text}>{trans('about.we_are_going_same_direction')}</Text>
     <Text style={styles.text}>
       {trans('about.we_share_the_costs_of_our_ride')}
-      {trans('about.thank_you_for_being_a_part')}
+      {trans('about.thank_you_for_being_a_part')} {user.firstName}!
     </Text>
     <View style={styles.horizontalDivider} />
     <View style={styles.infoRow}>
@@ -102,7 +104,7 @@ const About = () => (
       </View>
     </View>
     <View style={[styles.infoRow, { marginBottom: 0 }]}>
-      <Image source={require('@assets/profilePic.jpg')} style={styles.avatar} />
+      <Image source={{ uri: user.avatar }} style={styles.avatar} />
       <View style={{ flex: 1 }}>
         <Text style={styles.infoTitle}>{trans('about.you_are_awesome')}</Text>
         <Text style={styles.text}>
@@ -114,11 +116,21 @@ const About = () => (
     <View styles={styles.HRV}>
       <Text style={styles.infoTitle}>{trans('about.we_made_this_together')}</Text>
       <Text style={styles.text}>
-        {trans('about.the_movement_is_self_regulating')}
+        {trans('about.this_app_is_enabled')}
       </Text>
       <Image source={HRVLogo} style={styles.hrvLogo} />
     </View>
   </View>
 );
 
-export default About;
+About.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(About);

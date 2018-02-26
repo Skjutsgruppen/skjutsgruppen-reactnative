@@ -13,6 +13,7 @@ import ExperienceDetail from '@screens/experience/ExperienceDetail';
 
 import ExploreGroup from '@screens/group/ExploreGroup';
 import SearchGroup from '@screens/group/SearchGroup';
+import SharedTrip from '@screens/group/SharedTrip';
 
 import OnBoardingFirst from '@screens/auth/onboarding/first';
 import OnBoardingSecond from '@screens/auth/onboarding/second';
@@ -173,6 +174,7 @@ export const Routes = {
   SearchNotification: { screen: SearchNotification },
 
   Report: { screen: Report },
+  SharedTrip: { screen: SharedTrip },
 };
 
 export const AppNavigator = StackNavigator(Routes,

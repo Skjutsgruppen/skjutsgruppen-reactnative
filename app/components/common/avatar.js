@@ -10,9 +10,29 @@ const styles = StyleSheet.create({
     bottom: -2,
     right: 0,
   },
+  indicator: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 20,
+    backgroundColor: 'red',
+  },
 });
 
-const Avatar = ({ imageURI, notTouchable, size, style, onPress, isSupporter, ...props }) => {
+const Avatar = ({
+  imageURI,
+  notTouchable,
+  size,
+  style,
+  onPress,
+  isSupporter,
+  showIndicator,
+  indicatorColor,
+  ...props
+}) => {
   const wrapperStyle = {
     height: size,
     width: size,
@@ -27,9 +47,14 @@ const Avatar = ({ imageURI, notTouchable, size, style, onPress, isSupporter, ...
 
   const leafSize = parseInt(size * 0.3, 0);
 
+  const indicator = showIndicator ?
+    <View style={[styles.indicator, { backgroundColor: indicatorColor }]} />
+    : null;
+
   if (notTouchable) {
     return (
       <View style={[{ ...wrapperStyle }, style]}>
+        {indicator}
         {imageURI !== '' && <Image source={{ uri: imageURI }} style={avatarStyle} {...props} />}
         {
           isSupporter && <Image
@@ -43,6 +68,7 @@ const Avatar = ({ imageURI, notTouchable, size, style, onPress, isSupporter, ...
 
   return (
     <TouchableOpacity onPress={onPress} style={[{ ...wrapperStyle }, style]}>
+      {indicator}
       <Image source={{ uri: imageURI }} style={avatarStyle} {...props} />
       {
         isSupporter && <Image
@@ -61,6 +87,8 @@ Avatar.propTypes = {
   size: PropTypes.number.isRequired,
   style: Image.propTypes.style,
   onPress: PropTypes.func,
+  showIndicator: PropTypes.bool,
+  indicatorColor: PropTypes.string,
 };
 
 Avatar.defaultProps = {
@@ -69,6 +97,8 @@ Avatar.defaultProps = {
   style: {},
   imageURI: '',
   onPress: () => { },
+  showIndicator: false,
+  indicatorColor: 'transparent',
 };
 
 export default Avatar;
