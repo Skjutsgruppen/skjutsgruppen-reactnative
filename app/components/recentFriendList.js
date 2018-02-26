@@ -64,29 +64,21 @@ const styles = StyleSheet.create({
   },
 });
 
-const FriendList = ({
-  friendsLoading,
-  contactsLoading,
-  title,
-  friends,
-  contacts,
-  setOption,
-  setContactOption,
-  selectedFriends,
-  selectedContacts,
-  disabled,
-}) => {
-  if (friendsLoading && contactsLoading) return (<Loading />);
+const RecentFriendList = ({ title, loading, friends, setOption, selected, disabled }) => {
+  const filteredFriends = friends.filter(row => row);
 
-  const hasOption = key => selectedFriends.indexOf(key) > -1;
+  if (loading && filteredFriends.length < 1) return (<Loading />);
+
+  if (filteredFriends.length < 1) return null;
+
+  const hasOption = key => selected.indexOf(key) > -1;
   const hasDisabled = key => disabled.indexOf(key) > -1;
-  const hasContactOption = key => selectedContacts.indexOf(key) > -1;
 
   return (
     <View style={styles.list}>
       <Text style={styles.shareCategoryTitle}>{title.toUpperCase()}</Text>
       {
-        friends.map(friend => (
+        filteredFriends.map(friend => (
           <ShareItem
             key={friend.id}
             imageSource={{ uri: friend.avatar }}
@@ -97,44 +89,25 @@ const FriendList = ({
           />
         ))
       }
-      {
-        contacts.map(contact => (
-          <ShareItem
-            key={contact.id}
-            imageSource={require('@assets/icons/ic_user_default.png')}
-            hasPhoto
-            selected={hasContactOption(contact.id)}
-            label={contact.name}
-            onPress={() => setContactOption(contact.id, contact)}
-          />
-        ))
-      }
     </View>
   );
 };
 
-FriendList.propTypes = {
+RecentFriendList.propTypes = {
   title: PropTypes.string.isRequired,
-  friendsLoading: PropTypes.bool.isRequired,
-  contactsLoading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
   friends: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     avatar: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
   })).isRequired,
-  contacts: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  })).isRequired,
   setOption: PropTypes.func.isRequired,
-  setContactOption: PropTypes.func.isRequired,
-  selectedFriends: PropTypes.arrayOf(PropTypes.number).isRequired,
-  selectedContacts: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selected: PropTypes.arrayOf(PropTypes.number).isRequired,
   disabled: PropTypes.arrayOf(PropTypes.number),
 };
 
-FriendList.defaultProps = {
+RecentFriendList.defaultProps = {
   disabled: [],
 };
 
-export default FriendList;
+export default RecentFriendList;

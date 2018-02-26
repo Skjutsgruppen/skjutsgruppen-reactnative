@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import CheckIconPink from '@assets/icons/ic_checked_pink.png';
@@ -72,7 +72,7 @@ Radio.propTypes = {
   color: PropTypes.string,
   label: PropTypes.string,
   onPress: PropTypes.func,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 Radio.defaultProps = {
   readOnly: false,

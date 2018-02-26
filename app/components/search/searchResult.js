@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
@@ -105,9 +105,9 @@ class SearchResult extends Component {
     super(props);
     this.state = {
       filters: [],
-      modalDetail: {},
-      modalType: '',
-      isOpen: false,
+      Shareable: {},
+      shareableType: '',
+      showShareModal: false,
       resultsStyle: 'card',
       arrowX: 0,
     };
@@ -136,21 +136,6 @@ class SearchResult extends Component {
       navigation.navigate('Profile', { profileId: detail });
     }
   };
-
-  onSharePress = (isGroup) => {
-    this.setState({ isOpen: true, isGroup: isGroup !== FEED_TYPE_GROUP });
-  };
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-
-  onClose = () => {
-    this.setState({ isOpen: false });
-  }
 
   onFilterSelect = (param) => {
     const { filters } = this.state;
@@ -245,7 +230,7 @@ class SearchResult extends Component {
         renderItem={({ item }) => (
           <SearchItem
             key={item.id}
-            onSharePress={this.onSharePress}
+            onSharePress={this.setState({ showShareModal: true })}
             onPress={this.onPress}
             searchResult={item}
             resultsStyle={this.state.resultsStyle}
@@ -268,20 +253,19 @@ class SearchResult extends Component {
   };
 
   renderShareModal() {
+    const { showShareModal, Shareable, shareableType } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup={this.state.modalType !== FEED_TYPE_GROUP}
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={shareableType}
+          detail={Shareable}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -375,7 +359,6 @@ class SearchResult extends Component {
 }
 
 SearchResult.propTypes = {
-  share: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
     state: PropTypes.shape({

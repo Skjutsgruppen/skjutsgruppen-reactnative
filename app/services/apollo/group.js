@@ -67,6 +67,7 @@ mutation group
       membershipStatus
       totalParticipants
       isAdmin
+      url
     }
 }
 `;

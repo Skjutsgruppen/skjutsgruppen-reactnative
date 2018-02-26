@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  ViewPropTypes,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
@@ -70,7 +71,7 @@ GroupImage.propTypes = {
     imageURI: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
   roundedCorner: PropTypes.bool,
 };
 

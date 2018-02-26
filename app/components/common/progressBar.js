@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 
@@ -29,7 +29,7 @@ const ProgressBar = ({ amount, style, color }) => {
 
 ProgressBar.propTypes = {
   amount: PropTypes.number.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   color: PropTypes.string,
 };
 

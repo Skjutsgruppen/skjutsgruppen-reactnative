@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Chevron from '@assets/icons/ic_chevron_white.png';
@@ -44,7 +44,7 @@ Button.propTypes = {
   label: PropTypes.string.isRequired,
   icon: PropTypes.string,
   onPress: PropTypes.func.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 Button.defaultProps = {

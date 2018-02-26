@@ -81,7 +81,7 @@ class ExperienceDetail extends Component {
     super(props);
     this.state = {
       experience: {},
-      isOpen: false,
+      showShareModal: false,
       optionsOpen: false,
       deleting: false,
       sent: false,
@@ -99,20 +99,6 @@ class ExperienceDetail extends Component {
 
   componentWillReceiveProps({ experience, pending }) {
     this.setState({ experience, showNotification: pending });
-  }
-
-  onSharePress = () => {
-    this.setState({ isOpen: true });
-  }
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.experience.id, type: FEEDABLE_EXPERIENCE, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch(console.warn);
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
   }
 
   onDeletePress = () => {
@@ -192,28 +178,28 @@ class ExperienceDetail extends Component {
 
   renderReport = () => (<ModalAction label="Report this experience" onPress={() => { }} />)
 
-
   renderShareModal() {
     if (this.props.pending) {
       return null;
     }
 
+    const { showShareModal, experience } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={FEEDABLE_EXPERIENCE}
+          detail={experience}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
+
 
   renderDeleteExperience = () => (<ModalAction label="Delete this experience" onPress={this.onDeletePress} />);
 
@@ -303,9 +289,12 @@ class ExperienceDetail extends Component {
           <View style={styles.infoSection}>
             <Info experience={experience} loading={loading} />
             {
-              !pending &&
+              (!pending && !loading) &&
               <View style={styles.actions}>
-                <TouchableOpacity onPress={this.onSharePress} style={styles.button}>
+                <TouchableOpacity
+                  onPress={() => this.setState({ showShareModal: true })}
+                  style={styles.button}
+                >
                   <Text style={styles.buttonLabel}>Share</Text>
                   <Image source={ShareIcon} style={styles.buttonIcon} />
                 </TouchableOpacity>
@@ -326,7 +315,6 @@ class ExperienceDetail extends Component {
 }
 
 ExperienceDetail.propTypes = {
-  share: PropTypes.func.isRequired,
   experience: PropTypes.shape({
     Participants: PropTypes.array,
     Trip: PropTypes.object,

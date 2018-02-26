@@ -9,6 +9,10 @@ export function getToast(toast) {
     return toastArray.join('\n');
   }
 
+  if (toast.message) {
+    return toast.message;
+  }
+
   toast.forEach(err => toastArray.push(AppToastCode[err]));
 
   return toastArray.join('\n');

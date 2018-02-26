@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -35,7 +35,7 @@ const CustomButton = ({ children, style, onPress, bgColor, textColor, disabled }
 
 CustomButton.propTypes = {
   children: PropTypes.string.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
   bgColor: PropTypes.string,
   textColor: PropTypes.string,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 
@@ -56,7 +56,7 @@ const Input = ({ style, placeholder, defaultValue, onChangeText, ...props }) => 
 );
 
 Input.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.string,
   onChangeText: PropTypes.func,
