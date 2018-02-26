@@ -179,7 +179,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
 
 Group.propTypes = {
   group: PropTypes.shape({
-    photo: PropTypes.string.isRequired,
+    photo: PropTypes.string,
     name: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     User: PropTypes.object.isRequired,

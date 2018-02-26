@@ -1,6 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
+import { increaseFeedCommentCount } from '@services/apollo/dataSync';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -71,6 +72,11 @@ subscription{
         mapPhoto
         totalComments
         isParticipant
+        flexibilityInfo {
+          duration
+          unit
+          type
+        }
       }
     }
     ... on NewsFeed { 
@@ -181,6 +187,11 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         mapPhoto
         totalComments
         isParticipant
+        flexibilityInfo {
+          duration
+          unit
+          type
+        }
       }
     }
     ... on NewsFeed { 
@@ -676,6 +687,256 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
           return {
             trips: { ...prev.trips, ...{ rows, count: count + 1 } },
           };
+        },
+      }),
+    };
+  },
+});
+
+const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
+  subscription tripFeed($tripId: Int) {
+    tripFeed(tripId: $tripId){
+      remove
+      Feed {
+        id
+        date
+        User {
+          id
+          firstName
+          lastName
+          avatar
+        }
+        rate
+        updatedAt
+        ActivityType {
+          type
+        }
+        feedable
+        ...on TripCommentActivity{
+          Comment: TripComment {
+            id
+            date
+            text
+            User {
+              id
+              firstName
+              lastName
+              avatar
+            }
+          }
+        }
+        ...on TripExperienceActivity {
+          Experience: AddedExperience {
+            id
+            User {
+              id
+              firstName
+              lastName
+              avatar
+            }
+            description
+            Participants {
+              User {
+                id
+                firstName
+                lastName
+                avatar
+              }
+              status
+            }
+            photoUrl
+            Trip {
+              id
+              TripStart {
+                name
+                coordinates
+              }
+              TripEnd {
+                name
+                coordinates
+              }
+            }
+            published
+            publishedStatus
+            userStatus
+          }
+        }
+        ...on TripSuggestionActivity {
+          Trip: SuggestedTrip {
+            id
+            description
+            date
+            seats
+            type
+            mapPhoto
+            User {
+              id
+              firstName
+              lastName
+              avatar
+            }
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+            Stops {
+              name
+              coordinates
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const TRIP_FEED_QUERY = gql`
+query tripActivities($id: Int!, $limit: Int, $offset: Int) {
+  feeds: tripActivities(id: $id, limit: $limit, offset: $offset){
+    count
+    rows {
+      id
+      date
+      User {
+        id
+        firstName
+        lastName
+        avatar
+      }
+      rate
+      updatedAt
+      ActivityType {
+        type
+      }
+      feedable
+      ...on TripCommentActivity{
+        Comment: TripComment {
+          id
+          date
+          text
+          User {
+            id
+            firstName
+            lastName
+            avatar
+          }
+        }
+      }
+      ...on TripExperienceActivity {
+        Experience: AddedExperience {
+          id
+          User {
+            id
+            firstName
+            lastName
+            avatar
+          }
+          description
+          Participants {
+            User {
+              id
+              firstName
+              lastName
+              avatar
+            }
+            status
+          }
+          photoUrl
+          Trip {
+            id
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+          }
+          published
+          publishedStatus
+          userStatus
+        }
+      }
+      ...on TripSuggestionActivity {
+        Trip: SuggestedTrip {
+          id
+          description
+          date
+          seats
+          type
+          mapPhoto
+          User {
+            id
+            firstName
+            lastName
+            avatar
+          }
+          TripStart {
+            name
+            coordinates
+          }
+          TripEnd {
+            name
+            coordinates
+          }
+          Stops {
+            name
+            coordinates
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const withTripFeed = graphql(TRIP_FEED_QUERY, {
+  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({
+    variables: { id, offset, limit },
+    fetchPolicy: 'cache-and-network',
+  }),
+  props: ({ data }) => {
+    let rows = [];
+    let count = 0;
+    const { error, fetchMore, feeds, loading, networkStatus, subscribeToMore, refetch } = data;
+
+
+    if (feeds) {
+      rows = feeds.rows.slice(0).reverse();
+      count = feeds.count;
+    }
+
+    return {
+      feeds: { rows, count, fetchMore, loading, error, networkStatus, refetch },
+      subscribeToNewFeed: ({ id, userId }) => subscribeToMore({
+        document: TRIPS_FEED_SUBSCRIPTION_QUERY,
+        variables: { tripId: id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          let repeated = false;
+          const { Feed } = subscriptionData.data.tripFeed;
+
+          const found = prev.feeds.rows.filter(row => row.id === Feed.id);
+          repeated = found.length > 0;
+          let prevFeeds = prev.feeds;
+
+          if (!repeated) {
+            rows = [Feed].concat(prevFeeds.rows);
+            increaseFeedCommentCount(id, (Feed.User.id === userId));
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count + 1 } };
+          }
+
+          return { feeds: prevFeeds };
         },
       }),
     };
