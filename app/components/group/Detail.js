@@ -16,7 +16,7 @@ import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { AppNotification, Wrapper, Loading, FloatingNavbar } from '@components/common';
 import Colors from '@theme/colors';
-import GroupFeed from '@components/group/feed/list';
+import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
 import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
@@ -317,6 +317,34 @@ class Detail extends PureComponent {
     );
   }
 
+  renderCalendarModal() {
+    const { showCalendar } = this.state;
+    const { group } = this.props;
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent
+        onRequestClose={() => this.setState({ showCalendar: false })}
+        visible={showCalendar}
+      >
+        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+          <View style={styles.groupCalendarContent}>
+            <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
+            <View style={styles.closeWrapper}>
+              <TouchableOpacity
+                style={styles.closeModal}
+                onPress={() => this.setCalendarVisibilty(false)}
+              >
+                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
   render() {
     const { navigation, group } = this.props;
     const { leaveLoading, notification, notifierOffset, loading, error, success } = this.state;
@@ -325,6 +353,8 @@ class Detail extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
         <FloatingNavbar handleBack={this.goBack} offset={notifierOffset} />
         {notification && <AppNotification
           image={notifier.avatar}
@@ -334,11 +364,11 @@ class Detail extends PureComponent {
         />}
         <GroupFeedList
           header={header}
-          groupId={group.id}
+          footer={<View style={{ marginTop: 100 }} />}
+          id={group.id}
           isAdmin={group.isAdmin}
+          type={FEEDABLE_GROUP}
         />
-        <Toast message={error} type="error" />
-        <Toast message={success} type="success" />
         <CommentBox
           handleSend={this.onSubmit}
           loading={loading}
@@ -348,29 +378,7 @@ class Detail extends PureComponent {
           onAsk={this.onAsk}
         />
         {this.renderShareModal()}
-        {
-          this.state.showCalendar &&
-          <Modal
-            animationType="slide"
-            transparent
-            onRequestClose={() => this.setState({ showCalendar: false })}
-            visible={this.state.showCalendar}
-          >
-            <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-              <View style={styles.groupCalendarContent}>
-                <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
-                <View style={styles.closeWrapper}>
-                  <TouchableOpacity
-                    style={styles.closeModal}
-                    onPress={() => this.setCalendarVisibilty(false)}
-                  >
-                    <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        }
+        {this.renderCalendarModal()}
       </Wrapper>
     );
   }
