@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { View, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Item from '@components/group/feed/item';
+import Item from '@components/feed/item';
 import { compose } from 'react-apollo';
-import { withShare } from '@services/apollo/share';
 import Share from '@components/common/share';
 import {
   FEEDABLE_PROFILE,
   FEEDABLE_EXPERIENCE,
   FEEDABLE_GROUP,
   FEEDABLE_TRIP,
+  REPORT_COMMENT_TYPE,
 } from '@config/constant';
 import RelationModal from '@components/relationModal';
 import DataList from '@components/dataList';
@@ -18,6 +18,7 @@ import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import { withDeleteComment } from '@services/apollo/comment';
 import ConfirmModal from '@components/common/confirmModal';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -87,7 +88,7 @@ Action.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-class GroupFeed extends Component {
+class FeedList extends Component {
   constructor(props) {
     super(props);
     this.state = ({
@@ -99,20 +100,20 @@ class GroupFeed extends Component {
       friendsData: [],
       isLongPressModalOpen: false,
       isOwner: false,
-      commentId: null,
+      comment: {},
       showConfirm: false,
       deleting: false,
     });
   }
 
   componentWillMount() {
-    const { subscribeToGroupFeed, groupId } = this.props;
+    const { subscribeToNewFeed, id, user } = this.props;
 
-    subscribeToGroupFeed({ groupId });
+    subscribeToNewFeed({ id, userId: user.id });
   }
 
-  onCommentLongPress = ({ isOwner, commentId }) => {
-    this.setState({ isLongPressModalOpen: true, isOwner, commentId });
+  onCommentLongPress = ({ isOwner, comment }) => {
+    this.setState({ isLongPressModalOpen: true, isOwner, comment });
   }
 
   onCommentLongPressClose = () => {
@@ -139,6 +140,13 @@ class GroupFeed extends Component {
     }
   };
 
+  onCommentReport = () => {
+    const { navigation } = this.props;
+    this.onCommentLongPressClose();
+
+    navigation.navigate('Report', { data: this.state.comment, type: REPORT_COMMENT_TYPE });
+  }
+
   setModalVisibility = (show, friendsData) => {
     this.setState({ showFoFModal: show, friendsData });
   }
@@ -149,10 +157,10 @@ class GroupFeed extends Component {
 
   deleteComment = () => {
     const { deleteComment } = this.props;
-    const { commentId } = this.state;
+    const { comment } = this.state;
 
     this.setState({ deleting: true }, () => {
-      deleteComment({ id: commentId })
+      deleteComment({ id: comment.id })
         .then(() => {
           this.setState({ deleting: false, showConfirm: false, isLongPressModalOpen: false });
         })
@@ -205,7 +213,7 @@ class GroupFeed extends Component {
             {(isOwner || isAdmin)
               && <Action label="Delete comment" onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />
             }
-            {(!isOwner && !isAdmin) && <Action label="Report comment" onPress={() => { }} />}
+            {(!isOwner && !isAdmin) && <Action label="Report comment" onPress={() => this.onCommentReport()} />}
           </View>
           <View style={styles.closeWrapper}>
             <TouchableOpacity
@@ -239,33 +247,35 @@ class GroupFeed extends Component {
   }
 
   render() {
-    const { groupFeed, header } = this.props;
+    const { feeds, header, footer, type } = this.props;
 
     return (
       <View style={styles.wrapper}>
         <DataList
-          data={groupFeed}
+          data={feeds}
           header={header}
+          footer={footer}
+          infinityScroll={type !== FEEDABLE_TRIP}
           renderItem={({ item }) => (
             <Item
               onPress={this.onPress}
               onSharePress={(shareableType, shareable) =>
                 this.setState({ showShareModal: true, shareableType, shareable })}
-              groupFeed={item}
+              feed={item}
               setModalVisibility={this.setModalVisibility}
               onCommentLongPress={this.onCommentLongPress}
             />
           )}
           fetchMoreOptions={{
-            variables: { offset: groupFeed.rows.length },
+            variables: { offset: feeds.rows.length },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || fetchMoreResult.groupFeed.rows.length === 0) {
+              if (!fetchMoreResult || fetchMoreResult.feeds.rows.length === 0) {
                 return previousResult;
               }
 
-              const rows = previousResult.groupFeed.rows.concat(fetchMoreResult.groupFeed.rows);
+              const rows = previousResult.feeds.rows.concat(fetchMoreResult.feeds.rows);
 
-              return { groupFeed: { ...previousResult.groupFeed, ...{ rows } } };
+              return { feeds: { ...previousResult.feeds, ...{ rows } } };
             },
           }}
         />
@@ -278,10 +288,10 @@ class GroupFeed extends Component {
   }
 }
 
-GroupFeed.propTypes = {
+FeedList.propTypes = {
   isAdmin: PropTypes.bool,
-  groupId: PropTypes.number.isRequired,
-  groupFeed: PropTypes.shape({
+  id: PropTypes.number.isRequired,
+  feeds: PropTypes.shape({
     loading: PropTypes.boolean,
     error: PropTypes.object,
     count: PropTypes.number.isRequired,
@@ -290,16 +300,29 @@ GroupFeed.propTypes = {
     refetch: PropTypes.func,
     fetchMore: PropTypes.fetchMore,
   }).isRequired,
-  header: PropTypes.element.isRequired,
+  header: PropTypes.element,
+  footer: PropTypes.element,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  subscribeToGroupFeed: PropTypes.func.isRequired,
+  subscribeToNewFeed: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  type: PropTypes.string.isRequired,
 };
 
-GroupFeed.defaultProps = {
+FeedList.defaultProps = {
   isAdmin: false,
+  header: null,
+  footer: null,
 };
 
-export default compose(withShare, withDeleteComment, withNavigation)(GroupFeed);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(
+  withDeleteComment,
+  withNavigation,
+  connect(mapStateToProps),
+)(FeedList);
