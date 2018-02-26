@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-    marginBottom: 16,
   },
   text: {
     flex: 1,
@@ -28,7 +27,7 @@ const RoundedButton = ({ children, style, onPress, bgColor, textColor }) => (
 
 RoundedButton.propTypes = {
   children: PropTypes.string.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
   bgColor: PropTypes.string,
   textColor: PropTypes.string,

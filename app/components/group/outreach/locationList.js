@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Loading } from '@components/common';
-import { View, Picker } from 'react-native';
+import { ViewPropTypes, Picker } from 'react-native';
 
 const LocationList = ({ list, loading, style, selectedValue, onValueChange }) => {
   if (loading || list.length < 1) {
@@ -30,7 +30,7 @@ const LocationList = ({ list, loading, style, selectedValue, onValueChange }) =>
 LocationList.propTypes = {
   list: PropTypes.arrayOf(PropTypes.object).isRequired,
   loading: PropTypes.bool.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   selectedValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

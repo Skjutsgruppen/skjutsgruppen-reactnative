@@ -39,3 +39,26 @@ export const withContactSync = graphql(SYNC_CONTACTS, {
     },
   }),
 });
+
+const CONTACTS_QUERY = gql`
+query contacts($limit: Int, $offset: Int) {
+  contacts(limit: $limit, offset: $offset){
+    name
+    phoneNumber
+  }
+}
+`;
+
+export const withContactFriends = graphql(CONTACTS_QUERY, {
+  options: ({
+    offset = 0,
+    limit = null,
+  }) =>
+    ({
+      variables: { offset, limit },
+      fetchPolicy: 'network-only',
+    }),
+  props: ({ data: { contacts, loading, networkStatus } }) => ({
+    contacts: { rows: contacts, loading, networkStatus },
+  }),
+});

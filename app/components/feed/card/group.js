@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import { Footer } from '@components/feed/card';
@@ -195,7 +195,7 @@ Group.propTypes = {
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,
   min: PropTypes.bool,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
 };
 
 Group.defaultProps = {

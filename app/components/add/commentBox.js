@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
+import { StyleSheet, View, TextInput, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
@@ -47,7 +47,7 @@ const CommentBox = (
 CommentBox.propTypes = {
   label: PropTypes.string.isRequired,
   info: PropTypes.string,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   inputStyle: TextInput.propTypes.style,
   value: PropTypes.string,
   onChangeText: PropTypes.func.isRequired,

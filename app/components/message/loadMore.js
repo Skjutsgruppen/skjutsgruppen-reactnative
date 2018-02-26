@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, ViewPropTypes, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
@@ -29,7 +29,7 @@ const LoadMore = ({ onPress, remainingCount, style }) => (
 LoadMore.propTypes = {
   onPress: PropTypes.func.isRequired,
   remainingCount: PropTypes.number.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 };
 
 LoadMore.defaultProps = {

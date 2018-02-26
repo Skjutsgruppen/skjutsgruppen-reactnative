@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Modal, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Modal, Alert, Dimensions } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
 import { withFeed } from '@services/apollo/trip';
-import { withShare } from '@services/apollo/share';
 import PropTypes from 'prop-types';
 import Share from '@components/common/share';
-import { compose } from 'react-apollo';
 import Colors from '@theme/colors';
 import FeedIcon from '@assets/icons/ic_feed.png';
 import FeedIconActive from '@assets/icons/ic_feed_active.png';
@@ -98,9 +96,9 @@ class Feed extends Component {
     super(props);
     this.state = ({
       refreshing: false,
-      modalDetail: {},
-      modalType: '',
-      isOpen: false,
+      shareable: {},
+      shareableType: '',
+      showShareModal: false,
       filterOpen: false,
       filterType: FEED_FILTER_EVERYTHING,
       latitude: '',
@@ -108,6 +106,7 @@ class Feed extends Component {
       locationError: false,
       currentLocation: false,
       totalExperiences: 0,
+      loading: false,
     });
 
     this.feedList = null;
@@ -150,24 +149,6 @@ class Feed extends Component {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
   };
-
-  onSharePress = (modalType, modalDetail) => {
-    this.setState({ isOpen: true, modalType, modalDetail });
-  };
-
-  onShare = (share) => {
-    this.props.share({ id: this.state.modalDetail.id, type: this.state.modalType, share })
-      .then(() => this.setState({ isOpen: false }))
-      .catch((console.warn));
-  };
-
-  onRefreshClicked = () => {
-    this.props.feeds.refetch();
-  };
-
-  onClose = () => {
-    this.setState({ isOpen: false });
-  }
 
   onFilterChange = (type) => {
     const { filterType, longitude, latitude } = this.state;
@@ -222,10 +203,6 @@ class Feed extends Component {
     }
   }
 
-  redirectToMap = () => {
-    this.props.navigation.navigate('Map');
-  };
-
   experienceAfterCards = (index) => {
     if (this.isFirstLimitCard(index)) {
       return EXPERIENCE_FIRST_CARDS;
@@ -237,20 +214,19 @@ class Feed extends Component {
   isFirstLimitCard = index => index < EXPERIENCE_FIRST_CARDS;
 
   renderShareModal() {
+    const { showShareModal, shareableType, shareable } = this.state;
     return (
       <Modal
-        visible={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        visible={showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
         animationType="slide"
       >
-        <ScrollView>
-          <Share
-            modal
-            showGroup={this.state.modalType !== 'group'}
-            onNext={this.onShare}
-            onClose={this.onClose}
-          />
-        </ScrollView>
+        <Share
+          modal
+          type={shareableType}
+          detail={shareable}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
       </Modal>
     );
   }
@@ -305,7 +281,8 @@ class Feed extends Component {
   renderItem = ({ item, index }) => (
     <View>
       <FeedItem
-        onSharePress={this.onSharePress}
+        onSharePress={(shareableType, shareable) =>
+          this.setState({ showShareModal: true, shareableType, shareable })}
         onPress={this.onPress}
         feed={item}
       />
@@ -338,7 +315,7 @@ class Feed extends Component {
   }
 
   renderMap = () => (
-    <TouchableOpacity onPress={this.redirectToMap} style={styles.mapWrapper}>
+    <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')} style={styles.mapWrapper}>
       <Image source={Map} style={styles.mapImg} />
     </TouchableOpacity>
   );
@@ -361,7 +338,6 @@ class Feed extends Component {
 }
 
 Feed.propTypes = {
-  share: PropTypes.func.isRequired,
   feeds: PropTypes.shape({
     totalExperiences: PropTypes.numeric,
     rows: PropTypes.arrayOf(PropTypes.object),
@@ -383,4 +359,4 @@ Feed.propTypes = {
   subscribeToFeed: PropTypes.func.isRequired,
 };
 
-export default compose(withShare, withFeed)(Feed);
+export default withFeed(Feed);

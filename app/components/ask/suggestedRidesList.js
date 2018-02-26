@@ -134,8 +134,7 @@ class SuggestedRidesList extends Component {
 
   render() {
     const { search, onSubmit, defaultText } = this.props;
-
-    if (search.loading && search.length < 1) {
+    if (search.networkStatus === 1 && search.length < 1) {
       return (
         <View style={styles.centerWrapper}>
           <Loading />
@@ -143,7 +142,7 @@ class SuggestedRidesList extends Component {
       );
     }
 
-    if (search.rows.length < 1) {
+    if (search.count < 1 && !search.loading) {
       return this.renderNoSuggestion();
     }
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
-import TouchableHightlight from '@components/touchableHightlight';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -102,7 +102,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
 
   return (
     <View style={[styles.wrapper, wrapperStyle]}>
-      <TouchableHightlight
+      <TouchableHighlight
         onPress={() => onPress(FEEDABLE_TRIP, trip)}
       >
         <View>
@@ -135,7 +135,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
             {profileImage}
           </View>
         </View>
-      </TouchableHightlight>
+      </TouchableHighlight>
       {
         typeof onSharePress === 'function' &&
         <Footer
@@ -157,7 +157,7 @@ Trip.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
 };
 
 Trip.defaultProps = {

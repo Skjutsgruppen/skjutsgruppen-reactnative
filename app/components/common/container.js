@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Animated } from 'react-native';
+import { ViewPropTypes, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { withNavigation } from 'react-navigation';
@@ -37,7 +37,7 @@ class Container extends PureComponent {
 
 Container.propTypes = {
   children: PropTypes.node.isRequired,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   navigation: PropTypes.shape({
     setParams: PropTypes.func,
   }).isRequired,

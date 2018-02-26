@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
@@ -206,7 +206,7 @@ class CommentBox extends PureComponent {
 
 CommentBox.propTypes = {
   loading: PropTypes.bool,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   handleSend: PropTypes.func.isRequired,
   handleShowOptions: PropTypes.func,
   hasCalender: PropTypes.bool,
