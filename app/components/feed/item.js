@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import Feed from '@components/group/feed/default';
+import Info from '@components/feed/info';
 import { FEEDABLE_TRIP, FEED_FILTER_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
 
@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     paddingLeft: 20,
-    paddingVertical: 16,
+    paddingVertical: 6,
+    marginTop: 24,
   },
   profilePicWrapper: {
     width: 48,
@@ -47,37 +48,41 @@ const styles = StyleSheet.create({
   },
 });
 
-class GroupFeedItem extends PureComponent {
+class FeedItem extends PureComponent {
   renderProfilePic() {
-    const { groupFeed, onPress } = this.props;
+    const { feed, onPress } = this.props;
 
-    if (groupFeed.feedable === FEEDABLE_TRIP) {
+    if (feed.feedable === FEEDABLE_TRIP) {
       return (
         <View style={styles.profilePicWrapper}>
-          <TouchableOpacity onPress={() => onPress('Profile', groupFeed.User.id)}>
-            <Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />
+          <TouchableOpacity onPress={() => onPress('Profile', feed.User.id)}>
+            <Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />
           </TouchableOpacity>
-          <View
-            style={[
-              styles.indicator,
-              (groupFeed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
-            ]}
-          />
+          {
+            feed.Trip
+            &&
+            <View
+              style={[
+                styles.indicator,
+                (feed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
+              ]}
+            />
+          }
         </View>
       );
     }
 
-    return (<Image source={{ uri: groupFeed.User.avatar }} style={styles.profilePic} />);
+    return (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
   }
 
   render() {
-    const { groupFeed, onPress, setModalVisibility, onCommentLongPress } = this.props;
+    const { feed, onPress, setModalVisibility, onCommentLongPress } = this.props;
 
     return (
       <View style={styles.wrapper}>
         {this.renderProfilePic()}
-        <Feed
-          feed={groupFeed}
+        <Info
+          feed={feed}
           onPress={onPress}
           setModalVisibility={setModalVisibility}
           onCommentLongPress={onCommentLongPress}
@@ -87,8 +92,8 @@ class GroupFeedItem extends PureComponent {
   }
 }
 
-GroupFeedItem.propTypes = ({
-  groupFeed: PropTypes.shape({
+FeedItem.propTypes = ({
+  feed: PropTypes.shape({
     ActivityType: PropTypes.shape({
       type: PropTypes.string,
     }),
@@ -105,4 +110,4 @@ GroupFeedItem.propTypes = ({
   onCommentLongPress: PropTypes.func.isRequired,
 });
 
-export default GroupFeedItem;
+export default FeedItem;

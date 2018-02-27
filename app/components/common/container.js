@@ -27,6 +27,7 @@ class Container extends PureComponent {
         style={[{ flex: 1 }, style]}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])}
         scrollEventThrottle={5}
+        showsVerticalScrollIndicator={false}
         {...rest}
       >
         {children}

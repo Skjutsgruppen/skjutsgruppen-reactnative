@@ -12,11 +12,14 @@ import {
   FEED_FILTER_WANTED,
   FEEDABLE_TRIP,
   FEEDABLE_EXPERIENCE,
+  FEEDABLE_SUGGESTION,
+  FEED_TYPE_OFFER,
 } from '@config/constant';
 import RelationBubbleList from '@components/relationBubbleList';
 import Colors from '@theme/colors';
 import { SharedCard } from '@components/common';
 import { connect } from 'react-redux';
+
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -100,7 +103,8 @@ const styles = StyleSheet.create({
 
 class Feed extends Component {
   renderFeed() {
-    const { feed } = this.props;
+    const { feed, onPress } = this.props;
+
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
         <View>
@@ -138,8 +142,7 @@ class Feed extends Component {
       return (
         <View>
           <Text style={styles.commentText}>
-            {this.renderUsername()}
-            <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+            {this.renderUsername()} <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
           </Text>
           <Text style={styles.commentText}>{feed.Comment.text}</Text>
         </View>
@@ -148,6 +151,22 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
       return this.renderSharedCard();
+    }
+
+    if (feed.feedable === FEEDABLE_SUGGESTION) {
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} suggests {this.renderUsername(feed.Trip.User)} ride:
+          </Text>
+          <Text>{feed.Trip.description}</Text>
+          <SharedCard
+            trip={feed.Trip}
+            onPress={onPress}
+            date={feed.date}
+          />
+        </View >
+      );
     }
 
     return null;
@@ -218,12 +237,13 @@ class Feed extends Component {
     );
   }
 
-  renderUsername = () => {
+  renderUsername = (user = null) => {
     const { feed, onPress } = this.props;
+    const userDetail = (user) ? user : feed.User;
 
     return (
-      <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>
-        {feed.User.firstName}
+      <Text style={styles.name} onPress={() => onPress('Profile', userDetail.id)}>
+        {userDetail.firstName}
       </Text>
     );
   }
@@ -320,7 +340,7 @@ class Feed extends Component {
       return (<TouchableWithoutFeedback
         onLongPress={() => onCommentLongPress({
           isOwner: (feed.User.id === user.id),
-          commentId: feed.Comment.id,
+          comment: feed.Comment,
         })}
       >
         {this.renderOpenGroup()}

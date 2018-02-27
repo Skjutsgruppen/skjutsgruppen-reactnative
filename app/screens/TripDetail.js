@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { compose } from 'react-apollo';
-import { submitComment, withTripComment } from '@services/apollo/comment';
+import LinearGradient from 'react-native-linear-gradient';
+import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
-import { withTrip } from '@services/apollo/trip';
+import { withTrip, withTripFeed } from '@services/apollo/trip';
 import { withTripExperiences } from '@services/apollo/experience';
-import { Container, AppNotification, DetailHeader, Loading, ShareButton } from '@components/common';
+import { AppNotification, DetailHeader, Loading, ShareButton } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
-import Comment from '@components/comment/list';
 import Relation from '@components/relation';
 import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import List from '@components/experience/list';
-import Colors from '@theme/colors';
+import { Colors, Gradients } from '@theme';
 import Share from '@components/common/share';
 import Date from '@components/date';
 import Toast from '@components/toast';
@@ -29,12 +29,17 @@ import SuggestedRidesList from '@components/ask/suggestedRidesList';
 import AskCommentBox from '@components/ask/commentBox';
 import OfferCommentBox from '@components/offer/commentBox';
 import ToolBar from '@components/utils/toolbar';
+import Feed from '@components/feed/list';
+import { Wrapper } from '@components/common/index';
 
-const TripComment = withTripComment(Comment);
 const TripExperiences = withTripExperiences(List);
 const SuggestedRides = withSearch(SuggestedRidesList);
+const TripFeed = withTripFeed(Feed);
 
 const styles = StyleSheet.create({
+  bold: {
+    fontWeight: '600',
+  },
   wrapper: {
     flex: 1,
     backgroundColor: Colors.background.fullWhite,
@@ -103,7 +108,8 @@ const styles = StyleSheet.create({
   },
   btnSection: {
     justifyContent: 'space-around',
-    paddingVertical: 24,
+    padding: 20,
+    marginBottom: 12,
   },
   pillBtn: {
     flex: 1,
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -1 },
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 40,
+    shadowRadius: 4,
     elevation: 2,
   },
   returnModalContent: {
@@ -140,7 +146,6 @@ const styles = StyleSheet.create({
   },
   btnLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: Colors.text.gray,
   },
   modalContent: {
@@ -405,13 +410,238 @@ class TripDetail extends Component {
     return false;
   }
 
-  renderButton = () => {
-    const { loading } = this.state;
-    const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
+  returnRideButton = () => {
+    const { trip } = this.state;
+    if (trip.ReturnTrip.length === 1 && trip.Recurring.length < 1) {
+      return (
+        <TouchableOpacity
+          style={[styles.pillBtn, { maxWidth: '100%' }]}
+          onPress={() => this.redirectToSelectedReturnTrip(trip.ReturnTrip[0].id)}
+          activeOpacity={0.75}
+        >
+          <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
+          <Text style={styles.btnLabel}>
+            <Text style={styles.bold}>{trans('trip.return_ride')}</Text>
+            <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (trip.ReturnTrip.length > 0) {
+      return (
+        <TouchableOpacity
+          style={styles.pillBtn}
+          onPress={() => this.setReturnRidesModalVisibility(true)}
+          activeOpacity={0.75}
+        >
+          <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
+          <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.return')}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return null;
+  }
+
+  recurringRideButton = () => {
+    const { trip } = this.state;
+
     return (
-      <TouchableOpacity onPress={this.onSubmit} style={styles.send}>
-        {content}
-      </TouchableOpacity>);
+      trip.Recurring && trip.Recurring.length > 0 &&
+      <TouchableOpacity
+        style={styles.pillBtn}
+        onPress={() => this.setRecurringRidesModalVisibility(true)}
+        activeOpacity={0.75}
+      >
+        <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
+        <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.recurring')}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  header = () => {
+    const { error, success, trip } = this.state;
+
+    let profileImage = null;
+    if (trip.User.avatar) {
+      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
+    } else {
+      profileImage = (<View style={styles.imgIcon} />);
+    }
+
+    return (
+      <View>
+        <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
+        <TouchableOpacity
+          onPress={() => this.onProfilePress(trip.User.id)}
+          style={styles.profilePicWrapper}
+        >
+          {profileImage}
+        </TouchableOpacity>
+        <LinearGradient colors={Gradients.white}>
+          <View style={styles.detail}>
+            <Text style={[styles.text, styles.lightText]}>
+              <Text style={styles.username} onPress={() => { }}>
+                {trip.User.firstName}
+              </Text>
+              {
+                trip.type === FEED_TYPE_OFFER &&
+                <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+              }
+              {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
+            </Text>
+            <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
+            {
+              trip.Stops.length > 0 &&
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
+                {trip.Stops.map(place => place.name).join(', ')}
+              </Text>
+            }
+          </View>
+          <View style={styles.userComment}>
+            <Text style={[styles.text]}>{trip.description}</Text>
+          </View>
+          {
+            trip.User.relation && trip.User.relation.length > 0 &&
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
+              <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
+              <Relation
+                users={trip.User.relation}
+                avatarSize={45}
+              />
+            </View>
+          }
+          <View style={[styles.flexRow, styles.btnSection]}>
+            {trip.ReturnTrip && this.returnRideButton()}
+            {trip.Recurring && this.recurringRideButton()}
+          </View>
+          {
+            (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
+            <View>
+              <View style={styles.dividerWrapper}>
+                <View style={styles.horizontalDivider} />
+              </View>
+              <TripExperiences title="Experiences!" tripId={trip.id} />
+            </View>
+          }
+
+          {this.renderExperienceButton()}
+        </LinearGradient>
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
+      </View>
+    );
+  }
+
+  footer = () => (
+    <About />
+  );
+
+  recurringRidesModal = () => {
+    const { trip } = this.state;
+    const markedDates = {};
+    let selectedDate = '';
+    let tripDate = '';
+    let tripColor = '';
+
+    if (trip.Recurring) {
+      trip.Recurring.forEach((row, index) => {
+        selectedDate = getDate(row.date);
+        if (index === 0) {
+          tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
+        }
+
+        tripColor = (row.type === FEED_TYPE_WANTED) ?
+          Colors.background.blue : Colors.background.pink;
+        markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
+      });
+    }
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent
+        onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
+        visible={this.state.recurringRidesModalVisible}
+      >
+        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+          <View style={styles.returnModalContent}>
+            <Calendar
+              current={tripDate}
+              markedDates={markedDates}
+              markingType={'period'}
+              hideExtraDays
+              onDayPress={day => this.redirectToSelectedTripDate(day)}
+            />
+            <View style={styles.closeWrapper}>
+              <TouchableOpacity
+                style={styles.closeModal}
+                onPress={() =>
+                  this.setRecurringRidesModalVisibility(false)}
+              >
+                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  returnRideModal = () => {
+    const { trip } = this.state;
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent
+        onRequestClose={() => this.setState({ returnRidesModalVisible: false })}
+        visible={this.state.returnRidesModalVisible}
+      >
+        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+          <View style={styles.returnModalContent}>
+            <ReturnRides
+              avatar={trip.User.avatar}
+              trips={trip.ReturnTrip}
+              type={trip.type}
+              onPress={this.redirectToSelectedReturnTrip}
+            />
+            <View style={styles.closeWrapper}>
+              <TouchableOpacity
+                style={styles.closeModal}
+                onPress={() => this.setReturnRidesModalVisibility(false)}
+              >
+                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  renderRideSuggestions = () => {
+    const { trip, comment, showSuggestedRides } = this.state;
+
+    return (
+      <Modal
+        visible={showSuggestedRides}
+        onRequestClose={() => this.setSuggestedRidesVisibility(false)}
+        animationType="slide"
+      >
+        <SuggestedRides
+          from={trip.TripStart.coordinates}
+          to={trip.TripEnd.coordinates}
+          filters={[FEED_FILTER_OFFERED]}
+          tripId={trip.id}
+          onSubmit={this.setSuggestedRidesVisibility}
+          defaultText={comment}
+        />
+      </Modal>
+    );
   }
 
   renderModal() {
@@ -582,29 +812,17 @@ class TripDetail extends Component {
     );
   }
 
-  renderRideSuggestions = () => {
-    const { trip, comment, showSuggestedRides } = this.state;
-
+  renderButton = () => {
+    const { loading } = this.state;
+    const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
     return (
-      <Modal
-        visible={showSuggestedRides}
-        onRequestClose={() => this.setSuggestedRidesVisibility(false)}
-        animationType="slide"
-      >
-        <SuggestedRides
-          from={trip.TripStart.coordinates}
-          to={trip.TripEnd.coordinates}
-          filters={[FEED_FILTER_OFFERED]}
-          tripId={trip.id}
-          onSubmit={this.setSuggestedRidesVisibility}
-          defaultText={comment}
-        />
-      </Modal>
-    );
+      <TouchableOpacity onPress={this.onSubmit} style={styles.send}>
+        {content}
+      </TouchableOpacity>);
   }
 
   render() {
-    const { error, success, notifierOffset, trip } = this.state;
+    const { notifierOffset, trip } = this.state;
 
     if (!trip.User) {
       return (
@@ -614,183 +832,23 @@ class TripDetail extends Component {
       );
     }
 
-    let profileImage = null;
-    if (trip.User.avatar) {
-      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
-    } else {
-      profileImage = (<View style={styles.imgIcon} />);
-    }
-
-    const markedDates = {};
-    let selectedDate = '';
-    let tripDate = '';
-    let tripColor = '';
-
-    if (trip.Recurring) {
-      trip.Recurring.forEach((row, index) => {
-        selectedDate = getDate(row.date);
-        if (index === 0) {
-          tripDate = selectedDate.format('MMM DD, YYYY HH:mm');
-        }
-
-        tripColor = (row.type === FEED_TYPE_WANTED) ?
-          Colors.background.blue : Colors.background.pink;
-        markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
-      });
-    }
-
     return (
-      <View style={styles.wrapper}>
+      <Wrapper>
         {this.renderAppNotification()}
         <ToolBar transparent offset={notifierOffset} />
-        <Container>
-          <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
-          <TouchableOpacity
-            onPress={() => this.onProfilePress(trip.User.id)}
-            style={styles.profilePicWrapper}
-          >
-            {profileImage}
-          </TouchableOpacity>
-          <View style={styles.detail}>
-            <Text style={[styles.text, styles.lightText]}>
-              <Text style={styles.username} onPress={() => { }}>
-                {trip.User.firstName}
-              </Text>
-              {
-                trip.type === FEED_TYPE_OFFER &&
-                <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
-              }
-              {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
-            </Text>
-            <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
-            {
-              trip.Stops.length > 0 &&
-              <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
-                {trip.Stops.map(place => place.name).join(', ')}
-              </Text>
-            }
-            <View style={[styles.flexRow, styles.btnSection]}>
-              {
-                trip.ReturnTrip && trip.ReturnTrip.length > 0 &&
-                <TouchableOpacity
-                  style={styles.pillBtn}
-                  onPress={() => this.setReturnRidesModalVisibility(true)}
-                >
-                  <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
-                </TouchableOpacity>
-              }
-              {
-                trip.Recurring && trip.Recurring.length > 0 &&
-                <TouchableOpacity
-                  style={styles.pillBtn}
-                  onPress={() => this.setRecurringRidesModalVisibility(true)}
-                >
-                  <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
-                  <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
-                </TouchableOpacity>
-              }
-            </View>
-            {
-              this.state.showReturnRides &&
-              <Modal
-                animationType="slide"
-                transparent
-                onRequestClose={() => this.setState({ returnRidesModalVisible: false })}
-                visible={this.state.returnRidesModalVisible}
-              >
-                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-                  <View style={styles.returnModalContent}>
-                    <ReturnRides
-                      avatar={trip.User.avatar}
-                      trips={trip.ReturnTrip}
-                      type={trip.type}
-                      onPress={this.redirectToSelectedReturnTrip}
-                    />
-                    <View style={styles.closeWrapper}>
-                      <TouchableOpacity
-                        style={styles.closeModal}
-                        onPress={() => this.setReturnRidesModalVisibility(false)}
-                      >
-                        <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-            }
-            {
-              this.state.showRecurringRides &&
-              <Modal
-                animationType="slide"
-                transparent
-                onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
-                visible={this.state.recurringRidesModalVisible}
-              >
-                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-                  <View style={styles.returnModalContent}>
-                    <Calendar
-                      current={tripDate}
-                      markedDates={markedDates}
-                      markingType={'period'}
-                      hideExtraDays
-                      onDayPress={day => this.redirectToSelectedTripDate(day)}
-                    />
-                    <View style={styles.closeWrapper}>
-                      <TouchableOpacity
-                        style={styles.closeModal}
-                        onPress={() =>
-                          this.setRecurringRidesModalVisibility(false)}
-                      >
-                        <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-            }
-          </View>
-          <View style={styles.userComment}>
-            <Text style={[styles.text]}>{trip.description}</Text>
-          </View>
-          {
-            trip.User.relation && trip.User.relation.length > 0 &&
-            <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
-              <Relation
-                users={trip.User.relation}
-                avatarSize={45}
-              />
-            </View>
-          }
-          <View style={styles.dividerWrapper}>
-            <View style={styles.horizontalDivider} />
-          </View>
-          <Toast message={error} type="error" />
-          <Toast message={success} type="success" />
-          {
-            (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
-            <TripExperiences title="Experiences!" tripId={trip.id} />
-          }
-
-          {this.renderExperienceButton()}
-          <View style={styles.dividerWrapper}>
-            <View style={styles.horizontalDivider} />
-          </View>
-          <TripComment
-            onCommentPress={this.onProfilePress}
-            id={trip.id}
-            ownerId={trip.User.id}
-          />
-          <About />
-        </Container>
+        {this.state.showReturnRides && this.returnRideModal()}
+        {this.state.showRecurringRides && this.recurringRidesModal()}
+        <TripFeed
+          id={trip.id}
+          header={this.header()}
+          footer={this.footer()}
+          type={FEEDABLE_TRIP}
+        />
         {this.renderCommentBox()}
         {this.renderModal()}
         {this.renderShareModal()}
         {this.renderRideSuggestions()}
-      </View>
+      </Wrapper>
     );
   }
 }
