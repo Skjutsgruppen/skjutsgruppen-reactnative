@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 const BackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-    <Image source={require('@assets/icons/icon_back.png')} style={styles.icon} />
+    <Image source={require('@assets/icons/ic_back_toolbar.png')} style={styles.icon} />
     <Text style={styles.text}>Back</Text>
   </TouchableOpacity>
 );

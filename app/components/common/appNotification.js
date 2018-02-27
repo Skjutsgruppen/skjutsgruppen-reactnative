@@ -11,9 +11,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: Colors.background.darkGray,
-    paddingHorizontal: 16,
+    paddingLeft: 16,
   },
   content: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   icon: {
-    marginRight: 12,
+    paddingHorizontal: 16,
   },
   text: {
     color: Colors.text.white,
@@ -56,7 +57,7 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
           <Text style={styles.text}>{message}</Text>
         </View>
       </View>
-      <TouchableOpacity onPress={handleClose}>
+      <TouchableOpacity onPress={handleClose} style={styles.icon}>
         <Icon
           name="ios-close"
           size={45}

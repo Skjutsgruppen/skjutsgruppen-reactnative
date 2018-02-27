@@ -5,6 +5,7 @@ const Gradients = {
   pink: [Colors.background.fullWhite, Colors.background.pink],
   transparentPink: ['rgba(234, 76, 137, 0.1)', 'rgba(234, 76, 137, 0.75)'],
   white: [Colors.background.fullWhite, Colors.background.mutedBlue],
+  headerWhite: [Colors.background.fullWhite, '#ededf9'],
   transparentWhite: ['transparent', 'rgba(255, 255, 255, 1)'],
 };
 

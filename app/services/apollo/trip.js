@@ -229,7 +229,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         User {
           id 
           firstName 
-          avatar
+          avatar 
         } 
       }
     }
@@ -574,15 +574,12 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         description
         photoUrl
         publishedStatus
-        Trip{
-          id
-        }
         userStatus
         User {
           id 
           firstName 
           avatar 
-        }
+        } 
       }
       Participants{
         count
@@ -637,15 +634,12 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         description
         photoUrl
         publishedStatus
-        Trip{
-          id
-        }
         userStatus
         User {
           id 
           firstName 
           avatar 
-        }
+        } 
       }
       Participants{
         count

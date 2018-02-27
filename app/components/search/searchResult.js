@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, Modal, TouchableOpacity, Image } from 'react-na
 import PropTypes from 'prop-types';
 import TabIcon from '@components/tabIcon';
 import Moment from 'moment';
-import { Wrapper, FloatingNavbar, RoundedButton } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
+import { Wrapper, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import SearchItem from '@components/search/searchItem';
 import Share from '@components/common/share';
@@ -282,13 +283,13 @@ class SearchResult extends Component {
   )
 
   render() {
-    const { fromObj: from, toObj: to, direction, filters, navigation, search } = this.props;
+    const { fromObj: from, toObj: to, direction, filters, search } = this.props;
 
     const prettyDate = this.formatDates();
 
     return (
-      <Wrapper bgColor={Colors.background.lightBlueWhite}>
-        <FloatingNavbar handleBack={() => navigation.goBack()} style={{ elevation: 15 }} />
+      <Wrapper>
+        <ToolBar transparent={false} />
         <View style={styles.searchContent}>
           <View style={{ marginLeft: 50 }}>
             <Text style={styles.bold}>{from.name} - {to.name || this.prettify(direction) || 'Anywhere'}</Text>
