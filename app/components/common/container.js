@@ -26,8 +26,8 @@ class Container extends PureComponent {
         keyboardShouldPersistTaps="handled"
         style={[{ flex: 1 }, style]}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])}
-        scrollEventThrottle={5}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={1}
         {...rest}
       >
         {children}

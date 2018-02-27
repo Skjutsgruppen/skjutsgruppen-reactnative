@@ -289,6 +289,7 @@ class FeedList extends PureComponent {
           header={header}
           footer={footer}
           infinityScroll={type !== FEEDABLE_TRIP}
+          shouldUpdateAnimatedValue
           renderItem={({ item }) => (
             <Item
               onPress={this.onPress}

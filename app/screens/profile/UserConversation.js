@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, Modal } from 'react-native';
 import { withConversation } from '@services/apollo/profile';
-import { FloatingNavbar, Wrapper, ListSearchBar } from '@components/common';
+import { Wrapper, ListSearchBar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import DataList from '@components/dataList';
 import ListItem from '@components/profile/listItem';
@@ -52,11 +53,6 @@ class UserConversation extends PureComponent {
     navigation.navigate('ExperienceDetail', { experience });
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   renderSearchModal = () => (
     <Modal
       visible={this.state.isOpen}
@@ -88,11 +84,7 @@ class UserConversation extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <FloatingNavbar
-          handleBack={this.goBack}
-          transparent={false}
-          title={`Rides ${username} talked about`}
-        />
+        <ToolBar title={`Rides ${username} talked about`} />
         <View style={styles.listWrapper}>
           <DataList
             data={conversations}

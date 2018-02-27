@@ -465,15 +465,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id 
             firstName 
             avatar 
-          } 
-          Participants {
-            User {
-              id 
-              firstName 
-              avatar 
-            } 
-            status
-          }
+          }       
         }
       }
     }

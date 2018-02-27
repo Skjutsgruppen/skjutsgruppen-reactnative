@@ -7,7 +7,7 @@ import {
   Text,
 } from 'react-native';
 import Camera from 'react-native-camera';
-import { FloatingNavbar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 
 import CameraHead from '@assets/icons/ic_camera_head.png';
@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background.fullWhite,
   },
   cameraHead: {
     alignSelf: 'center',
@@ -192,7 +193,7 @@ class Cam extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <FloatingNavbar handleBack={this.props.onBack} />
+        <ToolBar transparent />
         <Image source={CameraHead} style={styles.cameraHead} />
         <View style={styles.viewFinder}>
           {this.renderCamera()}
@@ -213,7 +214,6 @@ class Cam extends React.Component {
 }
 
 Cam.propTypes = {
-  onBack: PropTypes.func.isRequired,
   takePicture: PropTypes.func.isRequired,
 };
 

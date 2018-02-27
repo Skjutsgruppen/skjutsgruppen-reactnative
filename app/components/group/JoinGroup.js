@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import { compose } from 'react-apollo';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import PropTypes from 'prop-types';
 import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
-import { Wrapper, Loading, FloatingNavbar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
+import { Wrapper, Container, Loading, ShareButton } from '@components/common';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
 import { withShare } from '@services/apollo/share';
@@ -119,7 +120,12 @@ class JoinGroup extends Component {
   }
 
   componentWillMount() {
+    const { navigation, group } = this.props;
     this.updateState(this.props);
+
+    navigation.setParams({
+      right: () => <ShareButton onPress={() => this.onSharePress('group', group)} animated />,
+    });
   }
 
   componentWillReceiveProps(props) {
@@ -244,12 +250,8 @@ class JoinGroup extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
-        <FloatingNavbar
-          handleBack={this.goBack}
-          showShare
-          handleShare={() => this.setState({ showShareModal: true })}
-        />
-        <ScrollView>
+        <ToolBar transparent />
+        <Container>
           {
             group.photo &&
             <GroupImage group={group} />
@@ -286,7 +288,7 @@ class JoinGroup extends Component {
           <Text style={[styles.text, styles.description]}>
             {group.description}
           </Text>
-        </ScrollView>
+        </Container>
         {this.renderButton()}
         {this.renderShareModal()}
       </Wrapper>

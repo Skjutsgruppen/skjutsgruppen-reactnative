@@ -5,13 +5,13 @@ import Container from '@components/common/container';
 import Circle from '@components/common/circle';
 import Radio from '@components/common/radio';
 import FeedContainer from '@components/common/feedContainer';
-import FloatingNavbar from '@components/common/floatingNavbar';
 import FloatingBackButton from '@components/common/floatingBackButton';
 import NavBar from '@components/common/navbar';
 import CustomButton from '@components/common/customButton';
 import RoundedButton from '@components/common/roundedButton';
 import Input from '@components/common/input';
 import ShareButton from '@components/common/shareButton';
+import MoreButton from '@components/common/moreButton';
 import ProfilePicture from '@components/common/profilePicture';
 import Avatar from '@components/common/avatar';
 import DetailHeader from '@components/common/detailHeader';
@@ -39,7 +39,7 @@ export {
   Radio,
   NavBar,
   ShareButton,
-  FloatingNavbar,
+  MoreButton,
   FloatingBackButton,
   CustomButton,
   RoundedButton,
