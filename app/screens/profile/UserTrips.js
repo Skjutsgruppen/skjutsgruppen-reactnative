@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { withMyTrips } from '@services/apollo/trip';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
-import { Wrapper, FloatingNavbar } from '@components/common';
+import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import { FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
 import { connect } from 'react-redux';
+import ToolBar from '@components/utils/toolbar';
 
 const Trips = withMyTrips(TripsList);
 
@@ -17,11 +18,6 @@ class UserTrips extends Component {
   constructor(props) {
     super(props);
     this.state = ({ trip: {} });
-  }
-
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
   }
 
   render() {
@@ -37,11 +33,7 @@ class UserTrips extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <FloatingNavbar
-          handleBack={this.goBack}
-          transparent={false}
-          title={NavigationTitle}
-        />
+        <ToolBar title={NavigationTitle} />
         <Trips
           id={userId}
           type={type}

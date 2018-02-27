@@ -6,7 +6,8 @@ import { trans } from '@lang/i18n';
 import { withGroupTrips } from '@services/apollo/group';
 import SharedTripList from '@components/group/sharedTrip/sharedTripList';
 import GroupCalendar from '@components/group/groupCalendar';
-import { Wrapper, FloatingNavbar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
+import { Wrapper } from '@components/common';
 
 const GroupTrip = withGroupTrips(SharedTripList);
 const Calendar = withGroupTrips(GroupCalendar);
@@ -87,7 +88,7 @@ class SharedTrip extends Component {
 
     return (
       <Wrapper>
-        <FloatingNavbar handleBack={() => navigation.goBack()} title={date} transparent={false} />
+        <ToolBar title={date} transparent={false} />
         <GroupTrip id={id} navigation={navigation} />
         <TouchableOpacity
           style={styles.iconWrapper}

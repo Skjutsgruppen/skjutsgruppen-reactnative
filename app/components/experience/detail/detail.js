@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  ScrollView,
   Text,
   View,
   TouchableOpacity,
@@ -9,9 +8,10 @@ import {
   Modal,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
-import { FloatingNavbar, ActionModal, AppNotification, ModalAction } from '@components/common';
+import { Container, MoreButton, ActionModal, AppNotification, ModalAction } from '@components/common';
 import ShareIcon from '@assets/icons/ic_share_white.png';
 import { withShare } from '@services/apollo/share';
 import { compose } from 'react-apollo';
@@ -92,7 +92,15 @@ class ExperienceDetail extends Component {
   }
 
   componentWillMount() {
-    const { experience, pending } = this.props;
+    const { experience, pending, navigation } = this.props;
+
+    const right = !pending ?
+      () => <MoreButton animated onPress={() => this.handleOptionsModalVisibility(true)} />
+      : null;
+
+    navigation.setParams({
+      right,
+    });
 
     this.setState({ experience, showNotification: pending });
   }
@@ -266,8 +274,8 @@ class ExperienceDetail extends Component {
   }
 
   render() {
-    const { experience, showNotification } = this.state;
-    const { navigation, loading, pending } = this.props;
+    const { experience, pending, showNotification } = this.state;
+    const { loading } = this.props;
 
     let image = null;
 
@@ -278,13 +286,8 @@ class ExperienceDetail extends Component {
     return (
       <View style={styles.flex}>
         {this.renderPendingNotification()}
-        <FloatingNavbar
-          handleBack={() => navigation.goBack()}
-          showMore={!pending}
-          handleShowMore={() => this.handleOptionsModalVisibility(true)}
-          offset={showNotification ? 70 : 0}
-        />
-        <ScrollView style={styles.flex}>
+        <ToolBar transparent offset={showNotification ? 70 : 0} />
+        <Container>
           {image}
           <View style={styles.infoSection}>
             <Info experience={experience} loading={loading} />
@@ -305,7 +308,7 @@ class ExperienceDetail extends Component {
             !pending &&
             <MoreExperiences title="Experiences!" exceptId={experience.id} />
           }
-        </ScrollView>
+        </Container>
         {this.renderShareModal()}
         {this.renderOptionsModal()}
         {this.renderConfirmModal()}

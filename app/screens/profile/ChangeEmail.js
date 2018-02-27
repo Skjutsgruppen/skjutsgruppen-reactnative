@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { ScrollView, Text, View, StyleSheet, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
+import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import CustomButton from '@components/common/customButton';
-import { Wrapper, FloatingNavbar, Loading } from '@components/common';
+import { Wrapper, Loading } from '@components/common';
 import { withChangeEmail } from '@services/apollo/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -98,22 +99,24 @@ class ChangeEmail extends Component {
     const { newEmail, error, success } = this.state;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <FloatingNavbar handleBack={this.goBack} />
-        <ScrollView style={{ paddingTop: 60 }}>
-          <Toast message={error} type="error" />
-          <Toast message={success} type="success" />
-          <Text style={styles.label}>New Email</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={newEmail}
-              style={styles.input}
-              onChangeText={text => this.setState({ newEmail: text })}
-              placeholderTextColor="#ccc"
-              underlineColorAndroid="transparent"
-            />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <ToolBar />
+        <ScrollView>
+          <View style={{ paddingTop: 60 }}>
+            <Toast message={error} type="error" />
+            <Toast message={success} type="success" />
+            <Text style={styles.label}>New Email</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                value={newEmail}
+                style={styles.input}
+                onChangeText={text => this.setState({ newEmail: text })}
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="transparent"
+              />
+            </View>
+            {this.renderUpdateButton()}
           </View>
-          {this.renderUpdateButton()}
         </ScrollView>
       </Wrapper>
     );

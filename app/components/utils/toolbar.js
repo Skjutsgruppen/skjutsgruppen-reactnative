@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Animated, StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Icon from '@assets/icons/ic_chevron_left.png';
+import Icon from '@assets/icons/ic_back_toolbar.png';
 import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
@@ -39,25 +39,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
-    elevation: 2,
+  },
+  spacer: {
+    width: 42,
   },
 });
 
 
 class ToolBar extends PureComponent {
   backButton = () => {
-    const { navigation, onBack } = this.props;
+    const { navigation, onBack, transparent } = this.props;
+    const params = navigation.state.params || {};
     let backHandler = navigation.goBack;
 
     if (typeof onBack === 'function') {
       backHandler = onBack;
     }
 
+    let elevation = transparent ? 5 : 0;
+    if (transparent) {
+      if (params.animatedValue) {
+        elevation = params.animatedValue.interpolate({
+          inputRange: [0, 50],
+          outputRange: [5, 0],
+          extrapolate: 'clamp',
+        });
+      }
+    }
+
     return (
       <TouchableOpacity onPress={() => backHandler()} style={styles.button}>
-        <View style={styles.iconWrapper}>
+        <Animated.View style={[styles.iconWrapper, { elevation }]}>
           <Image source={Icon} />
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     );
   }
@@ -80,7 +94,11 @@ class ToolBar extends PureComponent {
       rightComponent = params.right;
     }
 
-    return <View>{rightComponent()}</View>;
+    if (rightComponent) {
+      return <View>{rightComponent()}</View>;
+    }
+
+    return <View style={styles.spacer} />;
   }
 
   render() {
@@ -135,7 +153,7 @@ ToolBar.defaultProps = {
   transparent: false,
   offset: null,
   onBack: null,
-  right: () => { },
+  right: null,
 };
 
 export default withNavigation(ToolBar);

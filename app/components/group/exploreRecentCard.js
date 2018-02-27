@@ -101,7 +101,10 @@ class ExploreRecentGroup extends PureComponent {
             <Text style={styles.exploreFooterLabel}>{trans('search.newest')}</Text>
             <TouchableOpacity onPress={this.redirect}>
               <View style={styles.newestGroup}>
-                <Image source={{ uri: group.User.avatar }} style={styles.avatar} />
+                <Image
+                  source={{ uri: group.photo ? group.photo : group.mapPhoto }}
+                  style={styles.avatar}
+                />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.groupName}>{group.name}</Text>
                 </View>
