@@ -54,8 +54,9 @@ class TouchableHighlight extends React.Component {
         <TouchableComponent
           {...props}
           useForeground={useForeground}
+          style={style}
         >
-          <View style={style}>
+          <View>
             {childElement}
           </View>
         </TouchableComponent>

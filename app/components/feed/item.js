@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     paddingLeft: 20,
-    paddingVertical: 16,
+    paddingVertical: 6,
+    marginTop: 24,
   },
   profilePicWrapper: {
     width: 48,

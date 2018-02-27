@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     height: 26,
     borderRadius: 13,
     paddingHorizontal: 8,
-    marginVertical: 24,
+    marginVertical: 32,
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#f5f5f5',
@@ -146,6 +146,7 @@ const DataList = (
       ListHeaderComponent={renderHeader}
       ListFooterComponent={renderFooter}
       onEndReached={loadMore}
+      showsVerticalScrollIndicator={false}
     />
   );
 };

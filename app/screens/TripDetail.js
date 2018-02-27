@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { compose } from 'react-apollo';
+import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed } from '@services/apollo/trip';
@@ -13,7 +14,7 @@ import Relation from '@components/relation';
 import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import List from '@components/experience/list';
-import Colors from '@theme/colors';
+import { Colors, Gradients } from '@theme';
 import Share from '@components/common/share';
 import Date from '@components/date';
 import Toast from '@components/toast';
@@ -36,6 +37,9 @@ const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
 
 const styles = StyleSheet.create({
+  bold: {
+    fontWeight: '600',
+  },
   wrapper: {
     flex: 1,
     backgroundColor: Colors.background.fullWhite,
@@ -104,7 +108,8 @@ const styles = StyleSheet.create({
   },
   btnSection: {
     justifyContent: 'space-around',
-    paddingVertical: 24,
+    padding: 20,
+    marginBottom: 12,
   },
   pillBtn: {
     flex: 1,
@@ -119,7 +124,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -1 },
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 40,
+    shadowRadius: 4,
     elevation: 2,
   },
   returnModalContent: {
@@ -141,7 +146,6 @@ const styles = StyleSheet.create({
   },
   btnLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: Colors.text.gray,
   },
   modalContent: {
@@ -408,15 +412,18 @@ class TripDetail extends Component {
 
   returnRideButton = () => {
     const { trip } = this.state;
-
     if (trip.ReturnTrip.length === 1 && trip.Recurring.length < 1) {
       return (
         <TouchableOpacity
-          style={styles.pillBtn}
+          style={[styles.pillBtn, { maxWidth: '100%' }]}
           onPress={() => this.redirectToSelectedReturnTrip(trip.ReturnTrip[0].id)}
+          activeOpacity={0.75}
         >
           <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
-          <Text><Text style={styles.btnLabel}>{trans('trip.return_ride')}</Text> <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date></Text>
+          <Text style={styles.btnLabel}>
+            <Text style={styles.bold}>{trans('trip.return_ride')}</Text>
+            <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
+          </Text>
         </TouchableOpacity>
       );
     }
@@ -426,9 +433,10 @@ class TripDetail extends Component {
         <TouchableOpacity
           style={styles.pillBtn}
           onPress={() => this.setReturnRidesModalVisibility(true)}
+          activeOpacity={0.75}
         >
           <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
-          <Text style={styles.btnLabel}>{trans('trip.return')}</Text>
+          <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.return')}</Text>
         </TouchableOpacity>
       );
     }
@@ -444,9 +452,10 @@ class TripDetail extends Component {
       <TouchableOpacity
         style={styles.pillBtn}
         onPress={() => this.setRecurringRidesModalVisibility(true)}
+        activeOpacity={0.75}
       >
         <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
-        <Text style={styles.btnLabel}>{trans('trip.recurring')}</Text>
+        <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.recurring')}</Text>
       </TouchableOpacity>
     );
   }
@@ -470,58 +479,59 @@ class TripDetail extends Component {
         >
           {profileImage}
         </TouchableOpacity>
-        <View style={styles.detail}>
-          <Text style={[styles.text, styles.lightText]}>
-            <Text style={styles.username} onPress={() => { }}>
-              {trip.User.firstName}
-            </Text>
-            {
-              trip.type === FEED_TYPE_OFFER &&
-              <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
-            }
-            {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
-          </Text>
-          <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
-          {
-            trip.Stops.length > 0 &&
+        <LinearGradient colors={Gradients.white}>
+          <View style={styles.detail}>
             <Text style={[styles.text, styles.lightText]}>
-              <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
-              {trip.Stops.map(place => place.name).join(', ')}
+              <Text style={styles.username} onPress={() => { }}>
+                {trip.User.firstName}
+              </Text>
+              {
+                trip.type === FEED_TYPE_OFFER &&
+                <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+              }
+              {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
             </Text>
-          }
-        </View>
-        <View style={styles.userComment}>
-          <Text style={[styles.text]}>{trip.description}</Text>
-        </View>
-        {
-          trip.User.relation && trip.User.relation.length > 0 &&
-          <View style={{ alignItems: 'center', marginBottom: 16 }}>
-            <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
-            <Relation
-              users={trip.User.relation}
-              avatarSize={45}
-            />
+            <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+            <Text style={[styles.date, styles.lightText]}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
+            {
+              trip.Stops.length > 0 &&
+              <Text style={[styles.text, styles.lightText]}>
+                <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
+                {trip.Stops.map(place => place.name).join(', ')}
+              </Text>
+            }
           </View>
-        }
-        <View style={[styles.flexRow, styles.btnSection]}>
-          {trip.ReturnTrip && this.returnRideButton()}
-          {trip.Recurring && this.recurringRideButton()}
-        </View>
-        <View style={styles.dividerWrapper}>
-          <View style={styles.horizontalDivider} />
-        </View>
+          <View style={styles.userComment}>
+            <Text style={[styles.text]}>{trip.description}</Text>
+          </View>
+          {
+            trip.User.relation && trip.User.relation.length > 0 &&
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
+              <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
+              <Relation
+                users={trip.User.relation}
+                avatarSize={45}
+              />
+            </View>
+          }
+          <View style={[styles.flexRow, styles.btnSection]}>
+            {trip.ReturnTrip && this.returnRideButton()}
+            {trip.Recurring && this.recurringRideButton()}
+          </View>
+          {
+            (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
+            <View>
+              <View style={styles.dividerWrapper}>
+                <View style={styles.horizontalDivider} />
+              </View>
+              <TripExperiences title="Experiences!" tripId={trip.id} />
+            </View>
+          }
+
+          {this.renderExperienceButton()}
+        </LinearGradient>
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />
-        {
-          (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
-          <TripExperiences title="Experiences!" tripId={trip.id} />
-        }
-
-        {this.renderExperienceButton()}
-        <View style={styles.dividerWrapper}>
-          <View style={styles.horizontalDivider} />
-        </View>
       </View>
     );
   }
