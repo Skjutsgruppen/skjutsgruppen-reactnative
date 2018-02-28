@@ -80,3 +80,9 @@ export const FLEXIBILITY_TYPES = ['earlier', 'later'];
 
 export const PUBLIC_TRANSPORT_JOURNEY = 'JNY';
 export const PUBLIC_TRANSPORT_WALK = 'WALK';
+
+export const FEEDABLE_SUGGESTION = 'TripSuggestion';
+export const REPORT_COMMENT_TYPE = 'Comment';
+
+export const FLEXIBILITY_EARLIER_TYPE = 'earlier';
+

@@ -7,7 +7,7 @@ import { FloatingNavbar, RoundedButton, Avatar, Loading } from '@components/comm
 import { Colors } from '@theme';
 import { withReport } from '@services/apollo/report';
 import { propType } from 'graphql-anywhere/lib/src/utilities';
-import { FEEDABLE_TRIP, FEED_TYPE_OFFER } from '@config/constant';
+import { FEEDABLE_TRIP, FEED_TYPE_OFFER, REPORT_COMMENT_TYPE } from '@config/constant';
 import Date from '@components/date';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
@@ -124,6 +124,15 @@ class Report extends Component {
       );
     }
 
+    if (type === REPORT_COMMENT_TYPE) {
+      return (
+        <View>
+          <Text><Text>{data.User.firstName}</Text> <Date calendarTime>{data.date}</Date></Text>
+          <Text>{data.text}</Text>
+        </View>
+      );
+    }
+
     return null;
   }
 
@@ -169,7 +178,7 @@ class Report extends Component {
               </View>
               <View style={styles.descriptionWraper}>
                 <Toast message={error} type="error" />
-                <Text style={styles.label}>Why are you reporting?</Text>
+                <Text style={styles.label}>Why do you report this?</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Write"
