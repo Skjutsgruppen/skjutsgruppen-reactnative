@@ -57,7 +57,7 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
 
 feedItem.propTypes = {
   feed: PropTypes.shape({
-    name: PropTypes.string,
+    id: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,

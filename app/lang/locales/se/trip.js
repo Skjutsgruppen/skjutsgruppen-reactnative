@@ -12,4 +12,5 @@ export const trip = {
   a_post_on_your_fb_timeline: 'A post on your Facebook timeline se',
   a_tweet: 'A Tweet se',
   return: 'Return se',
+  return_ride: 'Return ride se',
 };
