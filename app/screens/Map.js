@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     position: 'absolute',
   },
+  loadingWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 /* avoid pagination and render all trips
@@ -50,15 +55,13 @@ class Map extends PureComponent {
   constructor(props) {
     super(props);
     this.state = ({
-      latitude: '',
-      longitude: '',
       filterOpen: false,
       filterType: FEED_FILTER_EVERYTHING,
       region: {
-        latitude: '',
-        longitude: '',
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
+        latitude: 20.989622,
+        longitude: -10.3460274,
+        latitudeDelta: 120,
+        longitudeDelta: 120 * ASPECT_RATIO,
       },
       locationError: false,
       currentLocation: false,
@@ -66,15 +69,20 @@ class Map extends PureComponent {
       error: '',
       from: 0,
       to: DISTANCE_GAP,
+      loading: false,
     });
     this.region = {};
   }
 
   componentWillMount() {
     const { latitude, longitude } = getCountryLocation();
-    const { region } = this.state;
-    const updatedRegion = { ...region, ...{ latitude, longitude } };
-    this.setState({ latitude, longitude, region: updatedRegion, loading: true });
+    let { region } = this.state;
+
+    if (latitude && longitude) {
+      region = { latitude, longitude, longitudeDelta: LONGITUDE_DELTA, latitudeDelta: LATITUDE_DELTA };
+    }
+
+    this.setState({ region, loading: true });
   }
 
   componentDidMount() {
@@ -92,7 +100,7 @@ class Map extends PureComponent {
   }
 
   onRegionChange = async (region) => {
-    const { longitude, latitude } = this.state;
+    const { longitude, latitude } = this.state.region;
     const distance = getDistanceFromLatLonInKm(
       latitude,
       longitude,
@@ -119,22 +127,29 @@ class Map extends PureComponent {
   async getLocation() {
     try {
       const { latitude, longitude } = await getCurrentLocation();
-      const { region } = this.state;
-
-      const updatedRegion = { ...region, ...{ latitude, longitude } };
-
-      this.setState({
-        latitude,
-        longitude,
-        currentLocation: true,
-        region: updatedRegion,
-        locationError: false,
-      }, this.fetchTripMap);
-    } catch (error) {
-      if (!this.state.currentLocation) {
-        this.setState({ locationError: true });
+      if (latitude && longitude) {
+        this.setState({
+          currentLocation: true,
+          region: {
+            latitude,
+            longitude,
+            longitudeDelta: LONGITUDE_DELTA,
+            latitudeDelta: LATITUDE_DELTA,
+          },
+          locationError: false,
+        }, this.fetchTripMap);
+      } else {
+        this.setState({ locationError: false }, this.fetchTripMap);
       }
-      this.setState({ error, loading: false });
+    } catch (error) {
+      let { locationError } = this.state;
+      const { currentLocation } = this.state;
+
+      if (!currentLocation) {
+        locationError = true;
+      }
+
+      this.setState({ error, locationError }, this.fetchTripMap);
     }
   }
 
@@ -173,39 +188,50 @@ class Map extends PureComponent {
   }
 
   async fetchTripMap() {
-    const { from, to, longitude, latitude, filterType } = this.state;
-    const { data } = await this.props.getMapTrips([longitude, latitude], from, to, filterType);
+    const { from, to, filterType, region } = this.state;
+    const { longitude, latitude } = region;
+    try {
+      const { data } = await this.props.getMapTrips([longitude, latitude], from, to, filterType);
 
-    if (data.nearByTrips && data.nearByTrips.length > 0) {
-      if (!this.ismounted) {
-        return;
+      if (data.nearByTrips && data.nearByTrips.length > 0) {
+        if (!this.ismounted) {
+          return;
+        }
+
+        const trips = data.nearByTrips.map((trip) => {
+          const { startPoint, Routable, id } = trip;
+          return {
+            id,
+            coordinate: {
+              lng: startPoint[0],
+              lat: startPoint[1],
+            },
+            trip: Routable,
+          };
+        });
+
+        this.setState({ trips, loading: false, locationError: false, error: false });
+      } else {
+        this.setState({ loading: false, locationError: false, error: false });
       }
-
-      const trips = data.nearByTrips.map((trip) => {
-        const { startPoint, Routable, id } = trip;
-        return {
-          id,
-          coordinate: {
-            lng: startPoint[0],
-            lat: startPoint[1],
-          },
-          trip: Routable,
-        };
-      });
-
-      this.setState({
-        trips,
-        loading: false,
-        region: { ...this.state.region, ...this.region },
-      });
+    } catch (error) {
+      if (this.ismounted) {
+        this.setState({ loading: false, error: true });
+      }
     }
   }
 
+  reTry = () => {
+    this.setState({ loading: true }, this.getLocation);
+  }
+
   renderCurrentLocation = () => {
-    const { currentLocation, latitude, longitude } = this.state;
+    const { currentLocation, region } = this.state;
     if (!currentLocation) {
       return null;
     }
+
+    const { latitude, longitude } = region;
 
     return (
       <Marker
@@ -218,22 +244,31 @@ class Map extends PureComponent {
     );
   }
 
-  renderError = () => {
-    const { locationError } = this.state;
+  renderLoader = () => {
+    const { locationError, loading } = this.state;
 
-    if (!locationError) {
-      return null;
+    if (loading) {
+      return (
+        <View style={styles.itemContainer}>
+          <Loading />
+          <Text>Fetching data...</Text>
+        </View>
+      );
     }
 
-    return (
-      <View>
-        <TouchableOpacity onPress={this.currentLocation}>
-          <Text>
-            Try Again
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
+    if (locationError) {
+      return (
+        <View style={styles.itemContainer}>
+          <TouchableOpacity onPress={this.reTry}>
+            <Text>
+              Try Again
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return null;
   }
 
   renderTrip = () => {
@@ -265,12 +300,7 @@ class Map extends PureComponent {
   }
 
   render() {
-    const { loading } = this.state;
-
-    if (loading && this.state.latitude === '') {
-      return (<Loading />);
-    }
-
+    const { region } = this.state;
     return (
       <View style={styles.container}>
         <Navigation
@@ -284,16 +314,13 @@ class Map extends PureComponent {
           loadingIndicatorColor="#666666"
           loadingBackgroundColor="#eeeeee"
           style={styles.map}
-          region={this.state.region}
+          region={region}
           onRegionChange={this.onRegionChange}
         >
           {this.renderTrip()}
           {this.renderCurrentLocation()}
         </MapView>
-        <View style={styles.itemContainer}>
-          {this.renderError()}
-          {loading && <View><Loading /><Text>Fetching data...</Text></View>}
-        </View>
+        {this.renderLoader()}
         <Filter
           map
           selected={this.state.filterType}
