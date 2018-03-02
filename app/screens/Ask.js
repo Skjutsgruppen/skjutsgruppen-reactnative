@@ -407,12 +407,11 @@ class Ask extends Component {
             />
           }
           {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
-          {
-            (activeStep === 4) &&
+          {(activeStep === 4) &&
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
-              onNext={this.onShareNext}
+              onNext={this.onShareAndPublishNext}
             />
           }
           {(activeStep === 5) && this.renderFinish()}

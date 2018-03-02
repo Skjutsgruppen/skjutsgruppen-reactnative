@@ -475,12 +475,11 @@ class Offer extends Component {
           }
           {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
           {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-          {
-            (activeStep === 5) &&
+          {(activeStep === 5) &&
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
-              onNext={this.onShareNext}
+              onNext={this.onShareAndPublishNext}
             />
           }
           {(activeStep === 6) && this.renderFinish()}

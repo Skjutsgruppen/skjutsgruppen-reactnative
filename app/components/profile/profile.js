@@ -27,6 +27,10 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import Date from '@components/date';
+import { withMyExperiences } from '@services/apollo/experience';
+import List from '@components/experience/myExperienceList';
+
+const MyExperience = withMyExperiences(List);
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -82,22 +86,19 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
   },
   connection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 12,
+    marginTop: 12,
   },
   button: {
     alignSelf: 'center',
     marginHorizontal: 20,
-    marginTop: 16,
+    marginTop: 24,
+    marginBottom: 48,
     maxWidth: 260,
   },
   verticalDivider: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.border.lightGray,
     marginHorizontal: 20,
-    marginTop: 48,
   },
   actions: {
     flexDirection: 'row',
@@ -133,6 +134,9 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     color: Colors.text.gray,
     textAlign: 'center',
+  },
+  actionsWrapper: {
+    marginTop: 24,
   },
 });
 
@@ -350,6 +354,7 @@ class Profile extends Component {
     if (!this.isCurrentUser() && user.relation) {
       return (
         <View style={styles.connection}>
+          <View style={styles.verticalDivider} />
           <FOF relation={user.relation} viewee={user} />
         </View>
       );
@@ -384,14 +389,15 @@ class Profile extends Component {
   )
 
   render() {
-    const { networkStatus, error } = this.props.data;
+    const { networkStatus, error, refetch } = this.props.data;
     const { user } = this.state;
+    let errorMessage = null;
 
     if (error) {
-      return (
+      errorMessage = (
         <View style={{ marginTop: 100 }}>
           <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          <TouchableOpacity onPress={this.state.refetch}>
+          <TouchableOpacity onPress={() => refetch()}>
             <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
           </TouchableOpacity>
         </View>
@@ -408,6 +414,7 @@ class Profile extends Component {
 
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
+        {errorMessage}
         <Avatar
           notTouchable
           isSupporter={user.isSupporter}
@@ -420,13 +427,22 @@ class Profile extends Component {
         <View style={styles.activityWrapper}>
           <View style={styles.hexagon}>
             <View style={styles.experienceCountWrapper}>
-              <Image
-                source={require('@assets/icons/ic_camera_head.png')}
-                style={styles.sunRay}
-              />
-              <Text style={styles.experienceCount}>{user.totalExperiences}</Text>
+              {user.totalExperiences > 0 ? (
+                <Image
+                  source={require('@assets/icons/ic_camera_head.png')}
+                  style={styles.sunRay}
+                />
+              ) : null}
+              <Text
+                style={[
+                  styles.experienceCount,
+                  { color: user.totalExperiences > 0 ? Colors.text.pink : Colors.text.gray },
+                ]}
+              >
+                {user.totalExperiences}
+              </Text>
             </View>
-            <Text style={styles.activityLabel}>Experiences</Text>
+            <Text style={styles.activityLabel}>{user.totalExperiences <= 1 ? 'Experience' : 'Experiences'}</Text>
           </View>
           <View style={styles.hexagon}>
             <Image
@@ -437,43 +453,42 @@ class Profile extends Component {
           </View>
         </View>
         {this.friendRelationButton()}
-        <View style={styles.verticalDivider} />
         {this.renderRelation()}
-        {this.fbLink()}
-        {this.twLink()}
-        <ProfileAction
-          label={`${user.totalOffered || 0} offered ${(user.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
-          onPress={() => this.redirect(FEED_FILTER_OFFERED)}
-        />
-        <ProfileAction
-          label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
-          onPress={() => this.redirect(FEED_FILTER_WANTED)}
-        />
-        {
-          this.isCurrentUser() &&
+        {user.totalExperiences > 0 && <MyExperience id={user.id} />}
+        <View style={styles.actionsWrapper}>
+          {this.fbLink()}
+          {this.twLink()}
           <ProfileAction
-            label={`${user.totalComments || 0} ride ${(user.totalComments || 0) <= 1 ? 'conversation' : 'conversations'}`}
+            label={`${user.totalOffered || 0} offered ${(user.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
+            onPress={() => this.redirect(FEED_FILTER_OFFERED)}
+          />
+          <ProfileAction
+            label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
+            onPress={() => this.redirect(FEED_FILTER_WANTED)}
+          />
+          <ProfileAction
+            label={`${user.totalRideConversations || 0} ride ${(user.totalRideConversations || 0) <= 1 ? 'conversation' : 'conversations'}`}
             onPress={() => this.redirect('conversation')}
           />
-        }
-        <ProfileAction
-          label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
-          onPress={() => this.redirect('groups')}
-        />
-        <ProfileAction
-          label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
-          onPress={() => this.redirect('friends')}
-        />
-        <ProfileAction
-          title={`Participant number ${user.id}`}
-          label=""
-        />
-        {!this.isCurrentUser() &&
           <ProfileAction
-            label="Report user"
-            onPress={() => this.redirect(REPORT_TYPE_USER)}
+            label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
+            onPress={() => this.redirect('groups')}
           />
-        }
+          <ProfileAction
+            label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
+            onPress={() => this.redirect('friends')}
+          />
+          <ProfileAction
+            title={`Participant number ${user.id}`}
+            label=""
+          />
+          {!this.isCurrentUser() &&
+            <ProfileAction
+              label="Report user"
+              onPress={() => this.redirect(REPORT_TYPE_USER)}
+            />
+          }
+        </View>
       </LinearGradient>
     );
   }

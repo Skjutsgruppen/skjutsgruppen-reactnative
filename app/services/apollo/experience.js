@@ -310,6 +310,7 @@ export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
       subscribeToNewExperience: param => subscribeToMore({
         document: MY_EXPERIENCES_SUBSCRIPTION_QUERY,
         variables: { userId: param.userId },
+        fetchPolicy: 'cache-and-network',
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
             return prev;
