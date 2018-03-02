@@ -20,7 +20,7 @@ subscription updatedProfile($id: Int){
     fbId
     totalOffered
     totalAsked
-    totalComments
+    totalRideConversations
     totalExperiences
     totalGroups
     totalFriends
@@ -49,7 +49,7 @@ query profile($id: Int){
     fbId
     totalOffered
     totalAsked
-    totalComments
+    totalRideConversations
     totalExperiences
     totalGroups
     totalFriends
@@ -103,7 +103,7 @@ subscription updatedAccount($id: Int) {
     phoneVerified
     totalOffered
     totalAsked
-    totalComments
+    totalRideConversations
     totalExperiences
     totalGroups
     totalFriends
@@ -129,7 +129,7 @@ query account {
     phoneVerified
     totalOffered
     totalAsked
-    totalComments
+    totalRideConversations
     totalExperiences
     totalGroups
     totalFriends
@@ -238,7 +238,7 @@ export const withConversation = graphql(CONVERSATION_QUERY, {
   }) =>
     ({
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'network-only',
       variables: {
         queryString,
         applyQueryString,
