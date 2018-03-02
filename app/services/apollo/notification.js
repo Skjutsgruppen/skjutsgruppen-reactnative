@@ -7,77 +7,33 @@ const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
   notification(userId: $userId ){
     id
-    type
-    User {
+    notifiable
+    createdAt
+    Notifications {
+      type
+    }
+    Notifiers {
       id
       firstName
       avatar
     }
-    Receiver{
-      id
-    }
-    notifiable
     Notifiable {
       ... on Trip {
-        id 
-        tripType:type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
+        id
         TripStart {
           name 
-          coordinates
         } 
         TripEnd {
           name 
-          coordinates
         } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
-        isParticipant
       }
       ... on Group {
         id
         name
-        description
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        outreach
-        type
-        photo
-        mapPhoto
-        TripStart {
-          name 
-          coordinates 
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops {
-          name 
-          coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
         membershipStatus
-        totalParticipants
-        isAdmin
+        User {
+          id
+        }
       }
       ... on GroupMembershipRequest {
         id
@@ -113,7 +69,6 @@ subscription notification($userId: Int!) {
           locality 
           membershipStatus
           totalParticipants
-          isAdmin
         }
       }
       ... on FriendRequest {
@@ -136,6 +91,16 @@ subscription notification($userId: Int!) {
         publishedStatus
         Trip{
           id
+          date
+          TripStart {
+            name 
+          }
+          TripEnd {
+            name 
+          }
+          Stops {
+            name 
+          }
         }
         userStatus
         User {
@@ -143,11 +108,16 @@ subscription notification($userId: Int!) {
           firstName 
           avatar 
         } 
+        Participants {
+          User {
+            id
+            firstName
+            avatar
+          }
+          status
+        }
       }
     }
-    notifiable
-    read
-    createdAt
   }
 }
 `;
@@ -157,77 +127,33 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
   notifications (filters:$filters, offset:$offset, limit:$limit) {
     rows {
       id
-      type
-      User {
+      notifiable
+      createdAt
+      Notifications {
+        type
+      }
+      Notifiers {
         id
         firstName
         avatar
       }
-      Receiver{
-        id
-      }
-      notifiable
       Notifiable {
         ... on Trip {
-          id 
-          tripType:type 
-          description 
-          seats 
-          User {
-            id 
-            firstName 
-            avatar 
-          } 
+          id
           TripStart {
             name 
-            coordinates
           } 
           TripEnd {
             name 
-            coordinates
           } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          photo 
-          mapPhoto
-          totalComments
-          isParticipant
         }
         ... on Group {
           id
           name
-          description
+          membershipStatus
           User {
-            id 
-            firstName 
-            avatar 
-          } 
-          outreach
-          type
-          photo
-          mapPhoto
-          TripStart {
-            name 
-            coordinates 
-          } 
-          TripEnd {
-            name 
-            coordinates
-          } 
-          Stops {
-            name 
-            coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
-          membershipStatus 
-          totalParticipants
-          isAdmin
+            id
+          }
         }
         ... on GroupMembershipRequest {
           id
@@ -285,6 +211,16 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           publishedStatus
           Trip{
             id
+            date
+            TripStart {
+              name 
+            }
+            TripEnd {
+              name 
+            }
+            Stops {
+              name 
+            }
           }
           userStatus
           User {
@@ -292,11 +228,16 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             firstName 
             avatar 
           } 
+          Participants {
+            User {
+              id
+              firstName
+              avatar
+            }
+            status
+          }
         }
       }
-      notifiable
-      read
-      createdAt
     }
     count
   }
@@ -349,13 +290,71 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
             return prev;
           }
 
+          let newRows = prev.notifications.rows;
+          let exists = false;
+
           const newNotification = subscriptionData.data.notification;
-          const newrows = [newNotification].concat(prev.notifications.rows);
+
+          if (newNotification.notifiable === 'Trip') {
+            newRows = prev.notifications.rows.map((row) => {
+              if (row.Notifiable.id === newNotification.Notifiable.id) {
+                const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                exists = true;
+
+                let found = false;
+                row.Notifiers.forEach((r) => {
+                  if (r.id === newNotification.Notifiers[0].id) {
+                    found = true;
+                  }
+                });
+
+                if (found) {
+                  return row;
+                }
+
+                return { ...row, Notifiers };
+              }
+
+              return row;
+            });
+          } else if (newNotification.notifiable === 'Group') {
+            newRows = prev.notifications.rows.map((row) => {
+              if (row.Notifiable.id === newNotification.Notifiable.id) {
+                exists = true;
+                let found = false;
+                row.Notifiers.forEach((r) => {
+                  if (r.id === newNotification.Notifiers[0].id) {
+                    found = true;
+                  }
+                });
+
+                if (found) {
+                  return row;
+                }
+
+                const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                return { ...row, Notifiers };
+              }
+
+              return row;
+            });
+          }
+
+          if (exists) {
+            return {
+              notifications: {
+                ...prev.notifications,
+                ...{ rows: newRows, count: prev.notifications.count },
+              },
+            };
+          }
+
+          newRows = [newNotification].concat(prev.notifications.rows);
 
           return {
             notifications: {
               ...prev.notifications,
-              ...{ rows: newrows, count: prev.notifications.count + 1 },
+              ...{ rows: newRows, count: prev.notifications.count + 1 },
             },
           };
         },
@@ -383,7 +382,6 @@ export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
   }),
 });
 
-
 const REJECT_GROUP_INVITATION_QUERY = gql`
 mutation rejectGroupInvitation($id:Int!) {
   rejectGroupInvitation(id:$id)
@@ -395,7 +393,6 @@ export const withRejectGroupInvitation = graphql(REJECT_GROUP_INVITATION_QUERY, 
     rejectGroupInvitation: id => mutate({ variables: { id } }),
   }),
 });
-
 
 const ACCEPT_GROUP_REQUEST_QUERY = gql`
 mutation acceptGroupRequest($id:Int!) {
@@ -409,7 +406,6 @@ export const withAcceptGroupRequest = graphql(ACCEPT_GROUP_REQUEST_QUERY, {
   }),
 });
 
-
 const ACCEPT_GROUP_INVITATION_QUERY = gql`
 mutation acceptGroupInvitation($id:Int!) {
   acceptGroupInvitation(id:$id)
@@ -421,7 +417,6 @@ export const withAcceptGroupInvitation = graphql(ACCEPT_GROUP_INVITATION_QUERY, 
     acceptGroupInvitation: id => mutate({ variables: { id } }),
   }),
 });
-
 
 const LEAVE_GROUP_QUERY = gql`
 mutation leaveGroup($id:Int!) {

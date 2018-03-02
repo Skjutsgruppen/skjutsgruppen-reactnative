@@ -133,7 +133,7 @@ export const updateNewNotificationToOld = (id, apollo) => {
     let rows = [];
 
     rows = newNotificationsData.notifications.rows.filter((notification) => {
-      if (notification.id === id && !isRemovableNotificationType(notification.type)) {
+      if (id === notification.id && !isRemovableNotificationType(notification.type)) {
         oldNotificationsData.notifications.rows.push(notification);
         oldNotificationsData.notifications.count += 1;
 
