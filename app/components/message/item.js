@@ -6,23 +6,16 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from '@components/common';
-import { withAcceptFriendRequest, withRejectFriendRequest } from '@services/apollo/friend';
-import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST,
   NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED,
-  NOTIFICATION_TYPE_COMMENT,
-  NOTIFICATION_TYPE_INVIVATION,
   NOTIFICATION_TYPE_FRIEND_REQUEST,
   NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED,
   NOTIFICATION_TYPE_EXPERIENCE_TAGGED,
   NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
-  NOTIFICATION_TYPE_EXPERIENCE_SHARED,
   NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED,
-  NOTIFICATION_TYPE_TRIP_SHARED,
-  NOTIFICATION_TYPE_TRIP_SHARED_GROUP,
   NOTIFICATION_CHARACTER_COUNT,
   NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
 } from '@config/constant';
@@ -66,7 +59,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
+    paddingRight: 20,
+    paddingLeft: 16,
     paddingVertical: 12,
   },
   experienceIconWrapper: {
@@ -82,13 +76,25 @@ const styles = StyleSheet.create({
   },
   profilePicWrapper: {
     flexDirection: 'row',
-    marginRight: 16,
+    marginRight: 12,
   },
   profilePic: {
-    width: 46,
-    height: 46,
+    width: 56,
+    height: 56,
+    borderWidth: 4,
+    borderColor: '#fff',
+    borderRadius: 28,
+    zIndex: 10,
+    overflow: 'hidden',
+  },
+  shiftedProfilePic: {
+    marginLeft: -16,
+    zIndex: 1,
+  },
+  avatar: {
+    height: 48,
+    width: 48,
     resizeMode: 'cover',
-    borderRadius: 23,
   },
   time: {
     left: 'auto',
@@ -144,24 +150,6 @@ class Item extends PureComponent {
       .catch(() => this.setState({ loading: false }));
   }
 
-  acceptFriendRequest = (id) => {
-    const { acceptFriendRequest, notification, user } = this.props;
-    this.setState({ loading: true });
-    acceptFriendRequest(id, user.id, notification.User.id)
-      .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
-      .catch(() => this.setState({ loading: false }));
-  }
-
-  rejectFriendRequest = (id) => {
-    const { rejectFriendRequest, notification } = this.props;
-    this.setState({ loading: true });
-    rejectFriendRequest(id, notification.User.id)
-      .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
-      .catch(() => this.setState({ loading: false }));
-  }
-
   redirect = (id, route, params) => {
     const { navigation, filters, notification, markRead } = this.props;
 
@@ -172,56 +160,62 @@ class Item extends PureComponent {
     navigation.navigate(route, params);
   }
 
-  friendRequest = ({ User, Notifiable }) => (
-    <TouchableOpacity onPress={() => this.redirect(null, 'Profile', { profileId: User.id })}>
-      <View style={styles.list}>
-        <View style={styles.flexRow}>
-          <View style={styles.profilePicWrapper}>
-            {this.renderPic(User.avatar, User.id)}
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.bold}>{User.firstName} </Text>
-            <Text style={styles.bold}>
-              wants to be your friend.
-            </Text>
+  friendRequest = ({ Notifiers, id, createdAt }) => {
+    const { filters } = this.props;
+    return (
+      <TouchableOpacity onPress={() => this.redirect(id, 'Profile', { profileId: Notifiers[0].id })}>
+        <View style={styles.list}>
+          <View style={styles.flexRow}>
+            <View style={styles.profilePicWrapper}>
+              {this.renderPic([Notifiers[0].avatar])}
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[filters === 'new' && styles.bold]}>{Notifiers[0].firstName} </Text>
+              <Text style={[filters === 'new' && styles.bold]}>
+                wants to be your friend.
+              </Text>
+            </View>
+            <View>
+              <Text>
+                <Date calenderTime>{createdAt}</Date>
+              </Text>
+            </View>
           </View>
         </View>
-        {this.state.loading ?
-          <Loading /> :
-          this.renderAction(
-            Notifiable.id,
-            this.acceptFriendRequest,
-            this.rejectFriendRequest,
-          )}
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  }
 
-  requestJoinGroup = ({ User, Notifiable }) => (
-    <TouchableOpacity onPress={() => this.redirect(null, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
-      <View style={styles.list}>
-        <View style={styles.flexRow}>
-          <View style={styles.profilePicWrapper}>
-            {this.renderPic(User.avatar, User.id)}
+  requestJoinGroup = ({ User, Notifiable, id }) => {
+    const { filters } = this.props;
+
+    return (
+      <TouchableOpacity onPress={() => this.redirect(id, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
+        <View style={styles.list}>
+          <View style={styles.flexRow}>
+            <View style={styles.profilePicWrapper}>
+              {this.renderPic([User.avatar])}
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text onPress={() => this.redirect(id, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]}>{User.firstName} </Text>
+              <Text style={[filters === 'new' && styles.bold]}>
+                wants to participate in your group
+                <Text> {Notifiable.Group.name} </Text>
+              </Text>
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text onPress={() => this.redirect(null, 'Profile', { profileId: User.id })} style={styles.bold}>{User.firstName} </Text>
-            <Text style={styles.bold}>
-              wants to participate in your group
-              <Text> {Notifiable.Group.name} </Text>
-            </Text>
-          </View>
+          {this.state.loading ?
+            <Loading /> :
+            this.renderAction(
+              Notifiable.id,
+              [],
+              this.acceptGroupRequest,
+              this.rejectGroupRequest,
+            )}
         </View>
-        {this.state.loading ?
-          <Loading /> :
-          this.renderAction(
-            Notifiable.id,
-            this.acceptGroupRequest,
-            this.rejectGroupRequest,
-          )}
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  }
 
   item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date }) => {
     const { filters } = this.props;
@@ -255,17 +249,17 @@ class Item extends PureComponent {
     );
   };
 
-  memberRequest = ({ Notifiable, User, date, id }) => {
+  memberRequest = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable && Notifiable.gmrStatus === 'pending') {
-      return this.requestJoinGroup({ User, Notifiable });
+      return this.requestJoinGroup({ User: Notifiers[0], Notifiable, id });
     }
 
     if (Notifiable && Notifiable.gmrStatus === 'accepted') {
       return this.item({
-        userId: User.id,
-        photo: User.avatar,
-        text: `You have accepted ${User.firstName}'s request to join group "${Notifiable.Group.name}"`,
-        date,
+        userId: Notifiers[0].id,
+        photo: [Notifiers[0].avatar],
+        text: `You have accepted ${Notifiers[0].firstName}'s request to join group "${Notifiable.Group.name}"`,
+        date: createdAt,
         onPress: () => this.redirect(id, 'GroupDetail', { group: Notifiable.Group }),
       });
     }
@@ -273,17 +267,17 @@ class Item extends PureComponent {
     return null;
   }
 
-  membershipRequestAccepted = ({ Notifiable, User, createdAt, id }) => {
+  membershipRequestAccepted = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        userId: User.id,
-        user: User.firstName,
-        photo: User.avatar,
+        userId: Notifiers[0].id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
         text: `${trans('message.added_you_to_group')} "${Notifiable.name}"`,
         date: createdAt,
         onPress: () => this.redirect(id, 'GroupDetail', {
           group: Notifiable,
-          notifier: User,
+          notifier: Notifiers[0],
           notificationMessage: trans('message.added_you_to_this_group'),
         }),
       });
@@ -292,14 +286,14 @@ class Item extends PureComponent {
     return null;
   }
 
-  friendRequestAccepted = ({ Notifiable, User, createdAt, id }) => {
+  friendRequestAccepted = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        userId: User.id,
-        photo: User.avatar,
-        text: `${trans('message.you_and')} ${User.firstName} ${trans('message.are_now_friends')}`,
+        userId: Notifiers[0].id,
+        photo: [Notifiers[0].avatar],
+        text: `${trans('message.you_and')} ${Notifiers[0].firstName} ${trans('message.are_now_friends')}`,
         date: createdAt,
-        onPress: () => this.redirect(id, 'Profile', { profileId: User.id }),
+        onPress: () => this.redirect(id, 'Profile', { profileId: Notifiers[0].id }),
       });
     }
 
@@ -309,7 +303,7 @@ class Item extends PureComponent {
   experienceRejected = ({ Notifiable, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        photo: Notifiable.photo,
+        photo: [Notifiable.photo],
         text: trans('message.one_participant_said_no'),
         date: createdAt,
         noAvatarAction: true,
@@ -324,7 +318,7 @@ class Item extends PureComponent {
   experienceRemoved = ({ Notifiable, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        photo: Notifiable.photo,
+        photo: [Notifiable.photo],
         text: trans('message.one_participant_removed'),
         date: createdAt,
         noAvatarAction: true,
@@ -336,11 +330,11 @@ class Item extends PureComponent {
     return null;
   }
 
-  experiencePublished = ({ Notifiable, User, createdAt, id }) => {
+  experiencePublished = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        userId: User.id,
-        photo: Notifiable.photo,
+        userId: Notifiers[0].id,
+        photo: [Notifiable.photo],
         experience: Notifiable,
         noAvatarAction: true,
         text: trans('message.your_experience_has_been_published'),
@@ -352,12 +346,12 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceShared = ({ Notifiable, User, createdAt, id }) => {
+  experienceShared = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        userId: User.id,
-        user: User.firstName,
-        photo: User.avatar,
+        userId: Notifiers[0].id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
         text: trans('message.shared_experience_with_you'),
         date: createdAt,
         onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
@@ -367,30 +361,12 @@ class Item extends PureComponent {
     return null;
   }
 
-  acceptTagRequest = (id) => {
-    const { acceptExperience, notification } = this.props;
-    this.setState({ loading: true });
-    acceptExperience(id)
-      .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
-      .catch(() => this.setState({ loading: false }));
-  }
-
-  rejectTagRequest = (id) => {
-    const { rejectExperience, notification } = this.props;
-    this.setState({ loading: true });
-    rejectExperience(id)
-      .then(notification.refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
-      .catch(() => this.setState({ loading: false }));
-  }
-
-  experienceTagged = ({ Notifiable, User, createdAt, id }) => {
+  experienceTagged = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        user: User.firstName,
-        photo: User.avatar,
-        userId: User.id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
+        userId: Notifiers[0].id,
         text: `${trans('message.tagged_you_in_an_experience')}`,
         date: createdAt,
         onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
@@ -400,7 +376,7 @@ class Item extends PureComponent {
     return null;
   }
 
-  tripShared = ({ Notifiable, User, createdAt }) => {
+  tripShared = ({ Notifiable, Notifiers, createdAt, id }) => {
     let type = null;
 
     if (Notifiable) {
@@ -411,34 +387,34 @@ class Item extends PureComponent {
       }
 
       return this.item({
-        userId: User.id,
-        user: User.firstName,
-        photo: User.avatar,
+        userId: Notifiers[0].id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
         text: `${type}`,
         date: createdAt,
-        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable }),
+        onPress: () => this.redirect(id, 'TripDetail', { trip: Notifiable }),
       });
     }
 
     return null;
   }
 
-  tripSharedGroup = ({ Notifiable, User, createdAt }) => {
+  tripSharedGroup = ({ Notifiable, Notifiers, createdAt, id }) => {
     if (Notifiable) {
       return this.item({
-        userId: User.id,
-        user: User.firstName,
-        photo: User.avatar,
+        userId: Notifiers[0].id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
         text: trans('message.shared_a_trip_on_your_group'),
         date: createdAt,
-        onPress: () => this.redirect(Notifiable.id, 'TripDetail', { trip: Notifiable, notifier: User, notificationMessage: 'Shared this trip on your group.' }),
+        onPress: () => this.redirect(id, 'TripDetail', { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Group' }),
       });
     }
 
     return null;
   }
 
-  comment = ({ notifiable, Notifiable, User, id, createdAt }) => {
+  comment = ({ notifiable, Notifiable, Notifiers, id, createdAt }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -447,12 +423,12 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_GROUP) {
       type = `${Notifiable.name}`;
       route = 'GroupDetail';
-      params = { group: Notifiable, notifier: User, notificationMessage: trans('message.commented_on_this_group') };
+      params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_group') };
       itemFields = {
-        userId: User.id,
+        userId: Notifiers[0].id,
         user: `${type}`,
-        photo: User.avatar,
-        text: `${User.firstName} ${trans('message.left_a_comment')}`,
+        photo: [Notifiers[0].avatar],
+        text: `${Notifiers[0].firstName} ${trans('message.left_a_comment')}`,
         date: createdAt,
         onPress: () => this.redirect(id, route, params),
       };
@@ -461,16 +437,16 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_TRIP) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: User, notificationMessage: trans('message.commented_on_this_ride') };
+      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_ride') };
 
       if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
       }
 
       itemFields = {
-        userId: User.id,
-        user: User.firstName,
-        photo: User.avatar,
+        userId: Notifiers[0].id,
+        user: Notifiers[0].firstName,
+        photo: [Notifiers[0].avatar],
         text: `${type}`,
         date: createdAt,
         onPress: () => this.redirect(id, route, params),
@@ -484,7 +460,7 @@ class Item extends PureComponent {
     return null;
   }
 
-  invitation = ({ notifiable, Notifiable, User, createdAt, id }) => {
+  invitation = ({ notifiable, Notifiable, Notifiers, createdAt, id }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -492,13 +468,13 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_GROUP) {
       type = `${trans('message.shared_group')} ${Notifiable.name} ${trans('message.to_you')}`;
       route = 'GroupDetail';
-      params = { group: Notifiable, notifier: User, notificationMessage: trans('message.shared_this_group_with_you') };
+      params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') };
     }
 
     if (notifiable === FEEDABLE_TRIP) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: User, notificationMessage: 'Shared this trip with you' };
+      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: 'Shared this trip with you' };
 
       if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
@@ -506,23 +482,57 @@ class Item extends PureComponent {
     }
 
     return this.item({
-      userId: User.id,
-      user: User.firstName,
-      photo: User.avatar,
+      userId: Notifiers[0].id,
+      user: Notifiers[0].firstName,
+      photo: [Notifiers[0].avatar],
       text: `${type}`,
       date: createdAt,
       onPress: () => this.redirect(id, route, params),
     });
   }
 
-  renderAction = (id, accept, reject) => {
+  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
+    const route = 'TripDetail';
+    const params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: 'Bundled notifications' };
+    const plus = Notifiers.length - 1;
+
+    return this.item({
+      userId: Notifiers[0],
+      user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+      photo: (plus > 0) ?
+        [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
+        [Notifiers[plus].avatar],
+      text: `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`,
+      date: createdAt,
+      onPress: () => this.redirect(id, route, params),
+    });
+  }
+
+  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
+    const route = 'GroupDetail';
+    const params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Bundled notifications' };
+    const plus = Notifiers.length - 1;
+
+    return this.item({
+      userId: Notifiers[0],
+      user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+      photo: (plus > 0) ?
+        [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
+        [Notifiers[plus].avatar],
+      text: `${Notifiable.name}`,
+      date: createdAt,
+      onPress: () => this.redirect(id, route, params),
+    });
+  }
+
+  renderAction = (id, bundleId, accept, reject) => {
     const { action } = this.state;
 
     if (action === ACTION_NONE) {
       return (
         <View style={styles.actions}>
           <TouchableOpacity
-            onPress={() => accept(id)}
+            onPress={() => accept(id, bundleId)}
             style={styles.accept}
           >
             <Icon
@@ -532,7 +542,7 @@ class Item extends PureComponent {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => reject(id)}
+            onPress={() => reject(id, bundleId)}
           >
             <Icon
               name="ios-close-circle-outline"
@@ -579,18 +589,15 @@ class Item extends PureComponent {
     return null;
   }
 
-  renderPic = (photo, userId) => {
-    let profileImage = null;
-    if (photo) {
-      profileImage = (
-        <TouchableOpacity onPress={() => this.redirect(null, 'Profile', { profileId: userId })}>
-          <Image source={{ uri: photo }} style={styles.profilePic} />
-        </TouchableOpacity>
-      );
-    }
-
-    return profileImage;
-  }
+  renderPic = photo => photo.map((imageURI, index) => {
+    const style = index === 1 ? [styles.profilePic, styles.shiftedProfilePic] : styles.profilePic;
+    const key = `avatar${index}`;
+    return (
+      <View style={style} key={key}>
+        <Image source={{ uri: imageURI }} style={styles.avatar} />
+      </View>
+    );
+  });
 
   renderExperiencePic = (Notifiable, noAvatarAction) => {
     let profileImage = null;
@@ -616,60 +623,48 @@ class Item extends PureComponent {
     const { notification } = this.props;
     let message = null;
 
-    if (notification.type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
+    if (notification.notifiable === 'Trip') {
+      message = this.tripNotificationBundle(notification);
+    }
+
+    if (notification.notifiable === 'Group') {
+      message = this.groupNotificationBundle(notification);
+    }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
       message = this.memberRequest(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST_ACCEPTED) {
       message = this.membershipRequestAccepted(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_COMMENT) {
-      message = this.comment(notification);
-    }
-
-    if (notification.type === NOTIFICATION_TYPE_INVIVATION) {
-      message = this.invitation(notification);
-    }
-
-    if (notification.type === NOTIFICATION_TYPE_FRIEND_REQUEST) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_REQUEST) {
       message = this.friendRequest(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
       message = this.friendRequestAccepted(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_TAGGED) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_EXPERIENCE_TAGGED) {
       message = this.experienceTagged(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_REJECTED) {
-      message = this.experienceRejected(notification);
-    }
-
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_REMOVED) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_EXPERIENCE_REMOVED) {
       message = this.experienceRemoved(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_SHARED) {
-      message = this.experienceShared(notification);
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_EXPERIENCE_REJECTED) {
+      message = this.experienceRejected(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED) {
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED) {
       message = this.experiencePublished(notification);
     }
 
-    if (notification.type === NOTIFICATION_TYPE_TRIP_SHARED) {
-      message = this.tripShared(notification);
-    }
-
-    if (notification.type === NOTIFICATION_TYPE_TRIP_SHARED_GROUP) {
-      message = this.tripSharedGroup(notification);
-    }
-
     return (
-      <View key={notification.id}>
+      <View key={notification.Notifiable.id}>
         {message}
       </View>
     );
@@ -680,20 +675,17 @@ Item.propTypes = {
   filters: PropTypes.string.isRequired,
   notification: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    User: PropTypes.object.isRequired,
+    Notifiers: PropTypes.arrayOf.isRequired,
+    Notifications: PropTypes.arrayOf.isRequired,
+    Notifiable: PropTypes.object.isRequired,
+    notifiable: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
   }).isRequired,
   rejectGroupInvitation: PropTypes.func.isRequired,
   acceptGroupRequest: PropTypes.func.isRequired,
   markRead: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
-  }).isRequired,
-  rejectFriendRequest: PropTypes.func.isRequired,
-  acceptFriendRequest: PropTypes.func.isRequired,
-  acceptExperience: PropTypes.func.isRequired,
-  rejectExperience: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number,
   }).isRequired,
 };
 
@@ -703,10 +695,6 @@ export default compose(
   withReadNotification,
   withRejectGroupInvitation,
   withAcceptGroupRequest,
-  withAcceptFriendRequest,
-  withRejectFriendRequest,
-  withAcceptExperience,
-  withRejectExperience,
   withNavigation,
   connect(mapStateToProps),
 )(Item);

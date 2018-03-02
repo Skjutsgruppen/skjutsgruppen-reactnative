@@ -44,7 +44,7 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
 
   if (type === 'image') {
     imgIcon = { uri: image };
-    imageStyle = { ...styles.image };
+    imageStyle = styles.image;
   }
 
   return (
