@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import Info from '@components/feed/info';
+import Detail from '@components/feed/itemDetail';
 import { FEEDABLE_TRIP, FEED_FILTER_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
+import FOF from '@components/relation/friendsOfFriend';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -75,17 +76,34 @@ class FeedItem extends PureComponent {
     return (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
   }
 
+  renderRelation = () => {
+    const { feed } = this.props;
+
+    if (feed.User.relation && feed.User.relation.path) {
+      return (
+        <View style={{ marginLeft: 62 }}>
+          <FOF mini relation={feed.User.relation} viewee={feed.User} />
+        </View>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const { feed, onPress, onCommentLongPress } = this.props;
 
     return (
-      <View style={styles.wrapper}>
-        {this.renderProfilePic()}
-        <Info
-          feed={feed}
-          onPress={onPress}
-          onCommentLongPress={onCommentLongPress}
-        />
+      <View>
+        <View style={styles.wrapper}>
+          {this.renderProfilePic()}
+          <Detail
+            feed={feed}
+            onPress={onPress}
+            onCommentLongPress={onCommentLongPress}
+          />
+        </View>
+        {feed.showRelation && this.renderRelation()}
       </View>
     );
   }

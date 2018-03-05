@@ -171,7 +171,9 @@ class Feed extends Component {
 
   tabEvent = (e, type) => {
     if (this.feedList && type === 'didBlur') {
-      this.setState({ filterType: FEED_FILTER_EVERYTHING });
+      this.setState({ filterType: FEED_FILTER_EVERYTHING }, () => {
+        this.props.feeds.refetch({ offset: 0, filter: { type: FEED_FILTER_EVERYTHING } });
+      });
     }
   }
 
@@ -262,7 +264,6 @@ class Feed extends Component {
     const isLimitNotExceeded = totalExperiences > offset;
     const isEverythingFilter = this.state.filterType === FEED_FILTER_EVERYTHING;
 
-
     if (isLimitNotExceeded && isRenderable && isEverythingFilter) {
       return (
         <View>
@@ -311,7 +312,8 @@ class Feed extends Component {
             return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
           },
         }}
-      />);
+      />
+    );
   }
 
   renderMap = () => (

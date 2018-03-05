@@ -10,7 +10,7 @@ import { AppNotification, DetailHeader, Loading, ShareButton } from '@components
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
-import FOF from '@components/Fof';
+import FOF from '@components/relation/friendsOfFriend';
 import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import List from '@components/experience/list';
@@ -871,6 +871,7 @@ class TripDetail extends Component {
           header={this.header()}
           footer={<About />}
           type={FEEDABLE_TRIP}
+          ownerId={trip.User.id}
         />
         {this.renderCommentBox()}
         {this.renderActionModal()}

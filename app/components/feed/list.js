@@ -98,6 +98,11 @@ class FeedList extends PureComponent {
       isLongPressModalOpen: false,
       isOwner: false,
       comment: {},
+      feeds: {
+        rows: [],
+        count: 0,
+        loading: false,
+      },
       showConfirm: false,
       deleting: false,
     });
@@ -107,6 +112,24 @@ class FeedList extends PureComponent {
     const { subscribeToNewFeed, id, user } = this.props;
 
     subscribeToNewFeed({ id, userId: user.id });
+  }
+
+  componentWillReceiveProps({ feeds, ownerId, user }) {
+    const uniqueUsers = [user.id, ownerId];
+    let newItem = {};
+
+    feeds.rows = feeds.rows.map((item) => {
+      newItem = item;
+      if (uniqueUsers.indexOf(item.User.id) > -1) {
+        newItem = { ...item, showRelation: false };
+      } else {
+        uniqueUsers.push(item.User.id);
+        newItem = { ...item, showRelation: true };
+      }
+      return newItem;
+    });
+
+    this.setState({ feeds });
   }
 
   onCommentLongPress = ({ isOwner, comment }) => {
@@ -225,8 +248,8 @@ class FeedList extends PureComponent {
   }
 
   render() {
-    const { feeds, header, footer, type } = this.props;
-
+    const { header, footer, type } = this.props;
+    const { feeds } = this.state;
     return (
       <View style={styles.wrapper}>
         <DataList
@@ -265,6 +288,7 @@ class FeedList extends PureComponent {
 }
 
 FeedList.propTypes = {
+  ownerId: PropTypes.number.isRequired,
   isAdmin: PropTypes.bool,
   id: PropTypes.number.isRequired,
   feeds: PropTypes.shape({
