@@ -14,11 +14,10 @@ import {
   FEEDABLE_EXPERIENCE,
   FEEDABLE_SUGGESTION,
 } from '@config/constant';
-import RelationBubbleList from '@components/relationBubbleList';
+import FOF from '@components/Fof';
 import Colors from '@theme/colors';
 import { SharedCard } from '@components/common';
 import { connect } from 'react-redux';
-
 
 const styles = StyleSheet.create({
   Wrapper: {
@@ -162,29 +161,23 @@ class Feed extends Component {
     return null;
   }
 
-  renderRelation() {
-    const { feed, setModalVisibility } = this.props;
-
-    return (
-      <View style={{ width: '100%' }}>
-        <RelationBubbleList
-          users={feed.User.relation}
-          avatarSize={24}
-          style={{ marginHorizontal: 0 }}
-          setModalVisibility={setModalVisibility}
-        />
-      </View>
-    );
+  renderRelation = () => {
+    const { feed } = this.props;
+    if (feed.User.relation) {
+      return <FOF relation={feed.User.relation} viewee={feed.User} />;
+    }
+    return null;
   }
 
   renderClosedGroup() {
     const { feed, onPress } = this.props;
+
     return (
       <View style={styles.Wrapper}>
         <View style={styles.content}>
           <View style={styles.title}>
             <Text style={styles.name} onPress={() => onPress('Profile', feed.Group.User.id)}>
-              {feed.Group.User.firstName}
+              {`${feed.Group.User.firstName} `}
             </Text>
             <Text style={styles.commentText}>
               Added <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
@@ -321,7 +314,6 @@ Feed.propTypes = {
     date: PropTypes.string.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  setModalVisibility: PropTypes.func.isRequired,
   onCommentLongPress: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,

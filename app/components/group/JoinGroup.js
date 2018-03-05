@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.text.blue,
     marginHorizontal: 16,
-    marginTop: 16,
+    marginTop: 24,
   },
   text: {
     marginHorizontal: 16,
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: 24,
+    marginBottom: 50,
   },
   msgWrapper: {
     alignItems: 'center',
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
     backgroundColor: Colors.background.fullWhite,
+    elevation: 15,
     shadowOffset: { width: 0, height: -4 },
     shadowColor: Colors.background.black,
     shadowOpacity: 0.1,
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 45,
     borderRadius: 24,
-    paddingHorizontal: 24,
+    paddingHorizontal: 50,
     backgroundColor: Colors.background.pink,
   },
   buttonText: {
@@ -248,12 +250,18 @@ class JoinGroup extends Component {
           handleShare={() => this.setState({ showShareModal: true })}
         />
         <ScrollView>
-          <GroupImage group={group} />
           {
-            (group.photo && group.mapPhoto) &&
-            <GroupMap group={group} onMapPress={this.onMapPress} />
+            group.photo &&
+            <GroupImage group={group} />
           }
-
+          {
+            group.mapPhoto &&
+            <GroupMap
+              group={group}
+              onMapPress={this.onMapPress}
+              showOverlay={group.photo === null}
+            />
+          }
           <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
           <ParticipantListBubble id={group.id} offset={0} />
           <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
