@@ -14,7 +14,7 @@ import {
   FEEDABLE_EXPERIENCE,
   FEEDABLE_SUGGESTION,
 } from '@config/constant';
-import FOF from '@components/Fof';
+import FOF from '@components/relation/friendsOfFriend';
 import Colors from '@theme/colors';
 import { SharedCard } from '@components/common';
 import { connect } from 'react-redux';
