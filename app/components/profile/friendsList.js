@@ -190,6 +190,9 @@ UserFriendsList.propTypes = {
   unfriend: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   subscribeToNewFriend: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

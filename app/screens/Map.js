@@ -79,7 +79,12 @@ class Map extends PureComponent {
     let { region } = this.state;
 
     if (latitude && longitude) {
-      region = { latitude, longitude, longitudeDelta: LONGITUDE_DELTA, latitudeDelta: LATITUDE_DELTA };
+      region = {
+        latitude,
+        longitude,
+        longitudeDelta: LONGITUDE_DELTA,
+        latitudeDelta: LATITUDE_DELTA,
+      };
     }
 
     this.setState({ region, loading: true });
