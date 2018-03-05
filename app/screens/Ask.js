@@ -138,6 +138,11 @@ class Ask extends Component {
         },
       });
     }
+
+    if (params && params.groupId) {
+      this.setState({ share: { groups: [params.groupId] } });
+    }
+
     this.container = null;
   }
 
@@ -373,6 +378,7 @@ class Ask extends Component {
       route,
       date,
       error,
+      share,
     } = this.state;
 
     return (
@@ -401,7 +407,7 @@ class Ask extends Component {
             />
           }
           {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
-          {(activeStep === 4) && <Share onNext={this.onShareAndPublishNext} />}
+          {(activeStep === 4) && <Share defaultValue={share} type={FEEDABLE_TRIP} onNext={this.onShareAndPublishNext} />}
           {(activeStep === 5) && this.renderFinish()}
         </Container>
       </Wrapper>

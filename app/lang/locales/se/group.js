@@ -5,4 +5,5 @@ export const group = {
   a_to_z: 'A to Z',
   groups_near_you: 'Groups Near You',
   popular_groups: 'Popular Groups',
+  report_this_group: 'Report this group SE',
 };

@@ -123,6 +123,21 @@ const styles = StyleSheet.create({
   closeModal: {
     padding: 16,
   },
+  modalContent: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
+  actionsWrapper: {
+    marginTop: 'auto',
+    marginHorizontal: 16,
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 24,
+  },
+  action: {
+    padding: 16,
+  },
 });
 
 class Detail extends PureComponent {
@@ -140,6 +155,7 @@ class Detail extends PureComponent {
       notifierOffset: 0,
       showCalendar: false,
       groupTrips: [],
+      modalVisibility: false,
     });
   }
 
@@ -211,19 +227,29 @@ class Detail extends PureComponent {
   }
 
   onOffer = () => {
-    const { navigation } = this.props;
+    const { navigation, group } = this.props;
     Keyboard.dismiss();
-    navigation.navigate('Offer');
+    navigation.navigate('Offer', { groupId: group.id });
   }
 
   onAsk = () => {
-    const { navigation } = this.props;
+    const { navigation, group } = this.props;
     Keyboard.dismiss();
-    navigation.navigate('Ask');
+    navigation.navigate('Ask', { groupId: group.id });
+  }
+
+  onReport = () => {
+    const { navigation, group } = this.props;
+    this.setModalVisible(false);
+    navigation.navigate('Report', { data: { Group: group }, type: FEEDABLE_GROUP });
   }
 
   setCalendarVisibilty = (show) => {
     this.setState({ showCalendar: show });
+  }
+
+  setModalVisible = (show) => {
+    this.setState({ modalVisibility: show });
   }
 
   redirectToSelectedTripDate = (date) => {
@@ -298,6 +324,42 @@ class Detail extends PureComponent {
       }
     </View>
   );
+
+  renderModal = () => {
+    const { modalVisibility } = this.state;
+    const { user, group } = this.props;
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent
+        onRequestClose={() => this.setState({ modalVisibility: false })}
+        visible={modalVisibility}
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.actionsWrapper}>
+            {
+              user.id !== group.User.id &&
+              <TouchableOpacity
+                style={styles.action}
+                onPress={this.onReport}
+              >
+                <Text style={styles.actionLabel}>{trans('group.report_this_group')}</Text>
+              </TouchableOpacity>
+            }
+          </View>
+          <View style={styles.closeWrapper}>
+            <TouchableOpacity
+              style={styles.closeModal}
+              onPress={() => this.setModalVisible(!modalVisibility)}
+            >
+              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
   renderShareModal() {
     const { showShareModal, group } = this.state;
@@ -377,7 +439,9 @@ class Detail extends PureComponent {
           handleShowCalender={this.setCalendarVisibilty}
           onOffer={this.onOffer}
           onAsk={this.onAsk}
+          handleShowOptions={() => this.setModalVisible(true)}
         />
+        {this.renderModal()}
         {this.renderShareModal()}
         {this.renderCalendarModal()}
       </Wrapper>
