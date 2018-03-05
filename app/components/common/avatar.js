@@ -27,10 +27,11 @@ const Avatar = ({
   notTouchable,
   size,
   style,
-  onPress,
-  isSupporter,
   showIndicator,
   indicatorColor,
+  imageStyle,
+  onPress,
+  isSupporter,
   ...props
 }) => {
   const wrapperStyle = {
@@ -55,7 +56,7 @@ const Avatar = ({
     return (
       <View style={[{ ...wrapperStyle }, style]}>
         {indicator}
-        {imageURI !== '' && <Image source={{ uri: imageURI }} style={avatarStyle} {...props} />}
+        {imageURI !== '' && <Image source={{ uri: imageURI }} style={[imageStyle, avatarStyle]} {...props} />}
         {
           isSupporter && <Image
             source={LeafIcon}
@@ -69,7 +70,7 @@ const Avatar = ({
   return (
     <TouchableOpacity onPress={onPress} style={[{ ...wrapperStyle }, style]}>
       {indicator}
-      <Image source={{ uri: imageURI }} style={avatarStyle} {...props} />
+      <Image source={{ uri: imageURI }} style={[imageStyle, avatarStyle]} {...props} />
       {
         isSupporter && <Image
           source={LeafIcon}

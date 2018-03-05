@@ -10,7 +10,7 @@ import { AppNotification, DetailHeader, Loading, ShareButton } from '@components
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
-import Relation from '@components/relation';
+import FOF from '@components/Fof';
 import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import List from '@components/experience/list';
@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
   date: {
     marginVertical: 12,
   },
-  userComment: {
-    margin: 24,
+  tripDescription: {
+    marginTop: 16,
     paddingBottom: 24,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
@@ -209,7 +209,7 @@ class TripDetail extends Component {
       error: '',
       success: '',
       comment: '',
-      modalVisible: false,
+      showActionModal: false,
       writingComment: false,
       showShareModal: false,
       notification: false,
@@ -324,7 +324,7 @@ class TripDetail extends Component {
   onCommentBoxBlur = comment => this.setState({ comment });
 
   setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
+    this.setState({ showActionModal: visible });
   }
 
   setReturnRidesModalVisibility = (show) => {
@@ -412,6 +412,10 @@ class TripDetail extends Component {
 
   returnRideButton = () => {
     const { trip } = this.state;
+    if (!trip.ReturnTrip) {
+      return null;
+    }
+
     if (trip.ReturnTrip.length === 1 && trip.Recurring.length < 1) {
       return (
         <TouchableOpacity
@@ -447,8 +451,11 @@ class TripDetail extends Component {
   recurringRideButton = () => {
     const { trip } = this.state;
 
+    if (!trip.Recurring || trip.Recurring.length < 1) {
+      return null;
+    }
+
     return (
-      trip.Recurring && trip.Recurring.length > 0 &&
       <TouchableOpacity
         style={styles.pillBtn}
         onPress={() => this.setRecurringRidesModalVisibility(true)}
@@ -480,63 +487,13 @@ class TripDetail extends Component {
           {profileImage}
         </TouchableOpacity>
         <LinearGradient colors={Gradients.white}>
-          <View style={styles.detail}>
-            <Text style={[styles.text, styles.lightText]}>
-              <Text style={styles.username}>
-                {trip.User.firstName}
-              </Text>
-              {
-                trip.type === FEED_TYPE_OFFER &&
-                <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
-              }
-              {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
-            </Text>
-            <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-            <Text style={[styles.date, styles.lightText]}>
-              <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
-              {
-                trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
-                <Text style={{ fontSize: 13, color: Colors.text.gray }}>
-                  {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
-                  {trip.flexibilityInfo.duration}
-                  {trip.flexibilityInfo.unit}
-                </Text>
-              }
-            </Text>
-            {
-              trip.Stops.length > 0 &&
-              <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
-                {trip.Stops.map(place => place.name).join(', ')}
-              </Text>
-            }
-          </View>
-          <View style={styles.userComment}>
-            <Text style={[styles.text]}>{trip.description}</Text>
-          </View>
-          {
-            trip.User.relation && trip.User.relation.length > 0 &&
-            <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <Text>{trans('trip.this_is_how_you_know')} {trip.User.firstName}</Text>
-              <Relation
-                users={trip.User.relation}
-                avatarSize={45}
-              />
-            </View>
-          }
+          {this.renderDetail()}
+          {this.renderRelation()}
           <View style={[styles.flexRow, styles.btnSection]}>
-            {trip.ReturnTrip && this.returnRideButton()}
-            {trip.Recurring && this.recurringRideButton()}
+            {this.returnRideButton()}
+            {this.recurringRideButton()}
           </View>
-          {
-            (trip.experienceStatus === EXPERIENCE_STATUS_PUBLISHED) &&
-            <View>
-              <View style={styles.dividerWrapper}>
-                <View style={styles.horizontalDivider} />
-              </View>
-              <TripExperiences title="Experiences!" tripId={trip.id} />
-            </View>
-          }
+          {this.renderExperience()}
           {this.renderExperienceButton()}
         </LinearGradient>
         <Toast message={error} type="error" />
@@ -628,6 +585,72 @@ class TripDetail extends Component {
     );
   }
 
+  renderRelation = () => {
+    const { trip } = this.state;
+
+    if (trip.User.relation && trip.User.relation.path) {
+      return (<FOF relation={trip.User.relation} viewee={trip.User} />);
+    }
+
+    return null;
+  }
+
+  renderDetail = () => {
+    const { trip } = this.state;
+    return (
+      <View style={styles.detail}>
+        <Text style={[styles.text, styles.lightText]}>
+          <Text style={styles.username}>
+            {trip.User.firstName}
+          </Text>
+          {
+            trip.type === FEED_TYPE_OFFER &&
+            <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+          }
+          {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
+        </Text>
+        <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+        <Text style={[styles.date, styles.lightText]}>
+          <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
+          {
+            trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
+            <Text style={{ fontSize: 13, color: Colors.text.gray }}>
+              {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
+              {trip.flexibilityInfo.duration}
+              {trip.flexibilityInfo.unit}
+            </Text>
+          }
+        </Text>
+        {
+          trip.Stops.length > 0 &&
+          <Text style={[styles.text, styles.lightText]}>
+            <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
+            {trip.Stops.map(place => place.name).join(', ')}
+          </Text>
+        }
+        <View style={styles.tripDescription}>
+          <Text style={[styles.text]}>{trip.description}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderExperience = () => {
+    const { trip } = this.state;
+    if (trip.experienceStatus !== EXPERIENCE_STATUS_PUBLISHED) {
+      return null;
+    }
+
+    return (
+      <View>
+        <View style={styles.dividerWrapper}>
+          <View style={styles.horizontalDivider} />
+        </View>
+        <TripExperiences title="Experiences!" tripId={trip.id} />
+      </View>
+    );
+  }
+
   renderRideSuggestions = () => {
     const { trip, comment, showSuggestedRides } = this.state;
 
@@ -649,16 +672,16 @@ class TripDetail extends Component {
     );
   }
 
-  renderModal() {
+  renderActionModal() {
     const { navigation, user } = this.props;
-    const { trip, modalVisible } = this.state;
+    const { trip, showActionModal } = this.state;
 
     return (
       <Modal
         animationType="slide"
         transparent
-        onRequestClose={() => this.setState({ modalVisible: false })}
-        visible={modalVisible}
+        onRequestClose={() => this.setState({ showActionModal: false })}
+        visible={showActionModal}
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
@@ -667,7 +690,7 @@ class TripDetail extends Component {
               <TouchableOpacity
                 style={styles.action}
                 onPress={() => {
-                  this.setState({ modalVisible: false });
+                  this.setState({ showActionModal: false });
                   navigation.navigate('Experience', { trip });
                 }}
               >
@@ -718,7 +741,7 @@ class TripDetail extends Component {
           <View style={styles.closeWrapper}>
             <TouchableOpacity
               style={styles.closeModal}
-              onPress={() => this.setModalVisible(!modalVisible)}
+              onPress={() => this.setModalVisible(!showActionModal)}
             >
               <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
             </TouchableOpacity>
@@ -850,7 +873,7 @@ class TripDetail extends Component {
           type={FEEDABLE_TRIP}
         />
         {this.renderCommentBox()}
-        {this.renderModal()}
+        {this.renderActionModal()}
         {this.renderShareModal()}
         {this.renderRideSuggestions()}
       </Wrapper>
