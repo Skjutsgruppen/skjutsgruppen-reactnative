@@ -65,13 +65,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const Selectable = ({ title, loading, rows, setOption, selected, disabled, user }) => {
+const Selectable = ({ title, loading, rows, setOption, selected, disabled, user, showSelf }) => {
   if (loading && rows === 0) return (<Loading />);
 
   if (rows.length === 0) return null;
 
   const hasOption = key => selected.indexOf(key) > -1;
   const hasDisabled = key => disabled.indexOf(key) > -1;
+
+  const list = showSelf ? rows.filter(row => row.id !== user.id) : rows;
+  
   return (
     <View>
       {
@@ -80,17 +83,19 @@ const Selectable = ({ title, loading, rows, setOption, selected, disabled, user 
           <Text style={styles.title}>{title.toUpperCase()}</Text>
         </View>
       }
-      <ShareItem
-        key={user.id}
-        color={hasDisabled(user.id) ? '' : 'blue'}
-        imageSource={user.avatar ? { uri: user.avatar } : require('@assets/icons/ic_user_default.png')}
-        hasPhoto
-        selected={hasOption(user.id)}
-        label="You"
-        onPress={() => { }}
-      />
+      {showSelf &&
+        <ShareItem
+          key={user.id}
+          color={hasDisabled(user.id) ? '' : 'blue'}
+          imageSource={user.avatar ? { uri: user.avatar } : require('@assets/icons/ic_user_default.png')}
+          hasPhoto
+          selected={hasOption(user.id)}
+          label="You"
+          onPress={() => { }}
+        />
+      }
       {
-        rows.filter(row => row.id !== user.id).map(row => (
+        list.map(row => (
           <ShareItem
             key={row.id}
             color={hasDisabled(row.id) ? 'gray' : 'blue'}
@@ -121,11 +126,13 @@ Selectable.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
+  showSelf: PropTypes.bool,
 };
 
 Selectable.defaultProps = {
   disabled: [],
   title: '',
+  showSelf: false,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

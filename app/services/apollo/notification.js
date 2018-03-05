@@ -468,7 +468,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           date 
           photo 
           mapPhoto
-          totalComments
+          totalFeeds
           isParticipant
         }
         ... on Group {
