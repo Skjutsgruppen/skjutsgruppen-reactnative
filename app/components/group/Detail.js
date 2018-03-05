@@ -368,6 +368,7 @@ class Detail extends PureComponent {
           id={group.id}
           isAdmin={group.isAdmin}
           type={FEEDABLE_GROUP}
+          ownerId={group.User.id}
         />
         <CommentBox
           handleSend={this.onSubmit}

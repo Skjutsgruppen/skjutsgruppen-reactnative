@@ -15,7 +15,8 @@ import { trans } from '@lang/i18n';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import _isEqual from 'lodash/isEqual';
-import FOF from '@components/Fof';
+import FOF from '@components/relation/friendsOfFriend';
+
 import {
   RELATIONSHIP_TYPE_FRIEND,
   RELATIONSHIP_TYPE_INCOMING,
@@ -163,11 +164,12 @@ class Profile extends Component {
 
   componentWillReceiveProps({ data }) {
     const { profile, loading, refetch } = data;
+    const { __typename } = profile;
     const { setUser } = this.props;
     const { user } = this.state;
 
     if (!loading && profile.id) {
-      if (this.isCurrentUser() && !_isEqual(profile, user)) {
+      if (this.isCurrentUser() && __typename === 'Account' && !_isEqual(profile, user)) {
         setUser(profile);
       }
 
