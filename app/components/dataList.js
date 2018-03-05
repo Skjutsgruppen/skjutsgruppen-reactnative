@@ -156,9 +156,9 @@ const DataList = (
 DataList.propTypes = {
   data: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object),
-    fetchMore: PropTypes.func.isRequired,
-    refetch: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+    fetchMore: PropTypes.func,
+    refetch: PropTypes.func,
+    loading: PropTypes.bool,
     count: PropTypes.numeric,
     error: PropTypes.object,
     networkStatus: PropTypes.numeric,

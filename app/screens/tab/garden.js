@@ -12,6 +12,7 @@ import AuthAction from '@redux/actions/auth';
 import { connect } from 'react-redux';
 import { FBLoginManager } from 'react-native-facebook-login';
 import PropTypes from 'prop-types';
+import { NavigationActions } from 'react-navigation';
 
 const styles = StyleSheet.create({
   basket: {
@@ -76,13 +77,22 @@ class Garden extends Component {
   };
 
   logout = () => {
-    const { logout, navigation } = this.props;
+    const { logout } = this.props;
     this.setState({ loading: true }, () => {
       logout()
         .then(() => FBLoginManager.logout(() => { }))
-        .then(() => navigation.replace('Splash'))
-        .catch(() => navigation.replace('Splash'));
+        .then(() => this.reset())
+        .catch(() => this.reset());
     });
+  }
+
+  reset = () => {
+    const { navigation } = this.props;
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
   }
 
   redirect = (path) => {
