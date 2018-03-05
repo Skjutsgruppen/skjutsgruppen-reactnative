@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import LeafIcon from '@assets/icons/ic_leaf.png';
 
@@ -90,6 +90,7 @@ Avatar.propTypes = {
   onPress: PropTypes.func,
   showIndicator: PropTypes.bool,
   indicatorColor: PropTypes.string,
+  imageStyle: ViewPropTypes.style,
 };
 
 Avatar.defaultProps = {
@@ -100,6 +101,7 @@ Avatar.defaultProps = {
   onPress: () => { },
   showIndicator: false,
   indicatorColor: 'transparent',
+  imageStyle: {},
 };
 
 export default Avatar;

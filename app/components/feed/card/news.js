@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
-import CommentIcon from '@assets/icons/ic_comment.png';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_NEWS } from '@config/constant';
 
@@ -147,7 +146,7 @@ const News = ({ news, onPress, wrapperStyle }) => {
   }
 
   return (
-    <View style={[styles.wrapper, wrapperStyle]} >
+    <View style={[styles.wrapper, wrapperStyle]}>
       <TouchableWithoutFeedback
         onPress={() => onPress(FEEDABLE_NEWS, news)}
         style={styles.flex1}
@@ -176,15 +175,6 @@ const News = ({ news, onPress, wrapperStyle }) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <View style={styles.newsAvatar} />
-      <View style={styles.footer}>
-        <View style={styles.commentIcon}>
-          <Text style={styles.commentCount}>{news.totalComments}</Text>
-          <TouchableOpacity onPress={() => onPress(FEEDABLE_NEWS, news)}>
-            <Image source={CommentIcon} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 };

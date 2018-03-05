@@ -114,6 +114,11 @@ Friends.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   handleRemovePress: PropTypes.func.isRequired,
+  removeFriendOption: PropTypes.bool,
+};
+
+Friends.defaultProps = {
+  removeFriendOption: false,
 };
 
 export default Friends;
