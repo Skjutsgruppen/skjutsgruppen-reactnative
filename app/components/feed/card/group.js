@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, ViewPropTypes 
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import { Footer } from '@components/feed/card';
-import Colors from '@theme/colors';
+import LinearGradient from 'react-native-linear-gradient';
+import { Colors, Gradients } from '@theme';
 import GroupImage from '@components/group/groupImage';
 import { trans } from '@lang/i18n';
 
@@ -88,12 +89,12 @@ const styles = StyleSheet.create({
   },
   commentGradientOverlay: {
     height: 24,
-    backgroundColor: 'rgba(255,255,255,0.85)',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    marginHorizontal: 24,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
   text: {
     lineHeight: 20,
@@ -154,7 +155,10 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             </View>
             <View style={styles.comment}>
               <Text style={[styles.text, styles.commentText]}>{group.description}</Text>
-              <View style={styles.commentGradientOverlay} />
+              <LinearGradient
+                colors={Gradients.transparentWhite}
+                style={styles.commentGradientOverlay}
+              />
             </View>
           </View>
           <View style={styles.profilePicWrapper}>

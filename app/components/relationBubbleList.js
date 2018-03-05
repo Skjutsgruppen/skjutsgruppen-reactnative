@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) => {
+const RelationBubbleList = ({ users, avatarSize, style, onPress }) => {
   const userBubbleLength = 3;
   let i = 0;
   const userPhotos = () => users.map((user, index) => {
@@ -46,7 +46,10 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
     }
 
     return (
-      <View key={i}>
+      <View
+        key={i}
+        style={{ flexDirection: 'row', alignItems: 'center' }}
+      >
         {image}
         {
           ((index + 1) !== users.length) &&
@@ -61,7 +64,7 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
 
   return (
     <TouchableOpacity
-      onPress={() => setModalVisibility(true, users)}
+      onPress={onPress}
       style={[styles.participantWrapper, { marginVertical: avatarSize / 3 }, style]}
     >
       {userPhotos()}
@@ -83,9 +86,9 @@ const RelationBubbleList = ({ users, avatarSize, style, setModalVisibility }) =>
 
 RelationBubbleList.propTypes = {
   avatarSize: PropTypes.number.isRequired,
-  setModalVisibility: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.shape()),
   style: PropTypes.shape().isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 RelationBubbleList.defaultProps = {
