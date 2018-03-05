@@ -7,7 +7,16 @@ import { FloatingNavbar, RoundedButton, Avatar, Loading } from '@components/comm
 import { Colors } from '@theme';
 import { withReport } from '@services/apollo/report';
 import { propType } from 'graphql-anywhere/lib/src/utilities';
-import { FEEDABLE_TRIP, FEED_TYPE_OFFER, REPORT_COMMENT_TYPE } from '@config/constant';
+import {
+  FEEDABLE_TRIP,
+  FEED_TYPE_OFFER,
+  REPORT_COMMENT_TYPE,
+  FEEDABLE_EXPERIENCE,
+  GROUP_FEED_TYPE_SHARE,
+  FEEDABLE_GROUP,
+  FEEDABLE_SUGGESTION,
+  REPORT_TYPE_USER,
+} from '@config/constant';
 import Date from '@components/date';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
@@ -75,6 +84,16 @@ const styles = {
     marginVertical: 12,
     marginHorizontal: 20,
   },
+  name: {
+    color: '#1db0ed',
+    lineHeight: 20,
+    fontWeight: 'bold',
+  },
+  time: {
+    marginTop: 2,
+    fontSize: 12,
+    color: Colors.text.gray,
+  },
 };
 
 class Report extends Component {
@@ -90,7 +109,7 @@ class Report extends Component {
   onReport = () => {
     const { description } = this.state;
     const { navigation } = this.props;
-    const { data, type } = navigation.state.params;
+    const { type, data } = navigation.state.params;
 
     if (!description) {
       this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) });
@@ -101,14 +120,32 @@ class Report extends Component {
 
     const report = {
       description,
-      reportable: type,
-      reportableId: data.id,
+      reportable: (type === FEEDABLE_SUGGESTION || type === GROUP_FEED_TYPE_SHARE) ? 'Feed' : type,
+      reportableId: this.getReportableId(type, data),
     };
 
     return this.props.report(report)
       .then(() => this.setState({ isReported: true, sending: false }))
       .catch(err => this.setState({ error: getToast(err), sending: false }));
   }
+
+  getReportableId = (type, data) => {
+    if (type === FEEDABLE_TRIP) {
+      return data.Trip.id;
+    } else if (type === FEEDABLE_GROUP) {
+      return data.Group.id;
+    } else if (type === REPORT_TYPE_USER) {
+      return data.User.id;
+    } else if (type === FEEDABLE_SUGGESTION || type === GROUP_FEED_TYPE_SHARE) {
+      return data.id;
+    } else if (type === REPORT_COMMENT_TYPE) {
+      return data.Comment.id;
+    }
+
+    return null;
+  }
+
+  renderUsername = username => <Text style={styles.name}>{username}</Text>;
 
   renderBodyText = () => {
     const { navigation } = this.props;
@@ -117,9 +154,11 @@ class Report extends Component {
     if (type === FEEDABLE_TRIP) {
       return (
         <View>
-          <Text>{data.User.firstName} {data.type === FEED_TYPE_OFFER ? 'offers' : 'asks'} {data.seats !== 0 ? `${data.seats} seats` : 'for a ride'} </Text>
-          <Text>{data.TripStart.name} - {data.TripEnd.name}</Text>
-          <Date format="MMM DD, YYYY">{data.date}</Date>
+          <Text>
+            {this.renderUsername(data.Trip.User.firstName)} {data.Trip.type === FEED_TYPE_OFFER ? 'offers' : 'asks'} {data.Trip.seats !== 0 ? `${data.Trip.seats} seats` : 'for a ride'}
+          </Text>
+          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
+          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
         </View>
       );
     }
@@ -127,13 +166,86 @@ class Report extends Component {
     if (type === REPORT_COMMENT_TYPE) {
       return (
         <View>
-          <Text><Text>{data.User.firstName}</Text> <Date calendarTime>{data.date}</Date></Text>
-          <Text>{data.text}</Text>
+          <Text>
+            <Text>{this.renderUsername(data.Comment.User.firstName)}{' '}</Text>
+            <Text style={styles.time}><Date calendarTime>{data.Comment.date}</Date></Text>
+          </Text >
+          <Text>{data.Comment.text}</Text>
+        </View >
+      );
+    }
+
+    if (type === FEEDABLE_EXPERIENCE) {
+      return (
+        <View>
+          <Text>
+            Experience for {data.Experience.Trip.TripStart.name} {' - '}
+            {data.Experience.Trip.TripEnd.name} {' on '}
+            <Date format="MMM DD, YYYY">{data.date}</Date>
+          </Text>
+        </View>
+      );
+    }
+
+    if (type === FEEDABLE_GROUP) {
+      return (
+        <View>
+          <Text><Text>{this.renderUsername(data.Group.User.firstName)}</Text></Text>
+          <Text>{data.Group.name}</Text>
+        </View>
+      );
+    }
+
+    if (type === GROUP_FEED_TYPE_SHARE) {
+      return (
+        <View>
+          <Text>
+            {this.renderUsername(data.User.firstName)} {' shared '}
+            {this.renderUsername(data.Trip.User.firstName)} ride
+          </Text>
+          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
+          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
+        </View>
+      );
+    }
+
+    if (type === FEEDABLE_SUGGESTION) {
+      return (
+        <View>
+          <Text>
+            {this.renderUsername(data.User.firstName)} {' suggested '}
+            {this.renderUsername(data.Trip.User.firstName)} ride
+          </Text>
+          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
+          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
+        </View >
+      );
+    }
+
+    if (type === REPORT_TYPE_USER) {
+      return (
+        <View>
+          <Text>{data.User.firstName}{data.lastName}</Text>
         </View>
       );
     }
 
     return null;
+  }
+
+  renderTypeText = () => {
+    const { navigation } = this.props;
+    const { type } = navigation.state.params;
+
+    if (type === FEEDABLE_TRIP) return 'ride';
+    if (type === FEEDABLE_SUGGESTION) return 'suggestion';
+    if (type === GROUP_FEED_TYPE_SHARE) return 'shared ride';
+    if (type === REPORT_COMMENT_TYPE) return 'comment';
+    if (type === FEEDABLE_EXPERIENCE) return 'experience';
+    if (type === FEEDABLE_GROUP) return 'group';
+    if (type === REPORT_TYPE_USER) return 'user';
+
+    return type;
   }
 
   renderButton = () => {
@@ -152,15 +264,32 @@ class Report extends Component {
     );
   }
 
+  renderAvatar = () => {
+    const { navigation } = this.props;
+    const { data, type } = navigation.state.params;
+
+    if (type === FEEDABLE_TRIP) {
+      return (<Avatar source={{ uri: data.Trip.User.avatar }} size={60} style={styles.avatar} />);
+    }
+
+    if (type === FEEDABLE_GROUP) {
+      return (<Avatar source={{ uri: data.Group.photo }} size={60} style={styles.avatar} />);
+    }
+
+    if (type === FEEDABLE_EXPERIENCE) {
+      return (<Avatar source={{ uri: data.Experience.photoUrl }} size={60} style={styles.avatar} />)
+    }
+
+    return (<Avatar source={{ uri: data.User.avatar }} size={60} style={styles.avatar} />);
+  }
+
   render() {
     const { navigation, user } = this.props;
+    const { isReported, error } = this.state;
 
     if (!navigation.state.params) {
       return null;
     }
-
-    const { data, type } = navigation.state.params;
-    const { isReported, error } = this.state;
 
     return (
       <View style={styles.contentWrapper}>
@@ -169,9 +298,9 @@ class Report extends Component {
           !isReported &&
           <ScrollView>
             <View style={styles.content}>
-              <Text style={styles.label}>You are reporting this {type === FEEDABLE_TRIP ? 'ride' : type}:</Text>
+              <Text style={styles.label}>You are reporting this {this.renderTypeText()}:</Text>
               <View style={styles.body}>
-                <Avatar source={{ uri: data.User.avatar }} size={60} style={styles.avatar} />
+                {this.renderAvatar()}
                 <View>
                   {this.renderBodyText()}
                 </View>
@@ -254,24 +383,57 @@ Report.propTypes = {
         data: PropTypes.oneOfType([
           PropTypes.shape({
             id: PropTypes.number,
-            TripStart: PropTypes.shape({
-              name: PropTypes.string,
-            }),
-            TripEnd: PropTypes.shape({
-              name: propType.string,
+            Trip: PropTypes.shape({
+              id: PropTypes.number,
+              TripStart: PropTypes.shape({
+                name: PropTypes.string,
+              }),
+              TripEnd: PropTypes.shape({
+                name: propType.string,
+              }),
+              User: PropTypes.shape({
+                firstName: PropTypes.string,
+                avatar: PropTypes.string,
+              }),
+              date: PropTypes.string,
             }),
             User: PropTypes.shape({
               firstName: PropTypes.string,
               avatar: PropTypes.string,
             }),
-            date: PropTypes.string,
           }),
           PropTypes.shape({
             id: PropTypes.number,
-            text: PropTypes.string,
-            User: PropTypes.shape({
-              firstName: PropTypes.string,
-              avatar: PropTypes.string,
+            Comment: PropTypes.shape({
+              id: PropTypes.number,
+              text: PropTypes.string,
+              User: PropTypes.shape({
+                firstName: PropTypes.string,
+                avatar: PropTypes.string,
+              }),
+            }),
+          }),
+          PropTypes.shape({
+            id: PropTypes.number,
+            Experience: PropTypes.shape({
+              id: PropTypes.number,
+              name: PropTypes.string,
+              photoUrl: PropTypes.string,
+              User: PropTypes.shape({
+                firstName: PropTypes.string,
+                avatar: PropTypes.string,
+              }),
+            }),
+          }),
+          PropTypes.shape({
+            id: PropTypes.number,
+            Group: PropTypes.shape({
+              id: PropTypes.number,
+              photo: PropTypes.string,
+              User: PropTypes.shape({
+                firstName: PropTypes.string,
+                avatar: PropTypes.string,
+              }),
             }),
           }),
         ]).isRequired,

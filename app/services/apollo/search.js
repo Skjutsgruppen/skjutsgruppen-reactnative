@@ -85,7 +85,7 @@ query search
         date 
         photo 
         mapPhoto
-        totalComments
+        totalFeeds
       }
       ...on PublicTransport{
         Routes {

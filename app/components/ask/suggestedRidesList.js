@@ -69,9 +69,13 @@ const styles = StyleSheet.create({
 class SuggestedRidesList extends Component {
   constructor(props) {
     super(props);
-    this.state = { selectedId: null, error: '', sending: false };
+    this.state = { selectedId: null, error: '', sending: false, text: '' };
   }
 
+  componentWillMount() {
+    const { defaultText } = this.props;
+    this.setState({ text: defaultText });
+  }
   onSelect = (tripId) => {
     this.setState({
       selectedId: tripId === this.state.selectedId ? null : tripId,
@@ -80,13 +84,14 @@ class SuggestedRidesList extends Component {
 
   onSuggest = () => {
     const { tripId, createSuggestion, onSubmit } = this.props;
-    const { selectedId } = this.state;
+    const { selectedId, text } = this.state;
 
     if (!selectedId) {
       this.setState({ error: getToast(['SELECT_ONE_RIDE']) });
     } else {
       this.setState({ sending: true });
       createSuggestion({
+        text,
         tripId,
         type: 'trip',
         suggestedTripId: selectedId,
@@ -165,6 +170,7 @@ class SuggestedRidesList extends Component {
           underlineColorAndroid="transparent"
           style={styles.input}
           defaultValue={defaultText}
+          onChangeText={text => this.setState({ text })}
         />
         <View style={{ flex: 1 }}>
           <DataList
