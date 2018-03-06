@@ -167,7 +167,10 @@ class Ask extends Component {
     }
 
     if (activeStep === 5) {
-      return loading;
+      if (!loading) {
+        navigation.goBack();
+      }
+      return true;
     }
 
     if (activeStep > 1) {

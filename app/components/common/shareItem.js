@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableHighlight, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-
 import Radio from '@components/add/radio';
 
 const styles = StyleSheet.create({
@@ -35,6 +34,7 @@ const ShareItem = ({
   label,
   onPress,
   style,
+  color,
 }) =>
   (
     <TouchableHighlight onPress={onPress} underlayColor="#f5f5f5">
@@ -46,7 +46,13 @@ const ShareItem = ({
           </View>
         }
         <Text>{label}</Text>
-        <Radio active={selected} readOnly={readOnly} color="blue" onPress={onPress} style={styles.radio} />
+        <Radio
+          active={selected}
+          readOnly={readOnly}
+          color={color}
+          onPress={onPress}
+          style={styles.radio}
+        />
       </View>
     </TouchableHighlight>
   );
@@ -64,7 +70,9 @@ ShareItem.propTypes = {
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func,
   style: ViewPropTypes.style,
+  color: PropTypes.string,
 };
+
 ShareItem.defaultProps = {
   key: null,
   imageSource: null,
@@ -72,6 +80,7 @@ ShareItem.defaultProps = {
   readOnly: false,
   onPress: () => { },
   style: {},
+  color: 'pink',
 };
 
 export default ShareItem;

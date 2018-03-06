@@ -686,16 +686,18 @@ class TripDetail extends Component {
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
             {
-              this.canCreateExperience() &&
-              <TouchableOpacity
-                style={styles.action}
-                onPress={() => {
-                  this.setState({ showActionModal: false });
-                  navigation.navigate('Experience', { trip });
-                }}
-              >
-                <Text style={styles.actionLabel}>{trans('trip.create_your_experience')}</Text>
-              </TouchableOpacity>
+              this.canCreateExperience() ?
+                <TouchableOpacity
+                  style={styles.action}
+                  onPress={() => {
+                    this.setState({ showActionModal: false });
+                    navigation.navigate('Experience', { trip });
+                  }}
+                >
+                  <Text style={styles.actionLabel}>{trans('trip.create_your_experience')}</Text>
+                </TouchableOpacity>
+                :
+                <Text style={[styles.action, styles.actionLabel, { color: Colors.text.gray }]}>{trans('trip.create_your_experience')}</Text>
             }
             <View style={styles.horizontalDivider} />
             <TouchableOpacity

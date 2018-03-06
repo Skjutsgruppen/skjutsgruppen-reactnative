@@ -4,15 +4,16 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Loading } from '@components/common';
 import ShareItem from '@components/common/shareItem';
 import Colors from '@theme/colors';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
-  shareCategoryTitle: {
+  title: {
     fontSize: 12,
     color: '#1ca9e5',
     marginHorizontal: 24,
     marginBottom: 12,
   },
-  list: {
+  head: {
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
     paddingTop: 24,
@@ -64,28 +65,40 @@ const styles = StyleSheet.create({
   },
 });
 
-const RecentFriendList = ({ title, loading, friends, setOption, selected, disabled }) => {
-  const filteredFriends = friends.filter(row => row);
+const Selectable = ({ title, loading, rows, setOption, selected, disabled, user }) => {
+  if (loading && rows === 0) return (<Loading />);
 
-  if (loading && filteredFriends.length < 1) return (<Loading />);
-
-  if (filteredFriends.length < 1) return null;
+  if (rows.length === 0) return null;
 
   const hasOption = key => selected.indexOf(key) > -1;
   const hasDisabled = key => disabled.indexOf(key) > -1;
-
   return (
-    <View style={styles.list}>
-      <Text style={styles.shareCategoryTitle}>{title.toUpperCase()}</Text>
+    <View>
       {
-        filteredFriends.map(friend => (
+        title !== '' &&
+        <View style={styles.head}>
+          <Text style={styles.title}>{title.toUpperCase()}</Text>
+        </View>
+      }
+      <ShareItem
+        key={user.id}
+        color={hasDisabled(user.id) ? '' : 'blue'}
+        imageSource={user.avatar ? { uri: user.avatar } : require('@assets/icons/ic_user_default.png')}
+        hasPhoto
+        selected={hasOption(user.id)}
+        label="You"
+        onPress={() => { }}
+      />
+      {
+        rows.filter(row => row.id !== user.id).map(row => (
           <ShareItem
-            key={friend.id}
-            imageSource={{ uri: friend.avatar }}
+            key={row.id}
+            color={hasDisabled(row.id) ? 'gray' : 'blue'}
+            imageSource={row.avatar ? { uri: row.avatar } : require('@assets/icons/ic_user_default.png')}
             hasPhoto
-            selected={hasOption(friend.id)}
-            label={`${friend.firstName} ${friend.lastName}` || friend.email}
-            onPress={() => !hasDisabled(friend.id) && setOption('friends', friend.id)}
+            selected={hasOption(row.id)}
+            label={`${row.firstName} ${row.lastName}`}
+            onPress={() => !hasDisabled(row.id) && setOption(row.id)}
           />
         ))
       }
@@ -93,21 +106,28 @@ const RecentFriendList = ({ title, loading, friends, setOption, selected, disabl
   );
 };
 
-RecentFriendList.propTypes = {
-  title: PropTypes.string.isRequired,
+Selectable.propTypes = {
   loading: PropTypes.bool.isRequired,
-  friends: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    avatar: PropTypes.string.isRequired,
+  rows: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     firstName: PropTypes.string.isRequired,
   })).isRequired,
+  title: PropTypes.string,
   setOption: PropTypes.func.isRequired,
-  selected: PropTypes.arrayOf(PropTypes.number).isRequired,
+  selected: PropTypes.oneOfType(
+    [PropTypes.arrayOf(PropTypes.number), PropTypes.arrayOf(PropTypes.string)],
+  ).isRequired,
   disabled: PropTypes.arrayOf(PropTypes.number),
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-RecentFriendList.defaultProps = {
+Selectable.defaultProps = {
   disabled: [],
+  title: '',
 };
 
-export default RecentFriendList;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(Selectable);
