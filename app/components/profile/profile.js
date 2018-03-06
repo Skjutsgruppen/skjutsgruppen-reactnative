@@ -164,11 +164,11 @@ class Profile extends Component {
 
   componentWillReceiveProps({ data }) {
     const { profile, loading, refetch } = data;
-    const { __typename } = profile;
     const { setUser } = this.props;
     const { user } = this.state;
 
     if (!loading && profile.id) {
+      const { __typename } = profile;
       if (this.isCurrentUser() && __typename === 'Account' && !_isEqual(profile, user)) {
         setUser(profile);
       }
