@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import {
@@ -13,6 +13,7 @@ import {
   FEEDABLE_TRIP,
   FEEDABLE_EXPERIENCE,
   FEEDABLE_SUGGESTION,
+  GROUP_FEED_TYPE_OFFER_RIDE,
 } from '@config/constant';
 import FOF from '@components/relation/friendsOfFriend';
 import Colors from '@theme/colors';
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
 
 class Feed extends Component {
   renderFeed() {
-    const { feed, onPress } = this.props;
+    const { feed, onPress, onLongPress, user } = this.props;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
@@ -128,37 +129,100 @@ class Feed extends Component {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
       return (
         <View>
-          <Text style={styles.commentText}>
-            {this.renderUsername()} <Text style={styles.time}>
-              <Date calendarTime>{feed.date}</Date>
-            </Text>
-          </Text>
-          <Text style={styles.commentText}>{feed.Comment.text}</Text>
+          <TouchableHighlight
+            onLongPress={() => onLongPress({
+              isOwner: (feed.User.id === user.id),
+              data: feed,
+              type: GROUP_FEED_TYPE_COMMENT,
+            })}
+          >
+            <View>
+              <Text style={styles.commentText}>
+                {this.renderUsername()} <Text style={styles.time}>
+                  <Date calendarTime>{feed.date}</Date>
+                </Text>
+              </Text>
+              <Text style={styles.commentText}>{feed.Comment.text}</Text>
+            </View>
+          </TouchableHighlight>
         </View>
       );
     }
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
-      return this.renderSharedCard();
+      return (
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: GROUP_FEED_TYPE_SHARE,
+          })}
+        >
+          {this.renderSharedCard()}
+        </TouchableHighlight>
+      );
     }
 
     if (feed.feedable === FEEDABLE_SUGGESTION) {
       return (
-        <View>
-          <Text style={styles.commentText}>
-            {this.renderUsername()} suggests {this.renderUsername(feed.Trip.User)} ride:
-          </Text>
-          <Text>{feed.Trip.description}</Text>
-          <SharedCard
-            trip={feed.Trip}
-            onPress={onPress}
-            date={feed.date}
-          />
-        </View>
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: FEEDABLE_SUGGESTION,
+          })}
+        >
+          <View>
+            {this.renderSuggestedText(feed)}
+            {feed.Trip.id &&
+              <SharedCard
+                trip={feed.Trip}
+                onPress={onPress}
+                date={feed.date}
+              />
+            }
+          </View>
+        </TouchableHighlight>
+      );
+    }
+
+    if (feed.feedable === FEEDABLE_EXPERIENCE) {
+      return (
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: FEEDABLE_EXPERIENCE,
+          })}
+        >
+          {this.renderExperience(feed, onPress)}
+        </TouchableHighlight>
       );
     }
 
     return null;
+  }
+
+  renderSuggestedText = (feed) => {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_OFFER_RIDE) {
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} offers a ride:
+          </Text>
+          <Text>{feed.Trip.description}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View>
+        <Text style={styles.commentText}>
+          {this.renderUsername()} suggests {this.renderUsername(feed.Trip.User)} ride:
+        </Text>
+        <Text>{feed.Suggestion.text}</Text>
+      </View>
+    );
   }
 
   renderRelation = () => {
@@ -235,43 +299,48 @@ class Feed extends Component {
     }
 
     if (feed.feedable === FEEDABLE_EXPERIENCE) {
-      let i = 1;
-      const participants = feed.Experience.Participants.map((participant, index) => {
-        let separator = '';
-        i += 1;
-        if (index === feed.Experience.Participants.length - 1) {
-          separator = ' and ';
-        } else if (index !== 0) {
-          separator = ', ';
-        }
-        return (
-          <Text key={i}>{separator}
-            <Text style={styles.name}>{participant.User.firstName}</Text>
-          </Text>
-        );
-      });
-      return (
-        <View>
-          <Text>
-            {participants} had an Experience <Text style={styles.time}>
-              <Date calendarTime>{feed.date}</Date></Text>
-          </Text>
-          <View style={styles.experience}>
-            <TouchableOpacity
-              key={feed.Experience.id}
-              onPress={() => onPress(FEEDABLE_EXPERIENCE, feed.Experience)}
-            >
-              <Image source={{ uri: feed.Experience.photoUrl }} style={styles.image} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
+      return this.renderExperience(feed, onPress);
     }
 
     return null;
   }
 
-  renderOpenGroup() {
+  renderExperience = (feed, onPress) => {
+    let i = 1;
+    const participants = feed.Experience.Participants.map((participant, index) => {
+      let separator = '';
+      i += 1;
+      if (index === feed.Experience.Participants.length - 1) {
+        separator = ' and ';
+      } else if (index !== 0) {
+        separator = ', ';
+      }
+      return (
+        <Text key={i}>{separator}
+          <Text style={styles.name}>{participant.User.firstName}</Text>
+        </Text>
+      );
+    });
+
+    return (
+      <View>
+        <Text>
+          {participants} had an Experience <Text style={styles.time}>
+            <Date calendarTime>{feed.date}</Date></Text>
+        </Text>
+        <View style={styles.experience}>
+          <TouchableOpacity
+            key={feed.Experience.id}
+            onPress={() => onPress(FEEDABLE_EXPERIENCE, feed.Experience)}
+          >
+            <Image source={{ uri: feed.Experience.photoUrl }} style={styles.image} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  renderDescription() {
     return (
       <View style={styles.Wrapper}>
         {this.renderFeed()}
@@ -281,25 +350,14 @@ class Feed extends Component {
   }
 
   render() {
-    const { feed, onCommentLongPress, user } = this.props;
+    const { feed } = this.props;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
       return this.renderClosedGroup();
     }
 
-    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
-      return (<TouchableWithoutFeedback
-        onLongPress={() => onCommentLongPress({
-          isOwner: (feed.User.id === user.id),
-          comment: feed.Comment,
-        })}
-      >
-        {this.renderOpenGroup()}
-      </TouchableWithoutFeedback>);
-    }
-
-    return (<View>{this.renderOpenGroup()}</View>);
+    return (<View>{this.renderDescription()}</View>);
   }
 }
 
@@ -314,7 +372,7 @@ Feed.propTypes = {
     date: PropTypes.string.isRequired,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onCommentLongPress: PropTypes.func.isRequired,
+  onLongPress: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

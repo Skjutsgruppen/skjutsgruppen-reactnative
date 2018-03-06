@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Footer = ({ onSharePress, onCommentPress, totalComments, hasReadMore }) => (
+const Footer = ({ onSharePress, onCommentPress, totalFeeds, hasReadMore }) => (
   <View style={styles.wrapper}>
     <TouchableOpacity onPress={onSharePress}>
       <Image source={ShareIcon} style={styles.shareIcon} />
@@ -45,7 +45,7 @@ const Footer = ({ onSharePress, onCommentPress, totalComments, hasReadMore }) =>
     {
       !hasReadMore && (
         <View style={styles.commentIcon}>
-          <Text style={styles.commentCout}>{totalComments}</Text>
+          <Text style={styles.commentCout}>{totalFeeds}</Text>
           <TouchableOpacity onPress={onCommentPress}>
             <Image source={CommentIcon} style={styles.commentIcon} />
           </TouchableOpacity>
@@ -58,14 +58,14 @@ const Footer = ({ onSharePress, onCommentPress, totalComments, hasReadMore }) =>
 Footer.propTypes = {
   onSharePress: PropTypes.func,
   onCommentPress: PropTypes.func,
-  totalComments: PropTypes.number,
+  totalFeeds: PropTypes.number,
   hasReadMore: PropTypes.bool,
 };
 
 Footer.defaultProps = {
   onSharePress: () => {},
   onCommentPress: () => {},
-  totalComments: 0,
+  totalFeeds: 0,
   hasReadMore: false,
 };
 

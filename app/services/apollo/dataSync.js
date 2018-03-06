@@ -79,6 +79,38 @@ export const increaseFeedCommentCount = (id, isOwner = false) => {
   }
 };
 
+export const updateFeedCount = (id, isOwner = false, increase = true) => {
+  try {
+    const feeds = client.readQuery({
+      query: GET_FEED_QUERY,
+      variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: FEED_FILTER_EVERYTHING } },
+    });
+
+    feeds.getFeed.rows.map((feed) => {
+      if (feed.feedable === FEEDABLE_TRIP && feed.Trip.id === id) {
+        if (increase) {
+          feed.Trip.totalFeeds += 1;
+        } else {
+          feed.Trip.totalFeeds -= 1;
+        }
+        if (isOwner) {
+          feed.Trip.isParticipant = true;
+        }
+      }
+
+      return feed;
+    });
+
+    client.writeQuery({
+      query: GET_FEED_QUERY,
+      data: feeds,
+      variables: { offset: 0, limit: PER_FETCH_LIMIT, filter: { type: FEED_FILTER_EVERYTHING } },
+    });
+  } catch (err) {
+    // empty
+  }
+};
+
 export const increaseProfileFriendsCount = () => {
   try {
     const myAccount = getAccount();

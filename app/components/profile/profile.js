@@ -23,6 +23,7 @@ import {
   RELATIONSHIP_TYPE_OUTGOING,
   FEED_FILTER_OFFERED,
   FEED_FILTER_WANTED,
+  REPORT_TYPE_USER,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import Date from '@components/date';
@@ -215,6 +216,10 @@ class Profile extends Component {
 
     if (type === 'conversation') {
       navigation.navigate('UserConversation', { username: user.firstName });
+    }
+
+    if (type === REPORT_TYPE_USER) {
+      navigation.navigate('Report', { data: { User: user }, type: REPORT_TYPE_USER });
     }
   }
 
@@ -463,6 +468,12 @@ class Profile extends Component {
           title={`Participant number ${user.id}`}
           label=""
         />
+        {!this.isCurrentUser() &&
+          <ProfileAction
+            label="Report user"
+            onPress={() => this.redirect(REPORT_TYPE_USER)}
+          />
+        }
       </LinearGradient>
     );
   }

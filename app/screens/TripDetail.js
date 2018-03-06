@@ -286,10 +286,12 @@ class TripDetail extends Component {
     }
   }
 
-  onOffer = () => {
+  onOffer = (comment) => {
     const { navigation } = this.props;
+    const { trip } = this.state;
+    this.setState({ comment });
     Keyboard.dismiss();
-    navigation.navigate('Offer');
+    navigation.navigate('Offer', { trip, isSuggestion: true, description: comment });
   }
 
   onProfilePress = (id) => {
@@ -318,7 +320,7 @@ class TripDetail extends Component {
     const { navigation } = this.props;
     const { trip } = this.state;
     this.setModalVisible(false);
-    navigation.navigate('Report', { data: trip, type: FEEDABLE_TRIP });
+    navigation.navigate('Report', { data: { Trip: trip }, type: FEEDABLE_TRIP });
   }
 
   onCommentBoxBlur = comment => this.setState({ comment });
@@ -874,6 +876,7 @@ class TripDetail extends Component {
           footer={<About />}
           type={FEEDABLE_TRIP}
           ownerId={trip.User.id}
+          isAdmin={trip.isAdmin}
         />
         {this.renderCommentBox()}
         {this.renderActionModal()}
