@@ -48,6 +48,10 @@ const Radio = ({ active, readOnly, color, label, onPress, style }) => {
     source = CheckIconBlue;
   }
 
+  if (color === 'gray') {
+    source = CheckIconGray;
+  }
+
   return (
     <View style={[styles.wrapper, style]}>
       <TouchableWithoutFeedback onPress={onPress}>

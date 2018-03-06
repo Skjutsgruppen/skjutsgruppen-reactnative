@@ -419,12 +419,13 @@ export const withCreateTrip = graphql(CREATE_TRIP_QUERY, {
 export const TRIP_PARTICIPANTS_QUERY = gql`
 query tripParticipants($id: Int, $offset: Int, $limit: Int) {
   tripParticipants(id:$id, offset:$offset, limit:$limit){
-   rows {
-    id 
-    firstName 
-    avatar 
-   }
-   count
+    rows {
+      id 
+      firstName 
+      lastName
+      avatar 
+    }
+    count
   }
 }
 `;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { withParticipants } from '@services/apollo/trip';
-import FriendList from '@components/friendList';
+import ParticipantList from '@components/friend/selectable';
 import Button from '@components/experience/button';
 import Colors from '@theme/colors';
 import { compose } from 'react-apollo';
@@ -39,10 +39,14 @@ class Participants extends Component {
   }
 
   componentWillMount() {
-    const { participants, user } = this.props;
+    const { participants, user, ownerId } = this.props;
 
     if (participants.indexOf(user.id) < 0) {
       participants.push(user.id);
+    }
+
+    if (participants.indexOf(ownerId) < 0 && user.id !== ownerId) {
+      participants.push(ownerId);
     }
 
     this.setState({ participants });
@@ -72,23 +76,25 @@ class Participants extends Component {
   }
 
   render() {
-    const { tripParticipants, onBack, user } = this.props;
+    const { tripParticipants, onBack, user, ownerId } = this.props;
     const { participants } = this.state;
+
+    const preSelect = [user.id];
+    if (ownerId !== user.id) {
+      preSelect.push(ownerId);
+    }
 
     return (
       <View style={styles.wrapper}>
         <ScrollView>
           <Text style={styles.title}>Tag who participated in the ride:</Text>
-          <FriendList
-            title=""
+          <ParticipantList
             loading={tripParticipants.loading}
-            friends={tripParticipants.rows}
-            total={tripParticipants.count}
-            setOption={this.setOption}
+            rows={tripParticipants.rows}
+            setOption={id => this.setOption('participants', id)}
             selected={participants}
-            disabled={[user.id]}
+            disabled={preSelect}
           />
-
         </ScrollView>
         <View style={styles.actions}>
           <Button onPress={onBack} label="Back" icon="back" />
@@ -113,6 +119,7 @@ Participants.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
+  ownerId: PropTypes.number.isRequired,
   participants: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
