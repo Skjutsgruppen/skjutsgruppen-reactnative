@@ -93,6 +93,7 @@ class Experience extends Component {
       return (
         <Participant
           id={trip.id}
+          ownerId={trip.User.id}
           onBack={() => this.setState({ screen: SCREEN_PREVIEW })}
           participants={participants}
           onNext={this.onParticipantSelect}
