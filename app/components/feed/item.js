@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
 class FeedItem extends PureComponent {
   renderProfilePic() {
     const { feed, onPress } = this.props;
-
     if (feed.feedable === FEEDABLE_TRIP) {
       return (
         <View style={styles.profilePicWrapper}>
@@ -91,8 +90,7 @@ class FeedItem extends PureComponent {
   }
 
   render() {
-    const { feed, onPress, onCommentLongPress } = this.props;
-
+    const { feed, onPress, onLongPress } = this.props;
     return (
       <View>
         <View style={styles.wrapper}>
@@ -100,7 +98,7 @@ class FeedItem extends PureComponent {
           <Detail
             feed={feed}
             onPress={onPress}
-            onCommentLongPress={onCommentLongPress}
+            onLongPress={onLongPress}
           />
         </View>
         {feed.showRelation && this.renderRelation()}
@@ -123,7 +121,7 @@ FeedItem.propTypes = ({
     updatedAt: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  onCommentLongPress: PropTypes.func.isRequired,
+  onLongPress: PropTypes.func.isRequired,
 });
 
 export default FeedItem;

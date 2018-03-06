@@ -97,6 +97,13 @@ class CommentBox extends PureComponent {
     this.setState({ text: '' });
   }
 
+  handleOffer = () => {
+    const { onOffer } = this.props;
+    const { text } = this.state;
+    onOffer(text);
+    this.setState({ text: '' });
+  }
+
   sendComment = () => {
     const { text } = this.state;
     const { handleSend } = this.props;
@@ -163,7 +170,7 @@ class CommentBox extends PureComponent {
   }
 
   renderFooter = () => {
-    const { onOffer, loading } = this.props;
+    const { loading } = this.props;
 
     if (loading) {
       return null;
@@ -179,7 +186,7 @@ class CommentBox extends PureComponent {
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
-          onPress={() => onOffer()}
+          onPress={() => this.handleOffer()}
           style={styles.action}
         >
           <Text style={styles.actionText}>Offer a Ride</Text>

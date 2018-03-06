@@ -89,6 +89,7 @@ class Participants extends Component {
         <ScrollView>
           <Text style={styles.title}>Tag who participated in the ride:</Text>
           <ParticipantList
+            showSelf
             loading={tripParticipants.loading}
             rows={tripParticipants.rows}
             setOption={id => this.setOption('participants', id)}

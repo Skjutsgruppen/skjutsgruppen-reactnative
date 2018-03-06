@@ -132,6 +132,7 @@ class Route extends PureComponent {
   componentWillMount() {
     const { defaultValue, hideReturnTripOption } = this.props;
     const { start, end, currentLocationSelected = '', isReturning } = defaultValue;
+
     let { stops } = defaultValue;
     let stopsCount = stops.length;
 
@@ -250,6 +251,7 @@ class Route extends PureComponent {
   render() {
     const { isOffer } = this.props;
     const { start, end, isReturning, hideReturnTripOption } = this.state;
+
     return (
       <View style={styles.wrapper}>
         <SectionLabel label="From" color={isOffer ? Colors.text.pink : Colors.text.blue} />

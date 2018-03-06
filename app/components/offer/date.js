@@ -80,7 +80,13 @@ class Date extends Component {
 
   componentWillMount() {
     const { defaultValue } = this.props;
-    this.setState(defaultValue);
+    const markedDates = {};
+    if (defaultValue.days.length > 0) {
+      defaultValue.days.forEach((day) => {
+        markedDates[day] = { startingDay: true, textColor: 'white', color: Colors.background.pink, endingDay: true };
+      });
+    }
+    this.setState({ ...defaultValue, ...{ markedDates } });
   }
 
   onNext = () => {
@@ -188,18 +194,22 @@ class Date extends Component {
   }
 
   render() {
-    const { time, isFlexible, flexibilityInfo } = this.state;
+    const { time, isFlexible, flexibilityInfo, markedDates } = this.state;
     const { isOffer } = this.props;
+    const dates = Object.keys(markedDates);
+    const activeMonth = dates.length > 0 ? dates[0] : '';
+
     return (
       <View style={styles.wrapper}>
         <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Date" />
         <Calendar
           firstDay={1}
           onDayPress={this.onSelectDay}
-          markedDates={this.state.markedDates}
+          markedDates={markedDates}
           markingType={'period'}
           minDate={Moment(new Date()).format('YYYY-MM-DD')}
           hideExtraDays
+          current={activeMonth}
         />
         <View style={styles.section}>
           <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Is this a recurring ride?" />

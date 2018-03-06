@@ -204,7 +204,7 @@ const CONVERSATION_QUERY = gql`
         time 
         photo 
         mapPhoto
-        totalComments
+        totalFeeds
         isParticipant
         experienceStatus
         ownerExperience {
