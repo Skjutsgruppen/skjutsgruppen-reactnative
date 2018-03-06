@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   actions: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 40,
   },
 });
 
