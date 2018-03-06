@@ -424,7 +424,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           date 
           photo 
           mapPhoto
-          totalComments
+          totalFeeds
         }
       }
       ... on CommentFeed {
@@ -479,106 +479,109 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
 const GROUP_FEED_SUBSCRIPTION = gql`
 subscription groupFeed($groupId: Int!){
   groupFeed(groupId: $groupId){
-    id
-    date
-    User {
-      id 
-      firstName 
-      avatar 
-      relation {
-        path{
-          id
-          firstName
-          avatar
-        }
-        areFriends
-      }
-    } 
-    feedable
-    ActivityType {
-      type
-    }
-    ... on GroupFeed {
-      Group {
-        id
-        name
-        description
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        outreach
-        type
-        photo
-        mapPhoto
-        TripStart {
-          name 
-          coordinates 
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops {
-          name 
-          coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
-        membershipStatus
-        totalParticipants
-        isAdmin
-      }
-    }
-    ... on TripFeed {
-      Trip {
+    remove 
+    Feed {
+      id
+      date
+      User {
         id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalComments
+        firstName 
+        avatar 
+         relation {
+          path {
+            id
+            firstName
+            avatar
+          }
+          areFriends
+        }
+      } 
+      feedable
+      ActivityType {
+        type
       }
-    }
-    ... on CommentFeed {
-      Comment {
-        id
-        groupId
-        text
-        date
-        User {
+      ... on GroupFeed {
+        Group {
           id
-          avatar
-          firstName
-          relation {
-            path{
-              id
-              firstName
-              avatar
+          name
+          description
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
+          type
+          photo
+          mapPhoto
+          TripStart {
+            name 
+            coordinates 
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops {
+            name 
+            coordinates
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus
+          totalParticipants
+          isAdmin
+        }
+      }
+      ... on TripFeed {
+        Trip {
+          id 
+          type 
+          description 
+          seats 
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          TripStart {
+            name 
+            coordinates
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          photo 
+          mapPhoto
+          totalFeeds
+        }
+      }
+      ... on CommentFeed {
+        Comment {
+          id
+          groupId
+          text
+          date
+          User {
+            id
+            avatar
+            firstName
+            relation {
+              path {
+                id
+                firstName
+                avatar
+              }
+              areFriends
             }
-            areFriends
           }
         }
       }
@@ -622,13 +625,26 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
             return prev;
           }
 
-          const newrows = [subscriptionData.data.groupFeed].concat(prev.feeds.rows);
-          return {
-            feeds: {
-              ...prev.feeds,
-              ...{ rows: newrows, count: prev.feeds.count + 1 },
-            },
-          };
+          const { Feed, remove } = subscriptionData.data.groupFeed;
+          rows = [];
+          count = 0;
+          let repeated = false;
+
+          const found = prev.feeds.rows.filter(row => row.id === Feed.id);
+          repeated = found.length > 0;
+          let prevFeeds = prev.feeds;
+
+          if (!repeated) {
+            rows = [Feed].concat(prevFeeds.rows);
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count + 1 } };
+          }
+
+          if (remove) {
+            rows = prev.feeds.rows.filter(row => row.id !== Feed.id);
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count - 1 } };
+          }
+
+          return { feeds: prevFeeds };
         },
       }),
     };
@@ -857,7 +873,7 @@ const GROUP_TRIPS_QUERY = gql`
       time 
       photo 
       mapPhoto
-      totalComments
+      totalFeeds
       isParticipant
       seats
     }

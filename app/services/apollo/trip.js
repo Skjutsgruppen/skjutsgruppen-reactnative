@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
-import { increaseFeedCommentCount } from '@services/apollo/dataSync';
+import { updateFeedCount } from '@services/apollo/dataSync';
 
 const FEED_SUBSCRIPTION = gql`
 subscription{
@@ -78,7 +78,7 @@ subscription{
         date 
         photo 
         mapPhoto
-        totalComments
+        totalFeeds
         isParticipant
         flexibilityInfo {
           duration
@@ -209,7 +209,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         date 
         photo 
         mapPhoto
-        totalComments
+        totalFeeds
         isParticipant
         flexibilityInfo {
           duration
@@ -372,7 +372,7 @@ mutation createTrip(
       date 
       photo 
       mapPhoto
-      totalComments
+      totalFeeds
       isParticipant
       url
   }
@@ -473,22 +473,26 @@ query trip($id: Int!){
     TripStart {
       name 
       coordinates
+      countryCode
     } 
     TripEnd {
       name 
       coordinates
+      countryCode
     } 
     Stops { 
       name 
       coordinates 
+      countryCode
     } 
     date 
     photo 
     mapPhoto
-    totalComments
+    totalFeeds
     isParticipant
     duration
     experienceStatus
+    isAdmin    
     flexibilityInfo {
       duration
       unit
@@ -585,7 +589,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
       time 
       photo 
       mapPhoto
-      totalComments
+      totalFeeds
       isParticipant
       experienceStatus
       ownerExperience {
@@ -648,7 +652,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       time 
       photo 
       mapPhoto
-      totalComments
+      totalFeeds
       isParticipant
       experienceStatus
       ownerExperience {
@@ -838,6 +842,9 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               coordinates
             }
           }
+          Suggestion {
+            text
+          }
         }
       }
     }
@@ -947,6 +954,9 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             coordinates
           }
         }
+        Suggestion {
+          text
+        }
       }
     }
   }
@@ -963,7 +973,6 @@ export const withTripFeed = graphql(TRIP_FEED_QUERY, {
     let count = 0;
     const { error, fetchMore, feeds, loading, networkStatus, subscribeToMore, refetch } = data;
 
-
     if (feeds) {
       rows = feeds.rows.slice(0).reverse();
       count = feeds.count;
@@ -979,10 +988,11 @@ export const withTripFeed = graphql(TRIP_FEED_QUERY, {
             return prev;
           }
 
+          const { Feed, remove } = subscriptionData.data.tripFeed;
+
           rows = [];
           count = 0;
           let repeated = false;
-          const { Feed } = subscriptionData.data.tripFeed;
 
           const found = prev.feeds.rows.filter(row => row.id === Feed.id);
           repeated = found.length > 0;
@@ -990,8 +1000,14 @@ export const withTripFeed = graphql(TRIP_FEED_QUERY, {
 
           if (!repeated) {
             rows = [Feed].concat(prevFeeds.rows);
-            increaseFeedCommentCount(id, (Feed.User.id === userId));
+            updateFeedCount(id, (Feed.User.id === userId));
             prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count + 1 } };
+          }
+
+          if (remove) {
+            rows = prev.feeds.rows.filter(row => row.id !== Feed.id);
+            updateFeedCount(id, (Feed.User.id === userId), false);
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count - 1 } };
           }
 
           return { feeds: prevFeeds };

@@ -22,6 +22,8 @@ import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
+import { submitSuggestion } from '@services/apollo/suggest';
+import { getDate } from '@config';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -112,6 +114,7 @@ class Offer extends Component {
       loading: false,
       trip: {},
       error: '',
+      isSuggestion: false,
     };
   }
 
@@ -141,6 +144,42 @@ class Offer extends Component {
         seat,
       });
     }
+
+    if (params && typeof params.isSuggestion !== 'undefined') {
+      const { trip, description } = params;
+      this.setState({
+        description: { text: description, photo: null },
+        date: {
+          days: [getDate(trip.date).format('YYYY-MM-DD').toString()],
+          time: getDate(trip.date).format('HH:mm').toString(),
+          flexibilityInfo: {
+            duration: trip.flexibilityInfo ? trip.flexibilityInfo.duration : 0,
+            unit: trip.flexibilityInfo ? trip.flexibilityInfo.unit : 'minutes',
+            type: trip.flexibilityInfo ? trip.flexibilityInfo.type : 'later',
+          },
+          isFlexible: (trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0) || false,
+        },
+        route: {
+          start: {
+            name: trip.TripStart.name,
+            coordinates: trip.TripStart.coordinates,
+            countryCode: trip.TripStart.countryCode,
+          },
+          end: {
+            name: trip.TripEnd.name,
+            coordinates: trip.TripEnd.coordinates,
+            countryCode: trip.TripEnd.countryCode,
+          },
+          stops: [],
+          isReturning: true,
+        },
+      });
+    }
+
+    if (params && params.groupId) {
+      this.setState({ share: { groups: [params.groupId] } });
+    }
+
     this.container = null;
   }
 
@@ -294,10 +333,32 @@ class Offer extends Component {
         }
 
         this.setState({ loading: false, trip: res.data.createTrip });
+        this.createSuggestion();
       });
     } catch (error) {
       console.warn(error);
     }
+  }
+
+  createSuggestion() {
+    const { createSuggestion, navigation } = this.props;
+    const { params } = navigation.state;
+    const offeredTrip = this.state.trip;
+
+    if (params && typeof params.isSuggestion !== 'undefined') {
+      const { trip, isSuggestion } = params;
+
+      if (isSuggestion) {
+        createSuggestion({
+          type: 'trip',
+          tripId: trip.id,
+          suggestedTripId: offeredTrip.id,
+          isOffer: true,
+        }).catch(error => console.warn(error));
+      }
+    }
+
+    return null;
   }
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
@@ -383,6 +444,7 @@ class Offer extends Component {
       date,
       seat,
       error,
+      share,
     } = this.state;
 
     return (
@@ -413,7 +475,7 @@ class Offer extends Component {
           }
           {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
           {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-          {(activeStep === 5) && <Share type={FEEDABLE_TRIP} onNext={this.onShareAndPublishNext} />}
+          {(activeStep === 5) && <Share defaultValue={share} type={FEEDABLE_TRIP} onNext={this.onShareAndPublishNext} />}
           {(activeStep === 6) && this.renderFinish()}
         </Container>
       </Wrapper>
@@ -423,6 +485,7 @@ class Offer extends Component {
 
 Offer.propTypes = {
   createTrip: PropTypes.func.isRequired,
+  createSuggestion: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.object,
     navigate: PropTypes.func,
@@ -432,4 +495,4 @@ Offer.propTypes = {
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default compose(withCreateTrip, connect(mapStateToProps))(Offer);
+export default compose(withCreateTrip, submitSuggestion, connect(mapStateToProps))(Offer);

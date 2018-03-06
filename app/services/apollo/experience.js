@@ -269,7 +269,7 @@ subscription myExperience($userId:Int!){
         date 
         photo 
         mapPhoto
-        totalComments
+        totalFeeds
       }
       User {
         id 
@@ -387,7 +387,7 @@ query experience($id: Int!){
       date 
       photo 
       mapPhoto
-      totalComments
+      totalFeeds
     }
     User {
       id 

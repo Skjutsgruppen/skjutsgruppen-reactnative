@@ -106,8 +106,9 @@ class Share extends Component {
   }
 
   componentWillMount() {
-    const { friends } = this.props;
+    const { friends, defaultValue } = this.props;
     const { friendsList } = this.state;
+    this.setState({ groups: defaultValue.groups });
 
     if (friends && !friends.loading) {
       friends.rows.forEach(friend => friendsList.push(friend));
@@ -448,6 +449,9 @@ Share.propTypes = {
     fbId: PropTypes.string,
     twitterId: PropTypes.string,
   }).isRequired,
+  defaultValue: PropTypes.shape({
+    groups: PropTypes.array,
+  }),
 };
 
 Share.defaultProps = {
@@ -457,6 +461,7 @@ Share.defaultProps = {
   labelColor: Colors.text.pink,
   onNext: null,
   detail: null,
+  defaultValue: { groups: [] },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

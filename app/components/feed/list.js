@@ -11,13 +11,16 @@ import {
   FEEDABLE_GROUP,
   FEEDABLE_TRIP,
   REPORT_COMMENT_TYPE,
+  GROUP_FEED_TYPE_COMMENT,
+  FEEDABLE_SUGGESTION,
+  GROUP_FEED_TYPE_SHARE,
 } from '@config/constant';
 import DataList from '@components/dataList';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
-import { withDeleteComment } from '@services/apollo/comment';
 import ConfirmModal from '@components/common/confirmModal';
 import { connect } from 'react-redux';
+import { withDeleteFeed } from '@services/apollo/feed';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -97,12 +100,13 @@ class FeedList extends PureComponent {
       showShareModal: false,
       isLongPressModalOpen: false,
       isOwner: false,
-      comment: {},
       feeds: {
         rows: [],
         count: 0,
         loading: false,
       },
+      data: {},
+      type: '',
       showConfirm: false,
       deleting: false,
     });
@@ -132,11 +136,11 @@ class FeedList extends PureComponent {
     this.setState({ feeds });
   }
 
-  onCommentLongPress = ({ isOwner, comment }) => {
-    this.setState({ isLongPressModalOpen: true, isOwner, comment });
+  onLongPress = ({ isOwner, data, type }) => {
+    this.setState({ isLongPressModalOpen: true, isOwner, data, type });
   }
 
-  onCommentLongPressClose = () => {
+  onLongPressClose = () => {
     this.setState({ isLongPressModalOpen: false });
   }
 
@@ -160,19 +164,46 @@ class FeedList extends PureComponent {
     }
   };
 
-  onCommentReport = () => {
+  onReport = () => {
     const { navigation } = this.props;
-    this.onCommentLongPressClose();
+    const { data, type } = this.state;
+    this.onLongPressClose();
 
-    navigation.navigate('Report', { data: this.state.comment, type: REPORT_COMMENT_TYPE });
+    if (type === GROUP_FEED_TYPE_COMMENT) {
+      navigation.navigate('Report', { data, type: REPORT_COMMENT_TYPE });
+    }
+
+    if (type === FEEDABLE_TRIP) {
+      navigation.navigate('Report', { data, type: FEEDABLE_TRIP });
+    }
+
+    if (type === FEEDABLE_EXPERIENCE) {
+      navigation.navigate('Report', { data, type: FEEDABLE_EXPERIENCE });
+    }
+
+    if (type === GROUP_FEED_TYPE_SHARE) {
+      navigation.navigate('Report', { data, type: GROUP_FEED_TYPE_SHARE });
+    }
+
+    if (type === FEEDABLE_SUGGESTION) {
+      navigation.navigate('Report', { data, type: FEEDABLE_SUGGESTION });
+    }
+
+    if (type === FEEDABLE_GROUP) {
+      navigation.navigate('Report', { data, type: FEEDABLE_GROUP });
+    }
+
+    if (type === FEEDABLE_SUGGESTION) {
+      navigation.navigate('Report', { data, type: FEEDABLE_SUGGESTION });
+    }
   }
 
-  deleteComment = () => {
-    const { deleteComment } = this.props;
-    const { comment } = this.state;
+  delete = () => {
+    const { deleteFeed } = this.props;
+    const { data } = this.state;
 
-    this.setState({ deleting: true }, () => {
-      deleteComment({ id: comment.id })
+    this.setState({ delete: true }, () => {
+      deleteFeed({ id: data.id })
         .then(() => {
           this.setState({ deleting: false, showConfirm: false, isLongPressModalOpen: false });
         })
@@ -184,24 +215,25 @@ class FeedList extends PureComponent {
   }
 
   renderConfirmModal = () => {
-    const { deleting, showConfirm } = this.state;
-    const message = <Text>Are you sure you want to delete this comment?</Text>;
+    const { deleting, showConfirm, type } = this.state;
+    const message = <Text>Are you sure you want to delete this {type}?</Text>;
 
     return (
       <ConfirmModal
         visible={showConfirm}
         loading={deleting}
         onDeny={() => this.setState({ showConfirm: false })}
-        onConfirm={this.deleteComment}
+        onConfirm={this.delete}
         message={message}
         onRequestClose={() => this.setState({ showConfirm: false })}
       />
     );
   }
 
-  renderCommentLongPressModal() {
-    const { isOwner } = this.state;
+  renderLongPressModal() {
+    const { isOwner, type } = this.state;
     const { isAdmin } = this.props;
+
     return (
       <Modal
         visible={this.state.isLongPressModalOpen}
@@ -211,15 +243,15 @@ class FeedList extends PureComponent {
       >
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
-            {(isOwner || isAdmin)
-              && <Action label="Delete comment" onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />
+            {((isOwner || isAdmin) && type !== FEEDABLE_EXPERIENCE)
+              && <Action label="Delete" onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />
             }
-            {(!isOwner && !isAdmin) && <Action label="Report comment" onPress={() => this.onCommentReport()} />}
+            {(!isOwner) && <Action label="Report" onPress={() => this.onReport()} />}
           </View>
           <View style={styles.closeWrapper}>
             <TouchableOpacity
               style={styles.closeModal}
-              onPress={this.onCommentLongPressClose}
+              onPress={this.onLongPressClose}
             >
               <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
             </TouchableOpacity>
@@ -263,7 +295,7 @@ class FeedList extends PureComponent {
               onSharePress={(shareableType, shareable) =>
                 this.setState({ showShareModal: true, shareableType, shareable })}
               feed={item}
-              onCommentLongPress={this.onCommentLongPress}
+              onLongPress={this.onLongPress}
             />
           )}
           fetchMoreOptions={{
@@ -280,7 +312,7 @@ class FeedList extends PureComponent {
           }}
         />
         {this.renderShareModal()}
-        {this.renderCommentLongPressModal()}
+        {this.renderLongPressModal()}
         {this.renderConfirmModal()}
       </View>
     );
@@ -306,11 +338,11 @@ FeedList.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   subscribeToNewFeed: PropTypes.func.isRequired,
-  deleteComment: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
   type: PropTypes.string.isRequired,
+  deleteFeed: PropTypes.func.isRequired,
 };
 
 FeedList.defaultProps = {
@@ -322,7 +354,7 @@ FeedList.defaultProps = {
 const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(
-  withDeleteComment,
   withNavigation,
+  withDeleteFeed,
   connect(mapStateToProps),
 )(FeedList);

@@ -156,7 +156,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
         <Footer
           onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
           onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
-          totalComments={trip.totalComments}
+          totalFeeds={trip.totalFeeds}
         />
       }
     </View>
