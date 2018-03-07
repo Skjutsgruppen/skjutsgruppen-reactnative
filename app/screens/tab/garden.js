@@ -74,7 +74,46 @@ class Garden extends Component {
     header: null,
     tabBarLabel: 'Garden',
     tabBarIcon: ({ focused }) => <Image source={focused ? SupportIconActive : SupportIcon} />,
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      if (scene.focused) {
+        const navigationInRoute = scene.route;
+        if (!!navigationInRoute
+          && !!navigationInRoute.params
+          && !!navigationInRoute.params.scrollToTop) {
+          navigationInRoute.params.scrollToTop();
+        }
+      }
+      jumpToIndex(4);
+    },
   };
+
+  constructor(props) {
+    super(props);
+    this.scrollView = null;
+  }
+
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ scrollToTop: this.scrollToTop });
+    navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
+  }
+
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  scrollToTop = () => {
+    if (this.scrollView) {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
+  tabEvent = (e, type) => {
+    if (this.scrollView && type === 'didBlur') {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
 
   logout = () => {
     const { logout } = this.props;
@@ -104,7 +143,7 @@ class Garden extends Component {
   render() {
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
-        <ScrollView>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
           <Image source={BasketIcon} style={styles.basket} />
           <Text style={styles.heading}>This app is an self-sustaining garden</Text>
           <Text style={styles.text}>

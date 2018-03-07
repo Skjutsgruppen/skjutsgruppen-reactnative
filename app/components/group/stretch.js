@@ -69,7 +69,7 @@ class Stretch extends PureComponent {
     const { outreach } = this.state;
     return (
       <View style={styles.wrapper}>
-        <SectionLabel label="Recurring ride?" />
+        <SectionLabel label="Stretch" />
         <View style={styles.radioRow}>
           <Radio
             active={outreach === STRETCH_TYPE_ROUTE}

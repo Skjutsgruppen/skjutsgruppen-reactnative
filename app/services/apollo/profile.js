@@ -241,6 +241,7 @@ export const withConversation = graphql(CONVERSATION_QUERY, {
   }) =>
     ({
       notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-and-network',
       variables: {
         queryString,
         applyQueryString,

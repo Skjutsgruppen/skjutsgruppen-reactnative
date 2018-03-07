@@ -71,12 +71,14 @@ const SearchBar = ({
         returnKeyType="search"
         onSubmitEditing={onSubmitSearch}
       />
-      <TouchableHighlight onPress={onPressClose} style={styles.clear}>
-        <Icon
-          name="ios-close"
-          size={32}
-          style={{ color: Colors.text.gray }}
-        />
+      <TouchableHighlight onPress={onPressClose}>
+        <View style={styles.clear}>
+          <Icon
+            name="ios-close"
+            size={32}
+            style={{ color: Colors.text.gray }}
+          />
+        </View>
       </TouchableHighlight>
     </View>
   );
