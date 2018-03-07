@@ -35,7 +35,7 @@ const MyExperience = withMyExperiences(List);
 const styles = StyleSheet.create({
   profilePic: {
     alignSelf: 'center',
-    marginTop: 54,
+    marginTop: 60,
     marginBottom: 24,
   },
   name: {

@@ -5,7 +5,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed } from '@services/apollo/trip';
-import { AppNotification, DetailHeader, Loading, ShareButton } from '@components/common';
+import { withTripExperiences } from '@services/apollo/experience';
+import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -148,7 +149,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    padding: 12,
   },
   title: {
     textAlign: 'center',
@@ -157,11 +159,13 @@ const styles = StyleSheet.create({
   },
   actionsWrapper: {
     marginTop: 'auto',
-    marginHorizontal: 16,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 12,
     overflow: 'hidden',
-    marginBottom: 24,
+    marginBottom: 12,
+    transform: [
+      { translateY: 1000 },
+    ],
   },
   action: {
     padding: 16,
@@ -179,8 +183,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   closeWrapper: {
-    borderRadius: 12,
-    marginHorizontal: 16,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 21,
     backgroundColor: Colors.background.fullWhite,
   },
   closeModal: {
@@ -694,95 +700,56 @@ class TripDetail extends Component {
     const { trip, showActionOption } = this.state;
 
     return (
-      <Modal
-        animationType="slide"
+      <ActionModal
+        animationType="fade"
         transparent
         onRequestClose={() => this.setState({ showActionOption: false })}
         visible={showActionOption}
       >
-        <View style={styles.modalContent}>
-          <View style={styles.actionsWrapper}>
-            {
-              this.canCreateExperience() ?
-                <TouchableOpacity
-                  style={styles.action}
-                  onPress={() => {
-                    this.setState({ showActionOption: false });
-                    navigation.navigate('Experience', { trip });
-                  }}
-                >
-                  <Text style={styles.actionLabel}>{trans('trip.create_your_experience')}</Text>
-                </TouchableOpacity>
-                :
-                <Text style={[styles.action, styles.actionLabel, { color: Colors.text.gray }]}>{trans('trip.create_your_experience')}</Text>
-            }
-            <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.share_your_live_location')} </Text>
-            </TouchableOpacity>
-            <View style={styles.horizontalDivider} />
-            {
-              trip.muted ?
-                (
-                  <TouchableOpacity
-                    style={styles.action}
-                    onPress={this.onUnmute}
-                  >
-                    <Text style={styles.actionLabel}>{trans('trip.unmute')}</Text>
-                  </TouchableOpacity>
-                ) :
-                (<View>
-                  <TouchableOpacity
-                    style={styles.action}
-                    onPress={() => this.onMute(2, 'hours')}
-                  >
-                    <Text style={styles.actionLabel}>{trans('trip.mute_two_hours')}</Text>
-                  </TouchableOpacity>
-                  <View style={styles.horizontalDivider} />
-                  <TouchableOpacity
-                    style={styles.action}
-                    onPress={() => this.onMute(1, 'day')}
-                  >
-                    <Text style={styles.actionLabel}>{trans('trip.mute_one_day')}</Text>
-                  </TouchableOpacity>
-                  <View style={styles.horizontalDivider} />
-                  <TouchableOpacity
-                    style={styles.action}
-                    onPress={() => this.onMute('forever')}
-                  >
-                    <Text style={styles.actionLabel}>{trans('trip.mute_forever')}</Text>
-                  </TouchableOpacity>
-                </View>)
-            }
-            <View style={styles.horizontalDivider} />
-            <TouchableOpacity
-              style={styles.action}
-            >
-              <Text style={styles.actionLabel}>{trans('trip.embeded_with_html')}</Text>
-            </TouchableOpacity>
-            <View style={styles.horizontalDivider} />
-            {
-              user.id !== trip.User.id &&
-              <TouchableOpacity
-                style={styles.action}
-                onPress={this.onReport}
-              >
-                <Text style={styles.actionLabel}>{trans('trip.report_this_ride')}</Text>
-              </TouchableOpacity>
-            }
-          </View>
-          <View style={styles.closeWrapper}>
-            <TouchableOpacity
-              style={styles.closeModal}
-              onPress={() => this.showActionModal(!showActionOption)}
-            >
-              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        <ModalAction
+          label={trans('trip.create_your_experience')}
+          onPress={() => {
+            this.setState({ showActionOption: false });
+            navigation.navigate('Experience', { trip });
+          }}
+          disabled={!this.canCreateExperience()}
+        />
+        <ModalAction label={trans('trip.share_your_live_location')} onPress={() => { }} />
+        {
+          trip.muted ?
+            (
+              <ModalAction
+                label={trans('trip.unmute')}
+                onPress={this.onUnmute}
+              />
+            ) :
+            ([
+              <ModalAction
+                key="mute_two_hours"
+                label={trans('trip.mute_two_hours')}
+                onPress={() => this.onMute(2, 'hours')}
+              />,
+              <ModalAction
+                key="mute_one_day"
+                label={trans('trip.mute_one_day')}
+                onPress={() => this.onMute(1, 'day')}
+              />,
+              <ModalAction
+                key="mute_forever"
+                label={trans('trip.mute_forever')}
+                onPress={() => this.onMute('forever')}
+              />,
+            ])
+        }
+        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => {}} />
+        {
+          user.id !== trip.User.id &&
+          <ModalAction
+            label={trans('trip.report_this_ride')}
+            onPress={this.onReport}
+          />
+        }
+      </ActionModal>
     );
   }
 
