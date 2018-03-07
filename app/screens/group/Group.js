@@ -79,7 +79,7 @@ class Group extends Component {
       },
       type: OPEN_GROUP,
       share: {},
-      activeStep: 1,
+      activeStep: 4,
       loading: false,
       group: {},
       error: '',
@@ -231,7 +231,7 @@ class Group extends Component {
 
     if (error !== '') {
       return (
-        <View style={{ marginTop: 100 }}>
+        <View style={{ marginTop: 100, marginHorizontal: '20%' }}>
           <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
             Try Again
           </CustomButton>
@@ -249,7 +249,7 @@ class Group extends Component {
 
   renderProgress = () => {
     const { activeStep } = this.state;
-    const progressAmount = (activeStep / 6) * 100;
+    const progressAmount = (activeStep / 5) * 100;
 
     if (activeStep > 4) {
       return null;
@@ -290,8 +290,8 @@ class Group extends Component {
           {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
           {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
           {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
-          {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
           {(activeStep === 5) && this.renderFinish()}
+          {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
         </Container>
       </Wrapper>
     );

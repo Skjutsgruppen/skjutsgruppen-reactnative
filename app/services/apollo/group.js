@@ -237,6 +237,7 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
 export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
   options: ({ keyword }) => ({
     variables: { keyword, offset: 0, limit: PER_FETCH_LIMIT },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { loading, searchGroup, refetch, fetchMore, networkStatus, error } }) => {
     let rows = [];

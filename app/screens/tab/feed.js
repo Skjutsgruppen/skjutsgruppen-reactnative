@@ -171,9 +171,14 @@ class Feed extends Component {
 
   tabEvent = (e, type) => {
     if (this.feedList && type === 'didBlur') {
-      this.setState({ filterType: FEED_FILTER_EVERYTHING }, () => {
-        this.props.feeds.refetch({ offset: 0, filter: { type: FEED_FILTER_EVERYTHING } });
-      });
+      if (this.state.filterType === FEED_FILTER_EVERYTHING) {
+        this.feedList.scrollToOffset({ offset: 0, animated: true });
+      } else {
+        this.setState({ filterType: FEED_FILTER_EVERYTHING }, () => {
+          this.props.feeds.refetch({ offset: 0, filter: { type: FEED_FILTER_EVERYTHING } });
+          this.feedList.scrollToOffset({ offset: 0, animated: true });
+        });
+      }
     }
   }
 

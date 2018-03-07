@@ -84,12 +84,17 @@ const styles = StyleSheet.create({
     position: 'relative',
     resizeMode: 'cover',
     borderRadius: 14,
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: '#fff',
     zIndex: 5,
   },
   shifted: {
     marginLeft: -10,
+    zIndex: 1,
+    position: 'relative',
+  },
+  shiftedMini: {
+    marginLeft: -5,
     zIndex: 1,
     position: 'relative',
   },
@@ -101,12 +106,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.background.blue,
   },
+  remainingCountMini: {
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.blue,
+  },
   countText: {
     color: Colors.text.white,
   },
-  names: {
-    paddingVertical: 16,
-    paddingHorizontal: 42,
+  countTextMini: {
+    color: Colors.text.white,
+    fontSize: 10,
   },
   username: {
     fontWeight: '600',
@@ -187,6 +200,16 @@ class FOF extends PureComponent {
   bundledName = (row) => {
     const name = row.map((user, index) => {
       const { navigation } = this.props;
+      let separator = ' and ';
+      if (index < (row.length - 2)) {
+        separator = ', ';
+      }
+
+      if (index === (row.length - 1)) {
+        separator = '';
+      }
+
+
       return ([
         <Text
           key={user.id}
@@ -195,7 +218,7 @@ class FOF extends PureComponent {
         >
           {user.firstName}
         </Text>,
-        (index < (row.length - 1)) ? ' and ' : '',
+        separator,
       ]);
     });
 
@@ -219,15 +242,17 @@ class FOF extends PureComponent {
     }
 
     return (
-      <Text style={[styles.names, expanded ? { height: 100 } : { height: 0 }]}>
-        You know {relation.path.map(this.bundledName)}
-        <Text
-          onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
-          style={styles.username}
-        >
-          {viewee.firstName}
+      <View style={{ paddingHorizontal: 24 }}>
+        <Text style={[expanded ? { height: 100 } : { height: 0 }]}>
+          You know {relation.path.map(this.bundledName)}
+          <Text
+            onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
+            style={styles.username}
+          >
+            {viewee.firstName}
+          </Text>
         </Text>
-      </Text>
+      </View>
     );
   }
 
@@ -275,7 +300,7 @@ class FOF extends PureComponent {
       >
         <Image source={{ uri: item[0].avatar }} style={styles.bunddledAvatar} />
       </TouchableHighlight>,
-      <View key={item[0].id} style={[styles.remainingCount, styles.shifted]}>
+      <View key={item[1].id} style={[styles.remainingCount, styles.shifted]}>
         <Text style={styles.countText}>{item.length - 1}</Text>
       </View>,
       arrow,
@@ -342,7 +367,7 @@ class FOF extends PureComponent {
         <Image
           key={item[1].id}
           source={{ uri: item[1].avatar }}
-          style={styles.bunddledAvatarMini}
+          style={[styles.bunddledAvatarMini, styles.shiftedMini]}
         />,
         arrow,
       ]);
@@ -350,8 +375,8 @@ class FOF extends PureComponent {
 
     return [
       <Image key={item[0].id} source={{ uri: item[0].avatar }} style={styles.bunddledAvatarMini} />,
-      <View key={item[1].id} style={[styles.remainingCount, styles.shifted]}>
-        <Text style={styles.countText}>{item.length - 1}</Text>
+      <View key={item[1].id} style={[styles.remainingCountMini, styles.shiftedMini]}>
+        <Text style={styles.countTextMini}>{item.length - 1}</Text>
       </View>,
       arrow,
     ];

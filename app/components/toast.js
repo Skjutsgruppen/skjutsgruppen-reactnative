@@ -6,19 +6,16 @@ const styles = StyleSheet.create({
   toastSuccess: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 4,
     backgroundColor: 'rgba(43, 156, 72, 0.7)',
   },
   toastError: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 4,
     backgroundColor: 'rgba(173, 43, 43, 0.7)',
   },
   toastWarning: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 4,
     backgroundColor: 'rgba(173, 97, 43, 0.6)',
   },
   msg: {
