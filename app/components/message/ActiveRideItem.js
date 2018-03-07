@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import Date from '@components/date';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { compose } from 'react-apollo';
 
+import { withResetMute } from '@services/apollo/mute';
+import { getDate } from '@config';
+import Date from '@components/date';
 import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
@@ -38,6 +41,25 @@ const styles = StyleSheet.create({
     height: 16,
     resizeMode: 'contain',
   },
+  muteWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 'auto',
+  },
+  muteCountWrapper: {
+    height: 32,
+    minWidth: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.background.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    paddingHorizontal: 4,
+  },
+  whiteText: {
+    color: Colors.text.white,
+    fontSize: 14,
+  },
 });
 
 const renderPic = (photo) => {
@@ -50,16 +72,23 @@ const renderPic = (photo) => {
   return profileImage;
 };
 
-const ActiveRideItem = ({ trip, navigation }) => {
+const ActiveRideItem = ({ trip, resetMute, navigation }) => {
   let tripName = `${trip.TripStart.name} - ${trip.TripEnd.name}`;
 
   if (tripName.length > 25) {
     tripName = `${tripName.slice(0, 25)} ...`;
   }
 
+  const navigateToTripDetail = () => {
+    if (trip.muted) {
+      resetMute({ mutable: 'Trip', mutableId: trip.id, from: getDate().format() });
+    }
+    navigation.navigate('TripDetail', { trip });
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('TripDetail', { trip })}
+      onPress={navigateToTripDetail}
       key={trip.id}
     >
       <View style={styles.list}>
@@ -71,6 +100,18 @@ const ActiveRideItem = ({ trip, navigation }) => {
             <Text>{tripName}</Text>
             <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
           </View>
+          {
+            trip.muted &&
+            (<View style={styles.muteWrapper}>
+              <Image source={require('@assets/icons/ic_mute.png')} />
+              {
+                trip.unreadNotificationCount > 0 &&
+                <View style={styles.muteCountWrapper}>
+                  <Text style={styles.whiteText}>{trip.unreadNotificationCount}</Text>
+                </View>
+              }
+            </View>)
+          }
         </View>
       </View>
     </TouchableOpacity>
@@ -79,6 +120,7 @@ const ActiveRideItem = ({ trip, navigation }) => {
 
 ActiveRideItem.propTypes = {
   trip: PropTypes.shape(),
+  resetMute: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
@@ -88,4 +130,4 @@ ActiveRideItem.defaultProps = {
   trip: {},
 };
 
-export default withNavigation(ActiveRideItem);
+export default compose(withResetMute, withNavigation)(ActiveRideItem);

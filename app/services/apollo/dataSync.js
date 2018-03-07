@@ -451,3 +451,50 @@ export const updateOtherProfileFriendCount = (friendId, apollo, decrease = false
   }
 };
 
+export const updateActiveRides = (updatedTrip) => {
+  try {
+    const trips = client.readQuery({
+      query: TRIPS_QUERY,
+      variables: {
+        id: null,
+        type: null,
+        active: true,
+        queryString: null,
+        limit: 10,
+        offset: 0,
+        applyQueryString: false,
+      },
+    });
+
+    trips.map((trip) => {
+      if (trip.id === updatedTrip.id) return updatedTrip;
+
+      return trip;
+    });
+  } catch (e) {
+    // empty
+  }
+};
+
+export const updateActiveGroups = (updatedGroup) => {
+  try {
+    const groups = client.readQuery({
+      query: GROUPS_QUERY,
+      variables: {
+        id: null,
+        queryString: null,
+        limit: 10,
+        offset: 0,
+        applyQueryString: false,
+      },
+    });
+
+    groups.map((group) => {
+      if (group.id === updatedGroup.id) return updatedGroup;
+
+      return group;
+    });
+  } catch (e) {
+    // empty
+  }
+};

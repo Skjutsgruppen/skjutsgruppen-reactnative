@@ -44,10 +44,10 @@ class ActionModal extends PureComponent {
         {
           Children.map(this.props.children, (action, index) => (
             <View>
-              { action }
+              {action}
               {
                 (index !== childrenCount - 1) &&
-                  <View style={styles.horizontalDivider} />
+                <View style={styles.horizontalDivider} />
               }
             </View>
           ))
