@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 });
 
 const Selectable = ({ title, loading, rows, setOption, selected, disabled, user, showSelf }) => {
-  if (loading && rows === 0) return (<Loading />);
+  if (loading && rows.length === 0) return (<Loading />);
 
   if (rows.length === 0) return null;
 
@@ -74,7 +74,7 @@ const Selectable = ({ title, loading, rows, setOption, selected, disabled, user,
   const hasDisabled = key => disabled.indexOf(key) > -1;
 
   const list = showSelf ? rows.filter(row => row.id !== user.id) : rows;
-  
+
   return (
     <View>
       {

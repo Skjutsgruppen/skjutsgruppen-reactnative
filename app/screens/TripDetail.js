@@ -5,7 +5,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed } from '@services/apollo/trip';
-import { withTripExperiences } from '@services/apollo/experience';
 import { AppNotification, DetailHeader, Loading, ShareButton } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
@@ -13,7 +12,6 @@ import { trans } from '@lang/i18n';
 import FOF from '@components/relation/friendsOfFriend';
 import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
-import List from '@components/experience/list';
 import { Colors, Gradients } from '@theme';
 import Share from '@components/common/share';
 import Date from '@components/date';
@@ -21,7 +19,7 @@ import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import About from '@components/common/about';
 import { getDate } from '@config';
-import { FLEXIBILITY_EARLIER_TYPE, FEED_FILTER_OFFERED, FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_PUBLISHED, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
+import { FLEXIBILITY_EARLIER_TYPE, FEED_FILTER_OFFERED, FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { connect } from 'react-redux';
 import { withSearch } from '@services/apollo/search';
@@ -33,7 +31,6 @@ import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
 import { withMute, withUnmute } from '@services/apollo/mute';
 
-const TripExperiences = withTripExperiences(List);
 const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
 
@@ -529,7 +526,6 @@ class TripDetail extends Component {
             {this.returnRideButton()}
             {this.recurringRideButton()}
           </View>
-          {this.renderExperience()}
           {this.renderExperienceButton()}
         </LinearGradient>
         <Toast message={error} type="error" />
@@ -667,22 +663,6 @@ class TripDetail extends Component {
         <View style={styles.tripDescription}>
           <Text style={[styles.text]}>{trip.description}</Text>
         </View>
-      </View>
-    );
-  }
-
-  renderExperience = () => {
-    const { trip } = this.state;
-    if (trip.experienceStatus !== EXPERIENCE_STATUS_PUBLISHED) {
-      return null;
-    }
-
-    return (
-      <View>
-        <View style={styles.dividerWrapper}>
-          <View style={styles.horizontalDivider} />
-        </View>
-        <TripExperiences title="Experiences!" tripId={trip.id} />
       </View>
     );
   }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BackHandler, Alert } from 'react-native';
 import Camera from '@components/experience/camera';
 import Preview from '@components/experience/preview';
 import Participant from '@components/experience/participant';
@@ -36,7 +37,39 @@ class Experience extends Component {
     const { navigation } = this.props;
     const { trip } = navigation.state.params;
     this.setState({ trip });
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { loading, screen } = this.state;
+    const { navigation } = this.props;
+
+    if (screen === SCREEN_CAMERA) {
+      Alert.alert(
+        '',
+        'Are you sure You want to exit this screen?',
+        [
+          { text: 'Cancel', onPress: () => { }, style: 'cancel' },
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ],
+        { cancelable: true },
+      );
+      return true;
+    }
+
+    if (screen === SCREEN_CONFIRM) {
+      if (!loading) {
+        navigation.goBack();
+      }
+      return true;
+    }
+
+    return true;
+  };
 
   onParticipantSelect = (participants) => {
     this.setState({ participants, screen: SCREEN_MESSAGE });
@@ -67,17 +100,13 @@ class Experience extends Component {
     }
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   takePicture = (data) => {
     this.setState({ image: data.path, screen: SCREEN_PREVIEW });
   }
 
   render() {
     const { screen, loading, image, error, trip, participants } = this.state;
+    const { navigation } = this.props;
 
     if (screen === SCREEN_PREVIEW) {
       return (
@@ -116,13 +145,13 @@ class Experience extends Component {
           error={error}
           loading={loading}
           image={image}
-          onNext={this.goBack}
+          onNext={() => navigation.goBack()}
           reTry={this.submit}
         />
       );
     }
 
-    return (<Camera onBack={this.goBack} takePicture={this.takePicture} />);
+    return (<Camera onBack={this.onBackButtonPress} takePicture={this.takePicture} />);
   }
 }
 

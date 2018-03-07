@@ -261,7 +261,7 @@ class Offer extends Component {
     }
   };
 
-  onShareAndPublishNext = (share) => {
+  onShareNext = (share) => {
     this.setState({
       share,
       activeStep: 6,
@@ -475,7 +475,14 @@ class Offer extends Component {
           }
           {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
           {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-          {(activeStep === 5) && <Share defaultValue={share} type={FEEDABLE_TRIP} onNext={this.onShareAndPublishNext} />}
+          {
+            (activeStep === 5) &&
+            <Share
+              defaultValue={share}
+              type={FEEDABLE_TRIP}
+              onNext={this.onShareNext}
+            />
+          }
           {(activeStep === 6) && this.renderFinish()}
         </Container>
       </Wrapper>
