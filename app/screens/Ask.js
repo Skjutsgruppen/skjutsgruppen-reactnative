@@ -348,14 +348,14 @@ class Ask extends Component {
 
   renderProgress = () => {
     const { activeStep } = this.state;
-    const progressAmount = (activeStep / 5) * 100;
+    const progressAmount = (activeStep / 4) * 100;
     if (activeStep > 4) {
       return null;
     }
 
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} color={Colors.background.blue} />
+        <ProgressBar amount={progressAmount} color={Colors.background.blue} changesColor={false} />
         <Text style={[
           styles.stepsCount,
           GlobalStyles.TextStyles.bold,
@@ -412,6 +412,7 @@ class Ask extends Component {
               defaultValue={share}
               type={FEEDABLE_TRIP}
               onNext={this.onShareAndPublishNext}
+              labelColor={Colors.text.blue}
             />
           }
           {(activeStep === 5) && this.renderFinish()}

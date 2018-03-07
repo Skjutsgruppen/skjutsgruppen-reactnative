@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, ViewPropTypes, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, ViewPropTypes, Text } from 'react-native';
+import TouchableHighlight from '@components/touchableHighlight';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 
@@ -12,25 +13,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text.blue,
   },
+  disabled: {
+    color: Colors.text.gray,
+  },
 });
 
-const ModalAction = ({ style, label, onPress }) => (
-  <TouchableOpacity
+const ModalAction = ({ style, label, onPress, disabled }) => (
+  <TouchableHighlight
     style={[styles.action, style]}
     onPress={onPress}
+    disabled={disabled}
   >
-    <Text style={styles.actionLabel}>{label}</Text>
-  </TouchableOpacity>
+    <Text style={[styles.actionLabel, disabled ? styles.disabled : {}]}>{label}</Text>
+  </TouchableHighlight>
 );
 
 ModalAction.propTypes = {
   style: ViewPropTypes.style,
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 ModalAction.defaultProps = {
   style: {},
+  disabled: false,
 };
 
 export default ModalAction;

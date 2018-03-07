@@ -413,14 +413,14 @@ class Offer extends Component {
 
   renderProgress = () => {
     const { activeStep } = this.state;
-    const progressAmount = (activeStep / 6) * 100;
+    const progressAmount = (activeStep / 5) * 100;
     if (activeStep > 5) {
       return null;
     }
 
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} />
+        <ProgressBar amount={progressAmount} changesColor={false} />
         <Text style={[
           styles.stepsCount,
           GlobalStyles.TextStyles.bold,
