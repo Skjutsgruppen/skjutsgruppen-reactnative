@@ -56,7 +56,7 @@ export const withContactFriends = graphql(CONTACTS_QUERY, {
   }) =>
     ({
       variables: { offset, limit },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-and-network',
     }),
   props: ({ data: { contacts, loading, networkStatus } }) => ({
     contacts: { rows: contacts, loading, networkStatus },

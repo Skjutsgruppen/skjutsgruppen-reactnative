@@ -102,7 +102,7 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
       </View>
     </TouchableOpacity>
   );
-}
+};
 
 ActiveGroupItem.propTypes = {
   group: PropTypes.shape().isRequired,

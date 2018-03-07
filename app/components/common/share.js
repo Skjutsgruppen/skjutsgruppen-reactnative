@@ -266,6 +266,7 @@ class Share extends Component {
               selected={this.hasOption('selectedGroups', group.id)}
               label={group.name}
               onPress={() => this.setOption('selectedGroups', group.id)}
+              color="blue"
             />
           ))
         }
@@ -310,9 +311,10 @@ class Share extends Component {
       {!this.isModal() &&
         <ShareItem
           readOnly
-          selected={this.hasOption('social', 'copy_to_clip')}
+          selected={this.hasOption('social', 'publish_to_whole_movement')}
           label={trans('global.publish_to_whole_movement')}
           onPress={() => { }}
+          color="blue"
         />
       }
       <ShareItem
@@ -320,6 +322,7 @@ class Share extends Component {
         selected={this.hasOption('social', 'copy_to_clip')}
         label={trans('global.copy_to_clipboard')}
         onPress={() => this.setOption('social', 'copy_to_clip')}
+        color="blue"
       />
       {this.hasFacebook() &&
         <ShareItem
@@ -327,6 +330,8 @@ class Share extends Component {
           selected={this.hasOption('social', 'facebook')}
           label={trans('global.your_fb_timeline')}
           onPress={() => this.setOption('social', 'facebook')}
+          color="blue"
+
         />}
       {this.hasTwitter() &&
         <ShareItem
@@ -334,6 +339,7 @@ class Share extends Component {
           selected={this.hasOption('social', 'tweet')}
           label={trans('global.tweet')}
           onPress={() => this.setOption('social', 'tweet')}
+          color="blue"
         />}
       <FriendList
         title="Recent"
@@ -362,6 +368,7 @@ class Share extends Component {
 
   renderButton = () => {
     const { loading } = this.state;
+    const { type } = this.props;
 
     if (loading) {
       return (<Loading />);
@@ -373,13 +380,13 @@ class Share extends Component {
         bgColor={Colors.background.pink}
         style={styles.button}
       >
-        {trans('global.share')}
+        {type === FEEDABLE_GROUP ? trans('global.add_and_publish_button') : trans('global.share')}
       </RoundedButton>
     );
   }
 
   render() {
-    const { labelColor } = this.props;
+    const { labelColor, type } = this.props;
 
     return (
       <View style={styles.wrapper}>
@@ -399,7 +406,7 @@ class Share extends Component {
             </View>
           }
           {!this.isModal() &&
-            <SectionLabel label={trans('global.invite_and_publish')} color={labelColor} />
+            <SectionLabel label={type === FEEDABLE_GROUP ? trans('global.add_and_publish') : trans('global.invite_and_publish')} color={labelColor} />
           }
           <SearchBar
             placeholder="Search contacts"

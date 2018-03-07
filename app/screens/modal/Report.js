@@ -277,7 +277,13 @@ class Report extends Component {
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      return (<Avatar source={{ uri: data.Experience.photoUrl }} size={60} style={styles.avatar} />)
+      return (
+        <Avatar
+          source={{ uri: data.Experience.photoUrl }}
+          size={60}
+          style={styles.avatar}
+        />
+      );
     }
 
     return (<Avatar source={{ uri: data.User.avatar }} size={60} style={styles.avatar} />);
