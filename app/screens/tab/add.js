@@ -31,35 +31,65 @@ class Add extends Component {
     header: null,
     tabBarLabel: 'Add',
     tabBarIcon: ({ focused }) => <Image source={focused ? AddIconActive : AddIcon} />,
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      if (scene.focused) {
+        const navigationInRoute = scene.route;
+        if (!!navigationInRoute
+          && !!navigationInRoute.params
+          && !!navigationInRoute.params.scrollToTop) {
+          navigationInRoute.params.scrollToTop();
+        }
+      }
+      jumpToIndex(1);
+    },
   };
 
-  redirect = (page) => {
-    const { navigation } = this.props;
-    navigation.navigate(page);
+  constructor(props) {
+    super(props);
+    this.scrollView = null;
   }
 
-  redirectToExploreGroup = () => {
-    this.redirect('ExploreGroup');
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ scrollToTop: this.scrollToTop });
+    navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
+  }
+
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  scrollToTop = () => {
+    if (this.scrollView) {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
+  tabEvent = (e, type) => {
+    if (this.scrollView && type === 'didBlur') {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
   }
 
   render() {
+    const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ScrollView>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
           <Circle />
           <Text style={styles.title}>Add</Text>
           <Starter
-            onPress={() => this.redirect('Offer')}
+            onPress={() => navigation.navigate('Offer')}
             label="Offer a ride"
             info="5 steps"
           />
           <Starter
-            onPress={() => this.redirect('Ask')}
+            onPress={() => navigation.navigate('Ask')}
             label="Ask for a ride"
             info="4 steps"
           />
           <Starter
-            onPress={() => this.redirect('Group')}
+            onPress={() => navigation.navigate('Group')}
             label="Add a new group"
             info="For a specific distance. area or subject"
           />

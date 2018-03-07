@@ -21,4 +21,6 @@ export const global = {
   tweet: 'Tweet se',
   share: 'Share se',
   search: 'Search se',
+  add_and_publish_button: 'Add and publish se',
+  add_and_publish: 'Share, add participants and publish se',
 };

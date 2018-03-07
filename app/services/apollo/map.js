@@ -49,6 +49,7 @@ export const withMapTrips = graphql(NEAR_BY_TRIPS_QUERY, {
   props: ({ mutate }) => ({
     getMapTrips: (from, distFrom, distTo, filter) => mutate({
       variables: { from, distFrom, distTo, filter },
+      fetchPolicy: 'cache-and-network',
     }),
   }),
 });

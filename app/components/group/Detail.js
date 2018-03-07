@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
-import { withShare } from '@services/apollo/share';
 import { withMute, withUnmute } from '@services/apollo/mute';
 import { AppNotification, Wrapper, Loading, FloatingNavbar, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';

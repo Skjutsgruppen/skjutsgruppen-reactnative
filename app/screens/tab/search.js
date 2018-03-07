@@ -139,6 +139,17 @@ class Search extends Component {
     header: null,
     tabBarLabel: 'Search',
     tabBarIcon: ({ focused }) => <Image source={focused ? SearchIconActive : SearchIcon} />,
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      if (scene.focused) {
+        const navigationInRoute = scene.route;
+        if (!!navigationInRoute
+          && !!navigationInRoute.params
+          && !!navigationInRoute.params.scrollToTop) {
+          navigationInRoute.params.scrollToTop();
+        }
+      }
+      jumpToIndex(2);
+    },
   };
 
   constructor(props) {
@@ -160,6 +171,13 @@ class Search extends Component {
       dates: [],
       modalVisible: false,
     };
+    this.scrollView = null;
+  }
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ scrollToTop: this.scrollToTop });
+    navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
   }
 
   onFilterSelect = (param) => {
@@ -212,6 +230,18 @@ class Search extends Component {
     this.setState({ modalVisible: visible });
   }
 
+  scrollToTop = () => {
+    if (this.scrollView) {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
+  tabEvent = (e, type) => {
+    if (this.scrollView && type === 'didBlur') {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
   switchLocation = () => {
     const { from, to } = this.state;
     this.setState({ from: to, to: from });
@@ -250,7 +280,7 @@ class Search extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" ref={(ref) => { this.scrollView = ref; }}>
           <Circle />
           <Text style={styles.title}>Search</Text>
           <LinearGradient colors={Gradients.white} style={styles.content}>

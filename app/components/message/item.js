@@ -215,7 +215,17 @@ class Item extends PureComponent {
     );
   }
 
-  item = ({ user, photo, text, onPress, userId, experience, noAvatarAction, date, ellipsize = true }) => {
+  item = ({
+    user,
+    photo,
+    text,
+    onPress,
+    userId,
+    experience,
+    noAvatarAction,
+    date,
+    ellipsize = true,
+  }) => {
     const { filters } = this.props;
 
     return (
