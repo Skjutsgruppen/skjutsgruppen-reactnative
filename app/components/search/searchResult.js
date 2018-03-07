@@ -115,10 +115,13 @@ class SearchResult extends Component {
 
   componentWillMount() {
     const { filters } = this.props;
-    this.setState({ filters });
+    let { resultsStyle } = this.state;
+
     if (filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1) {
-      this.setState({ resultsStyle: 'list' });
+      resultsStyle = 'list';
     }
+
+    this.setState({ filters, resultsStyle });
   }
 
   onPress = (type, detail) => {

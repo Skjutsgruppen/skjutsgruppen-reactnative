@@ -90,11 +90,6 @@ subscription{
     ... on NewsFeed { 
       News {
         id 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
         title 
         body 
         links 
@@ -141,14 +136,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id 
           firstName 
           avatar
-          relation {
-            path{
-              id
-              firstName
-              avatar
-            }
-            areFriends
-          }
         } 
         outreach
         type
@@ -221,11 +208,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
     ... on NewsFeed { 
       News {
         id 
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
         title 
         body 
         links 
@@ -248,14 +230,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id 
           firstName 
           avatar
-          relation {
-            path{
-              id
-              firstName
-              avatar
-            }
-            areFriends
-          }
         } 
       }
     }

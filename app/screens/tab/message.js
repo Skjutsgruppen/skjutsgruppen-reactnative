@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Image, Text, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '@theme/colors';
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class Message extends PureComponent {
+class Message extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Message',
@@ -82,7 +82,46 @@ class Message extends PureComponent {
         </View>
       </View>
     ),
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      if (scene.focused) {
+        const navigationInRoute = scene.route;
+        if (!!navigationInRoute
+          && !!navigationInRoute.params
+          && !!navigationInRoute.params.scrollToTop) {
+          navigationInRoute.params.scrollToTop();
+        }
+      }
+      jumpToIndex(3);
+    },
   };
+
+  constructor(props) {
+    super(props);
+    this.scrollView = null;
+  }
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ scrollToTop: this.scrollToTop });
+    navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
+  }
+
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  scrollToTop = () => {
+    if (this.scrollView) {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
+  tabEvent = (e, type) => {
+    if (this.scrollView && type === 'didBlur') {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
   render() {
     const { navigation } = this.props;
     return (
@@ -102,7 +141,7 @@ class Message extends PureComponent {
             />
           </View>
         </LinearGradient>
-        <ScrollView>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
           <View style={styles.content}>
             <Notification filters="new" />
             <Ride />

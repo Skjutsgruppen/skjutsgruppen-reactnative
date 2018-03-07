@@ -216,7 +216,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
   options: ({ filters, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { filters, offset, limit },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({ data:
     {
@@ -569,6 +569,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
 export const withNotificationSearch = graphql(NOTIFICATION_SEARCH_QUERY, {
   options: ({ keyword, offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
     variables: { keyword, offset, limit },
   }),
   props: ({
