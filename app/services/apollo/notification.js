@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
-import { updateNewNotificationToOld } from '@services/apollo/dataSync';
+import { updateNewNotificationToOld, updateActiveRides, updateActiveGroups } from '@services/apollo/dataSync';
 
 const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
@@ -26,6 +26,8 @@ subscription notification($userId: Int!) {
         TripEnd {
           name 
         } 
+        muted
+        unreadNotificationCount
       }
       ... on Group {
         id
@@ -34,6 +36,8 @@ subscription notification($userId: Int!) {
         User {
           id
         }
+        muted
+        unreadNotificationCount
       }
       ... on GroupMembershipRequest {
         id
@@ -41,34 +45,12 @@ subscription notification($userId: Int!) {
         Group {
           id
           name
-          description
-          User {
-            id 
-            firstName 
-            avatar 
-          } 
-          outreach
-          type
-          photo
-          mapPhoto
-          TripStart {
-            name 
-            coordinates 
-          } 
-          TripEnd {
-            name 
-            coordinates
-          } 
-          Stops {
-            name 
-            coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
           membershipStatus
-          totalParticipants
+          User {
+            id
+          }
+          muted
+          unreadNotificationCount
         }
       }
       ... on FriendRequest {
@@ -93,21 +75,23 @@ subscription notification($userId: Int!) {
           id
           date
           TripStart {
-            name 
+            name
           }
           TripEnd {
-            name 
+            name
           }
           Stops {
-            name 
+            name
           }
+          muted
+          unreadNotificationCount
         }
         userStatus
         User {
           id 
           firstName 
           avatar 
-        } 
+        }
         Participants {
           User {
             id
@@ -146,6 +130,8 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           TripEnd {
             name 
           } 
+          muted
+          unreadNotificationCount
         }
         ... on Group {
           id
@@ -154,6 +140,8 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           User {
             id
           }
+          muted
+          unreadNotificationCount
         }
         ... on GroupMembershipRequest {
           id
@@ -161,34 +149,12 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           Group {
             id
             name
-            description
-            User {
-              id 
-              firstName 
-              avatar 
-            } 
-            outreach
-            type
-            photo
-            mapPhoto
-            TripStart {
-              name 
-              coordinates 
-            } 
-            TripEnd {
-              name 
-              coordinates
-            } 
-            Stops {
-              name 
-              coordinates
-            } 
-            country 
-            county 
-            municipality 
-            locality 
             membershipStatus
-            totalParticipants
+            User {
+              id
+            }
+            muted
+            unreadNotificationCount
           }
         }
         ... on FriendRequest {
@@ -213,21 +179,23 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             id
             date
             TripStart {
-              name 
+              name
             }
             TripEnd {
-              name 
+              name
             }
             Stops {
-              name 
+              name
             }
+            muted
+            unreadNotificationCount
           }
           userStatus
           User {
             id 
             firstName 
             avatar 
-          } 
+          }
           Participants {
             User {
               id
@@ -296,48 +264,68 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           const newNotification = subscriptionData.data.notification;
 
           if (newNotification.notifiable === 'Trip') {
-            newRows = prev.notifications.rows.map((row) => {
-              if (row.Notifiable.id === newNotification.Notifiable.id) {
-                const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
-                exists = true;
+            if (newNotification.Notifiable.muted) {
+              exists = true;
+              updateActiveRides(newNotification.Notifiable);
+            } else {
+              newRows = prev.notifications.rows.map((row) => {
+                if (row.Notifiable.id === newNotification.Notifiable.id) {
+                  const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                  exists = true;
 
-                let found = false;
-                row.Notifiers.forEach((r) => {
-                  if (r.id === newNotification.Notifiers[0].id) {
-                    found = true;
+                  let found = false;
+                  row.Notifiers.forEach((r) => {
+                    if (r.id === newNotification.Notifiers[0].id) {
+                      found = true;
+                    }
+                  });
+
+                  if (found) {
+                    return row;
                   }
-                });
 
-                if (found) {
-                  return row;
+                  return { ...row, Notifiers };
                 }
 
-                return { ...row, Notifiers };
-              }
-
-              return row;
-            });
+                return row;
+              });
+            }
           } else if (newNotification.notifiable === 'Group') {
-            newRows = prev.notifications.rows.map((row) => {
-              if (row.Notifiable.id === newNotification.Notifiable.id) {
-                exists = true;
-                let found = false;
-                row.Notifiers.forEach((r) => {
-                  if (r.id === newNotification.Notifiers[0].id) {
-                    found = true;
-                  }
-                });
+            if (newNotification.Notifiable.muted) {
+              exists = true;
+              updateActiveGroups(newNotification.Notifiable);
+            } else {
+              newRows = prev.notifications.rows.map((row) => {
+                if (row.Notifiable.id === newNotification.Notifiable.id) {
+                  exists = true;
+                  let found = false;
+                  row.Notifiers.forEach((r) => {
+                    if (r.id === newNotification.Notifiers[0].id) {
+                      found = true;
+                    }
+                  });
 
-                if (found) {
-                  return row;
+                  if (found) {
+                    return row;
+                  }
+
+                  const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                  return { ...row, Notifiers };
                 }
 
-                const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
-                return { ...row, Notifiers };
-              }
-
-              return row;
-            });
+                return row;
+              });
+            }
+          } else if (newNotification.notifiable === 'Experience') {
+            if (newNotification.Notifiable.Trip.muted) {
+              exists = true;
+              updateActiveRides(newNotification.Notifiable.Trip);
+            }
+          } else if (newNotification.notifiable === 'GroupMembershipRequest') {
+            if (newNotification.Notifiable.Group.muted) {
+              exists = true;
+              updateActiveGroups(newNotification.Notifiable.Group);
+            }
           }
 
           if (exists) {

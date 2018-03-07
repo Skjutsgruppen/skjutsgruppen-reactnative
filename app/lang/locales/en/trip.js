@@ -7,6 +7,7 @@ export const trip = {
   mute_two_hours: 'Mute two hours',
   mute_one_day: 'Mute one day',
   mute_forever: 'Mute forever',
+  unmute: 'Unmute',
   embeded_with_html: 'Embeded with HTML',
   report_this_ride: 'Report this ride',
   a_post_on_your_fb_timeline: 'A post on your Facebook timeline',
