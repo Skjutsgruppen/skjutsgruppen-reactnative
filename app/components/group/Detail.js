@@ -428,7 +428,6 @@ class Detail extends PureComponent {
       transparent
       visible={this.state.showAction}
       onRequestClose={() => this.setState({ showAction: false })}
-      animationType="slide"
     >
       {this.renderMuteOptions()}
     </ActionModal>
