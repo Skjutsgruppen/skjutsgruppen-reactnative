@@ -1,8 +1,10 @@
 import React, { PureComponent, Children } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import * as Animatable from 'react-native-animatable';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   horizontalDivider: {
@@ -11,22 +13,27 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    backgroundColor: 'rgba(255,255,255,0.65)',
     justifyContent: 'flex-end',
+    padding: 12,
   },
   actionsWrapper: {
     maxHeight: '70%',
     marginTop: 'auto',
-    marginHorizontal: 16,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 12,
     overflow: 'hidden',
-    marginBottom: 24,
+    marginBottom: 12,
   },
   closeWrapper: {
+    height: 42,
+    borderRadius: 21,
     backgroundColor: Colors.background.fullWhite,
+    overflow: 'hidden',
   },
   close: {
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 16,
   },
   closeLabel: {
@@ -62,7 +69,6 @@ class ActionModal extends PureComponent {
       transparent,
       visible,
       onRequestClose,
-      animationType,
     } = this.props;
 
     return (
@@ -70,22 +76,36 @@ class ActionModal extends PureComponent {
         transparent={transparent}
         visible={visible}
         onRequestClose={onRequestClose}
-        animationType={animationType}
+        animationType="fade"
       >
         <View style={[styles.modalContent, style]}>
-          <View style={styles.actionsWrapper}>
+          <Animatable.View
+            animation="slideInUp"
+            iterationCount={1}
+            direction="alternate"
+            duration={600}
+            easing="ease-in-out-cubic"
+            style={styles.actionsWrapper}
+          >
             {this.renderActions()}
-          </View>
-          <View style={styles.closeWrapper}>
-            <TouchableOpacity
+          </Animatable.View>
+          <Animatable.View
+            animation="slideInUp"
+            iterationCount={1}
+            direction="alternate"
+            duration={620}
+            easing="ease-in-out-cubic"
+            style={styles.closeWrapper}
+          >
+            <TouchableHighlight
               style={styles.close}
               onPress={onRequestClose}
             >
               <Text style={styles.closeLabel}>{trans('global.cancel')}</Text>
-            </TouchableOpacity>
-          </View>
+            </TouchableHighlight>
+          </Animatable.View>
         </View>
-      </Modal>
+      </Modal >
     );
   }
 }
@@ -96,14 +116,12 @@ ActionModal.propTypes = {
   transparent: PropTypes.bool,
   visible: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
-  animationType: PropTypes.string,
 };
 
 ActionModal.defaultProps = {
   style: {},
   transparent: true,
   visible: false,
-  animationType: 'slide',
 };
 
 export default ActionModal;
