@@ -6,12 +6,10 @@ import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
   more: {
-    height: 24,
-    alignSelf: 'center',
-    paddingHorizontal: 14,
+    height: 80,
+    paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 24,
   },
   moreText: {
     fontSize: 14,
