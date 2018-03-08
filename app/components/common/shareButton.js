@@ -31,9 +31,9 @@ class ShareButton extends PureComponent {
 
     const params = navigation.state.params || {};
 
+    let opacity = 1;
+    let reverseOpacity = 0;
     if (animated) {
-      let opacity = 1;
-      let reverseOpacity = 0;
       if (params.animatedValue) {
         opacity = params.animatedValue.interpolate({
           inputRange: [0, 50],
@@ -47,10 +47,17 @@ class ShareButton extends PureComponent {
 
       return (
         <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-          <Animated.Image source={Icon} style={[styles.icon, { opacity }]} />
+          <Animated.Image
+            source={Icon}
+            style={[styles.icon, animated ? { opacity } : reverseOpacity]}
+          />
           <Animated.Image
             source={IconDark}
-            style={[styles.icon, styles.darkIcon, { opacity: reverseOpacity }]}
+            style={[
+              styles.icon,
+              styles.darkIcon,
+              animated ? { opacity: reverseOpacity } : { opacity },
+            ]}
           />
         </TouchableOpacity>
       );

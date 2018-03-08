@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
 import { withGroup } from '@services/apollo/group';
+import NoEnabler from '@components/group/enablers/noEnabler';
 
 class GroupDetail extends Component {
   constructor(props) {
@@ -49,6 +50,10 @@ class GroupDetail extends Component {
     const { notifier, notificationMessage } = navigation.state.params;
 
     if (this.isMember()) {
+      if (group.Enablers.length < 1) {
+        return <NoEnabler group={group} onAdd={this.refresh} />;
+      }
+
       return (
         <Detail
           refresh={this.refresh}

@@ -2,9 +2,15 @@ import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Detail from '@components/feed/itemDetail';
-import { FEEDABLE_TRIP, FEED_FILTER_WANTED } from '@config/constant';
+import {
+  CLOSE_GROUP,
+  GROUP_FEED_TYPE_JOINED_GROUP,
+  FEEDABLE_TRIP,
+  FEED_FILTER_WANTED,
+} from '@config/constant';
 import Colors from '@theme/colors';
 import FOF from '@components/relation/friendsOfFriend';
+
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -70,6 +76,11 @@ class FeedItem extends PureComponent {
           }
         </View>
       );
+    }
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
+      && feed.Group.type === CLOSE_GROUP) {
+      return (<Image source={{ uri: feed.Enabler.avatar }} style={styles.profilePic} />);
     }
 
     return (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);

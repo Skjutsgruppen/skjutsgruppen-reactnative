@@ -60,6 +60,13 @@ import Garden from '@screens/tab/garden';
 
 import Report from '@screens/modal/Report';
 
+import GroupInformation from '@screens/group/GroupInformation';
+import EnablerList from '@screens/group/EnablerList';
+import AddEnabler from '@screens/group/AddEnabler';
+import MembershipRequest from '@screens/group/MembershipRequest';
+import Participants from '@screens/group/Participants';
+import AddParticipant from '@screens/group/AddParticipant';
+
 const TabRoutes = {
   Feed: {
     screen: Feed,
@@ -169,6 +176,13 @@ export const Routes = {
 
   Report: { screen: Report },
   SharedTrip: { screen: SharedTrip },
+
+  GroupInformation: { screen: GroupInformation },
+  EnablerList: { screen: EnablerList },
+  AddEnabler: { screen: AddEnabler },
+  MembershipRequest: { screen: MembershipRequest },
+  Participants: { screen: Participants },
+  AddParticipant: { screen: AddParticipant },
 };
 
 export const AppNavigator = StackNavigator(Routes,

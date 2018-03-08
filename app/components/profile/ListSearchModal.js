@@ -3,18 +3,24 @@ import { View, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-nati
 import Colors from '@theme/colors';
 import { withMyTrips } from '@services/apollo/trip';
 import { withConversation } from '@services/apollo/profile';
-import { withMyGroups } from '@services/apollo/group';
+import { withMyGroups, withGroupMembers } from '@services/apollo/group';
 import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
 import SearchMyTrips from '@components/profile/SearchMyTrips';
 import SearchMyConversations from '@components/profile/SearchMyConversations';
 import SearchMyGroups from '@components/profile/SearchMyGroups';
 import SearchMyFriends from '@components/profile/SearchMyFriends';
+import SearchEnabler from '@components/group/enablers/enablerList';
+import SearchAddEnabler from '@components/group/enablers/addEnablerList';
+import SearchParticipant from '@components/group/participant/participantList';
 
 const TripsSearchResult = withMyTrips(SearchMyTrips);
 const ConversationSearchResult = withConversation(SearchMyConversations);
 const GroupsSearchResult = withMyGroups(SearchMyGroups);
 const FriendsSearchResult = withFriends(SearchMyFriends);
+const EnablersSearchResult = withGroupMembers(SearchEnabler);
+const AddEnablersSearchResult = withGroupMembers(SearchAddEnabler);
+const ParticipantSearchResult = withGroupMembers(SearchParticipant);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -71,10 +77,11 @@ class ListSearchModal extends PureComponent {
       onExperienceIconPress,
       handleRemovePress,
       unfriend,
+      isAdmin,
     } = this.props;
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <View style={[styles.searchInputWrapper]}>
           <TextInput
             placeholder="Search"
@@ -124,6 +131,37 @@ class ListSearchModal extends PureComponent {
             handleRemovePress={handleRemovePress}
             unfriend={unfriend}
           />}
+        {searchCategory === 'enabler' &&
+          <EnablersSearchResult
+            id={id}
+            onPress={onPress}
+            applyQueryString
+            queryString={this.state.searchQuery}
+            enabler
+            isSearching
+            isAdmin={isAdmin}
+          />
+        }
+        {searchCategory === 'addEnabler' &&
+          <AddEnablersSearchResult
+            id={id}
+            onPress={onPress}
+            applyQueryString
+            queryString={this.state.searchQuery}
+            excludeEnabler
+            isSearching
+          />
+        }
+        {searchCategory === 'participants' &&
+          <ParticipantSearchResult
+            id={id}
+            onPress={onPress}
+            applyQueryString
+            queryString={this.state.searchQuery}
+            isSearching
+            isAdmin={isAdmin}
+          />
+        }
       </View>
     );
   }
@@ -138,6 +176,7 @@ ListSearchModal.propTypes = {
   onExperienceIconPress: PropTypes.func,
   handleRemovePress: PropTypes.func,
   unfriend: PropTypes.bool,
+  isAdmin: PropTypes.bool,
 };
 
 ListSearchModal.defaultProps = {
@@ -146,6 +185,7 @@ ListSearchModal.defaultProps = {
   onExperienceIconPress: null,
   handleRemovePress: null,
   unfriend: false,
+  isAdmin: false,
 };
 
 export default ListSearchModal;
