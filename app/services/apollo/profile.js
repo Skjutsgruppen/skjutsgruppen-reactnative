@@ -213,15 +213,12 @@ const CONVERSATION_QUERY = gql`
           description
           photoUrl
           publishedStatus
-          Trip{
-            id
-          }
           userStatus
           User {
             id 
             firstName 
             avatar 
-          }
+          } 
         }
         Participants{
           count

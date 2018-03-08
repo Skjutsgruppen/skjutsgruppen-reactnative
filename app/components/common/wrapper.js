@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   mainView: {
@@ -20,7 +21,7 @@ Wrapper.propTypes = {
 };
 
 Wrapper.defaultProps = {
-  bgColor: '#fff',
+  bgColor: Colors.background.mutedBlue,
 };
 
 export default Wrapper;

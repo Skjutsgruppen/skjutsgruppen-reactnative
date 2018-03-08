@@ -11,11 +11,12 @@ import {
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import ToolBar from '@components/utils/toolbar';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withMute, withUnmute } from '@services/apollo/mute';
-import { AppNotification, Wrapper, Loading, FloatingNavbar, ActionModal, ModalAction } from '@components/common';
+import { AppNotification, Wrapper, Loading, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
@@ -441,15 +442,15 @@ class Detail extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <Toast message={error} type="error" />
-        <Toast message={success} type="success" />
-        <FloatingNavbar handleBack={this.goBack} offset={notifierOffset} />
+        <ToolBar transparent offset={notifierOffset} />
         {notification && <AppNotification
           image={notifier.avatar}
           name={notifier.firstName}
           message={notificationMessage}
           handleClose={this.onCloseNotification}
         />}
+        <Toast message={error} type="error" />
+        <Toast message={success} type="success" />
         <GroupFeedList
           header={header}
           footer={<View style={{ marginTop: 100 }} />}

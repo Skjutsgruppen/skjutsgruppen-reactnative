@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
-import { Wrapper, NavBar } from '@components/common';
+import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 import { withExploreGroup } from '@services/apollo/group';
+import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import ExploreGroupResult from '@components/group/exploreGroupList';
 
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     lineHeight: 36,
     paddingHorizontal: 20,
     paddingTop: 40,
-    paddingBottom: 12,
+    paddingBottom: 32,
     fontWeight: 'bold',
     textAlign: 'center',
     color: Colors.text.blue,
@@ -71,8 +72,8 @@ class ExploreGroup extends PureComponent {
 
   render() {
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper>
+        <ToolBar />
         <View style={styles.content}>
           <Text style={styles.header}>EXPLORE GROUPS</Text>
           <View style={styles.searchWrapper}>

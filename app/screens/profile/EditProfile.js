@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
-import { Wrapper, FloatingNavbar, Loading } from '@components/common';
+import { Wrapper, Loading } from '@components/common';
 import { connect } from 'react-redux';
+import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
@@ -530,9 +531,9 @@ class EditProfile extends Component {
     const profilePicture = uploadedImage || { uri: profileImage };
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <FloatingNavbar handleBack={this.goBack} />
-        <ScrollView style={{ marginTop: 50, flex: 1, paddingBottom: 50 }}>
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <ToolBar />
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={[styles.nameSection]}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
               <Image

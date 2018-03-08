@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import MapView from 'react-native-maps';
 import PropTypes from 'prop-types';
-import { FloatingNavbar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
 import TripMarker from '@components/map/roundMarker';
 
 const { width, height } = Dimensions.get('window');
@@ -41,11 +41,10 @@ class Area extends PureComponent {
 
   render() {
     const { origin, initialRegion } = this.state;
-    const { navigation } = this.props;
 
     return (
       <View style={StyleSheet.absoluteFill}>
-        <FloatingNavbar handleBack={() => navigation.goBack()} />
+        <ToolBar transparent />
         <MapView
           initialRegion={initialRegion}
           style={StyleSheet.absoluteFill}
