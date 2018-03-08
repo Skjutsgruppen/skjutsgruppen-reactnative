@@ -97,11 +97,11 @@ Avatar.defaultProps = {
   isSupporter: false,
   notTouchable: false,
   style: {},
+  imageStyle: {},
   imageURI: '',
   onPress: () => { },
   showIndicator: false,
   indicatorColor: 'transparent',
-  imageStyle: {},
 };
 
 export default Avatar;

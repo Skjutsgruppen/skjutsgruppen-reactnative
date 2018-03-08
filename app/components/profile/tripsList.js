@@ -1,17 +1,28 @@
 import React, { PureComponent } from 'react';
-import { View, Modal } from 'react-native';
+import { View, Modal, StyleSheet } from 'react-native';
+import PortionList from '@components/portionList';
 import PropTypes from 'prop-types';
 import { ListSearchBar } from '@components/common';
-import DataList from '@components/dataList';
 import ListItem from '@components/profile/listItem';
 import ListSearchModal from '@components/profile/ListSearchModal';
+import StickySectionHeader from '@components/profile/stickySectionHeader';
+import SectionDivider from '@components/profile/sectionDivider';
 import { withNavigation } from 'react-navigation';
 import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
+
+const styles = StyleSheet.create({
+  searchWrapper: {
+    paddingTop: 24,
+  },
+  loadingWrapper: {
+    paddingVertical: 50,
+  },
+});
 
 class UserTripsList extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false };
+    this.state = { isOpen: false, tripsArray: [] };
   }
 
   componentWillMount() {
@@ -72,19 +83,22 @@ class UserTripsList extends PureComponent {
     const { trips } = this.props;
 
     if (trips.count > 0) {
-      return (<ListSearchBar onSearchPress={this.onSearchPress} />);
+      return (
+        <View style={styles.searchWrapper}>
+          <ListSearchBar onSearchPress={this.onSearchPress} />
+        </View>
+      );
     }
 
     return null;
   }
 
-  renderDataList = () => {
+  renderSectionList = () => {
     const { trips } = this.props;
 
     return (
-      <DataList
+      <PortionList
         data={trips}
-        header={this.renderListSearch}
         renderItem={({ item }) => (
           <ListItem
             trip={item}
@@ -92,6 +106,12 @@ class UserTripsList extends PureComponent {
             onExperiencePress={this.onExperienceIconPress}
           />
         )}
+        listHeader={this.renderListSearch}
+        sectionHeader={
+          ({ section }) => <StickySectionHeader label={section.title} />
+        }
+        sectionFooter={() => <SectionDivider />}
+        stickySectionHeader
         fetchMoreOptions={{
           variables: { offset: trips.rows.length },
           updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -110,8 +130,8 @@ class UserTripsList extends PureComponent {
 
   render() {
     return (
-      <View>
-        {this.renderDataList()}
+      <View style={{ flex: 1 }}>
+        {this.renderSectionList()}
         {this.renderSearchModal()}
       </View>);
   }
