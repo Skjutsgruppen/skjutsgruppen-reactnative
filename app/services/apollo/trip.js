@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, TRIPS_FETCH_LIMIT } from '@config/constant';
 import { updateFeedCount } from '@services/apollo/dataSync';
 
 const FEED_SUBSCRIPTION = gql`
@@ -936,7 +936,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
 `;
 
 export const withTripFeed = graphql(TRIP_FEED_QUERY, {
-  options: ({ id, offset, limit = PER_FETCH_LIMIT }) => ({
+  options: ({ id, offset, limit = TRIPS_FETCH_LIMIT }) => ({
     variables: { id, offset, limit },
     fetchPolicy: 'cache-and-network',
   }),
