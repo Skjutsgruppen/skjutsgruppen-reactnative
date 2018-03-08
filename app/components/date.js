@@ -28,7 +28,7 @@ const DateView = ({ children, format, calendarTime, ...rest }) => {
   }
 
   if (isWithinAWeek(children) && !isToday(children)) {
-    autoFormat = 'ddd HH:mm';
+    autoFormat = 'ddd';
   }
 
   if (isBeforeAWeek(children)) {

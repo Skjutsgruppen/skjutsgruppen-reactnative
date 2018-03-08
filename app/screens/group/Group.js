@@ -249,7 +249,7 @@ class Group extends Component {
 
   renderProgress = () => {
     const { activeStep } = this.state;
-    const progressAmount = (activeStep / 5) * 100;
+    const progressAmount = (activeStep / 4) * 100;
 
     if (activeStep > 4) {
       return null;
@@ -257,7 +257,7 @@ class Group extends Component {
 
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} />
+        <ProgressBar amount={progressAmount} changesColor={false} />
         <Text style={[
           styles.stepsCount,
           GlobalStyles.TextStyles.bold,
