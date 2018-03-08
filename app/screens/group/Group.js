@@ -79,7 +79,7 @@ class Group extends Component {
       },
       type: OPEN_GROUP,
       share: {},
-      activeStep: 4,
+      activeStep: 1,
       loading: false,
       group: {},
       error: '',

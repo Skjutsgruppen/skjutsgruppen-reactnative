@@ -221,8 +221,9 @@ class TripDetail extends Component {
 
   componentWillMount() {
     const { navigation } = this.props;
+
     navigation.setParams({
-      right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} />,
+      right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
 
     const { notifier, notificationMessage, trip } = navigation.state.params;
@@ -231,7 +232,7 @@ class TripDetail extends Component {
     if (notifier) {
       initialState = {
         ...initialState,
-        ...{ notifier, notificationMessage, notification: true, notifierOffset: 70 },
+        ...{ notifier, notificationMessage, notification: true, notifierOffset: 75 },
       };
     }
 
@@ -254,7 +255,7 @@ class TripDetail extends Component {
           notificationMessage,
           notifier,
           notification: true,
-          notifierOffset: 70,
+          notifierOffset: 75,
         });
       } else {
         this.setState({ trip, loading });

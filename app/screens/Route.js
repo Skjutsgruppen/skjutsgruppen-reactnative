@@ -4,7 +4,7 @@ import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
 import { FEED_TYPE_WANTED, FEED_TYPE_OFFER } from '@config/constant';
-import { FloatingNavbar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
 import TripMarker from '@components/map/roundMarker';
 
 const { width, height } = Dimensions.get('window');
@@ -123,7 +123,7 @@ class Route extends PureComponent {
 
     return (
       <View style={StyleSheet.absoluteFill}>
-        <FloatingNavbar handleBack={this.handleBack} />
+        <ToolBar transparent />
         <MapView
           initialRegion={initialRegion}
           style={StyleSheet.absoluteFill}

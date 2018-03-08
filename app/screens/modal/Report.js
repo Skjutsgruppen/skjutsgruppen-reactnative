@@ -3,7 +3,8 @@ import { View, TextInput, Text, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { FloatingNavbar, RoundedButton, Avatar, Loading } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
+import { RoundedButton, Avatar, Loading } from '@components/common';
 import { Colors } from '@theme';
 import { withReport } from '@services/apollo/report';
 import { propType } from 'graphql-anywhere/lib/src/utilities';
@@ -30,7 +31,7 @@ const styles = {
     backgroundColor: Colors.background.mutedBlue,
   },
   content: {
-    paddingVertical: 20,
+    paddingVertical: 32,
     marginBottom: 50,
   },
   label: {
@@ -299,10 +300,10 @@ class Report extends Component {
 
     return (
       <View style={styles.contentWrapper}>
-        <FloatingNavbar handleBack={() => navigation.goBack()} title="Report" transparent={false} />
+        <ToolBar title="Report" />
         {
           !isReported &&
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
               <Text style={styles.label}>You are reporting this {this.renderTypeText()}:</Text>
               <View style={styles.body}>

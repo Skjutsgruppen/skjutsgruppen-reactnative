@@ -3,7 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { withMyExperiences } from '@services/apollo/experience';
 import ExperienceList from '@components/profile/experienceList';
 import PropTypes from 'prop-types';
-import { Wrapper, NavBar } from '@components/common';
+import ToolBar from '@components/utils/toolbar';
+import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 
@@ -36,8 +37,8 @@ class UserExperience extends PureComponent {
     const { userId } = this.props.navigation.state.params || this.props.user.id;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper>
+        <ToolBar />
         <View style={styles.listWrapper}>
           <Experiences
             id={userId}

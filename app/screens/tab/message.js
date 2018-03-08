@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Image, Text, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Colors from '@theme/colors';
+import { Colors, Gradients } from '@theme';
 import { Wrapper } from '@components/common';
 import Ride from '@components/message/ride';
 import Group from '@components/message/group';
@@ -126,22 +126,22 @@ class Message extends Component {
     const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <LinearGradient colors={['#fff', '#ededf9']} style={styles.header}>
-          <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
-          <View style={styles.searchInputWrapper}>
-            <Image
-              source={require('@assets/icons/ic_search.png')}
-              style={styles.searchIcon}
-            />
-            <TextInput
-              placeholder={trans('message.search')}
-              onFocus={() => navigation.navigate('SearchNotification')}
-              underlineColorAndroid="transparent"
-              style={styles.searchInput}
-            />
-          </View>
-        </LinearGradient>
-        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
+          <LinearGradient colors={Gradients.headerWhite} style={styles.header}>
+            <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
+            <View style={styles.searchInputWrapper}>
+              <Image
+                source={require('@assets/icons/ic_search.png')}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                placeholder={trans('message.search')}
+                onFocus={() => navigation.navigate('SearchNotification')}
+                underlineColorAndroid="transparent"
+                style={styles.searchInput}
+              />
+            </View>
+          </LinearGradient>
           <View style={styles.content}>
             <Notification filters="new" />
             <Ride />

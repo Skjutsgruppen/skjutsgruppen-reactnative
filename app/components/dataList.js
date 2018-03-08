@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { PureComponent } from 'react';
+import { View, FlatList, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
 import { Loading } from '@components/common';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -32,27 +33,32 @@ const styles = StyleSheet.create({
   },
 });
 
-const DataList = (
-  {
-    data,
-    shouldRefresh,
-    header,
-    footer,
-    noResultText,
-    onEndReachedThreshold,
-    fetchMoreOptions,
-    innerRef,
-    infinityScroll,
-    ...props
-  },
-) => {
-  const reload = () => (
-    <TouchableOpacity onPress={() => data.refetch()}>
-      <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
-    </TouchableOpacity>
-  );
+const AnimatedFlatlist = Animated.createAnimatedComponent(
+  FlatList,
+);
 
-  const loadMoreBtn = () => {
+class DataList extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.animatedValue = new Animated.Value(0);
+  }
+
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({ animatedValue: this.animatedValue });
+  }
+
+  reload = () => {
+    const { data } = this.props;
+    return (
+      <TouchableOpacity onPress={() => data.refetch()}>
+        <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  loadMoreBtn = () => {
+    const { data, infinityScroll, fetchMoreOptions } = this.props;
     const { rows, count, loading } = data;
 
     if (loading || infinityScroll || rows.length >= count) return null;
@@ -67,7 +73,26 @@ const DataList = (
     );
   };
 
-  const renderHeader = () => {
+  loadMore = () => {
+    const { data, infinityScroll, fetchMoreOptions } = this.props;
+    if (data.loading || data.rows.length >= data.count || !fetchMoreOptions || !infinityScroll) {
+      return;
+    }
+
+    data.fetchMore(fetchMoreOptions);
+  };
+
+  shouldRefetch = () => {
+    const { data, shouldRefresh } = this.props;
+    if (!shouldRefresh) {
+      return () => { };
+    }
+
+    return data.refetch();
+  };
+
+  renderHeader = () => {
+    const { data, infinityScroll, header } = this.props;
     const { networkStatus, rows } = data;
     let headerView = null;
 
@@ -83,20 +108,13 @@ const DataList = (
       <View>
         {parentHeader}
         {headerView}
-        {loadMoreBtn()}
+        {this.loadMoreBtn()}
       </View>
     );
   };
 
-  const shouldRefetch = () => {
-    if (!shouldRefresh) {
-      return () => { };
-    }
-
-    return data.refetch();
-  };
-
-  const renderFooter = () => {
+  renderFooter = () => {
+    const { data, noResultText, infinityScroll, footer } = this.props;
     const { loading, rows, error, count } = data;
     let footerView = null;
 
@@ -104,7 +122,7 @@ const DataList = (
       footerView = (
         <View>
           <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
-          {reload()}
+          {this.reload()}
         </View>
       );
     } else if (count < 1 && !loading) {
@@ -118,7 +136,7 @@ const DataList = (
     } else {
       footerView = (<Loading />);
     }
-    const footerComponent = typeof footer === 'function' ? footer() : footer;
+    const footerComponent = typeof footer === 'function' ? this.footer() : footer;
 
     return (
       <View style={styles.gap}>
@@ -128,30 +146,30 @@ const DataList = (
     );
   };
 
-  const loadMore = () => {
-    if (data.loading || data.rows.length >= data.count || !fetchMoreOptions || !infinityScroll) {
-      return;
-    }
-
-    data.fetchMore(fetchMoreOptions);
-  };
-
-  return (
-    <FlatList
-      ref={innerRef}
-      {...props}
-      data={data.rows}
-      keyExtractor={item => item.id}
-      refreshing={data.networkStatus === 4 || data.networkStatus === 2}
-      onRefresh={() => shouldRefetch()}
-      onEndReachedThreshold={onEndReachedThreshold}
-      ListHeaderComponent={renderHeader}
-      ListFooterComponent={renderFooter}
-      onEndReached={loadMore}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-};
+  render() {
+    const { data, innerRef, onEndReachedThreshold, shouldUpdateAnimatedValue } = this.props;
+    return (
+      <AnimatedFlatlist
+        {...this.props}
+        ref={innerRef}
+        data={data.rows}
+        keyExtractor={item => item.id}
+        refreshing={data.networkStatus === 4 || data.networkStatus === 2}
+        onRefresh={() => this.shouldRefetch()}
+        onEndReachedThreshold={onEndReachedThreshold}
+        ListHeaderComponent={this.renderHeader}
+        ListFooterComponent={this.renderFooter}
+        onEndReached={this.loadMore}
+        showsVerticalScrollIndicator={false}
+        onScroll={
+          shouldUpdateAnimatedValue ?
+            Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])
+            : null
+        }
+      />
+    );
+  }
+}
 
 DataList.propTypes = {
   data: PropTypes.shape({
@@ -174,6 +192,10 @@ DataList.propTypes = {
   shouldRefresh: PropTypes.bool,
   onEndReachedThreshold: PropTypes.number,
   infinityScroll: PropTypes.bool,
+  navigation: PropTypes.shape({
+    setParams: PropTypes.func,
+  }).isRequired,
+  shouldUpdateAnimatedValue: PropTypes.bool,
 };
 
 DataList.defaultProps = {
@@ -185,6 +207,7 @@ DataList.defaultProps = {
   shouldRefresh: true,
   onEndReachedThreshold: 0.8,
   infinityScroll: true,
+  shouldUpdateAnimatedValue: false,
 };
 
-export default DataList;
+export default withNavigation(DataList);

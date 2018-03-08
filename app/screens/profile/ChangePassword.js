@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import ToolBar from '@components/utils/toolbar';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Wrapper, Loading, NavBar } from '@components/common';
+import { Wrapper, Loading } from '@components/common';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
 import CustomButton from '@components/common/customButton';
@@ -177,70 +178,72 @@ class ChangePassword extends Component {
     } = this.state;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <NavBar handleBack={this.goBack} />
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <ToolBar />
         <ScrollView>
-          <Toast message={error} type="error" />
-          <Toast message={success} type="success" />
-          <Text style={styles.label}>Current Password</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={oldPassword}
-              secureTextEntry={hideOldPassword}
-              style={styles.input}
-              onChangeText={text => this.setState({ oldPassword: text })}
-              placeholderTextColor="#ccc"
-              underlineColorAndroid="transparent"
-              onSubmitEditing={() => this.focusNextField('two')}
-              ref={(input) => { inputs.one = input; }}
-              returnKeyType="next"
-            />
-            <TouchableOpacity
-              onPress={this.showCurrentPassword}
-              disabled={oldPassword.length < 1}
-            >
-              <View style={styles.iconWrapper}>
-                {this.secretIcon(hideOldPassword, oldPassword)}
-              </View>
-            </TouchableOpacity>
+          <View style={{ paddingTop: 50 }}>
+            <Toast message={error} type="error" />
+            <Toast message={success} type="success" />
+            <Text style={styles.label}>Current Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                value={oldPassword}
+                secureTextEntry={hideOldPassword}
+                style={styles.input}
+                onChangeText={text => this.setState({ oldPassword: text })}
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="transparent"
+                onSubmitEditing={() => this.focusNextField('two')}
+                ref={(input) => { inputs.one = input; }}
+                returnKeyType="next"
+              />
+              <TouchableOpacity
+                onPress={this.showCurrentPassword}
+                disabled={oldPassword.length < 1}
+              >
+                <View style={styles.iconWrapper}>
+                  {this.secretIcon(hideOldPassword, oldPassword)}
+                </View>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.label}>New Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                value={newPassword}
+                secureTextEntry={hideNewPassword}
+                style={styles.input}
+                onChangeText={text => this.setState({ newPassword: text })}
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="transparent"
+                onSubmitEditing={() => this.focusNextField('three')}
+                ref={(input) => { inputs.two = input; }}
+                returnKeyType="next"
+              />
+              <TouchableOpacity
+                onPress={this.showNewPassword}
+                disabled={newPassword.length < 1}
+              >
+                <View style={styles.iconWrapper}>
+                  {this.secretIcon(hideNewPassword, newPassword)}
+                </View>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.label}>Confirm Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                value={confirmPassword}
+                secureTextEntry
+                style={styles.input}
+                onChangeText={text => this.setState({ confirmPassword: text })}
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="transparent"
+                onSubmitEditing={this.onSubmit}
+                ref={(input) => { inputs.three = input; }}
+                returnKeyType="send"
+              />
+            </View>
+            {this.renderUpdateButton()}
           </View>
-          <Text style={styles.label}>New Password</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={newPassword}
-              secureTextEntry={hideNewPassword}
-              style={styles.input}
-              onChangeText={text => this.setState({ newPassword: text })}
-              placeholderTextColor="#ccc"
-              underlineColorAndroid="transparent"
-              onSubmitEditing={() => this.focusNextField('three')}
-              ref={(input) => { inputs.two = input; }}
-              returnKeyType="next"
-            />
-            <TouchableOpacity
-              onPress={this.showNewPassword}
-              disabled={newPassword.length < 1}
-            >
-              <View style={styles.iconWrapper}>
-                {this.secretIcon(hideNewPassword, newPassword)}
-              </View>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.label}>Confirm Password</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              value={confirmPassword}
-              secureTextEntry
-              style={styles.input}
-              onChangeText={text => this.setState({ confirmPassword: text })}
-              placeholderTextColor="#ccc"
-              underlineColorAndroid="transparent"
-              onSubmitEditing={this.onSubmit}
-              ref={(input) => { inputs.three = input; }}
-              returnKeyType="send"
-            />
-          </View>
-          {this.renderUpdateButton()}
         </ScrollView>
       </Wrapper>
     );
