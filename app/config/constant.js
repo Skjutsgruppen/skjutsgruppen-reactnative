@@ -1,4 +1,5 @@
 export const PER_FETCH_LIMIT = 10;
+export const TRIPS_FETCH_LIMIT = 20;
 export const NOTIFICATION_FETCH_LIMIT = 20;
 export const CONVERSATION_FETCH_LIMIT = 20;
 
