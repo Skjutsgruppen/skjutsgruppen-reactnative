@@ -1,16 +1,15 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { Loading, Retry } from '@components/common';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MesssageItem from '@components/message/item';
+import DataList from '@components/dataList';
 import { connect } from 'react-redux';
-import { PER_FETCH_LIMIT } from '@config/constant';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
-import LoadeMore from '@components/message/loadMore';
+import LoadMore from '@components/message/loadMore';
 
 const styles = StyleSheet.create({
   section: {
@@ -51,54 +50,48 @@ class NewNotification extends PureComponent {
     }
   }
 
-  loadMore = () => {
+  loadMore = (onPress) => {
     const { notifications } = this.props;
     if (notifications.loading) return null;
 
-    const remaining = notifications.count - PER_FETCH_LIMIT;
+    const remaining = notifications.count - notifications.rows.length;
     if (remaining < 1) return null;
 
-    return <LoadeMore onPress={this.moreNotification} remainingCount={remaining} />;
-  }
-
-  moreNotification = () => {
-    const { navigation, filters } = this.props;
-    navigation.navigate('SingleNotification', { filters });
+    return <LoadMore onPress={onPress} remainingCount={remaining} />;
   }
 
   renderNotification = () => {
     const { notifications, filters } = this.props;
 
-    let render = (<Text style={styles.emptyMessage}>{trans('message.no_message')}</Text>);
-    let limitedNotifications = notifications.rows;
+    return (
+      <DataList
+        data={notifications}
+        renderItem={({ item }) => (
+          <MesssageItem
+            key={item.id}
+            filters={filters}
+            notification={item}
+          />
+        )}
+        infinityScroll={false}
+        loadMoreButton={this.loadMore}
+        loadMorePosition="bottom"
+        fetchMoreOptions={{
+          variables: { offset: notifications.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.notifications.rows.length === 0) {
+              return previousResult;
+            }
 
-    if (limitedNotifications.length > PER_FETCH_LIMIT) {
-      limitedNotifications = limitedNotifications.slice(0, PER_FETCH_LIMIT);
-    }
+            const rows = previousResult.notifications.rows.concat(
+              fetchMoreResult.notifications.rows,
+            );
 
-    if (notifications.count > 0) {
-      render = limitedNotifications.map(message => (
-        <MesssageItem
-          key={message.id}
-          filters={filters}
-          notification={message}
-        />
-      ));
-    }
-
-    if (notifications.error) {
-      render = <Retry onPress={() => notifications.refetch()} />;
-    }
-
-    if (notifications.loading && notifications.row < 1) {
-      render = (
-        <View style={styles.spacedWrapper}>
-          <Loading />
-        </View>
-      );
-    }
-
-    return render;
+            return { notifications: { ...previousResult.notifications, ...{ rows } } };
+          },
+        }}
+      />
+    );
   }
 
   render() {
@@ -112,7 +105,6 @@ class NewNotification extends PureComponent {
           {filters.toUpperCase()} {filters !== 'new' && trans('message.messages')}
         </Text>
         {this.renderNotification()}
-        {this.loadMore()}
       </View>
     );
   }
@@ -125,9 +117,6 @@ NewNotification.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.numeric,
     error: PropTypes.object,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
   }).isRequired,
   subscribeToNotification: PropTypes.func.isRequired,
   user: PropTypes.shape({

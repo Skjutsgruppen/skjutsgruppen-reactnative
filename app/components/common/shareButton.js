@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   darkIcon: {
     position: 'absolute',
-    top: 15,
+    top: 19,
     left: 1,
   },
 });

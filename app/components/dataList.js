@@ -13,18 +13,19 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
     textAlign: 'center',
   },
-  gap: {
-    paddingVertical: 50,
-  },
-  loadMoreBtn: {
+  loadMoreBtnWrapper: {
     width: 100,
-    height: 26,
-    borderRadius: 13,
-    paddingHorizontal: 8,
-    marginVertical: 24,
+    height: 60,
     alignSelf: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
+  },
+  loadMoreBtn: {
+    height: 32,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#eee',
   },
   loadMoreText: {
     color: Colors.text.darkGray,
@@ -58,18 +59,25 @@ class DataList extends PureComponent {
   };
 
   loadMoreBtn = () => {
-    const { data, infinityScroll, fetchMoreOptions } = this.props;
+    const { data, infinityScroll, fetchMoreOptions, loadMoreButton } = this.props;
     const { rows, count, loading } = data;
 
     if (loading || infinityScroll || rows.length >= count) return null;
 
+    if (loadMoreButton) {
+      return loadMoreButton(() => data.fetchMore(fetchMoreOptions));
+    }
+
     return (
-      <TouchableOpacity
-        onPress={() => data.fetchMore(fetchMoreOptions)}
-        style={styles.loadMoreBtn}
-      >
-        <Text style={styles.loadMoreText}>Load More...</Text>
-      </TouchableOpacity>
+      <View style={styles.loadMoreBtnWrapper}>
+        <TouchableOpacity
+          onPress={() => data.fetchMore(fetchMoreOptions)}
+          style={styles.loadMoreBtn}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.loadMoreText}>Load more...</Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -92,14 +100,12 @@ class DataList extends PureComponent {
   };
 
   renderHeader = () => {
-    const { data, infinityScroll, header } = this.props;
+    const { data, infinityScroll, header, loadMorePosition } = this.props;
     const { networkStatus, rows } = data;
     let headerView = null;
 
-    const gap = infinityScroll ? 70 : 18;
-
-    if ((networkStatus === 1 && rows.length < 1) || (!infinityScroll && networkStatus === 3)) {
-      headerView = (<View style={{ paddingVertical: gap }}><Loading /></View>);
+    if ((networkStatus === 1 && rows.length < 1) || (!infinityScroll && loadMorePosition === 'top' && networkStatus === 3)) {
+      headerView = (<Loading style={{ height: 60 }} />);
     }
 
     const parentHeader = typeof header === 'function' ? header() : header;
@@ -108,14 +114,14 @@ class DataList extends PureComponent {
       <View>
         {parentHeader}
         {headerView}
-        {this.loadMoreBtn()}
+        {loadMorePosition === 'top' && this.loadMoreBtn()}
       </View>
     );
   };
 
   renderFooter = () => {
-    const { data, noResultText, infinityScroll, footer } = this.props;
-    const { loading, rows, error, count } = data;
+    const { data, noResultText, infinityScroll, footer, loadMorePosition } = this.props;
+    const { networkStatus, loading, rows, error, count } = data;
     let footerView = null;
 
     if (error && !loading) {
@@ -131,17 +137,18 @@ class DataList extends PureComponent {
           <Text style={styles.errorText}>{noResultText}</Text>
         </View>
       );
-    } else if (rows.length >= count || !infinityScroll) {
+    } else if (rows.length >= count || (!infinityScroll && loadMorePosition === 'top')) {
       footerView = null;
-    } else {
-      footerView = (<Loading />);
+    } else if (loading || (networkStatus === 1 && rows.length < 1)) {
+      footerView = (<Loading style={{ height: 80 }} />);
     }
     const footerComponent = typeof footer === 'function' ? this.footer() : footer;
 
     return (
-      <View style={styles.gap}>
+      <View style={infinityScroll && { paddingVertical: 50 }}>
         {footerView}
         {footerComponent}
+        {loadMorePosition === 'bottom' && this.loadMoreBtn()}
       </View>
     );
   };
@@ -196,6 +203,8 @@ DataList.propTypes = {
     setParams: PropTypes.func,
   }).isRequired,
   shouldUpdateAnimatedValue: PropTypes.bool,
+  loadMorePosition: PropTypes.string,
+  loadMoreButton: PropTypes.func,
 };
 
 DataList.defaultProps = {
@@ -208,6 +217,8 @@ DataList.defaultProps = {
   onEndReachedThreshold: 0.8,
   infinityScroll: true,
   shouldUpdateAnimatedValue: false,
+  loadMoreButton: null,
+  loadMorePosition: 'top',
 };
 
 export default withNavigation(DataList);
