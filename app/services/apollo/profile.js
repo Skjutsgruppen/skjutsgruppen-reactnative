@@ -260,3 +260,15 @@ export const withConversation = graphql(CONVERSATION_QUERY, {
     };
   },
 });
+
+const STORE_APP_TOKEN_QUERY = gql`
+  mutation storeAppToken($token: String){
+    storeAppToken(token: $token)
+  }
+`;
+
+export const withStoreAppToken = graphql(STORE_APP_TOKEN_QUERY, {
+  props: ({ mutate }) => ({
+    storeAppToken: token => mutate({ variables: { token } }),
+  }),
+});
