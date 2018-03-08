@@ -20,6 +20,7 @@ const Container = ({ children, style }) => (
     <ScrollView
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[styles.container, style]}
+      showsVerticalScrollIndicator={false}
     >
       {children}
     </ScrollView>

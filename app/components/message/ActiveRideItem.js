@@ -94,7 +94,7 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
       <View style={styles.list}>
         <View style={styles.flexRow}>
           <View style={styles.profilePicWrapper}>
-            {trip.photo ? renderPic(trip.photo) : renderPic(trip.mapPhoto)}
+            {renderPic(trip.User.avatar)}
           </View>
           <View>
             <Text>{tripName}</Text>

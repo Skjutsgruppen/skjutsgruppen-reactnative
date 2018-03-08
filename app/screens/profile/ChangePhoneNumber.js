@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { ScrollView, Text, View, StyleSheet, Clipboard } from 'react-native';
 import PropTypes from 'prop-types';
+import ToolBar from '@components/utils/toolbar';
 import CustomButton from '@components/common/customButton';
-import { Wrapper, FloatingNavbar, Loading } from '@components/common';
+import { Wrapper, Loading } from '@components/common';
 import { withChangePhoneNumber, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import Phone from '@components/phone';
 import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
@@ -182,12 +183,12 @@ class ChangePhoneNumber extends Component {
     const { countryCode, error, phoneVerificationCode, verifyPreviousNumber } = this.state;
 
     return (
-      <Wrapper bgColor={Colors.background.cream}>
-        <FloatingNavbar handleBack={this.goBack} />
-        <ScrollView style={{ paddingTop: 60 }}>
+      <Wrapper bgColor={Colors.background.mutedBlue}>
+        <ToolBar />
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Toast message={error} type="error" />
           {(!phoneVerificationCode && !verifyPreviousNumber) &&
-            <View>
+            <View style={{ marginTop: 50 }}>
               <Text style={styles.label}>New phone number</Text>
               <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
                 <Phone

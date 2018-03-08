@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import ToolBar from '@components/utils/toolbar';
 import GroupsList from '@components/profile/groupsList';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
-import { Wrapper, FloatingNavbar } from '@components/common';
+import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 
@@ -13,21 +14,12 @@ class UserGroups extends Component {
     header: null,
   };
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  }
-
   render() {
     const { userId, username } = this.props.navigation.state.params || this.props.user.id;
 
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
-        <FloatingNavbar
-          handleBack={this.goBack}
-          transparent={false}
-          title={`${username}'s Group`}
-        />
+      <Wrapper bgColor={Colors.background.creme}>
+        <ToolBar title={`${username}'s Group`} />
         <Groups id={userId} />
       </Wrapper>
     );
