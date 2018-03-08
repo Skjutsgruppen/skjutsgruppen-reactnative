@@ -14,6 +14,7 @@ import {
   FEEDABLE_EXPERIENCE,
   FEEDABLE_SUGGESTION,
   GROUP_FEED_TYPE_OFFER_RIDE,
+  GROUP_FEED_TYPE_ENABLER_ADDED,
 } from '@config/constant';
 import FOF from '@components/relation/friendsOfFriend';
 import Colors from '@theme/colors';
@@ -200,6 +201,17 @@ class Feed extends Component {
       );
     }
 
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_ENABLER_ADDED) {
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} is now enabler
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+        </View>
+      );
+    }
+
     return null;
   }
 
@@ -240,8 +252,8 @@ class Feed extends Component {
       <View style={styles.Wrapper}>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.name} onPress={() => onPress('Profile', feed.Group.User.id)}>
-              {`${feed.Group.User.firstName} `}
+            <Text style={styles.name} onPress={() => onPress('Profile', feed.Enabler.id)}>
+              {`${feed.Enabler.firstName} `}
             </Text>
             <Text style={styles.commentText}>
               Added <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group

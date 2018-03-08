@@ -390,7 +390,7 @@ export const withRejectGroupInvitation = graphql(REJECT_GROUP_INVITATION_QUERY, 
 });
 
 const ACCEPT_GROUP_REQUEST_QUERY = gql`
-mutation acceptGroupRequest($id:Int!) {
+mutation acceptGroupRequest($id:[Int]!) {
   acceptGroupRequest(id:$id)
 }
 `;

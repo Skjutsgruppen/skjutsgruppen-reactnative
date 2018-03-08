@@ -90,3 +90,5 @@ export const REPORT_COMMENT_TYPE = 'Comment';
 export const FLEXIBILITY_EARLIER_TYPE = 'earlier';
 
 export const REPORT_TYPE_USER = 'User';
+
+export const GROUP_FEED_TYPE_ENABLER_ADDED = 'enabler_added';

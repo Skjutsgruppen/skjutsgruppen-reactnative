@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 20,
+    marginHorizontal: 20,
+    marginVertical: 32,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 18,
     overflow: 'hidden',
@@ -30,8 +31,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListSearchBar = ({ onSearchPress }) => (
-  <TouchableOpacity style={styles.searchInputWrapper} onPress={() => onSearchPress()}>
+const ListSearchBar = ({ style, onSearchPress }) => (
+  <TouchableOpacity style={[styles.searchInputWrapper, style]} onPress={() => onSearchPress()}>
     <Image
       source={require('@assets/icons/ic_search.png')}
       style={styles.searchIcon}
@@ -41,7 +42,12 @@ const ListSearchBar = ({ onSearchPress }) => (
 );
 
 ListSearchBar.propTypes = {
+  style: ViewPropTypes.style,
   onSearchPress: PropTypes.func.isRequired,
+};
+
+ListSearchBar.defaultProps = {
+  style: {},
 };
 
 export default ListSearchBar;

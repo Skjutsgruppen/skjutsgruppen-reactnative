@@ -42,6 +42,11 @@ subscription{
         membershipStatus 
         totalParticipants
         isAdmin
+        Enablers {
+          id
+          firstName
+          avatar
+        }
       }
     }
     ... on TripFeed {
@@ -160,6 +165,11 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         membershipStatus 
         totalParticipants
         isAdmin
+        Enablers {
+          id
+          firstName
+          avatar
+        }
       }
     }
     ... on TripFeed { 
