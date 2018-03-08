@@ -66,6 +66,7 @@ class Date extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dateSelected: false,
       markedDates: {},
       days: [],
       time: '00:00',
@@ -111,11 +112,11 @@ class Date extends Component {
     const newDates = { ...markedDates };
     if (markedDates[selectedDate]) {
       delete newDates[selectedDate];
-      this.setState({ markedDates: newDates });
     } else {
       newDates[selectedDate] = { startingDay: true, textColor: 'white', color: isOffer ? Colors.text.pink : Colors.text.blue, endingDay: true };
-      this.setState({ markedDates: newDates });
     }
+
+    this.setState({ markedDates: newDates, dateSelected: true });
   };
 
   setDuration = (duration) => {
@@ -194,10 +195,10 @@ class Date extends Component {
   }
 
   render() {
-    const { time, isFlexible, flexibilityInfo, markedDates } = this.state;
+    const { time, isFlexible, flexibilityInfo, markedDates, dateSelected } = this.state;
     const { isOffer } = this.props;
     const dates = Object.keys(markedDates);
-    const activeMonth = dates.length > 0 ? dates[0] : '';
+    const activeMonth = dates.length > 0 && !dateSelected ? dates[0] : '';
 
     return (
       <View style={styles.wrapper}>

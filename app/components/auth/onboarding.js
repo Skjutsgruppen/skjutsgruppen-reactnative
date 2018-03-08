@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 150,
   },
+  logo: {
+    height: 200,
+    width: 200,
+    resizeMode: 'contain',
+  },
   actions: {
     width: '100%',
     position: 'absolute',
@@ -65,7 +70,7 @@ const OnBoarding = ({ loading, handleRegister, handleLogin }) => (
       alwaysBounceHorizontal={false}
     >
       <View style={styles.screen}>
-        <Image source={require('@assets/logo.png')} />
+        <Image source={require('@assets/icons/logo.png')} style={styles.logo} />
       </View>
     </ScrollView>
     {
