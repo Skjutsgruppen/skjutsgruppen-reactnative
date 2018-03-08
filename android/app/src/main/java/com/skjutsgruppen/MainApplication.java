@@ -23,6 +23,7 @@ import com.magus.fblogin.FacebookLoginPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import java.util.Arrays;
 import java.util.List;
+import com.evollu.react.fcm.FIRMessagingPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -49,7 +50,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ImagePickerPackage(),
             new ReactNativeConfigPackage(),
             new FacebookLoginPackage(),
-            new RNI18nPackage()
+            new RNI18nPackage(),
+            new FIRMessagingPackage()
       );
     }
 

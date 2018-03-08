@@ -7,6 +7,7 @@ import Apollo from '@services/apollo';
 import Internet from '@components/connection/internet';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import AppLoading from '@components/appLoading';
+import PushNotification from '@services/firebase/pushNotification';
 
 const initialState = {};
 const { persistor, store } = configureStore(initialState);
@@ -18,6 +19,7 @@ const App = () => (
       persistor={persistor}
     >
       <View style={{ flex: 1 }}>
+        <PushNotification />
         <Internet />
         <Router />
       </View>
