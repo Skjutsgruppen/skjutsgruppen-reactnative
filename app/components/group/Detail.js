@@ -277,6 +277,12 @@ class Detail extends PureComponent {
     }).then(refresh);
   }
 
+  onGroupInformation = () => {
+    const { group, navigation } = this.props;
+    this.setState({ showAction: false });
+    navigation.navigate('GroupInformation', { group });
+  }
+
   setCalendarVisibilty = (show) => {
     this.setState({ showCalendar: show });
   }
@@ -400,9 +406,13 @@ class Detail extends PureComponent {
     );
   }
 
-  renderMuteOptions = () => {
+  renderOptions = () => {
     const { group, user } = this.props;
     let actions = [];
+
+    actions = actions.concat([
+      <ModalAction label="Group Information" onPress={() => this.onGroupInformation()} key="group_information" />,
+    ]);
 
     if (group.muted) {
       actions = actions.concat([<ModalAction label={trans('trip.unmute')} onPress={this.onUnmute} key="unmute" />]);
@@ -429,7 +439,7 @@ class Detail extends PureComponent {
       visible={this.state.showAction}
       onRequestClose={() => this.setState({ showAction: false })}
     >
-      {this.renderMuteOptions()}
+      {this.renderOptions()}
     </ActionModal>
   );
 

@@ -136,7 +136,7 @@ class Item extends PureComponent {
   acceptGroupRequest = (id) => {
     const { acceptGroupRequest, notification } = this.props;
     this.setState({ loading: true });
-    acceptGroupRequest(id)
+    acceptGroupRequest([id])
       .then(notification.refetch)
       .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
       .catch(() => this.setState({ loading: false }));

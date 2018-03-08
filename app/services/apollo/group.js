@@ -70,6 +70,11 @@ mutation group
       url
       muted
       unreadNotificationCount
+      Enablers {
+        id
+        firstName
+        avatar
+      }
     }
 }
 `;
@@ -165,6 +170,11 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       membershipStatus
       totalParticipants
       isAdmin
+      Enablers {
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -229,6 +239,11 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
       membershipStatus
       totalParticipants
       isAdmin
+      Enablers {
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -288,6 +303,13 @@ subscription myGroup($userId: Int!){
       membershipStatus
       totalParticipants
       isAdmin
+      muted
+      unreadNotificationCount
+      Enablers {
+        id
+        firstName
+        avatar
+      }
     }
     remove
   }
@@ -331,6 +353,11 @@ query group($id: Int!){
       isAdmin
       muted
       unreadNotificationCount
+      Enablers {
+        id
+        firstName
+        avatar
+      }
   }
 }
 `;
@@ -356,14 +383,19 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
         firstName 
         avatar 
         relation {
-          path{
+          path {
             id
             firstName
             avatar
           }
           areFriends
         }
-      } 
+      }
+      Enabler {
+        id 
+        firstName 
+        avatar
+      }
       feedable
       ActivityType {
         type
@@ -401,6 +433,11 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           membershipStatus
           totalParticipants
           isAdmin
+          Enablers {
+            id
+            firstName
+            avatar
+          }
         }
       }
       ... on TripFeed {
@@ -500,7 +537,12 @@ subscription groupFeed($groupId: Int!){
           }
           areFriends
         }
-      } 
+      }
+      Enabler {
+        id
+        firstName
+        avatar
+      }
       feedable
       ActivityType {
         type
@@ -538,6 +580,11 @@ subscription groupFeed($groupId: Int!){
           membershipStatus
           totalParticipants
           isAdmin
+          Enablers {
+            id 
+            firstName
+            avatar
+          }
         }
       }
       ... on TripFeed {
@@ -657,12 +704,18 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
 });
 
 const GROUP_MEMBERS_SUBSCRIPTION_QUERY = gql`
-subscription updatedGroupMember($groupId: Int){
-  updatedGroupMember(groupId: $groupId){
-    User {
+subscription updatedGroupMember($groupId: Int, $enabler: Boolean){
+  updatedGroupMember(groupId: $groupId, enabler: $enabler){
+    GroupMember {
       id
-      firstName
-      avatar
+      User {
+        id
+        firstName
+        lastName
+        avatar
+      }      
+      admin
+      enabler
     }
     remove
   }
@@ -670,12 +723,18 @@ subscription updatedGroupMember($groupId: Int){
 `;
 
 const GROUP_MEMBRES_QUERY = gql`
-query groupMembers($id: Int, $limit: Int, $offset: Int){
-  groupMembers(id: $id, limit: $limit, offset: $offset){
+query groupMembers($id: Int, $limit: Int, $offset: Int, $enabler: Boolean, $excludeEnabler: Boolean, $queryString: String, $applyQueryString: Boolean){
+  groupMembers(id: $id, limit: $limit, offset: $offset, enabler: $enabler, excludeEnabler: $excludeEnabler, queryString: $queryString, applyQueryString: $applyQueryString){
     rows{
       id
-      firstName
-      avatar
+      User{
+        id
+        firstName
+        lastName
+        avatar
+      }
+      admin
+      enabler
     }
     count
   }
@@ -683,10 +742,20 @@ query groupMembers($id: Int, $limit: Int, $offset: Int){
 `;
 
 export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
-  options: ({ id, offset, limit = 10 }) => ({
+  options: (
+    {
+      id,
+      offset,
+      limit = 10,
+      enabler = false,
+      excludeEnabler = false,
+      queryString = null,
+      applyQueryString = false,
+    },
+  ) => ({
     notifyOnNetworkStatusChange: true,
-    variables: { id, limit, offset },
-    fetchPolicy: 'cache-and-network',
+    variables: { id, limit, offset, enabler, excludeEnabler, queryString, applyQueryString },
+    fetchPolicy: 'network-only',
   }),
   props: ({
     data: { loading, groupMembers, fetchMore, refetch, networkStatus, error, subscribeToMore } },
@@ -703,24 +772,35 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
       groupMembers: { loading, rows, count, fetchMore, refetch, networkStatus, error },
       subscribeToUpdatedGroupMember: param => subscribeToMore({
         document: GROUP_MEMBERS_SUBSCRIPTION_QUERY,
-        variables: { groupId: param.id },
+        variables: { groupId: param.id, enabler: param.enabler || false },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
             return prev;
           }
 
-          const { updatedGroupMember } = subscriptionData.data;
-          const { User, remove } = updatedGroupMember;
+          rows = [];
+          count = 0;
+          let repeated = false;
 
-          if (!remove) {
-            rows = [User].concat(prev.groupMembers.rows);
-            count += 1;
+          const { updatedGroupMember } = subscriptionData.data;
+          const { GroupMember, remove } = updatedGroupMember;
+          let prevRequest = prev.groupMembers;
+
+          if (remove) {
+            rows = prev.groupMembers.rows.filter(row => row.id !== GroupMember.id);
+            prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count - 1 } };
           } else {
-            rows = prev.groupMembers.rows.filter(row => row.id !== User.id);
-            count -= 1;
+            const found = prev.groupMembers.rows
+              .filter(row => row.id === GroupMember.id);
+            repeated = found.length > 0;
+
+            if (!repeated) {
+              rows = prev.groupMembers.rows.concat([GroupMember]);
+              prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count + 1 } };
+            }
           }
 
-          return { groupMembers: { ...prev.groupMembers, ...{ rows, count } } };
+          return { groupMembers: prevRequest };
         },
       }),
     };
@@ -764,6 +844,11 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
       isAdmin
       muted
       unreadNotificationCount
+      Enablers {
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -820,11 +905,11 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 
           rows = prev.groups.rows.filter((row) => {
             if (row.id === newGroup.id) {
-              return false;
+              return null;
             }
             count += 1;
 
-            return true;
+            return row;
           });
 
           if (remove) {
@@ -900,3 +985,170 @@ export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
     }),
   },
 );
+
+const GROUP_MEMBERSHIP_REQUEST_SUBSCRIPTION = gql`
+  subscription updatedGroupMembershipRequest($groupId: Int!){
+    updatedGroupMembershipRequest(groupId: $groupId){
+      GroupMembershipRequest {
+        id
+        User: Member {
+          id
+          firstName
+          lastName
+          avatar
+        }
+      }
+      remove
+    }
+  }
+`;
+
+const GROUP_MEMBERSHIP_REQUEST_QUERY = gql`
+query membershipRequest($id: Int!){
+  membershipRequest(id: $id){
+    count
+    rows {
+      id
+      User: Member {
+        id
+        firstName
+        lastName
+        avatar
+      }
+    }    
+  }
+}
+`;
+
+export const withGroupMembershipRequest = graphql(GROUP_MEMBERSHIP_REQUEST_QUERY,
+  {
+    options: ({ id }) => ({
+      fetchPolicy: 'cache-and-network',
+      variables: { id },
+    }),
+    props: ({
+      data: { loading, membershipRequest, refetch, networkStatus, error, subscribeToMore },
+    }) => {
+      let rows = [];
+      let count = 0;
+
+      if (membershipRequest) {
+        rows = membershipRequest.rows;
+        count = membershipRequest.count;
+      }
+
+      return {
+        membershipRequest: { loading, rows, count, error, refetch, networkStatus },
+        subscribeToNewRequest: param => subscribeToMore({
+          document: GROUP_MEMBERSHIP_REQUEST_SUBSCRIPTION,
+          variables: { groupId: param.id },
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) {
+              return prev;
+            }
+
+            rows = [];
+            count = 0;
+            let repeated = false;
+
+            const requests = subscriptionData.data.updatedGroupMembershipRequest;
+            const { GroupMembershipRequest, remove } = requests;
+            let prevRequest = prev.membershipRequest;
+            const found = prev.membershipRequest.rows
+              .filter(row => row.id === GroupMembershipRequest.id);
+            repeated = found.length > 0;
+
+            if (remove && repeated) {
+              rows = prev.membershipRequest.rows
+                .filter(row => row.id !== GroupMembershipRequest.id);
+              prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count - 1 } };
+            }
+
+            if (!repeated && !remove) {
+              rows = prev.membershipRequest.rows.concat([GroupMembershipRequest]);
+              prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count + 1 } };
+            }
+
+            return { membershipRequest: prevRequest };
+          },
+        }),
+      };
+    },
+  },
+);
+
+const ADD_GROUP_ENABLER_QUERY = gql`
+  mutation addGroupEnablers($groupId:Int!, $ids: [Int], $self: Boolean){
+    addGroupEnablers(groupId: $groupId, ids: $ids, self: $self)
+  }
+`;
+
+export const withAddGroupEnabler = graphql(ADD_GROUP_ENABLER_QUERY, {
+  props: ({ mutate }) => (
+    {
+      addGroupEnablers: (
+        {
+          groupId,
+          ids,
+          self = false,
+        },
+      ) => mutate({
+        variables: { groupId, ids, self },
+      }),
+    }),
+});
+
+const REMOVE_GROUP_ENABLER_QUERY = gql`
+  mutation removeGroupEnabler($groupId:Int!, $ids: [Int]){
+    removeGroupEnabler(groupId: $groupId, ids: $ids)
+  }
+`;
+
+export const withRemoveGroupEnabler = graphql(REMOVE_GROUP_ENABLER_QUERY, {
+  props: ({ mutate }) => (
+    {
+      removeGroupEnabler: ({ groupId, ids }) => mutate({
+        variables: { groupId, ids },
+      }),
+    }),
+});
+
+const REMOVE_GROUP_PARTICIPANT_QUERY = gql`
+  mutation removeGroupParticipant($groupId: Int!, $ids: [Int]){
+    removeGroupParticipant(groupId: $groupId, ids: $ids)
+  }
+`;
+
+export const withRemoveGroupParticipant = graphql(REMOVE_GROUP_PARTICIPANT_QUERY, {
+  props: ({ mutate }) => (
+    {
+      removeGroupParticipant: ({ groupId, ids }) => mutate({ variables: { groupId, ids } }),
+    }),
+});
+
+const ADD_GROUP_PARTICIPANT_QUERY = gql`
+  mutation addGroupParticipant($groupId: Int!, $ids: [Int]){
+    addGroupParticipant(groupId: $groupId, ids: $ids)
+  }
+`;
+
+export const withAddGroupParticipant = graphql(ADD_GROUP_PARTICIPANT_QUERY, {
+  props: ({ mutate }) => (
+    {
+      addGroupParticipant: ({ groupId, ids }) => mutate({ variables: { groupId, ids } }),
+    }),
+});
+
+const UNREGISTERED_GROUP_MEMBERS_QUERY = gql`
+  mutation storeUnregisteredGroupMembers($phoneNumbers: [String!], $groupId: Int!){
+    storeUnregisteredGroupMembers(phoneNumbers: $phoneNumbers, groupId: $groupId)
+  }
+`;
+
+export const withAddUnregisteredParticipants = graphql(UNREGISTERED_GROUP_MEMBERS_QUERY, {
+  props: ({ mutate }) => (
+    {
+      storeUnregisteredParticipants: ({ groupId, phoneNumbers }) =>
+        mutate({ variables: { groupId, phoneNumbers } }),
+    }),
+});

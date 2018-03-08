@@ -77,6 +77,17 @@ class Participants extends Component {
     this.setState({ showFoFModal: show });
   }
 
+  displayNumber = () => {
+    const { groupMembers } = this.props;
+
+    return (
+      <View style={{ backgroundColor: '#fff', justifyContent: 'center' }}>
+        <Text style={{ color: Colors.text.blue, fontSize: 12 }}>
+          {groupMembers.count} PARTICIPANTS
+        </Text>
+      </View>);
+  }
+
   renderModal() {
     const { id } = this.props;
 
@@ -87,12 +98,13 @@ class Participants extends Component {
         onPress={this.onPress}
         setModalVisibility={this.setModalVisibility}
         showFoFModal={this.state.showFoFModal}
+        enabler={false}
       />
     );
   }
 
   render() {
-    const { groupMembers: { count, rows, loading } } = this.props;
+    const { groupMembers: { count, rows, loading }, displayCount } = this.props;
     if (loading) {
       return (<Loading />);
     }
@@ -106,6 +118,9 @@ class Participants extends Component {
     if (count <= maxImage) {
       return (
         <View>
+          {
+            displayCount && this.displayNumber()
+          }
           <TouchableOpacity
             onPress={() => this.setModalVisibility(true)}
           >
@@ -117,13 +132,13 @@ class Participants extends Component {
 
                     return (
                       <Image
-                        source={{ uri: member.avatar }}
+                        source={{ uri: member.User.avatar }}
                         style={[
                           styles.profilePic,
                           index > 0 && { left: (index * imageSize) - (margin * index) },
                           { zIndex },
                         ]}
-                        key={member.id}
+                        key={member.User.id}
                       />
                     );
                   })
@@ -138,6 +153,9 @@ class Participants extends Component {
 
     return (
       <View>
+        {
+          displayCount && this.displayNumber()
+        }
         <TouchableOpacity
           onPress={() => this.setModalVisibility(true)}
         >
@@ -149,7 +167,7 @@ class Participants extends Component {
                   if (index < membersToRender.length - 1) {
                     return (
                       <Image
-                        source={{ uri: member.avatar }}
+                        source={{ uri: member.User.avatar }}
                         style={[
                           styles.profilePic,
                           index > 0 && { left: (index * imageSize) - (margin * index) },
@@ -167,7 +185,7 @@ class Participants extends Component {
                         index > 0 && { left: (index * imageSize) - (margin * index) },
                         { zIndex },
                       ]}
-                      key={member.id}
+                      key={member.User.id}
                     >
                       <Text style={styles.count}>
                         +{
@@ -203,6 +221,11 @@ Participants.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   subscribeToUpdatedGroupMember: PropTypes.func.isRequired,
+  displayCount: PropTypes.bool,
+};
+
+Participants.defaultProps = {
+  displayCount: false,
 };
 
 export default withNavigation(Participants);

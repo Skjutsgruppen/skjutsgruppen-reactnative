@@ -91,8 +91,8 @@ const FRIEND_SUBSCRIPTION_QUERY = gql`
 `;
 
 export const FRIEND_QUERY = gql`
-query friends($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){ 
-    friends(id:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) { 
+query friends($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean, $groupId: Int){ 
+    friends(id:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString, groupId: $groupId) { 
       rows {
         id 
         firstName
@@ -112,9 +112,10 @@ export const withFriends = graphql(FRIEND_QUERY, {
     limit = PER_FETCH_LIMIT,
     queryString = null,
     applyQueryString = false,
+    groupId = null,
   }) =>
     ({
-      variables: { id, offset, limit, queryString, applyQueryString },
+      variables: { id, offset, limit, queryString, applyQueryString, groupId },
       fetchPolicy: 'cache-and-network',
     }),
   props: ({
@@ -182,9 +183,9 @@ export const withBestFriends = graphql(BEST_FRIEND_QUERY, {
     offset = 0,
     limit = PER_FETCH_LIMIT,
   }) => ({
-    variables: { id, offset, limit },
-    fetchPolicy: 'cache-and-network',
-  }),
+      variables: { id, offset, limit },
+      fetchPolicy: 'cache-and-network',
+    }),
   props: ({ data: { loading, bestFriends, error, refetch, networkStatus, fetchMore } }) => {
     let rows = [];
     let count = 0;
