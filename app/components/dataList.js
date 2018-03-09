@@ -161,6 +161,7 @@ class DataList extends PureComponent {
         ListFooterComponent={this.renderFooter}
         onEndReached={this.loadMore}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={1}
         onScroll={
           shouldUpdateAnimatedValue ?
             Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])

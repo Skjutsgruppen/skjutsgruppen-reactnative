@@ -317,6 +317,7 @@ class Feed extends Component {
             return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
           },
         }}
+        shouldUpdateAnimatedValue
       />
     );
   }
@@ -330,7 +331,7 @@ class Feed extends Component {
   render() {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <Circle />
+        <Circle animatable />
         {this.renderFeed()}
         {this.renderShareModal()}
         <Filter

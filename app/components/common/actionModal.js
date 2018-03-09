@@ -1,21 +1,14 @@
 import React, { PureComponent, Children } from 'react';
-import { StyleSheet, ScrollView, View, Text, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, ScrollView, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import * as Animatable from 'react-native-animatable';
-import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
-import TouchableHighlight from '@components/touchableHighlight';
+import BaseModal from '@components/common/baseModal';
 
 const styles = StyleSheet.create({
   horizontalDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
-  },
-  modalContent: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.65)',
-    justifyContent: 'flex-end',
-    padding: 12,
   },
   actionsWrapper: {
     maxHeight: '70%',
@@ -24,22 +17,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 12,
-  },
-  closeWrapper: {
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: Colors.background.fullWhite,
-    overflow: 'hidden',
-  },
-  close: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  closeLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
 });
 
@@ -72,40 +49,22 @@ class ActionModal extends PureComponent {
     } = this.props;
 
     return (
-      <Modal
+      <BaseModal
         transparent={transparent}
         visible={visible}
         onRequestClose={onRequestClose}
-        animationType="fade"
+        style={style}
       >
-        <View style={[styles.modalContent, style]}>
-          <Animatable.View
-            animation="slideInUp"
-            iterationCount={1}
-            direction="alternate"
-            duration={600}
-            easing="ease-in-out-cubic"
-            style={styles.actionsWrapper}
-          >
-            {this.renderActions()}
-          </Animatable.View>
-          <Animatable.View
-            animation="slideInUp"
-            iterationCount={1}
-            direction="alternate"
-            duration={620}
-            easing="ease-in-out-cubic"
-            style={styles.closeWrapper}
-          >
-            <TouchableHighlight
-              style={styles.close}
-              onPress={onRequestClose}
-            >
-              <Text style={styles.closeLabel}>{trans('global.cancel')}</Text>
-            </TouchableHighlight>
-          </Animatable.View>
-        </View>
-      </Modal >
+        <Animatable.View
+          animation="slideInUp"
+          duration={600}
+          easing="ease-in-out-cubic"
+          style={styles.actionsWrapper}
+          useNativeDriver
+        >
+          {this.renderActions()}
+        </Animatable.View>
+      </BaseModal>
     );
   }
 }

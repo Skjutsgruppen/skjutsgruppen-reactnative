@@ -7,6 +7,8 @@ import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed } from '@services/apollo/trip';
 import { withTripExperiences } from '@services/apollo/experience';
 import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction } from '@components/common';
+import CalendarModal from '@components/common/calendarModal';
+import RidesModal from '@components/common/ridesModal';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -562,33 +564,18 @@ class TripDetail extends Component {
     }
 
     return (
-      <Modal
-        animationType="slide"
-        transparent
-        onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
-        visible={this.state.recurringRidesModalVisible}
+      <CalendarModal
+        onRequestClose={() => this.setRecurringRidesModalVisibility(false)}
+        visible={this.state.showRecurringRides}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-          <View style={styles.returnModalContent}>
-            <Calendar
-              current={tripDate}
-              markedDates={markedDates}
-              markingType={'period'}
-              hideExtraDays
-              onDayPress={day => this.redirectToSelectedTripDate(day)}
-            />
-            <View style={styles.closeWrapper}>
-              <TouchableOpacity
-                style={styles.closeModal}
-                onPress={() =>
-                  this.setRecurringRidesModalVisibility(false)}
-              >
-                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <Calendar
+          current={tripDate}
+          markedDates={markedDates}
+          markingType={'period'}
+          hideExtraDays
+          onDayPress={day => this.redirectToSelectedTripDate(day)}
+        />
+      </CalendarModal>
     );
   }
 
@@ -596,31 +583,17 @@ class TripDetail extends Component {
     const { trip } = this.state;
 
     return (
-      <Modal
-        animationType="slide"
-        transparent
-        onRequestClose={() => this.setState({ returnRidesModalVisible: false })}
-        visible={this.state.returnRidesModalVisible}
+      <RidesModal
+        onRequestClose={() => this.setState({ showReturnRides: false })}
+        visible={this.state.showReturnRides}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-          <View style={styles.returnModalContent}>
-            <ReturnRides
-              avatar={trip.User.avatar}
-              trips={trip.ReturnTrip}
-              type={trip.type}
-              onPress={this.redirectToSelectedReturnTrip}
-            />
-            <View style={styles.closeWrapper}>
-              <TouchableOpacity
-                style={styles.closeModal}
-                onPress={() => this.setReturnRidesModalVisibility(false)}
-              >
-                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <ReturnRides
+          avatar={trip.User.avatar}
+          trips={trip.ReturnTrip}
+          type={trip.type}
+          onPress={this.redirectToSelectedReturnTrip}
+        />
+      </RidesModal>
     );
   }
 
@@ -741,7 +714,7 @@ class TripDetail extends Component {
               />,
             ])
         }
-        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => {}} />
+        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => { }} />
         {
           user.id !== trip.User.id &&
           <ModalAction

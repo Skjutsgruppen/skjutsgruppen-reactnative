@@ -22,6 +22,7 @@ import CostCard from '@components/common/costCard';
 import ProgressBar from '@components/common/progressBar';
 import CommentBox from '@components/comment/commentBox';
 import Retry from '@components/common/retry';
+import BaseModal from '@components/common/baseModal';
 import CalendarModal from '@components/common/calendarModal';
 import ActionModal from '@components/common/actionModal';
 import ModalAction from '@components/common/modalAction';
@@ -55,6 +56,7 @@ export {
   ProgressBar,
   CommentBox,
   Retry,
+  BaseModal,
   CalendarModal,
   ActionModal,
   ModalAction,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import * as Animatable from 'react-native-animatable';
@@ -17,14 +17,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     elevation: 15,
     overflow: 'hidden',
-  },
-  calendarWrapper: {
-    height: 350,
+    backgroundColor: Colors.background.mutedBlue,
+    maxHeight: '60%',
   },
   closeWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
+    elevation: 15,
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
   },
   close: {
     padding: 20,
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const CalendarModal = ({
+const RidesModal = ({
   style,
   transparent,
   visible,
@@ -58,9 +61,9 @@ const CalendarModal = ({
         style={styles.wrapper}
         useNativeDriver
       >
-        <View style={styles.calendarWrapper}>
+        <ScrollView>
           {children}
-        </View>
+        </ScrollView>
         <View style={styles.closeWrapper}>
           <TouchableHighlight
             style={styles.close}
@@ -74,7 +77,7 @@ const CalendarModal = ({
   </Modal>
 );
 
-CalendarModal.propTypes = {
+RidesModal.propTypes = {
   children: PropTypes.node.isRequired,
   style: ViewPropTypes.style,
   transparent: PropTypes.bool,
@@ -83,11 +86,11 @@ CalendarModal.propTypes = {
   animationType: PropTypes.string,
 };
 
-CalendarModal.defaultProps = {
+RidesModal.defaultProps = {
   style: {},
   transparent: true,
   visible: false,
   animationType: 'fade',
 };
 
-export default CalendarModal;
+export default RidesModal;
