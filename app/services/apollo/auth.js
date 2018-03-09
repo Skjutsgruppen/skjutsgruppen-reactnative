@@ -19,7 +19,7 @@ mutation login($username: String!, $password:String!) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -55,7 +55,7 @@ mutation register($email: String!, $verified:Boolean) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -91,7 +91,7 @@ mutation verifyEmail($email:String!, $code:String!) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -141,7 +141,7 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -199,7 +199,7 @@ mutation {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -261,7 +261,7 @@ mutation changeEmail($email: String!){
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -299,7 +299,7 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
