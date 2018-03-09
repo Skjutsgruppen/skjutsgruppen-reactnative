@@ -281,7 +281,7 @@ subscription myExperience($userId:Int!){
 `;
 
 export const withMyExperiences = graphql(MY_EXPERIENCES_QUERY, {
-  options: ({ id, offset = 0, limit = PER_FETCH_LIMIT }) => ({
+  options: ({ id, offset = 0, limit = null }) => ({
     variables: { id, offset, limit },
     fetchPolicy: 'cache-and-network',
   }),
