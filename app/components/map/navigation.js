@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import BackIcon from '@assets/icons/ic_back_toolbar.png';
 
 import Colors from '@theme/colors';
 import FileterIcon from '@assets/icons/ic_menu_blue.png';
@@ -29,6 +30,14 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.15,
   },
+  backIconWrapper: {
+    height: 42,
+    width: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.fullWhite,
+  },
   backIcon: {
     backgroundColor: Colors.background.blue,
     borderWidth: 5,
@@ -39,9 +48,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const MapNavigation = ({ onPressBack, onPressFilter }) => (
+const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon }) => (
   <View style={styles.wrapper}>
-    <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />
+    {arrowBackIcon
+      ? <TouchableOpacity style={styles.backIconWrapper} onPress={onPressBack}>
+        <Image style={{ transform: [{ rotate: '90deg' }] }} source={BackIcon} />
+      </TouchableOpacity>
+      : <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />}
     <TouchableOpacity style={[styles.iconWrapper, styles.filteIconWrapper]} onPress={onPressFilter}>
       <Image source={FileterIcon} />
     </TouchableOpacity>
@@ -51,11 +64,13 @@ const MapNavigation = ({ onPressBack, onPressFilter }) => (
 MapNavigation.propTypes = {
   onPressBack: PropTypes.func,
   onPressFilter: PropTypes.func,
+  arrowBackIcon: PropTypes.bool,
 };
 
 MapNavigation.defaultProps = {
-  onPressBack: () => {},
-  onPressFilter: () => {},
+  onPressBack: () => { },
+  onPressFilter: () => { },
+  arrowBackIcon: false,
 };
 
 export default MapNavigation;

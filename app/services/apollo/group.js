@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { PER_FETCH_LIMIT } from '@config/constant';
+import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
 
 const CREATE_GROUP_QUERY = gql`
 mutation group
@@ -465,7 +465,15 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id 
             firstName 
             avatar 
-          }       
+          }     
+          Participants {
+            User {
+              id 
+              firstName 
+              avatar 
+            }
+            status
+          }  
         }
       }
     }
@@ -837,8 +845,8 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 });
 
 const GROUP_TRIPS_QUERY = gql`
-  query groupTrips($id: Int){
-    groupTrips(groupId: $id){
+  query groupTrips($id: Int, $filter: TripTypeEnum){
+    groupTrips(groupId: $id, filter: $filter){
       id 
       type 
       description 
@@ -883,9 +891,9 @@ const GROUP_TRIPS_QUERY = gql`
 
 export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
   {
-    options: ({ id }) => ({
+    options: ({ id, filter = FEED_FILTER_EVERYTHING }) => ({
       fetchPolicy: 'cache-and-network',
-      variables: { id },
+      variables: { id, filter },
     }),
     props: ({ data: { loading, groupTrips = [], refetch, networkStatus, error } }) => ({
       loading, groupTrips, refetch, networkStatus, error,
