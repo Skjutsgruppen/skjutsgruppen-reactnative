@@ -22,7 +22,7 @@ mutation getUserByFbId($id: String!) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -62,7 +62,7 @@ mutation getUserByEmail($email: String!) {
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
@@ -101,7 +101,7 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       phoneVerified
       totalOffered
       totalAsked
-      totalComments
+      totalRideConversations
       totalExperiences
       totalGroups
       totalFriends
