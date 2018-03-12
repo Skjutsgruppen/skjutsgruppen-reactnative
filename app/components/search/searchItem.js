@@ -4,6 +4,7 @@ import Trip from '@components/feed/card/trip';
 import Group from '@components/feed/card/group';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 import ListItem from '@components/search/listItem';
+import GroupItem from '@components/search/groupItem';
 import PublicTransportItem from '@components/search/publicTransportItem';
 
 const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
@@ -26,12 +27,13 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
       );
     }
 
+
     return (
-      <ListItem
+      <GroupItem
         onPress={() => onPress(FEEDABLE_GROUP, searchResult)}
-        type={searchResult.type}
-        image={image}
+        imageURI={searchResult.photo ? searchResult.photo : searchResult.mapPhoto}
         title={`${searchResult.TripStart.name} - ${searchResult.TripEnd.name}`}
+        colorOverlay={!searchResult.photo}
       />
     );
   }
