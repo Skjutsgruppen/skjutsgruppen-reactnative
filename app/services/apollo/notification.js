@@ -7,6 +7,7 @@ const NOTIFICATION_SUBSCRIPTION = gql`
 subscription notification($userId: Int!) {
   notification(userId: $userId ){
     id
+    ids
     notifiable
     createdAt
     Notifications {
@@ -111,6 +112,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
   notifications (filters:$filters, offset:$offset, limit:$limit) {
     rows {
       id
+      ids
       notifiable
       createdAt
       Notifications {
@@ -271,9 +273,11 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
               newRows = prev.notifications.rows.map((row) => {
                 if (row.Notifiable.id === newNotification.Notifiable.id) {
                   const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                  const ids = row.ids.concat(newNotification.ids);
+                  let found = false;
+
                   exists = true;
 
-                  let found = false;
                   row.Notifiers.forEach((r) => {
                     if (r.id === newNotification.Notifiers[0].id) {
                       found = true;
@@ -281,10 +285,10 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
                   });
 
                   if (found) {
-                    return row;
+                    return { ...row, ids };
                   }
 
-                  return { ...row, Notifiers };
+                  return { ...row, Notifiers, ids };
                 }
 
                 return row;
@@ -297,8 +301,12 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
             } else {
               newRows = prev.notifications.rows.map((row) => {
                 if (row.Notifiable.id === newNotification.Notifiable.id) {
-                  exists = true;
+                  const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
+                  const ids = row.ids.concat(newNotification.ids);
                   let found = false;
+
+                  exists = true;
+
                   row.Notifiers.forEach((r) => {
                     if (r.id === newNotification.Notifiers[0].id) {
                       found = true;
@@ -306,11 +314,10 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
                   });
 
                   if (found) {
-                    return row;
+                    return { ...row, ids };
                   }
 
-                  const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
-                  return { ...row, Notifiers };
+                  return { ...row, Notifiers, ids };
                 }
 
                 return row;
@@ -319,7 +326,7 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           } else if (newNotification.notifiable === 'Experience') {
             if (newNotification.Notifiable.Trip.muted) {
               exists = true;
-              updateActiveRides(newNotification.Notifiable.Trip);
+              updateActiveRides(newNotification.Notifiaidsble.Trip);
             }
           } else if (newNotification.notifiable === 'GroupMembershipRequest') {
             if (newNotification.Notifiable.Group.muted) {
@@ -353,16 +360,16 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 
 
 const READ_NOTIFICATION_QUERY = gql`
-mutation readNotification($id:Int!) {
-  readNotification(id:$id)
+mutation readNotification($ids:[Int]!) {
+  readNotification(ids:$ids)
 }
 `;
 
 export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
   props: ({ mutate }) => ({
-    markRead: id => mutate(
+    markRead: (id, ids) => mutate(
       {
-        variables: { id },
+        variables: { ids },
         update: (store) => {
           updateNewNotificationToOld(id, store);
         },

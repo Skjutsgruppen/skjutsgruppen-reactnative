@@ -411,7 +411,7 @@ class Ask extends Component {
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
-              onNext={this.onShareAndPublishNext}
+              onNext={this.onShareNext}
               labelColor={Colors.text.blue}
             />
           }
