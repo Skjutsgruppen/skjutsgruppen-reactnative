@@ -85,6 +85,8 @@ class Ride extends PureComponent {
   render() {
     const { trips } = this.props;
 
+    if (trips.count < 1) return null;
+
     let render = (<Text style={styles.emptyMessage}>{trans('message.no_ride')}</Text>);
 
     let limitedTrips = trips.rows;

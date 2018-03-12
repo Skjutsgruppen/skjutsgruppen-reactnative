@@ -82,8 +82,9 @@ class Group extends PureComponent {
   render() {
     const { groups } = this.props;
 
-    let render = (<Text style={styles.emptyMessage}>{trans('message.no_group')}</Text>);
+    if (groups.count < 1) return null;
 
+    let render = (<Text style={styles.emptyMessage}>{trans('message.no_group')}</Text>);
 
     let limitedgroups = groups.rows;
 

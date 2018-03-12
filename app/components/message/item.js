@@ -151,20 +151,20 @@ class Item extends PureComponent {
       .catch(() => this.setState({ loading: false }));
   }
 
-  redirect = (id, route, params) => {
+  redirect = (id, ids, route, params) => {
     const { navigation, filters, notification, markRead } = this.props;
 
     if (id && filters === 'new') {
-      markRead(id).then(notification.refetch);
+      markRead(id, ids).then(notification.refetch);
     }
 
     navigation.navigate(route, params);
   }
 
-  friendRequest = ({ Notifiers, id, createdAt }) => {
+  friendRequest = ({ Notifiers, id, ids, createdAt }) => {
     const { filters } = this.props;
     return (
-      <TouchableOpacity onPress={() => this.redirect(id, 'Profile', { profileId: Notifiers[0].id })}>
+      <TouchableOpacity onPress={() => this.redirect(id, ids, 'Profile', { profileId: Notifiers[0].id })}>
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
@@ -187,18 +187,18 @@ class Item extends PureComponent {
     );
   }
 
-  requestJoinGroup = ({ User, Notifiable, id }) => {
+  requestJoinGroup = ({ User, Notifiable, id, ids }) => {
     const { filters } = this.props;
 
     return (
-      <TouchableOpacity onPress={() => this.redirect(id, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
+      <TouchableOpacity onPress={() => this.redirect(id, ids, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
               {this.renderPic([User.avatar])}
             </View>
             <View style={{ flex: 1 }}>
-              <Text onPress={() => this.redirect(id, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiable.Group.name}</Text>
+              <Text onPress={() => this.redirect(id, ids, 'Profile', { profileId: User.id })} style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>{Notifiable.Group.name}</Text>
               <Text style={[filters === 'new' && styles.bold]} numberOfLines={1} ellipsizeMode={'tail'}>Participation request</Text>
             </View>
           </View>
@@ -263,7 +263,7 @@ class Item extends PureComponent {
     );
   };
 
-  memberRequest = ({ Notifiable, Notifiers, createdAt, id }) => {
+  memberRequest = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable && Notifiable.gmrStatus === 'pending') {
       return this.requestJoinGroup({ User: Notifiers[0], Notifiable, id });
     }
@@ -274,14 +274,14 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `You have accepted ${Notifiers[0].firstName}'s request to join group "${Notifiable.Group.name}"`,
         date: createdAt,
-        onPress: () => this.redirect(id, 'GroupDetail', { group: Notifiable.Group }),
+        onPress: () => this.redirect(id, ids, 'GroupDetail', { group: Notifiable.Group }),
       });
     }
 
     return null;
   }
 
-  membershipRequestAccepted = ({ Notifiable, Notifiers, createdAt, id }) => {
+  membershipRequestAccepted = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -289,7 +289,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `${trans('message.added_you_to_group')} "${Notifiable.name}"`,
         date: createdAt,
-        onPress: () => this.redirect(id, 'GroupDetail', {
+        onPress: () => this.redirect(id, ids, 'GroupDetail', {
           group: Notifiable,
           notifier: Notifiers[0],
           notificationMessage: trans('message.added_you_to_this_group'),
@@ -300,7 +300,7 @@ class Item extends PureComponent {
     return null;
   }
 
-  friendRequestAccepted = ({ Notifiable, Notifiers, createdAt, id }) => {
+  friendRequestAccepted = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -308,14 +308,14 @@ class Item extends PureComponent {
         text: `${trans('message.you_and')} ${Notifiers[0].firstName}\n${trans('message.are_now_friends')}`,
         date: createdAt,
         ellipsize: false,
-        onPress: () => this.redirect(id, 'Profile', { profileId: Notifiers[0].id }),
+        onPress: () => this.redirect(id, ids, 'Profile', { profileId: Notifiers[0].id }),
       });
     }
 
     return null;
   }
 
-  experienceRejected = ({ Notifiable, createdAt, id }) => {
+  experienceRejected = ({ Notifiable, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         photo: [Notifiable.photo],
@@ -323,14 +323,14 @@ class Item extends PureComponent {
         date: createdAt,
         noAvatarAction: true,
         experience: {},
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
     return null;
   }
 
-  experienceRemoved = ({ Notifiable, createdAt, id }) => {
+  experienceRemoved = ({ Notifiable, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         photo: [Notifiable.photo],
@@ -338,14 +338,14 @@ class Item extends PureComponent {
         date: createdAt,
         noAvatarAction: true,
         experience: {},
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
     return null;
   }
 
-  experiencePublished = ({ Notifiable, Notifiers, createdAt, id }) => {
+  experiencePublished = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -354,14 +354,14 @@ class Item extends PureComponent {
         noAvatarAction: true,
         text: trans('message.your_experience_has_been_published'),
         date: createdAt,
-        onPress: () => this.redirect(id, 'TripDetail', { trip: Notifiable.Trip }),
+        onPress: () => this.redirect(id, ids, 'TripDetail', { trip: Notifiable.Trip }),
       });
     }
 
     return null;
   }
 
-  experienceShared = ({ Notifiable, Notifiers, createdAt, id }) => {
+  experienceShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -369,14 +369,14 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: trans('message.shared_experience_with_you'),
         date: createdAt,
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
     return null;
   }
 
-  experienceTagged = ({ Notifiable, Notifiers, createdAt, id }) => {
+  experienceTagged = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         user: Notifiers[0].firstName,
@@ -384,14 +384,14 @@ class Item extends PureComponent {
         userId: Notifiers[0].id,
         text: `${trans('message.tagged_you_in_an_experience')}`,
         date: createdAt,
-        onPress: () => this.redirect(id, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
       });
     }
 
     return null;
   }
 
-  tripShared = ({ Notifiable, Notifiers, createdAt, id }) => {
+  tripShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     let type = null;
 
     if (Notifiable) {
@@ -407,14 +407,14 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `${type}`,
         date: createdAt,
-        onPress: () => this.redirect(id, 'TripDetail', { trip: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'TripDetail', { trip: Notifiable }),
       });
     }
 
     return null;
   }
 
-  tripSharedGroup = ({ Notifiable, Notifiers, createdAt, id }) => {
+  tripSharedGroup = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -422,14 +422,14 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: trans('message.shared_a_trip_on_your_group'),
         date: createdAt,
-        onPress: () => this.redirect(id, 'TripDetail', { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Group' }),
+        onPress: () => this.redirect(id, ids, 'TripDetail', { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Group' }),
       });
     }
 
     return null;
   }
 
-  comment = ({ notifiable, Notifiable, Notifiers, id, createdAt }) => {
+  comment = ({ notifiable, Notifiable, Notifiers, id, ids, createdAt }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -445,7 +445,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `${Notifiers[0].firstName} ${trans('message.left_a_comment')}`,
         date: createdAt,
-        onPress: () => this.redirect(id, route, params),
+        onPress: () => this.redirect(id, ids, route, params),
       };
     }
 
@@ -464,7 +464,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `${type}`,
         date: createdAt,
-        onPress: () => this.redirect(id, route, params),
+        onPress: () => this.redirect(id, ids, route, params),
       };
     }
 
@@ -475,7 +475,7 @@ class Item extends PureComponent {
     return null;
   }
 
-  invitation = ({ notifiable, Notifiable, Notifiers, createdAt, id }) => {
+  invitation = ({ notifiable, Notifiable, Notifiers, createdAt, id, ids }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -502,11 +502,11 @@ class Item extends PureComponent {
       photo: [Notifiers[0].avatar],
       text: `${type}`,
       date: createdAt,
-      onPress: () => this.redirect(id, route, params),
+      onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
-  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
+  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     const route = 'TripDetail';
     const params = { trip: Notifiable };
     const plus = Notifiers.length - 1;
@@ -519,11 +519,11 @@ class Item extends PureComponent {
         [Notifiers[plus].avatar],
       text: `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`,
       date: createdAt,
-      onPress: () => this.redirect(id, route, params),
+      onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
-  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id }) => {
+  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     const route = 'GroupDetail';
     const params = { group: Notifiable };
     const plus = Notifiers.length - 1;
@@ -536,11 +536,11 @@ class Item extends PureComponent {
         [Notifiers[plus].avatar],
       text: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
       date: createdAt,
-      onPress: () => this.redirect(id, route, params),
+      onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
-  friendJoinedMovement = ({ Notifiers, createdAt, id }) => {
+  friendJoinedMovement = ({ Notifiers, createdAt, id, ids }) => {
     const route = 'Profile';
     const params = { profileId: Notifiers[0].id };
 
@@ -550,7 +550,7 @@ class Item extends PureComponent {
       photo: [Notifiers[0].avatar],
       text: 'just joined the movement',
       date: createdAt,
-      onPress: () => this.redirect(id, route, params),
+      onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
@@ -632,7 +632,7 @@ class Item extends PureComponent {
     let profileImage = null;
 
     profileImage = (
-      <TouchableOpacity onPress={() => this.redirect(null, 'ExperienceDetail', { experience: Notifiable })}>
+      <TouchableOpacity onPress={() => this.redirect(null, [], 'ExperienceDetail', { experience: Notifiable })}>
         <Image source={ExperienceIcon} style={styles.profilePic} />
       </TouchableOpacity>
     );

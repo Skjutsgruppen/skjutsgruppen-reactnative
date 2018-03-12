@@ -479,7 +479,7 @@ class Offer extends Component {
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
-              onNext={this.onShareAndPublishNext}
+              onNext={this.onShareNext}
             />
           }
           {(activeStep === 6) && this.renderFinish()}
