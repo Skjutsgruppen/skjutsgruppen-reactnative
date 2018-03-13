@@ -7,6 +7,9 @@ import Icon from '@assets/icons/ic_back_toolbar.png';
 import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
+  wrapper: {
+    zIndex: 100,
+  },
   floated: {
     position: 'absolute',
     top: 0,
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
 
 class ToolBar extends PureComponent {
   backButton = () => {
-    const { navigation, onBack, transparent } = this.props;
+    const { navigation, onBack, transparent, isAnimatable } = this.props;
     const params = navigation.state.params || {};
     let backHandler = navigation.goBack;
 
@@ -67,7 +70,7 @@ class ToolBar extends PureComponent {
     }
 
     let elevation = transparent ? 5 : 0;
-    if (transparent) {
+    if (transparent && isAnimatable) {
       if (params.animatedValue) {
         elevation = params.animatedValue.interpolate({
           inputRange: [0, 50],
@@ -112,11 +115,11 @@ class ToolBar extends PureComponent {
   }
 
   render() {
-    const { navigation, transparent, offset } = this.props;
+    const { navigation, transparent, offset, showsGradientBackground, isAnimatable } = this.props;
     const params = navigation.state.params || {};
     let backgroundColor = transparent ? 'transparent' : Colors.background.fullWhite;
     let elevation = transparent ? 0 : 10;
-    if (transparent) {
+    if (transparent && isAnimatable) {
       if (params.animatedValue) {
         backgroundColor = params.animatedValue.interpolate({
           inputRange: [0, 50],
@@ -134,15 +137,20 @@ class ToolBar extends PureComponent {
     return (
       <Animated.View
         style={[
+          styles.wrapper,
           transparent && styles.floated,
           offset && { top: offset },
           { elevation },
           { backgroundColor },
         ]}
       >
-        <View style={styles.gradientWrapper}>
-          <LinearGradient colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0)']} style={{ height: 70 }} />
-        </View>
+        {
+          showsGradientBackground && (
+            <View style={styles.gradientWrapper}>
+              <LinearGradient colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0)']} style={{ height: 70 }} />
+            </View>
+          )
+        }
         <Animated.View style={[
           styles.toolbar,
           { backgroundColor },
@@ -165,6 +173,8 @@ ToolBar.propTypes = {
   }).isRequired,
   onBack: PropTypes.func,
   right: PropTypes.func,
+  showsGradientBackground: PropTypes.bool,
+  isAnimatable: PropTypes.bool,
 };
 
 ToolBar.defaultProps = {
@@ -173,6 +183,8 @@ ToolBar.defaultProps = {
   offset: null,
   onBack: null,
   right: null,
+  showsGradientBackground: true,
+  isAnimatable: true,
 };
 
 export default withNavigation(ToolBar);
