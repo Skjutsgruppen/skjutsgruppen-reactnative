@@ -136,7 +136,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           } 
           TripEnd {
             name 
-          } 
+          }
           muted
           unreadNotificationCount
         }
