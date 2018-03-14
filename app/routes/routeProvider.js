@@ -50,10 +50,7 @@ import Map from '@screens/Map';
 import Route from '@screens/Route';
 import Area from '@screens/Area';
 
-import SingleNotification from '@screens/notification/List';
 import SearchNotification from '@screens/notification/Search';
-import ActiveRideList from '@screens/notification/ActiveRideList';
-import ActiveGroupList from '@screens/notification/ActiveGroupList';
 
 import Add from '@screens/tab/add';
 import Feed from '@screens/tab/feed';
@@ -168,9 +165,6 @@ export const Routes = {
   UserExperiences: { screen: UserExperiences },
   UserConversation: { screen: UserConversation },
 
-  SingleNotification: { screen: SingleNotification },
-  ActiveRideList: { screen: ActiveRideList },
-  ActiveGroupList: { screen: ActiveGroupList },
   SearchNotification: { screen: SearchNotification },
 
   Report: { screen: Report },
