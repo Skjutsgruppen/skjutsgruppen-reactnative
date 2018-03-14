@@ -102,11 +102,11 @@ class ExperienceDetail extends Component {
       right,
     });
 
-    this.setState({ experience, showNotification: pending });
+    this.setState({ experience, showNotification: pending, pending });
   }
 
   componentWillReceiveProps({ experience, pending }) {
-    this.setState({ experience, showNotification: pending });
+    this.setState({ experience, showNotification: pending, pending });
   }
 
   onDeletePress = () => {
