@@ -5,7 +5,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed } from '@services/apollo/trip';
-import { withTripExperiences } from '@services/apollo/experience';
 import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
