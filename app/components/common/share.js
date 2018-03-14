@@ -15,6 +15,8 @@ import { connect } from 'react-redux';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE } from '@config/constant';
 import SendSMS from 'react-native-sms';
 import { withShare } from '@services/apollo/share';
+import DataList from '@components/dataList';
+import LoadMore from '@components/message/loadMore';
 
 const styles = StyleSheet.create({
   list: {
@@ -247,6 +249,16 @@ class Share extends Component {
     return typeof user.twitterId === 'string' && user.fbId.length > 0;
   }
 
+  loadMore = (onPress) => {
+    const { groups } = this.props;
+    if (groups.loading) return null;
+
+    const remaining = groups.count - groups.rows.length;
+
+    if (remaining < 1) return null;
+
+    return (<LoadMore onPress={onPress} remainingCount={remaining} />);
+  }
   renderGroups() {
     const { groups } = this.props;
 
@@ -257,19 +269,36 @@ class Share extends Component {
     return (
       <View style={styles.list}>
         <Text style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</Text>
-        {
-          groups.rows.map(group => group && (
+        <DataList
+          data={groups}
+          renderItem={({ item }) => (
             <ShareItem
-              key={group.id}
-              imageSource={{ uri: group.User.avatar }}
+              imageSource={{ uri: item.User.avatar }}
               hasPhoto
-              selected={this.hasOption('selectedGroups', group.id)}
-              label={group.name}
-              onPress={() => this.setOption('selectedGroups', group.id)}
+              selected={this.hasOption('selectedGroups', item.id)}
+              label={item.name}
+              onPress={() => this.setOption('selectedGroups', item.id)}
               color="blue"
             />
-          ))
-        }
+          )}
+          infinityScroll={false}
+          loadMoreButton={this.loadMore}
+          loadMorePosition="bottom"
+          fetchMoreOptions={{
+            variables: { offset: groups.rows.length },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              if (!fetchMoreResult || fetchMoreResult.groups.rows.length === 0) {
+                return previousResult;
+              }
+
+              const rows = previousResult.groups.rows.concat(
+                fetchMoreResult.groups.rows,
+              );
+
+              return { groups: { ...previousResult.groups, ...{ rows } } };
+            },
+          }}
+        />
       </View>
     );
   }
