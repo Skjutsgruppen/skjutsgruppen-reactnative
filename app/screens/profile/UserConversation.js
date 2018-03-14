@@ -95,6 +95,8 @@ class UserConversation extends PureComponent {
         data={conversations}
         renderItem={({ item }) => (
           <ListItem
+            showIndicator
+            indicatorColor={item.type === 'offered' ? Colors.background.pink : Colors.background.blue}
             trip={item}
             onPress={this.onPress}
             onExperiencePress={this.onExperienceIconPress}
