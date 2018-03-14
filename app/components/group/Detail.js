@@ -209,7 +209,7 @@ class Detail extends PureComponent {
     if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
       const coordinates = { area: group.areaCoordinates };
 
-      navigation.navigate('Area', { coordinates });
+      navigation.navigate('Area', { coordinates, id: group.id });
     }
 
     if (group.outreach === STRETCH_TYPE_ROUTE) {
@@ -219,7 +219,7 @@ class Detail extends PureComponent {
         stops: group.Stops,
       };
 
-      navigation.navigate('Route', { coordinates });
+      navigation.navigate('Route', { coordinates, id: group.id });
     }
 
     return null;

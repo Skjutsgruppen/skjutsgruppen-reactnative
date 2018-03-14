@@ -351,9 +351,9 @@ class SearchResult extends Component {
             !search.loading &&
             filters.length === 1 &&
             (this.state.filters.indexOf(FEED_TYPE_OFFER) > -1)) &&
-          <View style={[styles.arrowContainer, { paddingLeft: this.state.arrowX }]}>
-            <Image source={require('@assets/icons/ic_arrow_up.png')} style={styles.arrow} />
-          </View>
+            <View style={[styles.arrowContainer, { paddingLeft: this.state.arrowX }]}>
+              <Image source={require('@assets/icons/ic_arrow_up.png')} style={styles.arrow} />
+            </View>
         }
         {this.renderSearchResult()}
         {this.renderShareModal()}
