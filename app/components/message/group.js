@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Colors from '@theme/colors';
-import { Loading, Retry } from '@components/common';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
@@ -9,8 +8,8 @@ import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import ActiveGroupItem from '@components/message/ActiveGroupItem';
-import { PER_FETCH_LIMIT } from '@config/constant';
-import LoadeMore from '@components/message/loadMore';
+import LoadMore from '@components/message/loadMore';
+import DataList from '@components/dataList';
 
 const styles = StyleSheet.create({
   section: {
@@ -24,35 +23,6 @@ const styles = StyleSheet.create({
     color: Colors.text.blue,
     marginHorizontal: 24,
   },
-  emptyMessage: {
-    opacity: 0.5,
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-  },
-  spacedWrapper: {
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-  },
-  errorText: {
-    fontSize: 16,
-    lineHeight: 32,
-    color: Colors.text.gray,
-    textAlign: 'center',
-  },
-  more: {
-    height: 24,
-    alignSelf: 'center',
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 16,
-  },
-  moreText: {
-    fontSize: 12,
-    color: '#333',
-  },
 });
 
 class Group extends PureComponent {
@@ -63,20 +33,42 @@ class Group extends PureComponent {
     }
   }
 
-  loadMore = () => {
+  loadMore = (onPress) => {
     const { groups } = this.props;
     if (groups.loading) return null;
 
-    const remaining = groups.count - PER_FETCH_LIMIT;
+    const remaining = groups.count - groups.rows.length;
     if (remaining < 1) return null;
 
-    return <LoadeMore onPress={this.moreGroups} remainingCount={remaining} />;
+    return <LoadMore onPress={onPress} remainingCount={remaining} />;
   }
 
-  moreGroups = () => {
-    const { navigation } = this.props;
+  renderList = () => {
+    const { groups } = this.props;
 
-    navigation.navigate('ActiveGroupList');
+    return (
+      <DataList
+        data={groups}
+        renderItem={({ item }) => <ActiveGroupItem key={item.id} group={item} />}
+        infinityScroll={false}
+        loadMoreButton={this.loadMore}
+        loadMorePosition="bottom"
+        fetchMoreOptions={{
+          variables: { offset: groups.rows.length },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult || fetchMoreResult.groups.rows.length === 0) {
+              return previousResult;
+            }
+
+            const rows = previousResult.groups.rows.concat(
+              fetchMoreResult.groups.rows,
+            );
+
+            return { groups: { ...previousResult.groups, ...{ rows } } };
+          },
+        }}
+      />
+    );
   }
 
   render() {
@@ -84,37 +76,12 @@ class Group extends PureComponent {
 
     if (groups.count < 1) return null;
 
-    let render = (<Text style={styles.emptyMessage}>{trans('message.no_group')}</Text>);
-
-    let limitedgroups = groups.rows;
-
-    if (limitedgroups.length > PER_FETCH_LIMIT) {
-      limitedgroups = limitedgroups.slice(0, PER_FETCH_LIMIT);
-    }
-
-    if (groups.count > 0) {
-      render = limitedgroups.map(group => <ActiveGroupItem key={group.id} group={group} />);
-    }
-
-    if (groups.error) {
-      render = <Retry onPress={() => groups.refetch()} />;
-    }
-
-    if (groups.loading) {
-      render = (
-        <View style={styles.spacedWrapper}>
-          <Loading />
-        </View>
-      );
-    }
-
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
           {trans('message.your_groups').toUpperCase()}
         </Text>
-        {render}
-        {this.loadMore()}
+        {this.renderList()}
       </View>
     );
   }
@@ -125,9 +92,6 @@ Group.propTypes = {
     count: PropTypes.number.isRequired,
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     loading: PropTypes.bool.isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
