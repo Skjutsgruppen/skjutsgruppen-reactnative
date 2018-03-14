@@ -102,7 +102,10 @@ class NewNotification extends PureComponent {
   }
 
   render() {
-    const { filters } = this.props;
+    const { notifications, filters } = this.props;
+
+    if (notifications.count < 1) return null;
+
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>

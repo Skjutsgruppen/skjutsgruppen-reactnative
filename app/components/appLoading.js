@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 
+import Colors from '@theme/colors';
 import Logo from '@assets/icons/logo.png';
 
 const styles = StyleSheet.create({
@@ -8,6 +9,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.background.mutedBlue,
   },
 });
 
