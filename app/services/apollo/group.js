@@ -933,7 +933,6 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
             rows = prev.groupMembers.rows.filter(row => row.id !== GroupMember.id);
             prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count - 1 } };
           } else {
-            // error in GroupMember
             const found = prev.groupMembers.rows
               .filter(row => row.id === GroupMember.id);
             repeated = found.length > 0;

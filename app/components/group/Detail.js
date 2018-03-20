@@ -293,12 +293,11 @@ class Detail extends PureComponent {
   }
 
   leaveGroup = () => {
-    const { leaveGroup, group } = this.props;
+    const { group } = this.props;
 
     this.setState({ leaveLoading: true });
-    this.setState({ showConfirmModal: false },
-      leaveGroup(group.id),
-    );
+    this.props.leaveGroup(group.id)
+      .then(() => this.setState({ showConfirmModal: false }));
   }
 
   checkValidation = (comment) => {

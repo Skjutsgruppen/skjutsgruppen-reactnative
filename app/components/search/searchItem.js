@@ -27,12 +27,11 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
       );
     }
 
-
     return (
       <GroupItem
         onPress={() => onPress(FEEDABLE_GROUP, searchResult)}
         imageURI={searchResult.photo ? searchResult.photo : searchResult.mapPhoto}
-        title={`${searchResult.TripStart.name} - ${searchResult.TripEnd.name}`}
+        title={searchResult.name}
         colorOverlay={!searchResult.photo}
       />
     );

@@ -165,9 +165,9 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                 ]}
                 style={styles.commentGradientOverlay}
               />
-              <View style={styles.profilePicWrapper}>
-                {profileImage}
-              </View>
+            </View>
+            <View style={styles.profilePicWrapper}>
+              {profileImage}
             </View>
           </View>
         </TouchableHighlight>
