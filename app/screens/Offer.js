@@ -212,11 +212,15 @@ class Offer extends Component {
 
     if (params && params.group) {
       const { group, description } = params;
-      this.setState({ share: { groups: [group.id], groupId: group.id }, groupId: group.id, group });
+      this.setState({
+        share: { groups: [group.id], groupId: group.id },
+        groupId: group.id,
+        group,
+        description: { text: description, photo: null },
+      });
 
       if (params.group.outreach === STRETCH_TYPE_ROUTE) {
         this.setState({
-          description: { text: description, photo: null },
           route: {
             start: {
               name: group.TripStart.name,

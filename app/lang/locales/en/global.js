@@ -1,5 +1,6 @@
 export const global = {
   cancel: 'Cancel',
+  done: 'Done',
   anywhere: 'Anywhere',
   north: 'North',
   south: 'South',

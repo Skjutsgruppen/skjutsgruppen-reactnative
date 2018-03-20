@@ -615,6 +615,15 @@ query trip($id: Int!) {
         avatar 
       }
     }
+    Group {
+      id
+      name
+    }
+    linkedTrip {
+      id
+      description
+    }
+    isDeleted
   }
 }
 `;
@@ -833,15 +842,6 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         unreadNotificationCount
       }
       remove
-      Participants{
-        rows {
-          id
-          firstName
-          lastName
-          avatar
-        }
-        count
-      }
     }
   }
 `;
