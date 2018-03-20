@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-import Icon from '@assets/icons/ic_chevron_left.png';
+import Icon from '@assets/icons/ic_back_toolbar.png';
 import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     height: 42,
     width: 42,
     borderRadius: 21,
+    marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,

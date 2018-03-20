@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import PlaceInput from '@components/search/place/placeInput';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,13 +8,14 @@ import { Circle, RoundedButton } from '@components/common';
 import { Colors, Gradients } from '@theme';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_GROUP } from '@config/constant';
+import CalendarModal from '@components/common/calendarModal';
 import SearchIcon from '@assets/icons/ic_search.png';
 import SearchIconActive from '@assets/icons/ic_search_active.png';
 import { trans } from '@lang/i18n';
 import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
+import { getDate } from '@config';
 
 const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   },
   suggestion: {
     height: 22,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     borderRadius: 11,
     backgroundColor: Colors.background.gray,
     marginRight: 4,
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   selected: {
     backgroundColor: Colors.background.blue,
@@ -156,6 +157,12 @@ class Search extends Component {
 
   componentWillMount() {
     const { navigation } = this.props;
+
+    if (navigation.state.params) {
+      const { fromObj, toObj, filters, direction, dates } = navigation.state.params;
+      this.setState({ from: fromObj, to: toObj, filters, direction, dates });
+    }
+
     navigation.setParams({ scrollToTop: this.scrollToTop });
     navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
   }
@@ -169,7 +176,9 @@ class Search extends Component {
       filters.push(param);
     }
 
-    this.setState({ filters });
+    if (filters.length > 0) {
+      this.setState({ filters });
+    }
   }
 
   onDirectionSelect = (param) => {
@@ -184,20 +193,16 @@ class Search extends Component {
   onSelectDay = (date) => {
     const { markedDates } = this.state;
     const dates = [];
-    const selectedDate = date.dateString;
-
+    const selectedDate = getDate(date.dateString).format('YYYY-MM-DD').toString();
     const newDates = { ...markedDates };
 
     if (markedDates[selectedDate]) {
       delete newDates[selectedDate];
-      this.setState({ markedDates: newDates });
     } else {
-      newDates[selectedDate] = [
-        { startingDay: true, color: '#1ca9e5', textColor: '#fff' },
-        { endingDay: true, color: '#1ca9e5', textColor: '#fff' },
-      ];
-      this.setState({ markedDates: newDates });
+      newDates[selectedDate] = { startingDay: true, color: '#1ca9e5', textColor: '#fff', endingDay: true };
     }
+
+    this.setState({ markedDates: newDates });
 
     Object.keys(newDates).forEach((day) => {
       dates.push(day);
@@ -374,38 +379,22 @@ class Search extends Component {
                 <AppText size={14} color={Colors.text.blue} fontVariation="semibold">{trans('search.change')}</AppText>
               </TouchableOpacity>
             </View>
-
-            <Modal
-              animationType="slide"
-              transparent={false}
+            <CalendarModal
               visible={this.state.modalVisible}
-              style={{ backgroundColor: '#f00', padding: 50 }}
-              onRequestClose={() => { }}
+              onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}
-                style={styles.closeModal}
-              >
-                <Icon
-                  name={'ios-close'}
-                  size={32}
-                  style={{ color: Colors.text.darkCyan }}
-                />
-              </TouchableOpacity>
               <Calendar
                 firstDay={1}
                 onDayPress={this.onSelectDay}
                 markedDates={markedDates}
-                markingType="interactive"
+                markingType={'period'}
                 minDate={Moment(new Date()).format('YYYY-MM-DD')}
                 hideExtraDays
                 style={{
                   justifyContent: 'center',
                 }}
               />
-            </Modal>
+            </CalendarModal>
             <AppText size={14} color={Colors.text.gray} style={{ margin: 20 }}>{trans('search.show_results_from')}</AppText>
             <View style={styles.resultsFrom}>
               <TouchableOpacity
