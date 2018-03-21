@@ -33,22 +33,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const MemberItem = ({ user, onPress }) => {
+const MemberItem = ({ user: { User }, onPress }) => {
   let profileImage = null;
 
-  if (user.avatar) {
+  if (User.avatar) {
     profileImage = (
-      <Image source={{ uri: user.avatar }} style={styles.profilePic} />
+      <Image source={{ uri: User.avatar }} style={styles.profilePic} />
     );
   } else {
     profileImage = (<View style={styles.imgIcon} />);
   }
 
   return (
-    <TouchableOpacity onPress={() => onPress(user.id)} style={styles.wrapper}>
+    <TouchableOpacity onPress={() => onPress(User.id)} style={styles.wrapper}>
       {profileImage}
       <View style={styles.nameWrapper}>
-        <Text style={styles.name}>{user.firstName}</Text>
+        <Text style={styles.name}>{User.firstName}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -57,9 +57,11 @@ const MemberItem = ({ user, onPress }) => {
 MemberItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number,
-    firstName: PropTypes.string,
-    avatar: PropTypes.string,
+    User: PropTypes.shape({
+      id: PropTypes.number,
+      firstName: PropTypes.string,
+      avatar: PropTypes.string,
+    }),
   }).isRequired,
 };
 

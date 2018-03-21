@@ -84,6 +84,7 @@ class Area extends Component {
   componentWillMount() {
     const { defaultValue } = this.props;
     const { country, county, municipality, locality } = defaultValue;
+
     this.setState({ country, county, municipality, locality });
   }
 
@@ -193,6 +194,7 @@ class Area extends Component {
       </View>
     );
   }
+
   render() {
     return (
       <View>
@@ -201,7 +203,9 @@ class Area extends Component {
           <Picker
             style={styles.input}
             selectedValue={this.state.country}
-            onValueChange={country => this.setState({ country })}
+            onValueChange={country =>
+              this.setState({ country, county: null, municipality: null, locality: null })
+            }
           >
             {this.renderCountryCode()}
           </Picker>
@@ -214,7 +218,7 @@ class Area extends Component {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {this.props.buttonLabel}
         </RoundedButton>
       </View>
     );
@@ -231,6 +235,11 @@ Area.propTypes = {
     municipality: PropTypes.number,
     locality: PropTypes.number,
   }).isRequired,
+  buttonLabel: PropTypes.string,
+};
+
+Area.defaultProps = {
+  buttonLabel: 'Next',
 };
 
 export default compose(withCounties)(Area);
