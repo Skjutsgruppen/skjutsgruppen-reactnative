@@ -18,7 +18,9 @@ class ParticipantAvatar extends Component {
   }
 
   numberText = () => {
-    const { groupMembers: { count }, enabler } = this.props;
+    const { groupMembers: { count }, enabler, displayNumber } = this.props;
+
+    if (!displayNumber) return '';
 
     if (enabler) {
       return count > 1 ? `${count} ENABLERS` : `${count} ENABLER`;
@@ -58,6 +60,11 @@ ParticipantAvatar.propTypes = {
   onPress: PropTypes.func.isRequired,
   subscribeToUpdatedGroupMember: PropTypes.func.isRequired,
   enabler: PropTypes.bool.isRequired,
+  displayNumber: PropTypes.bool,
+};
+
+ParticipantAvatar.defaultProps = {
+  displayNumber: true,
 };
 
 export default ParticipantAvatar;

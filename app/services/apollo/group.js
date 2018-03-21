@@ -1,6 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING } from '@config/constant';
+import { GET_FEED_QUERY } from '@services/apollo/trip';
 
 const CREATE_GROUP_QUERY = gql`
 mutation group
@@ -334,14 +335,17 @@ query group($id: Int!){
       areaCoordinates
       TripStart {
         name 
+        countryCode
         coordinates 
       } 
       TripEnd {
-        name 
+        name
+        countryCode 
         coordinates
       } 
       Stops {
-        name 
+        name
+        countryCode 
         coordinates
       } 
       country 
@@ -358,6 +362,11 @@ query group($id: Int!){
         firstName
         avatar
       }
+      municipalityId
+      localityId
+      countyId
+      countryCode
+      hasCreatorLeft
   }
 }
 `;
@@ -790,6 +799,7 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
             rows = prev.groupMembers.rows.filter(row => row.id !== GroupMember.id);
             prevRequest = { ...prevRequest, ...{ rows, count: prevRequest.count - 1 } };
           } else {
+            // error in GroupMember
             const found = prev.groupMembers.rows
               .filter(row => row.id === GroupMember.id);
             repeated = found.length > 0;
@@ -1150,5 +1160,103 @@ export const withAddUnregisteredParticipants = graphql(UNREGISTERED_GROUP_MEMBER
     {
       storeUnregisteredParticipants: ({ groupId, phoneNumbers }) =>
         mutate({ variables: { groupId, phoneNumbers } }),
+    }),
+});
+
+const UPDATE_GROUP_MUTATION_QUERY = gql`
+  mutation updateGroup(
+    $id: Int,
+    $outreach: GroupOutreachEnum!
+    $tripStart: PlaceInput
+    $tripEnd: PlaceInput
+    $stops: [PlaceInput]
+    $name: String
+    $description: String
+    $photo: String
+    $countryCode: String
+    $countyId: Int
+    $municipalityId: Int
+    $localityId: Int
+    $type: GroupTypeEnum!
+   ){
+    updateGroup(
+      input : {
+        id: $id
+        outreach : $outreach
+        TripStart : $tripStart
+        TripEnd : $tripEnd
+        Stops : $stops
+        name : $name
+        description : $description
+        photo : $photo
+        countryCode : $countryCode
+        countyId : $countyId
+        municipalityId : $municipalityId
+        localityId : $localityId
+        type : $type
+      }
+    )
+  }
+`;
+
+export const withUpdateGroup = graphql(UPDATE_GROUP_MUTATION_QUERY, {
+  props: ({ mutate }) => (
+    {
+      updateGroup: ({
+        outreach,
+        tripStart,
+        tripEnd,
+        stops,
+        name,
+        description,
+        photo,
+        countryCode,
+        countyId,
+        municipalityId,
+        localityId,
+        type,
+        id,
+      }) => mutate({
+        variables: {
+          outreach,
+          tripStart,
+          tripEnd,
+          stops,
+          name,
+          description,
+          photo,
+          countryCode,
+          countyId,
+          municipalityId,
+          localityId,
+          type,
+          id,
+        },
+      }),
+    }),
+});
+
+const DELETE_GROUP_QUERY = gql`
+  mutation deleteGroup($id: Int!){
+    deleteGroup(id: $id)
+  }
+`;
+
+export const withDeleteGroup = graphql(DELETE_GROUP_QUERY, {
+  props: ({ mutate }) => (
+    {
+      deleteGroup: ({ id }) => mutate({
+        variables: { id },
+        refetchQueries: [
+          {
+            query: GET_FEED_QUERY,
+            variables: {
+              offset: 0,
+              limit: PER_FETCH_LIMIT,
+              filter: { type: FEED_FILTER_EVERYTHING },
+            },
+          },
+        ],
+      }),
     }),
 });

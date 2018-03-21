@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Toolbar from '@components/utils/toolbar';
@@ -9,6 +9,7 @@ import MembershipRequest from '@components/group/membershipRequest/membershipReq
 import ParticipantAvatar from '@components/group/participantAvatar';
 import { withGroupMembers, withGroupMembershipRequest } from '@services/apollo/group';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
+import Share from '@components/common/share';
 
 const styles = StyleSheet.create({
   contentWrapper: {
@@ -57,7 +58,10 @@ class GroupInformation extends Component {
     header: null,
   };
 
-  onShare = () => { }
+  constructor(props) {
+    super(props);
+    this.state = { showShareModal: false };
+  }
 
   onPress = (type) => {
     const { navigation } = this.props;
@@ -74,19 +78,61 @@ class GroupInformation extends Component {
     if (type === 'Participants') {
       navigation.navigate('Participants', { group });
     }
+
+    if (type === 'EditGroup') {
+      navigation.navigate('EditGroup', { id: group.id });
+    }
   }
 
-  renderShareButton = () => <ShareButton onPress={this.onShare} animated={false} />;
+  renderShareButton = () => (
+    <ShareButton
+      onPress={() => this.setState({ showShareModal: true })}
+      animated={false}
+    />
+  );
 
   renderButton = () => (
     <RoundedButton
-      onPress={() => { }}
+      onPress={() => this.onPress('EditGroup')}
       bgColor={Colors.background.pink}
       style={styles.button}
     >
       Change
     </RoundedButton>
   );
+
+  renderShareModal = () => {
+    const { navigation } = this.props;
+    const { group } = navigation.state.params;
+
+    return (
+      <Modal
+        visible={this.state.showShareModal}
+        onRequestClose={() => this.setState({ showShareModal: false })}
+        animationType="slide"
+      >
+        <Share
+          modal
+          type={'Group'}
+          detail={group}
+          onClose={() => this.setState({ showShareModal: false })}
+        />
+      </Modal>
+    );
+  }
+
+  renderStops = (Stops) => {
+    let stopText = 'Stops in ';
+
+    Stops.forEach((stop, index) => {
+      if (index > 0) {
+        stopText += ', ';
+      }
+      stopText += stop.name;
+    });
+
+    return stopText;
+  }
 
   render() {
     const { navigation } = this.props;
@@ -145,14 +191,22 @@ class GroupInformation extends Component {
               {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
               {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
             </Text>
+            <Text style={styles.text}>
+              {group.outreach === STRETCH_TYPE_ROUTE
+                && group.Stops.length > 0
+                && this.renderStops(group.Stops)}
+            </Text>
             <Text style={[styles.text, styles.description]}>
               {group.description}
             </Text>
           </View>
         </ScrollView>
-        {/* <View style={styles.footer}>
-          {this.renderButton()}
-        </View> */}
+        {group.isAdmin &&
+          <View style={styles.footer}>
+            {this.renderButton()}
+          </View>
+        }
+        {this.renderShareModal()}
       </View>
     );
   }

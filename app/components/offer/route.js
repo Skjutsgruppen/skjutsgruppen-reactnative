@@ -232,6 +232,7 @@ class Route extends PureComponent {
           <PlaceInput
             placeholder="Place"
             currentLocation={false}
+            wrapperStyle={{ flex: 1 }}
             height={60}
             defaultValue={place}
             inputStyle={{ paddingLeft: 68 }}
@@ -249,7 +250,7 @@ class Route extends PureComponent {
     });
   }
   render() {
-    const { isOffer } = this.props;
+    const { isOffer, buttonLabel } = this.props;
     const { start, end, isReturning, hideReturnTripOption } = this.state;
 
     return (
@@ -319,7 +320,7 @@ class Route extends PureComponent {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {buttonLabel}
         </RoundedButton>
       </View>
     );
@@ -348,10 +349,12 @@ Route.propTypes = {
   }).isRequired,
   hideReturnTripOption: PropTypes.bool.isRequired,
   isOffer: PropTypes.bool,
+  buttonLabel: PropTypes.string,
 };
 
 Route.defaultProps = {
   isOffer: false,
+  buttonLabel: 'Next',
 };
 
 export default Route;

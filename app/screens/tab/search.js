@@ -273,6 +273,7 @@ class Search extends Component {
                   placeholder={trans('search.from_where_i_am_now')}
                   onChangeText={({ place }) => this.setState({ from: place })}
                   style={styles.input}
+                  wrapperStyle={{ flex: 1 }}
                 />
                 <AppText
                   size={12}
@@ -295,6 +296,7 @@ class Search extends Component {
                   defaultValue={this.state.to}
                   onChangeText={({ place }) => this.setState({ to: place })}
                   style={styles.input}
+                  wrapperStyle={{ flex: 1 }}
                 />
                 <AppText
                   size={12}
