@@ -36,6 +36,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# pods 
+ios/Pods/
+
 # BUCK
 buck-out/
 \.buckd/

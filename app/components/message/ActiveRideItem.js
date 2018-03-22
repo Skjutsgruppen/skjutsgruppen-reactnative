@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
@@ -9,10 +9,9 @@ import { getDate } from '@config';
 import Date from '@components/date';
 import { Colors } from '@theme';
 
+import { AppText } from '@components/utils/texts';
+
 const styles = StyleSheet.create({
-  lightText: {
-    color: Colors.text.gray,
-  },
   flexRow: {
     flex: 1,
     flexDirection: 'row',
@@ -56,10 +55,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingHorizontal: 4,
   },
-  whiteText: {
-    color: Colors.text.white,
-    fontSize: 14,
-  },
 });
 
 const renderPic = (photo) => {
@@ -97,8 +92,8 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
             {renderPic(trip.User.avatar)}
           </View>
           <View>
-            <Text>{tripName}</Text>
-            <Text style={styles.lightText}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></Text>
+            <AppText>{tripName}</AppText>
+            <AppText color={Colors.text.gray}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></AppText>
           </View>
           {
             trip.muted &&
@@ -107,7 +102,12 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
               {
                 trip.unreadNotificationCount > 0 &&
                 <View style={styles.muteCountWrapper}>
-                  <Text style={styles.whiteText}>{trip.unreadNotificationCount}</Text>
+                  <AppText
+                    size={14}
+                    color={Colors.text.white}
+                  >
+                    {trip.unreadNotificationCount}
+                  </AppText>
                 </View>
               }
             </View>)

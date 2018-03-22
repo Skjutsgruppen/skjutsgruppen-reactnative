@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText } from '@components/utils/texts';
 import Colors from '@theme/colors';
 import { withMyTrips } from '@services/apollo/trip';
 import PropTypes from 'prop-types';
@@ -18,9 +19,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   sectionTitle: {
-    fontSize: 12,
     marginTop: 16,
-    color: Colors.text.blue,
     marginHorizontal: 24,
   },
 });
@@ -80,9 +79,9 @@ class Ride extends PureComponent {
 
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
+        <AppText size={12} color={Colors.text.blue} style={styles.sectionTitle}>
           {('Your active rides'.toUpperCase())}
-        </Text>
+        </AppText>
         {this.renderList()}
       </View>
     );
