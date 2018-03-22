@@ -8,6 +8,12 @@ import _find from 'lodash/find';
 import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
+  text: {
+    fontFamily: 'sfuiTextRegular',
+  },
+  lightText: {
+    color: Colors.text.gray,
+  },
   inputWrapper: {
     flexDirection: 'row',
     flex: 1,
@@ -38,7 +44,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.fullWhite,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 0,
     flex: 1,
     justifyContent: 'center',
@@ -50,6 +57,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   closeLabel: {
+    fontFamily: 'sfuiTextBold',
     textAlign: 'center',
     fontWeight: 'bold',
     color: Colors.text.blue,
@@ -96,15 +104,15 @@ class PlacesInput extends PureComponent {
     if (place.name) {
       return (
         <View>
-          <Text>
-            {place.name}
+          <Text style={styles.text} >{place.name}</Text>
+          <Text style={[styles.text, styles.lightText]}>
+            {this.getCountryName(place.countryCode)}
           </Text>
-          <Text style={{ color: Colors.text.gray }}>{this.getCountryName(place.countryCode)}</Text>
         </View>
       );
     }
 
-    return (<Text style={{ color: Colors.text.gray }}>{placeholder}</Text>);
+    return (<Text style={[styles.text, styles.lightText]}>{placeholder}</Text>);
   }
 
   renderModal() {
@@ -142,7 +150,7 @@ class PlacesInput extends PureComponent {
     const { inputStyle, height } = this.props;
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'red' }}>
         <View style={[styles.inputWrapper]}>
           <TouchableHighlight
             underlayColor="#f5f5f5"

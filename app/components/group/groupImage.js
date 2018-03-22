@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
   ViewPropTypes,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { Heading } from '@components/utils/texts';
 
 const cardHeight = 484;
 
@@ -35,10 +35,6 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   name: {
-    backgroundColor: 'transparent',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text.white,
     alignSelf: 'center',
     marginHorizontal: 24,
     textAlign: 'center',
@@ -61,7 +57,14 @@ const GroupImage = ({ group, wrapperStyle, roundedCorner }) => {
         source={source}
         style={[styles.img, roundedCorner && styles.roundedCorner]}
       />
-      <Text style={styles.name}>{group.name}</Text>
+      <Heading
+        size={24}
+        color={Colors.text.white}
+        fontVariation="bold"
+        style={styles.name}
+      >
+        {group.name}
+      </Heading>
     </View>
   );
 };

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Image, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Image, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
+import { Heading } from '@components/utils/texts';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 import SearchList from '@components/message/searchList';
@@ -14,14 +15,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
     marginTop: 42,
   },
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 36,
     marginVertical: 24,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 18,
@@ -41,6 +39,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingLeft: 0,
     marginRight: 16,
+    fontFamily: 'sfuiTextRegular',
   },
   content: {
     flex: 1,
@@ -67,7 +66,7 @@ class MessageSearch extends PureComponent {
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <LinearGradient colors={['#fff', '#ededf9']} style={styles.header}>
-          <Text style={styles.title}>{trans('message.messages_and_group')}</Text>
+          <Heading style={styles.title}>{trans('message.messages_and_group')}</Heading>
           <View style={styles.searchInputWrapper}>
             <Image
               source={require('@assets/icons/ic_search.png')}

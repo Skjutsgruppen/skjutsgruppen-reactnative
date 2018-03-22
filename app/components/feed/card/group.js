@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import { Footer } from '@components/feed/card';
@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import GroupImage from '@components/group/groupImage';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -45,15 +46,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  groupName: {
-    backgroundColor: 'transparent',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text.white,
-    alignSelf: 'center',
-    marginHorizontal: 24,
-    textAlign: 'center',
-  },
   profilePicWrapper: {
     height: profilePicSize,
     width: profilePicSize,
@@ -83,10 +75,6 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     overflow: 'hidden',
   },
-  commentText: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
   commentGradientOverlay: {
     height: 24,
     position: 'absolute',
@@ -95,17 +83,6 @@ const styles = StyleSheet.create({
     right: 0,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-  },
-  text: {
-    lineHeight: 20,
-  },
-  lightText: {
-    color: Colors.text.darkGray,
-  },
-  username: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-    marginRight: 2,
   },
 });
 
@@ -133,28 +110,28 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             />
             <View style={styles.detail}>
               <View>
-                <Text style={[styles.text, styles.lightText]}>
-                  <Text style={styles.username}>
+                <AppText>
+                  <AppText fontVariation="semibold" color={Colors.text.blue}>
                     {group.User.firstName || group.User.email}
-                  </Text>
-                  <Text> {trans('feed.created_a_group')}</Text>
-                </Text>
+                  </AppText>
+                  <AppText color={Colors.text.darkGray}> {trans('feed.created_a_group')}</AppText>
+                </AppText>
                 {
                   group.outreach === STRETCH_TYPE_AREA &&
-                  <Text style={[styles.text, styles.lightText]}>
+                  <AppText color={Colors.text.darkGray}>
                     {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-                  </Text>
+                  </AppText>
                 }
                 {
                   group.outreach === STRETCH_TYPE_ROUTE &&
-                  <Text style={[styles.text, styles.lightText]}>
+                  <AppText color={Colors.text.darkGray}>
                     {group.TripStart.name} - {group.TripEnd.name}
-                  </Text>
+                  </AppText>
                 }
               </View>
             </View>
             <View style={styles.comment}>
-              <Text style={[styles.text, styles.commentText]}>{group.description}</Text>
+              <AppText>{group.description}</AppText>
               <LinearGradient
                 colors={Gradients.transparentWhite}
                 style={styles.commentGradientOverlay}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors, Gradients } from '@theme';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
@@ -8,6 +8,7 @@ import { trans } from '@lang/i18n';
 import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, FLEXIBILITY_EARLIER_TYPE } from '@config/constant';
 import TouchableHighlight from '@components/touchableHighlight';
 import LinearGradient from 'react-native-linear-gradient';
+import { AppText } from '@components/utils/texts';
 
 const cardHeight = 484;
 const profilePicSize = 60;
@@ -74,16 +75,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
   },
-  text: {
-    lineHeight: 20,
-  },
-  lightText: {
-    color: Colors.text.darkGray,
-  },
-  username: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
 });
 
 const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
@@ -115,32 +106,35 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle }) => {
           <TripTypePill color={tripColor} label={tripLabel} />
           <View style={styles.detail}>
             <View>
-              <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.username}>{trip.User.firstName}</Text>
+              <AppText style={[styles.text]}>
+                <AppText fontVariation="semibold" color={Colors.text.blue}>{trip.User.firstName}</AppText>
                 {
                   trip.type === FEED_TYPE_OFFER &&
-                  <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+                  <AppText color={Colors.text.darkGray}> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
                 }
-                {trip.type === FEED_TYPE_WANTED && (<Text> {trans('feed.asks_for_a_ride')}</Text>)}
-              </Text>
-              <Text style={[styles.text, styles.lightText]}>
+                {trip.type === FEED_TYPE_WANTED && (<AppText color={Colors.text.darkGray}> {trans('feed.asks_for_a_ride')}</AppText>)}
+              </AppText>
+              <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                 {trip.TripStart.name} - {trip.TripEnd.name}
-              </Text>
-              <Text style={[styles.text, styles.lightText]}>
+              </AppText>
+              <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                 <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
                 {
                   trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
-                  <Text style={{ fontSize: 13, color: Colors.text.gray }}>
+                  <AppText
+                    size={13}
+                    color={Colors.text.darkGray}
+                  >
                     {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
                     {trip.flexibilityInfo.duration}
                     {trip.flexibilityInfo.unit}
-                  </Text>
+                  </AppText>
                 }
-              </Text>
+              </AppText>
             </View>
           </View>
           <View style={styles.comment}>
-            <Text style={[styles.text, styles.commentText]}>{trip.description}</Text>
+            <AppText>{trip.description}</AppText>
             <LinearGradient
               colors={Gradients.transparentWhite}
               style={styles.commentGradientOverlay}
