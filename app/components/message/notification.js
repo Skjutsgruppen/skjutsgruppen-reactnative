@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 import MesssageItem from '@components/message/item';
 import DataList from '@components/dataList';
 import { connect } from 'react-redux';
@@ -18,9 +19,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   sectionTitle: {
-    fontSize: 12,
     marginTop: 16,
-    color: Colors.text.blue,
     marginHorizontal: 24,
   },
   emptyMessage: {
@@ -101,9 +100,9 @@ class NewNotification extends PureComponent {
 
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
+        <AppText size={12} color={Colors.text.blue} style={styles.sectionTitle}>
           {filters.toUpperCase()} {filters !== 'new' && trans('message.messages')}
-        </Text>
+        </AppText>
         {this.renderNotification()}
       </View>
     );

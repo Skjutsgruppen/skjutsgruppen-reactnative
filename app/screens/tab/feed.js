@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Modal, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
+import { Heading } from '@components/utils/texts';
 import { withFeed } from '@services/apollo/trip';
 import PropTypes from 'prop-types';
 import Share from '@components/common/share';
@@ -31,15 +32,6 @@ import DataList from '@components/dataList';
 const FeedExperience = withGetExperiences(List);
 
 const styles = StyleSheet.create({
-  circle: {
-    position: 'absolute',
-    top: -Dimensions.get('window').width * 0.1,
-    left: -Dimensions.get('window').width * 0.1,
-    height: Dimensions.get('window').width * 0.6,
-    width: Dimensions.get('window').width * 0.6,
-    borderRadius: (Dimensions.get('window').width * 0.6) / 2,
-    backgroundColor: '#02cbf9',
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -60,18 +52,6 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     marginLeft: 12,
-  },
-  hi: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text.white,
-    backgroundColor: 'transparent',
-  },
-  errorText: {
-    fontSize: 16,
-    lineHeight: 32,
-    color: Colors.text.gray,
-    textAlign: 'center',
   },
 });
 
@@ -241,7 +221,13 @@ class Feed extends Component {
   renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.menuWrapper}>
-        <Text style={styles.hi}>{trans('feed.hi')}!</Text>
+        <Heading
+          fontVariation="bold"
+          size={24}
+          color={Colors.text.white}
+        >
+          {trans('feed.hi')}!
+        </Heading>
         <TouchableOpacity
           style={styles.menuIcon}
           onPress={() => this.setFilterVisibility(true)}

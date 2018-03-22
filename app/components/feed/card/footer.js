@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
 import ShareIcon from '@assets/icons/ic_share.png';
 import CommentIcon from '@assets/icons/ic_comment.png';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -19,12 +20,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   commentCout: {
-    color: Colors.text.gray,
     marginRight: 10,
-  },
-  readMore: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
 });
 
@@ -38,14 +34,18 @@ const Footer = ({ onSharePress, onCommentPress, totalFeeds, hasReadMore }) => (
         <TouchableOpacity
           onPress={onCommentPress}
         >
-          <Text style={styles.readMore}>{trans('feed.read_more')}</Text>
+          <AppText fontVariation="semibold" color={Colors.text.blue}>{trans('feed.read_more')}</AppText>
         </TouchableOpacity>
       )
     }
     {
       !hasReadMore && (
         <View style={styles.commentIcon}>
-          <Text style={styles.commentCout}>{totalFeeds}</Text>
+          <AppText
+            size={14}
+            color={Colors.text.gray}
+            style={styles.commentCout}
+          >{totalFeeds}</AppText>
           <TouchableOpacity onPress={onCommentPress}>
             <Image source={CommentIcon} style={styles.commentIcon} />
           </TouchableOpacity>

@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   Image,
   TouchableHighlight,
@@ -12,6 +11,7 @@ import Colors from '@theme/colors';
 import SunIcon from '@assets/icons/ic_camera_head.png';
 import Arrow from '@assets/icons/ic_arrow_experience.png';
 import { withNavigation } from 'react-navigation';
+import { AppText } from '@components/utils/texts';
 import { Loading } from '@components/common';
 
 const styles = StyleSheet.create({
@@ -26,10 +26,6 @@ const styles = StyleSheet.create({
   },
   arrow: {
     marginLeft: 24,
-  },
-  title: {
-    fontSize: 18,
-    color: Colors.text.gray,
   },
   horizontalScroller: {
     marginBottom: 24,
@@ -64,9 +60,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 12,
   },
-  msg: {
-    color: Colors.text.gray,
-  },
   centered: {
     alignSelf: 'center',
     alignItems: 'center',
@@ -78,7 +71,9 @@ class List extends PureComponent {
   render() {
     const { experiences, navigation, title } = this.props;
     const { rows, loading, error } = experiences;
-    let list = <Text style={[styles.block, styles.msg]}>No experiences has been created yet.</Text>;
+    let list = (<AppText style={[styles.block, styles.msg]}>
+      No experiences has been created yet.
+    </AppText>);
 
     if (loading) {
       return (<View style={[styles.block, styles.centered]}><Loading /></View>);
@@ -87,12 +82,12 @@ class List extends PureComponent {
     if (error) {
       list = (
         <View style={styles.block}>
-          <Text style={styles.msg}>{error.message}</Text>
+          <AppText color={Colors.text.gray} style={styles.msg}>{error.message}</AppText>
           <TouchableHighlight
             onPress={() => experiences.refetch()}
             underlayColor={Colors.background.lightGray}
           >
-            <Text style={styles.msg}>Retry</Text>
+            <AppText color={Colors.text.lightGray}>Retry</AppText>
           </TouchableHighlight>
         </View>
       );
@@ -117,7 +112,7 @@ class List extends PureComponent {
         <View style={styles.header}>
           <Image source={SunIcon} style={styles.sunIcon} />
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{title}</Text>
+            <AppText color={Colors.text.gray}>{title}</AppText>
             <Image source={Arrow} style={styles.arrow} />
           </View>
         </View>

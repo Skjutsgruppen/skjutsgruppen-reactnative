@@ -1,9 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 
+import { AppText } from '@components/utils/texts';
 import { Colors } from '@theme';
 import { withResetMute } from '@services/apollo/mute';
 import { getDate } from '@config';
@@ -84,7 +85,7 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
             {group.photo ? renderPic(group.photo) : renderPic(group.mapPhoto)}
           </View>
           <View>
-            <Text>{group.name}</Text>
+            <AppText>{group.name}</AppText>
           </View>
           {
             group.muted &&
@@ -93,7 +94,12 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
               {
                 group.unreadNotificationCount > 0 &&
                 <View style={styles.muteCountWrapper}>
-                  <Text style={styles.whiteText}>{group.unreadNotificationCount}</Text>
+                  <AppText
+                    size={14}
+                    color={Colors.text.white}
+                  >
+                    {group.unreadNotificationCount}
+                  </AppText>
                 </View>
               }
             </View>)

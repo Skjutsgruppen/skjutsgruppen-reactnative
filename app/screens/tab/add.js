@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, Image } from 'react-native';
-import { Wrapper, Circle } from '@components/common';
+import { StyleSheet, ScrollView, Image } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { Wrapper, Circle } from '@components/common';
+import { Heading } from '@components/utils/texts';
 import ExploreRecentGroup from '@components/group/exploreRecentCard';
 import { withExploreGroup } from '@services/apollo/group';
 
@@ -17,9 +18,6 @@ const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text.white,
     marginHorizontal: 20,
     marginTop: '15%',
     marginBottom: '5%',
@@ -77,16 +75,21 @@ class Add extends Component {
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ScrollView ref={(ref) => { this.scrollView = ref; }}>
           <Circle />
-          <Text style={styles.title}>Add</Text>
+          <Heading
+            size={24}
+            color={Colors.text.white}
+            fontVariation="bold"
+            style={styles.title}
+          >
+            Add
+          </Heading>
           <Starter
             onPress={() => navigation.navigate('Offer')}
             label="Offer a ride"
-            info="5 steps"
           />
           <Starter
             onPress={() => navigation.navigate('Ask')}
             label="Ask for a ride"
-            info="4 steps"
           />
           <Starter
             onPress={() => navigation.navigate('Group')}

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Image, Alert, Modal } from 'react-native';
 import PlaceInput from '@components/search/place/placeInput';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
+import { AppText, Heading } from '@components/utils/texts';
 import { Circle, RoundedButton } from '@components/common';
 import { Colors, Gradients } from '@theme';
 import { Calendar } from 'react-native-calendars';
@@ -23,18 +24,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.lightBlueWhite,
   },
   title: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
     paddingHorizontal: 20,
     marginTop: '10%',
     marginBottom: '5%',
-  },
-  scrollArea: {
-    flex: 1,
-    height: 300,
-    backgroundColor: Colors.background.fullWhite,
-    marginTop: 24,
   },
   content: {
     backgroundColor: 'red',
@@ -50,8 +42,6 @@ const styles = StyleSheet.create({
   inputLabel: {
     alignSelf: 'flex-start',
     width: 60,
-    fontWeight: 'bold',
-    color: Colors.text.gray,
     textAlign: 'center',
     marginTop: 20,
   },
@@ -70,11 +60,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: {
-    color: Colors.text.gray,
-    paddingHorizontal: 24,
-    marginVertical: 12,
-  },
   locationSuggestions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -92,10 +77,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     justifyContent: 'center',
   },
-  suggestionText: {
-    color: Colors.text.white,
-    fontSize: 12,
-  },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -103,13 +84,6 @@ const styles = StyleSheet.create({
     padding: 24,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
-  },
-  dateLabel: {
-    color: Colors.text.darkGray,
-  },
-  changeButton: {
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
   resultsFrom: {
     flexDirection: 'row',
@@ -282,7 +256,14 @@ class Search extends Component {
       <View style={styles.wrapper}>
         <ScrollView keyboardShouldPersistTaps="handled" ref={(ref) => { this.scrollView = ref; }}>
           <Circle />
-          <Text style={styles.title}>Search</Text>
+          <Heading
+            size={24}
+            color={Colors.text.white}
+            fontVariation="bold"
+            style={styles.title}
+          >
+            Search
+          </Heading>
           <LinearGradient colors={Gradients.white} style={styles.content}>
             <View style={styles.locationWrapper}>
               <View style={styles.inputWrapper}>
@@ -293,7 +274,14 @@ class Search extends Component {
                   onChangeText={({ place }) => this.setState({ from: place })}
                   style={styles.input}
                 />
-                <Text style={styles.inputLabel}>{trans('global.from')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.gray}
+                  fontVariation="bold"
+                  style={styles.inputLabel}
+                >
+                  {trans('global.from')}
+                </AppText>
               </View>
               <View style={styles.inputWrapper}>
                 <View style={styles.divider} />
@@ -308,33 +296,70 @@ class Search extends Component {
                   onChangeText={({ place }) => this.setState({ to: place })}
                   style={styles.input}
                 />
-                <Text style={styles.inputLabel}>{trans('global.to')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.gray}
+                  fontVariation="bold"
+                  style={styles.inputLabel}
+                >
+                  {trans('global.to')}
+                </AppText>
               </View>
             </View>
             {false &&
               <View style={styles.locationSuggestions}>
-                <Text style={styles.label}>{trans('search.or_choose')}:</Text>
+                <AppText size={14} color={Colors.text.gray} style={{ marginVertical: 12 }}>{trans('search.or_choose')}:</AppText>
                 <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-                  <Text style={styles.suggestionText}>{trans('global.anywhere')}</Text>
+                  <AppText
+                    size={12}
+                    color={Colors.text.white}
+                    fontVariation="semibold"
+                  >
+                    {trans('global.anywhere')}
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-                  <Text style={styles.suggestionText}>{trans('global.north')}</Text>
+                  <AppText
+                    size={12}
+                    color={Colors.text.white}
+                    fontVariation="semibold"
+                  >
+                    {trans('global.north')}
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-                  <Text style={styles.suggestionText}>{trans('global.south')}</Text>
+                  <AppText
+                    size={12}
+                    color={Colors.text.white}
+                    fontVariation="semibold"
+                  >
+                    {trans('global.south')}
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-                  <Text style={styles.suggestionText}>{trans('global.east')}</Text>
+                  <AppText
+                    size={12}
+                    color={Colors.text.white}
+                    fontVariation="semibold"
+                  >
+                    {trans('global.east')}
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-                  <Text style={styles.suggestionText}>{trans('global.west')}</Text>
+                  <AppText
+                    size={12}
+                    color={Colors.text.white}
+                    fontVariation="semibold"
+                  >
+                    {trans('global.west')}
+                  </AppText>
                 </TouchableOpacity>
               </View>
             }
             <View style={styles.dateRow}>
-              <Text style={styles.dateLabel}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</Text>
+              <AppText size={14} color={Colors.text.gray}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</AppText>
               <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-                <Text style={styles.changeButton}>{trans('search.change')}</Text>
+                <AppText size={14} color={Colors.text.blue} fontVariation="semibold">{trans('search.change')}</AppText>
               </TouchableOpacity>
             </View>
 
@@ -369,7 +394,7 @@ class Search extends Component {
                 }}
               />
             </Modal>
-            <Text style={styles.label}>{trans('search.show_results_from')}</Text>
+            <AppText size={14} color={Colors.text.gray} style={{ margin: 20 }}>{trans('search.show_results_from')}</AppText>
             <View style={styles.resultsFrom}>
               <TouchableOpacity
                 onPress={() => this.onFilterSelect(FEED_TYPE_OFFER)}
@@ -378,7 +403,13 @@ class Search extends Component {
                   filters.indexOf(FEED_TYPE_OFFER) > -1 && styles.selected,
                 ]}
               >
-                <Text style={styles.suggestionText}>{trans('search.offered')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.white}
+                  fontVariation="semibold"
+                >
+                  {trans('search.offered')}
+                </AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.onFilterSelect(FEED_TYPE_WANTED)}
@@ -387,7 +418,13 @@ class Search extends Component {
                   filters.indexOf(FEED_TYPE_WANTED) > -1 && styles.selected,
                 ]}
               >
-                <Text style={styles.suggestionText}>{trans('search.asked_for')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.white}
+                  fontVariation="semibold"
+                >
+                  {trans('search.asked_for')}
+                </AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.onFilterSelect(FEED_TYPE_PUBLIC_TRANSPORT)}
@@ -396,7 +433,13 @@ class Search extends Component {
                   filters.indexOf(FEED_TYPE_PUBLIC_TRANSPORT) > -1 && styles.selected,
                 ]}
               >
-                <Text style={styles.suggestionText}>{trans('search.public_transport')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.white}
+                  fontVariation="semibold"
+                >
+                  {trans('search.public_transport')}
+                </AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.onFilterSelect(FEED_TYPE_GROUP)}
@@ -405,7 +448,13 @@ class Search extends Component {
                   filters.indexOf(FEED_TYPE_GROUP) > -1 && styles.selected,
                 ]}
               >
-                <Text style={styles.suggestionText}>{trans('search.groups')}</Text>
+                <AppText
+                  size={12}
+                  color={Colors.text.white}
+                  fontVariation="semibold"
+                >
+                  {trans('search.groups')}
+                </AppText>
               </TouchableOpacity>
             </View>
             <RoundedButton
