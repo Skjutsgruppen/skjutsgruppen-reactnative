@@ -11,7 +11,7 @@ import { withFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import FriendList from '@components/friend/selectable';
 import SendSMS from 'react-native-sms';
-import FriendsWithNoMembership from '@components/group/participant/friendsWithNoMembership';
+// import FriendsWithNoMembership from '@components/group/participant/friendsWithNoMembership';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
 
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Friends = withFriends(FriendsWithNoMembership);
+// const Friends = withFriends(FriendsWithNoMembership);
 
 class AddParticipant extends Component {
   constructor(props) {
@@ -51,7 +51,20 @@ class AddParticipant extends Component {
       searchQuery: '',
       loading: false,
       error: '',
+      friendsList: [],
+      friendsListSearch: [],
     };
+  }
+
+  componentWillMount() {
+    const { friends } = this.props;
+    const { friendsList } = this.state;
+
+    if (friends && !friends.loading) {
+      friends.rows.forEach(friend => friendsList.push(friend));
+    }
+
+    this.setState({ friendsList });
   }
 
   componentWillReceiveProps({ contacts }) {
@@ -168,26 +181,28 @@ class AddParticipant extends Component {
   }
 
   renderList() {
-    const { contacts, group } = this.props;
+    const { friends } = this.props;
     const {
       searchQuery,
       selectedContacts,
       contactsList,
       contactsListSearch,
+      friendsList,
+      friendsListSearch,
       selectedFriends,
     } = this.state;
 
     if (searchQuery.length > 0) {
       return (
         <View style={styles.listWrapper}>
-          <Friends
-            groupId={group.id}
-            searchQuery={searchQuery}
-            selectedFriends={selectedFriends}
-            setOption={this.setOption}
+          <FriendList
+            loading={friends.loading}
+            rows={friendsListSearch}
+            setOption={id => this.setOption('selectedFriends', id)}
+            selected={selectedFriends}
           />
           <FriendList
-            loading={contacts.loading}
+            loading={false}
             rows={contactsListSearch}
             defaultAvatar
             setOption={id => this.setOption('selectedContacts', id)}
@@ -199,14 +214,13 @@ class AddParticipant extends Component {
 
     return (
       <View style={styles.listWrapper}>
-        <Friends
-          groupId={group.id}
-          searchQuery={searchQuery}
-          selectedFriends={selectedFriends}
-          setOption={this.setOption}
+        <FriendList
+          loading={friends.loading}
+          rows={friendsList}
+          setOption={id => this.setOption('selectedFriends', id)}
+          selected={selectedFriends}
         />
         <FriendList
-          loading={contacts.loading}
           rows={contactsList}
           defaultAvatar
           setOption={id => this.setOption('selectedContacts', id)}
@@ -261,6 +275,15 @@ AddParticipant.propTypes = {
     goBack: PropTypes.func.isRequired,
   }).isRequired,
   storeUnregisteredParticipants: PropTypes.func.isRequired,
+  friends: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    count: PropTypes.number.isRequired,
+    rows: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+      }),
+    ).isRequired,
+  }).isRequired,
 };
 
 export default compose(
@@ -268,4 +291,5 @@ export default compose(
   withAddGroupParticipant,
   withContactFriends,
   withAddUnregisteredParticipants,
+  withFriends,
 )(AddParticipant);

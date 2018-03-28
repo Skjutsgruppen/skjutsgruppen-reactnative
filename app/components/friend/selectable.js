@@ -112,7 +112,7 @@ const Selectable = ({ title, loading, rows, setOption, selected, disabled, user,
 };
 
 Selectable.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   rows: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     firstName: PropTypes.string.isRequired,
@@ -133,6 +133,7 @@ Selectable.defaultProps = {
   disabled: [],
   title: '',
   showSelf: false,
+  loading: false,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

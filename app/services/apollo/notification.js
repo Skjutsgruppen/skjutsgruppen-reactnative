@@ -37,6 +37,11 @@ subscription notification($userId: Int!) {
         User {
           id
         }
+        Enablers {
+          id
+          firstName
+          avatar
+        }
         muted
         unreadNotificationCount
       }
@@ -141,6 +146,11 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           membershipStatus
           User {
             id
+          }
+          Enablers {
+            id
+            firstName
+            avatar
           }
           muted
           unreadNotificationCount
@@ -474,6 +484,11 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id 
             firstName 
             avatar 
+          }
+          Enablers {
+            id
+            firstName
+            avatar
           } 
           outreach
           type
