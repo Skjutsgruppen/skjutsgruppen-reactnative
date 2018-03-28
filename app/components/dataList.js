@@ -154,7 +154,12 @@ class DataList extends PureComponent {
   };
 
   render() {
-    const { data, innerRef, onEndReachedThreshold, shouldUpdateAnimatedValue } = this.props;
+    const {
+      data,
+      innerRef,
+      onEndReachedThreshold,
+      shouldUpdateAnimatedValue,
+    } = this.props;
     return (
       <AnimatedFlatlist
         {...this.props}

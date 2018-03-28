@@ -11,8 +11,9 @@ import NewsDetail from '@screens/NewsDetail';
 import GroupDetail from '@screens/group/GroupDetail';
 import ExperienceDetail from '@screens/experience/ExperienceDetail';
 
+import AlphabeticalGroupsList from '@screens/group/AlphabeticalGroupsList';
 import ExploreGroup from '@screens/group/ExploreGroup';
-import SearchGroup from '@screens/group/SearchGroup';
+import GroupsInCounty from '@screens/group/GroupsInCounty';
 import SharedTrip from '@screens/group/SharedTrip';
 
 import OnBoardingFirst from '@screens/auth/onboarding/first';
@@ -129,8 +130,9 @@ export const Routes = {
   GroupDetail: { screen: GroupDetail, path: 'group/:id' },
   ExperienceDetail: { screen: ExperienceDetail },
 
-  SearchGroup: { screen: SearchGroup, path: 'search/:query' },
+  AlphabeticalGroupsList: { screen: AlphabeticalGroupsList },
   ExploreGroup: { screen: ExploreGroup },
+  GroupsInCounty: { screen: GroupsInCounty },
   SearchResult: { screen: SearchResult },
 
   OnBoardingFirst: { screen: OnBoardingFirst },

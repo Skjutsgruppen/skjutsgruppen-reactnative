@@ -118,6 +118,14 @@ subscription{
           firstName 
           avatar 
         } 
+        Participants{
+          User {
+            id
+            avatar
+            firstName
+          }
+          status
+        }
       }
     }
   }
@@ -240,7 +248,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id 
           firstName 
           avatar 
-        } 
+        }
+        Participants{
+          User {
+            id
+            avatar
+            firstName
+          }
+          status
+        }
       }
     }
    }

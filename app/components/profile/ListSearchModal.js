@@ -3,12 +3,13 @@ import { View, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-nati
 import Colors from '@theme/colors';
 import { withMyTrips } from '@services/apollo/trip';
 import { withConversation } from '@services/apollo/profile';
-import { withMyGroups, withGroupMembers } from '@services/apollo/group';
+import { withMyGroups, withGroupMembers, withSearchGroup } from '@services/apollo/group';
 import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
 import SearchMyTrips from '@components/profile/SearchMyTrips';
 import SearchMyConversations from '@components/profile/SearchMyConversations';
 import SearchMyGroups from '@components/profile/SearchMyGroups';
+import SearchExploreGroups from '@components/group/SearchExploreGroups';
 import SearchMyFriends from '@components/profile/SearchMyFriends';
 import SearchEnabler from '@components/group/enablers/enablerList';
 import SearchAddEnabler from '@components/group/enablers/addEnablerList';
@@ -17,6 +18,7 @@ import SearchParticipant from '@components/group/participant/participantList';
 const TripsSearchResult = withMyTrips(SearchMyTrips);
 const ConversationSearchResult = withConversation(SearchMyConversations);
 const GroupsSearchResult = withMyGroups(SearchMyGroups);
+const ExploreGroupsSearchResult = withSearchGroup(SearchExploreGroups);
 const FriendsSearchResult = withFriends(SearchMyFriends);
 const EnablersSearchResult = withGroupMembers(SearchEnabler);
 const AddEnablersSearchResult = withGroupMembers(SearchAddEnabler);
@@ -122,6 +124,14 @@ class ListSearchModal extends PureComponent {
             applyQueryString
             queryString={this.state.searchQuery}
           />}
+        {
+          searchCategory === 'exploreGroups' && this.state.searchQuery.length > 0 &&
+          <ExploreGroupsSearchResult
+            onPress={onPress}
+            keyword={this.state.searchQuery}
+            queryString={this.state.searchQuery}
+          />
+        }
         {searchCategory === 'friends' &&
           <FriendsSearchResult
             id={id}
