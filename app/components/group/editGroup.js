@@ -26,6 +26,8 @@ import SectionLabel from '@components/add/sectionLabel';
 import CommentBox from '@components/add/commentBox';
 import Route from '@components/offer/route';
 import Area from '@components/group/outreach/area';
+import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 
 const Enablers = withGroupMembers(ParticipantAvatar);
 
@@ -123,6 +125,18 @@ const styles = StyleSheet.create({
   radio: {
     marginBottom: 24,
   },
+  deleteText: {
+    color: Colors.text.red,
+  },
+  buttonWrapper: {
+    padding: 16,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 15,
+    alignItems: 'center',
+  },
+  button: {
+    maxWidth: 200,
+  },
 });
 
 class EditGroup extends Component {
@@ -134,12 +148,18 @@ class EditGroup extends Component {
       modalVisibility: false,
       loading: false,
       confirmModal: false,
+      updated: false,
+      error: false,
+      errorMsg: '',
+      openedComponent: '',
     };
   }
 
   componentWillMount() {
-    const { group } = this.props;
+    const { group, subscribeToGroup } = this.props;
     this.setState({ updatedGroup: group });
+
+    subscribeToGroup(group.id);
   }
 
   componentWillReceiveProps({ group }) {
@@ -147,7 +167,7 @@ class EditGroup extends Component {
   }
 
   onComplete = () => {
-    const { updateGroup } = this.props;
+    const { updateGroup, group } = this.props;
     const {
       outreach,
       TripStart,
@@ -164,56 +184,68 @@ class EditGroup extends Component {
       id,
     } = this.state.updatedGroup;
 
-    this.setState({ loading: true });
-
-    updateGroup({
-      outreach,
-      tripStart: TripStart.name ?
-        {
-          name: TripStart.name,
-          coordinates: TripStart.coordinates,
-          countryCode: TripStart.countryCode,
-        }
-        : null,
-      tripEnd: TripEnd.name ?
-        {
-          name: TripEnd.name,
-          coordinates: TripEnd.coordinates,
-          countryCode: TripEnd.countryCode,
-        }
-        : null,
-      stops: Stops.length > 0 ?
-        Stops.map(stop => ({
-          name: stop.name,
-          coordinates: stop.coordinates,
-          countryCode: stop.countryCode,
-        })) : null,
-      name,
-      description,
-      photo,
-      countryCode,
-      countyId,
-      municipalityId,
-      localityId,
-      type,
-      id,
-    })
-      .then(() => {
-        this.onChangePress(false, '');
-        this.setState({ loading: false });
+    if (name === '') {
+      this.onChangePress(false, '');
+      this.updateGroup('name', group.name);
+      this.setState({ errorMsg: getToast(['GROUP_NAME_REQUIRED']) });
+    } else if (description === '') {
+      this.onChangePress(false, '');
+      this.updateGroup('description', group.description);
+      this.setState({ errorMsg: getToast(['DESCRIPTION_REQUIRED']) });
+    } else if (this.state.updated) {
+      this.setState({ loading: true });
+      updateGroup({
+        outreach,
+        tripStart: TripStart.name ?
+          {
+            name: TripStart.name,
+            coordinates: TripStart.coordinates,
+            countryCode: TripStart.countryCode,
+          }
+          : null,
+        tripEnd: TripEnd.name ?
+          {
+            name: TripEnd.name,
+            coordinates: TripEnd.coordinates,
+            countryCode: TripEnd.countryCode,
+          }
+          : null,
+        stops: Stops.length > 0 ?
+          Stops.map(stop => ({
+            name: stop.name,
+            coordinates: stop.coordinates,
+            countryCode: stop.countryCode,
+          })) : null,
+        name,
+        description,
+        photo,
+        countryCode,
+        countyId,
+        municipalityId,
+        localityId,
+        type,
+        id,
       })
-      .catch(() => {
-        this.onChangePress(false, '');
-        this.setState({ loading: false });
-      });
+        .then(() => {
+          this.onChangePress(false, '');
+          this.setState({ loading: false, updated: false });
+        })
+        .catch(() => {
+          this.onChangePress(false, '');
+          this.setState({ loading: false, updated: false });
+        });
+    } else {
+      this.onChangePress(false, '');
+      this.setState({ loading: false, updated: false });
+    }
   }
 
   onChangePress = (show, redirect) => {
     const { navigation, group } = this.props;
 
-    if (redirect === 'enablers') {
+    if (redirect === 'Enablers') {
       navigation.navigate('EnablerList', { group });
-    } else if (redirect === 'participants') {
+    } else if (redirect === 'Participants') {
       navigation.navigate('Participants', { group });
     } else {
       this.setState({ modalVisibility: show, openedComponent: redirect });
@@ -269,6 +301,11 @@ class EditGroup extends Component {
     const group = { ...updatedGroup };
 
     if (key in updatedGroup) {
+      if (updatedGroup[key] === value) {
+        this.setState({ updated: false });
+      } else {
+        this.setState({ updated: true });
+      }
       group[key] = value;
     }
 
@@ -282,9 +319,10 @@ class EditGroup extends Component {
 
     this.props.deleteGroup({ id })
       .then(() => {
-        this.setState({ confirmModal: false });
+        this.setState({ confirmModal: false, loading: false, error: false });
         navigation.navigate('Feed');
-      });
+      })
+      .catch(() => this.setState({ confirmModal: true, loading: false, error: true }));
   }
 
   updateOutreach = async (value) => {
@@ -336,13 +374,11 @@ class EditGroup extends Component {
     const { updatedGroup: { description } } = this.state;
 
     return (
-      <View>
-        <CommentBox
-          label="What is your group about?"
-          onChangeText={text => this.updateGroup('description', text)}
-          value={description}
-        />
-      </View>
+      <CommentBox
+        label="What is your group about?"
+        onChangeText={text => this.updateGroup('description', text)}
+        value={description}
+      />
     );
   }
 
@@ -401,15 +437,13 @@ class EditGroup extends Component {
       };
 
       return (
-        <ScrollView>
-          <Route
-            isOffer
-            hideReturnTripOption
-            defaultValue={route}
-            buttonLabel={'Done'}
-            onNext={this.updateOutreach}
-          />
-        </ScrollView>
+        <Route
+          isOffer
+          hideReturnTripOption
+          defaultValue={route}
+          buttonLabel={'Done'}
+          onNext={this.updateOutreach}
+        />
       );
     }
 
@@ -424,18 +458,22 @@ class EditGroup extends Component {
   }
 
   renderButton = () => {
-    const { loading } = this.state;
+    const { loading, openedComponent } = this.state;
+
+    if (openedComponent === 'Outreach') return null;
 
     if (loading) return <Loading />;
 
     return (
-      <RoundedButton
-        onPress={() => this.onComplete()}
-        bgColor={Colors.background.pink}
-        style={styles.button}
-      >
-        Done
-      </RoundedButton>
+      <View style={styles.buttonWrapper}>
+        <RoundedButton
+          onPress={() => this.onComplete()}
+          bgColor={Colors.background.pink}
+          style={styles.button}
+        >
+          Done
+        </RoundedButton>
+      </View>
     );
   }
 
@@ -449,16 +487,24 @@ class EditGroup extends Component {
         onRequestClose={() => this.onChangePress(false, '')}
         visible={modalVisibility}
       >
-        {openedComponent === 'about' && this.renderAboutForm()}
-        {openedComponent === 'type' && this.renderTypeForm()}
-        {openedComponent === 'outreach' && this.renderOutreachForm()}
-        {openedComponent !== 'outreach' && this.renderButton()}
+        <View style={{ flex: 1 }}>
+          <ToolBar
+            title={openedComponent}
+            onBack={() => this.onChangePress(false, '')}
+          />
+          <ScrollView showsVerticalIndicator={false}>
+            {openedComponent === 'About' && this.renderAboutForm()}
+            {openedComponent === 'Type' && this.renderTypeForm()}
+            {openedComponent === 'Outreach' && this.renderOutreachForm()}
+          </ScrollView>
+          {openedComponent !== 'Outreach' && this.renderButton()}
+        </View>
       </Modal>
     );
   }
 
-  renderConfirmaModal = () => {
-    const { confirmModal, loading } = this.state;
+  renderConfirmModal = () => {
+    const { confirmModal, loading, error } = this.state;
 
     const message = (
       <Text>
@@ -472,7 +518,7 @@ class EditGroup extends Component {
         visible={confirmModal}
         onRequestClose={() => this.setState({ confirmModal: false })}
         message={message}
-        confirmLabel={'Yes'}
+        confirmLabel={error ? 'Retry' : 'Yes'}
         denyLabel="No"
         onConfirm={this.deleteGroup}
         onDeny={() => this.setState({ confirmModal: false })}
@@ -487,12 +533,12 @@ class EditGroup extends Component {
         <Text style={styles.text}>
           {count && `${count}`}{title} {status && (<Text style={styles.bold}> - {status}</Text>)}
         </Text>
-        {info && <Text style={styles.text}>{info}</Text>}
+        {info && info !== '' && <Text style={styles.text}>{info}</Text>}
         {subtext && <Text style={[styles.text, styles.lightText]}>{subtext}</Text>}
         {avatars}
       </View>
       {
-        redirect && redirect !== 'delete' &&
+        redirect && redirect !== 'Delete' &&
         <TouchableOpacity
           style={styles.action}
           onPress={() => this.onChangePress(true, redirect)}
@@ -504,12 +550,13 @@ class EditGroup extends Component {
   );
 
   render() {
-    const { uploadedImage, updatedGroup } = this.state;
+    const { uploadedImage, updatedGroup, errorMsg } = this.state;
     const image = uploadedImage || { uri: updatedGroup.photo };
 
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
         <ToolBar title="Change" />
+        <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={[styles.nameSection]}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
@@ -523,8 +570,8 @@ class EditGroup extends Component {
           {
             this.renderList({
               title: 'About',
-              info: updatedGroup.description,
-              redirect: 'about',
+              info: updatedGroup.description !== '' ? updatedGroup.description : null,
+              redirect: 'About',
             })
           }
           {
@@ -534,14 +581,14 @@ class EditGroup extends Component {
                 `${updatedGroup.TripStart.name} - ${updatedGroup.TripEnd.name}` :
                 `${updatedGroup.locality}, ${updatedGroup.county}`,
               subtext: updatedGroup.outreach === STRETCH_TYPE_ROUTE ? null : updatedGroup.country,
-              redirect: 'outreach',
+              redirect: 'Outreach',
             })
           }
           {
             this.renderList({
               title: updatedGroup.type === OPEN_GROUP ? 'Open group' : 'Closed group',
               subtext: updatedGroup.type === OPEN_GROUP ? 'Open for everyone to join' : 'Need to ask to join',
-              redirect: 'type',
+              redirect: 'Type',
             })
           }
           {
@@ -554,13 +601,13 @@ class EditGroup extends Component {
                 enabler
                 displayNumber={false}
               />),
-              redirect: 'enablers',
+              redirect: 'Enablers',
             })
           }
           {
             this.renderList({
               title: `${updatedGroup.totalParticipants} ${updatedGroup.totalParticipants > 1 ? 'participants' : 'participant'}`,
-              redirect: 'participants',
+              redirect: 'Participants',
             })
           }
           {
@@ -568,14 +615,15 @@ class EditGroup extends Component {
             this.renderList({
               title: <Text
                 onPress={() => this.setState({ confirmModal: true })}
+                style={styles.deleteText}
               >
                 Delete the group
               </Text>,
-              redirect: 'delete',
+              redirect: 'Delete',
             })
           }
           {this.renderModal()}
-          {this.renderConfirmaModal()}
+          {this.renderConfirmModal()}
         </ScrollView>
       </Wrapper>
     );
@@ -607,6 +655,7 @@ EditGroup.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   deleteGroup: PropTypes.func.isRequired,
+  subscribeToGroup: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
