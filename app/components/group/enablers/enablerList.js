@@ -47,6 +47,7 @@ class List extends Component {
       isSearchModalOpen: false,
       loading: false,
       selfDelete: false,
+      error: false,
     };
   }
 
@@ -84,12 +85,12 @@ class List extends Component {
 
     removeGroupEnabler({ groupId: id, ids: [participant.id] })
       .then(() => {
-        this.setState({ confirmModalVisibility: false, loading: false });
+        this.setState({ confirmModalVisibility: false, loading: false, error: false });
         if (selfDelete) {
-          navigation.navigate('GroupDetail', { group: navigation.state.params.group });
+          navigation.replace('GroupDetail', { group: navigation.state.params.group });
         }
       })
-      .catch(err => console.warn(err));
+      .catch(() => this.setState({ confirmModalVisibility: true, loading: false, error: true }));
   }
 
   renderButton = () => (
@@ -103,7 +104,7 @@ class List extends Component {
   )
 
   renderModal() {
-    const { confirmModalVisibility, participant, loading } = this.state;
+    const { confirmModalVisibility, participant, loading, error } = this.state;
 
     const message = (
       <Text>
@@ -119,7 +120,7 @@ class List extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={'Yes'}
+        confirmLabel={error ? 'Retry' : 'Yes'}
         denyLabel="No"
         onConfirm={this.removeEnabler}
         onDeny={() => this.setConfirmModalVisibility(false)}

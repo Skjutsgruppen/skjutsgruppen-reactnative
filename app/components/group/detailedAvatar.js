@@ -83,7 +83,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
     return (
       <View>
         <View style={styles.titleWrapper}>
-          <Text style={styles.title}>{numberText}</Text>
+          {numberText.length > 0 && <Text style={styles.title}>{numberText}</Text>}
         </View>
         <TouchableHighlight
           onPress={() => onPress()}
@@ -121,9 +121,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
       >
         <View>
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>
-              {numberText}
-            </Text>
+            {numberText.length > 0 && <Text style={styles.title}>{numberText}</Text>}
           </View>
           <View style={styles.bublesWrapper}>
             <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
