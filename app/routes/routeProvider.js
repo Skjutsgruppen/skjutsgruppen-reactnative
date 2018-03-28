@@ -66,6 +66,7 @@ import AddEnabler from '@screens/group/AddEnabler';
 import MembershipRequest from '@screens/group/MembershipRequest';
 import Participants from '@screens/group/Participants';
 import AddParticipant from '@screens/group/AddParticipant';
+import EditGroup from '@screens/group/EditGroup';
 
 const TabRoutes = {
   Feed: {
@@ -183,6 +184,7 @@ export const Routes = {
   MembershipRequest: { screen: MembershipRequest },
   Participants: { screen: Participants },
   AddParticipant: { screen: AddParticipant },
+  EditGroup: { screen: EditGroup },
 };
 
 export const AppNavigator = StackNavigator(Routes,

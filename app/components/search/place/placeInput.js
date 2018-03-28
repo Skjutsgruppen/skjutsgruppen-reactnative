@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     flexDirection: 'row',
-    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'flex-start',
     paddingRight: 0,
@@ -147,10 +146,10 @@ class PlacesInput extends PureComponent {
   }
 
   render() {
-    const { inputStyle, height } = this.props;
+    const { wrapperStyle, inputStyle, height } = this.props;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'red' }}>
+      <View style={wrapperStyle}>
         <View style={[styles.inputWrapper]}>
           <TouchableHighlight
             underlayColor="#f5f5f5"
@@ -177,6 +176,7 @@ PlacesInput.propTypes = {
   height: PropTypes.number,
   label: PropTypes.string,
   inputStyle: TouchableHighlight.propTypes.style,
+  wrapperStyle: TouchableHighlight.propTypes.style,
   direction: PropTypes.bool,
   currentLocation: PropTypes.bool,
 };
@@ -188,6 +188,7 @@ PlacesInput.defaultProps = {
   inputStyle: {},
   direction: false,
   currentLocation: false,
+  wrapperStyle: {},
 };
 
 export default PlacesInput;
