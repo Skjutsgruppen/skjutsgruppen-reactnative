@@ -92,3 +92,5 @@ export const FLEXIBILITY_EARLIER_TYPE = 'earlier';
 export const REPORT_TYPE_USER = 'User';
 
 export const GROUP_FEED_TYPE_ENABLER_ADDED = 'enabler_added';
+
+export const GROUP_FEED_TYPE_UPDATED = 'group_updated';
