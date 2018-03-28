@@ -740,7 +740,7 @@ class TripDetail extends Component {
               />,
             ])
         }
-        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => {}} />
+        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => { }} />
         {
           user.id !== trip.User.id &&
           <ModalAction
