@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Animated, StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { Animated, StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
-import Colors from '@theme/colors';
-import Icon from '@assets/icons/ic_back_toolbar.png';
 import { withNavigation } from 'react-navigation';
+
+import Colors from '@theme/colors';
+import TouchableHighlight from '@components/touchableHighlight';
+
+import Icon from '@assets/icons/ic_back_toolbar.png';
 
 const styles = StyleSheet.create({
   floated: {
@@ -43,9 +46,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   iconWrapper: {
-    height: 42,
-    width: 42,
-    borderRadius: 21,
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  icon: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
@@ -78,11 +87,13 @@ class ToolBar extends PureComponent {
     }
 
     return (
-      <TouchableOpacity onPress={() => backHandler()} style={styles.button}>
-        <Animated.View style={[styles.iconWrapper, { elevation }]}>
-          <Image source={Icon} />
-        </Animated.View>
-      </TouchableOpacity>
+      <View style={styles.iconWrapper}>
+        <TouchableHighlight onPress={() => backHandler()} style={styles.button}>
+          <Animated.View style={[styles.icon, { elevation }]}>
+            <Image source={Icon} />
+          </Animated.View>
+        </TouchableHighlight>
+      </View>
     );
   }
 

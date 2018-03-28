@@ -49,6 +49,13 @@ class NewNotification extends PureComponent {
     }
   }
 
+  componentWillReceiveProps() {
+    const { setNoMessages, notifications, filters } = this.props;
+
+
+    if (notifications.count < 1) setNoMessages(filters);
+  }
+
   loadMore = (onPress) => {
     const { notifications } = this.props;
     if (notifications.loading) return null;
@@ -117,6 +124,7 @@ NewNotification.propTypes = {
     count: PropTypes.numeric,
     error: PropTypes.object,
   }).isRequired,
+  setNoMessages: PropTypes.func.isRequired,
   subscribeToNotification: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.numeric,

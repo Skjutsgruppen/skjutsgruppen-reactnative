@@ -311,6 +311,7 @@ class FeedList extends PureComponent {
               return { feeds: { ...previousResult.feeds, ...{ rows } } };
             },
           }}
+          noResultText="No comments yet."
         />
         {this.renderShareModal()}
         {this.renderLongPressModal()}

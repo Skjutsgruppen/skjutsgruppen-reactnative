@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@components/utils/texts';
 import Colors from '@theme/colors';
@@ -24,12 +24,18 @@ const styles = StyleSheet.create({
   },
 });
 
-class Ride extends PureComponent {
+class Ride extends Component {
   componentWillMount() {
     const { subscribeToNewTrip, user } = this.props;
     if (user.id) {
       subscribeToNewTrip({ userId: user.id });
     }
+  }
+
+  componentWillReceiveProps() {
+    const { setNoMessages, trips } = this.props;
+
+    if (trips.count < 1) setNoMessages('rides');
   }
 
   loadMore = (onPress) => {
@@ -95,6 +101,7 @@ Ride.propTypes = {
     error: PropTypes.object,
     refetch: PropTypes.func,
   }).isRequired,
+  setNoMessages: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

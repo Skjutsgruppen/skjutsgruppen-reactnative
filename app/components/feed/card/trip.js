@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-import { Colors, Gradients } from '@theme';
+import { Colors } from '@theme';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
   },
   comment: {
     flex: 1,
-    flexBasis: 50,
-    minHeight: 50,
+    flexBasis: 56,
+    minHeight: 56,
     paddingHorizontal: 18,
     marginTop: 'auto',
     overflow: 'hidden',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   commentGradientOverlay: {
     height: 24,
     position: 'absolute',
-    bottom: 0,
+    bottom: -3,
     left: 0,
     right: 0,
     borderBottomLeftRadius: 12,
@@ -152,12 +152,18 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
             <View style={styles.comment}>
               <AppText>{trip.description}</AppText>
               <LinearGradient
-                colors={Gradients.transparentWhite}
+                locations={[0, 0.3, 0.7, 0.8]}
+                colors={[
+                  'rgba(255, 255, 255, 0)',
+                  'rgba(255, 255, 255, 0.5)',
+                  'rgba(255, 255, 255, 0.85)',
+                  'rgba(255, 255, 255, 1)',
+                ]}
                 style={styles.commentGradientOverlay}
               />
-            </View>
-            <View style={styles.profilePicWrapper}>
-              {profileImage}
+              <View style={styles.profilePicWrapper}>
+                {profileImage}
+              </View>
             </View>
           </View>
         </TouchableHighlight>

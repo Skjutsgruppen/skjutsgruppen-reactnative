@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
@@ -11,6 +11,7 @@ import {
   FEED_FILTER_NEARBY,
   FEED_FILTER_NEWS,
 } from '@config/constant';
+import { ActionModal, ModalAction } from '@components/common';
 
 const styles = StyleSheet.create({
   actionsWrapper: {
@@ -64,36 +65,20 @@ Action.propTypes = {
 };
 
 const Filter = ({ showModal, onCloseModal, onPress, map }) => (
-  <Modal
-    animationType="slide"
-    transparent
+  <ActionModal
     visible={showModal}
     onRequestClose={onCloseModal}
+    title="Filters:"
   >
-    <View style={styles.modalContent}>
-      <View style={styles.actionsWrapper}>
-        <Text style={styles.title}>Filters:</Text>
-        <Action label={trans('feed.everything')} onPress={() => onPress(FEED_FILTER_EVERYTHING)} />
-        <Action label={trans('feed.offered_rides')} onPress={() => onPress(FEED_FILTER_OFFERED)} />
-        <Action label={trans('feed.rides_that_are_asked_for')} onPress={() => onPress(FEED_FILTER_WANTED)} />
-        {!map &&
-          <View>
-            <Action label={trans('feed.close_to_you')} onPress={() => onPress(FEED_FILTER_NEARBY)} />
-            <Action label={trans('feed.news')} onPress={() => onPress(FEED_FILTER_NEWS)} />
-            <Action label="Experience" onPress={() => onPress(FEED_FILTER_EXPERIENCE)} />
-          </View>
-        }
-      </View>
-      <View style={styles.closeWrapper}>
-        <TouchableOpacity
-          style={styles.closeModal}
-          onPress={onCloseModal}
-        >
-          <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </Modal>
+    <ModalAction label={trans('feed.everything')} onPress={() => onPress(FEED_FILTER_EVERYTHING)} />
+    <ModalAction label={trans('feed.offered_rides')} onPress={() => onPress(FEED_FILTER_OFFERED)} />
+    <ModalAction label={trans('feed.rides_that_are_asked_for')} onPress={() => onPress(FEED_FILTER_WANTED)} />
+    {!map && [
+      <ModalAction key={trans('feed.close_to_you')} label={trans('feed.close_to_you')} onPress={() => onPress(FEED_FILTER_NEARBY)} />,
+      <ModalAction key={trans('feed.news')} label={trans('feed.news')} onPress={() => onPress(FEED_FILTER_NEWS)} />,
+      <ModalAction key={trans('feed.experience')} label={trans('feed.experience')} onPress={() => onPress(FEED_FILTER_EXPERIENCE)} />,
+    ]}
+  </ActionModal>
 );
 
 Filter.propTypes = {
