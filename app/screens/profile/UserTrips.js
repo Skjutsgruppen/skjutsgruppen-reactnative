@@ -20,15 +20,22 @@ class UserTrips extends Component {
     this.state = ({ trip: {} });
   }
 
+  isCurrentUser = () => {
+    const { navigation, user } = this.props;
+    const { userId } = navigation.state.params;
+
+    return user.id === userId;
+  }
+
   render() {
     const { userId, username } = this.props.navigation.state.params || this.props.user.id;
     const { type } = this.props.navigation.state.params;
     let NavigationTitle = '';
 
     if (type === FEED_FILTER_OFFERED) {
-      NavigationTitle = `${username}'s Offered Rides`;
+      NavigationTitle = this.isCurrentUser() ? 'My offered rides' : `${username}'s offered rides`;
     } else if (type === FEED_FILTER_WANTED) {
-      NavigationTitle = `Rides ${username} asked for`;
+      NavigationTitle = this.isCurrentUser() ? 'My asked rides' : `Rides ${username} asked for`;
     }
 
     return (

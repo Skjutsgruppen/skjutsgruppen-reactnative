@@ -7,11 +7,11 @@ import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
     marginBottom: 8,
+    width: '100%',
   },
   card: {
-    maxWidth: 300,
+    maxWidth: 500,
     backgroundColor: '#f6f9fc',
     padding: 10,
     marginTop: 16,
@@ -76,8 +76,9 @@ const SharedCard = ({ trip, onPress, date }) => {
       <TouchableOpacity
         onPress={() => onPress(FEEDABLE_TRIP, trip)}
         style={styles.card}
+        activeOpacity={0.8}
       >
-        <View style={{ width: '100%' }}>
+        <View>
           {image}
           {title}
           <Text style={styles.text}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>

@@ -31,6 +31,12 @@ class Group extends PureComponent {
     }
   }
 
+  componentWillReceiveProps() {
+    const { setNoMessages, groups } = this.props;
+
+    if (groups.count < 1) setNoMessages('groups');
+  }
+
   loadMore = (onPress) => {
     const { groups } = this.props;
     if (groups.loading) return null;
@@ -91,6 +97,7 @@ Group.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     loading: PropTypes.bool.isRequired,
   }).isRequired,
+  setNoMessages: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

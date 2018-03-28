@@ -14,12 +14,20 @@ class UserGroups extends Component {
     header: null,
   };
 
+  isCurrentUser = () => {
+    const { navigation, user } = this.props;
+    const { userId } = navigation.state.params;
+
+    return user.id === userId;
+  }
+
   render() {
     const { userId, username } = this.props.navigation.state.params || this.props.user.id;
+    const user = this.isCurrentUser() ? 'My' : (`${username || this.props.user.firstName}'s`);
 
     return (
       <Wrapper bgColor={Colors.background.creme}>
-        <ToolBar title={`${username}'s Group`} />
+        <ToolBar title={`${user} groups`} />
         <Groups id={userId} />
       </Wrapper>
     );
@@ -34,6 +42,7 @@ UserGroups.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
   }).isRequired,
 };
 
