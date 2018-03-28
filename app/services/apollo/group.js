@@ -206,8 +206,8 @@ export const withExploreGroup = graphql(EXPLORE_GROUPS_QUERY, {
 });
 
 export const SEARCH_GROUPS_QUERY = gql`
-query searchGroup($keyword: String!, $offset: Int, $limit: Int){
-  searchGroup(keyword: $keyword, offset: $offset, limit: $limit){
+query searchGroup($queryString: String!, $offset: Int, $limit: Int){
+  searchGroup(keyword: $queryString, offset: $offset, limit: $limit){
     rows {
       id
       name
@@ -251,9 +251,9 @@ query searchGroup($keyword: String!, $offset: Int, $limit: Int){
 }
 `;
 export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
-  options: ({ keyword }) => ({
-    variables: { keyword, offset: 0, limit: PER_FETCH_LIMIT },
-    fetchPolicy: 'cache-and-network',
+  options: ({ queryString }) => ({
+    variables: { queryString, offset: 0, limit: PER_FETCH_LIMIT },
+    fetchPolicy: 'network-only',
   }),
   props: ({ data: { loading, searchGroup, refetch, fetchMore, networkStatus, error } }) => {
     let rows = [];
@@ -1013,6 +1013,119 @@ const GROUP_MEMBERSHIP_REQUEST_SUBSCRIPTION = gql`
   }
 `;
 
+const GROUPS_IN_COUNTY_QUERY = gql`
+  query groupsInCounty($countyId: Int!){
+    groupsInCounty(countyId: $countyId){
+      Municipality {
+        id
+        name
+        countyId
+      }
+      Groups {
+        rows{
+          id
+          outreach
+          name
+          description
+          type
+          photo
+          mapPhoto
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          TripStart {
+            name 
+            coordinates 
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops {
+            name 
+            coordinates
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus
+          totalParticipants
+          isAdmin
+          muted
+          unreadNotificationCount
+        }
+        count
+      }
+    }
+  }
+`;
+
+export const withGroupsInCounty = graphql(GROUPS_IN_COUNTY_QUERY,
+  {
+    options: ({ countyId }) => ({
+      fetchPolicy: 'network-only',
+      variable: { countyId },
+    }),
+    props: ({ data: { loading, groupsInCounty, refetch, networkStatus, error } }) => ({
+      loading, groupsInCounty, refetch, networkStatus, error,
+    }),
+  },
+);
+
+const GROUPS_IN_MUNICIPALITY_QUERY = gql`
+mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
+  groupsInMunicipality(municipalityId: $municipalityId, limit: $limit, offset: $offset){
+    rows{
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+      muted
+      unreadNotificationCount
+    }
+    count
+  }
+}
+`;
+
+export const withGroupsInMunicipality = graphql(GROUPS_IN_MUNICIPALITY_QUERY, {
+  props: ({ mutate }) => (
+    {
+      groupsInMunicipality: ({ municipalityId, limit = PER_FETCH_LIMIT, offset }) =>
+        (mutate({ variables: { municipalityId, limit, offset } })),
+    }),
+});
+
 const GROUP_MEMBERSHIP_REQUEST_QUERY = gql`
 query membershipRequest($id: Int!){
   membershipRequest(id: $id){
@@ -1259,4 +1372,184 @@ export const withDeleteGroup = graphql(DELETE_GROUP_QUERY, {
         ],
       }),
     }),
+});
+
+const ALPHABETISED_GROUPS_QUERY = gql`
+query alphabetisedGroups{
+  alphabetisedGroups{
+    alphabet
+    Groups {
+      rows{
+        id
+        outreach
+        name
+        description
+        type
+        photo
+        mapPhoto
+        User {
+          id 
+          firstName 
+          avatar 
+        } 
+        TripStart {
+          name 
+          coordinates 
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops {
+          name 
+          coordinates
+        } 
+        country 
+        county 
+        municipality 
+        locality 
+        membershipStatus
+        totalParticipants
+        isAdmin
+        muted
+        unreadNotificationCount
+      }
+      count
+    }
+  }
+}`;
+
+export const withAlphabetisedGroups = graphql(ALPHABETISED_GROUPS_QUERY, {
+  options: () => ({
+    fetchPolicy: 'cache-and-network',
+  }),
+  props: ({ data: { loading, alphabetisedGroups, refetch, networkStatus, error } }) => ({
+    loading, alphabetisedGroups, refetch, networkStatus, error,
+  }),
+});
+
+
+const SEARCH_ALPHABETISED_GROUP_QUERY = gql`
+mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int){
+  alphabetisedGroup (startCharacter: $startCharacter, limit: $limit, offset: $offset){
+    rows{
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+      muted
+      unreadNotificationCount
+    }
+    count
+  }
+}`;
+
+export const withSearchAlphabetisedGroup = graphql(SEARCH_ALPHABETISED_GROUP_QUERY, {
+  props: ({ mutate }) => (
+    {
+      searchAlphabetisedGroup: ({ startCharacter, limit = PER_FETCH_LIMIT, offset }) =>
+        (mutate({ variables: { startCharacter, limit, offset } })),
+    }),
+});
+
+const NEAR_BY_GROUPS_QUERY = gql`
+query nearByGroups($from: [Float]!,
+  $distFrom: Int!,
+  $distTo: Int!,
+  $type: GroupTypeEnum,
+  $outreach: GroupOutreachEnum,
+  $limit: Int,
+  $offset: Int,
+){
+  nearByGroups(input: {
+    from: $from,
+    distFrom: $distFrom,
+    distTo: $distTo,
+    type: $type,
+    outreach: $outreach,
+    limit: $limit,
+    offset: $offset,
+  }) {
+    rows {
+      id
+      outreach
+      name
+      description
+      type
+      photo
+      mapPhoto
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      TripStart {
+        name 
+        coordinates 
+      } 
+      TripEnd {
+        name 
+        coordinates
+      } 
+      Stops {
+        name 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+      muted
+      unreadNotificationCount
+    }
+    count
+  }
+}
+`;
+
+export const withNearByGroups = graphql(NEAR_BY_GROUPS_QUERY, {
+  options: ({ from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset }) => ({
+    notifyOnNetworkStatusChange: true,
+    variables: { from, distFrom, distTo, type, outreach, limit, offset },
+    fetchPolicy: 'network-only',
+  }),
+  props: (
+    { data: {
+      loading,
+      nearByGroups,
+      error,
+      refetch,
+      networkStatus,
+      fetchMore,
+    } }) => ({ loading, nearByGroups, error, refetch, networkStatus, fetchMore }),
 });

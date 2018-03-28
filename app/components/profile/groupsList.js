@@ -34,7 +34,7 @@ class UsersGroupsList extends PureComponent {
 
   onSearchPress = () => {
     this.setState({ isOpen: true });
-  };
+  }
 
   onClose = () => {
     this.setState({ isOpen: false });
