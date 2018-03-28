@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TouchableHighlight, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import { withMyGroups } from '@services/apollo/group';
+import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withFriends, withBestFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
@@ -110,13 +110,12 @@ class Share extends Component {
   componentWillMount() {
     const { friends, defaultValue } = this.props;
     const { friendsList } = this.state;
-    this.setState({ groups: defaultValue.groups });
 
     if (friends && !friends.loading) {
       friends.rows.forEach(friend => friendsList.push(friend));
     }
 
-    this.setState({ friendsList });
+    this.setState({ friendsList, selectedGroups: defaultValue.groups || [] });
   }
 
   componentWillReceiveProps({ contacts }) {
@@ -187,7 +186,7 @@ class Share extends Component {
     } = this.state;
 
     const shareInput = { social, friends, groups };
-    const { share, detail, type } = this.props;
+    const { share, detail, type, storeUnregisteredParticipants } = this.props;
     const { name, Trip, TripStart, TripEnd, id } = detail;
     let smsBody = '';
 
@@ -209,6 +208,10 @@ class Share extends Component {
       }
 
       if (contacts.length > 0) {
+        if (type === FEEDABLE_GROUP) {
+          storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
+        }
+
         SendSMS.send({
           body: smsBody,
           recipients: contacts,
@@ -259,6 +262,7 @@ class Share extends Component {
 
     return (<LoadMore onPress={onPress} remainingCount={remaining} />);
   }
+
   renderGroups() {
     const { groups } = this.props;
 
@@ -488,6 +492,7 @@ Share.propTypes = {
   defaultValue: PropTypes.shape({
     groups: PropTypes.array,
   }),
+  storeUnregisteredParticipants: PropTypes.func.isRequired,
 };
 
 Share.defaultProps = {
@@ -507,4 +512,5 @@ export default compose(withMyGroups,
   withFriends,
   withContactFriends,
   withShare,
+  withAddUnregisteredParticipants,
   connect(mapStateToProps))(Share);
