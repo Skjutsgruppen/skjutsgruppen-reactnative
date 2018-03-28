@@ -320,7 +320,7 @@ class GooglePlacesAutocomplete extends Component {
   render() {
     const { direction, currentLocation } = this.props;
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
+      <Wrapper>
         {this.renderTextInput()}
         {direction && this.renderDirectionOption()}
         {currentLocation && this.renderCurrentLocationOption()}

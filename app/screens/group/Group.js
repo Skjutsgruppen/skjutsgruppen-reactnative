@@ -277,10 +277,12 @@ class Group extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar
-          title="Add a new group"
-          onBack={this.onBackButtonPress}
-        />
+        {(activeStep !== 5) &&
+          <ToolBar
+            title="Add a new group"
+            onBack={this.onBackButtonPress}
+          />
+        }
         <Toast message={error} type="error" />
         {(activeStep !== 5) &&
           <Container

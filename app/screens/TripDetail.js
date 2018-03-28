@@ -31,6 +31,9 @@ import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
 import { withMute, withUnmute } from '@services/apollo/mute';
 
+import ReturnIconPink from '@assets/icons/ic_return.png';
+import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
+
 const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
 
@@ -479,6 +482,11 @@ class TripDetail extends Component {
       return null;
     }
 
+    const icon = (<Image
+      source={trip.type === FEED_TYPE_WANTED ? ReturnIconBlue : ReturnIconPink}
+      style={styles.btnIcon}
+    />);
+
     if (trip.ReturnTrip.length === 1 && trip.Recurring.length < 1) {
       return (
         <TouchableOpacity
@@ -486,7 +494,7 @@ class TripDetail extends Component {
           onPress={() => this.redirectToSelectedReturnTrip(trip.ReturnTrip[0].id)}
           activeOpacity={0.75}
         >
-          <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
+          {icon}
           <Text style={styles.btnLabel}>
             <Text style={styles.bold}>{trans('trip.return_ride')}</Text>
             <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
@@ -502,7 +510,7 @@ class TripDetail extends Component {
           onPress={() => this.setReturnRidesModalVisibility(true)}
           activeOpacity={0.75}
         >
-          <Image source={require('@assets/icons/ic_return.png')} style={styles.btnIcon} />
+          {icon}
           <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.return')}</Text>
         </TouchableOpacity>
       );

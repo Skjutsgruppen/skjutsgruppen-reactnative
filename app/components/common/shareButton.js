@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, TouchableOpacity, Image, Animated, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Animated, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import { withNavigation } from 'react-navigation';
+
+import TouchableHighlight from '@components/touchableHighlight';
+
 import Icon from '@assets/icons/ic_share_white.png';
 import IconDark from '@assets/icons/ic_share_dark.png';
-import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   button: {
@@ -12,6 +15,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
   },
+  iconWrapper: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
   icon: {
     height: 32,
     width: 32,
@@ -19,7 +28,7 @@ const styles = StyleSheet.create({
   },
   darkIcon: {
     position: 'absolute',
-    top: 19,
+    top: 2,
     left: 1,
   },
 });
@@ -46,20 +55,24 @@ class ShareButton extends PureComponent {
       }
 
       return (
-        <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-          <Animated.Image
-            source={Icon}
-            style={[styles.icon, animated ? { opacity } : reverseOpacity]}
-          />
-          <Animated.Image
-            source={IconDark}
-            style={[
-              styles.icon,
-              styles.darkIcon,
-              animated ? { opacity: reverseOpacity } : { opacity },
-            ]}
-          />
-        </TouchableOpacity>
+        <View style={styles.iconWrapper}>
+          <TouchableHighlight onPress={onPress} style={[styles.button, style]}>
+            <View>
+              <Animated.Image
+                source={Icon}
+                style={[styles.icon, animated ? { opacity } : reverseOpacity]}
+              />
+              <Animated.Image
+                source={IconDark}
+                style={[
+                  styles.icon,
+                  styles.darkIcon,
+                  animated ? { opacity: reverseOpacity } : { opacity },
+                ]}
+              />
+            </View>
+          </TouchableHighlight>
+        </View>
       );
     }
 
