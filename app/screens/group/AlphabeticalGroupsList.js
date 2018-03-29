@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   listHeader: {
-    backgroundColor: Colors.background.cream,
+    backgroundColor: Colors.background.mutedBlue,
     paddingTop: 24,
-    paddingBottom: 5,
-    marginBottom: 19,
+    paddingBottom: 10,
+    marginBottom: 4,
     paddingHorizontal: 24,
     color: Colors.text.darkGray,
     fontSize: 16,
@@ -108,7 +108,7 @@ class AlphabeticalGroupsList extends Component {
 
   render() {
     return (
-      <Wrapper bgColor={Colors.background.cream}>
+      <Wrapper>
         <ToolBar title="Alphabetical order" />
         {this.renderAlphabetisedGroupsList()}
       </Wrapper>
@@ -121,7 +121,11 @@ AlphabeticalGroupsList.propTypes = {
     navigate: PropTypes.func.isRequired,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
-  alphabetisedGroups: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  alphabetisedGroups: PropTypes.arrayOf(PropTypes.shape()),
+};
+
+AlphabeticalGroupsList.defaultProps = {
+  alphabetisedGroups: [],
 };
 
 export default compose(

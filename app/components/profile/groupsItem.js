@@ -28,15 +28,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 16,
   },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border.lightGray,
-    marginTop: 24,
-    marginBottom: 8,
-  },
 });
 
-const GroupsItem = ({ group, onPress, index, section }) => (
+const GroupsItem = ({ group, onPress }) => (
   <TouchableHighlight
     onPress={() => onPress('group', group)}
     style={styles.wrapper}
@@ -62,9 +56,6 @@ const GroupsItem = ({ group, onPress, index, section }) => (
           }
         </View>
       </View>
-      {
-        section && index && index === (section.count - 1) && <View style={styles.divider} />
-      }
     </View>
   </TouchableHighlight>
 );
@@ -75,13 +66,6 @@ GroupsItem.propTypes = {
     count: PropTypes.number,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
-  index: PropTypes.number,
-  section: PropTypes.shape(),
-};
-
-GroupsItem.defaultProps = {
-  index: null,
-  section: null,
 };
 
 export default GroupsItem;

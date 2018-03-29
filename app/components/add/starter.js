@@ -1,22 +1,29 @@
 import React from 'react';
-import { StyleSheet, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
 import { GlobalStyles } from '@theme/styles';
 import { Heading, AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
-  block: {
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    padding: '8%',
-    marginHorizontal: 20,
+  wrapper: {
+    borderRadius: 24,
     marginBottom: '8%',
+    marginHorizontal: 20,
     elevation: 4,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
+  },
+  block: {
+    height: 124,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.fullWhite,
+    borderRadius: 24,
+    padding: '5%',
   },
   label: {
     textAlign: 'center',
@@ -24,36 +31,37 @@ const styles = StyleSheet.create({
 });
 
 const Starter = ({ label, info, style, onPress }) => (
-  <TouchableHighlight
-    onPress={onPress}
-    style={[styles.block, style]}
-    underlayColor="#f0f0f0"
-  >
-    <View>
-      <Heading
-        accessibilityLabel="Go to next form"
-        size={24}
-        color={Colors.text.blue}
-        fontVariation="bold"
-        style={styles.label}
-      >
-        {label}
-      </Heading>
-      {
-        info &&
-        <AppText
-          size={15}
-          color={Colors.text.gray}
-          style={[
-            GlobalStyles.TextStyles.textCenter,
-            { marginTop: 12 },
-          ]}
+  <View style={styles.wrapper}>
+    <TouchableHighlight
+      onPress={onPress}
+      style={[styles.block, style]}
+    >
+      <View>
+        <Heading
+          accessibilityLabel="Go to next form"
+          size={24}
+          color={Colors.text.blue}
+          fontVariation="bold"
+          style={styles.label}
         >
-          {info}
-        </AppText>
-      }
-    </View>
-  </TouchableHighlight>
+          {label}
+        </Heading>
+        {
+          info &&
+          <AppText
+            size={15}
+            color={Colors.text.gray}
+            style={[
+              GlobalStyles.TextStyles.textCenter,
+              { marginTop: 12 },
+            ]}
+          >
+            {info}
+          </AppText>
+        }
+      </View>
+    </TouchableHighlight>
+  </View>
 );
 
 Starter.propTypes = {
@@ -65,7 +73,7 @@ Starter.propTypes = {
 Starter.defaultProps = {
   info: null,
   style: {},
-  onPress: () => {},
+  onPress: () => { },
 };
 
 export default Starter;

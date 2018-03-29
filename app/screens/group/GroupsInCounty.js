@@ -63,6 +63,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    marginTop: 24,
+    marginBottom: 8,
+  },
 });
 
 class GroupsListByCounty extends Component {
@@ -131,7 +137,12 @@ class GroupsListByCounty extends Component {
 
     if (loading) return null;
 
-    return (<GroupsInMunicipality section={section} />);
+    return (
+      <View>
+        <GroupsInMunicipality section={section} />
+        <View style={styles.divider} />
+      </View>
+    );
   }
 
   renderGroupsInCountyList = () => {
@@ -146,11 +157,9 @@ class GroupsListByCounty extends Component {
       <SectionList
         ListHeaderComponent={this.header}
         ListFooterComponent={() => <View style={{ height: 50 }} />}
-        renderItem={({ item, index, section }) => (
+        renderItem={({ item }) => (
           <GroupsItem
             key={item.id}
-            index={index}
-            section={section}
             group={item}
             onPress={this.onPress}
           />)
@@ -180,7 +189,11 @@ GroupsListByCounty.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
-  groupsInCounty: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  groupsInCounty: PropTypes.arrayOf(PropTypes.shape()),
+};
+
+GroupsListByCounty.defaultProps = {
+  groupsInCounty: [],
 };
 
 

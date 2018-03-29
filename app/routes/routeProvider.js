@@ -50,6 +50,7 @@ import UserConversation from '@screens/profile/UserConversation';
 import Map from '@screens/Map';
 import Route from '@screens/Route';
 import Area from '@screens/Area';
+import CloseByGroupsMap from '@screens/CloseByGroupsMap';
 
 import SearchNotification from '@screens/notification/Search';
 
@@ -187,6 +188,7 @@ export const Routes = {
   Participants: { screen: Participants },
   AddParticipant: { screen: AddParticipant },
   EditGroup: { screen: EditGroup },
+  CloseByGroupsMap: { screen: CloseByGroupsMap },
 };
 
 export const AppNavigator = StackNavigator(Routes,

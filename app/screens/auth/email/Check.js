@@ -184,6 +184,7 @@ class Check extends Component {
           placeholder="Verification code"
           returnKeyType="send"
           onSubmitEditing={this.onSubmit}
+          autoCapitalize="none"
         />
         {this.renderButton()}
         {this.renderResendVerification()}

@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 
-class CloseByGroupsMap extends Component {
+class CloseByGroupsMapWindow extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -24,17 +24,11 @@ class CloseByGroupsMap extends Component {
     this.setState({ groups: nearByGroups.rows });
   }
 
-  onMarkerPress = (detail) => {
-    const { navigation } = this.props;
-
-    navigation.navigate('GroupDetail', { group: detail });
-  }
-
   renderGroups = () => {
     let coordinate = {};
     const { groups } = this.state;
 
-    if (groups.length > 0) {
+    if (groups && groups.length > 0) {
       return groups.map((group) => {
         coordinate = {
           latitude: group.TripStart.coordinates[1],
@@ -46,7 +40,7 @@ class CloseByGroupsMap extends Component {
             key={`${group.id}-${moment().unix()}`}
             onPress={(e) => {
               e.stopPropagation();
-              this.onMarkerPress(group);
+              return null;
             }}
             coordinate={coordinate}
             image={group.User.avatar}
@@ -58,27 +52,44 @@ class CloseByGroupsMap extends Component {
     return null;
   }
 
-  render() {
+  renderCurrentLocation = () => {
     const { origin } = this.props;
+
+    if (!origin) {
+      return null;
+    }
+
+    const { latitude, longitude } = origin;
+
+    return (
+      <Marker
+        onPress={e => e.stopPropagation()}
+        coordinate={{ latitude, longitude }}
+        current
+      />
+    );
+  }
+
+  render() {
+    const { origin, loading } = this.props;
+
+    if (loading) { return null; }
 
     return (
       <MapView
         initialRegion={origin}
         style={StyleSheet.absoluteFill}
         ref={(c) => { this.mapView = c; }}
-        onMapReady={this.fitMap}
         cacheEnabled
       >
+        {this.renderCurrentLocation()}
         {this.renderGroups()}
       </MapView>
     );
   }
 }
 
-CloseByGroupsMap.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
+CloseByGroupsMapWindow.propTypes = {
   nearByGroups: PropTypes.shape({
     rows: PropTypes.array,
   }),
@@ -86,10 +97,12 @@ CloseByGroupsMap.propTypes = {
     latitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     longitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
+  loading: PropTypes.bool,
 };
 
-CloseByGroupsMap.defaultProps = {
+CloseByGroupsMapWindow.defaultProps = {
   nearByGroups: {},
+  loading: true,
 };
 
-export default withNavigation(CloseByGroupsMap);
+export default withNavigation(CloseByGroupsMapWindow);
