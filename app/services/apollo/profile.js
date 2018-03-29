@@ -272,3 +272,14 @@ export const withStoreAppToken = graphql(STORE_APP_TOKEN_QUERY, {
     storeAppToken: token => mutate({ variables: { token } }),
   }),
 });
+
+const DELETE_ACCOUNT_QUERY = gql`
+mutation deleteAccount($id: Int) {
+  deleteAccount(id: $id)
+}`;
+
+export const withDeleteAccount = graphql(DELETE_ACCOUNT_QUERY, {
+  props: ({ mutate }) => ({
+    deleteAccount: (id = null) => mutate({ variables: { id } }),
+  }),
+});

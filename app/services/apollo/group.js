@@ -1541,7 +1541,7 @@ export const withNearByGroups = graphql(NEAR_BY_GROUPS_QUERY, {
   options: ({ from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { from, distFrom, distTo, type, outreach, limit, offset },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   }),
   props: (
     { data: {

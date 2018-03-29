@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, FlatList, Animated, Modal } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, FlatList, Animated, Modal, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { withExploreGroup, withNearByGroups } from '@services/apollo/group';
 import { withCounties } from '@services/apollo/location';
@@ -11,9 +11,9 @@ import PopularGroupsCards from '@components/group/popularGroupsList';
 import Card from '@components/group/discover/card';
 import Alphabet from '@components/group/discover/alphabet';
 import ListSearchModal from '@components/profile/ListSearchModal';
-import CloseByGroupsMap from '@components/group/CloseByGroupsMap';
+import CloseByGroupsMapWindow from '@components/group/closeByGroupsMapWindow';
 
-const NearByGroupsMap = withNearByGroups(CloseByGroupsMap);
+const NearByGroupsMapWindow = withNearByGroups(CloseByGroupsMapWindow);
 
 const AnimatedFlatlist = Animated.createAnimatedComponent(
   FlatList,
@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     borderRadius: 16,
   },
+  innerMapWrapper: {
+    height: 400,
+    backgroundColor: 'transparent',
+  },
   locationTextWrapper: {
     flex: 1,
     justifyContent: 'center',
@@ -90,6 +94,11 @@ const styles = StyleSheet.create({
   },
   noLocationText: {
     color: 'white',
+    paddingHorizontal: 24,
+    textAlign: 'center',
+  },
+  noLocationRetry: {
+    color: Colors.text.blue,
   },
 });
 
@@ -162,7 +171,7 @@ class ExploreGroup extends PureComponent {
         this.setState({ origin, loading: false });
       },
       () => {
-        this.setState({ loading: false, error: 'Sorry, could not track your location!' });
+        this.setState({ loading: false, error: 'Sorry, could not track your location! Please check if your GPS is turned on.' });
       },
       { timeout: 20000, maximumAge: 1000 },
     );
@@ -190,7 +199,6 @@ class ExploreGroup extends PureComponent {
   renderMap = () => {
     const { loading, origin, error } = this.state;
 
-
     if (loading) {
       return (
         <View style={styles.locationTextWrapper}>
@@ -203,18 +211,29 @@ class ExploreGroup extends PureComponent {
       return (
         <View style={styles.locationTextWrapper}>
           <Text style={styles.noLocationText}>{error}</Text>
+          <Text
+            onPress={this.currentLocation}
+            style={[styles.noLocationText, styles.noLocationRetry]}
+          >Tap to retry!</Text>
         </View>
       );
     }
 
-    return (<NearByGroupsMap
-      from={[origin.longitude, origin.latitude]}
-      distFrom={0}
-      distTo={500000}
-      origin={origin}
-      outreach="route"
-      type="ClosedGroup"
-    />);
+    return (
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('CloseByGroupsMap', { origin })}
+        style={styles.innerMapWrapper}
+      >
+        <NearByGroupsMapWindow
+          from={[origin.longitude, origin.latitude]}
+          distFrom={0}
+          distTo={100000000}
+          origin={origin}
+          outreach={null}
+          type={null}
+        />
+      </TouchableOpacity>
+    );
   }
 
   renderCountiesList = () => {
