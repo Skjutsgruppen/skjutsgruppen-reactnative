@@ -143,6 +143,7 @@ class Email extends Component {
           keyboardType="email-address"
           returnKeyType="send"
           onSubmitEditing={this.onSubmit}
+          autoCapitalize="none"
         />
         {this.renderButton()}
         <View style={styles.divider} />
