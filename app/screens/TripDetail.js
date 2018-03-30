@@ -4,8 +4,8 @@ import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
-import { withTrip, withTripFeed } from '@services/apollo/trip';
-import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction } from '@components/common';
+import { withTrip, withTripFeed, withDeleteTrip } from '@services/apollo/trip';
+import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction, ConfirmModal } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -221,6 +221,8 @@ class TripDetail extends Component {
       showRecurringRides: false,
       showSuggestedRides: false,
       trip: {},
+      confirmModalVisibility: false,
+      retry: false,
     });
   }
 
@@ -295,6 +297,7 @@ class TripDetail extends Component {
     const { trip } = this.state;
     this.setState({ comment });
     Keyboard.dismiss();
+
     navigation.navigate('Offer', { trip, isSuggestion: true, description: comment });
   }
 
@@ -360,7 +363,24 @@ class TripDetail extends Component {
     navigation.navigate('Report', { data: { Trip: trip }, type: FEEDABLE_TRIP });
   }
 
-  onCommentBoxBlur = comment => this.setState({ comment });
+  onDelete = () => {
+    const { deleteTrip, navigation } = this.props;
+    const { trip: { id } } = this.state;
+    this.setState({ loading: true });
+
+    deleteTrip({ id })
+      .then(() => {
+        this.setState({ loading: false, retry: false });
+        this.setConfirmModalVisibility(false);
+        this.showActionModal(false);
+        navigation.navigate('Feed');
+      })
+      .catch((error) => {
+        this.setState({ loading: false, retry: error });
+        this.setConfirmModalVisibility(true);
+        this.showActionModal(false);
+      });
+  }
 
   setReturnRidesModalVisibility = (show) => {
     this.setState({ showReturnRides: show });
@@ -372,6 +392,10 @@ class TripDetail extends Component {
 
   setSuggestedRidesVisibility = (show, comment = '') => {
     this.setState({ showSuggestedRides: show, comment });
+  }
+
+  setConfirmModalVisibility = (show) => {
+    this.setState({ confirmModalVisibility: show });
   }
 
   showActionModal(visible) {
@@ -635,6 +659,8 @@ class TripDetail extends Component {
 
   renderDetail = () => {
     const { trip } = this.state;
+    const { navigation } = this.props;
+
     return (
       <View style={styles.detail}>
         <Text style={[styles.text, styles.lightText]}>
@@ -667,7 +693,29 @@ class TripDetail extends Component {
           </Text>
         }
         <View style={styles.tripDescription}>
-          <Text style={[styles.text]}>{trip.description}</Text>
+          <Text style={[styles.text]}>
+            {trip.description}
+            {trip.Group && trip.Group.id &&
+              <Text
+                onPress={() => navigation.navigate('GroupDetail', { group: trip.Group, fetch: true })}
+                style={{ fontStyle: 'italic' }}
+              >
+                {' '}
+                I added this ride in the group ({trip.Group.name}). Read more about our group here.
+              </Text>
+            }
+            {
+              trip.linkedTrip && trip.linkedTrip.id &&
+              <Text
+                onPress={() => navigation.navigate('TripDetail', { trip: trip.linkedTrip, fetch: true })}
+                style={{ fontStyle: 'italic' }}
+              >
+                {' '}
+                I added this ride in the trip ({trip.linkedTrip.description}).
+                Read more about our trip here.
+              </Text>
+            }
+          </Text>
         </View>
       </View>
     );
@@ -694,25 +742,13 @@ class TripDetail extends Component {
     );
   }
 
-  renderActionModal() {
-    const { navigation, user } = this.props;
-    const { trip, showActionOption } = this.state;
+  renderParticipantsAction() {
+    const { trip } = this.state;
+
+    if (!trip.isParticipant) return null;
 
     return (
-      <ActionModal
-        animationType="fade"
-        transparent
-        onRequestClose={() => this.setState({ showActionOption: false })}
-        visible={showActionOption}
-      >
-        <ModalAction
-          label={trans('trip.create_your_experience')}
-          onPress={() => {
-            this.setState({ showActionOption: false });
-            navigation.navigate('Experience', { trip });
-          }}
-          disabled={!this.canCreateExperience()}
-        />
+      <View>
         <ModalAction label={trans('trip.share_your_live_location')} onPress={() => { }} />
         {
           trip.muted ?
@@ -741,12 +777,40 @@ class TripDetail extends Component {
             ])
         }
         <ModalAction label={trans('trip.embeded_with_html')} onPress={() => { }} />
+      </View>
+    );
+  }
+
+  renderActionModal() {
+    const { user, navigation } = this.props;
+    const { trip, showActionOption } = this.state;
+
+    return (
+      <ActionModal
+        animationType="fade"
+        transparent
+        onRequestClose={() => this.setState({ showActionOption: false })}
+        visible={showActionOption}
+      >
+        <ModalAction
+          label={trans('trip.create_your_experience')}
+          onPress={() => {
+            this.setState({ showActionOption: false });
+            navigation.navigate('Experience', { trip });
+          }}
+          disabled={!this.canCreateExperience()}
+        />
+        {this.renderParticipantsAction()}
         {
-          user.id !== trip.User.id &&
-          <ModalAction
-            label={trans('trip.report_this_ride')}
-            onPress={this.onReport}
-          />
+          user.id !== trip.User.id ?
+            <ModalAction
+              label={trans('trip.report_this_ride')}
+              onPress={this.onReport}
+            /> :
+            <ModalAction
+              label={trans('trip.delete_this_ride')}
+              onPress={() => this.setConfirmModalVisibility(true)}
+            />
         }
       </ActionModal>
     );
@@ -850,6 +914,29 @@ class TripDetail extends Component {
       </TouchableOpacity>);
   }
 
+  renderConfirmModal = () => {
+    const { loading, confirmModalVisibility, retry } = this.state;
+    const message = (
+      <Text>
+        Are you sure you want to delete this trip?
+      </Text>
+    );
+
+    return (
+      <ConfirmModal
+        loading={loading}
+        visible={confirmModalVisibility}
+        onRequestClose={() => this.setConfirmModalVisibility(false)}
+        message={message}
+        confirmLabel={retry ? 'Retry' : 'Yes'}
+        denyLabel="No"
+        onConfirm={() => this.onDelete()}
+        onDeny={() => this.setConfirmModalVisibility(false)}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
   render() {
     const { notifierOffset, trip } = this.state;
 
@@ -879,6 +966,7 @@ class TripDetail extends Component {
         {this.renderActionModal()}
         {this.renderShareModal()}
         {this.renderRideSuggestions()}
+        {this.renderConfirmModal()}
       </Wrapper>
     );
   }
@@ -899,6 +987,7 @@ TripDetail.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
+  deleteTrip: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -909,6 +998,7 @@ const TripWithDetail = compose(
   withTrip,
   withMute,
   withUnmute,
+  withDeleteTrip,
   connect(mapStateToProps),
 )(TripDetail);
 

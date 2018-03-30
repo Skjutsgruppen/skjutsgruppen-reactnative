@@ -6,4 +6,5 @@ export const group = {
   groups_near_you: 'Groups Near You',
   popular_groups: 'Popular Groups',
   report_this_group: 'Report this group',
+  leave_group: 'Leave group',
 };
