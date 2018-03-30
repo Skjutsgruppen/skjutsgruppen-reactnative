@@ -65,7 +65,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const Selectable = ({ title, loading, rows, setOption, selected, disabled, user, showSelf }) => {
+const Selectable = ({
+  title,
+  loading,
+  rows,
+  setOption,
+  selected,
+  disabled,
+  user,
+  showSelf,
+  readOnlyUserId,
+}) => {
   if (loading && rows.length === 0) return (<Loading />);
 
   if (rows.length === 0) return null;
@@ -92,6 +102,7 @@ const Selectable = ({ title, loading, rows, setOption, selected, disabled, user,
           selected={hasOption(user.id)}
           label="You"
           onPress={() => { }}
+          readOnly={readOnlyUserId === user.id}
         />
       }
       {
@@ -104,6 +115,7 @@ const Selectable = ({ title, loading, rows, setOption, selected, disabled, user,
             selected={hasOption(row.id)}
             label={`${row.firstName} ${row.lastName}`}
             onPress={() => !hasDisabled(row.id) && setOption(row.id)}
+            readOnly={readOnlyUserId === row.id}
           />
         ))
       }
@@ -127,6 +139,7 @@ Selectable.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   showSelf: PropTypes.bool,
+  readOnlyUserId: PropTypes.number,
 };
 
 Selectable.defaultProps = {
@@ -134,6 +147,7 @@ Selectable.defaultProps = {
   title: '',
   showSelf: false,
   loading: false,
+  readOnlyUserId: null,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

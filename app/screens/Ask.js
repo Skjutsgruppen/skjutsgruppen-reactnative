@@ -16,7 +16,7 @@ import Toast from '@components/toast';
 import { Colors } from '@theme';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
-import { FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
+import { FEED_TYPE_WANTED, FEEDABLE_TRIP, STRETCH_TYPE_ROUTE } from '@config/constant';
 import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
@@ -110,6 +110,8 @@ class Ask extends Component {
       loading: false,
       trip: {},
       error: '',
+      groupId: null,
+      group: {},
     };
   }
 
@@ -117,7 +119,7 @@ class Ask extends Component {
     const { params } = this.props.navigation.state;
 
     if (params && typeof params.isReturnedTrip !== 'undefined') {
-      const { parentId, trip } = params;
+      const { parentId, trip, share, defaultGroup } = params;
       const { description, route, date } = trip;
 
       this.setState({
@@ -136,11 +138,40 @@ class Ask extends Component {
           time: date.time,
           flexibilityInfo: date.flexibilityInfo,
         },
+        share: { ...share, groupId: defaultGroup.id },
+        groupId: defaultGroup.id,
+        group: defaultGroup,
       });
     }
 
-    if (params && params.groupId) {
-      this.setState({ share: { groups: [params.groupId] } });
+    if (params && params.group) {
+      const { group, description } = params;
+      this.setState({ share: { groups: [group.id], groupId: group.id }, groupId: group.id, group });
+
+      if (params.group.outreach === STRETCH_TYPE_ROUTE) {
+        this.setState({
+          description: { text: description, photo: null },
+          route: {
+            start: {
+              name: group.TripStart.name,
+              coordinates: group.TripStart.coordinates,
+              countryCode: group.TripStart.countryCode,
+            },
+            end: {
+              name: group.TripEnd.name,
+              coordinates: group.TripEnd.coordinates,
+              countryCode: group.TripEnd.countryCode,
+            },
+            stops: group.Stops.length < 0 ? [] :
+              group.Stops.map(stop => ({
+                name: stop.name,
+                coordinates: group.TripEnd.coordinates,
+                countryCode: group.TripEnd.countryCode,
+              })),
+            isReturning: true,
+          },
+        });
+      }
     }
 
     this.container = null;
@@ -227,11 +258,14 @@ class Ask extends Component {
 
   onMakeReturnRide = () => {
     const { navigation } = this.props;
-    const { description, route, date, trip } = this.state;
+    const { description, route, date, trip, share, group } = this.state;
+
     navigation.replace('Ask', {
       isReturnedTrip: true,
       parentId: trip.id,
       trip: { description, route, date },
+      share,
+      defaultGroup: group,
     });
   }
 
@@ -255,7 +289,7 @@ class Ask extends Component {
   }
 
   createTrip() {
-    const { description, route, date, share, parentId } = this.state;
+    const { description, route, date, share, parentId, groupId } = this.state;
     let utcTime = '';
     const dates = [];
 
@@ -279,6 +313,7 @@ class Ask extends Component {
       seats: 0,
       share,
       type: FEED_TYPE_WANTED,
+      groupId,
     };
 
     try {
@@ -314,8 +349,7 @@ class Ask extends Component {
   }
 
   renderFinish() {
-    const { loading, trip, error, route, isReturnedTrip } = this.state;
-
+    const { loading, trip, error, route, isReturnedTrip, group, date } = this.state;
     if (loading) {
       return (
         <View style={{ marginTop: 100 }}>
@@ -341,6 +375,8 @@ class Ask extends Component {
         type={FEEDABLE_TRIP}
         isReturnedTrip={isReturnedTrip ? false : route.isReturning}
         onMakeReturnRide={this.onMakeReturnRide}
+        group={group}
+        isRecurring={date.days && date.days.length > 1}
       />
     );
   }
@@ -383,40 +419,45 @@ class Ask extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar
-          title="Ask for a ride"
-          onBack={this.onBackButtonPress}
-        />
+        {activeStep !== 5 &&
+          <ToolBar
+            title={!isReturnedTrip ? 'Ask for a ride' : 'Add a return ride'}
+            onBack={this.onBackButtonPress}
+          />
+        }
         <Toast message={error} type="error" />
-        <Container
-          innerRef={(ref) => { this.container = ref; }}
-          style={{ backgroundColor: 'transparent' }}
-        >
-          {this.renderReturnRideText()}
-          {this.renderProgress()}
-          {
-            (activeStep === 1) &&
-            <Description defaultValue={description} onNext={this.onDescriptionNext} />
-          }
-          {
-            (activeStep === 2) &&
-            <Route
-              defaultValue={route}
-              hideReturnTripOption={isReturnedTrip}
-              onNext={this.onRouteNext}
-            />
-          }
-          {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
-          {(activeStep === 4) &&
-            <Share
-              defaultValue={share}
-              type={FEEDABLE_TRIP}
-              onNext={this.onShareNext}
-              labelColor={Colors.text.blue}
-            />
-          }
-          {(activeStep === 5) && this.renderFinish()}
-        </Container>
+        {activeStep !== 5 &&
+          <Container
+            innerRef={(ref) => { this.container = ref; }}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            {/* {this.renderReturnRideText()} */}
+            {this.renderProgress()}
+            {
+              (activeStep === 1) &&
+              <Description defaultValue={description} onNext={this.onDescriptionNext} />
+            }
+            {
+              (activeStep === 2) &&
+              <Route
+                defaultValue={route}
+                hideReturnTripOption={isReturnedTrip}
+                onNext={this.onRouteNext}
+              />
+            }
+            {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
+            {(activeStep === 4) &&
+              <Share
+                defaultValue={share}
+                type={FEEDABLE_TRIP}
+                onNext={this.onShareNext}
+                labelColor={Colors.text.blue}
+              />
+            }
+
+          </Container>
+        }
+        {(activeStep === 5) && this.renderFinish()}
       </Wrapper>
     );
   }

@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
 import { withGroup } from '@services/apollo/group';
 import NoEnabler from '@components/group/enablers/noEnabler';
+import { Loading } from '@components/common';
 
 class GroupDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ group: {}, refetch: null });
+    this.state = ({ group: {}, refetch: null, fetch: false });
   }
 
   componentWillMount() {
-    const { navigation } = this.props;
+    const { navigation, fetch } = this.props;
     const { group } = navigation.state.params;
-    this.setState({ group });
+    this.setState({ group, fetch });
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
     if (!loading && group.id) {
-      this.setState({ group, loading, refetch });
+      this.setState({ group, loading, refetch, fetch: false });
     }
   }
 
@@ -34,10 +34,9 @@ class GroupDetail extends Component {
   }
 
   isMember = () => {
-    const { user } = this.props;
     const { group } = this.state;
 
-    if (user.id === group.User.id || group.membershipStatus === 'accepted') {
+    if (group.membershipStatus === 'accepted') {
       return true;
     }
 
@@ -45,9 +44,13 @@ class GroupDetail extends Component {
   }
 
   render() {
-    const { group } = this.state;
+    const { group, fetch } = this.state;
     const { navigation } = this.props;
     const { notifier, notificationMessage } = navigation.state.params;
+
+    if (fetch) {
+      return <Loading />;
+    }
 
     if (this.isMember()) {
       if (group.Enablers.length < 1) {
@@ -80,18 +83,19 @@ GroupDetail.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number,
-  }).isRequired,
+  fetch: PropTypes.bool,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
+GroupDetail.defaultProps = {
+  fetch: false,
+};
 
-const GroupWithDetail = withGroup(connect(mapStateToProps)(GroupDetail));
+
+const GroupWithDetail = withGroup(GroupDetail);
 
 const GroupScreen = ({ navigation }) => {
-  const { group } = navigation.state.params;
-  return (<GroupWithDetail id={group.id} navigation={navigation} />);
+  const { group, fetch } = navigation.state.params;
+  return (<GroupWithDetail id={group.id} navigation={navigation} fetch={fetch || false} />);
 };
 
 GroupScreen.propTypes = {
