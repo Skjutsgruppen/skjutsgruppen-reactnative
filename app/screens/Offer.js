@@ -17,7 +17,7 @@ import Toast from '@components/toast';
 import { Colors } from '@theme';
 import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
-import { FEED_TYPE_OFFER, FEEDABLE_TRIP } from '@config/constant';
+import { FEED_TYPE_OFFER, FEEDABLE_TRIP, STRETCH_TYPE_ROUTE } from '@config/constant';
 import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
@@ -62,6 +62,21 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     paddingHorizontal: 10,
     paddingTop: 20,
+  },
+  footer: {
+    marginTop: 'auto',
+    backgroundColor: Colors.background.mutedBlue,
+    elevation: 15,
+  },
+  buttonWrapper: {
+    paddingHorizontal: 20,
+    paddingVertical: '5%',
+  },
+  button: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: 50,
   },
 });
 
@@ -115,6 +130,10 @@ class Offer extends Component {
       trip: {},
       error: '',
       isSuggestion: false,
+      groupId: null,
+      suggestion: {},
+      group: {},
+      tripId: null,
     };
   }
 
@@ -122,7 +141,7 @@ class Offer extends Component {
     const { params } = this.props.navigation.state;
 
     if (params && typeof params.isReturnedTrip !== 'undefined') {
-      const { parentId, trip } = params;
+      const { parentId, trip, share, defaultGroup, defaultTripId, defaultSuggestion } = params;
       const { description, route, date, seat } = trip;
 
       this.setState({
@@ -142,12 +161,25 @@ class Offer extends Component {
           flexibilityInfo: date.flexibilityInfo,
         },
         seat,
+        share: {
+          ...share,
+          groupId: defaultGroup.id,
+          offeredUser: (defaultSuggestion.User && defaultSuggestion.User) || {},
+        },
+        groupId: defaultGroup.id,
+        tripId: defaultTripId,
+        isSuggestion: (!!defaultTripId),
+        suggestion: defaultSuggestion,
+        group: defaultGroup,
       });
     }
 
     if (params && typeof params.isSuggestion !== 'undefined') {
       const { trip, description } = params;
+
       this.setState({
+        isSuggestion: true,
+        suggestion: trip,
         description: { text: description, photo: null },
         date: {
           days: [getDate(trip.date).format('YYYY-MM-DD').toString()],
@@ -173,11 +205,39 @@ class Offer extends Component {
           stops: [],
           isReturning: true,
         },
+        share: { offeredUser: trip.User },
+        tripId: trip.id,
       });
     }
 
-    if (params && params.groupId) {
-      this.setState({ share: { groups: [params.groupId] } });
+    if (params && params.group) {
+      const { group, description } = params;
+      this.setState({ share: { groups: [group.id], groupId: group.id }, groupId: group.id, group });
+
+      if (params.group.outreach === STRETCH_TYPE_ROUTE) {
+        this.setState({
+          description: { text: description, photo: null },
+          route: {
+            start: {
+              name: group.TripStart.name,
+              coordinates: group.TripStart.coordinates,
+              countryCode: group.TripStart.countryCode,
+            },
+            end: {
+              name: group.TripEnd.name,
+              coordinates: group.TripEnd.coordinates,
+              countryCode: group.TripEnd.countryCode,
+            },
+            stops: group.Stops.length < 0 ? [] :
+              group.Stops.map(stop => ({
+                name: stop.name,
+                coordinates: group.TripEnd.coordinates,
+                countryCode: group.TripEnd.countryCode,
+              })),
+            isReturning: true,
+          },
+        });
+      }
     }
 
     this.container = null;
@@ -272,11 +332,15 @@ class Offer extends Component {
 
   onMakeReturnRide = () => {
     const { navigation } = this.props;
-    const { description, route, date, seat, trip } = this.state;
+    const { description, route, date, seat, trip, share, group, tripId, suggestion } = this.state;
     navigation.replace('Offer', {
       isReturnedTrip: true,
       parentId: trip.id,
       trip: { description, route, date, seat },
+      share,
+      defaultGroup: group,
+      defaultTripId: tripId,
+      defaultSuggestion: suggestion,
     });
   }
 
@@ -300,7 +364,7 @@ class Offer extends Component {
   }
 
   createTrip() {
-    const { description, route, date, seat, share, parentId } = this.state;
+    const { description, route, date, seat, share, parentId, groupId, tripId } = this.state;
     let utcTime = '';
     const dates = [];
 
@@ -324,6 +388,8 @@ class Offer extends Component {
       seats: seat,
       share,
       type: FEED_TYPE_OFFER,
+      groupId,
+      linkedTripId: tripId,
     };
 
     try {
@@ -341,21 +407,17 @@ class Offer extends Component {
   }
 
   createSuggestion() {
-    const { createSuggestion, navigation } = this.props;
-    const { params } = navigation.state;
+    const { createSuggestion } = this.props;
+    const { isSuggestion, suggestion } = this.state;
     const offeredTrip = this.state.trip;
 
-    if (params && typeof params.isSuggestion !== 'undefined') {
-      const { trip, isSuggestion } = params;
-
-      if (isSuggestion) {
-        createSuggestion({
-          type: 'trip',
-          tripId: trip.id,
-          suggestedTripId: offeredTrip.id,
-          isOffer: true,
-        }).catch(error => console.warn(error));
-      }
+    if (Object.keys(suggestion).length > 0 && isSuggestion) {
+      createSuggestion({
+        type: 'trip',
+        tripId: suggestion.id,
+        suggestedTripId: offeredTrip.id,
+        isOffer: true,
+      }).catch(error => console.warn(error));
     }
 
     return null;
@@ -381,7 +443,7 @@ class Offer extends Component {
   }
 
   renderFinish() {
-    const { loading, trip, error, route, isReturnedTrip } = this.state;
+    const { loading, trip, error, route, isReturnedTrip, suggestion, group, date } = this.state;
 
     if (loading) {
       return (
@@ -407,6 +469,9 @@ class Offer extends Component {
         type={FEEDABLE_TRIP}
         isReturnedTrip={isReturnedTrip ? false : route.isReturning}
         onMakeReturnRide={this.onMakeReturnRide}
+        suggestion={suggestion}
+        group={group}
+        isRecurring={date.days && date.days.length > 1}
       />
     );
   }
@@ -448,42 +513,47 @@ class Offer extends Component {
     } = this.state;
 
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar
-          title="Offer a ride"
-          onBack={this.onBackButtonPress}
-        />
+      <Wrapper>
+        {activeStep !== 6 &&
+          <ToolBar
+            title={!isReturnedTrip ? 'Offer a ride' : 'Add a return ride'}
+            onBack={this.onBackButtonPress}
+          />
+        }
         <Toast message={error} type="error" />
-        <Container
-          innerRef={(ref) => { this.container = ref; }}
-          style={{ backgroundColor: 'transparent' }}
-        >
-          {this.renderReturnRideText()}
-          {this.renderProgress()}
-          {
-            (activeStep === 1) &&
-            <Description isOffer defaultValue={description} onNext={this.onDescriptionNext} />
-          }
-          {
-            (activeStep === 2) &&
-            <Route
-              defaultValue={route}
-              hideReturnTripOption={isReturnedTrip}
-              onNext={this.onRouteNext}
-              isOffer
-            />
-          }
-          {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
-          {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-          {(activeStep === 5) &&
-            <Share
-              defaultValue={share}
-              type={FEEDABLE_TRIP}
-              onNext={this.onShareNext}
-            />
-          }
-          {(activeStep === 6) && this.renderFinish()}
-        </Container>
+        {
+          (activeStep !== 6) &&
+          <Container
+            innerRef={(ref) => { this.container = ref; }}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            {/* {this.renderReturnRideText()} */}
+            {this.renderProgress()}
+            {
+              (activeStep === 1) &&
+              <Description isOffer defaultValue={description} onNext={this.onDescriptionNext} />
+            }
+            {
+              (activeStep === 2) &&
+              <Route
+                defaultValue={route}
+                hideReturnTripOption={isReturnedTrip}
+                onNext={this.onRouteNext}
+                isOffer
+              />
+            }
+            {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
+            {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
+            {(activeStep === 5) &&
+              <Share
+                defaultValue={share}
+                type={FEEDABLE_TRIP}
+                onNext={this.onShareNext}
+              />
+            }
+          </Container>
+        }
+        {(activeStep === 6) && this.renderFinish()}
       </Wrapper>
     );
   }

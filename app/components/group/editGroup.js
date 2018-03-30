@@ -224,10 +224,11 @@ class EditGroup extends Component {
     const { user } = this.props;
     const { updatedGroup } = this.state;
 
-    if (updatedGroup.isAdmin &&
-      (!(updatedGroup.hasCreatorLeft)
-        || (updatedGroup.User.id === user.id))
-    ) {
+    if (updatedGroup.User.id === user.id && !(updatedGroup.hasCreatorLeft)) {
+      return true;
+    }
+
+    if (updatedGroup.isAdmin && updatedGroup.hasCreatorLeft) {
       return true;
     }
 

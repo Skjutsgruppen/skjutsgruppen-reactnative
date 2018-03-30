@@ -108,14 +108,26 @@ class Share extends Component {
   }
 
   componentWillMount() {
-    const { friends, defaultValue } = this.props;
+    const { friends, defaultValue: { offeredUser, groups, friends: defaultFriends } } = this.props;
     const { friendsList } = this.state;
 
     if (friends && !friends.loading) {
       friends.rows.forEach(friend => friendsList.push(friend));
     }
 
-    this.setState({ friendsList, selectedGroups: defaultValue.groups || [] });
+    if (offeredUser) {
+      this.setState({ selectedFriends: [offeredUser.id] });
+    }
+
+    if (defaultFriends) {
+      this.setState({ selectedFriends: defaultFriends.map(id => id) });
+    }
+
+    if (groups) {
+      this.setState({ selectedGroups: groups.map(id => id) });
+    }
+
+    this.setState({ friendsList });
   }
 
   componentWillReceiveProps({ contacts }) {
@@ -164,8 +176,17 @@ class Share extends Component {
   }
 
   setOption = (type, value) => {
-    const data = this.state[type];
+    const { defaultValue } = this.props;
 
+    if (type === 'selectedGroups' && defaultValue.groupId === value) {
+      return null;
+    }
+
+    if (type === 'selectedFriends' && defaultValue.offeredUser && defaultValue.offeredUser.id === value) {
+      return null;
+    }
+
+    const data = this.state[type];
     if (data.indexOf(value) > -1) {
       data.splice(data.indexOf(value), 1);
     } else {
@@ -175,6 +196,8 @@ class Share extends Component {
     const obj = {};
     obj[type] = data;
     this.setState(obj);
+
+    return true;
   }
 
   submitShare = async () => {
@@ -264,7 +287,7 @@ class Share extends Component {
   }
 
   renderGroups() {
-    const { groups } = this.props;
+    const { groups, defaultValue } = this.props;
 
     if (groups.rows.length === 0) {
       return null;
@@ -277,12 +300,13 @@ class Share extends Component {
           data={groups}
           renderItem={({ item }) => (
             <ShareItem
-              imageSource={{ uri: item.User.avatar }}
+              imageSource={{ uri: item.photo || item.mapPhoto }}
               hasPhoto
               selected={this.hasOption('selectedGroups', item.id)}
               label={item.name}
               onPress={() => this.setOption('selectedGroups', item.id)}
               color="blue"
+              readOnly={defaultValue.groupId === item.id}
             />
           )}
           infinityScroll={false}
@@ -308,7 +332,7 @@ class Share extends Component {
   }
 
   renderList = () => {
-    const { bestFriends, friends } = this.props;
+    const { bestFriends, friends, defaultValue: { offeredUser } } = this.props;
     const {
       friendsListSearch,
       contactsListSearch,
@@ -328,6 +352,7 @@ class Share extends Component {
             rows={friendsListSearch}
             setOption={id => this.setOption('friends', id)}
             selected={selectedFriends}
+            readOnlyUserId={offeredUser ? offeredUser.id : null}
           />
           <FriendList
             loading={friends.loading}
@@ -341,6 +366,17 @@ class Share extends Component {
     }
 
     return (<View style={styles.listWrapper}>
+      {offeredUser &&
+        <ShareItem
+          readOnly
+          imageSource={{ uri: offeredUser.avatar }}
+          label={offeredUser.firstName}
+          onPress={() => { }}
+          color="blue"
+          selected
+          hasPhoto
+        />
+      }
       {!this.isModal() &&
         <ShareItem
           readOnly
@@ -388,6 +424,7 @@ class Share extends Component {
         rows={friendsList}
         setOption={id => this.setOption('selectedFriends', id)}
         selected={selectedFriends}
+        readOnlyUserId={offeredUser ? offeredUser.id : null}
       />
       <FriendList
         loading={friends.loading}
@@ -491,6 +528,12 @@ Share.propTypes = {
   }).isRequired,
   defaultValue: PropTypes.shape({
     groups: PropTypes.array,
+    offeredUser: PropTypes.shape({
+      id: PropTypes.number,
+      avatar: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
   }),
   storeUnregisteredParticipants: PropTypes.func.isRequired,
 };
@@ -502,7 +545,7 @@ Share.defaultProps = {
   labelColor: Colors.text.pink,
   onNext: null,
   detail: null,
-  defaultValue: { groups: [] },
+  defaultValue: { groups: [], offeredUser: null },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
