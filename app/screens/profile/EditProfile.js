@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
-import { Wrapper, Loading } from '@components/common';
+import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
@@ -14,11 +14,12 @@ import Connect from '@components/facebook/connect';
 import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
-import { withAccount } from '@services/apollo/profile';
+import { withAccount, withDeleteAccount } from '@services/apollo/profile';
 import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withFacebookConnect } from '@services/apollo/facebook';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
+import { NavigationActions } from 'react-navigation';
 
 const AvailableLanguages = {
   en: 'English',
@@ -151,6 +152,7 @@ class EditProfile extends Component {
       newEmail: null,
       newPhoneNumber: null,
       phoneVerificationCode: null,
+      modalVisibility: false,
     };
   }
 
@@ -252,10 +254,39 @@ class EditProfile extends Component {
     });
   }
 
+  setConfirmModalVisibility = (visibility) => {
+    this.setState({ modalVisibility: visibility, error: null });
+  }
+
   goBack = () => {
     const { navigation } = this.props;
 
     navigation.goBack();
+  }
+
+  deleteAccount = () => {
+    const { deleteAccount, logout } = this.props;
+
+    this.setState({ loading: true }, () => {
+      deleteAccount()
+        .then(() => this.setConfirmModalVisibility(false))
+        .then(() => {
+          logout()
+            .then(() => FBLoginManager.logout(() => { }))
+            .then(() => this.reset())
+            .catch(() => this.reset());
+        })
+        .catch(error => this.setState({ loading: false, error }));
+    });
+  }
+
+  reset = () => {
+    const { navigation } = this.props;
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
   }
 
   checkValidation() {
@@ -516,6 +547,29 @@ class EditProfile extends Component {
     );
   }
 
+  renderModal = () => {
+    const { modalVisibility, loading, error } = this.state;
+    const message = (
+      <Text>
+        Are you sure you want to delete yourself from the movement?
+      </Text>
+    );
+
+    return (
+      <ConfirmModal
+        loading={loading}
+        visible={modalVisibility}
+        onRequestClose={() => this.setConfirmModalVisibility(false)}
+        message={message}
+        confirmLabel={error !== null ? 'Retry' : 'Yes'}
+        denyLabel="No"
+        onConfirm={this.deleteAccount}
+        onDeny={() => this.setConfirmModalVisibility(false)}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
   render() {
     const {
       profileImage,
@@ -589,9 +643,13 @@ class EditProfile extends Component {
             })
           }
           {this.renderLanguage()}
-          {/* <TouchableOpacity style={styles.deleteRow}>
+          <TouchableOpacity
+            onPress={() => this.setConfirmModalVisibility(true)}
+            style={styles.deleteRow}
+          >
             <Text style={[styles.text, styles.deleteLabel]}>Delete yourself from the movement</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
+          {this.renderModal()}
         </ScrollView>
       </Wrapper>
     );
@@ -622,6 +680,8 @@ EditProfile.propTypes = {
     refetch: PropTypes.func,
   }).isRequired,
   resendEmailVerification: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -629,6 +689,9 @@ const mapStateToProps = state => ({ user: state.auth.user });
 const mapDispatchToProps = dispatch => ({
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user)))
+    .catch(error => console.warn(error)),
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.warn(error)),
 });
 
@@ -638,5 +701,6 @@ export default compose(
   withFacebookConnect,
   withResendEmailVerification,
   withRegeneratePhoneVerification,
+  withDeleteAccount,
   connect(mapStateToProps, mapDispatchToProps),
 )(EditProfile);

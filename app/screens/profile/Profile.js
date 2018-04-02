@@ -69,7 +69,7 @@ Profile.navigationOptions = {
 
 Profile.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
