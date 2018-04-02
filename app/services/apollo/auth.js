@@ -26,6 +26,7 @@ mutation login($username: String!, $password:String!) {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -62,6 +63,7 @@ mutation register($email: String!, $verified:Boolean) {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -98,6 +100,7 @@ mutation verifyEmail($email:String!, $code:String!) {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -122,9 +125,30 @@ export const withResendEmailVerification = graphql(RESEND_EMAIL_VERIFICATION_QUE
 });
 
 const UPDATE_USER_QUERY = gql`
-mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneNumber:String,  $phoneCountryCode: String, $password:String, $fbId:String, $fbToken: String) {
+mutation updateUser($firstName:String,
+  $lastName:String,
+  $avatar:String,
+  $phoneNumber:String,
+  $phoneCountryCode: String,
+  $password:String,
+  $fbId:String,
+  $fbToken: String,
+  $twitterId: String,
+  $twitterToken: String,
+  $twitterSecret: String,
+) {
   updateUser(input:{
-    firstName:$firstName, lastName: $lastName,  avatar: $avatar, phoneNumber:$phoneNumber, phoneCountryCode: $phoneCountryCode, password: $password, fbId:$fbId, fbToken: $fbToken
+    firstName:$firstName,
+    lastName: $lastName,
+    avatar: $avatar,
+    phoneNumber:$phoneNumber,
+    phoneCountryCode: $phoneCountryCode,
+    password: $password,
+    fbId:$fbId,
+    fbToken: $fbToken,
+    twitterId: $twitterId,
+    twitterToken: $twitterToken,
+    twitterSecret: $twitterSecret
   }) {
     token,
     User {
@@ -148,6 +172,7 @@ mutation updateUser($firstName:String, $lastName:String, $avatar:String, $phoneN
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -164,6 +189,9 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
       password,
       fbId,
       fbToken,
+      twitterId,
+      twitterToken,
+      twitterSecret,
     }) =>
       mutate({
         variables: {
@@ -175,6 +203,9 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
           password,
           fbId,
           fbToken,
+          twitterId,
+          twitterToken,
+          twitterSecret,
         },
       }),
   }),
@@ -206,6 +237,7 @@ mutation {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 } 
@@ -268,6 +300,7 @@ mutation changeEmail($email: String!){
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -306,6 +339,7 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }`;

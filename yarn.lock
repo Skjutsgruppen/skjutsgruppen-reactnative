@@ -3057,6 +3057,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jssha@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/jssha/-/jssha-2.3.1.tgz#147b2125369035ca4b2f7d210dc539f009b3de9a"
+
 jsx-ast-utils@^1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-1.4.1.tgz#3867213e8dd79bf1e8f2300c0cfc1efb182c0df1"
@@ -4163,6 +4167,14 @@ react-native-tab-view@^0.0.74:
   dependencies:
     prop-types "^15.6.0"
 
+react-native-twitter:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-twitter/-/react-native-twitter-0.2.1.tgz#28398aeae077247d9433e2b6bdac7bf4b05db4a5"
+  dependencies:
+    eventemitter3 "^2.0.3"
+    jssha "^2.3.1"
+    url-search-params "^0.10.0"
+
 react-native-vector-icons@^4.4.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.5.0.tgz#6b95619e64f62f05f579f74a01fe5640df95158b"
@@ -4997,6 +5009,10 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
 
+tipsi-twitter:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tipsi-twitter/-/tipsi-twitter-2.0.0.tgz#2fa787f264d31504397671c33237177e265bb963"
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -5107,6 +5123,10 @@ ultron@~1.1.0:
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
+
+url-search-params@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/url-search-params/-/url-search-params-0.10.0.tgz#d428c1fa9d78d5c5a3feb634147873890f4adcf0"
 
 utf8@^2.1.1:
   version "2.1.2"

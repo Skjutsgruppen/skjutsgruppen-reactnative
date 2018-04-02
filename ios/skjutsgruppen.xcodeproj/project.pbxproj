@@ -81,6 +81,7 @@
 		FE17B05407C54A388D0619DC /* sfuiDisplay.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 536ABB19B5044209877C7FC7 /* sfuiDisplay.ttf */; };
 		D83DA5239DD844A9A05EA749 /* sfuiText.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E9521EB173B44B0A252251F /* sfuiText.ttf */; };
 		3E12033FF66F48D49577A83A /* sfuiTextItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2E110D152D4A3ABC409228 /* sfuiTextItalic.ttf */; };
+		7B8A661DD3EB45FBA1AB6D59 /* libTPSTwitterModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB43CD007E9F48B4955C5A06 /* libTPSTwitterModule.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -580,6 +581,8 @@
 		536ABB19B5044209877C7FC7 /* sfuiDisplay.ttf */ = {isa = PBXFileReference; name = "sfuiDisplay.ttf"; path = "../assets/fonts/sfuiDisplay.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		0E9521EB173B44B0A252251F /* sfuiText.ttf */ = {isa = PBXFileReference; name = "sfuiText.ttf"; path = "../assets/fonts/sfuiText.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		1C2E110D152D4A3ABC409228 /* sfuiTextItalic.ttf */ = {isa = PBXFileReference; name = "sfuiTextItalic.ttf"; path = "../assets/fonts/sfuiTextItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B2ABA61484AD417BA9925C26 /* TPSTwitterModule.xcodeproj */ = {isa = PBXFileReference; name = "TPSTwitterModule.xcodeproj"; path = "../node_modules/tipsi-twitter/ios/TPSTwitterModule.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		BB43CD007E9F48B4955C5A06 /* libTPSTwitterModule.a */ = {isa = PBXFileReference; name = "libTPSTwitterModule.a"; path = "libTPSTwitterModule.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -635,6 +638,7 @@
 				24E924699E0845C3A266250F /* libsqlite3.0.tbd in Frameworks */,
 				A04B18EAE7F141A5A9F46F82 /* libRNFIRMessaging.a in Frameworks */,
 				8942E40BC9DB1DE6D9C73E59 /* libPods-Skjutsgruppen.a in Frameworks */,
+				7B8A661DD3EB45FBA1AB6D59 /* libTPSTwitterModule.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -938,6 +942,7 @@
 				53F685A5F48A4AF38F545CF3 /* RCTGoogleAnalyticsBridge.xcodeproj */,
 				63BE2481D9954D1DAA345EE2 /* SMXCrashlytics.xcodeproj */,
 				909B73DDC7F6435BABCC23B2 /* RNFIRMessaging.xcodeproj */,
+				B2ABA61484AD417BA9925C26 /* TPSTwitterModule.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -2075,12 +2080,14 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2119,12 +2126,14 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2170,6 +2179,7 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = Skjutsgruppen/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -2222,6 +2232,7 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = Skjutsgruppen/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -2271,11 +2282,13 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2319,11 +2332,13 @@
 					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
 					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
+					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2355,6 +2370,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2380,6 +2396,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
