@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { userRegister, withUpdateProfile } from '@services/apollo/auth';
-import { withFacebookConnect } from '@services/apollo/facebook';
+import { withSocialConnect } from '@services/apollo/social';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
@@ -49,12 +49,13 @@ class FBLogin extends PureComponent {
   }
 
   async connect({ profile, token }) {
-    const { facebookConnect, setLogin, navigation, syncContacts } = this.props;
+    const { socialConnect, setLogin, navigation, syncContacts } = this.props;
 
-    const response = await facebookConnect({
+    const response = await socialConnect({
       id: profile.id,
       email: profile.email,
       token,
+      type: 'facebook',
     });
 
     await setLogin({
@@ -105,7 +106,7 @@ class FBLogin extends PureComponent {
 
   signupWithFacebook = (register) => {
     Alert.alert('Sign up with facebook',
-      'You are not sign up with facebook. Please tap on sign up button to continue with facebook.',
+      'You are not signed up with facebook. Please tap on sign up button to continue with facebook.',
       [
         { text: 'Not Now', onPress: () => this.setState({ loading: false }) },
         { text: 'Sign up', onPress: register },
@@ -132,7 +133,7 @@ FBLogin.propTypes = {
   setRegister: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
-  facebookConnect: PropTypes.func.isRequired,
+  socialConnect: PropTypes.func.isRequired,
   signup: PropTypes.bool,
 };
 
@@ -150,6 +151,10 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default compose(
-  userRegister, withUpdateProfile, withFacebookConnect, withNavigation, withContactSync,
+  userRegister,
+  withUpdateProfile,
+  withSocialConnect,
+  withNavigation,
+  withContactSync,
   connect(null, mapDispatchToProps),
 )(FBLogin);

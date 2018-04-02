@@ -7,6 +7,7 @@ import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import PropTypes from 'prop-types';
 import FBLogin from '@components/facebook/login';
+import TwitterLogin from '@components/twitter/login';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -40,14 +41,6 @@ class Method extends Component {
     header: null,
   };
 
-  onPressFacebook = () => {
-
-  };
-
-  onPressTwitter = () => {
-
-  };
-
   onPressEmail = () => {
     this.props.navigation.navigate('RegisterViaEmail');
   };
@@ -68,15 +61,11 @@ class Method extends Component {
           We will not post anything to Facebook or Twitter without asking you.
         </ColoredText>
         <View style={styles.button}>
-          <FBLogin signup navigation={this.props.navigation} />
+          <FBLogin signup />
         </View>
-        <CustomButton
-          style={styles.button}
-          onPress={this.onPressTwitter}
-          bgColor="#1da1f2"
-        >
-          Sign up with Twitter
-        </CustomButton>
+        <View style={styles.button}>
+          <TwitterLogin signup />
+        </View>
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>
           {'or do the old school and a bitter longer sign up process (that\'s ok as well)'}

@@ -29,6 +29,7 @@ mutation getUserByFbId($id: String!) {
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
@@ -37,46 +38,6 @@ mutation getUserByFbId($id: String!) {
 export const withgetUserByFbId = graphql(GET_USER_BY_FBID_QUERY, {
   props: ({ mutate }) => ({
     getUserByFbId: id => mutate({ variables: { id } }),
-  }),
-});
-
-
-const GET_USER_BY_EMAIL_QUERY = gql`
-mutation getUserByEmail($email: String!) {
-  getUserByEmail(email: $email) {
-    token,
-    status,
-    error,
-    message
-    User {
-      id
-      email
-      newEmail
-      avatar
-      phoneNumber
-      newPhoneNumber
-      firstName
-      lastName
-      emailVerified
-      verificationCode
-      phoneVerified
-      totalOffered
-      totalAsked
-      totalRideConversations
-      totalExperiences
-      totalGroups
-      totalFriends
-      fbId      
-      createdAt
-      isSupporter
-    }
-  }
-}
-`;
-
-export const withGetUserByEmail = graphql(GET_USER_BY_EMAIL_QUERY, {
-  props: ({ mutate }) => ({
-    getUserByEmail: email => mutate({ variables: { email } }),
   }),
 });
 
@@ -108,6 +69,7 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       fbId      
       createdAt
       isSupporter
+      twitterId
     }
   }
 }
