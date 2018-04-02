@@ -13,10 +13,10 @@ import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYP
 import SearchIcon from '@assets/icons/ic_search.png';
 import SearchIconActive from '@assets/icons/ic_search_active.png';
 import { trans } from '@lang/i18n';
-import ExploreRecentGroup from '@components/group/exploreRecentCard';
+import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
 
-const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
+const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  divider: {
+  switchSpacer: {
     flex: 1,
   },
   switcherIcon: {
@@ -105,6 +105,12 @@ const styles = StyleSheet.create({
     top: 24,
     right: 24,
     zIndex: 100,
+  },
+  divider: {
+    marginBottom: 40,
+    marginTop: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
   },
 });
 
@@ -285,7 +291,7 @@ class Search extends Component {
                 </AppText>
               </View>
               <View style={styles.inputWrapper}>
-                <View style={styles.divider} />
+                <View style={styles.switchSpacer} />
                 <TouchableOpacity onPress={this.switchLocation} style={styles.locationSwitcher}>
                   <Image source={require('@assets/icons/icon_switcher.png')} style={styles.switcherIcon} />
                 </TouchableOpacity>
@@ -466,7 +472,8 @@ class Search extends Component {
             >
               {trans('search.search')}
             </RoundedButton>
-            <ExploreGroupsRecentDetail limit={1} from={null} filter="recent" />
+            <View style={styles.divider} />
+            <DiscoverGroup limit={1} from={null} filter="recent" />
           </LinearGradient>
         </ScrollView>
       </View>

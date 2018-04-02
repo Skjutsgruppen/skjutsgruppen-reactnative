@@ -495,7 +495,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.number,
   data: PropTypes.shape({
     profile: PropTypes.shape({
       id: PropTypes.number,
@@ -512,9 +512,9 @@ Profile.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    firstName: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
+    id: PropTypes.number,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
   }).isRequired,
   addFriend: PropTypes.func.isRequired,
   cancelFriendRequest: PropTypes.func.isRequired,
@@ -522,6 +522,10 @@ Profile.propTypes = {
   acceptFriendRequest: PropTypes.func.isRequired,
   subscribeToUpdatedProfile: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
+};
+
+Profile.defaultProps = {
+  id: null,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

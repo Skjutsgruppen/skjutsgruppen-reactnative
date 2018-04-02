@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { Wrapper, Circle } from '@components/common';
 import { Heading } from '@components/utils/texts';
-import ExploreRecentGroup from '@components/group/exploreRecentCard';
+import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
 
 import Starter from '@components/add/starter';
@@ -14,7 +14,7 @@ import { Colors } from '@theme';
 import AddIcon from '@assets/icons/ic_add.png';
 import AddIconActive from '@assets/icons/ic_add_active.png';
 
-const ExploreGroupsRecentDetail = withExploreGroup(ExploreRecentGroup);
+const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
 const styles = StyleSheet.create({
   title: {
@@ -73,7 +73,7 @@ class Add extends Component {
     const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
           <Circle />
           <Heading
             size={24}
@@ -96,12 +96,7 @@ class Add extends Component {
             label="Add a new group"
             info="For a specific distance. area or subject"
           />
-          <ExploreGroupsRecentDetail
-            limit={1}
-            from={null}
-            filter="recent"
-            style={{ marginHorizontal: 20, marginTop: 0 }}
-          />
+          <DiscoverGroup limit={1} from={null} filter="recent" />
         </ScrollView>
       </Wrapper>
     );
