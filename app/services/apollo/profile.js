@@ -28,6 +28,7 @@ subscription updatedProfile($id: Int){
     friendRequestId
     createdAt
     isSupporter
+    twitterId
   }
 }`;
 
@@ -57,6 +58,7 @@ query profile($id: Int){
     friendRequestId
     createdAt
     isSupporter
+    twitterId
   }
 }`;
 
@@ -110,6 +112,7 @@ subscription updatedAccount($id: Int) {
     fbId      
     createdAt
     isSupporter
+    twitterId
   }
 }`;
 
@@ -136,6 +139,7 @@ query account {
     fbId      
     createdAt
     isSupporter
+    twitterId
   }
 }`;
 

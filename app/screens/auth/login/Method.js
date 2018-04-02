@@ -6,6 +6,7 @@ import CustomButton from '@components/common/customButton';
 import { ColoredText, GreetText } from '@components/auth/texts';
 import PropTypes from 'prop-types';
 import FBLogin from '@components/facebook/login';
+import TwitterLogin from '@components/twitter/login';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -43,10 +44,6 @@ class Method extends Component {
     header: null,
   };
 
-  onPressTwitter = () => {
-
-  };
-
   onPressEmail = () => {
     this.props.navigation.navigate('LoginViaEmail');
   };
@@ -64,14 +61,9 @@ class Method extends Component {
         <View style={styles.button}>
           <FBLogin />
         </View>
-
-        <CustomButton
-          onPress={this.onPressTwitter}
-          bgColor="#1da1f2"
-          style={styles.button}
-        >
-          Sign in with Twitter
-        </CustomButton>
+        <View style={styles.button}>
+          <TwitterLogin />
+        </View>
         <View style={styles.divider} />
         <ColoredText color={Colors.text.purple}>Or</ColoredText>
         <CustomButton

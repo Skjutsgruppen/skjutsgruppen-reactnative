@@ -1,4 +1,6 @@
 rootProject.name = 'Skjutsgruppen'
+include ':react-native-twitter'
+project(':react-native-twitter').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-twitter/android')
 include ':react-native-fabric'
 project(':react-native-fabric').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fabric/android')
 include ':react-native-google-analytics-bridge'
@@ -29,4 +31,6 @@ include ':app', ':react-native-i18n'
 project(':react-native-i18n').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-i18n/android')
 include ':react-native-fcm'
 project(':react-native-fcm').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fcm/android')
+include ':tipsi-twitter'
+project(':tipsi-twitter').projectDir = new File(rootProject.projectDir, '../node_modules/tipsi-twitter/android')
 include ':app'

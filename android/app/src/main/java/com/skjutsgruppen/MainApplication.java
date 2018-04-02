@@ -3,6 +3,8 @@ package com.skjutsgruppen;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import ga.piroro.rnt.RNTPackage;
+import com.gettipsi.reactnativetwittersdk.TwitterReactPackage;
 import com.smixx.fabric.FabricPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.rnfs.RNFSPackage;
@@ -37,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNTPackage(),
             new FabricPackage(),
             new GoogleAnalyticsBridgePackage(),
             new RNFSPackage(),
@@ -51,7 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeConfigPackage(),
             new FacebookLoginPackage(),
             new RNI18nPackage(),
-            new FIRMessagingPackage()
+            new FIRMessagingPackage(),
+            new TwitterReactPackage()            
       );
     }
 
