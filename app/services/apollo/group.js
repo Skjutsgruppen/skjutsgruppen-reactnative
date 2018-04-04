@@ -400,16 +400,16 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           areFriends
         }
       }
-      Enabler {
-        id 
-        firstName 
-        avatar
-      }
       feedable
       ActivityType {
         type
       }
       ... on GroupFeed {
+        Enabler {
+          id 
+          firstName 
+          avatar
+        }
         Group {
           id
           name
@@ -547,16 +547,16 @@ subscription groupFeed($groupId: Int!){
           areFriends
         }
       }
-      Enabler {
-        id
-        firstName
-        avatar
-      }
       feedable
       ActivityType {
         type
       }
       ... on GroupFeed {
+        Enabler {
+          id
+          firstName
+          avatar
+        }
         Group {
           id
           name

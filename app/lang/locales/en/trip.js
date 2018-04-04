@@ -14,4 +14,5 @@ export const trip = {
   a_tweet: 'A Tweet',
   return: 'Return',
   return_ride: 'Return ride',
+  delete_this_ride: 'Delete this ride',
 };

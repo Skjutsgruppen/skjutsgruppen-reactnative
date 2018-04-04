@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { RoundedButton } from '@components/common';
+import { Container, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import AddPhoto from '@components/add/photo';
 import CommentBox from '@components/add/commentBox';
@@ -48,7 +48,7 @@ class Description extends PureComponent {
     const { isOffer } = this.props;
 
     return (
-      <View>
+      <Container>
         <AddPhoto onSelect={res => this.setState({ photo: res.data })} iconColor={isOffer ? 'pink' : 'blue'} defaultPhoto={photo} />
         <CommentBox
           label="Comment"
@@ -69,7 +69,7 @@ class Description extends PureComponent {
         >
           Next
         </RoundedButton>
-      </View>
+      </Container>
     );
   }
 }

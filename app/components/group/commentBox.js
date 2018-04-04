@@ -163,14 +163,14 @@ class CommentBox extends PureComponent {
     return (
       <View style={styles.actions} >
         <TouchableOpacity
-          onPress={() => onOffer(true)}
+          onPress={() => onOffer(this.state.text)}
           style={styles.action}
         >
           <Text style={styles.actionText}>Offer a Ride</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
-          onPress={() => onAsk()}
+          onPress={() => onAsk(this.state.text)}
           style={styles.action}
         >
           <Text style={styles.actionText}>Ask a Ride</Text>
