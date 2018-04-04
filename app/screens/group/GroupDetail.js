@@ -13,9 +13,11 @@ class GroupDetail extends Component {
   }
 
   componentWillMount() {
-    const { navigation, fetch } = this.props;
+    const { navigation, fetch, subscribeToGroup } = this.props;
     const { group } = navigation.state.params;
     this.setState({ group, fetch });
+
+    subscribeToGroup(group.id);
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
@@ -84,10 +86,14 @@ GroupDetail.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   fetch: PropTypes.bool,
+  subscribeToGroup: PropTypes.func.isRequired,
 };
 
 GroupDetail.defaultProps = {
   fetch: false,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
 };
 
 

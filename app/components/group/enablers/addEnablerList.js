@@ -74,10 +74,10 @@ class AddEnabler extends Component {
 
     addGroupEnablers({ ids: participants.map(participant => participant.id), groupId: id })
       .then(() => {
-        this.setState({ confirmModalVisibility: false, loading: false });
+        this.setState({ confirmModalVisibility: false, loading: false, error: false });
         navigation.goBack();
       })
-      .catch(err => console.warn(err));
+      .catch(() => this.setState({ confirmModalVisibility: true, loading: false, error: true }));
   }
 
   onPress = (id) => {

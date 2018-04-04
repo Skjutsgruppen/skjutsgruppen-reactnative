@@ -606,66 +606,71 @@ export const withTrip = graphql(FIND_TRIP_QUERY, {
 const TRIPS_SUBSCRIPTION_QUERY = gql`
   subscription myTrip($userId: Int!){
     myTrip(userId:$userId){
-      id 
-      type 
-      description 
-      seats 
-      User {
+      Trip {
         id 
-        firstName 
-        avatar 
-        relation {
-          path{
-            id
-            firstName
-            avatar
-          }
-          areFriends
-        }
-      } 
-      TripStart {
-        name 
-        coordinates
-      } 
-      TripEnd {
-        name 
-        coordinates
-      } 
-      Stops { 
-        name 
-        coordinates 
-      } 
-      date 
-      time 
-      photo 
-      mapPhoto
-      totalFeeds
-      isParticipant
-      experienceStatus
-      ownerExperience {
-        id
-        createdAt
-        description
-        photoUrl
-        publishedStatus
-        userStatus
+        type 
+        description 
+        seats 
         User {
           id 
           firstName 
           avatar 
+          relation {
+            path{
+              id
+              firstName
+              avatar
+            }
+            areFriends
+          }
         } 
+        TripStart {
+          name 
+          coordinates
+        } 
+        TripEnd {
+          name 
+          coordinates
+        } 
+        Stops { 
+          name 
+          coordinates 
+        } 
+        date 
+        time 
+        photo 
+        mapPhoto
+        totalFeeds
+        isParticipant
+        experienceStatus
+        ownerExperience {
+          id
+          createdAt
+          description
+          photoUrl
+          publishedStatus
+          userStatus
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+        }
+        Participants{
+          count
+        }
+        Group {
+          id
+          name
+        }
+        linkedTrip {
+          id
+          description
+        }
+        muted
+        unreadNotificationCount
       }
-      Participants{
-        count
-      }
-      Group {
-        id
-        name
-      }
-      linkedTrip {
-        id
-        description
-      }
+      remove
     }
   }
 `;
@@ -781,16 +786,24 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
           rows = [];
           count = 0;
           const newTrip = subscriptionData.data.myTrip;
+          const { Trip, remove } = newTrip;
 
           rows = prev.trips.rows.filter((row) => {
-            if (row.id === newTrip.id) {
+            if (row.id === Trip.id) {
               return false;
             }
             count += 1;
 
             return true;
           });
-          rows = [newTrip].concat(rows);
+
+          if (remove) {
+            rows = prev.trips.rows.filter(row => row.id !== Trip.id);
+            count -= 1;
+          } else {
+            rows = [Trip].concat(rows);
+            count += 1;
+          }
 
           return {
             trips: { ...prev.trips, ...{ rows, count: count + 1 } },

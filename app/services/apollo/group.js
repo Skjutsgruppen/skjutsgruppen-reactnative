@@ -176,6 +176,8 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
         firstName
         avatar
       }
+      muted
+      unreadNotificationCount
     }
     count
   }
@@ -245,6 +247,8 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
         firstName
         avatar
       }
+      muted
+      unreadNotificationCount
     }
     count
   }
@@ -317,6 +321,60 @@ subscription myGroup($userId: Int!){
 }
 `;
 
+export const GROUPS_SUBSCRIPTION = gql`
+  subscription groupUpdated($id: Int!) {
+    groupUpdated (groupId: $id){
+      id
+      name
+      description
+      User {
+        id 
+        firstName 
+        avatar 
+      } 
+      outreach
+      type
+      photo
+      mapPhoto
+      areaCoordinates
+      TripStart {
+        name 
+        countryCode
+        coordinates 
+      } 
+      TripEnd {
+        name
+        countryCode 
+        coordinates
+      } 
+      Stops {
+        name
+        countryCode 
+        coordinates
+      } 
+      country 
+      county 
+      municipality 
+      locality 
+      membershipStatus
+      totalParticipants
+      isAdmin
+      muted
+      unreadNotificationCount
+      Enablers {
+        id
+        firstName
+        avatar
+      }
+      municipalityId
+      localityId
+      countyId
+      countryCode
+      hasCreatorLeft
+    }
+  }
+`;
+
 export const FIND_GROUP_QUERY = gql`
 query group($id: Int!){
   group(id: $id){
@@ -376,8 +434,23 @@ export const withGroup = graphql(FIND_GROUP_QUERY, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { loading, group = {}, refetch, networkStatus, error } }) => ({
-    loading, group, refetch, networkStatus, error,
+  props: ({ data: { loading, group = {}, refetch, networkStatus, error, subscribeToMore } }) => ({
+    loading,
+    group,
+    refetch,
+    networkStatus,
+    error,
+    subscribeToGroup: id => subscribeToMore({
+      document: GROUPS_SUBSCRIPTION,
+      variables: { id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+
+        return { group: subscriptionData.data.groupUpdated };
+      },
+    }),
   }),
 });
 
@@ -410,6 +483,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           firstName 
           avatar
         }
+        updatedField
         Group {
           id
           name
@@ -557,6 +631,7 @@ subscription groupFeed($groupId: Int!){
           firstName
           avatar
         }
+        updatedField
         Group {
           id
           name
@@ -1329,23 +1404,24 @@ export const withUpdateGroup = graphql(UPDATE_GROUP_MUTATION_QUERY, {
         localityId,
         type,
         id,
-      }) => mutate({
-        variables: {
-          outreach,
-          tripStart,
-          tripEnd,
-          stops,
-          name,
-          description,
-          photo,
-          countryCode,
-          countyId,
-          municipalityId,
-          localityId,
-          type,
-          id,
-        },
-      }),
+      }) =>
+        mutate({
+          variables: {
+            outreach,
+            tripStart,
+            tripEnd,
+            stops,
+            name,
+            description,
+            photo,
+            countryCode,
+            countyId,
+            municipalityId,
+            localityId,
+            type,
+            id,
+          },
+        }),
     }),
 });
 
