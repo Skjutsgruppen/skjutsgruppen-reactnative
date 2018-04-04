@@ -46,6 +46,7 @@ class ParticipantList extends Component {
       participant: {},
       isSearchModalOpen: false,
       loading: false,
+      error: false,
     };
   }
 
@@ -80,9 +81,9 @@ class ParticipantList extends Component {
 
     removeGroupParticipant({ groupId: id, ids: [participant.id] })
       .then(() => {
-        this.setState({ confirmModalVisibility: false, loading: false });
+        this.setState({ confirmModalVisibility: false, loading: false, error: false });
       })
-      .catch(err => console.warn(err));
+      .catch(err => this.setState({ confirmModalVisibility: true, loading: false, error: err }));
   }
 
   renderButton = () => (
@@ -96,7 +97,7 @@ class ParticipantList extends Component {
   )
 
   renderModal() {
-    const { confirmModalVisibility, participant, loading } = this.state;
+    const { confirmModalVisibility, participant, loading, error } = this.state;
 
     const message = (
       <Text>
@@ -112,7 +113,7 @@ class ParticipantList extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={'Yes'}
+        confirmLabel={error ? 'Retry' : 'Yes'}
         denyLabel="No"
         onConfirm={this.removeParticipant}
         onDeny={() => this.setConfirmModalVisibility(false)}
