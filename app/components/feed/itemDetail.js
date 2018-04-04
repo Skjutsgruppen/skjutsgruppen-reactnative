@@ -15,6 +15,7 @@ import {
   FEEDABLE_SUGGESTION,
   GROUP_FEED_TYPE_OFFER_RIDE,
   GROUP_FEED_TYPE_ENABLER_ADDED,
+  GROUP_FEED_TYPE_UPDATED,
 } from '@config/constant';
 import FOF from '@components/relation/friendsOfFriend';
 import Colors from '@theme/colors';
@@ -206,6 +207,17 @@ class Feed extends Component {
         <View>
           <Text style={styles.commentText}>
             {this.renderUsername()} is now enabler
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+        </View>
+      );
+    }
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_UPDATED) {
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} has updated the {feed.updatedField} of the group
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>

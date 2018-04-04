@@ -7,7 +7,7 @@ import { ShareButton, RoundedButton } from '@components/common';
 import GroupMap from '@components/group/groupMap';
 import MembershipRequest from '@components/group/membershipRequest/membershipRequestAvatar';
 import ParticipantAvatar from '@components/group/participantAvatar';
-import { withGroupMembers, withGroupMembershipRequest } from '@services/apollo/group';
+import { withGroupMembers, withGroupMembershipRequest, withGroup } from '@services/apollo/group';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Share from '@components/common/share';
 
@@ -53,14 +53,22 @@ const ParticipantListBubble = withGroupMembers(ParticipantAvatar);
 const MembershipRequestBubble = withGroupMembershipRequest(MembershipRequest);
 const Enablers = withGroupMembers(ParticipantAvatar);
 
-class GroupInformation extends Component {
-  static navigationOptions = {
-    header: null,
-  };
-
+class Information extends Component {
   constructor(props) {
     super(props);
-    this.state = { showShareModal: false };
+    this.state = { showShareModal: false, group: {} };
+  }
+
+  componentWillMount() {
+    const { navigation, subscribeToGroup } = this.props;
+    const { group } = navigation.state.params;
+    this.setState({ group });
+
+    subscribeToGroup(group.id);
+  }
+
+  componentWillReceiveProps({ group }) {
+    this.setState({ group });
   }
 
   onPress = (type) => {
@@ -135,13 +143,7 @@ class GroupInformation extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-
-    if (!navigation.state.params) {
-      return null;
-    }
-
-    const { group } = navigation.state.params;
+    const { group } = this.state;
 
     return (
       <View style={styles.contentWrapper}>
@@ -212,10 +214,36 @@ class GroupInformation extends Component {
   }
 }
 
+Information.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+  group: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  subscribeToGroup: PropTypes.func.isRequired,
+};
+
+const GroupInfo = withGroup(Information);
+
+const GroupInformation = ({ navigation }) => {
+  if (!navigation.state.params) {
+    return null;
+  }
+
+  const { group } = navigation.state.params;
+
+  return <GroupInfo navigation={navigation} id={group.id} />;
+};
+
 GroupInformation.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+};
+
+GroupInformation.navigationOptions = {
+  header: null,
 };
 
 export default GroupInformation;
