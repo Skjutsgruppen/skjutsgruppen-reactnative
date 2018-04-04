@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
@@ -13,10 +13,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const SectionLabel = ({ label, color }) => (
+const SectionLabel = ({ label, color, style }) => (
   <Text style={[
     styles.label,
     GlobalStyles.TextStyles.bold,
+    style,
     { color: color !== null ? color : Colors.text.pink },
   ]}
   >
@@ -27,10 +28,12 @@ const SectionLabel = ({ label, color }) => (
 SectionLabel.propTypes = {
   label: PropTypes.string.isRequired,
   color: PropTypes.string,
+  style: ViewPropTypes.style,
 };
 
 SectionLabel.defaultProps = {
   color: Colors.text.pink,
+  style: {},
 };
 
 export default SectionLabel;

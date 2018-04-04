@@ -90,6 +90,14 @@ subscription{
           unit
           type
         }
+        Group {
+          id
+          name
+        }
+        linkedTrip {
+          id 
+          description
+        }
       }
     }
     ... on NewsFeed { 
@@ -221,6 +229,14 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           unit
           type
         }
+        Group {
+          id
+          name
+        }
+        linkedTrip {
+          id
+          description
+        }
       }
     }
     ... on NewsFeed { 
@@ -303,14 +319,21 @@ export const withFeed = graphql(GET_FEED_QUERY, {
             return prev;
           }
 
-          const newrows = [subscriptionData.data.feed].concat(prev.getFeed.rows);
+          rows = [];
+          count = 0;
+          let repeated = false;
 
-          return {
-            getFeed: {
-              ...prev.getFeed,
-              ...{ rows: newrows, count: prev.getFeed.count + 1 },
-            },
-          };
+          const newFeed = subscriptionData.data.feed;
+          const found = prev.getFeed.rows.filter(row => row.id === newFeed.id);
+          repeated = found.length > 0;
+          let prevFeeds = prev.getFeed;
+
+          if (!repeated) {
+            rows = [newFeed].concat(prevFeeds.rows);
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count + 1 } };
+          }
+
+          return { getFeed: prevFeeds };
         },
       }),
     };
@@ -332,6 +355,8 @@ mutation createTrip(
   $seats:Int,
   $flexibilityInfo:FlexibilityInput,
   $share:ShareInput,
+  $groupId: Int,
+  $linkedTripId: Int,
 ) {
   createTrip( input :{
     parentId: $parentId
@@ -347,6 +372,8 @@ mutation createTrip(
     seats : $seats
     flexibilityInfo : $flexibilityInfo
     share : $share
+    groupId: $groupId
+    linkedTripId: $linkedTripId
   }) {
       id 
       type 
@@ -375,6 +402,15 @@ mutation createTrip(
       totalFeeds
       isParticipant
       url
+      recurring
+      Group {
+        id
+        name
+      }
+      linkedTrip {
+        id
+        description
+      }
   }
 }
 `;
@@ -395,6 +431,8 @@ export const withCreateTrip = graphql(CREATE_TRIP_QUERY, {
       flexibilityInfo,
       share,
       type,
+      groupId = null,
+      linkedTripId = null,
     }) =>
       mutate({
         variables: {
@@ -411,6 +449,8 @@ export const withCreateTrip = graphql(CREATE_TRIP_QUERY, {
           seats,
           flexibilityInfo,
           share,
+          groupId,
+          linkedTripId,
         },
       }),
   }),
@@ -541,6 +581,14 @@ query trip($id: Int!){
         avatar 
       }
     }
+    Group {
+      id
+      name
+    }
+    linkedTrip {
+      id
+      description
+    }
   }
 }
 `;
@@ -610,6 +658,14 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
       Participants{
         count
       }
+      Group {
+        id
+        name
+      }
+      linkedTrip {
+        id
+        description
+      }
     }
   }
 `;
@@ -672,6 +728,14 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       }
       muted
       unreadNotificationCount
+      Group {
+        id
+        name
+      }
+      linkedTrip {
+        id
+        description
+      }
     }
     count
   }
@@ -1013,4 +1077,29 @@ export const withTripFeed = graphql(TRIP_FEED_QUERY, {
       }),
     };
   },
+});
+
+const DELETE_TRIP_QUERY = gql`
+  mutation deleteTrip($id: Int!){
+    deleteTrip(id: $id)
+  }
+`;
+
+export const withDeleteTrip = graphql(DELETE_TRIP_QUERY, {
+  props: ({ mutate }) => (
+    {
+      deleteTrip: ({ id }) => mutate({
+        variables: { id },
+        refetchQueries: [
+          {
+            query: GET_FEED_QUERY,
+            variables: {
+              offset: 0,
+              limit: PER_FETCH_LIMIT,
+              filter: { type: FEED_FILTER_EVERYTHING },
+            },
+          },
+        ],
+      }),
+    }),
 });

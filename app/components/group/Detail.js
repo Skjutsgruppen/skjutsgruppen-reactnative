@@ -5,7 +5,6 @@ import {
   Text,
   Modal,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -16,7 +15,7 @@ import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withLeaveGroup } from '@services/apollo/notification';
 import { withMute, withUnmute } from '@services/apollo/mute';
-import { AppNotification, Wrapper, Loading, ActionModal, ModalAction } from '@components/common';
+import { AppNotification, Wrapper, ConfirmModal, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
@@ -159,6 +158,7 @@ class Detail extends PureComponent {
       notifierOffset: 0,
       showCalendar: false,
       groupTrips: [],
+      confirmModal: false,
     });
   }
 
@@ -229,16 +229,18 @@ class Detail extends PureComponent {
     this.setState({ notification: false, notifierOffset: 0 });
   }
 
-  onOffer = () => {
+  onCommentBoxBlur = comment => this.setState({ comment });
+
+  onOffer = (comment) => {
     const { navigation, group } = this.props;
     Keyboard.dismiss();
-    navigation.navigate('Offer', { groupId: group.id });
+    navigation.navigate('Offer', { group, description: comment });
   }
 
-  onAsk = () => {
+  onAsk = (comment) => {
     const { navigation, group } = this.props;
     Keyboard.dismiss();
-    navigation.navigate('Ask', { groupId: group.id });
+    navigation.navigate('Ask', { group, description: comment });
   }
 
   onReport = () => {
@@ -287,6 +289,10 @@ class Detail extends PureComponent {
     this.setState({ showCalendar: show });
   }
 
+  setConfirmModalVisibility = (show) => {
+    this.setState({ showConfirmModal: show });
+  }
+
   redirectToSelectedTripDate = (date) => {
     const { navigation, group } = this.props;
     this.setCalendarVisibilty(false);
@@ -299,6 +305,10 @@ class Detail extends PureComponent {
 
     this.setState({ leaveLoading: true });
     leaveGroup(group.id)
+      .then(() => {
+        this.setConfirmModalVisibility(false);
+        this.setState({ showAction: false });
+      })
       .then(refresh)
       .catch(console.warn);
   }
@@ -317,11 +327,7 @@ class Detail extends PureComponent {
   }
 
   isGroupJoined = () => {
-    const { user, group } = this.props;
-
-    if (user.id === group.User.id) {
-      return false;
-    }
+    const { group } = this.props;
 
     return group.membershipStatus === 'accepted';
   }
@@ -331,34 +337,15 @@ class Detail extends PureComponent {
     navigation.goBack();
   }
 
-  header = (leaveLoading) => {
+  header = () => {
     const { group } = this.props;
 
     return (
       <View>
         <GroupImage group={group} />
-        {this.isGroupJoined() && this.renderLeaveButton(leaveLoading)}
         <MapToggle handlePress={this.onMapPress} />
       </View>);
   }
-
-  renderLeaveButton = leaveLoading => (
-    <View style={styles.leaveButton}>
-      {
-        leaveLoading ?
-          <View style={styles.leaving}>
-            <Text style={[styles.leaveText, styles.leavingText]}>Leaving</Text>
-            <Loading />
-          </View>
-          :
-          <TouchableWithoutFeedback
-            onPress={this.leaveGroup}
-          >
-            <View><Text style={styles.leaveText}> Leave group </Text></View>
-          </TouchableWithoutFeedback>
-      }
-    </View>
-  );
 
   renderShareModal() {
     const { showShareModal, group } = this.state;
@@ -424,6 +411,12 @@ class Detail extends PureComponent {
       ]);
     }
 
+    if (this.isGroupJoined()) {
+      actions = actions.concat([
+        <ModalAction label={trans('group.leave_group')} onPress={() => this.setConfirmModalVisibility(true)} key="leave" />,
+      ]);
+    }
+
     if (user.id !== group.User.id) {
       actions = actions.concat([
         <ModalAction label={trans('group.report_this_group')} onPress={this.onReport} key="report" />,
@@ -443,10 +436,33 @@ class Detail extends PureComponent {
     </ActionModal>
   );
 
+  renderConfirmModal = () => {
+    const { leaveLoading, showConfirmModal } = this.state;
+    const message = (
+      <Text>
+        Are you sure you want to leave the group?
+      </Text>
+    );
+
+    return (
+      <ConfirmModal
+        loading={leaveLoading}
+        visible={showConfirmModal}
+        onRequestClose={() => this.setConfirmModalVisibility(false)}
+        message={message}
+        confirmLabel={'Yes'}
+        denyLabel="No"
+        onConfirm={() => this.leaveGroup()}
+        onDeny={() => this.setConfirmModalVisibility(false)}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
   render() {
     const { navigation, group } = this.props;
-    const { leaveLoading, notification, notifierOffset, loading, error, success } = this.state;
-    const header = this.header(leaveLoading);
+    const { notification, notifierOffset, loading, error, success } = this.state;
+    const header = this.header();
     const { notifier, notificationMessage } = navigation.state.params;
 
     return (
@@ -476,10 +492,12 @@ class Detail extends PureComponent {
           handleShowCalender={this.setCalendarVisibilty}
           onOffer={this.onOffer}
           onAsk={this.onAsk}
+          onBlur={this.onCommentBoxBlur}
         />
         {this.renderShareModal()}
         {this.renderCalendarModal()}
         {this.renderOptionsModal()}
+        {this.renderConfirmModal()}
         {
           this.state.showCalendar &&
           <Modal
