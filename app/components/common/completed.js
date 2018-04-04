@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import { RoundedButton } from '@components/common';
+import { Wrapper, Container, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import SectionLabel from '@components/add/sectionLabel';
 import { withNavigation } from 'react-navigation';
 import Trip from '@components/feed/card/trip';
 import Group from '@components/feed/card/group';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
+import TabBar from '@components/common/tabBar';
 
 const styles = StyleSheet.create({
   wrapper: {
     marginTop: 20,
     marginBottom: 75,
+    backgroundColor: 'green',
   },
   title: {
     fontSize: 16,
@@ -57,50 +59,114 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingVertical: '5%',
+    backgroundColor: Colors.background.mutedBlue,
+    elevation: 15,
   },
   button: {
     width: 200,
     alignSelf: 'center',
-    marginTop: '10%',
-    marginBottom: 50,
+    marginVertical: 32,
+  },
+  link: {
+    color: Colors.text.blue,
+    textAlign: 'center',
+    marginBottom: 32,
+    fontWeight: 'bold',
+    backgroundColor: 'transparent',
   },
 });
 
-const Completed = ({ detail, type, navigation, isReturnedTrip, onMakeReturnRide }) => (
-  <View style={styles.wrapper}>
-    <SectionLabel label="Published" />
-    {
-      (type === FEEDABLE_TRIP) &&
-      <Trip
-        onPress={() => navigation.navigate('TripDetail', { trip: detail })}
-        trip={detail}
-      />
-    }
+const getTitle = (isReturnedTrip, suggestion, group, isRecurring) => {
+  if (isReturnedTrip && Object.keys(suggestion).length > 0) {
+    return `Published and  offered to ${suggestion.User.firstName}`;
+  }
 
-    {
-      (type === FEEDABLE_GROUP) &&
-      <Group
-        onPress={() => navigation.navigate('GroupDetail', { group: detail })}
-        group={detail}
-      />
-    }
+  if (Object.keys(group).length > 0) {
+    return `Published in ${group.name}`;
+  }
 
-    {
-      isReturnedTrip &&
+  if (isRecurring) return 'All of your rides are published!';
+
+  return 'Published!';
+};
+
+const Completed = ({
+  detail,
+  type,
+  navigation,
+  isReturnedTrip,
+  onMakeReturnRide,
+  suggestion,
+  group,
+  isRecurring,
+}) =>
+  (
+    <Wrapper>
+      <Container>
+        <SectionLabel
+          label={getTitle(isReturnedTrip, suggestion, group, isRecurring)}
+          style={{ marginTop: 30 }}
+        />
+        {
+          (type === FEEDABLE_TRIP) &&
+          <Trip
+            onPress={() => navigation.navigate('TripDetail', { trip: detail })}
+            trip={detail}
+            shouldHandleRecurring
+          />
+        }
+
+        {
+          (type === FEEDABLE_GROUP) &&
+          <Group
+            onPress={() => navigation.navigate('GroupDetail', { group: detail })}
+            group={detail}
+          />
+        }
+      </Container>
       <View style={styles.footer}>
-        <RoundedButton
-          onPress={onMakeReturnRide}
-          bgColor={Colors.background.pink}
-          style={styles.button}
-        >
-          Add return ride
-        </RoundedButton>
+        {
+          isReturnedTrip &&
+          <RoundedButton
+            onPress={onMakeReturnRide}
+            bgColor={Colors.background.pink}
+            style={styles.button}
+          >
+            Add return ride
+          </RoundedButton>
+        }
+        {
+          Object.keys(suggestion).length > 0 &&
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('TripDetail', { trip: suggestion })}
+          >
+            Back to {suggestion.User.firstName}{"'"}s ride
+          </Text>
+        }
+        {
+          Object.keys(group).length > 0 && isReturnedTrip &&
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('GroupDetail', { group, fetch: true })}
+          >
+            Back to {group.name}
+          </Text>
+        }
+        {
+          Object.keys(group).length > 0 && !isReturnedTrip &&
+          <RoundedButton
+            onPress={() => navigation.navigate('GroupDetail', { group, fetch: true })}
+            bgColor={Colors.background.pink}
+            style={styles.button}
+          >
+            Back to group
+          </RoundedButton>
+        }
+        <TabBar />
       </View>
-    }
-  </View>
-);
+    </Wrapper>
+  );
 
 Completed.propTypes = {
   navigation: PropTypes.shape({
@@ -112,11 +178,25 @@ Completed.propTypes = {
   type: PropTypes.oneOf([FEEDABLE_TRIP, FEEDABLE_GROUP]).isRequired,
   isReturnedTrip: PropTypes.bool,
   onMakeReturnRide: PropTypes.func,
+  suggestion: PropTypes.shape({
+    User: PropTypes.shape({
+      firstName: PropTypes.string,
+    }),
+    id: PropTypes.number,
+  }),
+  group: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+  }),
+  isRecurring: PropTypes.bool,
 };
 
 Completed.defaultProps = {
   isReturnedTrip: false,
   onMakeReturnRide: () => { },
+  suggestion: {},
+  group: {},
+  isRecurring: false,
 };
 
 export default withNavigation(Completed);

@@ -282,17 +282,19 @@ class Group extends Component {
           onBack={this.onBackButtonPress}
         />
         <Toast message={error} type="error" />
-        <Container
-          innerRef={(ref) => { this.container = ref; }}
-          style={{ backgroundColor: 'transparent' }}
-        >
-          {this.renderProgress()}
-          {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
-          {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
-          {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
-          {(activeStep === 5) && this.renderFinish()}
-          {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
-        </Container>
+        {(activeStep !== 5) &&
+          <Container
+            innerRef={(ref) => { this.container = ref; }}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            {this.renderProgress()}
+            {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
+            {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
+            {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
+            {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
+          </Container>
+        }
+        {(activeStep === 5) && this.renderFinish()}
       </Wrapper>
     );
   }
