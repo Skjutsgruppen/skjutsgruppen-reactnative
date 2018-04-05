@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 12,
   },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 16,
+  },
   closeWrapper: {
     height: 42,
     borderRadius: 21,
@@ -69,6 +74,7 @@ class ActionModal extends PureComponent {
       transparent,
       visible,
       onRequestClose,
+      title,
     } = this.props;
 
     return (
@@ -87,6 +93,9 @@ class ActionModal extends PureComponent {
             easing="ease-in-out-cubic"
             style={styles.actionsWrapper}
           >
+            {
+              title && title !== '' && <Text style={styles.title}>{title}</Text>
+            }
             {this.renderActions()}
           </Animatable.View>
           <Animatable.View
@@ -116,12 +125,14 @@ ActionModal.propTypes = {
   transparent: PropTypes.bool,
   visible: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
+  title: PropTypes.string,
 };
 
 ActionModal.defaultProps = {
   style: {},
   transparent: true,
   visible: false,
+  title: null,
 };
 
 export default ActionModal;

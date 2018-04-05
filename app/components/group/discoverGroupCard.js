@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     marginBottom: 75,
     height: cardHeight,
     borderRadius: 24,
-    backgroundColor: Colors.background.red,
+    backgroundColor: Colors.background.fullWhite,
     elevation: 2,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',

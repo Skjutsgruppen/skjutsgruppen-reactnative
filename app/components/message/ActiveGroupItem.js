@@ -1,10 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 
 import { AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
 import { Colors } from '@theme';
 import { withResetMute } from '@services/apollo/mute';
 import { getDate } from '@config';
@@ -78,7 +79,7 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
   };
 
   return (
-    <TouchableOpacity onPress={navigateToGroupDetail} key={group.id}>
+    <TouchableHighlight onPress={navigateToGroupDetail} key={group.id}>
       <View style={styles.list}>
         <View style={styles.flexRow}>
           <View style={styles.profilePicWrapper}>
@@ -106,7 +107,7 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
           }
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

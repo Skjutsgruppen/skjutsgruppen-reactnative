@@ -28,6 +28,7 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -50,8 +51,19 @@ const styles = StyleSheet.create({
   mapImg: {
     resizeMode: 'contain',
   },
+  menuIconWrapper: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginLeft: 2,
+  },
   menuIcon: {
-    marginLeft: 12,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
   },
 });
 
@@ -228,12 +240,14 @@ class Feed extends Component {
         >
           {trans('feed.hi')}!
         </Heading>
-        <TouchableOpacity
-          style={styles.menuIcon}
-          onPress={() => this.setFilterVisibility(true)}
-        >
-          <Image source={require('@assets/icons/ic_menu.png')} />
-        </TouchableOpacity>
+        <View style={styles.menuIconWrapper}>
+          <TouchableHighlight
+            style={styles.menuIcon}
+            onPress={() => this.setFilterVisibility(true)}
+          >
+            <Image source={require('@assets/icons/ic_menu.png')} />
+          </TouchableHighlight>
+        </View>
       </View>
       {this.renderMap()}
     </View>
@@ -284,6 +298,20 @@ class Feed extends Component {
 
   renderFeed() {
     const { feeds } = this.props;
+    const { filterType } = this.state;
+    let noResultText = 'No rides have been created yet.';
+
+    if (filterType === FEEDABLE_EXPERIENCE.toLowerCase()) {
+      noResultText = 'No experiences published yet.';
+    }
+
+    if (filterType === FEEDABLE_TRIP) {
+      noResultText = 'No rides yet.';
+    }
+
+    if (filterType === FEEDABLE_NEWS.toLowerCase()) {
+      noResultText = 'No news yet.';
+    }
 
     return (
       <DataList
@@ -303,6 +331,8 @@ class Feed extends Component {
             return { getFeed: { ...previousResult.getFeed, ...{ rows } } };
           },
         }}
+        shouldUpdateAnimatedValue
+        noResultText={noResultText}
       />
     );
   }
@@ -316,7 +346,7 @@ class Feed extends Component {
   render() {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <Circle />
+        <Circle animatable />
         {this.renderFeed()}
         {this.renderShareModal()}
         <Filter

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
@@ -10,6 +10,7 @@ import Date from '@components/date';
 import { Colors } from '@theme';
 
 import { AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -82,7 +83,7 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
   };
 
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       onPress={navigateToTripDetail}
       key={trip.id}
     >
@@ -114,7 +115,7 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
           }
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 
