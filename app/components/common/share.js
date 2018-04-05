@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableHighlight, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withFriends, withBestFriends } from '@services/apollo/friend';
@@ -17,6 +17,7 @@ import SendSMS from 'react-native-sms';
 import { withShare } from '@services/apollo/share';
 import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   list: {
@@ -31,8 +32,9 @@ const styles = StyleSheet.create({
   },
   navBar: {
     flexDirection: 'row',
-    height: 40,
-    paddingHorizontal: 4,
+    height: 48,
+    paddingHorizontal: 8,
+    marginTop: 8,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -63,6 +65,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 5,
   },
+  iconWrapper: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  icon: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   footer: {
     backgroundColor: Colors.background.mutedBlue,
     paddingHorizontal: 20,
@@ -83,7 +98,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
     transform: [
       { rotate: '-90deg' },
     ],
@@ -366,7 +380,7 @@ class Share extends Component {
     }
 
     return (<View style={styles.listWrapper}>
-      {offeredUser &&
+      {Object.keys(offeredUser).length > 0 &&
         <ShareItem
           readOnly
           imageSource={{ uri: offeredUser.avatar }}
@@ -464,13 +478,16 @@ class Share extends Component {
           {
             this.isModal() &&
             <View style={styles.navBar}>
-              <TouchableHighlight
-                style={styles.closeIcon}
-                underlayColor="#f5f5f5"
-                onPress={this.onClose}
-              >
-                <Image source={require('@assets/icons/ic_back.png')} />
-              </TouchableHighlight>
+              <View style={styles.iconWrapper}>
+                <TouchableHighlight
+                  style={styles.closeIcon}
+                  onPress={this.onClose}
+                >
+                  <View style={styles.icon}>
+                    <Image source={require('@assets/icons/ic_back.png')} />
+                  </View>
+                </TouchableHighlight>
+              </View>
               <Text style={styles.pageTitle} >{trans('global.share_with')}</Text>
               <View style={styles.map} />
             </View>
@@ -545,7 +562,7 @@ Share.defaultProps = {
   labelColor: Colors.text.pink,
   onNext: null,
   detail: null,
-  defaultValue: { groups: [], offeredUser: null },
+  defaultValue: { groups: [], offeredUser: {} },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

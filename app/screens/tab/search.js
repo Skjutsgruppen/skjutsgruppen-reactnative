@@ -260,7 +260,11 @@ class Search extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <ScrollView keyboardShouldPersistTaps="handled" ref={(ref) => { this.scrollView = ref; }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          ref={(ref) => { this.scrollView = ref; }}
+          showsVerticalScrollIndicator={false}
+        >
           <Circle />
           <Heading
             size={24}

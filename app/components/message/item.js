@@ -3,8 +3,9 @@ import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import { withReadNotification, withRejectGroupInvitation, withAcceptGroupRequest } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
-import Colors from '@theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import TouchableHighlight from '@components/touchableHighlight';
+import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import {
   FEEDABLE_TRIP,
@@ -249,7 +250,7 @@ class Item extends PureComponent {
     const { filters } = this.props;
 
     return (
-      <TouchableOpacity onPress={onPress}>
+      <TouchableHighlight onPress={onPress}>
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
@@ -285,7 +286,7 @@ class Item extends PureComponent {
             {<AppText fontVariation={filters === 'new' ? 'semibold' : null}><Date calendarTime>{date}</Date></AppText>}
           </View>
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
     );
   };
 

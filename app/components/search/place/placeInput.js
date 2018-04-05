@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
-import { View, Modal, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Modal, Text, StyleSheet } from 'react-native';
 import GooglePlacesAutocomplete from '@components/search/place/googlePlacesAutocomplete';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Countries from '@config/countries';
 import _find from 'lodash/find';
 import { trans } from '@lang/i18n';
+
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   text: {
@@ -152,7 +154,6 @@ class PlacesInput extends PureComponent {
       <View style={wrapperStyle}>
         <View style={[styles.inputWrapper]}>
           <TouchableHighlight
-            underlayColor="#f5f5f5"
             style={[styles.placeInput, { height }, { ...inputStyle }]}
             onPress={() => this.setState({ showModal: true })}
           >

@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableHighlight, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Text, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+
+import TouchableHighlight from '@components/touchableHighlight';
 import Radio from '@components/add/radio';
 
 const styles = StyleSheet.create({
@@ -37,7 +39,7 @@ const ShareItem = ({
   color,
 }) =>
   (
-    <TouchableHighlight onPress={onPress} underlayColor="#f5f5f5">
+    <TouchableHighlight onPress={onPress}>
       <View style={[styles.shareItem, style]}>
         {
           imageSource &&

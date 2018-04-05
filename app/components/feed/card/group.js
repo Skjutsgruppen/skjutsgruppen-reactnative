@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import { Footer } from '@components/feed/card';
 import LinearGradient from 'react-native-linear-gradient';
-import { Colors, Gradients } from '@theme';
+import { Colors } from '@theme';
 import GroupImage from '@components/group/groupImage';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
   },
   comment: {
     flex: 1,
-    flexBasis: 50,
-    minHeight: 50,
+    flexBasis: 56,
+    minHeight: 56,
     paddingHorizontal: 18,
     marginTop: 'auto',
     overflow: 'hidden',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   commentGradientOverlay: {
     height: 24,
     position: 'absolute',
-    bottom: 0,
+    bottom: -3,
     left: 0,
     right: 0,
     borderBottomLeftRadius: 12,
@@ -133,7 +133,13 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             <View style={styles.comment}>
               <AppText>{group.description}</AppText>
               <LinearGradient
-                colors={Gradients.transparentWhite}
+                locations={[0, 0.3, 0.7, 0.8]}
+                colors={[
+                  'rgba(255, 255, 255, 0)',
+                  'rgba(255, 255, 255, 0.5)',
+                  'rgba(255, 255, 255, 0.85)',
+                  'rgba(255, 255, 255, 1)',
+                ]}
                 style={styles.commentGradientOverlay}
               />
             </View>

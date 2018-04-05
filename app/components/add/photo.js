@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Image,
   Platform,
 } from 'react-native';
@@ -12,9 +11,13 @@ import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
 
+import TouchableHighlight from '@components/touchableHighlight';
+
 import AddPhotoIconPink from '@assets/icons/ic_add_pink.png';
 import AddPhotoIconBlue from '@assets/icons/ic_add_blue.png';
 import CameraIcon from '@assets/icons/ic_camera_add.png';
+
+const imageSize = 180;
 
 const styles = StyleSheet.create({
   container: {
@@ -22,26 +25,48 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginVertical: '10%',
   },
+  cameraWrapper: {
+    height: imageSize,
+    width: imageSize,
+    borderRadius: imageSize / 2,
+    overflow: 'hidden',
+  },
+  camera: {
+    height: imageSize,
+    width: imageSize,
+    borderRadius: imageSize / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   imageContainer: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 180,
-    width: 180,
-    borderRadius: 90,
+    height: imageSize,
+    width: imageSize,
+    borderRadius: imageSize / 2,
     backgroundColor: Colors.background.gray,
     padding: 24,
   },
   image: {
-    height: 180,
-    width: 180,
-    borderRadius: 90,
+    height: imageSize,
+    width: imageSize,
+    borderRadius: imageSize / 2,
     resizeMode: 'cover',
   },
-  add: {
+  addWrapper: {
     position: 'absolute',
     bottom: 12,
     right: 0,
+    height: 42,
+    width: 42,
+    borderRadius: 21,
+    overflow: 'hidden',
+  },
+  addIcon: {
+    maxHeight: 42,
+    maxWidth: 42,
+    resizeMode: 'contain',
   },
   cross: {
     transform: [
@@ -125,7 +150,13 @@ class Camera extends Component {
     const { imageSource } = this.state;
 
     if (imageSource === null) {
-      return <Image source={CameraIcon} />;
+      return (
+        <View style={styles.cameraWrapper}>
+          <TouchableHighlight style={styles.camera} onPress={this.selectOrRemove}>
+            <Image source={CameraIcon} />
+          </TouchableHighlight>
+        </View>
+      );
     }
 
     return <Image style={styles.image} source={imageSource} />;
@@ -144,12 +175,17 @@ class Camera extends Component {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           {this.renderPhoto()}
-          <TouchableOpacity
-            onPress={this.selectOrRemove}
-            style={[styles.add]}
-          >
-            {<View style={(imageSource !== null) && styles.cross}><Image source={icon} /></View>}
-          </TouchableOpacity>
+          <View style={styles.addWrapper}>
+            <TouchableHighlight
+              onPress={this.selectOrRemove}
+            >
+              {
+                <View style={(imageSource !== null) && styles.cross}>
+                  <Image source={icon} style={styles.addIcon} />
+                </View>
+              }
+            </TouchableHighlight>
+          </View>
         </View>
       </View>
     );

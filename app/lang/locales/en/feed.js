@@ -5,6 +5,7 @@ export const feed = {
   rides_that_are_asked_for: 'Rides that are asked for',
   close_to_you: 'Close to you',
   news: 'News',
+  experience: 'Experience',
   created_a_group: 'created a group',
   read_more: 'Read more',
   offers: 'offers',

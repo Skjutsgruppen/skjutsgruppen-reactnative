@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import {
@@ -17,25 +17,28 @@ import {
   GROUP_FEED_TYPE_ENABLER_ADDED,
   GROUP_FEED_TYPE_UPDATED,
 } from '@config/constant';
-import FOF from '@components/relation/friendsOfFriend';
 import Colors from '@theme/colors';
+import TouchableHighlight from '@components/touchableHighlight';
 import { SharedCard } from '@components/common';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
+  wrapFlex: {
+    flex: 1,
+    paddingLeft: 12,
+  },
   Wrapper: {
     flex: 1,
-    maxWidth: 300,
     backgroundColor: '#fff',
-    paddingLeft: 10,
+    paddingLeft: 6,
     paddingRight: 20,
     marginTop: 4,
   },
   content: {
-    flex: 1,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingTop: 2,
+    marginHorizontal: 6,
   },
   title: {
     flexDirection: 'row',
@@ -54,20 +57,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: 12,
     color: Colors.text.gray,
-  },
-  indicator: {
-    height: 16,
-    width: 16,
-    borderRadius: 8,
-    position: 'absolute',
-    top: 0,
-    right: 16,
-  },
-  pinkBg: {
-    backgroundColor: Colors.background.pink,
-  },
-  blueBg: {
-    backgroundColor: Colors.background.blue,
   },
   experience: {
     width: 220,
@@ -97,7 +86,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
-        <View>
+        <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
             {this.renderUsername()} Started the group
           </Text>
@@ -108,7 +97,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP) {
       return (
-        <View>
+        <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
             {this.renderUsername()} Joined the group
           </Text>
@@ -119,7 +108,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
       return (
-        <View>
+        <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
             {this.renderUsername()} Left the group
           </Text>
@@ -137,6 +126,7 @@ class Feed extends Component {
               data: feed,
               type: GROUP_FEED_TYPE_COMMENT,
             })}
+            style={styles.wrapFlex}
           >
             <View>
               <Text style={styles.commentText}>
@@ -173,6 +163,7 @@ class Feed extends Component {
             data: feed,
             type: FEEDABLE_SUGGESTION,
           })}
+          style={styles.wrapFlex}
         >
           <View>
             {this.renderSuggestedText(feed)}
@@ -196,6 +187,7 @@ class Feed extends Component {
             data: feed,
             type: FEEDABLE_EXPERIENCE,
           })}
+          style={styles.wrapFlex}
         >
           {this.renderExperience(feed, onPress)}
         </TouchableHighlight>
@@ -204,7 +196,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_ENABLER_ADDED) {
       return (
-        <View>
+        <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
             {this.renderUsername()} is now enabler
           </Text>
@@ -230,7 +222,7 @@ class Feed extends Component {
   renderSuggestedText = (feed) => {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_OFFER_RIDE) {
       return (
-        <View>
+        <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
             {this.renderUsername()} offers a ride:
           </Text>
@@ -240,21 +232,13 @@ class Feed extends Component {
     }
 
     return (
-      <View>
+      <View style={styles.wrapFlex}>
         <Text style={styles.commentText}>
           {this.renderUsername()} suggests {this.renderUsername(feed.Trip.User)} ride:
         </Text>
         <Text>{feed.Suggestion.text}</Text>
       </View>
     );
-  }
-
-  renderRelation = () => {
-    const { feed } = this.props;
-    if (feed.User.relation) {
-      return <FOF relation={feed.User.relation} viewee={feed.User} />;
-    }
-    return null;
   }
 
   renderClosedGroup() {
@@ -294,7 +278,7 @@ class Feed extends Component {
     if (feed.feedable === FEEDABLE_TRIP) {
       if (feed.Trip.User.id === feed.User.id) {
         return (
-          <View>
+          <View style={styles.content}>
             <Text style={styles.commentText}>
               {this.renderUsername()} <Text style={styles.commentText}>{feed.Trip.type === FEED_FILTER_WANTED ? 'asks for a ride' : 'offers a ride'}</Text>
             </Text>
@@ -309,7 +293,7 @@ class Feed extends Component {
       }
 
       return (
-        <View>
+        <View style={styles.content}>
           <Text style={styles.commentText}>
             {this.renderUsername()} <Text style={styles.commentText}>shared <Text style={styles.name}>{`${feed.Trip.User.firstName}'s`}</Text> {feed.feedable === FEEDABLE_TRIP ? 'ride' : feed.feedable}: </Text>
           </Text>
@@ -347,7 +331,7 @@ class Feed extends Component {
     });
 
     return (
-      <View>
+      <View style={styles.wrapFlex}>
         <Text>
           {participants} had an Experience <Text style={styles.time}>
             <Date calendarTime>{feed.date}</Date></Text>
@@ -368,7 +352,6 @@ class Feed extends Component {
     return (
       <View style={styles.Wrapper}>
         {this.renderFeed()}
-        {false && this.renderRelation()}
       </View>
     );
   }
@@ -381,7 +364,7 @@ class Feed extends Component {
       return this.renderClosedGroup();
     }
 
-    return (<View>{this.renderDescription()}</View>);
+    return this.renderDescription();
   }
 }
 
