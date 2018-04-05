@@ -68,6 +68,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Colors.text.white,
   },
+  noMessage: {
+    paddingHorizontal: 20,
+    paddingVertical: 32,
+    alignItems: 'center',
+  },
+  noMessageText: {
+    marginTop: 24,
+    marginHorizontal: 20,
+    lineHeight: 24,
+    color: Colors.text.gray,
+    textAlign: 'center',
+  },
 });
 
 class Message extends Component {
@@ -98,6 +110,13 @@ class Message extends Component {
   constructor(props) {
     super(props);
     this.scrollView = null;
+
+    this.state = {
+      hasNewMessages: true,
+      hasActiveRides: true,
+      hasGroups: true,
+      hasOldMessages: true,
+    };
   }
 
   componentWillMount() {
@@ -107,7 +126,32 @@ class Message extends Component {
   }
 
   shouldComponentUpdate() {
-    return false;
+    return true;
+  }
+
+  setNoMessages = (type) => {
+    if (type === 'new') {
+      this.setState({ hasNewMessages: false });
+    }
+    if (type === 'old') {
+      this.setState({ hasOldMessages: false });
+    }
+    if (type === 'groups') {
+      this.setState({ hasGroups: false });
+    }
+    if (type === 'rides') {
+      this.setState({ hasActiveRides: false });
+    }
+  }
+
+  hasAnyMessage = () => {
+    const {
+      hasActiveRides,
+      hasNewMessages,
+      hasOldMessages,
+      hasGroups,
+    } = this.state;
+    return hasActiveRides || hasNewMessages || hasOldMessages || hasGroups;
   }
 
   scrollToTop = () => {
@@ -122,8 +166,28 @@ class Message extends Component {
     }
   }
 
+  renderNoMessages = () => (
+    <View style={styles.noMessage}>
+      <Image source={require('@assets/icons/ic_cycle.png')} />
+      <Text style={styles.noMessageText}>
+        Nothing here yet. When you start a conversation with someone
+        or join a group you will see them all here. Great right?
+      </Text>
+    </View>
+  )
+
+  renderMessages = () => (
+    <View style={styles.content}>
+      <Notification filters="new" setNoMessages={this.setNoMessages} />
+      <Ride setNoMessages={this.setNoMessages} />
+      <Group setNoMessages={this.setNoMessages} />
+      <Notification filters="old" setNoMessages={this.setNoMessages} />
+    </View>
+  )
+
   render() {
     const { navigation } = this.props;
+
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
@@ -142,12 +206,10 @@ class Message extends Component {
               />
             </View>
           </LinearGradient>
-          <View style={styles.content}>
-            <Notification filters="new" />
-            <Ride />
-            <Group />
-            <Notification filters="old" />
-          </View>
+          {
+            !this.hasAnyMessage() ? this.renderNoMessages()
+              : this.renderMessages()
+          }
         </ScrollView>
       </Wrapper>
     );

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, ViewPropTypes, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { StyleSheet, View, ViewPropTypes, Animated, Easing, LayoutAnimation, Platform, UIManager } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 
@@ -12,12 +12,17 @@ const styles = StyleSheet.create({
   },
   bar: {
     height: 4,
+    width: '0%',
   },
 });
 
 class ProgressBar extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.state = {
+      widthAnim: new Animated.Value(0),
+    };
 
     if (Platform.OS === 'android') {
       if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -26,9 +31,21 @@ class ProgressBar extends PureComponent {
     }
   }
 
+  componentDidMount() {
+    Animated.timing(
+      this.state.widthAnim,
+      {
+        toValue: 1,
+        duration: 350,
+        easing: Easing.easeInEaseOut,
+        delay: 200,
+      },
+    ).start();
+  }
+
   componentWillUpdate() {
     const config = {
-      duration: 250,
+      duration: 350,
       update: {
         type: 'easeInEaseOut',
       },
@@ -45,9 +62,16 @@ class ProgressBar extends PureComponent {
       }
     }
 
+    let width = '0%';
+
+    width = this.state.widthAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [width, `${amount}%`],
+    });
+
     return (
       <View style={[styles.container, style]}>
-        <View style={[styles.bar, { width: `${amount}%`, backgroundColor: progressColor }]} />
+        <Animated.View style={[styles.bar, { width, backgroundColor: progressColor }]} />
       </View>
     );
   }

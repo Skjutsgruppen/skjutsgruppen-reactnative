@@ -1,15 +1,22 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewPropTypes } from 'react-native';
+import { View, Text, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
+import TouchableHighlight from '@components/touchableHighlight';
+
 const styles = StyleSheet.create({
+  wrapper: {
+    height: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
   button: {
     flexDirection: 'row',
     height: 48,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
   },
   text: {
     flex: 1,
@@ -20,9 +27,14 @@ const styles = StyleSheet.create({
 });
 
 const RoundedButton = ({ children, style, onPress, bgColor, textColor }) => (
-  <TouchableOpacity style={[styles.button, style, { backgroundColor: bgColor }]} onPress={onPress}>
-    <Text style={[styles.text, { color: textColor }]}>{children}</Text>
-  </TouchableOpacity>
+  <View style={[styles.wrapper, style]}>
+    <TouchableHighlight
+      style={[styles.button, { backgroundColor: bgColor }]}
+      onPress={onPress}
+    >
+      <Text style={[styles.text, { color: textColor }]}>{children}</Text>
+    </TouchableHighlight>
+  </View>
 );
 
 RoundedButton.propTypes = {

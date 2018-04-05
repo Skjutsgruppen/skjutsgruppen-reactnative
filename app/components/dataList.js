@@ -133,7 +133,7 @@ class DataList extends PureComponent {
       );
     } else if (count < 1 && !loading) {
       footerView = (
-        <View>
+        <View style={{ marginTop: 24, marginBottom: 48 }}>
           <Text style={styles.errorText}>{noResultText}</Text>
         </View>
       );

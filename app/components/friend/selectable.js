@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+
+import Colors from '@theme/colors';
+
 import { Loading } from '@components/common';
 import ShareItem from '@components/common/shareItem';
-import Colors from '@theme/colors';
-import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   title: {

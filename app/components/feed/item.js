@@ -14,6 +14,7 @@ import FOF from '@components/relation/friendsOfFriend';
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1,
     flexDirection: 'row',
     paddingLeft: 20,
     paddingVertical: 6,
@@ -43,15 +44,6 @@ const styles = StyleSheet.create({
   },
   blueBg: {
     backgroundColor: Colors.background.blue,
-  },
-  commentText: {
-    lineHeight: 20,
-    alignItems: 'flex-end',
-  },
-  time: {
-    maxWidth: 300,
-    textAlign: 'right',
-    color: Colors.text.gray,
   },
 });
 
@@ -91,7 +83,7 @@ class FeedItem extends PureComponent {
 
     if (feed.User.relation && feed.User.relation.path) {
       return (
-        <View style={{ marginLeft: 62 }}>
+        <View style={{ marginLeft: 74 }}>
           <FOF mini relation={feed.User.relation} viewee={feed.User} />
         </View>
       );
