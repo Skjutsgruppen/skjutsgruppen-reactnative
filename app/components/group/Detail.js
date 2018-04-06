@@ -301,16 +301,12 @@ class Detail extends PureComponent {
   }
 
   leaveGroup = () => {
-    const { leaveGroup, refresh, group } = this.props;
+    const { leaveGroup, group } = this.props;
 
     this.setState({ leaveLoading: true });
-    leaveGroup(group.id)
-      .then(() => {
-        this.setConfirmModalVisibility(false);
-        this.setState({ showAction: false });
-      })
-      .then(refresh)
-      .catch(console.warn);
+    this.setState({ showConfirmModal: false },
+      leaveGroup(group.id),
+    );
   }
 
   checkValidation = (comment) => {
@@ -464,6 +460,10 @@ class Detail extends PureComponent {
     const { notification, notifierOffset, loading, error, success } = this.state;
     const header = this.header();
     const { notifier, notificationMessage } = navigation.state.params;
+
+    if (group.isDeleted) {
+      return null;
+    }
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
