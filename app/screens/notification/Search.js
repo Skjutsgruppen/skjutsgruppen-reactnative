@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     height: 36,
     flex: 1,
+    fontFamily: 'SFUIText-Regular',
     borderRadius: 18,
     paddingLeft: 0,
     marginRight: 16,
-    fontFamily: 'sfuiTextRegular',
   },
   content: {
     flex: 1,

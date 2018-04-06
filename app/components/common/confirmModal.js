@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading, GhostButton } from '@components/common';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -65,7 +66,7 @@ const ConfirmModal = ({
         {
           !loading &&
           <View>
-            <Text style={styles.message}>{message}</Text>
+            <AppText style={styles.message}>{message}</AppText>
             <View style={styles.actions}>
               <GhostButton
                 label={confirmLabel}

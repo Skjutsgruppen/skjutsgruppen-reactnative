@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Picker } from 'react-native';
+import { StyleSheet, View, Picker } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
@@ -7,11 +7,11 @@ import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { FLEXIBILITY_UNITS, FLEXIBILITY_TYPES } from '@config/constant';
 import TimePicker from '@components/utils/timePicker';
-import { GlobalStyles } from '@theme/styles';
 
 import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import Radio from '@components/add/radio';
+import { AppText } from '@components/utils/texts';
 
 function pad(n, width = 2, padString = '0') {
   const num = String(n);
@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   info: {
+    fontSize: 15,
+    color: Colors.text.gray,
     marginHorizontal: 20,
-    lineHeight: 24,
   },
   radioRow: {
     flexDirection: 'row',
@@ -44,10 +45,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     marginBottom: 32,
-  },
-  inputWrapper: {
-    flex: 1,
-    backgroundColor: '#ffffff',
   },
   input: {
     height: 48,
@@ -215,16 +212,13 @@ class Date extends Component {
         />
         <View style={styles.section}>
           <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.is_this_a_recurring_ride')} />
-          <Text style={[GlobalStyles.TextStyles.light, styles.info]}>
-            {trans('add.place_more_balls_in_calendar')}
-          </Text>
+          <AppText style={styles.info}>{trans('add.place_more_balls_in_calendar')}</AppText>
         </View>
         <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.time')} />
-        <View style={styles.inputContainer}>
-          <View style={[styles.inputWrapper, { paddingLeft: 20, height: 60 }]}>
-            <TimePicker defaultTime={time} onChange={value => this.setState({ time: value })} />
-          </View>
-        </View>
+        <TimePicker
+          defaultTime={time}
+          onChange={value => this.setState({ time: value })}
+        />
         <View style={styles.radioRow}>
           <Radio
             active={!isFlexible}
@@ -243,7 +237,7 @@ class Date extends Component {
           isFlexible &&
           <View style={styles.inputContainer}>
             <View style={[styles.inputWrapper, { justifyContent: 'center', alignItems: 'center' }]}>
-              <Text>{trans('add.i_can_go')}</Text>
+              <AppText>{trans('add.i_can_go')}</AppText>
             </View>
             <View style={styles.inputWrapper}>
               <Picker

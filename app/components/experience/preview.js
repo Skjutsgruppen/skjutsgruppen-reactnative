@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, Image } from 'react-native';
+import { StyleSheet, ScrollView, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import CapturedImage from '@components/experience/capturedImage';
 import CameraHead from '@assets/icons/ic_camera_head.png';
 import Button from '@components/experience/button';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   cameraHead: {
@@ -11,9 +12,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   msg: {
-    fontSize: 16,
-    color: '#000',
-    textAlign: 'center',
     marginBottom: 16,
   },
   actions: {
@@ -28,7 +26,7 @@ const Preview = ({ image, onBack, onNext }) => (
   <ScrollView>
     <Image source={CameraHead} style={styles.cameraHead} />
     <CapturedImage imageURI={image} />
-    <Text style={styles.msg}>Nice! Well done!</Text>
+    <AppText centered style={styles.msg}>Nice! Well done!</AppText>
     <View style={styles.actions}>
       <Button onPress={onBack} label="Back" icon="back" />
       <Button onPress={onNext} label="Done" icon="next" />

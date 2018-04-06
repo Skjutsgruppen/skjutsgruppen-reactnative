@@ -15,6 +15,7 @@ import SearchEnabler from '@components/group/enablers/enablerList';
 import SearchAddEnabler from '@components/group/enablers/addEnablerList';
 import SearchParticipant from '@components/group/participant/participantList';
 import { trans } from '@lang/i18n';
+import { Wrapper } from '@components/common';
 
 const TripsSearchResult = withMyTrips(SearchMyTrips);
 const ConversationSearchResult = withConversation(SearchMyConversations);
@@ -26,10 +27,6 @@ const AddEnablersSearchResult = withGroupMembers(SearchAddEnabler);
 const ParticipantSearchResult = withGroupMembers(SearchParticipant);
 
 const styles = StyleSheet.create({
-  wrapper: {
-    padding: '20%',
-    alignItems: 'center',
-  },
   text: {
     fontSize: 16,
     lineHeight: 32,
@@ -48,6 +45,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   searchInput: {
+    fontFamily: 'SFUIText-Regular',
     fontSize: 15,
     height: 36,
     flex: 1,
@@ -84,7 +82,7 @@ class ListSearchModal extends PureComponent {
     } = this.props;
 
     return (
-      <View style={{ flex: 1 }}>
+      <Wrapper>
         <View style={[styles.searchInputWrapper]}>
           <TextInput
             placeholder={trans('search.search')}
@@ -173,7 +171,7 @@ class ListSearchModal extends PureComponent {
             isAdmin={isAdmin}
           />
         }
-      </View>
+      </Wrapper>
     );
   }
 }

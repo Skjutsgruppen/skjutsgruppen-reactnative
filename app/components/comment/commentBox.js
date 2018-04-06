@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 import { Colors } from '@theme';
 import { Loading } from '@components/common';
 
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   commentInput: {
     height: '100%',
     flex: 1,
+    fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     paddingRight: 12,
     textAlignVertical: 'center',
@@ -96,7 +98,7 @@ class CommentBox extends PureComponent {
 
     return (
       <TouchableOpacity onPress={this.sendComment} style={styles.send}>
-        <Text style={styles.sendText}>Send</Text>
+        <AppText color={Colors.text.blue} fontVariation="bold">Send</AppText>
       </TouchableOpacity>
     );
   }
@@ -168,8 +170,8 @@ class CommentBox extends PureComponent {
 
     return (
       <View style={styles.footerSocialSection}>
-        <Text>{trans('detail.a_post_on_your_fb_timeline')}</Text>
-        <Text style={{ marginLeft: 12 }}>{trans('detail.a_tweet')}</Text>
+        <AppText>{trans('detail.a_post_on_your_fb_timeline')}</AppText>
+        <AppText style={{ marginLeft: 12 }}>{trans('detail.a_tweet')}</AppText>
       </View>
     );
   }

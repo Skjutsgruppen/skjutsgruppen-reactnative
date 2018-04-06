@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import PlaceInput from '@components/search/place/placeInput';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';

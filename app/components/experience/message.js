@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, View, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from '@components/experience/button';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   title: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#000',
     marginTop: 40,
     marginBottom: 30,
   },
@@ -27,10 +25,6 @@ const styles = StyleSheet.create({
     marginVertical: 50,
     fontSize: 16,
     color: '#000',
-  },
-  link: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
   actions: {
     flexDirection: 'row',
@@ -55,7 +49,7 @@ class Message extends Component {
   render() {
     return (
       <ScrollView>
-        <Text style={styles.title}>Optional:</Text>
+        <AppText centered style={styles.title}>Optional:</AppText>
         <View style={styles.inputWrapper}>
           <TextInput
             multiline
@@ -64,14 +58,15 @@ class Message extends Component {
             onChangeText={text => this.setState({ text })}
             underlineColorAndroid="transparent"
             value={this.state.text}
+            style={{ fontFamily: 'SFUIText-Regular' }}
           />
         </View>
-        <Text style={styles.msg}>
+        <AppText style={styles.msg}>
           Friendly reminder: Experiences are public and may be
           used to show how are awesome our movement is
-          (only in accordance with the <Text style={styles.link}>participant agreement</Text>,
+          (only in accordance with the <AppText color={Colors.text.blue} fontVariation="bold">participant agreement</AppText>,
           never something stupid :)). You are awesome!
-        </Text>
+        </AppText>
         <View style={styles.actions}>
           <Button onPress={this.props.onBack} label="Back" icon="back" />
           <Button onPress={this.onPublish} label="Publish" />

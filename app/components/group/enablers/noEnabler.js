@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 import { Wrapper, RoundedButton, Loading } from '@components/common';
@@ -8,20 +8,11 @@ import { compose } from 'react-apollo';
 import { withAddGroupEnabler } from '@services/apollo/group';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
+import { AppText, Heading } from '@components/utils/texts';
+
 import BackIcon from '@assets/icons/ic_back_white_toolbar.png';
 
 const styles = StyleSheet.create({
-  whiteText: {
-    color: Colors.text.white,
-    fontSize: 16,
-    marginVertical: 12,
-    textAlign: 'center',
-  },
-  loader: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   header: {
     height: 54,
     paddingHorizontal: 6,
@@ -45,11 +36,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 18,
   },
   button: {
     paddingHorizontal: 32,
@@ -112,13 +98,13 @@ class NoEnabler extends Component {
               source={{ uri: group.photo ? group.photo : group.mapPhoto }}
               style={styles.groupImage}
             />
-            <Text style={[styles.whiteText, styles.title]}>{group.name}</Text>
-            <Text style={styles.whiteText}>
+            <Heading centered fontVariation="bold" color={Colors.text.white} style={{ marginVertical: 18 }}>{group.name}</Heading>
+            <AppText color={Colors.text.white} style={{ marginVertical: 12 }}>
               {trans('detail.for_group_to_work_one_or_more_participants_need_to_enable_it')}
-            </Text>
-            <Text style={styles.whiteText}>
+            </AppText>
+            <AppText color={Colors.text.white} style={{ marginVertical: 12 }}>
               {trans('detail.press_to_be_an_enabler_of_this_group')}
-            </Text>
+            </AppText>
             {
               this.renderButton()
             }

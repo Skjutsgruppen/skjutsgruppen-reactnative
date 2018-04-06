@@ -1,13 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_NEWS } from '@config/constant';
+import { AppText } from '@components/utils/texts';
 
 const cardHeight = 484;
-const profilePicSize = 60;
 
 const styles = StyleSheet.create({
   flex1: {
@@ -42,18 +42,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-  newsAvatar: {
-    height: profilePicSize,
-    width: profilePicSize,
-    position: 'absolute',
-    top: (cardHeight / 2) - (profilePicSize / 2),
-    right: 20,
-    zIndex: 10,
-    backgroundColor: Colors.background.blue,
-    borderRadius: (profilePicSize / 2),
-    borderWidth: 2,
-    borderColor: Colors.border.white,
-  },
   offerType: {
     position: 'absolute',
     top: 20,
@@ -72,10 +60,6 @@ const styles = StyleSheet.create({
   },
   blueBg: {
     backgroundColor: Colors.background.blue,
-  },
-  typeText: {
-    color: Colors.text.white,
-    fontSize: 10,
   },
   detail: {
     paddingHorizontal: 24,
@@ -97,36 +81,8 @@ const styles = StyleSheet.create({
     right: 0,
     marginHorizontal: 24,
   },
-  footer: {
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  commentIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  commentCount: {
-    color: '#888',
-    marginRight: 10,
-  },
   text: {
     lineHeight: 20,
-  },
-  lightText: {
-    color: Colors.text.darkGray,
-  },
-  username: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
   },
 });
 
@@ -136,7 +92,7 @@ const News = ({ news, onPress, wrapperStyle }) => {
     let i = 0;
     return news.links.map((link) => {
       i += 1;
-      return (<Text key={i}>{link}</Text>);
+      return (<AppText key={i}>{link}</AppText>);
     });
   };
 
@@ -156,20 +112,20 @@ const News = ({ news, onPress, wrapperStyle }) => {
             {image}
           </View>
           <View style={[styles.offerType, styles.blueBg]}>
-            <Text style={styles.typeText}>{trans('feed.your_movement').toUpperCase()}</Text>
+            <AppText size={10} color={Colors.text.white}>{trans('feed.your_movement').toUpperCase()}</AppText>
           </View>
           <View style={styles.detail}>
             <View>
-              <Text style={[styles.text, styles.lightText]}>
-                <Text style={styles.username}>
+              <AppText color={Colors.text.darkGray} style={styles.text}>
+                <AppText color={Colors.text.blue} fontVariation="bold">
                   {trans('feed.your_movement')}
-                </Text>
-              </Text>
-              <Text style={[styles.text, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>
+                </AppText>
+              </AppText>
+              <AppText color={Colors.text.darkGray} style={styles.text}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></AppText>
             </View>
           </View>
           <View style={styles.comment}>
-            <Text style={styles.text}>{news.body}</Text>
+            <AppText style={styles.text}>{news.body}</AppText>
             {renderLinks()}
             <View style={styles.commentGradientOverlay} />
           </View>

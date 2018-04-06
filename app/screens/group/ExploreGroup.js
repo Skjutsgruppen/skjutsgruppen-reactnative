@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   Image,
   FlatList,
   Animated,
@@ -24,6 +23,9 @@ import Alphabet from '@components/group/discover/alphabet';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import CloseByGroupsMapWindow from '@components/group/closeByGroupsMapWindow';
 import TabBar from '@components/common/tabBar';
+import { AppText, Heading } from '@components/utils/texts';
+
+import IconSearch from '@assets/icons/ic_search.png';
 
 const NearByGroupsMapWindow = withNearByGroups(CloseByGroupsMapWindow);
 
@@ -55,14 +57,12 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
   },
   countryName: {
-    fontSize: 16,
     color: Colors.text.gray,
     marginHorizontal: 20,
     marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: Colors.text.pink,
     paddingHorizontal: 20,
     marginBottom: 10,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   mapWrapper: {
     height: 400,
-    backgroundColor: Colors.background.gray,
+    backgroundColor: '#fff',
     elevation: 10,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
@@ -227,11 +227,15 @@ class ExploreGroup extends PureComponent {
     if (origin.latitude === '' || origin.longitude === '') {
       return (
         <View style={styles.locationTextWrapper}>
-          <Text style={styles.noLocationText}>{error}</Text>
-          <Text
+          <AppText size={14} centered color={Colors.text.gray} style={{ paddingHorizontal: 24 }}>
+            {error}</AppText>
+          <AppText
+            centered
+            color={Colors.text.darkGray}
+            fontVariation="bold"
+            style={{ paddingHorizontal: 24, marginTop: 16 }}
             onPress={this.currentLocation}
-            style={[styles.noLocationText, styles.noLocationRetry]}
-          >Tap to retry!</Text>
+          >Tap to retry!</AppText>
         </View>
       );
     }
@@ -279,52 +283,50 @@ class ExploreGroup extends PureComponent {
 
     return (
       <Wrapper>
-        <View style={styles.content}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.header}>
-              <View>
-                <Text style={styles.title}>Discover groups</Text>
-                <Text style={styles.totalGroups}>Currently {totalGroupsCount} groups</Text>
-              </View>
-              <View style={styles.searchIconWrapper}>
-                <TouchableHighlight onPress={this.onSearchPress} style={styles.searchIcon}>
-                  <Image source={require('@assets/icons/ic_search.png')} />
-                </TouchableHighlight>
-              </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <View>
+              <Heading style={{ marginBottom: 16 }}>Discover groups</Heading>
+              <AppText color={Colors.text.gray}>Currently {totalGroupsCount} groups</AppText>
             </View>
-            <Text style={styles.sectionTitle}>Popular</Text>
-            <View style={styles.section}>
-              <PopularGroupsList setGroupsCount={this.setGroupsCount} from={null} filter="popular" />
+            <View style={styles.searchIconWrapper}>
+              <TouchableHighlight onPress={this.onSearchPress} style={styles.searchIcon}>
+                <Image source={IconSearch} />
+              </TouchableHighlight>
             </View>
-            <Text style={styles.sectionTitle}>Close to you</Text>
-            <View style={styles.section}>
-              <View style={styles.mapWrapper}>
-                {this.renderMap()}
-              </View>
+          </View>
+          <Heading style={styles.sectionTitle}>Popular</Heading>
+          <View style={styles.section}>
+            <PopularGroupsList setGroupsCount={this.setGroupsCount} from={null} filter="popular" />
+          </View>
+          <Heading style={styles.sectionTitle}>Close to you</Heading>
+          <View style={styles.section}>
+            <View style={styles.mapWrapper}>
+              {this.renderMap()}
             </View>
-            <Text style={styles.sectionTitle}>County</Text>
-            <Text style={styles.countryName}>Sweden</Text>
-            <View style={styles.section}>
-              {this.renderCountiesList()}
-            </View>
-            <Text style={styles.sectionTitle}>Alphabetic order</Text>
-            <View style={styles.section}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {alphabets.map((alphabet) => {
-                  index += 1;
-                  return (
-                    <Alphabet
-                      key={index}
-                      onPress={() => this.onPress('AlphabeticalGroups')}
-                      letter={alphabet}
-                    />
-                  );
-                })}
-              </ScrollView>
-            </View>
-          </ScrollView>
-          <TabBar />
-        </View>
+          </View>
+          <Heading style={styles.sectionTitle}>County</Heading>
+          <AppText style={styles.countryName}>Sweden</AppText>
+          <View style={styles.section}>
+            {this.renderCountiesList()}
+          </View>
+          <Heading style={styles.sectionTitle}>Alphabetic order</Heading>
+          <View style={styles.section}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {alphabets.map((alphabet) => {
+                index += 1;
+                return (
+                  <Alphabet
+                    key={index}
+                    onPress={() => this.onPress('AlphabeticalGroups')}
+                    letter={alphabet}
+                  />
+                );
+              })}
+            </ScrollView>
+          </View>
+        </ScrollView>
+        <TabBar />
         {this.renderSearchModal()}
       </Wrapper >
     );

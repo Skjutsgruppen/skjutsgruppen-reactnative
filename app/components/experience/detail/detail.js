@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Image,
@@ -23,16 +22,13 @@ import { connect } from 'react-redux';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import ConfirmModal from '@components/common/confirmModal';
 import Info from '@components/experience/detail/info';
+import { AppText, Title } from '@components/utils/texts';
 
 const MoreExperiences = withMoreExperiences(List);
 
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-  },
-  viewHeaderImage: {
-    width: '100%',
-    height: 300,
   },
   headerImage: {
     width: '100%',
@@ -43,13 +39,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 24,
     backgroundColor: Colors.background.fullWhite,
-  },
-  block: {
-    paddingVertical: 12,
-  },
-  name: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
   actions: {
     alignItems: 'center',
@@ -66,10 +55,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     width: '75%',
     maxWidth: 200,
-  },
-  buttonLabel: {
-    color: Colors.text.white,
-    fontSize: 16,
   },
   buttonIcon: {
     marginLeft: 12,
@@ -259,7 +244,7 @@ class ExperienceDetail extends Component {
 
   renderConfirmModal = () => {
     const { deleting, showConfirm } = this.state;
-    const message = <Text>{`Are you sure? This will delete the experience for ${this.getParticipantsName()}`}</Text>;
+    const message = <AppText>{`Are you sure? This will delete the experience for ${this.getParticipantsName()}`}</AppText>;
 
     return (
       <ConfirmModal
@@ -298,7 +283,7 @@ class ExperienceDetail extends Component {
                   onPress={() => this.setState({ showShareModal: true })}
                   style={styles.button}
                 >
-                  <Text style={styles.buttonLabel}>Share</Text>
+                  <Title color={Colors.text.white}>Share</Title>
                   <Image source={ShareIcon} style={styles.buttonIcon} />
                 </TouchableOpacity>
               </View>

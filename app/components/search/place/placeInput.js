@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Modal, Text, StyleSheet } from 'react-native';
+import { View, Text, Modal, StyleSheet } from 'react-native';
 import GooglePlacesAutocomplete from '@components/search/place/googlePlacesAutocomplete';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
@@ -8,11 +8,9 @@ import _find from 'lodash/find';
 import { trans } from '@lang/i18n';
 
 import TouchableHighlight from '@components/touchableHighlight';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  text: {
-    fontFamily: 'sfuiTextRegular',
-  },
   lightText: {
     color: Colors.text.gray,
   },
@@ -38,11 +36,11 @@ const styles = StyleSheet.create({
     marginRight: 24,
   },
   placeInput: {
+    backgroundColor: Colors.background.fullWhite,
     marginLeft: 0,
     marginRight: 0,
     marginTop: 0,
     marginBottom: 0,
-    backgroundColor: Colors.background.fullWhite,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
     paddingVertical: 12,
@@ -56,12 +54,6 @@ const styles = StyleSheet.create({
   },
   close: {
     padding: 16,
-  },
-  closeLabel: {
-    fontFamily: 'sfuiTextBold',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
 });
 
@@ -115,15 +107,15 @@ class PlacesInput extends PureComponent {
     if (place.name) {
       return (
         <View>
-          <Text style={styles.text} >{place.name}</Text>
-          <Text style={[styles.text, styles.lightText]}>
+          <AppText>{place.name}</AppText>
+          <AppText color={Colors.text.gray}>
             {this.getCountryName(place.countryCode)}
-          </Text>
+          </AppText>
         </View>
       );
     }
 
-    return (<Text style={[styles.text, styles.lightText]}>{placeholder}</Text>);
+    return (<AppText color={Colors.text.gray}>{placeholder}</AppText>);
   }
 
   renderModal() {
@@ -151,7 +143,7 @@ class PlacesInput extends PureComponent {
             style={styles.close}
             onPress={() => this.setState({ showModal: false })}
           >
-            <Text style={styles.closeLabel}>{trans('global.cancel')}</Text>
+            <AppText color={Colors.text.blue} fontVariation="bold" centered>{trans('global.cancel')}</AppText>
           </TouchableHighlight>
         </View>
       </Modal>

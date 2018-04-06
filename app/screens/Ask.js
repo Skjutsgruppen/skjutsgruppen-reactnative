@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
+import { StyleSheet, View, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -18,48 +18,17 @@ import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
 import { FEED_TYPE_WANTED, FEEDABLE_TRIP, STRETCH_TYPE_ROUTE } from '@config/constant';
 import { isToday, isFuture } from '@components/date';
-import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
+import { Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  mainTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    margin: 12,
-    textAlign: 'center',
-  },
   progress: {
     paddingHorizontal: 20,
   },
   stepsCount: {
     marginTop: 10,
-  },
-  returnHeader: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-  },
-  returnIcon: {
-    width: 50,
-    height: 36,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 6,
-  },
-  returnText: {
-    width: 210,
-    alignSelf: 'center',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    paddingHorizontal: 10,
-    paddingTop: 20,
   },
 });
 
@@ -386,16 +355,15 @@ class Ask extends Component {
     return (
       <View style={styles.progress}>
         <ProgressBar amount={progressAmount} color={Colors.background.blue} changesColor={false} />
-        <Text style={[
-          styles.stepsCount,
-          GlobalStyles.TextStyles.bold,
-          GlobalStyles.TextStyles.light,
-          activeStep === 4 ? GlobalStyles.TextStyles.blue : {},
-        ]}
+        <Heading
+          size={16}
+          style={styles.stepsCount}
+          fontVariation="bold"
+          color={activeStep === 4 ? Colors.text.blue : Colors.text.lightGray}
         >
-          <Text style={GlobalStyles.TextStyles.blue}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 4 })}
-          {activeStep === 4 && <Text>, {trans('add.well_done')}</Text>}
-        </Text>
+          <Heading size={16} fontVariation="bold" color={Colors.text.blue}>{trans('add.step', { activeStep })}</Heading> {trans('add.out_of', { value: 4 })}
+          {activeStep === 4 && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>}
+        </Heading>
       </View>
     );
   }

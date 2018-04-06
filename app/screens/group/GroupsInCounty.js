@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, SectionList, Animated } from 'react-native';
+import { View, Image, StyleSheet, SectionList, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { withGroupsInCounty } from '@services/apollo/group';
 import { Wrapper, Loading } from '@components/common';
@@ -10,6 +10,7 @@ import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import GroupsItem from '@components/profile/groupsItem';
 import GroupsInMunicipality from '@components/group/groupsInMunicipality';
+import { Heading } from '@components/utils/texts';
 
 const cardHeight = 484;
 
@@ -44,24 +45,12 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 12,
   },
-  title: {
-    backgroundColor: 'transparent',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text.white,
-    alignSelf: 'center',
-    marginHorizontal: 24,
-    textAlign: 'center',
-  },
   listHeader: {
-    backgroundColor: Colors.background.fullWhite,
     paddingTop: 24,
     paddingBottom: 5,
     marginBottom: 19,
     paddingHorizontal: 24,
     color: Colors.text.pink,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   divider: {
     borderBottomWidth: 1,
@@ -126,7 +115,7 @@ class GroupsListByCounty extends Component {
           colors={Gradients.transparentPink}
           style={styles.overlay}
         >
-          <Text style={styles.title}>{navigation.state.params.county.name}</Text>
+          <Heading size={18} centered color={Colors.text.white} fontVariation="bold">{navigation.state.params.county.name}</Heading>
         </LinearGradient>
       </View>
     );
@@ -166,7 +155,7 @@ class GroupsListByCounty extends Component {
         }
         keyExtractor={(item, index) => index}
         sections={groupsByCounty}
-        renderSectionHeader={item => <Text style={styles.listHeader}>{item.section.title}</Text>}
+        renderSectionHeader={item => <Heading fontVariation="bold" style={styles.listHeader}>{item.section.title}</Heading>}
         renderSectionFooter={item => this.sectionFooter(item)}
         stickySectionHeadersEnabled
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])}

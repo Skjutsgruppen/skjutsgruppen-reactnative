@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Map from '@assets/icons/icon_map.png';
 import ChevronRight from '@assets/icons/icon_chevron_right.png';
 import BackButton from '@components/common/backButton';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -13,10 +14,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  title: {
-    fontWeight: 'bold',
-    color: Colors.text.purple,
   },
   mapWrapper: {
     flexDirection: 'row',
@@ -43,7 +40,7 @@ const NavBar = ({ style, handleBack, title, onMapPress }) => (
     <BackButton onPress={handleBack} />
     {
       (title !== '') &&
-      <Text style={styles.title}>{title}</Text>
+      <AppText fontVariation="bold" color={Colors.text.purple}>{title}</AppText>
     }
     {
       onMapPress ?

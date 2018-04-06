@@ -1,23 +1,18 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 import Date from '@components/date';
 import { Wrapper, FloatingBackButton, RoundedButton } from '@components/common';
 import { Colors } from '@theme';
+import { AppText, Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  whiteText: {
+  text: {
     color: Colors.text.white,
-    fontSize: 16,
-    marginVertical: 16,
     textAlign: 'center',
     lineHeight: 32,
-  },
-  loader: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginVertical: 16,
   },
   header: {
     height: 70,
@@ -29,11 +24,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 12,
     paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 24,
   },
   button: {
     paddingHorizontal: 32,
@@ -49,22 +39,22 @@ const ExperienceNotPublished = ({ experience, navigation, onBack, isRejected }) 
     </View>
     <ScrollView>
       <View style={styles.content}>
-        <Text style={[styles.whiteText, styles.title]}>Experience not published.</Text>
+        <Heading centered fontVariation="bold" style={{ marginVertical: 24 }}>Experience not published.</Heading>
         {
           !isRejected &&
-          <Text style={[styles.whiteText, styles.title]}>
+          <Heading centered fontVariation="bold" style={{ marginVertical: 24 }}>
             One or more participants did not agree.
-          </Text>
+          </Heading>
         }
-        <Text style={styles.whiteText}>
+        <AppText style={styles.text}>
           If not everyone tagged in the Experiece agrees the Experience is not published.
-        </Text>
+        </AppText>
         {
           experience.Trip && experience.Trip.TripStart &&
-          <Text style={styles.whiteText}>
+          <AppText style={styles.text}>
             This concers your Experience on <Date format="MMM DD">{experience.createdAt}</Date>
             {` From ${experience.Trip.TripStart.name} to ${experience.Trip.TripEnd.name}`}
-          </Text>
+          </AppText>
         }
         {
           experience.Trip && experience.Trip.TripStart &&

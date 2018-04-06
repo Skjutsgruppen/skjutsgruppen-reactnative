@@ -5,6 +5,7 @@ import * as Animatable from 'react-native-animatable';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import TouchableHighlight from '@components/touchableHighlight';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   horizontalDivider: {
@@ -43,9 +44,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
   },
-  closeLabel: {
+  calcleLabel: {
+    fontFamily: 'SFUIText-Bold',
     textAlign: 'center',
-    fontWeight: 'bold',
     color: Colors.text.blue,
   },
 });
@@ -96,7 +97,7 @@ class ActionModal extends PureComponent {
             style={styles.actionsWrapper}
           >
             {
-              title && title !== '' && <Text style={styles.title}>{title}</Text>
+              title && title !== '' && <AppText centered fontVariation="bold" style={{ padding: 16 }}>{title}</AppText>
             }
             {this.renderActions()}
           </Animatable.View>
@@ -112,7 +113,7 @@ class ActionModal extends PureComponent {
               style={styles.close}
               onPress={onRequestClose}
             >
-              <Text style={styles.closeLabel}>{trans('global.cancel')}</Text>
+              <Text style={styles.calcleLabel}>{trans('global.cancel')}</Text>
             </TouchableHighlight>
           </Animatable.View>
         </View>

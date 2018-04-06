@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+
+import { AppText } from '@components/utils/texts';
 
 import CheckIconPink from '@assets/icons/ic_checked_pink.png';
 import CheckIconBlue from '@assets/icons/ic_checked_blue.png';
@@ -37,7 +39,7 @@ const Radio = ({ active, readOnly, color, label, onPress, style, size }) => {
         <Image source={CheckIconGray} style={sizeStyle} />
         {
           label &&
-          <Text style={styles.label}>{label}</Text>
+          <AppText style={styles.label}>{label}</AppText>
         }
       </View>
     );
@@ -65,7 +67,7 @@ const Radio = ({ active, readOnly, color, label, onPress, style, size }) => {
       </TouchableWithoutFeedback>
       {
         label &&
-        <Text style={styles.label}>{label}</Text>
+        <AppText style={styles.label}>{label}</AppText>
       }
     </View>
   );

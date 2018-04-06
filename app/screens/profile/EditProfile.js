@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
 import FCM from 'react-native-fcm';
 import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
@@ -24,6 +24,7 @@ import { SMS_NUMBER } from '@config';
 import { NavigationActions } from 'react-navigation';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const AvailableLanguages = {
   en: 'English',
@@ -42,9 +43,7 @@ const AvailableLanguages = {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 16,
     lineHeight: 28,
-    color: Colors.text.black,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -52,6 +51,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    fontFamily: 'SFUIText-Regular',
     fontSize: 16,
     lineHeight: 28,
     color: Colors.text.black,
@@ -117,10 +117,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 400,
-  },
-  awaitingVerification: {
-    color: Colors.text.green,
-    lineHeight: 28,
   },
   resendVerification: {
     lineHeight: 28,
@@ -453,10 +449,11 @@ class EditProfile extends Component {
       return (<Loading />);
     }
 
-    return (<Text
+    return (<AppText
+      color={Colors.text.blue}
+      style={styles.text}
       onPress={this.resendEmailVerification}
-      style={styles.resendVerification}
-    >Resend Verification</Text>);
+    >Resend Verification</AppText>);
   }
 
   renderPhoneVerificationButton = () => {
@@ -467,10 +464,11 @@ class EditProfile extends Component {
       return (<Loading />);
     }
 
-    return (<Text
+    return (<AppText
+      color={Colors.text.blue}
+      style={styles.text}
       onPress={() => navigation.navigate('ChangePhoneNumber', { verifyPreviousNumber: true })}
-      style={styles.resendVerification}
-    >{trans('profile.verify_phone_number')}</Text>);
+    >{trans('profile.verify_phone_number')}</AppText>);
   }
 
   renderFacebookConnect = () => {
@@ -479,7 +477,7 @@ class EditProfile extends Component {
     if (facebookLinked) {
       return (
         <TouchableOpacity style={styles.action} onPress={this.unlinkFacebook}>
-          <Text style={styles.actionLabel}>{trans('profile.unlink')}</Text>
+          <AppText color={Colors.text.blue}>{trans('profile.unlink')}</AppText>
         </TouchableOpacity>
       );
     }
@@ -493,7 +491,7 @@ class EditProfile extends Component {
     if (twitterLinked) {
       return (
         <TouchableOpacity style={styles.action} onPress={this.unlinkTwitter}>
-          <Text style={styles.actionLabel}>{trans('profile.unlink')}</Text>
+          <AppText color={Colors.text.blue}>{trans('profile.unlink')}</AppText>
         </TouchableOpacity>
       );
     }
@@ -505,11 +503,11 @@ class EditProfile extends Component {
     const { language } = this.state;
     return (
       <View style={styles.row}>
-        <Text style={styles.text}>
-          {trans('profile.language')} <Text style={styles.bold}> - {AvailableLanguages[language]}</Text>
-        </Text>
+        <AppText style={styles.text}>
+          {trans('profile.language')} <AppText fontVariation="bold"> - {AvailableLanguages[language]}</AppText>
+        </AppText>
         <TouchableOpacity style={styles.action}>
-          <Text style={styles.actionLabel}>{trans('global.change')}</Text>
+          <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
         </TouchableOpacity>
         <Picker
           selectedValue={language}
@@ -586,12 +584,12 @@ class EditProfile extends Component {
     return (
       <View style={styles.row}>
         <View>
-          <Text style={styles.text}>
-            {count && `${count}`}{title} {status && (<Text style={styles.bold}> - {status}</Text>)}
-          </Text>
-          {info && <Text style={styles.text}>{info}</Text>}
+          <AppText style={styles.text}>
+            {count && `${count}`}{title} {status && (<AppText fontVariation="bold"> - {status}</AppText>)}
+          </AppText>
+          {info && <AppText style={styles.text}>{info}</AppText>}
           {awaitingVerification &&
-            <Text style={styles.awaitingVerification}>{awaitingVerification}</Text>
+            <AppText color={Colors.text.green}>{awaitingVerification}</AppText>
           }
           {sendVerification &&
             ((sendVerification === 'email')
@@ -601,12 +599,12 @@ class EditProfile extends Component {
             ((sendVerification === 'phone')
               && this.renderPhoneVerificationButton())
           }
-          {subtext && <Text style={[styles.text, styles.lightText]}>{subtext}</Text>}
+          {subtext && <AppText color={Colors.text.gray} style={styles.text}>{subtext}</AppText>}
         </View>
         {
           redirect &&
           <TouchableOpacity style={styles.action} onPress={() => this.redirect(redirect)}>
-            <Text style={styles.actionLabel}>{trans('global.change')}</Text>
+            <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
           </TouchableOpacity>
         }
       </View >
@@ -616,9 +614,9 @@ class EditProfile extends Component {
   renderModal = () => {
     const { modalVisibility, loading, error } = this.state;
     const message = (
-      <Text>
+      <AppText>
         {trans('profile.are_you_sure_you_want_to_delete_yourself_from_this_movement')}
-      </Text>
+      </AppText>
     );
 
     return (
@@ -686,23 +684,23 @@ class EditProfile extends Component {
           }
           <View style={styles.row}>
             <View>
-              <Text style={styles.text}>
-                {trans('profile.facebook')} - <Text style={styles.bold}>{facebookLinked ? 'connected' : 'not connected'}</Text>
-              </Text>
-              <Text style={[styles.text, styles.lightText]}>
+              <AppText style={styles.text}>
+                {trans('profile.facebook')} - <AppText fontVariation="bold">{facebookLinked ? 'connected' : 'not connected'}</AppText>
+              </AppText>
+              <AppText color={Colors.text.gray} style={styles.text}>
                 {trans('profile.visible_for_other_participants')}
-              </Text>
+              </AppText>
             </View>
             {this.renderFacebookConnect()}
           </View>
           <View style={styles.row}>
             <View>
-              <Text style={styles.text}>
-                {trans('profile.twitter')} - <Text style={styles.bold}>{twitterLinked ? 'connected' : 'not connected'}</Text>
-              </Text>
-              <Text style={[styles.text, styles.lightText]}>
+              <AppText style={styles.text}>
+                {trans('profile.twitter')} - <AppText fontVariation="bold">{twitterLinked ? 'connected' : 'not connected'}</AppText>
+              </AppText>
+              <AppText color={Colors.text.gray} style={styles.text}>
                 {trans('profile.visible_for_other_participants')}
-              </Text>
+              </AppText>
             </View>
             {this.renderTwitterConnect()}
           </View>
@@ -725,7 +723,10 @@ class EditProfile extends Component {
             onPress={() => this.setConfirmModalVisibility(true)}
             style={styles.deleteRow}
           >
-            <Text style={[styles.text, styles.deleteLabel]}>{trans('profile.delete_yourself_from_this_movement')}</Text>
+            <AppText
+              color={Colors.text.red}
+              style={styles.text}
+            >{trans('profile.delete_yourself_from_this_movement')}</AppText>
           </TouchableOpacity>
           {this.renderModal()}
         </ScrollView>

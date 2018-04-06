@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text, ScrollView } from 'react-native';
+import { View, TextInput, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -21,11 +21,9 @@ import {
 import Date from '@components/date';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
+import { AppText } from '@components/utils/texts';
 
 const styles = {
-  lightText: {
-    color: Colors.text.gray,
-  },
   contentWrapper: {
     flex: 1,
     backgroundColor: Colors.background.mutedBlue,
@@ -53,6 +51,7 @@ const styles = {
   },
   input: {
     height: 140,
+    fontFamily: 'SFUIText-Regular',
     padding: 20,
     backgroundColor: Colors.background.fullWhite,
     borderBottomWidth: 1,
@@ -84,16 +83,6 @@ const styles = {
   thankyouText: {
     marginVertical: 12,
     marginHorizontal: 20,
-  },
-  name: {
-    color: '#1db0ed',
-    lineHeight: 20,
-    fontWeight: 'bold',
-  },
-  time: {
-    marginTop: 2,
-    fontSize: 12,
-    color: Colors.text.gray,
   },
 };
 
@@ -146,7 +135,7 @@ class Report extends Component {
     return null;
   }
 
-  renderUsername = username => <Text style={styles.name}>{username}</Text>;
+  renderUsername = username => <AppText color={Colors.text.blue} fontVariation="bold">{username}</AppText>;
 
   renderBodyText = () => {
     const { navigation } = this.props;
@@ -155,11 +144,11 @@ class Report extends Component {
     if (type === FEEDABLE_TRIP) {
       return (
         <View>
-          <Text>
+          <AppText>
             {this.renderUsername(data.Trip.User.firstName)} {data.Trip.type === FEED_TYPE_OFFER ? 'offers' : 'asks'} {data.Trip.seats !== 0 ? `${data.Trip.seats} seats` : 'for a ride'}
-          </Text>
-          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
-          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
+          </AppText>
+          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
         </View>
       );
     }
@@ -167,11 +156,13 @@ class Report extends Component {
     if (type === REPORT_COMMENT_TYPE) {
       return (
         <View>
-          <Text>
-            <Text>{this.renderUsername(data.Comment.User.firstName)}{' '}</Text>
-            <Text style={styles.time}><Date calendarTime>{data.Comment.date}</Date></Text>
-          </Text >
-          <Text>{data.Comment.text}</Text>
+          <AppText>
+            <AppText>{this.renderUsername(data.Comment.User.firstName)}{' '}</AppText>
+            <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}>
+              <Date calendarTime>{data.Comment.date}</Date>
+            </AppText>
+          </AppText >
+          <AppText>{data.Comment.text}</AppText>
         </View >
       );
     }
@@ -179,11 +170,11 @@ class Report extends Component {
     if (type === FEEDABLE_EXPERIENCE) {
       return (
         <View>
-          <Text>
+          <AppText>
             Experience for {data.Experience.Trip.TripStart.name} {' - '}
             {data.Experience.Trip.TripEnd.name} {' on '}
             <Date format="MMM DD, YYYY">{data.date}</Date>
-          </Text>
+          </AppText>
         </View>
       );
     }
@@ -191,8 +182,8 @@ class Report extends Component {
     if (type === FEEDABLE_GROUP) {
       return (
         <View>
-          <Text><Text>{this.renderUsername(data.Group.User.firstName)}</Text></Text>
-          <Text>{data.Group.name}</Text>
+          <AppText>{this.renderUsername(data.Group.User.firstName)}</AppText>
+          <AppText>{data.Group.name}</AppText>
         </View>
       );
     }
@@ -200,12 +191,12 @@ class Report extends Component {
     if (type === GROUP_FEED_TYPE_SHARE) {
       return (
         <View>
-          <Text>
+          <AppText>
             {this.renderUsername(data.User.firstName)} {' shared '}
             {this.renderUsername(data.Trip.User.firstName)} ride
-          </Text>
-          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
-          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
+          </AppText>
+          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
         </View>
       );
     }
@@ -213,12 +204,12 @@ class Report extends Component {
     if (type === FEEDABLE_SUGGESTION) {
       return (
         <View>
-          <Text>
+          <AppText>
             {this.renderUsername(data.User.firstName)} {' suggested '}
             {this.renderUsername(data.Trip.User.firstName)} ride
-          </Text>
-          <Text>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</Text>
-          <Text style={styles.time}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></Text>
+          </AppText>
+          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
         </View >
       );
     }
@@ -226,7 +217,7 @@ class Report extends Component {
     if (type === REPORT_TYPE_USER) {
       return (
         <View>
-          <Text>{data.User.firstName}{data.lastName}</Text>
+          <AppText>{data.User.firstName}{data.lastName}</AppText>
         </View>
       );
     }
@@ -303,7 +294,7 @@ class Report extends Component {
           !isReported &&
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
-              <Text style={styles.label}>You are reporting this {this.renderTypeText()}:</Text>
+              <AppText style={styles.label}>You are reporting this {this.renderTypeText()}:</AppText>
               <View style={styles.body}>
                 {this.renderAvatar()}
                 <View>
@@ -312,7 +303,7 @@ class Report extends Component {
               </View>
               <View style={styles.descriptionWraper}>
                 <Toast message={error} type="error" />
-                <Text style={styles.label}>Why do you report this?</Text>
+                <AppText style={styles.label}>Why do you report this?</AppText>
                 <TextInput
                   style={styles.input}
                   placeholder="Write"
@@ -324,28 +315,28 @@ class Report extends Component {
                   maxLength={100}
                 />
               </View>
-              <Text style={styles.label}>Information about you:</Text>
+              <AppText style={styles.label}>Information about you:</AppText>
               <View style={styles.infoWrapper}>
                 <View style={styles.info}>
-                  <Text>Name</Text>
-                  <Text>{user.firstName} {user.lastName}</Text>
-                  <Text style={styles.lightText}>
+                  <AppText>Name</AppText>
+                  <AppText>{user.firstName} {user.lastName}</AppText>
+                  <AppText color={Colors.text.gray}>
                     Only visible for the one reviewing your report
-                  </Text>
+                  </AppText>
                 </View>
                 <View style={styles.info}>
-                  <Text>E-mail</Text>
-                  <Text>{user.email}</Text>
-                  <Text style={styles.lightText}>
+                  <AppText>E-mail</AppText>
+                  <AppText>{user.email}</AppText>
+                  <AppText color={Colors.text.gray}>
                     Only visible for the one reviewing your report
-                  </Text>
+                  </AppText>
                 </View>
                 <View style={styles.info}>
-                  <Text>Phone</Text>
-                  <Text>{user.phoneNumber}</Text>
-                  <Text style={styles.lightText}>
+                  <AppText>Phone</AppText>
+                  <AppText>{user.phoneNumber}</AppText>
+                  <AppText color={Colors.text.gray}>
                     Only visible for the one reviewing your report
-                  </Text>
+                  </AppText>
                 </View>
               </View>
             </View>
@@ -354,17 +345,17 @@ class Report extends Component {
         {
           isReported &&
           <View style={styles.thankyouContent}>
-            <Text style={styles.label}>Thank you</Text>
-            <Text style={styles.thankyouText}>
+            <AppText style={styles.label}>Thank you</AppText>
+            <AppText style={styles.thankyouText}>
               If any action is taken you will get an e-mail.
-            </Text>
-            <Text style={styles.thankyouText}>
+            </AppText>
+            <AppText style={styles.thankyouText}>
               Thank you for remembering that we are an non-profit movement.
                   We make this work with the help of volunteers and
                   all of you who help out with the self-sustaining garden.
                   Our volunteers work as fast as they can to get to your report.
-            </Text>
-            <Text style={styles.thankyouText}>Thanks for being a part of the movement!</Text>
+            </AppText>
+            <AppText style={styles.thankyouText}>Thanks for being a part of the movement!</AppText>
           </View>
         }
         {

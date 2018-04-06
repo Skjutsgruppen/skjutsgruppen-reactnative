@@ -4,7 +4,6 @@ import GroupsList from '@components/profile/groupsList';
 import { withMyGroups } from '@services/apollo/group';
 import PropTypes from 'prop-types';
 import { Wrapper } from '@components/common';
-import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
 
@@ -27,7 +26,7 @@ class UserGroups extends Component {
     const user = this.isCurrentUser() ? trans('profile.my') : trans('profile.username_s', { name: username || this.props.user.firstName });
 
     return (
-      <Wrapper bgColor={Colors.background.creme}>
+      <Wrapper>
         <ToolBar title={trans('profile.user_groups', { user })} />
         <Groups id={userId} />
       </Wrapper>

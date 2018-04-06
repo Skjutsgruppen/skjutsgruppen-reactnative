@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading, GhostButton } from '@components/common';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -19,9 +20,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   message: {
-    fontSize: 18,
     lineHeight: 32,
-    textAlign: 'center',
     marginHorizontal: 20,
     marginVertical: 16,
   },
@@ -31,11 +30,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     borderTopWidth: 1,
     borderTopColor: Colors.border.lightGray,
-  },
-  verticalDivider: {
-    width: 1,
-    height: '100%',
-    backgroundColor: Colors.border.lightGray,
   },
 });
 
@@ -62,7 +56,7 @@ const DeletedModal = ({
           {
             !loading &&
             <View>
-              <Text style={styles.message}>{message}</Text>
+              <AppText size={18} centered style={styles.message}>{message}</AppText>
               <View style={styles.actions}>
                 <GhostButton
                   label={confirmLabel}

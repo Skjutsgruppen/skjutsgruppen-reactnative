@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import TouchableHighlight from '@components/touchableHighlight';
 import Radio from '@components/add/radio';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   shareItem: {
@@ -47,7 +48,7 @@ const ShareItem = ({
             <Image source={imageSource} style={hasPhoto ? styles.image : {}} />
           </View>
         }
-        <Text>{label}</Text>
+        <AppText>{label}</AppText>
         <Radio
           active={selected}
           readOnly={readOnly}

@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   Modal,
   TouchableOpacity,
   Keyboard,
@@ -29,77 +28,12 @@ import { trans } from '@lang/i18n';
 import GroupCalendar from '@components/group/groupCalendar';
 import { getDate } from '@config';
 import CommentBox from '@components/group/commentBox';
+import { AppText } from '@components/utils/texts';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 const Calendar = withGroupTrips(GroupCalendar);
 
 const styles = StyleSheet.create({
-  leaveButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 24,
-    bottom: 12,
-    height: 32,
-    width: 120,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    backgroundColor: Colors.background.fullWhite,
-    shadowOffset: { width: 0, height: 2 },
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  leaving: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  leavingText: {
-    marginRight: 4,
-  },
-  leaveText: {
-    fontSize: 13,
-    color: Colors.text.darkGray,
-  },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: '100%',
-  },
-  footerContent: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f3ed',
-    borderTopWidth: 2,
-    borderColor: '#cececf',
-    paddingVertical: 9,
-    paddingLeft: 24,
-    paddingRight: 12,
-  },
-  msgInput: {
-    flex: 1,
-    backgroundColor: '#fff',
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#b1abab',
-    paddingHorizontal: 12,
-  },
-  send: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 0.25,
-  },
-  sendText: {
-    color: '#00aeef',
-    fontWeight: 'bold',
-  },
-  calendarIcon: {
-    paddingRight: 10,
-  },
   groupCalendarContent: {
     position: 'absolute',
     left: 0,
@@ -114,30 +48,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 4,
   },
-  actionLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
-  },
   closeWrapper: {
     backgroundColor: Colors.background.fullWhite,
   },
   closeModal: {
-    padding: 16,
-  },
-  modalContent: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
-  },
-  actionsWrapper: {
-    marginTop: 'auto',
-    marginHorizontal: 16,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 24,
-  },
-  action: {
     padding: 16,
   },
 });
@@ -373,7 +287,7 @@ class Detail extends PureComponent {
                 style={styles.closeModal}
                 onPress={() => this.setCalendarVisibilty(false)}
               >
-                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.cancel')}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -429,9 +343,7 @@ class Detail extends PureComponent {
   renderConfirmModal = () => {
     const { leaveLoading, showConfirmModal } = this.state;
     const message = (
-      <Text>
-        {trans('detail.are_you_sure_you_want_to_leave_group')}
-      </Text>
+      <AppText>{trans('detail.are_you_sure_you_want_to_leave_group')}</AppText>
     );
 
     return (
@@ -508,7 +420,7 @@ class Detail extends PureComponent {
                     style={styles.closeModal}
                     onPress={() => this.setCalendarVisibilty(false)}
                   >
-                    <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                    <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.cancel')}</AppText>
                   </TouchableOpacity>
                 </View>
               </View>

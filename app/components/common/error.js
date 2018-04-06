@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import propTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const Error = ({ text }) => (
   <View>
-    <Text>{text}</Text>
+    <AppText>{text}</AppText>
   </View>
 );
 

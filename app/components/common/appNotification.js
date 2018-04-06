@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -27,12 +28,6 @@ const styles = StyleSheet.create({
   icon: {
     paddingHorizontal: 16,
   },
-  text: {
-    color: Colors.text.white,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
 });
 
 const AppNotification = ({ image, name, message, style, handleClose, type }) => {
@@ -53,8 +48,8 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
       <View style={styles.content}>
         <Image source={imgIcon} style={imageStyle} />
         <View style={{ flex: 1 }}>
-          {name !== '' && <Text style={[styles.text, styles.bold]}>{name}</Text>}
-          <Text style={styles.text}>{message}</Text>
+          {name !== '' && <AppText color={Colors.text.white} fontVariation="bold">{name}</AppText>}
+          <AppText color={Colors.text.white}>{message}</AppText>
         </View>
       </View>
       <TouchableOpacity onPress={handleClose} style={styles.icon}>

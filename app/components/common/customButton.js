@@ -1,17 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewPropTypes } from 'react-native';
+import { TouchableOpacity, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import { Title } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   button: {
     borderRadius: 12,
     padding: 10,
     marginBottom: 24,
-  },
-  text: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 16,
   },
   disabled: {
     backgroundColor: '#ddd',
@@ -29,7 +25,7 @@ const CustomButton = ({ children, style, onPress, bgColor, textColor, disabled }
     disabled={disabled}
     onPress={onPress}
   >
-    <Text style={[styles.text, { color: textColor }]}>{children}</Text>
+    <Title centered fontVariation="bold" color={textColor}>{children}</Title>
   </TouchableOpacity>
 );
 

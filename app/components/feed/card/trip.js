@@ -11,20 +11,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import { AppText } from '@components/utils/texts';
 
 const cardHeight = 484;
-const profilePicSize = 60;
+const imageHeight = 230;
+const profilePicSize = 64;
 
 const styles = StyleSheet.create({
   wrapper: {
     maxHeight: cardHeight,
     backgroundColor: Colors.background.fullWhite,
-    marginHorizontal: 16,
+    marginHorizontal: 19,
     marginVertical: 10,
     borderRadius: 12,
-    shadowOffset: { width: 0, height: 1 },
-    shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 0,
-    shadowRadius: 5,
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     zIndex: 10,
   },
   groupName: {
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     height: profilePicSize,
     width: profilePicSize,
     position: 'absolute',
-    top: (cardHeight * 0.48) - (profilePicSize / 2),
+    top: imageHeight - (profilePicSize / 2),
     right: 20,
     zIndex: 10,
   },
@@ -57,15 +58,12 @@ const styles = StyleSheet.create({
   },
   comment: {
     flex: 1,
-    flexBasis: 56,
-    minHeight: 56,
+    flexBasis: 72,
+    maxHeight: 72,
+    paddingTop: 2,
     paddingHorizontal: 18,
     marginTop: 'auto',
     overflow: 'hidden',
-  },
-  commentText: {
-    fontSize: 16,
-    lineHeight: 24,
   },
   commentGradientOverlay: {
     height: 24,
@@ -123,12 +121,12 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
           <View>
             <TripImage
               imageURI={trip.photo ? trip.photo : trip.mapPhoto}
-              height={cardHeight * 0.48}
+              height={imageHeight}
             />
             {trip.type && <TripTypePill color={tripColor} label={tripLabel} />}
             <View style={styles.detail}>
               <View>
-                <AppText style={[styles.text]}>
+                <AppText style={{ lineHeight: 24 }}>
                   <AppText fontVariation="semibold" color={trip.User.deleted ? Colors.text.black : Colors.text.blue}>
                     {trip.User.firstName}
                   </AppText>
@@ -147,7 +145,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                       prettify(trip.direction)
                   }
                 </AppText>
-                <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
+                <AppText color={Colors.text.darkGray} style={{ marginTop: 6 }}>
                   <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
                   {
                     trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
@@ -164,7 +162,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
               </View>
             </View>
             <View style={styles.comment}>
-              <AppText>{trip.description}</AppText>
+              <AppText style={{ lineHeight: 24 }}>{trip.description}</AppText>
               <LinearGradient
                 locations={[0, 0.3, 0.7, 0.8]}
                 colors={[
