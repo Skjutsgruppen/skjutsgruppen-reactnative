@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
+import { StyleSheet, View, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -19,12 +19,12 @@ import { getTimezone } from '@helpers/device';
 import Moment from 'moment-timezone';
 import { FEED_TYPE_OFFER, FEEDABLE_TRIP, STRETCH_TYPE_ROUTE } from '@config/constant';
 import { isToday, isFuture } from '@components/date';
-import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
 import { submitSuggestion } from '@services/apollo/suggest';
 import { getDate } from '@config';
 import { trans } from '@lang/i18n';
+import { Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -36,8 +36,10 @@ const styles = StyleSheet.create({
   },
   progress: {
     paddingHorizontal: 20,
+    marginTop: 16,
   },
   stepsCount: {
+    fontSize: 16,
     marginTop: 10,
   },
   returnHeader: {
@@ -483,16 +485,15 @@ class Offer extends Component {
     return (
       <View style={styles.progress}>
         <ProgressBar amount={progressAmount} changesColor={false} />
-        <Text style={[
-          styles.stepsCount,
-          GlobalStyles.TextStyles.bold,
-          GlobalStyles.TextStyles.light,
-          activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
-        ]}
+        <Heading
+          size={16}
+          style={styles.stepsCount}
+          fontVariation="bold"
+          color={activeStep === 5 ? Colors.text.pink : Colors.text.lightGray}
         >
-          <Text style={GlobalStyles.TextStyles.pink}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 5 })}
-          {activeStep === 5 && <Text>, {trans('add.well_done')}</Text>}
-        </Text>
+          <Heading size={16} fontVariation="bold" color={Colors.text.pink}>{trans('add.step', { activeStep })}</Heading> {trans('add.out_of', { value: 5 })}
+          {activeStep === 5 && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>}
+        </Heading>
       </View>
     );
   }

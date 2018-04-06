@@ -47,6 +47,7 @@ class Seats extends Component {
           maxLength={2}
           keyboardType="numeric"
           inputStyle={{ textAlign: 'center' }}
+          multiline={false}
         />
         <RoundedButton
           onPress={this.onNext}

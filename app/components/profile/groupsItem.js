@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
 import { UcFirst } from '@config';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -41,21 +42,21 @@ const GroupsItem = ({ group, onPress }) => (
       <View style={styles.flexRow}>
         <Avatar imageURI={group.photo || group.mapPhoto} size={46} />
         <View style={styles.infoWrapper}>
-          <Text>{group.name}</Text>
+          <AppText>{group.name}</AppText>
           {
             group.outreach === STRETCH_TYPE_AREA &&
-            <Text style={styles.lightText}>
+            <AppText color={Colors.text.gray} style={styles.lightText}>
               {[group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-            </Text>
+            </AppText>
           }
 
           {
             group.outreach === STRETCH_TYPE_ROUTE &&
-            <Text style={styles.lightText}>
+            <AppText color={Colors.text.gray}>
               {group.TripStart.name
                 || UcFirst(group.direction)} - {group.TripEnd.name
                   || UcFirst(group.direction)}
-            </Text>
+            </AppText>
           }
         </View>
       </View>

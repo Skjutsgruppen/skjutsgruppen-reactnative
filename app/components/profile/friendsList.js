@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Modal } from 'react-native';
+import { View, Modal } from 'react-native';
 import Friends from '@components/profile/card/friends';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
@@ -12,15 +12,7 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
 
-const styles = StyleSheet.create({
-  errorText: {
-    textAlign: 'center',
-    color: Colors.text.red,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-});
+import { AppText } from '@components/utils/texts';
 
 class UserFriendsList extends Component {
   constructor(props) {
@@ -89,12 +81,11 @@ class UserFriendsList extends Component {
   renderModal() {
     const { confirmModalVisibility, friend, loading, error } = this.state;
     const message = (
-      <Text>
-        {trans('profile.remove_from_friend_confirm', { firstName: friend.firstName, lastName: friend.lastName })}
+      <AppText>
         {trans('profile.are_you_sure_you_want_to_remove')}
-        <Text style={styles.boldText}> {friend.firstName} {friend.lastName} </Text>
+        <AppText fontVariation="bold"> {friend.firstName} {friend.lastName} </AppText>
         {trans('profile.from_your_friends_list')}
-      </Text>
+      </AppText>
     );
 
     return (

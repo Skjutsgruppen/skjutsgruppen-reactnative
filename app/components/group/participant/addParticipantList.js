@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Modal, View, ScrollView } from 'react-native';
+import { StyleSheet, Modal, View, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
@@ -14,15 +14,9 @@ import SendSMS from 'react-native-sms';
 // import FriendsWithNoMembership from '@components/group/participant/friendsWithNoMembership';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  errorText: {
-    textAlign: 'center',
-    color: Colors.text.red,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
   footer: {
     padding: 20,
     elevation: 10,
@@ -160,9 +154,9 @@ class AddParticipant extends Component {
     const totalFriends = selectedContacts.length + selectedFriends.length;
 
     const message = (
-      <Text>
+      <AppText>
         Are you sure you want to add {totalFriends > 1 ? `${totalFriends} friends` : ''}?
-      </Text>
+      </AppText>
     );
 
     return (

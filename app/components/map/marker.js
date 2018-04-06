@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Image, View, Text } from 'react-native';
+import { StyleSheet, Image, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   dot: {
@@ -124,7 +125,7 @@ class Marker extends PureComponent {
           tripType === FEED_TYPE_WANTED ? styles.blueBg : {},
         ]}
         >
-          {!!count && <Text style={styles.seatCount}>{count > 0 ? count : ''}</Text>}
+          {!!count && <AppText size={10} color={Colors.text.white}>{count > 0 ? count : ''}</AppText>}
         </View>
         {children}
       </MapView.Marker>

@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { ProgressBar } from '@components/common';
 import { Colors } from '@theme';
 import { trans } from '@lang/i18n';
+import { AppText, Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -25,14 +26,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontWeight: 'bold',
     color: Colors.text.pink,
     fontSize: 16,
     marginBottom: 6,
   },
   percentage: {
-    fontSize: 24,
-    fontWeight: 'bold',
     color: Colors.text.yellowGreen,
   },
 });
@@ -41,18 +39,19 @@ const CostCard = ({ title, coveredPercentage, totalCost, wrapperStyle }) => (
   <View style={[styles.wrapper, wrapperStyle]}>
     <View style={styles.info}>
       <View>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.cost}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</Text>
+        <Heading size={16} fontVariation="bold" style={styles.title}>{title}</Heading>
+        <AppText size={15}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</AppText>
       </View>
       <View>
-        <Text
+        <Heading
+          fontVariation="bold"
           style={[
             styles.percentage,
             coveredPercentage === 0 ? { color: Colors.text.lightGray } : {},
           ]}
         >
           {`${coveredPercentage}%`}
-        </Text>
+        </Heading>
       </View>
     </View>
     <ProgressBar amount={coveredPercentage} />

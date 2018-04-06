@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, StyleSheet } from 'react-native';
 import { Colors } from '@theme';
-
-const styles = StyleSheet.create({
-  actionLabel: {
-    fontSize: 16,
-    color: Colors.text.blue,
-  },
-});
+import { AppText } from '@components/utils/texts';
 
 class FBLink extends Component {
   static contextTypes = {
@@ -32,12 +25,12 @@ class FBLink extends Component {
   render() {
     const { label } = this.props;
     return (
-      <Text
+      <AppText
+        color={Colors.text.blue}
         onPress={this.onPress}
-        style={styles.actionLabel}
       >
         {label}
-      </Text>
+      </AppText>
     );
   }
 }

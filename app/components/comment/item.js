@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import RelationBubbleList from '@components/relationBubbleList';
 import { connect } from 'react-redux';
+import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   commentWrapper: {
@@ -19,25 +21,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginRight: 12,
   },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
-    paddingRight: 4,
-  },
-  time: {
-    color: '#777777',
-    fontWeight: 'normal',
-    marginTop: 2,
-  },
-  commentText: {
-    marginTop: 4,
-    color: '#000',
-  },
   commentRelation: {
     marginTop: 16,
-  },
-  smallText: {
-    fontSize: 12,
   },
 });
 
@@ -60,20 +45,22 @@ const Item = ({ user, comment, onPress, onCommentLongPress }) => {
         <TouchableOpacity onPress={() => onPress(comment.User.id)}>{image}</TouchableOpacity>
         <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-            <Text style={styles.name}>
+            <AppText color={Colors.text.blue} fontVariation="bold" style={{ paddingRight: 4 }}>
               {comment.User.firstName}
-              <Text style={[styles.time, styles.smallText]}> <Date>{comment.date}</Date></Text>
-            </Text>
+              <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}>
+                <Date>{comment.date}</Date>
+              </AppText>
+            </AppText>
           </View>
           <View>
-            <Text style={styles.commentText}>{comment.text}</Text>
+            <AppText style={{ marginTop: 4 }}>{comment.text}</AppText>
           </View>
           {comment.showRelation &&
             <View style={styles.commentRelation}>
               {comment.User.relation.relation.length > 2
-                ? (<Text style={styles.smallText}>You are friends of friends!</Text>)
+                ? (<AppText size={12}>You are friends of friends!</AppText>)
                 : (comment.User.relation.relation.length >= 1)
-                && (<Text style={styles.smallText}>You are friends!</Text>)
+              && (<AppText size={12}>You are friends!</AppText>)
               }
               <RelationBubbleList
                 users={comment.User.relation}

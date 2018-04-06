@@ -3,44 +3,36 @@ import PropTypes from 'prop-types';
 import {
   Text,
   StyleSheet,
-  Platform,
 } from 'react-native';
-import Colors from '@theme/colors';
 
 const baseStyles = StyleSheet.create({
-  textAndroid: {
-    fontFamily: 'sfuiDisplayRegular',
-    fontSize: 16,
-  },
-  textIOS: {
+  text: {
+    fontFamily: 'SFUIDisplay-Regular',
     fontSize: 16,
     backgroundColor: 'transparent',
   },
   semibold: {
-    fontFamily: 'sfuiDisplaySemibold',
+    fontFamily: 'SFUIDisplay-Semibold',
   },
   bold: {
-    fontFamily: 'sfuiDisplaybold',
+    fontFamily: 'SFUIDisplay-Bold',
   },
   italic: {
-    fontFamily: 'sfuiDisplayRegular',
+    fontFamily: 'SFUIDisplay-Regular',
   },
 });
 
-const Title = ({ style, fontVariation, size, color, children, ...props }) => {
+const Title = ({ style, fontVariation, size, color, centered, children, ...props }) => {
   let newStyle;
-  let fontStyle;
-  const extraStyle = { fontSize: size, color };
+  const fontSize = size ? { fontSize: size } : {};
+  const textColor = color ? { color } : {};
+  const fontStyle = fontVariation ? baseStyles[fontVariation] : {};
+  const textAlign = centered ? { textAlign: 'center' } : {};
 
-  if (Platform.OS === 'android') {
-    fontStyle = fontVariation ? baseStyles[fontVariation] : {};
-    if (Array.isArray(style)) {
-      newStyle = [baseStyles.textAndroid, fontStyle, ...style, extraStyle];
-    } else {
-      newStyle = [baseStyles.textAndroid, fontStyle, style, extraStyle];
-    }
-  } else if (Platform.OS === 'ios') {
-    newStyle = [baseStyles.textIOS, style];
+  if (Array.isArray(style)) {
+    newStyle = [baseStyles.text, fontStyle, ...style, fontSize, textColor, textAlign];
+  } else {
+    newStyle = [baseStyles.text, fontStyle, style, fontSize, textColor, textAlign];
   }
 
   return (
@@ -56,13 +48,15 @@ Title.propTypes = {
   fontVariation: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
+  centered: PropTypes.bool,
 };
 
 Title.defaultProps = {
   style: {},
   fontVariation: null,
-  size: 16,
-  color: Colors.text.black,
+  size: null,
+  color: null,
+  centered: false,
 };
 
 export default Title;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
@@ -12,49 +12,22 @@ import {
   FEED_FILTER_NEWS,
 } from '@config/constant';
 import { ActionModal, ModalAction } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  actionsWrapper: {
-    marginTop: 'auto',
-    marginHorizontal: 16,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 24,
-  },
-  modalContent: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-  },
-  title: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    padding: 16,
-  },
   action: {
     padding: 16,
-  },
-  actionLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
   horizontalDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
-  },
-  closeWrapper: {
-    backgroundColor: Colors.background.fullWhite,
-  },
-  closeModal: {
-    padding: 16,
   },
 });
 
 const Action = ({ label, onPress }) => (
   <View style={styles.horizontalDivider} >
     <TouchableOpacity style={styles.action} onPress={onPress}>
-      <Text style={styles.actionLabel}>{label}</Text>
+      <AppText centered fontVariation="bold" color={Colors.text.blue}>{label}</AppText>
     </TouchableOpacity>
   </View>
 );

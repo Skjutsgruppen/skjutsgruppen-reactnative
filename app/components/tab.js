@@ -1,7 +1,9 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckIcon from '@assets/icons/icon_check.png';
+import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -57,13 +59,12 @@ const Tab = ({ label, active, disabled, complete }) => (
           <Image source={CheckIcon} style={styles.icon} />
       }
     </View>
-    <Text style={
-      [
-        styles.text,
-        active && styles.activeText,
-      ]
-    }
-    >{label}</Text>
+    <AppText
+      size={11}
+      centered
+      fontVarition={active ? 'bold' : null}
+      color={active ? Colors.text.darkgray : Colors.text.gray}
+    >{label}</AppText>
   </View>
 );
 

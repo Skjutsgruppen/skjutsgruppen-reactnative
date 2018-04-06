@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Dimensions, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
+import { Heading } from '@components/utils/texts';
 
 const cardHeight = Dimensions.get('window').height * 0.25;
 const cardWidth = Dimensions.get('window').width * 0.7;
@@ -22,12 +23,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 10,
-    overflow: 'hidden',
   },
   image: {
     height: cardHeight,
     width: cardWidth,
     resizeMode: 'cover',
+    borderRadius: 16,
   },
   title: {
     fontWeight: 'bold',
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     height: cardHeight,
     width: cardWidth,
     padding: 12,
+    borderRadius: 16,
   },
 });
 
@@ -63,7 +65,7 @@ const GroupItem = ({ style, onPress, imageURI, title, colorOverlay }) => {
           colors={gradientColors}
           style={styles.overlay}
         >
-          <Text style={styles.title}>{title}</Text>
+          <Heading size={16} centered fontFariation="bold" color={Colors.text.white}>{title}</Heading>
         </LinearGradient>
       </View>
     </TouchableOpacity>

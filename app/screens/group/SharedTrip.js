@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, StyleSheet, Modal, Text, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
@@ -8,14 +8,12 @@ import SharedTripList from '@components/group/sharedTrip/sharedTripList';
 import GroupCalendar from '@components/group/groupCalendar';
 import ToolBar from '@components/utils/toolbar';
 import { Wrapper } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 const GroupTrip = withGroupTrips(SharedTripList);
 const Calendar = withGroupTrips(GroupCalendar);
 
 const styles = StyleSheet.create({
-  calendarIcon: {
-    paddingRight: 10,
-  },
   groupCalendarContent: {
     position: 'absolute',
     left: 0,
@@ -29,11 +27,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 4,
-  },
-  actionLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
   closeWrapper: {
     backgroundColor: Colors.background.fullWhite,
@@ -112,7 +105,7 @@ class SharedTrip extends Component {
                     style={styles.closeModal}
                     onPress={() => this.handleShowCalender(false)}
                   >
-                    <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                    <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.cancel')}</AppText>
                   </TouchableOpacity>
                 </View>
               </View>

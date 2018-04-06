@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import TouchableHighlight from '@components/touchableHighlight';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   borderBottom: {
@@ -17,9 +18,6 @@ const styles = StyleSheet.create({
     paddingVertical: 36,
     paddingHorizontal: 20,
   },
-  blueText: {
-    color: Colors.text.blue,
-  },
 });
 
 const ProfileAction = ({ title, label, icon, onPress }) => (
@@ -27,8 +25,8 @@ const ProfileAction = ({ title, label, icon, onPress }) => (
     <TouchableHighlight onPress={onPress}>
       <View style={styles.action}>
         <View>
-          {title !== '' && <Text>{title}</Text>}
-          <Text style={styles.blueText}>{label}</Text>
+          {title !== '' && <AppText>{title}</AppText>}
+          <AppText color={Colors.text.blue}>{label}</AppText>
         </View>
         {icon && <Image source={icon} />}
       </View>

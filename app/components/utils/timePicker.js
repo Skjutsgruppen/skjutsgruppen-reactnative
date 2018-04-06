@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
+import Colors from '@theme/colors';
+
+const styles = StyleSheet.create({
+  input: {
+    height: 80,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderColor: Colors.border.lightGray,
+    justifyContent: 'center',
+    marginBottom: 32,
+    paddingLeft: 20,
+  },
+});
 
 class TimePicker extends Component {
   state = {
@@ -20,10 +35,10 @@ class TimePicker extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <TouchableOpacity style={{ flex: 1, justifyContent: 'center' }} onPress={this.showDateTimePicker}>
-          <Text>{this.props.defaultTime}</Text>
-        </TouchableOpacity>
+      <View>
+        <TouchableHighlight style={styles.input} onPress={this.showDateTimePicker}>
+          <AppText>{this.props.defaultTime}</AppText>
+        </TouchableHighlight>
         <DateTimePicker
           mode="time"
           is24Hour

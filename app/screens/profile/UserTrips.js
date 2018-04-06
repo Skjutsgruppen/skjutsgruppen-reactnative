@@ -3,7 +3,6 @@ import { withMyTrips } from '@services/apollo/trip';
 import TripsList from '@components/profile/tripsList';
 import PropTypes from 'prop-types';
 import { Wrapper } from '@components/common';
-import Colors from '@theme/colors';
 import { FEED_FILTER_OFFERED, FEED_FILTER_WANTED } from '@config/constant';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
@@ -40,7 +39,7 @@ class UserTrips extends Component {
     }
 
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
+      <Wrapper>
         <ToolBar title={NavigationTitle} />
         <Trips
           id={userId}

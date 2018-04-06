@@ -3,44 +3,36 @@ import PropTypes from 'prop-types';
 import {
   Text,
   StyleSheet,
-  Platform,
 } from 'react-native';
-import Colors from '@theme/colors';
 
 const baseStyles = StyleSheet.create({
-  textAndroid: {
-    fontFamily: 'avenirRegular',
-    fontSize: 24,
-  },
-  textIOS: {
+  text: {
+    fontFamily: 'AvenirLTStd-Heavy',
     fontSize: 24,
     backgroundColor: 'transparent',
   },
   semibold: {
-    fontFamily: 'avenirSemibold',
+    fontFamily: 'AvenirLTStd-Medium',
   },
   bold: {
-    fontFamily: 'avenirBold',
+    fontFamily: 'AvenirLTStd-Heavy',
   },
   italic: {
-    fontFamily: 'avenir',
+    fontFamily: 'AvenirLTStd-Book',
   },
 });
 
-const Heading = ({ style, fontVariation, size, color, children, ...props }) => {
+const Heading = ({ style, fontVariation, size, color, centered, children, ...props }) => {
   let newStyle;
-  let fontStyle;
-  const extraStyle = { fontSize: size, color };
+  const fontSize = size ? { fontSize: size } : {};
+  const textColor = color ? { color } : {};
+  const fontStyle = fontVariation ? baseStyles[fontVariation] : {};
+  const textAlign = centered ? { textAlign: 'center' } : {};
 
-  if (Platform.OS === 'android') {
-    fontStyle = fontVariation ? baseStyles[fontVariation] : {};
-    if (Array.isArray(style)) {
-      newStyle = [baseStyles.textAndroid, fontStyle, ...style, extraStyle];
-    } else {
-      newStyle = [baseStyles.textAndroid, fontStyle, style, extraStyle];
-    }
-  } else if (Platform.OS === 'ios') {
-    newStyle = [baseStyles.textIOS, style];
+  if (Array.isArray(style)) {
+    newStyle = [baseStyles.text, fontStyle, ...style, fontSize, textColor, textAlign];
+  } else {
+    newStyle = [baseStyles.text, fontStyle, style, fontSize, textColor, textAlign];
   }
 
   return (
@@ -56,13 +48,15 @@ Heading.propTypes = {
   fontVariation: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
+  centered: PropTypes.bool,
 };
 
 Heading.defaultProps = {
   style: {},
   fontVariation: 'bold',
-  size: 24,
-  color: Colors.text.black,
+  size: null,
+  color: null,
+  centered: false,
 };
 
 export default Heading;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import CycleIcon from '@assets/icons/ic_cycle.png';
@@ -11,6 +11,7 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -19,25 +20,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   text: {
-    fontSize: 16,
     lineHeight: 32,
     marginVertical: 16,
     textAlign: 'center',
-  },
-  lightText: {
-    color: Colors.text.gray,
-  },
-  italic: {
-    fontStyle: 'italic',
   },
   button: {
     width: '60%',
     paddingHorizontal: 16,
     marginTop: 32,
-  },
-  link: {
-    color: Colors.text.blue,
-    fontWeight: '500',
   },
 });
 
@@ -47,10 +37,10 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 2 && isFilter(FEED_TYPE_OFFER) && isFilter(FEED_TYPE_PUBLIC_TRANSPORT)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>{trans('search.no_search_results')}</Text>
-        <Text style={styles.text}>
+        <AppText style={styles.text}>{trans('search.no_search_results')}</AppText>
+        <AppText style={styles.text}>
           {trans('search.ask_for_a_ride_so_other_participants_find_you')}
-        </Text>
+        </AppText>
         {renderRoundButton('Ask', trans('search.ask_for_a_ride'))}
       </View>
     );
@@ -59,9 +49,9 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 1 && isFilter(FEED_TYPE_OFFER)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>
+        <AppText style={styles.text}>
           {trans('search.did_not_find_any_offered_ride_we_suggest', { namePlace })}
-        </Text>
+        </AppText>
       </View>
     );
   }
@@ -70,13 +60,18 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 1 && isFilter(FEED_TYPE_GROUP)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>{trans('search.no_groups_for_this_search')}</Text>
-        <Text style={[styles.text, styles.italic]}>{trans('search.yet')}</Text>
-        <Text style={styles.text}>
+        <AppText style={styles.text}>{trans('search.no_groups_for_this_search')}</AppText>
+        <AppText fontVaritaion="italic" style={styles.text}>{trans('search.yet')}</AppText>
+        <AppText style={styles.text}>
           {trans('search.lets_add_a_group')}
-        </Text>
+        </AppText>
         {renderRoundButton('Group', trans('search.add_a_group'))}
-        <Text onPress={() => navigation.navigate('ExploreGroup')} style={[styles.text, styles.link]}>{trans('search.or_explore_existing_group')}</Text>
+        <AppText
+          onPress={() => navigation.navigate('ExploreGroup')}
+          fontVaritaion="semibold"
+          style={styles.text}
+          color={Colors.text.blue}
+        >{trans('search.or_explore_existing_group')}</AppText>
       </View>
     );
   }
@@ -84,10 +79,10 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 1 && isFilter(FEED_TYPE_WANTED)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>{trans('search.no_search_results')}</Text>
-        <Text style={styles.text}>
+        <AppText style={styles.text}>{trans('search.no_search_results')}</AppText>
+        <AppText style={styles.text}>
           {trans('search.offer_a_ride_so_other_participants_can_find_you')}
-        </Text>
+        </AppText>
         {renderRoundButton('Offer', trans('search.offer_a_ride'))}
       </View>
     );
@@ -96,7 +91,7 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   return (
     <View style={styles.wrapper}>
       <Image source={CycleIcon} />
-      <Text style={[styles.text, styles.lightText]}>{trans('search.no_search_results')}</Text>
+      <AppText color={Colors.text.gray} style={styles.text}>{trans('search.no_search_results')}</AppText>
       {renderRoundButton('Add', trans('search.add_ride'))}
     </View>
   );

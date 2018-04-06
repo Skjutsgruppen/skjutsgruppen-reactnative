@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
 import { withGroup } from '@services/apollo/group';
 import NoEnabler from '@components/group/enablers/noEnabler';
 import { Loading, DeletedModal } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 class GroupDetail extends Component {
   constructor(props) {
@@ -55,9 +56,7 @@ class GroupDetail extends Component {
     const { navigation } = this.props;
 
     const message = (
-      <Text>
-        This group has been deleted.
-      </Text>
+      <AppText>This group has been deleted.</AppText>
     );
 
     return (

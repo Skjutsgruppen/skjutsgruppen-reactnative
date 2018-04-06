@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import { withParticipants } from '@services/apollo/trip';
 import ParticipantList from '@components/friend/selectable';
 import Button from '@components/experience/button';
@@ -7,6 +7,7 @@ import Colors from '@theme/colors';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -14,9 +15,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.fullWhite,
   },
   title: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#000',
     padding: 24,
     backgroundColor: Colors.background.fullWhite,
     elevation: 5,
@@ -87,7 +85,7 @@ class Participants extends Component {
     return (
       <View style={styles.wrapper}>
         <ScrollView>
-          <Text style={styles.title}>Tag who participated in the ride:</Text>
+          <AppText centered style={styles.title}>Tag who participated in the ride:</AppText>
           <ParticipantList
             showSelf
             loading={tripParticipants.loading}

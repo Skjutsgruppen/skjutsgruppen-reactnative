@@ -2,13 +2,13 @@ import React from 'react';
 import {
   View,
   ScrollView,
-  Text,
   TouchableHighlight,
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading } from '@components/common';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const Styles = StyleSheet.create({
   suggestion: {
@@ -31,9 +31,7 @@ const Place = ({ item, loading, onPress }) => (
       onPress={() => onPress(item)}
     >
       <View style={Styles.suggestion}>
-        <Text numberOfLines={1}>
-          {item.description}
-        </Text>
+        <AppText numberOfLines={1}> {item.description} </AppText>
         {loading && <Loading size="small" />}
       </View>
     </TouchableHighlight>
