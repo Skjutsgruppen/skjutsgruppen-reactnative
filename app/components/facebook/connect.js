@@ -3,7 +3,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
-import { withGetUserByEmail, withgetUserByFbId } from '@services/apollo/facebook';
+import { withgetUserByFbId } from '@services/apollo/facebook';
+import { withGetUserByEmail } from '@services/apollo/social';
 import FBLoginView from '@components/facebook/button';
 import FBLink from '@components/facebook/link';
 import { Loading } from '@components/common';
