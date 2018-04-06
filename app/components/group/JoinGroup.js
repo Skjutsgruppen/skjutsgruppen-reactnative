@@ -120,11 +120,11 @@ class JoinGroup extends Component {
   }
 
   componentWillMount() {
-    const { navigation, group } = this.props;
+    const { navigation } = this.props;
     this.updateState(this.props);
 
     navigation.setParams({
-      right: () => <ShareButton onPress={() => this.onSharePress('group', group)} animated />,
+      right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
   }
 
@@ -248,6 +248,10 @@ class JoinGroup extends Component {
   render() {
     const { group } = this.props;
 
+    if (group.isDeleted) {
+      return null;
+    }
+
     return (
       <Wrapper bgColor={Colors.background.fullWhite}>
         <ToolBar transparent />
@@ -276,7 +280,7 @@ class JoinGroup extends Component {
             {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
           </Text>
           {
-            group.Stops.length > 0 &&
+            group.Stops && group.Stops.length > 0 &&
             <View style={styles.stopText}>
               <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
               <Text style={{ color: '#333' }}>

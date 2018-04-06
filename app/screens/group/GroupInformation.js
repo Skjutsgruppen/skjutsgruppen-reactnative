@@ -142,11 +142,11 @@ class Information extends Component {
     return stopText;
   }
 
-  render() {
+  renderDetails = () => {
     const { group } = this.state;
 
     return (
-      <View style={styles.contentWrapper}>
+      <View style={{ flex: 1 }}>
         <Toolbar
           title={group.name}
           transparent={false}
@@ -202,13 +202,23 @@ class Information extends Component {
               {group.description}
             </Text>
           </View>
+          {this.renderShareModal()}
         </ScrollView>
+      </View>
+    );
+  }
+
+  render() {
+    const { group } = this.state;
+
+    return (
+      <View style={styles.contentWrapper}>
+        {!group.isDeleted && this.renderDetails()}
         {group.isAdmin &&
           <View style={styles.footer}>
             {this.renderButton()}
           </View>
         }
-        {this.renderShareModal()}
       </View>
     );
   }
