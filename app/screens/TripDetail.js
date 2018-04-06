@@ -5,7 +5,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
 import { withTrip, withTripFeed, withDeleteTrip } from '@services/apollo/trip';
-import { AppNotification, DetailHeader, Loading, ShareButton, ActionModal, ModalAction, ConfirmModal } from '@components/common';
+import {
+  AppNotification,
+  DetailHeader,
+  Loading,
+  ShareButton,
+  ActionModal,
+  ModalAction,
+  ConfirmModal,
+  DeletedModal,
+} from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
 import { trans } from '@lang/i18n';
@@ -226,12 +235,12 @@ class TripDetail extends Component {
       trip: {},
       confirmModalVisibility: false,
       retry: false,
+      deletedModal: false,
     });
   }
 
   componentWillMount() {
-    const { navigation } = this.props;
-
+    const { navigation, subscribeToDeletedTrip } = this.props;
     navigation.setParams({
       right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
@@ -247,9 +256,15 @@ class TripDetail extends Component {
     }
 
     this.setState(initialState);
+
+    subscribeToDeletedTrip(trip.id);
   }
 
   componentWillReceiveProps({ trip, loading }) {
+    if (!loading && trip && trip.isDeleted) {
+      this.setState({ deletedModal: true });
+    }
+
     if (!loading && trip.id) {
       if (trip.experienceStatus === EXPERIENCE_STATUS_PENDING) {
         const notifier = {
@@ -367,16 +382,15 @@ class TripDetail extends Component {
   }
 
   onDelete = () => {
-    const { deleteTrip, navigation } = this.props;
+    const { deleteTrip } = this.props;
     const { trip: { id } } = this.state;
     this.setState({ loading: true });
 
     deleteTrip({ id })
       .then(() => {
-        this.setState({ loading: false, retry: false });
         this.setConfirmModalVisibility(false);
         this.showActionModal(false);
-        navigation.navigate('Feed');
+        this.setState({ loading: false, retry: false, deletedModal: true });
       })
       .catch((error) => {
         this.setState({ loading: false, retry: error });
@@ -923,10 +937,16 @@ class TripDetail extends Component {
   }
 
   renderConfirmModal = () => {
-    const { loading, confirmModalVisibility, retry } = this.state;
+    const { loading, confirmModalVisibility, retry, trip } = this.state;
+
     const message = (
       <Text>
         Are you sure you want to delete this trip?
+        {
+          ((trip.ReturnTrip && trip.ReturnTrip.length > 0) ||
+            (trip.Recurring && trip.Recurring.length > 0)) &&
+          ' Deleting this trip will delete all the associated trips.'
+        }
       </Text>
     );
 
@@ -945,19 +965,32 @@ class TripDetail extends Component {
     );
   }
 
-  render() {
-    const { notifierOffset, trip } = this.state;
+  renderDeletedModal = () => {
+    const { deletedModal } = this.state;
+    const { navigation } = this.props;
 
-    if (!trip.User) {
-      return (
-        <View style={styles.wrapper}>
-          <Loading />
-        </View>
-      );
-    }
+    const message = (
+      <Text>
+        This trip has been deleted.
+      </Text>
+    );
 
     return (
-      <Wrapper>
+      <DeletedModal
+        visible={deletedModal}
+        onRequestClose={() => this.setState({ deletedModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false }, () => navigation.navigate('Feed'))}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
+  renderTrip() {
+    const { notifierOffset, trip } = this.state;
+
+    return (
+      <View style={{ flex: 1 }}>
         {this.renderAppNotification()}
         <ToolBar transparent offset={notifierOffset} />
         {this.state.showReturnRides && this.returnRideModal()}
@@ -975,6 +1008,25 @@ class TripDetail extends Component {
         {this.renderShareModal()}
         {this.renderRideSuggestions()}
         {this.renderConfirmModal()}
+      </View>
+    );
+  }
+
+  render() {
+    const { trip } = this.state;
+
+    if (!trip.User) {
+      return (
+        <View style={styles.wrapper}>
+          <Loading />
+        </View>
+      );
+    }
+
+    return (
+      <Wrapper>
+        {!trip.isDeleted && this.renderTrip()}
+        {this.renderDeletedModal()}
       </Wrapper>
     );
   }
@@ -996,6 +1048,7 @@ TripDetail.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   deleteTrip: PropTypes.func.isRequired,
+  subscribeToDeletedTrip: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

@@ -29,6 +29,7 @@ import SearchBar from '@components/common/searchBar';
 import ListSearchBar from '@components/common/ListSearchBar';
 import ConfirmModal from '@components/common/confirmModal';
 import GhostButton from '@components/common/ghostButton';
+import DeletedModal from '@components/common/deletedModal';
 
 export {
   Loading,
@@ -62,4 +63,5 @@ export {
   ListSearchBar,
   ConfirmModal,
   GhostButton,
+  DeletedModal,
 };
