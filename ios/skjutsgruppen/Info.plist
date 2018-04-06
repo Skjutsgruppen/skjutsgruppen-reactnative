@@ -9,9 +9,9 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
-	<string/>
+	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>nu.skjutsgruppen.Skjutsgruppen</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -38,7 +38,7 @@
 	<key>FacebookDisplayName</key>
 	<string>{your-app-name}</string>
 	<key>LSApplicationCategoryType</key>
-	<string/>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -62,22 +62,29 @@
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string/>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMainNibFile~ipad</key>
 	<string>LaunchScreen</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
-		<string>avenir.ttf</string>
-		<string>sfuiDisplay.ttf</string>
-		<string>sfuiText.ttf</string>
-		<string>sfuiTextItalic.ttf</string>
+		<string>AvenirLTStd-Book.ttf</string>
+		<string>AvenirLTStd-Heavy.ttf</string>
+		<string>AvenirLTStd-Medium.ttf</string>
+		<string>SFUIDisplay-Bold.ttf</string>
+		<string>SFUIDisplay-Regular.ttf</string>
+		<string>SFUIText-Bold.ttf</string>
+		<string>SFUIText-Regular.ttf</string>
+		<string>SFUIDisplay-Semi-Bold.ttf</string>
+		<string>SFUIText-RegularItalic.ttf</string>
+		<string>SFUIText-SemiBold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -86,11 +93,13 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

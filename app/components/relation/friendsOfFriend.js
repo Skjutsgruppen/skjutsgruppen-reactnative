@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, ScrollView, Text, Image, TouchableHighlight, Platform, UIManager, LayoutAnimation, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Image, TouchableHighlight, Platform, UIManager, LayoutAnimation, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
@@ -7,6 +7,7 @@ import { compose } from 'react-apollo';
 import Colors from '@theme/colors';
 import FatArrow from '@assets/icons/icon_arrow_fat.png';
 import ThinArrow from '@assets/icons/ic_arrow_gray.png';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   labelWrapper: {
@@ -114,17 +115,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.background.blue,
   },
-  countText: {
-    color: Colors.text.white,
-  },
-  countTextMini: {
-    color: Colors.text.white,
-    fontSize: 10,
-  },
-  username: {
-    fontWeight: '600',
-    color: Colors.text.blue,
-  },
   chevronDown: {
     height: 14,
     width: 14,
@@ -175,14 +165,14 @@ class FOF extends PureComponent {
     if (relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={styles.labelWrapper}>
-          <Text style={{ fontSize: 13, textAlign: 'center' }}>You have no friend connections</Text>
+          <AppText size={13} style={{ textAlign: 'center' }}>You have no friend connections</AppText>
         </View>
       );
     }
 
     return (
       <View style={styles.labelWrapper}>
-        <Text style={{ fontSize: 13, textAlign: 'center' }}>This is how you know {viewee.firstName}</Text>
+        <AppText size={13} style={{ textAlign: 'center' }}>This is how you know {viewee.firstName}</AppText>
         <TouchableHighlight
           onPress={this.handleExpand}
           underlayColor={Colors.background.mutedBlue}
@@ -211,13 +201,13 @@ class FOF extends PureComponent {
 
 
       return ([
-        <Text
+        <AppText
           key={user.id}
           onPress={() => navigation.navigate('Profile', { profileId: user.id })}
-          style={styles.username}
+          color={Colors.text.blue}
         >
           {user.firstName}
-        </Text>,
+        </AppText>,
         separator,
       ]);
     });
@@ -231,9 +221,9 @@ class FOF extends PureComponent {
 
     if (relation.areFriends) {
       return (
-        <Text style={[styles.names, { textAlign: 'center' }, expanded ? { height: 100 } : { height: 0 }]}>
+        <AppText style={[{ textAlign: 'center', marginTop: 12 }, expanded ? { height: 100 } : { height: 0 }]}>
           You are friends
-        </Text>
+        </AppText>
       );
     }
 
@@ -243,15 +233,16 @@ class FOF extends PureComponent {
 
     return (
       <View style={{ paddingHorizontal: 24 }}>
-        <Text style={[expanded ? { height: 100 } : { height: 0 }]}>
+        <AppText style={[{ marginTop: 12 }, expanded ? { height: 100 } : { height: 0 }]}>
           You know {relation.path.map(this.bundledName)}
-          <Text
+          <AppText
+            fontVariation="semibold"
+            color={Colors.text.blue}
             onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
-            style={styles.username}
           >
             {viewee.firstName}
-          </Text>
-        </Text>
+          </AppText>
+        </AppText>
       </View>
     );
   }
@@ -301,7 +292,7 @@ class FOF extends PureComponent {
         <Image source={{ uri: item[0].avatar }} style={styles.bunddledAvatar} />
       </TouchableHighlight>,
       <View key={item[1].id} style={[styles.remainingCount, styles.shifted]}>
-        <Text style={styles.countText}>{item.length - 1}</Text>
+        <AppText size={14} color={Colors.text.white}>{item.length - 1}</AppText>
       </View>,
       arrow,
     ];
@@ -376,7 +367,7 @@ class FOF extends PureComponent {
     return [
       <Image key={item[0].id} source={{ uri: item[0].avatar }} style={styles.bunddledAvatarMini} />,
       <View key={item[1].id} style={[styles.remainingCountMini, styles.shiftedMini]}>
-        <Text style={styles.countTextMini}>{item.length - 1}</Text>
+        <AppText size={10} color={Colors.text.white}>{item.length - 1}</AppText>
       </View>,
       arrow,
     ];
@@ -387,9 +378,9 @@ class FOF extends PureComponent {
     if (relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
-          <Text style={{ fontSize: 11, color: Colors.text.gray }}>
+          <AppText size={11} color={Colors.text.gray }>
             You have no friend connections
-          </Text>
+          </AppText>
         </View>
       );
     }
@@ -403,9 +394,9 @@ class FOF extends PureComponent {
       >
         <View>
           <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
-            <Text style={{ fontSize: 11, color: Colors.text.gray }}>
+            <AppText size={11} color={Colors.text.gray}>
               {relation.areFriends ? 'You are friends' : 'You are Friends of Friend!'}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.list, styles.listLeft]}>
             <View style={styles.spacer} />
