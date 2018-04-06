@@ -340,7 +340,7 @@ class Profile extends Component {
     if (user.twitterId && user.twitterId !== '') {
       return (
         <ProfileAction
-          onPress={() => Linking.openURL(`https://twitter.com/${user.twitterId}`)}
+          onPress={() => Linking.openURL(`https://twitter.com?profile_id=${user.twitterId}`)}
           label="Twitter profile"
         />
       );
