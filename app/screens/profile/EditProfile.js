@@ -11,12 +11,13 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import PropTypes from 'prop-types';
 import Connect from '@components/facebook/connect';
+import TwitterConnect from '@components/twitter/twitterConnect';
 import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
 import { withAccount, withDeleteAccount } from '@services/apollo/profile';
 import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVerification } from '@services/apollo/auth';
-import { withFacebookConnect } from '@services/apollo/facebook';
+import { withSocialConnect } from '@services/apollo/social';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import { NavigationActions } from 'react-navigation';
@@ -144,7 +145,8 @@ class EditProfile extends Component {
       phoneVerificationLoading: false,
       firstNameLoading: false,
       lastNameLoading: false,
-      linked: false,
+      facebookLinked: false,
+      twitterLinked: false,
       error: '',
       success: '',
       language: 'en',
@@ -169,11 +171,17 @@ class EditProfile extends Component {
       email,
       fbId,
       totalFriends,
+      twitterId,
     } = this.props.user;
-    let linked = false;
+    let facebookLinked = false;
+    let twitterLinked = false;
 
     if (fbId) {
-      linked = true;
+      facebookLinked = true;
+    }
+
+    if (twitterId) {
+      twitterLinked = true;
     }
 
     this.setState({
@@ -182,7 +190,8 @@ class EditProfile extends Component {
       profileImage: avatar,
       phoneNumber,
       email,
-      linked,
+      facebookLinked,
+      twitterLinked,
       totalFriends,
     });
   }
@@ -197,17 +206,18 @@ class EditProfile extends Component {
   }
 
   onLogin = async (fb) => {
-    const { facebookConnect, setUser } = this.props;
+    const { socialConnect, setUser } = this.props;
     if (!fb.hasID) {
       try {
         this.setState({ loading: true });
-        const response = await facebookConnect({
+        const response = await socialConnect({
           id: fb.fbUser.profile.id,
           email: fb.fbUser.profile.email,
           token: fb.fbUser.token,
+          type: 'facebook',
         });
         setUser(response.data.connect.User);
-        this.setState({ linked: true, loading: false });
+        this.setState({ facebookLinked: true, loading: false });
       } catch (error) {
         this.setState({ loading: false });
       }
@@ -215,6 +225,30 @@ class EditProfile extends Component {
     } else {
       FBLoginManager.logout(() => { });
       Alert.alert('Error', 'Facebook account is already linked with another account.');
+    }
+  }
+
+  onConnectTwitter = async (twitter) => {
+    const { socialConnect, setUser } = this.props;
+
+    if (!twitter.hasID) {
+      try {
+        this.setState({ loading: true });
+        const response = await socialConnect({
+          id: twitter.twitterUser.auth.userID,
+          email: twitter.twitterUser.profile.email,
+          token: twitter.twitterUser.auth.authToken,
+          secret: twitter.twitterUser.auth.authTokenSecret,
+          type: 'twitter',
+        });
+
+        setUser(response.data.connect.User);
+        this.setState({ twitterLinked: true, loading: false });
+      } catch (error) {
+        this.setState({ loading: false });
+      }
+    } else {
+      Alert.alert('Error', 'Twitter account is already linked with another account.');
     }
   }
 
@@ -307,13 +341,25 @@ class EditProfile extends Component {
     };
   }
 
-  unlink = async () => {
+  unlinkFacebook = async () => {
     const { facebookConnect, user, setUser } = this.props;
     try {
       this.setState({ loading: true });
       const response = await facebookConnect({ id: '', email: user.email, token: '' });
       setUser(response.data.connect.User);
-      this.setState({ linked: false, loading: false });
+      this.setState({ facebookLinked: false, loading: false });
+    } catch (error) {
+      this.setState({ loading: false });
+    }
+  }
+
+  unlinkTwitter = async () => {
+    const { socialConnect, user, setUser } = this.props;
+    try {
+      this.setState({ loading: true });
+      const response = await socialConnect({ id: '', email: user.email, token: '', secret: '', type: 'twitter' });
+      setUser(response.data.connect.User);
+      this.setState({ twitterLinked: false, loading: false });
     } catch (error) {
       this.setState({ loading: false });
     }
@@ -422,17 +468,31 @@ class EditProfile extends Component {
   }
 
   renderFacebookConnect = () => {
-    const { linked } = this.state;
+    const { facebookLinked } = this.state;
 
-    if (linked) {
+    if (facebookLinked) {
       return (
-        <TouchableOpacity style={styles.action} onPress={this.unlink}>
+        <TouchableOpacity style={styles.action} onPress={this.unlinkFacebook}>
           <Text style={styles.actionLabel}>Unlink</Text>
         </TouchableOpacity>
       );
     }
 
     return (<Connect buttonType="link" onLogin={this.onLogin} />);
+  }
+
+  renderTwitterConnect = () => {
+    const { twitterLinked } = this.state;
+
+    if (twitterLinked) {
+      return (
+        <TouchableOpacity style={styles.action} onPress={this.unlinkTwitter}>
+          <Text style={styles.actionLabel}>Unlink</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return (<TwitterConnect buttonType="link" onLogin={this.onConnectTwitter} />);
   }
 
   renderLanguage = () => {
@@ -575,7 +635,8 @@ class EditProfile extends Component {
       profileImage,
       phoneNumber,
       email,
-      linked,
+      facebookLinked,
+      twitterLinked,
       uploadedImage,
       totalFriends,
       newEmail,
@@ -620,13 +681,24 @@ class EditProfile extends Component {
           <View style={styles.row}>
             <View>
               <Text style={styles.text}>
-                Facebook - <Text style={styles.bold}>{linked ? 'connected' : 'not connected'}</Text>
+                Facebook - <Text style={styles.bold}>{facebookLinked ? 'connected' : 'not connected'}</Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
                 Visible for other participants
               </Text>
             </View>
             {this.renderFacebookConnect()}
+          </View>
+          <View style={styles.row}>
+            <View>
+              <Text style={styles.text}>
+                Twitter - <Text style={styles.bold}>{twitterLinked ? 'connected' : 'not connected'}</Text>
+              </Text>
+              <Text style={[styles.text, styles.lightText]}>
+                Visible for other participants
+              </Text>
+            </View>
+            {this.renderTwitterConnect()}
           </View>
           {
             this.renderList({
@@ -670,6 +742,7 @@ EditProfile.propTypes = {
     email: PropTypes.string,
     fbId: PropTypes.string,
     totalFriends: PropTypes.number,
+    twitterId: PropTypes.string,
   }).isRequired,
   setUser: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
@@ -698,7 +771,7 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   withAccount,
   withUpdateProfile,
-  withFacebookConnect,
+  withSocialConnect,
   withResendEmailVerification,
   withRegeneratePhoneVerification,
   withDeleteAccount,

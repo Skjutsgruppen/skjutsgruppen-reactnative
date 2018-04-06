@@ -418,9 +418,9 @@ class Share extends Component {
       {this.hasTwitter() &&
         <ShareItem
           imageSource={require('@assets/icons/ic_twitter.png')}
-          selected={this.hasOption('social', 'tweet')}
+          selected={this.hasOption('social', 'Twitter')}
           label={trans('global.tweet')}
-          onPress={() => this.setOption('social', 'tweet')}
+          onPress={() => this.setOption('social', 'Twitter')}
           color="blue"
         />}
       <FriendList
