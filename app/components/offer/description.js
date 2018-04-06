@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Container, RoundedButton } from '@components/common';
@@ -7,12 +7,13 @@ import Colors from '@theme/colors';
 import AddPhoto from '@components/add/photo';
 import CommentBox from '@components/add/commentBox';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   infoText: {
     marginHorizontal: 20,
     marginBottom: 20,
-    lineHeight: 24,
+    fontSize: 14,
     color: Colors.text.gray,
   },
   bold: {
@@ -57,9 +58,7 @@ class Description extends PureComponent {
           value={this.state.text}
           labelColor={isOffer ? Colors.text.pink : Colors.text.blue}
         />
-        <Text style={styles.infoText}>
-          {trans('add.write_about_who_you_are')}
-        </Text>
+        <AppText size={15} style={styles.infoText}>{trans('add.write_about_who_you_are')}</AppText>
         <RoundedButton
           onPress={this.onNext}
           bgColor={Colors.background.pink}

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableHighlight, View, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   button: {
@@ -12,10 +13,6 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 20,
   },
-  label: {
-    fontSize: 16,
-    color: Colors.text.blue,
-  },
 });
 
 const GhostButton = ({ style, label, color, onPress }) => (
@@ -25,7 +22,7 @@ const GhostButton = ({ style, label, color, onPress }) => (
     underlayColor={Colors.background.mutedPink}
   >
     <View>
-      <Text style={[styles.label, color ? { color } : {}]}>{label}</Text>
+      <AppText color={color || Colors.text.blue}>{label}</AppText>
     </View>
   </TouchableHighlight>
 );

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 import { Loading } from '@components/common';
 import ShareItem from '@components/common/shareItem';
@@ -11,7 +12,7 @@ import ShareItem from '@components/common/shareItem';
 const styles = StyleSheet.create({
   title: {
     fontSize: 12,
-    color: '#1ca9e5',
+    color: Colors.text.blue,
     marginHorizontal: 24,
     marginBottom: 12,
   },
@@ -92,7 +93,7 @@ const Selectable = ({
       {
         title !== '' &&
         <View style={styles.head}>
-          <Text style={styles.title}>{title.toUpperCase()}</Text>
+          <AppText style={styles.title}>{title.toUpperCase()}</AppText>
         </View>
       }
       {showSelf &&

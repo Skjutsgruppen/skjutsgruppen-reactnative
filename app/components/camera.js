@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Image,
@@ -12,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import PropTypes from 'prop-types';
 
+import { AppText } from '@components/utils/texts';
 import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
@@ -109,7 +109,9 @@ class Camera extends Component {
         return children;
       }
 
-      return (<Text style={styles.selectImage}>{label}</Text>);
+      return (<AppText centered style={styles.selectImage} allowFontScalling={false}>
+        {label}
+      </AppText>);
     }
 
     return (

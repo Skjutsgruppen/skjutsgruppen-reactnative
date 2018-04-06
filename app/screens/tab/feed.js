@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -41,10 +41,12 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   menuWrapper: {
+    height: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 16,
-    marginBottom: 12,
+    marginLeft: 27,
+    marginTop: 22,
+    marginBottom: 4,
   },
   mapWrapper: {
     alignSelf: 'flex-end',
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     width: 40,
     borderRadius: 20,
     overflow: 'hidden',
-    marginLeft: 2,
+    marginLeft: 3,
   },
   menuIcon: {
     height: 40,
@@ -252,13 +254,15 @@ class Feed extends Component {
     );
   }
 
-  renderHeader = () => (
-    <View style={styles.header}>
+  renderHeader = () => {
+    const hiStyle = Platform.OS === 'ios' ? { marginTop: 8 } : {};
+    return (<View style={styles.header}>
       <View style={styles.menuWrapper}>
         <Heading
           fontVariation="bold"
           size={24}
           color={Colors.text.white}
+          style={[{ lineHeight: 24 }, hiStyle]}
         >
           {trans('feed.hi')}!
         </Heading>
@@ -272,8 +276,8 @@ class Feed extends Component {
         </View>
       </View>
       {this.renderMap()}
-    </View>
-  )
+    </View>);
+  }
 
   renderExperience = (index) => {
     const { totalExperiences } = this.props.feeds;

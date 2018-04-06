@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Image, Text, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
-import { Heading } from '@components/utils/texts';
+import { Heading, AppText } from '@components/utils/texts';
 import { Wrapper } from '@components/common';
 import Ride from '@components/message/ride';
 import Group from '@components/message/group';
 import Notification from '@components/message/notification';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
+
 import MessageIcon from '@assets/icons/ic_message.png';
 import MessageIconActive from '@assets/icons/ic_message_active.png';
+import IconSearch from '@assets/icons/ic_search.png';
+import IconCycle from '@assets/icons/ic_cycle.png';
 
 const styles = StyleSheet.create({
   header: {
@@ -38,13 +41,13 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   searchInput: {
+    fontFamily: 'SFUIText-Regular',
     fontSize: 15,
     height: 36,
     flex: 1,
     borderRadius: 18,
     paddingLeft: 0,
     marginRight: 16,
-    fontFamily: 'sfuiTextRegular',
   },
   content: {
     backgroundColor: Colors.background.fullWhite,
@@ -64,10 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     opacity: 1,
   },
-  newMessageCount: {
-    fontSize: 10,
-    color: Colors.text.white,
-  },
   noMessage: {
     paddingHorizontal: 20,
     paddingVertical: 32,
@@ -77,8 +76,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginHorizontal: 20,
     lineHeight: 24,
-    color: Colors.text.gray,
-    textAlign: 'center',
   },
 });
 
@@ -169,11 +166,11 @@ class Message extends Component {
 
   renderNoMessages = () => (
     <View style={styles.noMessage}>
-      <Image source={require('@assets/icons/ic_cycle.png')} />
-      <Text style={styles.noMessageText}>
+      <Image source={IconCycle} />
+      <AppText centered color={Colors.text.gray} style={styles.noMessageText}>
         Nothing here yet. When you start a conversation with someone
         or join a group you will see them all here. Great right?
-      </Text>
+      </AppText>
     </View>
   )
 
@@ -196,7 +193,7 @@ class Message extends Component {
             <Heading style={styles.title}>{trans('message.messages_and_group')}</Heading>
             <View style={styles.searchInputWrapper}>
               <Image
-                source={require('@assets/icons/ic_search.png')}
+                source={IconSearch}
                 style={styles.searchIcon}
               />
               <TextInput

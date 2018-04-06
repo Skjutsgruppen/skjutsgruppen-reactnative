@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TextInput, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
-import { GlobalStyles } from '@theme/styles';
+import { AppText, Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -15,32 +15,56 @@ const styles = StyleSheet.create({
   },
   textarea: {
     height: 80,
+    fontFamily: 'SFUIText-Regular',
     backgroundColor: Colors.background.fullWhite,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  singleLined: {
+    paddingVertical: 30,
   },
 });
 
 const CommentBox = (
-  { label, style, inputStyle, value, onChangeText, showTextCount, labelColor, ...props },
+  { label, style, inputStyle, value, onChangeText, showTextCount, labelColor, multiline, ...props },
 ) =>
   (
     <View style={[styles.wrapper, style]}>
-      <Text style={[styles.label, GlobalStyles.TextStyles.bold, { color: labelColor }]}>
+      <Heading size={16} color={labelColor} fontVariation="bold" style={styles.label}>
         {label}
-      </Text>
-      <TextInput
-        style={[styles.textarea, inputStyle]}
-        multiline
-        placeholder="Write"
-        numberOfLines={4}
-        onChangeText={onChangeText}
-        underlineColorAndroid="transparent"
-        defaultValue={value}
-        {...props}
-      />
-      {showTextCount && <Text style={{ color: Colors.text.gray, textAlign: 'right', paddingHorizontal: 20 }}>{value.length}/22</Text>}
+      </Heading>
+      {
+        multiline && (
+          <TextInput
+            style={[styles.textarea, inputStyle]}
+            multiline
+            placeholder="Write"
+            numberOfLines={4}
+            onChangeText={onChangeText}
+            underlineColorAndroid="transparent"
+            placeholderTextColor={Colors.text.gray}
+            defaultValue={value}
+            {...props}
+          />
+        )
+      }
+      {
+        !multiline && (
+          <TextInput
+            style={[styles.textarea, styles.singleLined, inputStyle]}
+            placeholder="Write"
+            numberOfLines={1}
+            onChangeText={onChangeText}
+            underlineColorAndroid="transparent"
+            placeholderTextColor={Colors.text.gray}
+            defaultValue={value}
+            {...props}
+          />
+        )
+      }
+      {showTextCount && <AppText style={{ color: Colors.text.gray, textAlign: 'right', paddingHorizontal: 20 }}>{value.length}/22</AppText>}
     </View>
   );
 
@@ -53,6 +77,7 @@ CommentBox.propTypes = {
   onChangeText: PropTypes.func.isRequired,
   labelColor: PropTypes.string,
   showTextCount: PropTypes.bool,
+  multiline: PropTypes.bool,
 };
 CommentBox.defaultProps = {
   info: null,
@@ -61,6 +86,7 @@ CommentBox.defaultProps = {
   value: '',
   labelColor: Colors.text.pink,
   showTextCount: false,
+  multiline: true,
 };
 
 export default CommentBox;

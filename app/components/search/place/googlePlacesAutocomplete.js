@@ -8,7 +8,6 @@ import {
   View,
   FlatList,
   Image,
-  Text,
   StyleSheet,
   TouchableHighlight,
   PixelRatio,
@@ -22,6 +21,7 @@ import { Loading } from '@components/common/index';
 import Place from '@components/search/place/place';
 import ConfirmModal from '@components/common/confirmModal';
 import GeoLocation from '@services/location/geoLocation';
+import { AppText } from '@components/utils/texts';
 
 const defaultStyles = {
   container: {
@@ -29,7 +29,6 @@ const defaultStyles = {
   },
   textInputContainer: {
     backgroundColor: '#C9C9CE',
-    height: 44,
     borderTopColor: '#7e7e7e',
     borderBottomColor: '#b5b5b5',
     borderTopWidth: 1 / PixelRatio.get(),
@@ -38,15 +37,8 @@ const defaultStyles = {
   },
   textInput: {
     backgroundColor: '#FFFFFF',
-    height: 28,
-    borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 7.5,
-    marginLeft: 8,
-    marginRight: 8,
+    height: 60,
+    fontFamily: 'SFUIText-Regular',
     fontSize: 15,
     flex: 1,
   },
@@ -55,7 +47,6 @@ const defaultStyles = {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
-  powered: {},
   listView: {
     backgroundColor: Colors.background.mutedBlue,
   },
@@ -68,9 +59,7 @@ const defaultStyles = {
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#c8c7cc',
   },
-  description: {},
   loader: {
-    // flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     height: 20,
@@ -319,7 +308,7 @@ class GooglePlacesAutocomplete extends Component {
           onChangeText={this.onChangeText}
           {...textInputProps}
         />
-        <Text>{label}</Text>
+        <AppText size={13} color={Colors.text.gray} fontVariation="bold">{label}</AppText>
       </View>
     );
   }
@@ -344,7 +333,7 @@ class GooglePlacesAutocomplete extends Component {
       >
         <View style={defaultStyles.suggestion}>
           <Image source={LocationIcon} style={defaultStyles.locationIcon} />
-          <Text>From where I am now</Text>
+          <AppText>From where I am now</AppText>
           {currentLocationLoading && <Loading />}
         </View>
       </TouchableHighlight>

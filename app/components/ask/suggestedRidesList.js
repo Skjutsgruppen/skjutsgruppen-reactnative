@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, TouchableHighlight, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, TextInput, Image, TouchableHighlight, KeyboardAvoidingView } from 'react-native';
 import DataList from '@components/dataList';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
+import { AppText } from '@components/utils/texts';
 import { RoundedButton, Loading } from '@components/common';
 import SuggestedRide from '@components/ask/suggestedRide';
 import { submitSuggestion } from '@services/apollo/suggest';
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 100,
+    fontFamily: 'SFUIText-Regular',
     borderBottomWidth: 1,
     borderBottomColor: Colors.border.lightGray,
     marginHorizontal: 20,
@@ -108,7 +110,7 @@ class SuggestedRidesList extends Component {
 
     return (
       <View style={styles.centerWrapper}>
-        <Text style={{ marginBottom: 20 }}>No any suggestion found for the trip.</Text>
+        <AppText style={{ marginBottom: 20 }}>No any suggestion found for the trip.</AppText>
         <RoundedButton
           bgColor={Colors.background.pink}
           onPress={() => onSubmit(false)}
@@ -185,7 +187,7 @@ class SuggestedRidesList extends Component {
                 selectedId={this.state.selectedId}
               />
             )}
-            header={<Text style={styles.label}>SUGGEST A RIDE </Text>}
+            header={<AppText style={styles.label}>SUGGEST A RIDE </AppText>}
             shouldRefresh={false}
             fetchMoreOptions={{
               variables: { offset: search.rows.length },

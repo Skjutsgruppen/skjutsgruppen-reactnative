@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Wrapper, Container, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
@@ -7,9 +7,10 @@ import SectionLabel from '@components/add/sectionLabel';
 import { withNavigation } from 'react-navigation';
 import Trip from '@components/feed/card/trip';
 import Group from '@components/feed/card/group';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEED_TYPE_WANTED } from '@config/constant';
 import TabBar from '@components/common/tabBar';
-import {trans} from '@lang/i18n';
+import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -62,6 +63,9 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: Colors.background.mutedBlue,
     elevation: 15,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   button: {
     width: 200,
@@ -69,11 +73,7 @@ const styles = StyleSheet.create({
     marginVertical: 32,
   },
   link: {
-    color: Colors.text.blue,
-    textAlign: 'center',
     marginBottom: 32,
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
   },
 });
 
@@ -106,6 +106,7 @@ const Completed = ({
       <Container>
         <SectionLabel
           label={getTitle(isReturnedTrip, suggestion, group, isRecurring)}
+          color={detail.type === FEED_TYPE_WANTED ? Colors.text.blue : Colors.text.pink}
           style={{ marginTop: 30 }}
         />
         {
@@ -138,21 +139,27 @@ const Completed = ({
         }
         {
           Object.keys(suggestion).length > 0 &&
-          <Text
+          <AppText
+            centered
+            color={Colors.text.blue}
+            fontVariation="bold"
             style={styles.link}
             onPress={() => navigation.navigate('TripDetail', { trip: suggestion })}
           >
             Back to {suggestion.User.firstName}{"'"}s ride
-          </Text>
+          </AppText>
         }
         {
           Object.keys(group).length > 0 && isReturnedTrip &&
-          <Text
+          <AppText
+            centered
+            color={Colors.text.blue}
+            fontVariation="bold"
             style={styles.link}
             onPress={() => navigation.navigate('GroupDetail', { group, fetch: true })}
           >
             Back to {group.name}
-          </Text>
+          </AppText>
         }
         {
           Object.keys(group).length > 0 && !isReturnedTrip &&

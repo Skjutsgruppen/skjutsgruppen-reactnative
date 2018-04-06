@@ -3,44 +3,36 @@ import PropTypes from 'prop-types';
 import {
   Text,
   StyleSheet,
-  Platform,
 } from 'react-native';
-import Colors from '@theme/colors';
 
 const baseStyles = StyleSheet.create({
-  textAndroid: {
-    fontFamily: 'sfuiTextRegular',
-    fontSize: 16,
-  },
-  textIOS: {
+  text: {
+    fontFamily: 'SFUIText-Regular',
     fontSize: 16,
     backgroundColor: 'transparent',
   },
   semibold: {
-    fontFamily: 'sfuiTextSemibold',
+    fontFamily: 'SFUIText-SemiBold',
   },
   bold: {
-    fontFamily: 'sfuiTextBold',
+    fontFamily: 'SFUIText-Bold',
   },
   italic: {
-    fontFamily: 'sfuiTextRegularItalic',
+    fontFamily: 'SFUIText-RegularItalic',
   },
 });
 
-const AppText = ({ style, fontVariation, size, color, children, ...props }) => {
+const AppText = ({ style, fontVariation, size, color, centered, children, ...props }) => {
   let newStyle;
-  let fontStyle;
-  const extraStyle = { fontSize: size, color };
+  const fontStyle = fontVariation ? baseStyles[fontVariation] : {};
+  const fontSize = size ? { fontSize: size } : {};
+  const textColor = color ? { color } : {};
+  const textAlign = centered ? { textAlign: 'center' } : {};
 
-  if (Platform.OS === 'android') {
-    fontStyle = fontVariation ? baseStyles[fontVariation] : {};
-    if (Array.isArray(style)) {
-      newStyle = [baseStyles.textAndroid, fontStyle, ...style, extraStyle];
-    } else {
-      newStyle = [baseStyles.textAndroid, fontStyle, style, extraStyle];
-    }
-  } else if (Platform.OS === 'ios') {
-    newStyle = [baseStyles.textIOS, style];
+  if (Array.isArray(style)) {
+    newStyle = [baseStyles.text, fontStyle, ...style, fontSize, textColor, textAlign];
+  } else {
+    newStyle = [baseStyles.text, fontStyle, style, fontSize, textColor, textAlign];
   }
 
   return (
@@ -56,12 +48,14 @@ AppText.propTypes = {
   fontVariation: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
+  centered: PropTypes.bool,
 };
 
 AppText.defaultProps = {
   style: {},
   fontVariation: null,
-  size: 16,
-  color: Colors.text.black,
+  size: null,
+  color: null,
+  centered: false,
 };
 export default AppText;

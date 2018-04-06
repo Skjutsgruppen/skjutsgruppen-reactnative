@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Modal, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import Colors from '@theme/colors';
+import { View, Modal, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+
+import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -106,14 +108,14 @@ class Picker extends PureComponent {
         onPress={() => this.onSelect(key)}
         style={[styles.pickerItem, selected]}
       >
-        <Text
+        <AppText
+          size={14}
           numberOfLines={1}
           ellipsizeMode="middle"
           key={key}
-          style={styles.text}
         >
           {value}
-        </Text>
+        </AppText>
       </TouchableOpacity>
     );
   }
@@ -123,7 +125,7 @@ class Picker extends PureComponent {
       <View style={styles.wrapper}>
         {this.modal()}
         <TouchableOpacity style={{ backgroundColor: '#ccc', paddingLeft: 10, paddingTop: 10, height: 40, width: 60, marginTop: 15 }} onPress={this.showModal}>
-          <Text>{this.state.selected}</Text>
+          <AppText>{this.state.selected}</AppText>
         </TouchableOpacity>
       </View>
     );

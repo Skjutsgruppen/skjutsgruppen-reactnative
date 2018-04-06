@@ -3,11 +3,12 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import Gradients from '@theme/gradients';
+import Colors from '@theme/colors';
+import { Heading } from '@components/utils/texts';
 
 const cardHeight = 420;
 
@@ -36,11 +37,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  groupName: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
 });
 
 const GroupMap = ({ group, onMapPress, showOverlay }) => (
@@ -57,7 +53,7 @@ const GroupMap = ({ group, onMapPress, showOverlay }) => (
         colors={Gradients.transparentPink}
         style={styles.gradient}
       >
-        <Text style={styles.groupName}>{group.name}</Text>
+        <Heading color={Colors.text.white}>{group.name}</Heading>
       </LinearGradient>
     }
   </TouchableOpacity>

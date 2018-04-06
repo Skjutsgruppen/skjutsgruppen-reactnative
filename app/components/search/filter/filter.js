@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, Text } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -15,10 +16,6 @@ const styles = StyleSheet.create({
     marginRight: 6,
     marginBottom: 6,
   },
-  label: {
-    color: Colors.text.white,
-    fontSize: 12,
-  },
   active: {
     backgroundColor: Colors.background.blue,
   },
@@ -30,7 +27,7 @@ const Filter = ({ style, label, onPress, active }) => (
     underlayColor={Colors.background.lightGray}
     onPress={onPress}
   >
-    <Text style={styles.label}>{label}</Text>
+    <Text style={{ fontSize: 13, color: Colors.text.white }}>{label}</Text>
   </TouchableHighlight>
 );
 

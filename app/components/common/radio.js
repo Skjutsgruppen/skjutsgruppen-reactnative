@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -31,7 +32,7 @@ const Radio = ({ onPress, label, checked }) => (
     >
       <View style={[styles.radio, { backgroundColor: checked ? '#1db0ed' : '#ffffff' }]} />
     </TouchableWithoutFeedback>
-    <Text style={styles.label}>{label}</Text>
+    <AppText style={styles.label}>{label}</AppText>
   </View>
 );
 

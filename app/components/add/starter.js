@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
@@ -12,11 +12,12 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginBottom: '8%',
     marginHorizontal: 20,
-    elevation: 4,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    overflow: 'hidden',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    overflow: Platform.OS === 'ios' ? 'visible' : 'hidden',
   },
   block: {
     height: 124,

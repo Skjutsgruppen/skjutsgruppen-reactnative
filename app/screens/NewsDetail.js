@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, Image } from 'react-native';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -18,20 +19,6 @@ const styles = StyleSheet.create({
   detail: {
     paddingHorizontal: 24,
     paddingTop: 24,
-  },
-  username: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-    marginRight: 4,
-  },
-  text: {
-    lineHeight: 22,
-  },
-  lightText: {
-    color: Colors.text.darkGray,
-  },
-  date: {
-    marginVertical: 12,
   },
 });
 
@@ -51,13 +38,13 @@ const NewsDetail = ({ navigation }) => {
           {image}
         </View>
         <View style={styles.detail}>
-          <Text style={[styles.text, styles.lightText]}>
-            <Text style={styles.username}>
+          <AppText color={Colors.text.darkGray}>
+            <AppText color={Colors.text.blue} fontVariation="bold" style={{ marginRight: 4 }}>
               {trans('global.your_movement')}
-            </Text>
-          </Text>
-          <Text style={[styles.date, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>
-          <Text>{news.body}</Text>
+            </AppText>
+          </AppText>
+          <AppText color={Colors.text.darkGray} style={{ marginVertical: 12 }}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></AppText>
+          <AppText>{news.body}</AppText>
         </View>
       </ScrollView>
     </View>

@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, ViewPropTypes } from 'react-native';
+import { View, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import TouchableHighlight from '@components/touchableHighlight';
+import { Title } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -20,9 +21,6 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 16,
   },
 });
 
@@ -32,7 +30,7 @@ const RoundedButton = ({ children, style, onPress, bgColor, textColor }) => (
       style={[styles.button, { backgroundColor: bgColor }]}
       onPress={onPress}
     >
-      <Text style={[styles.text, { color: textColor }]}>{children}</Text>
+      <Title fontVariation="bold" centered style={[styles.text, { color: textColor }]}>{children}</Title>
     </TouchableHighlight>
   </View>
 );

@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Chevron from '@assets/icons/ic_chevron_white.png';
+import { Title } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   button: {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
 const Button = ({ label, icon, onPress, style }) => (
   <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
     {icon === 'back' && <Image source={Chevron} style={styles.backIcon} />}
-    <Text style={styles.buttonLabel}>{label}</Text>
+    <Title size={18} color={Colors.text.white} centered>{label}</Title>
     {icon === 'next' && <Image source={Chevron} style={styles.nextIcon} />}
   </TouchableOpacity>
 );

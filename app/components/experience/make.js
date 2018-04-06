@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 import Icon from '@assets/icons/ic_make_experience.png';
 
@@ -17,10 +18,6 @@ const styles = StyleSheet.create({
     width: 48,
     marginRight: 16,
   },
-  title: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
 });
 
 const MakeExperience = ({ handlePress }) => (
@@ -29,8 +26,8 @@ const MakeExperience = ({ handlePress }) => (
       <Image source={Icon} />
     </View>
     <View style={{ flex: 1 }}>
-      <Text style={styles.title}>Make an experience!</Text>
-      <Text>Click here to take a photo of you and other participants.</Text>
+      <AppText fontVariation="bold" color={Colors.text.blue}>Make an experience!</AppText>
+      <AppText>Click here to take a photo of you and other participants.</AppText>
     </View>
   </TouchableOpacity>
 );

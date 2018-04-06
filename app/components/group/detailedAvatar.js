@@ -4,12 +4,12 @@ import {
   Image,
   StyleSheet,
   Dimensions,
-  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import TouchableHighlight from '@components/touchableHighlight';
+import { AppText } from '@components/utils/texts';
 
 const imageSize = 48;
 const margin = 12;
@@ -26,8 +26,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 12,
-    color: Colors.text.blue,
     marginHorizontal: 16,
     marginTop: 16,
   },
@@ -58,10 +56,6 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: Colors.border.white,
   },
-  count: {
-    fontSize: 14,
-    color: Colors.text.white,
-  },
   loadingWrapper: {
     paddingVertical: 16,
     backgroundColor: Colors.background.fullWhite,
@@ -83,7 +77,9 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
     return (
       <View>
         <View style={styles.titleWrapper}>
-          {numberText.length > 0 && <Text style={styles.title}>{numberText}</Text>}
+          {numberText.length > 0 && (
+            <AppText size={12} color={Colors.text.blue} style={styles.title}>{numberText}</AppText>
+          )}
         </View>
         <TouchableHighlight
           onPress={() => onPress()}
@@ -121,7 +117,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
       >
         <View>
           <View style={styles.titleWrapper}>
-            {numberText.length > 0 && <Text style={styles.title}>{numberText}</Text>}
+            {numberText.length > 0 && <AppText style={styles.title}>{numberText}</AppText>}
           </View>
           <View style={styles.bublesWrapper}>
             <View style={[styles.wrapper, { width: warpperWidth + 12 }]}>
@@ -151,13 +147,13 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                       ]}
                       key={member.User.id}
                     >
-                      <Text style={styles.count}>
+                      <AppText size={14} color={Colors.text.blue}>
                         +{
                           (rows.length > maxImage)
                             ? (count - (maxImage - 1))
                             : (count - rows.length) + 1
                         }
-                      </Text>
+                      </AppText>
                     </View>
                   );
                 })

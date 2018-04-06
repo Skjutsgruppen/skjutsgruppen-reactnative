@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -11,14 +13,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.mutedBlue,
     marginBottom: 6,
   },
-  text: {
-    color: Colors.text.blue,
-  },
 });
 
 const StickySectionHeader = ({ label }) => (
   <View style={styles.wrapper}>
-    <Text style={styles.text}>{label}</Text>
+    <AppText color={Colors.text.blue}>{label}</AppText>
   </View>
 );
 

@@ -1,17 +1,13 @@
 import React, { PureComponent } from 'react';
-import { View, SectionList, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+
 import { Loading } from '@components/common';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
-import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  errorText: {
-    fontSize: 16,
-    lineHeight: 32,
-    color: Colors.text.gray,
-    textAlign: 'center',
-  },
   gap: {
     paddingVertical: 50,
   },
@@ -24,11 +20,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#f5f5f5',
-  },
-  loadMoreText: {
-    color: Colors.text.darkGray,
-    fontSize: 12,
-    textAlign: 'center',
   },
 });
 
@@ -79,7 +70,7 @@ class PortionList extends PureComponent {
 
     return (
       <TouchableOpacity onPress={() => data.refetch()}>
-        <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+        <AppText centered color={Colors.text.gray} style={{ marginVertical: 8 }}>{trans('global.tap_to_retry')}</AppText>
       </TouchableOpacity>
     );
   }
@@ -95,7 +86,7 @@ class PortionList extends PureComponent {
         onPress={() => data.fetchMore(fetchMoreOptions)}
         style={styles.loadMoreBtn}
       >
-        <Text style={styles.loadMoreText}>Load More...</Text>
+        <AppText size={12} centered color={Colors.text.darkGray}>Load More...</AppText>
       </TouchableOpacity>
     );
   }
@@ -128,14 +119,15 @@ class PortionList extends PureComponent {
     if (error && !loading) {
       footerView = (
         <View>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <AppText centered color={Colors.text.gray} style={{ marginVertical: 8 }}>{trans('global.oops_something_went_wrong')}</AppText>
           {this.reload()}
         </View>
       );
     } else if (count < 1 && !loading) {
       footerView = (
         <View>
-          <Text style={styles.errorText}>{noResultText}</Text>
+          <AppText centered color={Colors.text.gray} style={{ marginVertical: 8 }}>
+            {noResultText}</AppText>
         </View>
       );
     } else if (rows.length >= count || !infinityScroll) {

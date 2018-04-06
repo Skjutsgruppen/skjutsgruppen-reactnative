@@ -87,7 +87,9 @@ class List extends PureComponent {
             onPress={() => experiences.refetch()}
             underlayColor={Colors.background.lightGray}
           >
-            <AppText color={Colors.text.lightGray}>Retry</AppText>
+            <View>
+              <AppText color={Colors.text.lightGray}>Retry</AppText>
+            </View>
           </TouchableHighlight>
         </View>
       );

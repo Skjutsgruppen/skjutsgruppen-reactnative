@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
   Dimensions,
@@ -11,6 +10,7 @@ import Date from '@components/date';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { withNavigation } from 'react-navigation';
+import { AppText } from '@components/utils/texts';
 
 const imageSize = 48;
 const margin = 12;
@@ -18,10 +18,6 @@ const margin = 12;
 const styles = StyleSheet.create({
   block: {
     paddingVertical: 12,
-  },
-  name: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
   wrapper: {
     flexDirection: 'row',
@@ -52,13 +48,6 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: Colors.border.white,
   },
-  count: {
-    fontSize: 14,
-    color: Colors.text.white,
-  },
-  deleted: {
-    fontWeight: 'bold',
-  },
 });
 
 
@@ -80,23 +69,24 @@ const Info = ({ loading, experience, navigation }) => {
 
       if (row.User.deleted) {
         deletedParticipantCount += 1;
-        return (<Text key={row.User.id}>
-          <Text style={styles.deleted}>
+        return (<AppText key={row.User.id}>
+          <AppText fontVariation="bold">
             {deletedParticipantCount <= 1 ? 'Deleted Participant' : `${deletedParticipantCount} Deleted Participants`}
-          </Text>
+          </AppText>
           {separator}
-        </Text>);
+        </AppText>);
       }
 
-      return (<Text key={row.User.id}>
-        <Text
+      return (<AppText key={row.User.id}>
+        <AppText
+          color={Colors.text.blue}
+          fontVariation="bold"
           onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
-          style={styles.name}
         >
           {row.User.firstName}
-        </Text>
+        </AppText>
         {separator}
-      </Text>);
+      </AppText>);
     });
   };
 
@@ -107,19 +97,19 @@ const Info = ({ loading, experience, navigation }) => {
     }
 
     return (
-      <Text onPress={() => {
+      <AppText onPress={() => {
         if (experience.Trip.isDeleted) return null;
         return navigation.navigate('TripDetail', { trip: experience.Trip });
       }}
       >
-        <Text>
+        <AppText>
           went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
           . {experience.Trip.isDeleted
-            ? <Text style={styles.deleted}>This ride has been deleted</Text>
-            : <Text style={styles.name}>See their trip here</Text>
+            ? <AppText fontVariation="bold">This ride has been deleted</AppText>
+            : <AppText color={Colors.text.blue} fontVariation="bold">See their trip here</AppText>
           }
-        </Text>
-      </Text>
+        </AppText>
+      </AppText>
     );
   };
 
@@ -166,9 +156,9 @@ const Info = ({ loading, experience, navigation }) => {
                     { zIndex },
                   ]}
                 >
-                  <Text style={styles.count}>
+                  <AppText size={14} color={Colors.text.white}>
                     +{(participants.length + 1) - maxImage}
-                  </Text>
+                  </AppText>
                 </View>
               );
             })
@@ -186,15 +176,15 @@ const Info = ({ loading, experience, navigation }) => {
       </View>
 
       <View style={styles.block}>
-        <Text>
+        <AppText>
           {renderParticipants()}
           {renderTripInfo()}
-        </Text>
+        </AppText>
       </View>
       <View style={styles.block}>
-        <Text>
+        <AppText>
           {experience.description}
-        </Text>
+        </AppText>
       </View>
 
     </View>

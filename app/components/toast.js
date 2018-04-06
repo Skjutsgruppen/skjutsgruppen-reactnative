@@ -1,6 +1,8 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   toastSuccess: {
@@ -18,11 +20,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     backgroundColor: 'rgba(173, 97, 43, 0.6)',
   },
-  msg: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-  },
 });
 
 const Toast = ({ message, type }) => {
@@ -31,12 +28,15 @@ const Toast = ({ message, type }) => {
   }
 
   if (type === 'error') {
-    return (<View style={styles.toastError}><Text style={styles.msg}>{message}</Text></View>);
+    return (<View style={styles.toastError}>
+      <AppText centered color={Colors.text.white}>{message}</AppText></View>);
   } else if (type === 'warning') {
-    return (<View style={styles.toastWarning}><Text style={styles.msg}>{message}</Text></View>);
+    return (<View style={styles.toastWarning}>
+      <AppText centered color={Colors.text.white}>{message}</AppText></View>);
   }
 
-  return (<View style={styles.toastSuccess}><Text style={styles.msg}>{message}</Text></View>);
+  return (<View style={styles.toastSuccess}>
+    <AppText centered color={Colors.text.white}>{message}</AppText></View>);
 };
 
 Toast.propTypes = {

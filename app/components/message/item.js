@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { withReadNotification, withRejectGroupInvitation, withAcceptGroupRequest } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -36,33 +36,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  bold: {
-    fontWeight: '500',
-  },
-  lightText: {
-    color: Colors.text.gray,
-  },
-  textWrap: {
-    flex: 1,
-    flexWrap: 'wrap',
-  },
-  content: {
-    flex: 1,
-    backgroundColor: Colors.background.fullWhite,
-  },
   textContent: {
     flex: 1,
     marginRight: 12,
-  },
-  section: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
-  },
-  sectionTitle: {
-    fontSize: 12,
-    marginTop: 16,
-    color: Colors.text.blue,
-    marginHorizontal: 24,
   },
   list: {
     flexDirection: 'row',
@@ -104,10 +80,6 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48,
     resizeMode: 'cover',
-  },
-  time: {
-    left: 'auto',
-    paddingLeft: 10,
   },
   actions: {
     flexDirection: 'row',
@@ -654,7 +626,7 @@ class Item extends PureComponent {
             style={styles.requestResultIcon}
           />
           <View>
-            <Text style={styles.requestResultLabel}>Rejected</Text>
+            <AppText color={Colors.text.gray} style={{ marginLeft: 2 }}>Rejected</AppText>
           </View>
         </View>
       );

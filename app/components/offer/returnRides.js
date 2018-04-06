@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 import { FEED_FILTER_WANTED } from '@config/constant';
 import Date from '@components/date';
 
@@ -12,11 +13,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 24,
-  },
-  title: {
-    color: Colors.text.blue,
-    marginBottom: 16,
-    fontWeight: 'bold',
   },
   card: {
     flexDirection: 'row',
@@ -59,7 +55,7 @@ const styles = StyleSheet.create({
 
 const ReturnRides = ({ avatar, trips, type, onPress }) => (
   <View style={styles.returnRidesWrapper}>
-    <Text style={styles.title}>Return rides:</Text>
+    <AppText fontVariation="bold" color={Colors.text.blue} style={{ marginBottom: 16 }}>Return rides:</AppText>
     {
       trips.map(trip => (
         <View key={trip.id} style={styles.card}>
@@ -73,7 +69,7 @@ const ReturnRides = ({ avatar, trips, type, onPress }) => (
             />
           </View>
           <TouchableOpacity style={styles.content} onPress={() => onPress(trip.id)}>
-            <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+            <AppText>{trip.TripStart.name} - {trip.TripEnd.name}</AppText>
             <Date format="YYYY-MM-DD HH:mm">{trip.date}</Date>
           </TouchableOpacity>
         </View>

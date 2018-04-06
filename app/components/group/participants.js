@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import { Loading } from '@components/common';
 import { withGroupMembers } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const ParticipantsInModal = withGroupMembers(ParticipantsModal);
 
@@ -50,10 +50,6 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: Colors.border.white,
   },
-  count: {
-    fontSize: 14,
-    color: Colors.text.white,
-  },
 });
 
 class Participants extends Component {
@@ -83,9 +79,9 @@ class Participants extends Component {
 
     return (
       <View style={{ backgroundColor: '#fff', justifyContent: 'center' }}>
-        <Text style={{ color: Colors.text.blue, fontSize: 12 }}>
+        <AppText color={Colors.text.blue} size={12}>
           {groupMembers.count} {trans('detail.PARTICIPANTS')}
-        </Text>
+        </AppText>
       </View>);
   }
 
@@ -188,13 +184,13 @@ class Participants extends Component {
                       ]}
                       key={member.User.id}
                     >
-                      <Text style={styles.count}>
+                      <AppText size={14} color={Colors.text.white}>
                         +{
                           (rows.length > maxImage)
                             ? (count - (maxImage - 1))
                             : (count - rows.length) + 1
                         }
-                      </Text>
+                      </AppText>
                     </View>
                   );
                 })
