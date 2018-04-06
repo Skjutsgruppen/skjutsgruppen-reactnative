@@ -313,14 +313,12 @@ class EditGroup extends Component {
   }
 
   deleteGroup = () => {
-    const { navigation } = this.props;
     const { updatedGroup: { id } } = this.state;
     this.setState({ loading: true });
 
     this.props.deleteGroup({ id })
       .then(() => {
         this.setState({ confirmModal: false, loading: false, error: false });
-        navigation.navigate('Feed');
       })
       .catch(() => this.setState({ confirmModal: true, loading: false, error: true }));
   }
@@ -549,12 +547,12 @@ class EditGroup extends Component {
     </View >
   );
 
-  render() {
+  renderEdit = () => {
     const { uploadedImage, updatedGroup, errorMsg } = this.state;
     const image = uploadedImage || { uri: updatedGroup.photo };
 
     return (
-      <Wrapper bgColor={Colors.background.fullWhite}>
+      <View style={{ flex: 1 }}>
         <ToolBar title="Change" />
         <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
@@ -625,6 +623,16 @@ class EditGroup extends Component {
           {this.renderModal()}
           {this.renderConfirmModal()}
         </ScrollView>
+      </View>
+    );
+  }
+
+  render() {
+    const { updatedGroup } = this.state;
+
+    return (
+      <Wrapper bgColor={Colors.background.fullWhite}>
+        {!updatedGroup.isDeleted && this.renderEdit()}
       </Wrapper>
     );
   }
@@ -632,20 +640,20 @@ class EditGroup extends Component {
 
 EditGroup.propTypes = {
   group: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    type: PropTypes.string,
     photo: PropTypes.string,
     mapPhoto: PropTypes.string,
     Enablers: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        avatar: PropTypes.string.isRequired,
-      }).isRequired,
-    ).isRequired,
-    totalParticipants: PropTypes.number.isRequired,
-    outreach: PropTypes.string.isRequired,
+        id: PropTypes.number,
+        avatar: PropTypes.string,
+      }),
+    ),
+    totalParticipants: PropTypes.number,
+    outreach: PropTypes.string,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,

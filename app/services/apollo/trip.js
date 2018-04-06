@@ -6,136 +6,141 @@ import { updateFeedCount } from '@services/apollo/dataSync';
 const FEED_SUBSCRIPTION = gql`
 subscription{
   feed {
-    id
-    feedable
-    updatedAt
-    ... on GroupFeed {
-      Group {
-        id
-        name
-        description
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        outreach
-        type
-        photo
-        mapPhoto
-        TripStart {
-          name 
-          coordinates 
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops {
-          name 
-          coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
-        membershipStatus 
-        totalParticipants
-        isAdmin
-        Enablers {
-          id
-          firstName
-          avatar
-        }
-      }
-    }
-    ... on TripFeed {
-      Trip {
-        id 
-        type 
-        description 
-        seats 
-        User {
-          id 
-          firstName 
-          avatar 
-          relation {
-            path{
-              id
-              firstName
-              avatar
-            }
-            areFriends
-          }
-        } 
-        TripStart {
-          name 
-          coordinates
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
-        mapPhoto
-        totalFeeds
-        isParticipant
-        flexibilityInfo {
-          duration
-          unit
-          type
-        }
+    Feed {
+      id
+      feedable
+      updatedAt
+      ... on GroupFeed {
         Group {
           id
           name
-        }
-        linkedTrip {
-          id 
           description
-        }
-      }
-    }
-    ... on NewsFeed { 
-      News {
-        id 
-        title 
-        body 
-        links 
-        photo 
-        visibleFrom 
-        visibleUntil 
-        updatedAt
-        totalComments
-      }
-    }
-    ... on ExperienceFeed{
-      Experience{
-        id
-        createdAt
-        description
-        photoUrl
-        publishedStatus
-        userStatus
-        User {
-          id 
-          firstName 
-          avatar 
-        } 
-        Participants{
           User {
+            id 
+            firstName 
+            avatar 
+          } 
+          outreach
+          type
+          photo
+          mapPhoto
+          TripStart {
+            name 
+            coordinates 
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops {
+            name 
+            coordinates
+          } 
+          country 
+          county 
+          municipality 
+          locality 
+          membershipStatus 
+          totalParticipants
+          isAdmin
+          Enablers {
             id
-            avatar
             firstName
+            avatar
           }
-          status
+          isDeleted
+        }
+      }
+      ... on TripFeed {
+        Trip {
+          id 
+          type 
+          description 
+          seats 
+          User {
+            id 
+            firstName 
+            avatar 
+            relation {
+              path{
+                id
+                firstName
+                avatar
+              }
+              areFriends
+            }
+          } 
+          TripStart {
+            name 
+            coordinates
+          } 
+          TripEnd {
+            name 
+            coordinates
+          } 
+          Stops { 
+            name 
+            coordinates 
+          } 
+          date 
+          photo 
+          mapPhoto
+          totalFeeds
+          isParticipant
+          flexibilityInfo {
+            duration
+            unit
+            type
+          }
+          Group {
+            id
+            name
+          }
+          linkedTrip {
+            id 
+            description
+          }
+          isDeleted
+        }
+      }
+      ... on NewsFeed { 
+        News {
+          id 
+          title 
+          body 
+          links 
+          photo 
+          visibleFrom 
+          visibleUntil 
+          updatedAt
+          totalComments
+        }
+      }
+      ... on ExperienceFeed{
+        Experience{
+          id
+          createdAt
+          description
+          photoUrl
+          publishedStatus
+          userStatus
+          User {
+            id 
+            firstName 
+            avatar 
+          } 
+          Participants{
+            User {
+              id
+              avatar
+              firstName
+            }
+            status
+          }
         }
       }
     }
+    remove
   }
 }
 `;
@@ -186,6 +191,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName
           avatar
         }
+        isDeleted
       }
     }
     ... on TripFeed { 
@@ -237,6 +243,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id
           description
         }
+        isDeleted
       }
     }
     ... on NewsFeed { 
@@ -323,14 +330,24 @@ export const withFeed = graphql(GET_FEED_QUERY, {
           count = 0;
           let repeated = false;
 
-          const newFeed = subscriptionData.data.feed;
-          const found = prev.getFeed.rows.filter(row => row.id === newFeed.id);
+          const { Feed, remove } = subscriptionData.data.feed;
+
+          if (!Feed) {
+            return prev;
+          }
+
+          const found = prev.getFeed.rows.filter(row => row.id === Feed.id);
           repeated = found.length > 0;
           let prevFeeds = prev.getFeed;
 
           if (!repeated) {
-            rows = [newFeed].concat(prevFeeds.rows);
+            rows = [Feed].concat(prevFeeds.rows);
             prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count + 1 } };
+          }
+
+          if (remove) {
+            rows = prev.getFeed.rows.filter(row => row.id !== Feed.id);
+            prevFeeds = { ...prevFeeds, ...{ rows, count: prevFeeds.count - 1 } };
           }
 
           return { getFeed: prevFeeds };
@@ -490,9 +507,113 @@ export const withParticipants = graphql(TRIP_PARTICIPANTS_QUERY, {
   },
 });
 
+const TRIP_UPDATED_SUBSCRIPTION = gql`
+  subscription tripUpdated ($id: Int!) {
+    tripUpdated(tripId: $id) {
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id 
+        firstName 
+        avatar 
+        relation {
+            path{
+            id
+            firstName
+            avatar
+          }
+          areFriends
+        }
+      } 
+      TripStart {
+        name 
+        coordinates
+        countryCode
+      } 
+      TripEnd {
+        name 
+        coordinates
+        countryCode
+      } 
+      Stops { 
+        name 
+        coordinates 
+        countryCode
+      } 
+      date 
+      photo 
+      mapPhoto
+      totalFeeds
+      isParticipant
+      duration
+      experienceStatus
+      isAdmin    
+      muted
+      unreadNotificationCount
+      flexibilityInfo {
+        duration
+        unit
+        type
+      }
+      Participants {
+        count
+      }
+      ReturnTrip {
+        id
+        date
+        type
+        TripStart {
+          name
+        }
+        TripEnd {
+          name
+        }
+        Stops {
+          name
+        }
+        User {
+          id 
+          firstName 
+          avatar 
+        }
+      }
+      Recurring {
+        id
+        date
+        type
+        TripStart {
+          name
+        }
+        TripEnd {
+          name
+        }
+        Stops {
+          name
+        }
+        User {
+          id 
+          firstName 
+          avatar 
+        }
+      }
+      Group {
+        id
+        name
+      }
+      linkedTrip {
+        id
+        description
+      }
+      isDeleted
+    }
+  }
+`;
+
 export const FIND_TRIP_QUERY = gql`
-query trip($id: Int!){
-  trip(id: $id){
+query trip($id: Int!) {
+  trip(id: $id) {
     id 
     type 
     description 
@@ -589,6 +710,7 @@ query trip($id: Int!){
       id
       description
     }
+    isDeleted
   }
 }
 `;
@@ -598,9 +720,28 @@ export const withTrip = graphql(FIND_TRIP_QUERY, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { loading, trip = {}, refetch, networkStatus, error } }) => ({
-    loading, trip, refetch, networkStatus, error,
-  }),
+  props: ({ data: { loading, trip = {}, refetch, networkStatus, error, subscribeToMore } }) => (
+    {
+      loading,
+      trip,
+      refetch,
+      networkStatus,
+      error,
+      subscribeToDeletedTrip: id => subscribeToMore({
+        document: TRIP_UPDATED_SUBSCRIPTION,
+        variables: { id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          const updatedTrip = subscriptionData.data.tripUpdated;
+
+          return { trip: updatedTrip };
+        },
+      }),
+    }
+  ),
 });
 
 const TRIPS_SUBSCRIPTION_QUERY = gql`
@@ -1101,18 +1242,6 @@ const DELETE_TRIP_QUERY = gql`
 export const withDeleteTrip = graphql(DELETE_TRIP_QUERY, {
   props: ({ mutate }) => (
     {
-      deleteTrip: ({ id }) => mutate({
-        variables: { id },
-        refetchQueries: [
-          {
-            query: GET_FEED_QUERY,
-            variables: {
-              offset: 0,
-              limit: PER_FETCH_LIMIT,
-              filter: { type: FEED_FILTER_EVERYTHING },
-            },
-          },
-        ],
-      }),
+      deleteTrip: ({ id }) => mutate({ variables: { id } }),
     }),
 });

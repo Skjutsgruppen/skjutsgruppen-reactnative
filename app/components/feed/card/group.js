@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
 const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
   let profileImage = null;
 
+  if (group.isDeleted) {
+    return null;
+  }
+
   if (!min) {
     if (group.User.avatar) {
       profileImage = (<Image source={{ uri: group.User.avatar }} style={styles.profilePic} />);
@@ -167,17 +171,17 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
 Group.propTypes = {
   group: PropTypes.shape({
     photo: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    User: PropTypes.object.isRequired,
-    outreach: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    User: PropTypes.object,
+    outreach: PropTypes.string,
     country: PropTypes.string,
     county: PropTypes.string,
     municipality: PropTypes.string,
     locality: PropTypes.string,
-    TripStart: PropTypes.object.isRequired,
-    TripEnd: PropTypes.object.isRequired,
-    description: PropTypes.string.isRequired,
+    TripStart: PropTypes.object,
+    TripEnd: PropTypes.object,
+    description: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,

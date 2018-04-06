@@ -49,6 +49,7 @@ class AddEnabler extends Component {
       error: '',
       isSearchModalOpen: false,
       unfriend: false,
+      retry: false,
     };
   }
 
@@ -74,10 +75,10 @@ class AddEnabler extends Component {
 
     addGroupEnablers({ ids: participants.map(participant => participant.id), groupId: id })
       .then(() => {
-        this.setState({ confirmModalVisibility: false, loading: false, error: false });
+        this.setState({ confirmModalVisibility: false });
         navigation.goBack();
       })
-      .catch(() => this.setState({ confirmModalVisibility: true, loading: false, error: true }));
+      .catch(() => this.setState({ confirmModalVisibility: true, loading: false, retry: true }));
   }
 
   onPress = (id) => {
@@ -90,10 +91,10 @@ class AddEnabler extends Component {
       if (this.state.participants.length < 1) {
         this.setState({ error: getToast(['SELECT_ONE_USER']) });
       } else {
-        this.setState({ confirmModalVisibility: true, error: '' });
+        this.setState({ confirmModalVisibility: true, retry: '' });
       }
     } else {
-      this.setState({ confirmModalVisibility: false, error: '' });
+      this.setState({ confirmModalVisibility: false, retry: '' });
     }
   }
 
@@ -115,7 +116,7 @@ class AddEnabler extends Component {
   );
 
   renderModal() {
-    const { confirmModalVisibility, loading, error, participants } = this.state;
+    const { confirmModalVisibility, loading, retry, participants } = this.state;
     let separator = '';
 
     const participantsName = participants.map((participant, index) => {
@@ -148,7 +149,7 @@ class AddEnabler extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error !== '' ? 'Retry' : 'Yes'}
+        confirmLabel={retry !== '' ? 'Retry' : 'Yes'}
         denyLabel="No"
         onConfirm={() => this.onAddEnabler()}
         onDeny={() => this.setConfirmModalVisibility(false)}
