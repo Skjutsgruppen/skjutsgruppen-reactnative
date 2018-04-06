@@ -93,6 +93,10 @@ const styles = StyleSheet.create({
 });
 
 const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring }) => {
+  if (trip.isDeleted) {
+    return null;
+  }
+
   let profileImage = null;
   if (trip.User.avatar) {
     profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
@@ -119,7 +123,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
               imageURI={trip.photo ? trip.photo : trip.mapPhoto}
               height={cardHeight * 0.48}
             />
-            <TripTypePill color={tripColor} label={tripLabel} />
+            {trip.type && <TripTypePill color={tripColor} label={tripLabel} />}
             <View style={styles.detail}>
               <View>
                 <AppText style={[styles.text]}>

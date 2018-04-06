@@ -93,6 +93,10 @@ class NoEnabler extends Component {
   render() {
     const { group, navigation } = this.props;
 
+    if (group.isDeleted) {
+      return null;
+    }
+
     return (
       <Wrapper bgColor={Colors.background.darkGray}>
         <View style={styles.header}>

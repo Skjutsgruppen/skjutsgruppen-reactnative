@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
+import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
 import { withGroup } from '@services/apollo/group';
 import NoEnabler from '@components/group/enablers/noEnabler';
-import { Loading } from '@components/common';
+import { Loading, DeletedModal } from '@components/common';
 
 class GroupDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ group: {}, refetch: null, fetch: false });
+    this.state = ({ group: {}, refetch: null, fetch: false, deletedModal: false });
   }
 
   componentWillMount() {
@@ -21,6 +22,10 @@ class GroupDetail extends Component {
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
+    if (!loading && group && group.isDeleted) {
+      this.setState({ deletedModal: true });
+    }
+
     if (!loading && group.id) {
       this.setState({ group, loading, refetch, fetch: false });
     }
@@ -45,13 +50,33 @@ class GroupDetail extends Component {
     return false;
   }
 
-  render() {
-    const { group, fetch } = this.state;
+  renderDeletedModal = () => {
+    const { deletedModal } = this.state;
+    const { navigation } = this.props;
+
+    const message = (
+      <Text>
+        This group has been deleted.
+      </Text>
+    );
+
+    return (
+      <DeletedModal
+        visible={deletedModal}
+        onRequestClose={() => this.setState({ deletedModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ deletedModal: false }, () => navigation.navigate('Feed'))}
+      />
+    );
+  }
+
+  renderGroup = () => {
+    const { group } = this.state;
     const { navigation } = this.props;
     const { notifier, notificationMessage } = navigation.state.params;
 
-    if (fetch) {
-      return <Loading />;
+    if (group.isDeleted) {
+      return null;
     }
 
     if (this.isMember()) {
@@ -73,6 +98,21 @@ class GroupDetail extends Component {
         refresh={this.refresh}
         group={group}
       />);
+  }
+
+  render() {
+    const { fetch, group } = this.state;
+
+    if (fetch) {
+      return <Loading />;
+    }
+
+    return (
+      <View style={{ flex: 1 }}>
+        {!group.isDeleted && this.renderGroup()}
+        {this.renderDeletedModal()}
+      </View>
+    );
   }
 }
 

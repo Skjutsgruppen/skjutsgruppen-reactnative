@@ -129,7 +129,9 @@ class Share extends Component {
       friends.rows.forEach(friend => friendsList.push(friend));
     }
 
-    if (offeredUser) {
+    console.log(this.props);
+
+    if (offeredUser && Object.keys(offeredUser).length > 0) {
       this.setState({ selectedFriends: [offeredUser.id] });
     }
 
@@ -145,15 +147,12 @@ class Share extends Component {
   }
 
   componentWillReceiveProps({ contacts }) {
-    const contactsList = [];
     if (contacts && !contacts.loading) {
-      contacts.rows.forEach((contact) => {
-        contactsList.push({
-          id: contact.phoneNumber,
-          firstName: contact.name,
-          lastName: '',
-        });
-      });
+      const contactsList = contacts.rows.map(contact => ({
+        id: contact.phoneNumber,
+        firstName: contact.name,
+        lastName: '',
+      }));
       this.setState({ contactsList });
     }
   }
@@ -281,12 +280,12 @@ class Share extends Component {
 
   hasFacebook() {
     const { user } = this.props;
-    return typeof user.fbId === 'string' && user.fbId.length > 0;
+    return user.fbId && typeof user.fbId === 'string' && user.fbId.length > 0;
   }
 
   hasTwitter() {
     const { user } = this.props;
-    return typeof user.twitterId === 'string' && user.fbId.length > 0;
+    return user.twitterId && typeof user.twitterId === 'string' && user.fbId.length > 0;
   }
 
   loadMore = (onPress) => {
@@ -380,7 +379,7 @@ class Share extends Component {
     }
 
     return (<View style={styles.listWrapper}>
-      {Object.keys(offeredUser).length > 0 &&
+      {offeredUser && Object.keys(offeredUser).length > 0 &&
         <ShareItem
           readOnly
           imageSource={{ uri: offeredUser.avatar }}
