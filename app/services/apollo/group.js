@@ -371,6 +371,7 @@ export const GROUPS_SUBSCRIPTION = gql`
       countyId
       countryCode
       hasCreatorLeft
+      isDeleted
     }
   }
 `;
@@ -378,53 +379,54 @@ export const GROUPS_SUBSCRIPTION = gql`
 export const FIND_GROUP_QUERY = gql`
 query group($id: Int!){
   group(id: $id){
-      id
-      name
-      description
-      User {
-        id 
-        firstName 
-        avatar 
-      } 
-      outreach
-      type
-      photo
-      mapPhoto
-      areaCoordinates
-      TripStart {
-        name 
-        countryCode
-        coordinates 
-      } 
-      TripEnd {
-        name
-        countryCode 
-        coordinates
-      } 
-      Stops {
-        name
-        countryCode 
-        coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
-      membershipStatus
-      totalParticipants
-      isAdmin
-      muted
-      unreadNotificationCount
-      Enablers {
-        id
-        firstName
-        avatar
-      }
-      municipalityId
-      localityId
-      countyId
+    id
+    name
+    description
+    User {
+      id 
+      firstName 
+      avatar 
+    } 
+    outreach
+    type
+    photo
+    mapPhoto
+    areaCoordinates
+    TripStart {
+      name 
       countryCode
-      hasCreatorLeft
+      coordinates 
+    } 
+    TripEnd {
+      name
+      countryCode 
+      coordinates
+    } 
+    Stops {
+      name
+      countryCode 
+      coordinates
+    } 
+    country 
+    county 
+    municipality 
+    locality 
+    membershipStatus
+    totalParticipants
+    isAdmin
+    muted
+    unreadNotificationCount
+    Enablers {
+      id
+      firstName
+      avatar
+    }
+    municipalityId
+    localityId
+    countyId
+    countryCode
+    hasCreatorLeft
+    isDeleted
   }
 }
 `;
