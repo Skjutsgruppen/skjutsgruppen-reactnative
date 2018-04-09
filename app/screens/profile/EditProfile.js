@@ -205,14 +205,14 @@ class EditProfile extends Component {
     }
   }
 
-  onLogin = async (fb) => {
-    const { socialConnect, setUser } = this.props;
+  onConnectFB = async (fb) => {
+    const { socialConnect, setUser, user } = this.props;
     if (!fb.hasID) {
       try {
         this.setState({ loading: true });
         const response = await socialConnect({
           id: fb.fbUser.profile.id,
-          email: fb.fbUser.profile.email,
+          email: user.email,
           token: fb.fbUser.token,
           type: 'facebook',
         });
@@ -229,14 +229,14 @@ class EditProfile extends Component {
   }
 
   onConnectTwitter = async (twitter) => {
-    const { socialConnect, setUser } = this.props;
+    const { socialConnect, setUser, user } = this.props;
 
     if (!twitter.hasID) {
       try {
         this.setState({ loading: true });
         const response = await socialConnect({
           id: twitter.twitterUser.auth.userID,
-          email: twitter.twitterUser.profile.email,
+          email: user.email,
           token: twitter.twitterUser.auth.authToken,
           secret: twitter.twitterUser.auth.authTokenSecret,
           type: 'twitter',
@@ -478,7 +478,7 @@ class EditProfile extends Component {
       );
     }
 
-    return (<Connect buttonType="link" onLogin={this.onLogin} />);
+    return (<Connect buttonType="link" onLogin={this.onConnectFB} />);
   }
 
   renderTwitterConnect = () => {
