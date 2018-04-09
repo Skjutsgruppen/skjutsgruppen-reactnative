@@ -129,8 +129,6 @@ class Share extends Component {
       friends.rows.forEach(friend => friendsList.push(friend));
     }
 
-    console.log(this.props);
-
     if (offeredUser && Object.keys(offeredUser).length > 0) {
       this.setState({ selectedFriends: [offeredUser.id] });
     }
@@ -280,12 +278,14 @@ class Share extends Component {
 
   hasFacebook() {
     const { user } = this.props;
+
     return user.fbId && typeof user.fbId === 'string' && user.fbId.length > 0;
   }
 
   hasTwitter() {
     const { user } = this.props;
-    return user.twitterId && typeof user.twitterId === 'string' && user.fbId.length > 0;
+
+    return user.twitterId && typeof user.twitterId === 'string' && user.twitterId.length > 0;
   }
 
   loadMore = (onPress) => {
