@@ -386,7 +386,7 @@ class Offer extends Component {
       time: utcTime,
       flexibilityInfo: date.flexibilityInfo,
       seats: seat,
-      share,
+      share: { social: share.social, friends: share.friends, groups: share.groups },
       type: FEED_TYPE_OFFER,
       groupId,
       linkedTripId: tripId,
@@ -394,7 +394,7 @@ class Offer extends Component {
 
     try {
       this.props.createTrip(tripData).then((res) => {
-        if (share.social.indexOf('copy_to_clip') > -1) {
+        if (share.clipboard.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
 
