@@ -86,14 +86,15 @@ class Message extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: 'Message',
-    tabBarIcon: ({ focused }) => (
-      <View>
-        <Image source={focused ? MessageIconActive : MessageIcon} />
-        <View style={styles.indicator}>
-          <Text style={styles.newMessageCount}>+10</Text>
-        </View>
-      </View>
-    ),
+    tabBarIcon: ({ focused }) => <Image source={focused ? MessageIconActive : MessageIcon} />,
+    // tabBarIcon: ({ focused }) => (
+    //   <View>
+    //     <Image source={focused ? MessageIconActive : MessageIcon} />
+    //     <View style={styles.indicator}>
+    //       <Text style={styles.newMessageCount}>+10</Text>
+    //     </View>
+    //   </View>
+    // ),
     tabBarOnPress: ({ scene, jumpToIndex }) => {
       if (scene.focused) {
         const navigationInRoute = scene.route;

@@ -272,7 +272,7 @@ class JoinGroup extends Component {
           </Text>
           <Text style={styles.text}>
             {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-            {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
+            {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name || group.direction} - ${group.TripEnd.name || group.direction}`}
           </Text>
           {
             group.Stops && group.Stops.length > 0 &&

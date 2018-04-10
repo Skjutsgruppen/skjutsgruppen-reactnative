@@ -216,6 +216,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
+
 class TripDetail extends Component {
   constructor(props) {
     super(props);
@@ -329,6 +331,7 @@ class TripDetail extends Component {
     const { navigation } = this.props;
     const { trip } = this.state;
     navigation.navigate('Route', { info: trip });
+    this.showActionModal(false);
   }
 
   onCloseNotification = () => {
@@ -689,7 +692,17 @@ class TripDetail extends Component {
           }
           {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
         </Text>
-        <Text style={styles.fromTo}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+        <Text style={styles.fromTo}>
+          {
+            trip.TripStart.name ?
+              trip.TripStart.name :
+              prettify(trip.direction)
+          } - {
+            trip.TripEnd.name ?
+              trip.TripEnd.name :
+              prettify(trip.direction)
+          }
+        </Text>
         <Text style={[styles.date, styles.lightText]}>
           <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
           {
@@ -765,7 +778,7 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <ModalAction label={trans('trip.share_your_live_location')} onPress={() => { }} />
+        <ModalAction label={trans('trip.share_your_live_location')} onPress={this.onMapPress} />
         {
           trip.muted ?
             (

@@ -230,12 +230,18 @@ class Ask extends Component {
   };
 
   onRouteNext = (route) => {
-    if (route.start.coordinates.length === 0) {
-      this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
-    } else if (route.end.coordinates.length === 0) {
-      this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
+    // if (route.start.coordinates.length === 0) {
+    //   this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
+    // } else if (route.end.coordinates.length === 0) {
+    //   this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
+    if (route.start.coordinates.length === 0 && route.end.coordinates.length === 0) {
+      this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
     } else {
-      this.setState({ route, activeStep: 3, error: '' }, this.scrollToTop);
+      this.setState({
+        route: { ...route, direction: route.directionFrom || route.directionTo },
+        activeStep: 3,
+        error: '',
+      }, this.scrollToTop);
     }
   };
 
@@ -318,6 +324,7 @@ class Ask extends Component {
       share: { social: share.social, friends: share.friends, groups: share.groups },
       type: FEED_TYPE_WANTED,
       groupId,
+      direction: route.direction,
     };
 
     try {

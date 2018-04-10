@@ -9,10 +9,13 @@ const SMS_NUMBER = Config.SMS_NUMBER;
 
 const getDate = date => Moment.utc(date).tz(getTimezone());
 
+const UcFirst = str => (str ? (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()) : '');
+
 export {
   getDate,
   API_URL,
   GOOGLE_MAP_API_KEY,
   WS_API_URL,
   SMS_NUMBER,
+  UcFirst,
 };

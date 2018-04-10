@@ -117,7 +117,7 @@ android {
         applicationId "com.skjutsgruppen"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         ndk {   
             abiFilters "armeabi-v7a", "x86"
@@ -171,7 +171,16 @@ repositories {
 }
 
 dependencies {
-    compile project(':react-native-fbsdk')
+    implementation project(':tipsi-twitter')
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-maps')
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-i18n')
+    implementation project(':react-native-fcm')
+    implementation project(':react-native-facebook-login')
+    implementation project(':react-native-contacts')
+    implementation project(':react-native-config')
+    implementation project(':react-native-fbsdk')
     implementation project(':react-native-twitter')
     implementation project(':tipsi-twitter')
     implementation project(':react-native-fabric')
@@ -189,21 +198,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:15.0.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
 
-    implementation project(':react-native-contacts')
-    implementation project(':react-native-vector-icons')
-    implementation project(':react-native-image-picker')
-    implementation project(':react-native-i18n')
-    implementation project(':react-native-config')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:27.1.0"
     implementation "com.facebook.react:react-native:0.20.1"  // From node_modules
-    implementation project(':react-native-facebook-login')
     implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
       transitive = true;
     }
-    implementation project(':react-native-fcm')
-    implementation 'com.google.firebase:firebase-core:15.0.0'
 }
 
 // Run this once to be able to run the application with BUCK
