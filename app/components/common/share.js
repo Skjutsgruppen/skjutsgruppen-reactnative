@@ -110,7 +110,8 @@ class Share extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      social: ['copy_to_clip'],
+      clipboard: ['copy_to_clip'],
+      social: [],
       selectedFriends: [],
       selectedContacts: [],
       selectedGroups: [],
@@ -146,8 +147,15 @@ class Share extends Component {
       this.setState({ selectedGroups: groups.map(id => id) });
     }
 
+
+    if (detail && detail.Participants && detail.Participants.rows) {
+      this.setState({
+        participantsList: detail.Participants.rows.filter(participant =>
+          user.id !== participant.id),
+      });
+    }
+
     this.setState({
-      participantsList: detail.Participants.rows.filter(participant => user.id !== participant.id),
       friendsList,
       selectedGroups: groups || [],
     });
@@ -167,9 +175,9 @@ class Share extends Component {
   onNext = () => {
     const { onNext } = this.props;
     this.setState({ loading: true });
-    const { social, selectedFriends: friends, selectedGroups: groups } = this.state;
+    const { social, clipboard, selectedFriends: friends, selectedGroups: groups } = this.state;
     if (typeof onNext === 'function') {
-      onNext({ social, friends, groups });
+      onNext({ social, friends, groups, clipboard });
     } else {
       this.submitShare();
     }
@@ -440,9 +448,9 @@ class Share extends Component {
       }
       <ShareItem
         imageSource={require('@assets/icons/ic_copy.png')}
-        selected={this.hasOption('social', 'copy_to_clip')}
+        selected={this.hasOption('clipboard', 'copy_to_clip')}
         label={trans('global.copy_to_clipboard')}
-        onPress={() => this.setOption('social', 'copy_to_clip')}
+        onPress={() => this.setOption('clipboard', 'copy_to_clip')}
         color="blue"
       />
       {this.hasFacebook() &&
