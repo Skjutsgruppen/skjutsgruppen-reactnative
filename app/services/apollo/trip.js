@@ -507,110 +507,6 @@ export const withParticipants = graphql(TRIP_PARTICIPANTS_QUERY, {
   },
 });
 
-const TRIP_UPDATED_SUBSCRIPTION = gql`
-  subscription tripUpdated ($id: Int!) {
-    tripUpdated(tripId: $id) {
-      id 
-      type 
-      description 
-      seats 
-      User {
-        id 
-        firstName 
-        avatar 
-        relation {
-            path{
-            id
-            firstName
-            avatar
-          }
-          areFriends
-        }
-      } 
-      TripStart {
-        name 
-        coordinates
-        countryCode
-      } 
-      TripEnd {
-        name 
-        coordinates
-        countryCode
-      } 
-      Stops { 
-        name 
-        coordinates 
-        countryCode
-      } 
-      date 
-      photo 
-      mapPhoto
-      totalFeeds
-      isParticipant
-      duration
-      experienceStatus
-      isAdmin    
-      muted
-      unreadNotificationCount
-      flexibilityInfo {
-        duration
-        unit
-        type
-      }
-      Participants {
-        count
-      }
-      ReturnTrip {
-        id
-        date
-        type
-        TripStart {
-          name
-        }
-        TripEnd {
-          name
-        }
-        Stops {
-          name
-        }
-        User {
-          id 
-          firstName 
-          avatar 
-        }
-      }
-      Recurring {
-        id
-        date
-        type
-        TripStart {
-          name
-        }
-        TripEnd {
-          name
-        }
-        Stops {
-          name
-        }
-        User {
-          id 
-          firstName 
-          avatar 
-        }
-      }
-      Group {
-        id
-        name
-      }
-      linkedTrip {
-        id
-        description
-      }
-      isDeleted
-    }
-  }
-`;
-
 export const FIND_TRIP_QUERY = gql`
 query trip($id: Int!) {
   trip(id: $id) {
@@ -645,7 +541,18 @@ query trip($id: Int!) {
       name 
       coordinates 
       countryCode
-    } 
+    }
+    Location {
+      id
+      User {
+        id
+        avatar
+      }
+      interval
+      duration
+      timeFraction
+      locationCoordinates
+    }
     date 
     photo 
     mapPhoto
@@ -662,6 +569,124 @@ query trip($id: Int!) {
       type
     }
     Participants {
+      rows {
+        id
+        firstName
+        lastName
+        avatar
+      }
+      count
+    }
+    ReturnTrip {
+      id
+      date
+      type
+      TripStart {
+        name
+      }
+      TripEnd {
+        name
+      }
+      Stops {
+        name
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      }
+    }
+    Recurring {
+      id
+      date
+      type
+      TripStart {
+        name
+      }
+      TripEnd {
+        name
+      }
+      Stops {
+        name
+      }
+      User {
+        id 
+        firstName 
+        avatar 
+      }
+    }
+  }
+}
+`;
+
+export const TRIP_SUBSCRIPTION = gql`
+subscription onTripUpdated($id: Int!) {
+  tripUpdated(tripId: $id){
+    id 
+    type 
+    description 
+    seats 
+    User {
+      id 
+      firstName 
+      avatar 
+      relation {
+          path{
+          id
+          firstName
+          avatar
+        }
+        areFriends
+      }
+    } 
+    TripStart {
+      name 
+      coordinates
+      countryCode
+    } 
+    TripEnd {
+      name 
+      coordinates
+      countryCode
+    } 
+    Stops { 
+      name 
+      coordinates 
+      countryCode
+    }
+    Location {
+      id
+      User {
+        id
+        avatar
+      }
+      interval
+      duration
+      timeFraction
+      locationCoordinates
+    }
+    date 
+    photo 
+    mapPhoto
+    totalFeeds
+    isParticipant
+    duration
+    experienceStatus
+    isAdmin    
+    muted
+    unreadNotificationCount
+    flexibilityInfo {
+      duration
+      unit
+      type
+    }
+    Participants {
+      rows {
+        id
+        firstName
+        lastName
+        avatar
+      }
       count
     }
     ReturnTrip {
@@ -720,28 +745,24 @@ export const withTrip = graphql(FIND_TRIP_QUERY, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { loading, trip = {}, refetch, networkStatus, error, subscribeToMore } }) => (
-    {
-      loading,
-      trip,
-      refetch,
-      networkStatus,
-      error,
-      subscribeToDeletedTrip: id => subscribeToMore({
-        document: TRIP_UPDATED_SUBSCRIPTION,
-        variables: { id },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
-            return prev;
-          }
+  props: ({ data: { loading, trip = {}, refetch, networkStatus, error, subscribeToMore } }) => ({
+    loading,
+    trip,
+    refetch,
+    networkStatus,
+    error,
+    subscribeToTrip: id => subscribeToMore({
+      document: TRIP_SUBSCRIPTION,
+      variables: { id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
 
-          const updatedTrip = subscriptionData.data.tripUpdated;
-
-          return { trip: updatedTrip };
-        },
-      }),
-    }
-  ),
+        return { trip: subscriptionData.data.tripUpdated };
+      },
+    }),
+  }),
 });
 
 const TRIPS_SUBSCRIPTION_QUERY = gql`
@@ -812,6 +833,15 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         unreadNotificationCount
       }
       remove
+      Participants{
+        rows {
+          id
+          firstName
+          lastName
+          avatar
+        }
+        count
+      }
     }
   }
 `;
@@ -869,7 +899,13 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           avatar 
         } 
       }
-      Participants{
+      Participants {
+        rows {
+          id
+          firstName
+          lastName
+          avatar
+        }
         count
       }
       muted
@@ -957,7 +993,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
 
 const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
   subscription tripFeed($tripId: Int) {
-    tripFeed(tripId: $tripId){
+    tripFeed(tripId: $tripId) {
       remove
       Feed {
         id

@@ -49,3 +49,15 @@ export const withLocalities = graphql(LOCALITY_QUERY, {
     loading, list: localities || [],
   }),
 });
+
+const UPDATE_LOCATION_QUERY = gql`
+  mutation updateLocation($point: [Float]!) {
+    updateLocation(point: $point)
+  }
+`;
+
+export const withUpdateLocation = graphql(UPDATE_LOCATION_QUERY, {
+  props: ({ mutate }) => ({
+    updateLocation: point => mutate({ variables: { point } }),
+  }),
+});

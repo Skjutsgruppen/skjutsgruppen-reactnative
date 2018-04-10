@@ -11,6 +11,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.border.lightGray,
+    paddingVertical: 16,
+  },
   modalContent: {
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.65)',
@@ -24,11 +31,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 12,
-  },
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 16,
   },
   closeWrapper: {
     height: 42,
@@ -70,11 +72,11 @@ class ActionModal extends PureComponent {
 
   render() {
     const {
+      title,
       style,
       transparent,
       visible,
       onRequestClose,
-      title,
     } = this.props;
 
     return (
@@ -120,19 +122,19 @@ class ActionModal extends PureComponent {
 }
 
 ActionModal.propTypes = {
+  title: PropTypes.string,
   children: PropTypes.node.isRequired,
   style: ViewPropTypes.style,
   transparent: PropTypes.bool,
   visible: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
 };
 
 ActionModal.defaultProps = {
+  title: null,
   style: {},
   transparent: true,
   visible: false,
-  title: null,
 };
 
 export default ActionModal;

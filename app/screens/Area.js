@@ -1,20 +1,43 @@
+/* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert } from 'react-native';
 import MapView from 'react-native-maps';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
+
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import Navigation from '@components/map/navigation';
 import TripMarker from '@components/map/roundMarker';
 import Marker from '@components/map/marker';
-import { withGroupTrips } from '@services/apollo/group';
-import { withNavigation } from 'react-navigation';
-import moment from 'moment';
 import Filter from '@components/feed/filter';
+import GeoLocation from '@services/location/geoLocation';
+import { withGroup, withGroupTrips, withGroupParticipantIds } from '@services/apollo/group';
+import { withLocationSharedToSpecificResource, withStopSpecific } from '@services/apollo/share';
+import ShareLocation from '@components/common/shareLocation';
+import { withUpdateLocation } from '@services/apollo/location';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 3;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const DURATION = 10;
+
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+const ShareLocationWithData = compose(withStopSpecific, withGroupParticipantIds)(ShareLocation);
 
 class AreaMap extends PureComponent {
   static navigationOptions = {
@@ -35,29 +58,47 @@ class AreaMap extends PureComponent {
       loading: false,
       error: '',
       filterType: FEED_FILTER_EVERYTHING,
+      group: {},
+      sharedLocations: [],
+      myPosition: {},
     });
   }
 
   componentWillMount() {
-    const { navigation } = this.props;
-    const { coordinates } = navigation.state.params;
+    const { group, user } = this.props;
+    const { data, subscribeToLocationShared } = this.props.locationSharedToSpecificResource;
+
+    subscribeToLocationShared({ userId: user.id, groupId: group.id });
 
     this.setState({
+      myPosition: {
+        latitude: group.Location.locationCoordinates ?
+          group.Location.locationCoordinates[1] : null,
+        longitude: group.Location.locationCoordinates ?
+          group.Location.locationCoordinates[0] : null,
+      },
       initialRegion: {
-        longitude: coordinates.area[0],
-        latitude: coordinates.area[1],
+        longitude: group.areaCoordinates[0],
+        latitude: group.areaCoordinates[1],
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
       origin: {
-        longitude: coordinates.area[0],
-        latitude: coordinates.area[1],
+        longitude: group.areaCoordinates[0],
+        latitude: group.areaCoordinates[1],
       },
+      sharedLocations: data || [],
     });
   }
 
-  componentWillReceiveProps({ groupTrips }) {
-    this.setState({ trips: groupTrips });
+  componentWillReceiveProps({ groupTrips, locationSharedToSpecificResource }) {
+    const sharedLocations = locationSharedToSpecificResource.data ?
+      locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
+
+    this.setState({
+      trips: groupTrips,
+      sharedLocations,
+    });
   }
 
   onFilterChange = (type) => {
@@ -69,6 +110,45 @@ class AreaMap extends PureComponent {
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
     navigation.navigate('TripDetail', { trip: Trip });
+  }
+
+  currentLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          myPosition: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          },
+        });
+      },
+      () => {
+        Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
+      },
+      { timeout: 20000, maximumAge: 1000 },
+    );
+  };
+
+  startTrackingLocation = () => {
+    const { updateLocation, group } = this.props;
+    const { __typename } = group;
+
+    GeoLocation.listenToLocationUpdate(__typename, group.id, (position) => {
+      updateLocation([position.coords.longitude, position.coords.latitude]);
+      this.setState({
+        myPosition: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      });
+    });
+  }
+
+  stopTrackingLocation = () => {
+    const { group } = this.props;
+    const { __typename } = group;
+
+    GeoLocation.stopListeningToLocationUpdate(__typename, group.id);
   }
 
   async fetchTripsByType() {
@@ -91,41 +171,73 @@ class AreaMap extends PureComponent {
     navigation.goBack();
   }
 
-  renderTrips = () => {
-    let coordinate = {};
-    const { trips } = this.state;
+  gotoRegion = (coordinates) => {
+    const region = {
+      longitude: coordinates[0],
+      latitude: coordinates[1],
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    };
 
-    if (trips.length > 0) {
-      return trips.map((trip) => {
-        coordinate = {
-          latitude: trip.TripStart.coordinates[1],
-          longitude: trip.TripStart.coordinates[0],
+    this.mapView.animateToRegion(region, DURATION);
+  }
+
+  renderLiveLocations = () => {
+    const { group } = this.props;
+    const { sharedLocations, myPosition } = this.state;
+
+    let markers = [];
+    if (sharedLocations.length > 0) {
+      markers = sharedLocations.map((location) => {
+        const coordinate = {
+          latitude: location.locationCoordinates[1],
+          longitude: location.locationCoordinates[0],
         };
 
         return (
           <Marker
-            key={`${trip.id}-${moment().unix()}`}
+            key={`${location.id}-${moment().unix()}`}
             onPress={(e) => {
               e.stopPropagation();
-              this.onMarkerPress(trip);
             }}
             coordinate={coordinate}
-            image={trip.User.avatar}
-            count={trip.seats}
-            tripType={trip.type}
+            image={location.User.avatar}
           />
         );
       });
     }
 
-    return null;
+    if (myPosition.latitude &&
+      myPosition.longitude &&
+      group.Location.locationCoordinates &&
+      group.Location.locationCoordinates.length > 0) {
+      const coordinate = {
+        latitude: myPosition.latitude,
+        longitude: myPosition.longitude,
+      };
+      markers.push(
+        <Marker
+          key={`${group.Location.id}-${moment().unix()}`}
+          onPress={(e) => {
+            e.stopPropagation();
+          }}
+          coordinate={coordinate}
+          image={group.Location.User.avatar}
+        />);
+    }
+
+    return markers;
   }
 
   render() {
+    const { loading, group, locationSharedToSpecificResource } = this.props;
     const { origin, initialRegion } = this.state;
+    const { __typename } = group;
+
+    if (loading || locationSharedToSpecificResource.loading) return null;
 
     return (
-      <View style={StyleSheet.absoluteFill}>
+      <View style={styles.container}>
         <Navigation
           arrowBackIcon
           onPressBack={this.handleBack}
@@ -133,7 +245,7 @@ class AreaMap extends PureComponent {
         />
         <MapView
           initialRegion={initialRegion}
-          style={StyleSheet.absoluteFill}
+          style={styles.map}
           ref={(c) => { this.mapView = c; }}
           onMapReady={this.fitMap}
           cacheEnabled
@@ -141,7 +253,7 @@ class AreaMap extends PureComponent {
           <MapView.Marker.Animated coordinate={origin}>
             <TripMarker />
           </MapView.Marker.Animated>
-          {this.renderTrips()}
+          {this.renderLiveLocations()}
         </MapView>
         <Filter
           map
@@ -149,6 +261,16 @@ class AreaMap extends PureComponent {
           onPress={this.onFilterChange}
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setState({ filterOpen: false })}
+        />
+        <ShareLocationWithData
+          locationSharedToSpecificResource={locationSharedToSpecificResource}
+          id={group.id}
+          type={__typename}
+          detail={group}
+          gotoRegion={this.gotoRegion}
+          myPosition={this.myPosition}
+          startTrackingLocation={this.startTrackingLocation}
+          stopTrackingLocation={this.stopTrackingLocation}
         />
       </View>
     );
@@ -159,17 +281,39 @@ AreaMap.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  group: PropTypes.shape().isRequired,
   groupTrips: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  locationSharedToSpecificResource: PropTypes.shape({
+    data: PropTypes.arrayOf(PropTypes.shape()),
+    subscribeToLocationShared: PropTypes.func,
+  }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
+  updateLocation: PropTypes.func.isRequired,
 };
 
-const RenderAreaMap = withGroupTrips(AreaMap);
+const mapStateToProps = state => ({ user: state.auth.user });
 
-const Area = ({ navigation }) => (
-  <RenderAreaMap
-    id={navigation.state.params.id}
-    navigation={navigation}
-  />
-);
+const RenderAreaMap = compose(
+  withLocationSharedToSpecificResource,
+  withGroup,
+  withUpdateLocation,
+  withGroupTrips, connect(mapStateToProps))(AreaMap);
+
+const Area = ({ navigation }) => {
+  const { id, __typename } = navigation.state.params.info;
+
+  return (
+    <RenderAreaMap
+      resourceId={id}
+      resourceType={__typename}
+      id={id}
+      navigation={navigation}
+    />
+  );
+};
 
 Area.navigationOptions = {
   header: null,

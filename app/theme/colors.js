@@ -1,6 +1,7 @@
 const background = {
   blue: '#00aeef',
   lightBlueWhite: '#f6f9fc',
+  darkBlue: '#0057db',
   mutedBlue: '#f6f9fc',
   yellow: '#ffed00',
   green: '#2b9c48',
@@ -8,6 +9,7 @@ const background = {
   purple: '#a27ba8',
   black: '#141414',
   darkGray: '#484848',
+  brightPurple: '#9e049e',
   gray: '#898989',
   lightGray: '#dddee3',
   cream: '#f3f2ed',
@@ -21,6 +23,7 @@ const background = {
 const text = {
   blue: '#00aeef',
   lightBlueWhite: '#f6f9fc',
+  darkBlue: '#0057db',
   mutedBlue: '#f6f9fc',
   yellow: '#ffed00',
   green: '#2b9c48',
@@ -29,6 +32,7 @@ const text = {
   black: '#141414',
   darkGray: '#484848',
   gray: '#898989',
+  brightPurple: '#9e049e',
   lightGray: '#dddee3',
   cream: '#f3f2ed',
   white: '#ffffff',
@@ -41,6 +45,7 @@ const text = {
 const border = {
   blue: '#00aeef',
   lightBlueWhite: '#f6f9fc',
+  darkBlue: '#0057db',
   mutedBlue: '#f6f9fc',
   yellow: '#ffed00',
   green: '#2b9c48',
@@ -49,6 +54,7 @@ const border = {
   black: '#141414',
   darkGray: '#484848',
   gray: '#898989',
+  brightPurple: '#9e049e',
   lightGray: '#dddee3',
   cream: '#f3f2ed',
   white: '#ffffff',

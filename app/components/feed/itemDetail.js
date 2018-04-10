@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
+import MapView from 'react-native-maps';
+import { connect } from 'react-redux';
+
+import Marker from '@components/map/marker';
 import Date from '@components/date';
 import {
   GROUP_FEED_TYPE_CREATE_GROUP,
@@ -16,11 +20,16 @@ import {
   GROUP_FEED_TYPE_OFFER_RIDE,
   GROUP_FEED_TYPE_ENABLER_ADDED,
   GROUP_FEED_TYPE_UPDATED,
+  LOCATION_SHARED,
 } from '@config/constant';
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
 import { SharedCard } from '@components/common';
-import { connect } from 'react-redux';
+
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const styles = StyleSheet.create({
   wrapFlex: {
@@ -77,6 +86,10 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'cover',
     borderRadius: 12,
+  },
+  mapFeedContainer: {
+    height: 200,
+    width: 300,
   },
 });
 
@@ -212,6 +225,37 @@ class Feed extends Component {
             {this.renderUsername()} has updated the {feed.updatedField} of the group
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+        </View>
+      );
+    }
+
+    if (feed.ActivityType.type === LOCATION_SHARED && feed.Location) {
+      const coordinates = {
+        latitude: feed.Location.locationCoordinates[1],
+        longitude: feed.Location.locationCoordinates[0],
+      };
+
+      return (
+        <View>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} shares position
+          </Text>
+          <MapView
+            scrollEnabled={false}
+            style={styles.mapFeedContainer}
+            region={{
+              longitude: coordinates.longitude,
+              latitude: coordinates.latitude,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            }}
+          >
+            <Marker
+              onPress={() => { }}
+              coordinate={coordinates}
+              image={feed.User.avatar}
+            />
+          </MapView>
         </View>
       );
     }
