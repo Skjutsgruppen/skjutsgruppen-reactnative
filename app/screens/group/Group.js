@@ -203,10 +203,10 @@ class Group extends Component {
         area.municipality,
         area.locality,
         type,
-        share,
+        { social: share.social, friends: share.friends, groups: share.groups },
       )
         .then((res) => {
-          if (share.social.indexOf('copy_to_clip') > -1) {
+          if (share.clipboard.indexOf('copy_to_clip') > -1) {
             Clipboard.setString(res.data.group.url);
           }
 
