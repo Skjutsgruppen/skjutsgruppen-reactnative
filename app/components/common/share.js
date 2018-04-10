@@ -315,13 +315,13 @@ class Share extends Component {
   hasFacebook() {
     const { user } = this.props;
 
-    return user.fbId && typeof user.fbId === 'string' && user.fbId.length > 0;
+    return !!user.fbId;
   }
 
   hasTwitter() {
     const { user } = this.props;
 
-    return user.twitterId && typeof user.twitterId === 'string' && user.twitterId.length > 0;
+    return !!user.twitterId;
   }
 
   loadMore = (onPress) => {
@@ -416,85 +416,86 @@ class Share extends Component {
       );
     }
 
-    return (<View style={styles.listWrapper}>
-      {offeredUser && Object.keys(offeredUser).length > 0 &&
+    return (
+      <View style={styles.listWrapper}>
+        {offeredUser && Object.keys(offeredUser).length > 0 &&
+          <ShareItem
+            readOnly
+            imageSource={{ uri: offeredUser.avatar }}
+            label={offeredUser.firstName}
+            onPress={() => { }}
+            color="blue"
+            selected
+            hasPhoto
+          />
+        }
+        {this.showRideParticipants() &&
+          <FriendList
+            title="PARTICIPANTS IN THIS RIDE"
+            rows={participantsList}
+            defaultAvatar
+            setOption={id => this.setOption('selectedTripParticipants', id)}
+            selected={selectedTripParticipants}
+          />
+        }
+        {!this.isModal() &&
+          <ShareItem
+            readOnly
+            selected={this.hasOption('social', 'publish_to_whole_movement')}
+            label={trans('global.publish_to_whole_movement')}
+            onPress={() => { }}
+            color="blue"
+          />
+        }
         <ShareItem
-          readOnly
-          imageSource={{ uri: offeredUser.avatar }}
-          label={offeredUser.firstName}
-          onPress={() => { }}
+          imageSource={require('@assets/icons/ic_copy.png')}
+          selected={this.hasOption('clipboard', 'copy_to_clip')}
+          label={trans('global.copy_to_clipboard')}
+          onPress={() => this.setOption('clipboard', 'copy_to_clip')}
           color="blue"
-          selected
-          hasPhoto
         />
-      }
-      {this.showRideParticipants() &&
+        {this.hasFacebook() &&
+          <ShareItem
+            imageSource={require('@assets/icons/ic_facebook.png')}
+            selected={this.hasOption('social', 'Facebook')}
+            label={trans('global.your_fb_timeline')}
+            onPress={() => this.setOption('social', 'Facebook')}
+            color="blue"
+          />}
+        {this.hasTwitter() &&
+          <ShareItem
+            imageSource={require('@assets/icons/ic_twitter.png')}
+            selected={this.hasOption('social', 'Twitter')}
+            label={trans('global.tweet')}
+            onPress={() => this.setOption('social', 'Twitter')}
+            color="blue"
+          />}
         <FriendList
-          title="PARTICIPANTS IN THIS RIDE"
-          rows={participantsList}
-          defaultAvatar
-          setOption={id => this.setOption('selectedTripParticipants', id)}
-          selected={selectedTripParticipants}
+          title="Recent"
+          loading={bestFriends.loading}
+          rows={bestFriends.rows}
+          setOption={id => this.setOption('selectedFriends', id)}
+          selected={selectedFriends}
         />
-      }
-      {!this.isModal() &&
-        <ShareItem
-          readOnly
-          selected={this.hasOption('social', 'publish_to_whole_movement')}
-          label={trans('global.publish_to_whole_movement')}
-          onPress={() => { }}
-          color="blue"
-        />
-      }
-      <ShareItem
-        imageSource={require('@assets/icons/ic_copy.png')}
-        selected={this.hasOption('clipboard', 'copy_to_clip')}
-        label={trans('global.copy_to_clipboard')}
-        onPress={() => this.setOption('clipboard', 'copy_to_clip')}
-        color="blue"
-      />
-      {this.hasFacebook() &&
-        <ShareItem
-          imageSource={require('@assets/icons/ic_facebook.png')}
-          selected={this.hasOption('social', 'facebook')}
-          label={trans('global.your_fb_timeline')}
-          onPress={() => this.setOption('social', 'facebook')}
-          color="blue"
-        />}
-      {this.hasTwitter() &&
-        <ShareItem
-          imageSource={require('@assets/icons/ic_twitter.png')}
-          selected={this.hasOption('social', 'Twitter')}
-          label={trans('global.tweet')}
-          onPress={() => this.setOption('social', 'Twitter')}
-          color="blue"
-        />}
-      <FriendList
-        title="Recent"
-        loading={bestFriends.loading}
-        rows={bestFriends.rows}
-        setOption={id => this.setOption('selectedFriends', id)}
-        selected={selectedFriends}
-      />
-      {this.showGroup() && this.renderGroups()}
-      <FriendList
-        title="Your Friends"
-        loading={friends.loading}
-        rows={friendsList}
-        setOption={id => this.setOption('selectedFriends', id)}
-        selected={selectedFriends}
-        readOnlyUserId={offeredUser ? offeredUser.id : null}
-      />
-      {!this.showRideParticipants() &&
+        {this.showGroup() && this.renderGroups()}
         <FriendList
+          title="Your Friends"
           loading={friends.loading}
-          rows={contactsList}
-          defaultAvatar
-          setOption={id => this.setOption('selectedContacts', id)}
-          selected={selectedContacts}
+          rows={friendsList}
+          setOption={id => this.setOption('selectedFriends', id)}
+          selected={selectedFriends}
+          readOnlyUserId={offeredUser ? offeredUser.id : null}
         />
-      }
-    </View>);
+        {!this.showRideParticipants() &&
+          <FriendList
+            loading={friends.loading}
+            rows={contactsList}
+            defaultAvatar
+            setOption={id => this.setOption('selectedContacts', id)}
+            selected={selectedContacts}
+          />
+        }
+      </View>);
   }
 
   renderButton = () => {

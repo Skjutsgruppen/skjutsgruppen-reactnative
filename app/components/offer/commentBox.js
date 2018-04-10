@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import { Loading } from '@components/common';
+import Radio from '@components/add/radio';
 
 const styles = StyleSheet.create({
   footer: {
@@ -22,11 +23,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   footerSocialSection: {
-    height: 42,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    marginHorizontal: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
   iconWrapper: {
@@ -34,6 +35,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     paddingHorizontal: 18,
+  },
+  socialLabel: {
+    fontSize: 12,
+    marginLeft: 6,
   },
   commentInput: {
     height: '100%',
@@ -59,24 +64,59 @@ class CommentBox extends PureComponent {
     super(props);
 
     this.state = {
-      writting: false,
+      writing: false,
       text: '',
       offset: 0,
+      shareFacebook: false,
+      shareTwitter: false,
     };
+  }
+
+  componentWillMount() {
+    const { user } = this.props;
+    if (user.fbId) {
+      this.setState({ shareFacebook: true });
+    }
+
+    if (user.twitterId) {
+      this.setState({ shareTwitter: true });
+    }
   }
 
   handleChange = text => this.setState({ text })
 
-  handleBlur = () => this.setState({ writting: false });
+  handleBlur = () => this.setState({ writing: false });
 
-  handleFocus = () => this.setState({ writting: true });
+  handleFocus = () => this.setState({ writing: true });
 
   sendComment = () => {
-    const { text } = this.state;
+    const { text, shareFacebook, shareTwitter } = this.state;
     const { handleSend } = this.props;
-    handleSend(text);
+    const social = [];
+
+    if (shareFacebook) {
+      social.push('Facebook');
+    }
+
+    if (shareTwitter) {
+      social.push('Twitter');
+    }
+
+    handleSend(text, social);
     this.setState({ text: '' });
   };
+
+  shareFacebookRadio = () => {
+    const { shareFacebook } = this.state;
+
+    this.setState({ shareFacebook: !shareFacebook });
+  }
+
+  shareTwitterRadio = () => {
+    const { shareTwitter } = this.state;
+
+    this.setState({ shareTwitter: !shareTwitter });
+  }
 
   renderSendButton = () => {
     const { loading } = this.props;
@@ -103,9 +143,9 @@ class CommentBox extends PureComponent {
 
   renderOption = () => {
     const { handleShowOptions } = this.props;
-    const { writting } = this.state;
+    const { writing } = this.state;
 
-    if (writting) {
+    if (writing) {
       return null;
     }
 
@@ -121,9 +161,9 @@ class CommentBox extends PureComponent {
 
   renderCalendar = () => {
     const { hasCalender, handleShowCalender } = this.props;
-    const { writting } = this.state;
+    const { writing } = this.state;
 
-    if (!writting && hasCalender) {
+    if (!writing && hasCalender) {
       return (
         <TouchableOpacity
           style={styles.iconWrapper}
@@ -160,18 +200,64 @@ class CommentBox extends PureComponent {
   }
 
   renderFooter = () => {
-    const { writting } = this.state;
+    const { writing } = this.state;
+    const { user } = this.props;
 
-    if (!writting) {
+    if (!writing) {
       return null;
     }
 
-    return (
-      <View style={styles.footerSocialSection}>
-        <Text>{trans('trip.a_post_on_your_fb_timeline')}</Text>
-        <Text style={{ marginLeft: 12 }}>{trans('trip.a_tweet')}</Text>
-      </View>
-    );
+    if (!!user.fbId && !!user.twitterId) {
+      return (
+        <View style={styles.footerSocialSection}>
+          <Radio
+            color="blue"
+            active={this.state.shareFacebook}
+            onPress={this.shareFacebookRadio}
+            size={24}
+          />
+          <Text style={styles.socialLabel}>{trans('trip.a_post_on_your_fb_timeline')}</Text>
+          <Radio
+            color="blue"
+            active={this.state.shareTwitter}
+            onPress={this.shareTwitterRadio}
+            size={24}
+            style={{ marginLeft: 16 }}
+          />
+          <Text style={styles.socialLabel}>{trans('trip.a_tweet')}</Text>
+        </View>
+      );
+    }
+
+    if (!!user.fbId && !user.twitterId) {
+      return (
+        <View style={styles.footerSocialSection}>
+          <Radio
+            color="blue"
+            active={this.state.shareFacebook}
+            onPress={this.shareFacebookRadio}
+            size={24}
+          />
+          <Text style={styles.socialLabel}>A post about this ride on your Facebook timeline</Text>
+        </View>
+      );
+    }
+
+    if (!user.fbId && !!user.twitterId) {
+      return (
+        <View style={styles.footerSocialSection}>
+          <Radio
+            color="blue"
+            active={this.state.shareTwitter}
+            onPress={this.shareTwitterRadio}
+            size={24}
+          />
+          <Text style={styles.socialLabel}>A tweet about this ride</Text>
+        </View>
+      );
+    }
+
+    return null;
   }
 
   render() {
@@ -180,13 +266,13 @@ class CommentBox extends PureComponent {
 
     return (
       <View style={[styles.footer, { bottom: offset }, style]}>
+        {this.renderFooter()}
         <View style={styles.footerCommentSection}>
           {this.renderOption()}
           {this.renderCalendar()}
           {this.renderInput()}
           {this.renderSendButton()}
         </View>
-        {this.renderFooter()}
       </View>
     );
   }
@@ -199,6 +285,10 @@ CommentBox.propTypes = {
   handleShowOptions: PropTypes.func,
   hasCalender: PropTypes.bool,
   handleShowCalender: PropTypes.func,
+  user: PropTypes.shape({
+    fbId: PropTypes.string,
+    twitterId: PropTypes.string,
+  }).isRequired,
 };
 
 CommentBox.defaultProps = {
@@ -209,4 +299,6 @@ CommentBox.defaultProps = {
   handleShowCalender: () => { },
 };
 
-export default CommentBox;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default connect(mapStateToProps)(CommentBox);

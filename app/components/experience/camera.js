@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
+  PermissionsAndroid,
 } from 'react-native';
 import Camera from 'react-native-camera';
 import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
-
+import { Loading } from '@components/common';
 import CameraHead from '@assets/icons/ic_camera_head.png';
 import PropTypes from 'prop-types';
 
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     paddingHorizontal: '10%',
-    paddingVertical: '8%',
+    paddingVertical: '5%',
   },
   message: {
     color: '#000',
@@ -62,9 +63,17 @@ const styles = StyleSheet.create({
   actionButton: {
     padding: 20,
   },
+  wrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerText: {
+    textAlign: 'center',
+  },
 });
 
-class Cam extends React.Component {
+class Cam extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -80,7 +89,13 @@ class Cam extends React.Component {
       type: Camera.constants.Type.front,
       orientation: Camera.constants.Orientation.auto,
       flashMode: Camera.constants.FlashMode.auto,
+      loading: true,
+      permissionDenied: false,
     };
+  }
+
+  componentWillMount() {
+    this.grantCameraPermission();
   }
 
   get typeIcon() {
@@ -146,6 +161,45 @@ class Cam extends React.Component {
     this.setState({ flashMode: newFlashMode });
   }
 
+  grantCameraPermission = async () => {
+    try {
+      const cameraGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA);
+      const interalStorageGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+      const externalStorageGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+      if (cameraGranted === PermissionsAndroid.RESULTS.GRANTED
+        && interalStorageGranted === PermissionsAndroid.RESULTS.GRANTED
+        && externalStorageGranted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.setState({ loading: false, permissionDenied: false });
+      } else {
+        this.setState({ loading: false, permissionDenied: true });
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  initializeCamera = () => {
+    const { permissionDenied } = this.state;
+
+    if (permissionDenied) {
+      return (
+        <View style={[styles.viewFinder, { backgroundColor: '#000' }]} />);
+    }
+
+    return (
+      <View style={styles.viewFinder}>
+        {this.renderCamera()}
+        <View style={styles.actions}>
+          {this.renderCameraType()}
+          {this.renderFlash()}
+        </View>
+      </View>
+    );
+  }
+
   renderCamera = () => (
     <Camera
       ref={(cam) => {
@@ -184,26 +238,39 @@ class Cam extends React.Component {
     />
   </TouchableOpacity>);
 
-  renderCapureButton = () => (
-    <TouchableOpacity onPress={this.takePicture} >
-      <View style={styles.captureButton} />
-    </TouchableOpacity>
-  );
+  renderCapureButton = () => {
+    const { permissionDenied } = this.state;
+
+    if (permissionDenied) {
+      return (
+        <TouchableOpacity onPress={this.grantCameraPermission} >
+          <View style={styles.captureButton} />
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity onPress={this.takePicture} >
+        <View style={styles.captureButton} />
+      </TouchableOpacity>
+    );
+  }
 
   render() {
+    const { loading } = this.state;
+
+    if (loading) {
+      return (
+        <View style={styles.wrapper}>
+          <Loading />
+        </View>);
+    }
+
     return (
       <View style={styles.container}>
         <ToolBar transparent />
         <Image source={CameraHead} style={styles.cameraHead} />
-        <View style={styles.viewFinder}>
-          {this.renderCamera()}
-
-          <View style={styles.actions}>
-            {this.renderCameraType()}
-            {this.renderFlash()}
-          </View>
-        </View>
-
+        {this.initializeCamera()}
         <View style={styles.captureArea}>
           <Text style={styles.message}>Show everyone participating in this ride</Text>
           {this.renderCapureButton()}
