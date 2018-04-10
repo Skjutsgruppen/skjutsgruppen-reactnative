@@ -110,13 +110,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "com.skjutsgruppen"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         ndk {   
@@ -171,44 +171,45 @@ repositories {
 }
 
 dependencies {
-    compile project(':react-native-twitter')
-    compile project(':tipsi-twitter')
-    compile project(':react-native-fabric')
-    compile project(':react-native-google-analytics-bridge')
-    compile project(':react-native-fs')
-    compile project(':react-native-camera')
-    compile project(':react-native-linear-gradient')
-    compile project(':react-native-sms')
-    compile project(':react-native-device-info')
+    implementation project(':react-native-twitter')
+    implementation project(':tipsi-twitter')
+    implementation project(':react-native-fabric')
+    implementation project(':react-native-google-analytics-bridge')
+    implementation project(':react-native-fs')
+    implementation project(':react-native-camera')
+    implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-sms')
+    implementation project(':react-native-device-info')
 
-    compile(project(':react-native-maps')) {
+    implementation(project(':react-native-maps')) {
         exclude group: 'com.google.android.gms', module: 'play-services-base'
         exclude group: 'com.google.android.gms', module: 'play-services-maps'
     }
-    compile 'com.google.android.gms:play-services-base:11.+'
-    compile 'com.google.android.gms:play-services-maps:11.+'
-    compile 'com.google.android.gms:play-services-location:11.+'
+    //noinspection GradleCompatible
+    implementation 'com.google.android.gms:play-services-base:12.0.1'
+    implementation 'com.google.android.gms:play-services-maps:12.0.1'
+    implementation 'com.google.android.gms:play-services-location:12.0.1'
 
-    compile project(':react-native-contacts')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-image-picker')
-    compile project(':react-native-i18n')
-    compile project(':react-native-config')
-    compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
-    compile "com.facebook.react:react-native:+"
-    compile project(':react-native-facebook-login')
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+    implementation project(':react-native-contacts')
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-i18n')
+    implementation project(':react-native-config')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:27.1.0"
+    implementation "com.facebook.react:react-native:0.20.1"  // From node_modules
+    implementation project(':react-native-facebook-login')
+    implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
       transitive = true;
     }
-    compile project(':react-native-fcm')
-    compile 'com.google.firebase:firebase-core:11.+'
+    implementation project(':react-native-fcm')
+    implementation 'com.google.firebase:firebase-core:12.0.1'
 }
 
 // Run this once to be able to run the application with BUCK
-// puts all compile dependencies into folder libs for BUCK to use
+// puts all implementation dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
-    from configurations.compile
+    from configurations.implementation
     into 'libs'
 }
 

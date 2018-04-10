@@ -26,6 +26,7 @@ import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import java.util.Arrays;
 import java.util.List;
 import com.evollu.react.fcm.FIRMessagingPackage;
+import com.skjutsgruppen.react.modules.GeoLocationPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -55,7 +56,8 @@ public class MainApplication extends Application implements ReactApplication {
             new FacebookLoginPackage(),
             new RNI18nPackage(),
             new FIRMessagingPackage(),
-            new TwitterReactPackage()            
+            new TwitterReactPackage(),
+            new GeoLocationPackage()
       );
     }
 

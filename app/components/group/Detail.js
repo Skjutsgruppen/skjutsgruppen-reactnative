@@ -207,19 +207,11 @@ class Detail extends PureComponent {
     const { navigation, group } = this.props;
 
     if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
-      const coordinates = { area: group.areaCoordinates };
-
-      navigation.navigate('Area', { coordinates, id: group.id });
+      navigation.navigate('Area', { info: group });
     }
 
     if (group.outreach === STRETCH_TYPE_ROUTE) {
-      const coordinates = {
-        start: group.TripStart,
-        end: group.TripEnd,
-        stops: group.Stops,
-      };
-
-      navigation.navigate('Route', { coordinates, id: group.id });
+      navigation.navigate('Route', { info: group });
     }
 
     return null;
