@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet, View, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import { userRegister, withUpdateProfile } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
@@ -7,35 +7,53 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import Connect from '@components/facebook/connect';
+import Connect from '@components/facebook/facebookConnect';
 import { Loading } from '@components/common';
 import { withNavigation } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
+import { Colors } from '@theme';
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.6)',
+  },
+  modalContent: {
+    padding: 20,
+    borderRadius: 12,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 5,
+  },
+});
 
 class FBLogin extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { loading: false };
+    this.state = { loading: false, showModal: false };
   }
 
   onLogin = async (fb) => {
-    const { profile, token } = fb.fbUser;
+    const { profile, auth: { accessToken } } = fb.fbUser;
     const { setLogin, navigation, syncContacts } = this.props;
-    this.setState({ loading: true });
+    this.setState({ showModal: true });
 
     if (fb.hasID) {
       await setLogin(fb.userById);
-      syncContacts();
       navigation.replace('Tab');
+      syncContacts();
       return;
     }
 
     if (fb.hasEmail) {
+      this.setState({ showModal: false });
+
       Alert.alert(`User already exist with ${profile.email}`,
         'Would you like to connect with facebook?',
         [
-          { text: 'Cancel', onPress: () => this.setState({ loading: false }) },
-          { text: 'OK', onPress: () => this.connect({ profile, token }) },
+          { text: 'Cancel', onPress: () => null },
+          { text: 'OK', onPress: () => this.connect({ profile, accessToken }) },
         ],
       );
       return;
@@ -44,17 +62,18 @@ class FBLogin extends PureComponent {
     if (this.props.signup) {
       this.register(fb.fbUser);
     } else {
+      this.setState({ showModal: false });
       this.signupWithFacebook(() => this.register(fb.fbUser));
     }
   }
 
-  async connect({ profile, token }) {
+  connect = async ({ profile, accessToken }) => {
+    this.setState({ showModal: true });
     const { socialConnect, setLogin, navigation, syncContacts } = this.props;
-
     const response = await socialConnect({
       id: profile.id,
       email: profile.email,
-      token,
+      token: accessToken,
       type: 'facebook',
     });
 
@@ -67,7 +86,7 @@ class FBLogin extends PureComponent {
     navigation.replace('Tab');
   }
 
-  async register({ profile, token: fbToken }) {
+  async register({ profile, auth: { accessToken: fbToken } }) {
     if (profile.email === '') {
       Alert.alert('Error!', 'Email is required');
       return;
@@ -77,7 +96,7 @@ class FBLogin extends PureComponent {
     try {
       const { data } = await register({
         email: profile.email,
-        verified: profile.verified,
+        verified: true,
       });
 
       const { token, User } = data.register;
@@ -89,16 +108,17 @@ class FBLogin extends PureComponent {
         fbId: profile.id,
         fbToken,
       });
+
       await setRegister({
         token: response.data.updateUser.token,
         user: response.data.updateUser.User,
       });
 
-      if (profile.verified) {
-        navigation.replace('EmailVerified');
-      } else {
-        navigation.replace('CheckMail');
-      }
+      // if (profile.verified) {
+      navigation.replace('EmailVerified');
+      // } else {
+      //   navigation.replace('CheckMail');
+      // }
     } catch (error) {
       console.warn(error, error.graphQLErrors[0].code);
     }
@@ -114,13 +134,31 @@ class FBLogin extends PureComponent {
     );
   }
 
-  render() {
-    if (this.state.loading) {
-      return (<Loading />);
-    }
+  renderModal = () => {
+    const { showModal } = this.state;
 
     return (
-      <Connect buttonType={this.props.signup ? 'signup' : 'login'} onLogin={this.onLogin} />
+      <Modal
+        transparent
+        animationType={'fade'}
+        visible={showModal}
+        onRequestClose={() => null}
+      >
+        <View style={styles.backdrop}>
+          <View style={styles.modalContent}>
+            <Loading />
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  render() {
+    return (
+      <View>
+        <Connect buttonType={this.props.signup ? 'signup' : 'login'} onLogin={this.onLogin} />
+        {this.renderModal()}
+      </View>
     );
   }
 }

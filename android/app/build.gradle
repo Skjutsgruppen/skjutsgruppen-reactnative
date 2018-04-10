@@ -171,6 +171,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':react-native-fbsdk')
     implementation project(':react-native-twitter')
     implementation project(':tipsi-twitter')
     implementation project(':react-native-fabric')
