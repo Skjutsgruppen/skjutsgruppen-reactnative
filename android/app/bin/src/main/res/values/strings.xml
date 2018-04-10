@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Skjutsgruppen</string>
+    <string name="fb_app_id">152012658857025</string>
+    <string name="fb_login_protocol_scheme">fb152012658857025</string>
+</resources>

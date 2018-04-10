@@ -36,6 +36,7 @@ export const FEEDABLE_GROUP = 'Group';
 export const FEEDABLE_NEWS = 'News';
 export const FEEDABLE_EXPERIENCE = 'Experience';
 export const FEEDABLE_PROFILE = 'Profile';
+export const FEEDABLE_LOCATION = 'Location';
 
 export const OPEN_GROUP = 'OpenGroup';
 export const CLOSE_GROUP = 'ClosedGroup';
@@ -96,3 +97,5 @@ export const REPORT_TYPE_USER = 'User';
 export const GROUP_FEED_TYPE_ENABLER_ADDED = 'enabler_added';
 
 export const GROUP_FEED_TYPE_UPDATED = 'group_updated';
+
+export const LOCATION_SHARED = 'location_shared';

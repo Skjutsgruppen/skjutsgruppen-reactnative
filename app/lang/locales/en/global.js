@@ -23,4 +23,6 @@ export const global = {
   search: 'Search',
   add_and_publish_button: 'Add and publish',
   add_and_publish: 'Share, add participants and publish',
+  share_location_for: 'Share location for',
+  share_live_location_with: 'Share live location with',
 };

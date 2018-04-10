@@ -9,3 +9,4 @@ export { trip } from '@lang/locales/en/trip';
 export { addGroup } from '@lang/locales/en/addGroup';
 export { setting } from '@lang/locales/en/setting';
 export { about } from '@lang/locales/en/about';
+export { interval } from '@lang/locales/en/interval';

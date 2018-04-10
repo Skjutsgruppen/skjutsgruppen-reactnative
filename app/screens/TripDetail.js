@@ -240,13 +240,16 @@ class TripDetail extends Component {
   }
 
   componentWillMount() {
-    const { navigation, subscribeToDeletedTrip } = this.props;
+    const { navigation, subscribeToTrip } = this.props;
+
     navigation.setParams({
       right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
 
     const { notifier, notificationMessage, trip } = navigation.state.params;
     let initialState = { trip };
+
+    subscribeToTrip(trip.id);
 
     if (notifier) {
       initialState = {
@@ -256,8 +259,6 @@ class TripDetail extends Component {
     }
 
     this.setState(initialState);
-
-    subscribeToDeletedTrip(trip.id);
   }
 
   componentWillReceiveProps({ trip, loading }) {
@@ -327,14 +328,7 @@ class TripDetail extends Component {
   onMapPress = () => {
     const { navigation } = this.props;
     const { trip } = this.state;
-    const tripType = trip.type;
-    const coordinates = {
-      start: trip.TripStart,
-      end: trip.TripEnd,
-      stops: trip.Stops,
-    };
-
-    navigation.navigate('Route', { coordinates, tripType });
+    navigation.navigate('Route', { info: trip });
   }
 
   onCloseNotification = () => {
@@ -1036,6 +1030,7 @@ TripDetail.propTypes = {
   trip: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  subscribeToTrip: PropTypes.func.isRequired,
   refetch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   submit: PropTypes.func.isRequired,
@@ -1048,7 +1043,6 @@ TripDetail.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   deleteTrip: PropTypes.func.isRequired,
-  subscribeToDeletedTrip: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
