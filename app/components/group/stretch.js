@@ -53,7 +53,7 @@ class Stretch extends PureComponent {
   onNext = (trip) => {
     const { onNext } = this.props;
     const { outreach } = this.state;
-    onNext({ outreach, trip });
+    onNext({ outreach, trip: { ...trip, direction: trip.directionFrom || trip.directionTo } });
   }
 
   renderOutReach = () => {

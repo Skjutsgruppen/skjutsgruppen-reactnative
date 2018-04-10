@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 24,
     marginBottom: 48,
-    maxWidth: 260,
+    width: '75%',
   },
   verticalDivider: {
     borderBottomWidth: 1,

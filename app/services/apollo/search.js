@@ -41,6 +41,7 @@ query search
         type
         photo
         mapPhoto
+        direction
         TripStart {
           name 
           coordinates 
@@ -72,6 +73,7 @@ query search
           avatar
           deleted
         } 
+        direction
         TripStart {
           name 
           coordinates
@@ -104,40 +106,6 @@ query search
         }
         date
         url
-      }
-      ...on Group {
-        id
-        name
-        description
-        User {
-          id 
-          firstName 
-          avatar
-          deleted
-        } 
-        outreach
-        type
-        photo
-        mapPhoto
-        TripStart {
-          name 
-          coordinates 
-        } 
-        TripEnd {
-          name 
-          coordinates
-        } 
-        Stops {
-          name 
-          coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
-        membershipStatus 
-        totalParticipants
-        isAdmin
       }
     }
     count
@@ -209,6 +177,7 @@ query search
           avatar 
           deleted
         } 
+        direction
         TripStart {
           name 
           coordinates
@@ -319,6 +288,7 @@ query search
         type
         photo
         mapPhoto
+        direction
         TripStart {
           name 
           coordinates 

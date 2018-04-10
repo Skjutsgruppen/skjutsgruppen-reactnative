@@ -31,7 +31,7 @@ const Profile = ({ navigation, user }) => {
   let userId = user.id;
   let isUserProfile = false;
 
-  if (navigation.state.params && navigation.state.params.profileId) {
+  if ((navigation.state.params && navigation.state.params.profileId && user.id !== navigation.state.params.profileId)) {
     const { profileId } = navigation.state.params;
     userId = profileId;
     isUserProfile = true;

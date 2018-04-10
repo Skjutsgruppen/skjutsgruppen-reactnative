@@ -12,8 +12,10 @@ import { TextStyles } from '@theme/styles/global';
 import { ModalAction, ActionModal } from '@components/common';
 import Share from '@components/common/share';
 import { trans } from '@lang/i18n';
+import { UcFirst } from '@config';
 import { withShareLocation } from '@services/apollo/share';
 import { FEEDABLE_LOCATION } from '../../config/constant';
+import { Loading } from '.';
 
 const styles = StyleSheet.create({
   purpleBg: {
@@ -153,7 +155,6 @@ class ShareLocation extends PureComponent {
     this.loadInterval = false;
   }
 
-
   onShareLocation = (unit) => {
     const { shareLocation, detail, startTrackingLocation } = this.props;
     const { myPosition } = this.state;
@@ -181,7 +182,6 @@ class ShareLocation extends PureComponent {
     }
   }
 
-
   info = () => {
     const { type } = this.props;
     if (type === FEEDABLE_GROUP) {
@@ -205,7 +205,14 @@ class ShareLocation extends PureComponent {
             <Image source={{ uri: detail.User.avatar }} style={styles.avatar} />
           </View>
           <View>
-            <Text style={TextStyles.light}>{detail.TripStart.name} - {detail.TripEnd.name}</Text>
+            <Text style={TextStyles.light}>
+              {
+                detail.TripStart.name ||
+                UcFirst(detail.direction)
+              } - {detail.TripEnd.name ||
+                UcFirst(detail.direction)
+              }
+            </Text>
             <Text style={TextStyles.light}><Date format="MMM DD, YYYY HH:mm">{detail.date}</Date></Text>
           </View>
         </View>
@@ -225,9 +232,9 @@ class ShareLocation extends PureComponent {
   }
 
   showActionModal = () => {
-    const { showActionOption } = this.state;
+    const { showActionOption, fetchingPosition } = this.state;
 
-    if (!showActionOption) return null;
+    if (!showActionOption || fetchingPosition) return null;
 
     return (
       <ActionModal
@@ -323,13 +330,20 @@ class ShareLocation extends PureComponent {
   }
 
   renderShareLocation = () => {
-    const { stopSpecific, detail, stopTrackingLocation, myPosition, currentLocation } = this.props;
+    const {
+      stopSpecific,
+      detail,
+      stopTrackingLocation,
+      myPosition,
+      currentLocation,
+      fetchingPosition } = this.props;
     const { myLocation } = this.state;
     const { __typename } = detail;
 
     return (
       <TouchableHighlight
         onPress={() => {
+          if (fetchingPosition) return;
           if (myLocation.id) {
             stopTrackingLocation();
             stopSpecific({ id: detail.id, type: __typename })
@@ -346,20 +360,22 @@ class ShareLocation extends PureComponent {
           <View style={[styles.thumbnail, styles.purpleBg]}>
             <Image source={require('@assets/icons/ic_location_white.png')} style={{ alignSelf: 'center' }} />
           </View>
-          {!myLocation.id && (!myPosition.latitude || !myPosition.longitude) &&
-            <Text>Location not found. Try again!</Text>
-          }
-          {!myLocation.id && (myPosition.latitude && myPosition.longitude) &&
+          {!myLocation.id && !fetchingPosition &&
             <View>
               <Text style={TextStyles.blue}>Share my live location for...</Text>
               <Text style={TextStyles.light}>Choose with who and for how long you share</Text>
+            </View>
+          }
+          {!myLocation.id && fetchingPosition &&
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={TextStyles.light}>Fetching your position.</Text><Loading />
             </View>
           }
           {myLocation.id && myLocation.duration > 0 &&
             <View style={[styles.row, { flex: 1, justifyContent: 'space-between' }]}>
               <View>
                 <Text style={TextStyles.blue}>Stop sharing Location</Text>
-                <Text style={TextStyles.light}>In this group</Text>
+                <Text style={TextStyles.light}>In this {__typename}</Text>
               </View>
               <View style={styles.timerWrapper}>
                 <View style={styles.timer}>
@@ -408,11 +424,13 @@ ShareLocation.propTypes = {
   startTrackingLocation: PropTypes.func.isRequired,
   stopTrackingLocation: PropTypes.func.isRequired,
   currentLocation: PropTypes.func,
+  fetchingPosition: PropTypes.bool,
 };
 
 ShareLocation.defaultProps = {
   myPosition: {},
   currentLocation: null,
+  fetchingPosition: false,
 };
 
 export default compose(withShareLocation)(ShareLocation);

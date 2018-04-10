@@ -1,14 +1,11 @@
 package com.skjutsgruppen.react.modules;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -18,8 +15,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.skjutsgruppen.GeoLocationService;
-import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 
 public class GeoLocationModule extends ReactContextBaseJavaModule {
     public GeoLocationModule(ReactApplicationContext reactContext) {
@@ -41,7 +38,12 @@ public class GeoLocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startService(Promise promise) {
+        if (!isGpsOn()) {
+            promise.reject("gps_off", "Gps is turned off");
+        }
+
         String result = "Location service started";
+
         try {
             Intent intent = new Intent(getReactApplicationContext(), GeoLocationService.class);
             getReactApplicationContext().startService(intent);
@@ -65,6 +67,25 @@ public class GeoLocationModule extends ReactContextBaseJavaModule {
             return;
         }
         promise.resolve(result);
+    }
+
+    @ReactMethod
+    public void checkGpsStatus(Promise promise) {
+        promise.resolve(isGpsOn());
+    }
+
+    @ReactMethod
+    public void showGpsSetting(){
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        getReactApplicationContext().startActivity(intent);
+    }
+
+    private boolean isGpsOn() {
+        LocationManager locationManager = (LocationManager)
+                getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     private WritableMap createGeoData(Location message) {

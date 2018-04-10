@@ -48,16 +48,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon }) => (
+const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon, showMenu }) => (
   <View style={styles.wrapper}>
     {arrowBackIcon
       ? <TouchableOpacity style={styles.backIconWrapper} onPress={onPressBack}>
         <Image style={{ transform: [{ rotate: '90deg' }] }} source={BackIcon} />
       </TouchableOpacity>
       : <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />}
+    {showMenu &&
     <TouchableOpacity style={[styles.iconWrapper, styles.filteIconWrapper]} onPress={onPressFilter}>
       <Image source={FileterIcon} />
     </TouchableOpacity>
+    }
   </View>
 );
 
@@ -65,12 +67,14 @@ MapNavigation.propTypes = {
   onPressBack: PropTypes.func,
   onPressFilter: PropTypes.func,
   arrowBackIcon: PropTypes.bool,
+  showMenu: PropTypes.bool,
 };
 
 MapNavigation.defaultProps = {
   onPressBack: () => { },
   onPressFilter: () => { },
   arrowBackIcon: false,
+  showMenu: true,
 };
 
 export default MapNavigation;

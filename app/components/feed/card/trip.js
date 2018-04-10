@@ -92,6 +92,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
+
 const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring }) => {
   if (trip.isDeleted) {
     return null;
@@ -137,7 +139,15 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                   {trip.type === FEED_TYPE_WANTED && (<AppText color={Colors.text.darkGray}> {trans('feed.asks_for_a_ride')}</AppText>)}
                 </AppText>
                 <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
-                  {trip.TripStart.name} - {trip.TripEnd.name}
+                  {
+                    trip.TripStart.name ?
+                      trip.TripStart.name :
+                      prettify(trip.direction)
+                  } - {
+                    trip.TripEnd.name ?
+                      trip.TripEnd.name :
+                      prettify(trip.direction)
+                  }
                 </AppText>
                 <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                   <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>

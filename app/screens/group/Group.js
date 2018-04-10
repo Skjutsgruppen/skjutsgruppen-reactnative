@@ -46,6 +46,7 @@ class Group extends Component {
       strech: {
         outreach: STRETCH_TYPE_ROUTE,
         route: {
+          direction: null,
           start: {
             name: '',
             countryCode: '',
@@ -142,11 +143,8 @@ class Group extends Component {
     }
 
     if (outreach === 'route') {
-      if (trip.start.coordinates.length === 0) {
-        this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
-        error += 1;
-      } else if (trip.end.coordinates.length === 0) {
-        this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
+      if (trip.start.coordinates.length === 0 && trip.end.coordinates.length === 0) {
+        this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
         error += 1;
       }
 
@@ -204,6 +202,7 @@ class Group extends Component {
         area.locality,
         type,
         { social: share.social, friends: share.friends, groups: share.groups },
+        route.direction,
       )
         .then((res) => {
           if (share.clipboard.indexOf('copy_to_clip') > -1) {

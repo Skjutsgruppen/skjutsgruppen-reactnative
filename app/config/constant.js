@@ -64,6 +64,7 @@ export const NOTIFICATION_TYPE_EXPERIENCE_SHARED = 'experience_shared';
 export const NOTIFICATION_TYPE_EXPERIENCE_REJECTED = 'experience_rejected';
 export const NOTIFICATION_TYPE_EXPERIENCE_REMOVED = 'experience_removed';
 export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
+export const NOTIFICATION_TYPE_LOCATION_SHARED = 'location_shared';
 
 export const NOTIFICATION_TYPE_TRIP_SHARED = 'trip_shared';
 export const NOTIFICATION_TYPE_TRIP_SHARED_GROUP = 'trip_shared_group';

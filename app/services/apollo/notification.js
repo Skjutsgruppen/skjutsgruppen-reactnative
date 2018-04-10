@@ -29,6 +29,7 @@ subscription notification($userId: Int!) {
         } 
         muted
         unreadNotificationCount
+        direction
       }
       ... on Group {
         id
@@ -107,6 +108,16 @@ subscription notification($userId: Int!) {
           status
         }
       }
+      ... on Location {
+        id
+        Trip {
+          id
+        }
+        Group {
+          id
+          outreach
+        }
+      }
     }
   }
 }
@@ -139,6 +150,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           }
           muted
           unreadNotificationCount
+          direction          
         }
         ... on Group {
           id
@@ -215,6 +227,16 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
               avatar
             }
             status
+          }
+        }
+        ... on Location {
+          id
+          Trip {
+            id
+          }
+          Group {
+            id
+            outreach
           }
         }
       }

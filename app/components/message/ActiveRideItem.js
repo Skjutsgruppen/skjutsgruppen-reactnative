@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
+
 const renderPic = (photo) => {
   let profileImage = null;
 
@@ -69,7 +71,14 @@ const renderPic = (photo) => {
 };
 
 const ActiveRideItem = ({ trip, resetMute, navigation }) => {
-  let tripName = `${trip.TripStart.name} - ${trip.TripEnd.name}`;
+  let tripName = `${trip.TripStart.name ?
+    trip.TripStart.name :
+    prettify(trip.direction)
+  } - ${
+    trip.TripEnd.name ?
+      trip.TripEnd.name :
+      prettify(trip.direction)
+  }`;
 
   if (tripName.length > 25) {
     tripName = `${tripName.slice(0, 25)} ...`;
