@@ -322,7 +322,7 @@ class Profile extends Component {
   fbLink() {
     const { user } = this.state;
 
-    if (user.fbId && user.fbId !== '') {
+    if (user.fbId) {
       return (
         <ProfileAction
           onPress={() => Linking.openURL(`https://www.facebook.com/${user.fbId}`)}
@@ -337,7 +337,7 @@ class Profile extends Component {
   twLink() {
     const { user } = this.state;
 
-    if (user.twitterId && user.twitterId !== '') {
+    if (user.twitterId) {
       return (
         <ProfileAction
           onPress={() => Linking.openURL(`https://twitter.com?profile_id=${user.twitterId}`)}

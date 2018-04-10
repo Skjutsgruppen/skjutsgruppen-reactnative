@@ -4,8 +4,6 @@ import Pie from 'react-native-pie';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { getToast } from '@config/toast';
-import Toast from '@components/toast';
-
 import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import Date from '@components/date';
 import TouchableHighlight from '@components/touchableHighlight';

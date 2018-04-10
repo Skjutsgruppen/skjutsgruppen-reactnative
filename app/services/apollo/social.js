@@ -126,3 +126,43 @@ export const withGetUserByTwitterId = graphql(GET_USER_BY_TWITTER_ID_QUERY, {
     getUserByTwitterId: id => mutate({ variables: { id } }),
   }),
 });
+
+const GET_USER_BY_FBID_QUERY = gql`
+mutation getUserByFbId($id: String!) {
+  getUserByFbId(fbId: $id) {
+    token,
+    status,
+    error,
+    message
+    User {
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalRideConversations
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      createdAt
+      isSupporter
+      twitterId
+    }
+  }
+}
+`;
+
+export const withgetUserByFbId = graphql(GET_USER_BY_FBID_QUERY, {
+  props: ({ mutate }) => ({
+    getUserByFbId: id => mutate({ variables: { id } }),
+  }),
+});
