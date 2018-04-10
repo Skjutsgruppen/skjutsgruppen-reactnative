@@ -58,6 +58,7 @@ subscription{
           type 
           description 
           seats 
+          direction
           User {
             id 
             firstName 
@@ -173,6 +174,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         type
         photo
         mapPhoto
+        direction
         TripStart {
           name 
           coordinates 
@@ -206,6 +208,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         type 
         description 
         seats 
+        direction
         User {
           id 
           firstName 
@@ -384,6 +387,7 @@ mutation createTrip(
   $share:ShareInput,
   $groupId: Int,
   $linkedTripId: Int,
+  $direction: directionEnum,
 ) {
   createTrip( input :{
     parentId: $parentId
@@ -401,6 +405,7 @@ mutation createTrip(
     share : $share
     groupId: $groupId
     linkedTripId: $linkedTripId
+    direction: $direction
   }) {
       id 
       type 
@@ -412,6 +417,7 @@ mutation createTrip(
         avatar
         deleted
       } 
+      direction
       TripStart {
         name 
         coordinates
@@ -461,6 +467,7 @@ export const withCreateTrip = graphql(CREATE_TRIP_QUERY, {
       type,
       groupId = null,
       linkedTripId = null,
+      direction,
     }) =>
       mutate({
         variables: {
@@ -479,6 +486,7 @@ export const withCreateTrip = graphql(CREATE_TRIP_QUERY, {
           share,
           groupId,
           linkedTripId,
+          direction,
         },
       }),
   }),
@@ -525,6 +533,7 @@ query trip($id: Int!) {
     type 
     description 
     seats 
+    direction
     User {
       id 
       firstName 
@@ -651,6 +660,7 @@ subscription onTripUpdated($id: Int!) {
     type 
     description 
     seats 
+    direction
     User {
       id 
       firstName 
@@ -818,6 +828,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
             areFriends
           }
         } 
+        direction
         TripStart {
           name 
           coordinates
@@ -893,6 +904,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           areFriends
         }
       }
+      direction
       TripStart {
         name 
         coordinates

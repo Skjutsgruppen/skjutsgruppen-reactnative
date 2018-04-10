@@ -87,9 +87,9 @@ class PlacesInput extends PureComponent {
     this.setState({ place: defaultValue });
   }
 
-  onPress = ({ place, source }) => {
-    this.setState({ place, showModal: false }, () => {
-      this.props.onChangeText({ place, source });
+  onPress = ({ place, source, direction }) => {
+    this.setState({ place, direction, showModal: false }, () => {
+      this.props.onChangeText({ place, source, direction });
     });
   }
 
@@ -99,8 +99,16 @@ class PlacesInput extends PureComponent {
   }
 
   getPlaceName = () => {
-    const { place } = this.state;
+    const { place, direction } = this.state;
     const { placeholder } = this.props;
+
+    if (direction) {
+      return (
+        <View>
+          <Text>{direction.charAt(0).toUpperCase() + direction.slice(1)}</Text>
+        </View>
+      );
+    }
 
     if (place.name) {
       return (

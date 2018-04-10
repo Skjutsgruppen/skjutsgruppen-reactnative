@@ -126,6 +126,8 @@ class Route extends PureComponent {
       isReturning: true,
       hideReturnTripOption: false,
       currentLocationSelected: '',
+      directionFrom: '',
+      directionTo: '',
     };
   }
 
@@ -169,7 +171,7 @@ class Route extends PureComponent {
     this.setStops(i, place, this.state.stopsCount);
   };
 
-  setEndPlace = ({ place, source }) => {
+  setEndPlace = ({ place, source, direction }) => {
     let { currentLocationSelected } = this.state;
 
     if (source === 'currentLocation') {
@@ -179,13 +181,14 @@ class Route extends PureComponent {
     }
 
     currentLocationSelected = source === 'currentLocation' ? 'end' : currentLocationSelected;
-    this.setState({ end: place, currentLocationSelected });
+    this.setState({ end: place, currentLocationSelected, directionTo: direction });
   }
 
-  setStartPlace = ({ place, source }) => {
+  setStartPlace = ({ place, source, direction }) => {
     let { currentLocationSelected } = this.state;
     currentLocationSelected = source === 'currentLocation' ? 'start' : currentLocationSelected;
-    this.setState({ start: place, currentLocationSelected });
+
+    this.setState({ start: place, directionFrom: direction, currentLocationSelected });
   }
 
   setStops = (count, stop, stopsCount) => {
@@ -263,6 +266,7 @@ class Route extends PureComponent {
           currentLocation={this.currentLocation('start')}
           defaultValue={start}
           onChangeText={this.setStartPlace}
+          direction
         />
         {
           isOffer &&
@@ -291,6 +295,7 @@ class Route extends PureComponent {
           currentLocation={this.currentLocation('end')}
           defaultValue={end}
           onChangeText={this.setEndPlace}
+          direction
         />
         {!hideReturnTripOption &&
           <View style={styles.returnSection}>

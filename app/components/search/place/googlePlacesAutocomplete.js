@@ -240,6 +240,10 @@ class GooglePlacesAutocomplete extends Component {
     });
   }
 
+  directionSelected = (direction) => {
+    this.props.onPress({ place: { name: '', countryCode: '', coordinates: [] }, direction, source: 'direction' });
+  }
+
   renderItem = ({ item }) => (
     <Place
       loading={this.state.selectedItem === item}
@@ -292,11 +296,11 @@ class GooglePlacesAutocomplete extends Component {
 
   renderDirectionOption = () => (
     <FiltersWrapper title="Or choose:">
-      <Filter label="Anywhere" active={false} />
-      <Filter label="North" active />
-      <Filter label="South" active />
-      <Filter label="West" active={false} />
-      <Filter label="East" active />
+      <Filter label="Anywhere" active={false} onPress={() => this.directionSelected('anywhere')} />
+      <Filter label="North" active={false} onPress={() => this.directionSelected('north')} />
+      <Filter label="South" active={false} onPress={() => this.directionSelected('south')} />
+      <Filter label="West" active={false} onPress={() => this.directionSelected('west')} />
+      <Filter label="East" active={false} onPress={() => this.directionSelected('east')} />
     </FiltersWrapper>
   );
 
