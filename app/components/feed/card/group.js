@@ -129,7 +129,15 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
                 {
                   group.outreach === STRETCH_TYPE_ROUTE &&
                   <AppText color={Colors.text.darkGray}>
-                    {group.TripStart.name} - {group.TripEnd.name}
+                    {
+                      group.TripStart.name ?
+                        group.TripStart.name :
+                        group.direction
+                    } - {
+                      group.TripEnd.name ?
+                        group.TripEnd.name :
+                        group.direction
+                    }
                   </AppText>
                 }
               </View>
@@ -179,6 +187,7 @@ Group.propTypes = {
     TripStart: PropTypes.object,
     TripEnd: PropTypes.object,
     description: PropTypes.string,
+    direction: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,

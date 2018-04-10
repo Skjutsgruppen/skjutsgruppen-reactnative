@@ -6,6 +6,7 @@ import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP, FEEDABLE_GROUP } from
 import ListItem from '@components/search/listItem';
 import GroupItem from '@components/search/groupItem';
 import PublicTransportItem from '@components/search/publicTransportItem';
+import { UcFirst } from '@config';
 
 const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
   if (resultsStyle === 'list') {
@@ -14,6 +15,8 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
     }
 
     const image = { uri: searchResult.User.avatar };
+    const startPlace = searchResult.TripStart.name || UcFirst(searchResult.direction);
+    const endPlace = searchResult.TripEnd.name || UcFirst(searchResult.direction);
 
     if (searchResult.type === FEED_TYPE_WANTED || searchResult.type === FEED_TYPE_OFFER) {
       return (
@@ -21,7 +24,7 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
           onPress={() => onPress(FEEDABLE_TRIP, searchResult)}
           type={searchResult.type}
           image={image}
-          title={`${searchResult.TripStart.name} - ${searchResult.TripEnd.name}`}
+          title={`${startPlace} - ${endPlace}`}
           date={searchResult.date}
         />
       );

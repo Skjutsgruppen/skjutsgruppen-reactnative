@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   actions: {
+    minWidth: 220,
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 24,

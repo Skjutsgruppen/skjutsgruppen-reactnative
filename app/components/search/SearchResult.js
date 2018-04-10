@@ -679,7 +679,7 @@ class SearchResult extends Component {
               <FloatingBackButton onPress={this.goBack} />
               <TouchableWithoutFeedback onPress={this.goBack}>
                 <View style={styles.fromRow}>
-                  <Text>{from.name}</Text>
+                  <Text>{from.name || this.prettify(direction) || 'Anywhere'}</Text>
                   <Text style={[styles.lightText, styles.bold]}>From</Text>
                 </View>
               </TouchableWithoutFeedback>

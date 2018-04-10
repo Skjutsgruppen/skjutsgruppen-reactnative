@@ -166,12 +166,11 @@ class FeedList extends PureComponent {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
 
-    if (type === FEEDABLE_LOCATION && detail.outreach === STRETCH_TYPE_AREA) {
-      navigation.navigate('Area', { info: detail });
-    }
+    if (type === FEEDABLE_LOCATION) {
+      const { group } = navigation.state.params;
 
-    if (type === FEEDABLE_LOCATION && detail.outreach === STRETCH_TYPE_ROUTE) {
-      navigation.navigate('Route', { info: detail });
+      if (group.outreach === STRETCH_TYPE_AREA) navigation.navigate('Area', { info: group });
+      if (group.outreach === STRETCH_TYPE_ROUTE) navigation.navigate('Route', { info: group });
     }
   };
 

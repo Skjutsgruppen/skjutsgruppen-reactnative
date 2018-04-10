@@ -58,6 +58,7 @@ export const ApiToastCode = {
 export const AppToastCode = {
   TO_REQUIRED: 'To is required',
   FROM_REQUIRED: 'From is required',
+  EITHER_FROM_TO_REQUIRED: 'Either From or To required',
   EMAIL_REQUIRED: 'Email is required',
   USERNAME_REQUIRED: 'Username is required',
   EMAIL_VERIFICATION_CODE_REQUIRED: 'Verification code is required',
