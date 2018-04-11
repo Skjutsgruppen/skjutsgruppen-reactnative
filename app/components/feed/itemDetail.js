@@ -21,6 +21,7 @@ import {
   GROUP_FEED_TYPE_ENABLER_ADDED,
   GROUP_FEED_TYPE_UPDATED,
   LOCATION_SHARED,
+  GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED,
 } from '@config/constant';
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -223,6 +224,17 @@ class Feed extends Component {
         <View>
           <Text style={styles.commentText}>
             {this.renderUsername()} has updated the {feed.updatedField} of the group
+          </Text>
+          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+        </View>
+      );
+    }
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED) {
+      return (
+        <View style={styles.wrapFlex}>
+          <Text style={styles.commentText}>
+            {this.renderUsername()} has stopped sharing location.
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
