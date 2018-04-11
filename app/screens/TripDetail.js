@@ -602,7 +602,7 @@ class TripDetail extends Component {
 
     return (
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent
         onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
         visible={this.state.recurringRidesModalVisible}

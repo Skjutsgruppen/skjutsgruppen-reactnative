@@ -1,15 +1,16 @@
 import React from 'react';
-import { withSearch } from '@services/apollo/search';
+import { withSearchAllTrips, withSearchAllGroups } from '@services/apollo/search';
 import PropTypes from 'prop-types';
-import Result from '@components/search/searchResult';
+import SearchResult from '@components/search/SearchResult';
+import { compose } from 'react-apollo';
 
-const SearchResult = withSearch(Result);
+const AllSearchResult = compose(withSearchAllTrips, withSearchAllGroups)(SearchResult);
 
 const Search = ({ navigation }) => {
   const { from, to, direction, filters, dates } = navigation.state.params;
 
   return (
-    <SearchResult
+    <AllSearchResult
       from={from.coordinates}
       to={to.coordinates}
       direction={direction}
@@ -17,6 +18,8 @@ const Search = ({ navigation }) => {
       toObj={to}
       filters={filters}
       dates={dates}
+      fromPlace={from}
+      toPlace={to}
     />
   );
 };

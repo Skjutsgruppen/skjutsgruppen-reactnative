@@ -50,4 +50,3 @@ FriendsWithNoMembership.propTypes = {
 };
 
 export default FriendsWithNoMembership;
-

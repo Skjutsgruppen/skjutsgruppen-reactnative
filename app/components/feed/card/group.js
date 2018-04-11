@@ -151,9 +151,6 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
           <View style={styles.profilePicWrapper}>
             {profileImage}
           </View>
-          <View style={styles.profilePicWrapper}>
-            {profileImage}
-          </View>
         </View>
       </TouchableWithoutFeedback>
       {
