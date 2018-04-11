@@ -52,6 +52,7 @@ export const ApiToastCode = {
   EMAIL_VERIFIED: 'Email verified',
   EMAIL_VERIFICATION_CODE_EXPIRED: 'Your verification code has expired, please resend a new verification code.',
   EMAIL_NOT_AVAILABLE: 'Email not available',
+  NEED_TO_PARTICIPATE_IN_GROUP_TO_SHARE_LOCATION: 'You are not a participant.',
 };
 
 export const AppToastCode = {
