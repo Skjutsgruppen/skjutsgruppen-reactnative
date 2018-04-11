@@ -884,8 +884,8 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
 `;
 
 export const TRIPS_QUERY = gql`
-query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, $limit: Int, $offset: Int, $applyQueryString: Boolean ){ 
-  trips(input:{userId:$id, type:$type, active:$active, queryString: $queryString, applyQueryString: $applyQueryString}, limit: $limit, offset: $offset) { 
+query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, $limit: Int, $offset: Int, $applyQueryString: Boolean, $interval: Int ){ 
+  trips(input:{userId:$id, type:$type, active:$active, queryString: $queryString, applyQueryString: $applyQueryString, interval: $interval}, limit: $limit, offset: $offset) { 
     rows {
       id
       type 
@@ -960,6 +960,10 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         id
         description
       }
+      flexibilityInfo {
+        duration
+      }
+      duration
     }
     count
   }
@@ -976,9 +980,10 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
       active = true,
       queryString = null,
       applyQueryString = false,
+      interval = null,
     },
   ) => ({
-    variables: { id, offset, limit, type, active, queryString, applyQueryString },
+    variables: { id, offset, limit, type, active, queryString, applyQueryString, interval },
     fetchPolicy: applyQueryString ? 'network-only' : 'cache-and-network',
   }),
   props: (
