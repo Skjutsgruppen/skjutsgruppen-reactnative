@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
+import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
 import { RoundedButton, Avatar, CostCard } from '@components/common';
 import ProfileAction from '@components/profile/profileAction';
@@ -13,6 +14,9 @@ import { connect } from 'react-redux';
 import { LoginManager } from 'react-native-fbsdk';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
+import { compose } from 'react-apollo';
+import { withRemoveAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
 
 const styles = StyleSheet.create({
   basket: {
@@ -116,8 +120,10 @@ class Garden extends Component {
   }
 
   logout = () => {
-    const { logout } = this.props;
-    this.setState({ loading: true }, () => {
+    const { logout, removeAppToken } = this.props;
+    this.setState({ loading: true }, async () => {
+      await removeAppToken(getDeviceId());
+      await FCM.cancelAllLocalNotifications();
       logout()
         .then(() => LoginManager.logOut())
         .then(() => this.reset())
@@ -232,6 +238,7 @@ Garden.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  removeAppToken: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Garden);
+export default compose(withRemoveAppToken, connect(mapStateToProps, mapDispatchToProps))(Garden);

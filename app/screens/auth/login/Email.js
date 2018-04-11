@@ -3,6 +3,7 @@ import { View, StyleSheet, TextInput, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
+import FCM from 'react-native-fcm';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
@@ -16,6 +17,8 @@ import BackButton from '@components/auth/backButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { NavigationActions } from 'react-navigation';
+import { withStoreAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -56,7 +59,7 @@ class Login extends Component {
     this.state = ({ username: '', password: '', loading: false, error: '', inputs: {} });
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { auth, navigation } = this.props;
 
     if (auth.login) {
@@ -66,7 +69,7 @@ class Login extends Component {
 
   onSubmit = async () => {
     this.setState({ loading: true });
-    const { submit, setLogin, setRegister, navigation, syncContacts } = this.props;
+    const { submit, setLogin, setRegister, navigation, syncContacts, storeAppToken } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
@@ -84,7 +87,10 @@ class Login extends Component {
           });
         } else {
           setLogin({ token, user: User })
-            .then(() => {
+            .then(async () => {
+              await FCM.getFCMToken()
+                .then(appToken => storeAppToken(appToken, getDeviceId()));
+
               navigation.dispatch(
                 NavigationActions.reset({
                   index: 0,
@@ -95,6 +101,7 @@ class Login extends Component {
                   ],
                 }),
               );
+
               syncContacts();
             })
             .catch(err => console.warn(err));
@@ -212,6 +219,7 @@ Login.propTypes = {
     reset: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  storeAppToken: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
@@ -226,5 +234,6 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   userLogin,
   withContactSync,
+  withStoreAppToken,
   connect(mapStateToProps, mapDispatchToProps),
 )(Login);

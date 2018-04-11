@@ -271,14 +271,14 @@ export const withConversation = graphql(CONVERSATION_QUERY, {
 });
 
 const STORE_APP_TOKEN_QUERY = gql`
-  mutation storeAppToken($token: String){
-    storeAppToken(token: $token)
+  mutation storeAppToken($token: String, $deviceId: String!){
+    storeAppToken(token: $token, deviceId: $deviceId)
   }
 `;
 
 export const withStoreAppToken = graphql(STORE_APP_TOKEN_QUERY, {
   props: ({ mutate }) => ({
-    storeAppToken: token => mutate({ variables: { token } }),
+    storeAppToken: (token, deviceId) => mutate({ variables: { token, deviceId } }),
   }),
 });
 
@@ -292,3 +292,16 @@ export const withDeleteAccount = graphql(DELETE_ACCOUNT_QUERY, {
     deleteAccount: (id = null) => mutate({ variables: { id } }),
   }),
 });
+
+const REMOVE_APP_TOKEN_QUERY = gql`
+  mutation removeAppToken($deviceId: String!){
+    removeAppToken(deviceId: $deviceId)
+  }
+`;
+
+export const withRemoveAppToken = graphql(REMOVE_APP_TOKEN_QUERY, {
+  props: ({ mutate }) => ({
+    removeAppToken: deviceId => mutate({ variables: { deviceId } }),
+  }),
+});
+
