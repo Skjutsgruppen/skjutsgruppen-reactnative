@@ -182,9 +182,21 @@ class AreaMap extends PureComponent {
     this.mapView.animateToRegion(region, DURATION);
   }
 
+  isMember = () => {
+    const { group } = this.props;
+    const { __typename } = group;
+
+    if (__typename === 'Trip') return true;
+    if (__typename === 'Group') return (group.membershipStatus === 'accepted');
+
+    return false;
+  }
+
   renderLiveLocations = () => {
     const { group } = this.props;
     const { sharedLocations, myPosition } = this.state;
+
+    if (!this.isMember()) return null;
 
     let markers = [];
     if (sharedLocations.length > 0) {
@@ -231,7 +243,7 @@ class AreaMap extends PureComponent {
 
   render() {
     const { loading, group, locationSharedToSpecificResource } = this.props;
-    const { origin, initialRegion } = this.state;
+    const { origin, initialRegion, myPosition } = this.state;
     const { __typename } = group;
 
     if (loading || locationSharedToSpecificResource.loading) return null;
@@ -262,16 +274,19 @@ class AreaMap extends PureComponent {
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setState({ filterOpen: false })}
         />
-        <ShareLocationWithData
-          locationSharedToSpecificResource={locationSharedToSpecificResource}
-          id={group.id}
-          type={__typename}
-          detail={group}
-          gotoRegion={this.gotoRegion}
-          myPosition={this.myPosition}
-          startTrackingLocation={this.startTrackingLocation}
-          stopTrackingLocation={this.stopTrackingLocation}
-        />
+        {this.isMember() &&
+          <ShareLocationWithData
+            locationSharedToSpecificResource={locationSharedToSpecificResource}
+            id={group.id}
+            type={__typename}
+            detail={group}
+            gotoRegion={this.gotoRegion}
+            myPosition={myPosition}
+            startTrackingLocation={this.startTrackingLocation}
+            stopTrackingLocation={this.stopTrackingLocation}
+            currentLocation={this.currentLocation}
+          />
+        }
       </View>
     );
   }

@@ -99,3 +99,5 @@ export const GROUP_FEED_TYPE_ENABLER_ADDED = 'enabler_added';
 export const GROUP_FEED_TYPE_UPDATED = 'group_updated';
 
 export const LOCATION_SHARED = 'location_shared';
+
+export const GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED = 'location_sharing_stopped';

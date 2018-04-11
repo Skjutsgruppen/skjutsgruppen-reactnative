@@ -138,7 +138,7 @@ class JoinGroup extends Component {
     if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
       const coordinates = { area: group.areaCoordinates };
 
-      navigation.navigate('Area', { coordinates });
+      navigation.navigate('Area', { coordinates, info: group });
     }
 
     if (group.outreach === STRETCH_TYPE_ROUTE) {
@@ -148,7 +148,7 @@ class JoinGroup extends Component {
         stops: group.Stops,
       };
 
-      navigation.navigate('Route', { coordinates });
+      navigation.navigate('Route', { coordinates, info: group });
     }
 
     return null;
