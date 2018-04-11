@@ -3,6 +3,7 @@ import { View, Alert, Modal, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import FCM from 'react-native-fcm';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withNavigation, NavigationActions } from 'react-navigation';
@@ -12,6 +13,8 @@ import { withContactSync } from '@services/apollo/contact';
 import { withSocialConnect } from '@services/apollo/social';
 import { userRegister, withUpdateProfile } from '@services/apollo/auth';
 import { Colors } from '@theme';
+import { withStoreAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -36,11 +39,14 @@ class TwitterLogin extends PureComponent {
 
   onLogin = async (twitter) => {
     const { profile, auth: { authToken, authTokenSecret } } = twitter.twitterUser;
-    const { setLogin, navigation, syncContacts } = this.props;
+    const { setLogin, navigation, syncContacts, storeAppToken } = this.props;
     this.setState({ showModal: true });
 
     if (twitter.hasID) {
       await setLogin(twitter.userById);
+      await FCM.getFCMToken()
+        .then(token => storeAppToken(token, getDeviceId()));
+
       navigation.dispatch(
         NavigationActions.reset({
           index: 0,
@@ -51,6 +57,7 @@ class TwitterLogin extends PureComponent {
           ],
         }),
       );
+
       syncContacts();
       return;
     }
@@ -78,7 +85,7 @@ class TwitterLogin extends PureComponent {
 
   connect = async ({ profile, authToken, authTokenSecret }) => {
     this.setState({ showModal: true });
-    const { socialConnect, setLogin, navigation, syncContacts } = this.props;
+    const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
     const response = await socialConnect({
       id: profile.id,
       email: profile.email,
@@ -91,6 +98,9 @@ class TwitterLogin extends PureComponent {
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
+
+    await FCM.getFCMToken()
+      .then(token => storeAppToken(token, getDeviceId()));
 
     navigation.dispatch(
       NavigationActions.reset({
@@ -192,6 +202,7 @@ TwitterLogin.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
   signup: PropTypes.bool,
+  storeAppToken: PropTypes.func.isRequired,
 };
 
 TwitterLogin.defaultProps = {
@@ -212,4 +223,5 @@ export default compose(withNavigation,
   withContactSync,
   withSocialConnect,
   withUpdateProfile,
+  withStoreAppToken,
   connect(null, mapDispatchToProps))(TwitterLogin);

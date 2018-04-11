@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
+import FCM from 'react-native-fcm';
 import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
@@ -15,12 +16,13 @@ import TwitterConnect from '@components/twitter/twitterConnect';
 import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
-import { withAccount, withDeleteAccount } from '@services/apollo/profile';
+import { withAccount, withDeleteAccount, withRemoveAppToken } from '@services/apollo/profile';
 import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import { NavigationActions } from 'react-navigation';
+import { getDeviceId } from '@helpers/device';
 
 const AvailableLanguages = {
   en: 'English',
@@ -299,12 +301,14 @@ class EditProfile extends Component {
   }
 
   deleteAccount = () => {
-    const { deleteAccount, logout } = this.props;
+    const { deleteAccount, logout, removeAppToken } = this.props;
 
     this.setState({ loading: true }, () => {
       deleteAccount()
         .then(() => this.setConfirmModalVisibility(false))
-        .then(() => {
+        .then(async () => {
+          await removeAppToken(getDeviceId());
+          await FCM.cancelAllLocalNotifications();
           logout()
             .then(() => LoginManager.logOut())
             .then(() => this.reset())
@@ -755,6 +759,7 @@ EditProfile.propTypes = {
   resendEmailVerification: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   deleteAccount: PropTypes.func.isRequired,
+  removeAppToken: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -775,5 +780,6 @@ export default compose(
   withResendEmailVerification,
   withRegeneratePhoneVerification,
   withDeleteAccount,
+  withRemoveAppToken,
   connect(mapStateToProps, mapDispatchToProps),
 )(EditProfile);

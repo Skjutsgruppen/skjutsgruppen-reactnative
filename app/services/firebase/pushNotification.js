@@ -1,16 +1,25 @@
-import { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Platform } from 'react-native';
 import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import PropTypes from 'prop-types';
 import { withStoreAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
+import ScheduledNotification from '@services/firebase/scheduleNotification';
+import Scheduler from '@services/firebase/scheduler';
 
-class PushNotification extends PureComponent {
-  componentDidMount() {
-    const { storeAppToken } = this.props;
+class PushNotification extends Component {
+  async componentDidMount() {
+    const { storeAppToken, user } = this.props;
+
     FCM.removeAllDeliveredNotifications();
     FCM.requestPermissions();
-    FCM.getFCMToken().then(token => storeAppToken(token).catch(err => console.warn(err)));
+
+    if (user && user.id) {
+      await FCM.getFCMToken()
+        .then(appToken => storeAppToken(appToken, getDeviceId()));
+    }
 
     this.notificationListner = FCM.on(FCMEvent.Notification, (notif) => {
       if (notif.local_notification || notif.opened_from_tray) {
@@ -34,8 +43,12 @@ class PushNotification extends PureComponent {
             break;
         }
       }
-
-      this.showLocalNotification(notif.fcm);
+      if (notif.fcm) {
+        this.showLocalNotification(notif.fcm);
+      }
+      if (notif.custom_notification) {
+        this.scheduleLocalNotification(notif.custom_notification);
+      }
     });
 
     this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, (token) => {
@@ -45,7 +58,7 @@ class PushNotification extends PureComponent {
 
   componentWillUnmount() {
     this.notificationListner.remove();
-    this.refreshTokenListener.remove();
+    this.refreshTokenLisstener.remove();
   }
 
   showLocalNotification = (notif) => {
@@ -60,13 +73,35 @@ class PushNotification extends PureComponent {
     });
   }
 
+  scheduleLocalNotification = (data) => {
+    const payload = JSON.parse(data);
+    Scheduler.schedule(payload);
+  }
+
   render() {
+    const { user } = this.props;
+
+    if (user.id) {
+      return (
+        <ScheduledNotification />
+      );
+    }
+
     return null;
   }
 }
 
 PushNotification.propTypes = {
   storeAppToken: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+  }),
 };
 
-export default compose(withStoreAppToken)(PushNotification);
+PushNotification.defaultProps = {
+  user: {},
+};
+
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withStoreAppToken, connect(mapStateToProps))(PushNotification);
