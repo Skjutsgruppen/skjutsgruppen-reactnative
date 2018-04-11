@@ -233,9 +233,23 @@ class RouteMap extends PureComponent {
     this.mapView.animateToRegion(region, DURATION);
   }
 
+  isMember = () => {
+    const { info } = this.state;
+    const { __typename } = info;
+
+    if (__typename === 'Trip') return info.isParticipant;
+
+    if (__typename === 'Group') return (info.membershipStatus === 'accepted');
+
+    return false;
+  }
+
+
   renderLiveLocations = () => {
     const { sharedLocations, info, myPosition } = this.state;
     let markers = [];
+
+    if (!this.isMember()) return null;
 
     if (sharedLocations.length > 0) {
       markers = sharedLocations.map((location) => {
@@ -246,7 +260,7 @@ class RouteMap extends PureComponent {
 
         return (
           <Marker
-            key={`${location.id}-${moment().unix()}`}
+            key={`${location.id}${moment().unix()}`}
             onPress={(e) => {
               e.stopPropagation();
             }}
@@ -267,7 +281,7 @@ class RouteMap extends PureComponent {
       };
       markers.push(
         <Marker
-          key={`${myPosition.id}-${moment().unix()}`}
+          key={`${myPosition.id}${moment().unix()}`}
           onPress={(e) => {
             e.stopPropagation();
           }}
@@ -309,7 +323,7 @@ class RouteMap extends PureComponent {
 
   render() {
     const { loading, locationSharedToSpecificResource } = this.props;
-    const { origin, destination, initialRegion, waypoints, info } = this.state;
+    const { origin, destination, initialRegion, waypoints, info, myPosition } = this.state;
     const { __typename } = info;
 
     if (loading || locationSharedToSpecificResource.loading) return null;
@@ -349,16 +363,19 @@ class RouteMap extends PureComponent {
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setState({ filterOpen: false })}
         />
-        <ShareLocationWithData
-          locationSharedToSpecificResource={locationSharedToSpecificResource}
-          id={info.id}
-          type={__typename}
-          detail={info}
-          gotoRegion={this.gotoRegion}
-          myPosition={this.myPosition}
-          startTrackingLocation={this.startTrackingLocation}
-          stopTrackingLocation={this.stopTrackingLocation}
-        />
+        {this.isMember() &&
+          <ShareLocationWithData
+            locationSharedToSpecificResource={locationSharedToSpecificResource}
+            id={info.id}
+            type={__typename}
+            detail={info}
+            gotoRegion={this.gotoRegion}
+            myPosition={myPosition}
+            startTrackingLocation={this.startTrackingLocation}
+            stopTrackingLocation={this.stopTrackingLocation}
+            currentLocation={this.currentLocation}
+          />
+        }
       </View>
     );
   }

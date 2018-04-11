@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, Modal } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, Modal, Alert } from 'react-native';
 import Pie from 'react-native-pie';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
+import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 
 import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
 import Date from '@components/date';
@@ -170,7 +172,10 @@ class ShareLocation extends PureComponent {
     if (__typename === 'Group') {
       obj.groupId = detail.id;
       startTrackingLocation();
-      shareLocation(obj);
+      shareLocation(obj)
+        .catch((error) => {
+          Alert.alert(getToast(error));
+        });
     }
     if (__typename === 'Trip') {
       obj.tripId = detail.id;
@@ -320,8 +325,8 @@ class ShareLocation extends PureComponent {
   }
 
   renderShareLocation = () => {
+    const { stopSpecific, detail, stopTrackingLocation, myPosition, currentLocation } = this.props;
     const { myLocation } = this.state;
-    const { stopSpecific, detail, stopTrackingLocation } = this.props;
     const { __typename } = detail;
 
     return (
@@ -329,7 +334,10 @@ class ShareLocation extends PureComponent {
         onPress={() => {
           if (myLocation.id) {
             stopTrackingLocation();
-            stopSpecific({ id: detail.id, type: __typename });
+            stopSpecific({ id: detail.id, type: __typename })
+              .catch(error => Alert.alert(error.code));
+          } else if (!myPosition.latitude || !myPosition.longitude) {
+            currentLocation();
           } else {
             this.setState({ showActionOption: true });
           }
@@ -340,7 +348,10 @@ class ShareLocation extends PureComponent {
           <View style={[styles.thumbnail, styles.purpleBg]}>
             <Image source={require('@assets/icons/ic_location_white.png')} style={{ alignSelf: 'center' }} />
           </View>
-          {!myLocation.id &&
+          {!myLocation.id && (!myPosition.latitude || !myPosition.longitude) &&
+            <Text>Location not found. Try again!</Text>
+          }
+          {!myLocation.id && (myPosition.latitude && myPosition.longitude) &&
             <View>
               <Text style={TextStyles.blue}>Share my live location for...</Text>
               <Text style={TextStyles.light}>Choose with who and for how long you share</Text>
@@ -398,10 +409,12 @@ ShareLocation.propTypes = {
   myPosition: PropTypes.shape(),
   startTrackingLocation: PropTypes.func.isRequired,
   stopTrackingLocation: PropTypes.func.isRequired,
+  currentLocation: PropTypes.func,
 };
 
 ShareLocation.defaultProps = {
   myPosition: {},
+  currentLocation: null,
 };
 
 export default compose(withShareLocation)(ShareLocation);
