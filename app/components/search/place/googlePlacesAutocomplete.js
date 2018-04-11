@@ -155,7 +155,7 @@ class GooglePlacesAutocomplete extends Component {
       response = await response.json();
       this.props.onPress({
         place: {
-          name: response.results[0].address_components[0].long_name,
+          name: response.results[0].formatted_address.split(',')[0],
           countryCode: response.results[0].address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
           coordinates: [longitude, latitude],
         },
@@ -175,7 +175,7 @@ class GooglePlacesAutocomplete extends Component {
           const details = response.result;
           this.props.onPress({
             place: {
-              name: details.address_components[0].long_name,
+              name: details.formatted_address.split(',')[0],
               countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
               coordinates: [details.geometry.location.lng, details.geometry.location.lat],
             },
