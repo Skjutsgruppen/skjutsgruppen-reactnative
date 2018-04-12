@@ -75,6 +75,7 @@ class PlacesInput extends PureComponent {
         coordinates: [],
       },
       showModal: false,
+      directionText: null,
     });
   }
 
@@ -88,7 +89,7 @@ class PlacesInput extends PureComponent {
   }
 
   onPress = ({ place, source, direction }) => {
-    this.setState({ place, direction, showModal: false }, () => {
+    this.setState({ place, directionText: direction, direction, showModal: false }, () => {
       this.props.onChangeText({ place, source, direction });
     });
   }
@@ -141,6 +142,7 @@ class PlacesInput extends PureComponent {
           minLength={2}
           onPress={this.onPress}
           direction={direction}
+          directionText={this.state.directionText}
           currentLocation={currentLocation}
         />
         <View style={styles.closeWrapper}>
