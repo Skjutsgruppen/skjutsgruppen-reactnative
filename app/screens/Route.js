@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import GeoLocation from '@services/location/geoLocation';
 import { withUpdateLocation } from '@services/apollo/location';
 import { withTrip } from '@services/apollo/trip';
+import ConfirmModal from '@components/common/confirmModal';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -48,6 +49,8 @@ class RouteMap extends PureComponent {
     super(props);
     this.mapView = null;
     this.state = ({
+      showTurnOnGpsModal: false,
+      fetchingPosition: false,
       initialRegion: {},
       origin: {},
       destination: {},
@@ -100,8 +103,6 @@ class RouteMap extends PureComponent {
       stops: info.Stops,
       sharedLocations: data,
     });
-
-    this.currentLocation();
   }
 
   componentDidMount() {
@@ -131,17 +132,35 @@ class RouteMap extends PureComponent {
     }
   }
 
-  currentLocation = () => {
-    navigator.geolocation.getCurrentPosition(
+  openGpsSettings = () => {
+    GeoLocation.showSettings();
+    this.setState({ showTurnOnGpsModal: false });
+  }
+
+  currentLocation = async () => {
+    this.setState({ fetchingPosition: true });
+    const isGpsEnabled = await GeoLocation.isGpsEnabled();
+
+    if (!isGpsEnabled) {
+      this.setState({ showTurnOnGpsModal: true, fetchingPosition: false });
+
+      return Promise.resolve();
+    }
+
+    return navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
+          fetchingPosition: false,
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           },
         });
+
+        return position;
       },
       () => {
+        this.setState({ fetchingPosition: false });
         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
       },
       { timeout: 20000, maximumAge: 1000 },
@@ -222,12 +241,17 @@ class RouteMap extends PureComponent {
     }
   }
 
+  handleBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
   gotoRegion = (coordinates) => {
     const region = {
       longitude: coordinates[0],
       latitude: coordinates[1],
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
+      latitudeDelta: 0.00511,
+      longitudeDelta: 0.00421,
     };
 
     this.mapView.animateToRegion(region, DURATION);
@@ -244,6 +268,17 @@ class RouteMap extends PureComponent {
     return false;
   }
 
+  renderTurnOnGpsActionModal = () => (
+    <ConfirmModal
+      visible={this.state.showTurnOnGpsModal}
+      loading={false}
+      onDeny={() => this.setState({ showTurnOnGpsModal: false })}
+      confirmLabel={'Open settings'}
+      onConfirm={() => this.openGpsSettings()}
+      message={'Your GPS is turned off.'}
+      onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
+    />
+  )
 
   renderLiveLocations = () => {
     const { sharedLocations, info, myPosition } = this.state;
@@ -323,7 +358,14 @@ class RouteMap extends PureComponent {
 
   render() {
     const { loading, locationSharedToSpecificResource } = this.props;
-    const { origin, destination, initialRegion, waypoints, info, myPosition } = this.state;
+    const {
+      origin,
+      destination,
+      initialRegion,
+      waypoints,
+      info,
+      myPosition,
+      fetchingPosition } = this.state;
     const { __typename } = info;
 
     if (loading || locationSharedToSpecificResource.loading) return null;
@@ -332,6 +374,7 @@ class RouteMap extends PureComponent {
       <View style={styles.container}>
         <Navigation
           arrowBackIcon
+          showMenu={false}
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
@@ -374,8 +417,10 @@ class RouteMap extends PureComponent {
             startTrackingLocation={this.startTrackingLocation}
             stopTrackingLocation={this.stopTrackingLocation}
             currentLocation={this.currentLocation}
+            fetchingPosition={fetchingPosition}
           />
         }
+        {this.renderTurnOnGpsActionModal()}
       </View>
     );
   }
