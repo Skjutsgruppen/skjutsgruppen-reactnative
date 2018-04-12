@@ -18,7 +18,8 @@ subscription{
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
           outreach
           type
@@ -60,12 +61,14 @@ subscription{
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
             relation {
               path{
                 id
                 firstName
                 avatar
+                deleted
               }
               areFriends
             }
@@ -127,13 +130,15 @@ subscription{
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
           Participants{
             User {
               id
               avatar
               firstName
+              deleted
             }
             status
           }
@@ -162,6 +167,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id 
           firstName 
           avatar
+          deleted
         } 
         outreach
         type
@@ -203,12 +209,14 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
           relation {
             path{
               id
               firstName
               avatar
+              deleted
             }
             areFriends
           }
@@ -270,13 +278,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
         }
         Participants{
           User {
             id
             avatar
             firstName
+            deleted
           }
           status
         }
@@ -399,7 +409,8 @@ mutation createTrip(
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       TripStart {
         name 
@@ -518,11 +529,13 @@ query trip($id: Int!) {
       id 
       firstName 
       avatar 
+      deleted
       relation {
           path{
           id
           firstName
           avatar
+          deleted
         }
         areFriends
       }
@@ -547,6 +560,7 @@ query trip($id: Int!) {
       User {
         id
         avatar
+        deleted
       }
       interval
       duration
@@ -593,7 +607,8 @@ query trip($id: Int!) {
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       }
     }
     Recurring {
@@ -612,7 +627,8 @@ query trip($id: Int!) {
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       }
     }
     Group {
@@ -638,12 +654,14 @@ subscription onTripUpdated($id: Int!) {
     User {
       id 
       firstName 
-      avatar 
+      avatar
+      deleted
       relation {
           path{
           id
           firstName
           avatar
+          deleted
         }
         areFriends
       }
@@ -668,6 +686,7 @@ subscription onTripUpdated($id: Int!) {
       User {
         id
         avatar
+        deleted
       }
       interval
       duration
@@ -714,7 +733,8 @@ subscription onTripUpdated($id: Int!) {
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       }
     }
     Recurring {
@@ -733,7 +753,8 @@ subscription onTripUpdated($id: Int!) {
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       }
     }
     Group {
@@ -785,12 +806,14 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
           relation {
             path{
               id
               firstName
               avatar
+              deleted
             }
             areFriends
           }
@@ -824,7 +847,8 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
         }
         Participants{
@@ -857,12 +881,14 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
         relation {
           path{
             id
             firstName
             avatar
+            deleted
           }
           areFriends
         }
@@ -896,7 +922,8 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
         } 
       }
       Participants {
@@ -905,6 +932,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           firstName
           lastName
           avatar
+          deleted
         }
         count
       }
@@ -1003,11 +1031,13 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
           firstName
           lastName
           avatar
+          deleted
           relation {
             path{
               id
               firstName
               avatar
+              deleted
             }
             areFriends
           }
@@ -1028,6 +1058,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               firstName
               lastName
               avatar
+              deleted
             }
           }
         }
@@ -1039,6 +1070,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               firstName
               lastName
               avatar
+              deleted
             }
             description
             Participants {
@@ -1047,6 +1079,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
                 firstName
                 lastName
                 avatar
+                deleted
               }
               status
             }
@@ -1080,6 +1113,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               firstName
               lastName
               avatar
+              deleted
             }
             TripStart {
               name
@@ -1115,11 +1149,13 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
         firstName
         lastName
         avatar
+        deleted
         relation {
           path{
             id
             firstName
             avatar
+            deleted
           }
           areFriends
         }
@@ -1140,6 +1176,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             firstName
             lastName
             avatar
+            deleted
           }
         }
       }
@@ -1151,6 +1188,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             firstName
             lastName
             avatar
+            deleted
           }
           description
           Participants {
@@ -1159,6 +1197,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
               firstName
               lastName
               avatar
+              deleted
             }
             status
           }
@@ -1192,6 +1231,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             firstName
             lastName
             avatar
+            deleted
           }
           TripStart {
             name

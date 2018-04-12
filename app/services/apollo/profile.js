@@ -28,6 +28,7 @@ subscription updatedProfile($id: Int){
     friendRequestId
     createdAt
     isSupporter
+    deleted
     twitterId
   }
 }`;
@@ -58,6 +59,7 @@ query profile($id: Int){
     friendRequestId
     createdAt
     isSupporter
+    deleted
     twitterId
   }
 }`;
@@ -183,11 +185,13 @@ const CONVERSATION_QUERY = gql`
           id 
           firstName 
           avatar 
+          deleted
           relation {
             path{
               id
               firstName
               avatar
+              deleted
             }
             areFriends
           }
@@ -222,6 +226,7 @@ const CONVERSATION_QUERY = gql`
             id 
             firstName 
             avatar 
+            deleted
           } 
         }
         Participants{

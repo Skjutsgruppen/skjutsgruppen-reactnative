@@ -124,7 +124,7 @@ class Marker extends PureComponent {
           tripType === FEED_TYPE_WANTED ? styles.blueBg : {},
         ]}
         >
-          {count && <Text style={styles.seatCount}>{count > 0 ? count : ''}</Text>}
+          {!!count && <Text style={styles.seatCount}>{count > 0 ? count : ''}</Text>}
         </View>
         {children}
       </MapView.Marker>
@@ -147,7 +147,7 @@ Marker.propTypes = {
 
 Marker.defaultProps = {
   children: null,
-  current: PropTypes.false,
+  current: false,
   tripType: null,
   count: null,
   image: '',

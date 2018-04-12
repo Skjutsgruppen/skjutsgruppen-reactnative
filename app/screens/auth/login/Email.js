@@ -15,6 +15,7 @@ import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { NavigationActions } from 'react-navigation';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -84,7 +85,16 @@ class Login extends Component {
         } else {
           setLogin({ token, user: User })
             .then(() => {
-              navigation.replace('Tab');
+              navigation.dispatch(
+                NavigationActions.reset({
+                  index: 0,
+                  actions: [
+                    NavigationActions.navigate({
+                      routeName: 'Tab',
+                    }),
+                  ],
+                }),
+              );
               syncContacts();
             })
             .catch(err => console.warn(err));
