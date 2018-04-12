@@ -9,7 +9,7 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/facebookConnect';
 import { Loading } from '@components/common';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
 import { Colors } from '@theme';
 
@@ -41,7 +41,16 @@ class FBLogin extends PureComponent {
 
     if (fb.hasID) {
       await setLogin(fb.userById);
-      navigation.replace('Tab');
+      navigation.dispatch(
+        NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: 'Tab',
+            }),
+          ],
+        }),
+      );
       syncContacts();
       return;
     }
@@ -82,8 +91,17 @@ class FBLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
+    navigation.dispatch(
+      NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }),
+    );
     syncContacts();
-    navigation.replace('Tab');
   }
 
   async register({ profile, auth: { accessToken: fbToken } }) {
@@ -114,11 +132,7 @@ class FBLogin extends PureComponent {
         user: response.data.updateUser.User,
       });
 
-      // if (profile.verified) {
       navigation.replace('EmailVerified');
-      // } else {
-      //   navigation.replace('CheckMail');
-      // }
     } catch (error) {
       console.warn(error, error.graphQLErrors[0].code);
     }

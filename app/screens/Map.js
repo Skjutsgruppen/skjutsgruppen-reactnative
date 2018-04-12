@@ -304,25 +304,30 @@ class Map extends PureComponent {
       return null;
     }
 
-    return trips.map((row) => {
-      coordinate = {
-        latitude: row.coordinate.lat,
-        longitude: row.coordinate.lng,
-      };
-      return (
-        <Marker
-          key={`${row.trip.id}-${moment().unix()}`}
-          onPress={(e) => {
-            e.stopPropagation();
-            this.onMarkerPress(row.trip);
-          }}
-          coordinate={coordinate}
-          image={row.trip.User.avatar}
-          count={row.trip.seats}
-          tripType={row.trip.type}
-        />
-      );
-    });
+    try {
+      return trips.map((row) => {
+        coordinate = {
+          latitude: row.coordinate.lat,
+          longitude: row.coordinate.lng,
+        };
+        return (
+          <Marker
+            key={`${row.trip.id}-${moment().unix()}`}
+            onPress={(e) => {
+              e.stopPropagation();
+              this.onMarkerPress(row.trip);
+            }}
+            coordinate={coordinate}
+            image={row.trip.User.avatar}
+            count={row.trip.seats}
+            tripType={row.trip.type}
+          />
+        );
+      });
+    } catch (err) {
+      console.warn(err);
+      return null;
+    }
   }
 
   render() {

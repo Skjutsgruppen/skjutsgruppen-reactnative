@@ -96,7 +96,10 @@ class About extends Component {
   render() {
     return (
       <View>
-        <AddPhoto onSelect={res => this.setState({ photo: res.data })} />
+        <AddPhoto
+          defaultPhoto={this.state.photo}
+          onSelect={res => this.setState({ photo: res.data })}
+        />
         <CommentBox
           label="Name of the group"
           onChangeText={name => this.setState({ name })}

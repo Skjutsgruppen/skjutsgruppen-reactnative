@@ -322,7 +322,13 @@ class Feed extends Component {
     const userDetail = user || feed.User;
 
     return (
-      <Text style={styles.name} onPress={() => onPress('Profile', userDetail.id)}>
+      <Text
+        style={styles.name}
+        onPress={() => {
+          if (userDetail.deleted) return null;
+          return onPress('Profile', userDetail.id);
+        }}
+      >
         {userDetail.firstName}
       </Text>
     );

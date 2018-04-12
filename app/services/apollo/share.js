@@ -34,6 +34,7 @@ query locationSharedToSpecificResource($resourceId: Int!, $resourceType: Shareab
       id
       firstName
       avatar
+      deleted
     }
     locationCoordinates
     sharedFrom
@@ -54,6 +55,7 @@ subscription onLocationShared($userId: Int!, $tripId: Int, $groupId: Int) {
       id
       firstName
       avatar
+      deleted
     }
     locationCoordinates
     sharedFrom

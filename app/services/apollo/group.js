@@ -43,7 +43,8 @@ mutation group
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       outreach
       type
@@ -146,7 +147,8 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       outreach
       type
@@ -217,7 +219,8 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       outreach
       type
@@ -283,7 +286,8 @@ subscription myGroup($userId: Int!){
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       outreach
       type
@@ -337,7 +341,8 @@ export const GROUPS_SUBSCRIPTION = gql`
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       outreach
       type
@@ -384,6 +389,7 @@ export const GROUPS_SUBSCRIPTION = gql`
         User {
           id
           avatar
+          deleted
         }
         interval
         duration
@@ -404,6 +410,7 @@ query group($id: Int!){
       id 
       firstName 
       avatar 
+      deleted
     } 
     outreach
     type
@@ -450,6 +457,7 @@ query group($id: Int!){
       User {
         id
         avatar
+        deleted
       }
       interval
       duration
@@ -494,12 +502,14 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
         relation {
           path {
             id
             firstName
             avatar
+            deleted
           }
           areFriends
         }
@@ -529,7 +539,8 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
           outreach
           type
@@ -578,6 +589,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id 
             firstName 
             avatar 
+            deleted
           } 
           TripStart {
             name 
@@ -607,11 +619,13 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id
             avatar
             firstName
+            deleted
             relation {
               path{
                 id
                 firstName
                 avatar
+                deleted
               }
               areFriends
             }
@@ -629,13 +643,15 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           }     
           Participants {
             User {
               id 
               firstName 
-              avatar 
+              avatar
+              deleted
             }
             status
           }  
@@ -656,12 +672,14 @@ subscription groupFeed($groupId: Int!){
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
          relation {
           path {
             id
             firstName
             avatar
+            deleted
           }
           areFriends
         }
@@ -692,6 +710,7 @@ subscription groupFeed($groupId: Int!){
             id 
             firstName 
             avatar 
+            deleted
           } 
           outreach
           type
@@ -739,7 +758,8 @@ subscription groupFeed($groupId: Int!){
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
           TripStart {
             name 
@@ -769,11 +789,13 @@ subscription groupFeed($groupId: Int!){
             id
             avatar
             firstName
+            deleted
             relation {
               path {
                 id
                 firstName
                 avatar
+                deleted
               }
               areFriends
             }
@@ -856,6 +878,7 @@ subscription updatedGroupMember($groupId: Int, $enabler: Boolean){
         firstName
         lastName
         avatar
+        deleted
       }      
       admin
       enabler
@@ -875,6 +898,7 @@ query groupMembers($id: Int, $limit: Int, $offset: Int, $enabler: Boolean, $excl
         firstName
         lastName
         avatar
+        deleted
       }
       admin
       enabler
@@ -965,6 +989,7 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
         id 
         firstName 
         avatar 
+        deleted
       } 
       TripStart {
         name 
@@ -1082,12 +1107,14 @@ const GROUP_TRIPS_QUERY = gql`
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
         relation {
           path{
             id
             firstName
             avatar
+            deleted
           }
           areFriends
         }
@@ -1166,7 +1193,8 @@ const GROUPS_IN_COUNTY_QUERY = gql`
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            deleted
           } 
           TripStart {
             name 
@@ -1222,7 +1250,8 @@ mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       TripStart {
         name 
@@ -1535,6 +1564,7 @@ query alphabetisedGroups{
           id 
           firstName 
           avatar 
+          deleted
         } 
         TripStart {
           name 
@@ -1587,7 +1617,8 @@ mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int)
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       TripStart {
         name 
@@ -1652,7 +1683,8 @@ query nearByGroups($from: [Float]!,
       User {
         id 
         firstName 
-        avatar 
+        avatar
+        deleted
       } 
       TripStart {
         name 
