@@ -29,11 +29,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const Radio = ({ active, readOnly, color, label, onPress, style }) => {
+const Radio = ({ active, readOnly, color, label, onPress, style, size }) => {
+  const sizeStyle = size ? { width: size, height: size } : {};
   if (readOnly) {
     return (
       <View style={[styles.wrapper, style]}>
-        <Image source={CheckIconGray} />
+        <Image source={CheckIconGray} style={sizeStyle} />
         {
           label &&
           <Text style={styles.label}>{label}</Text>
@@ -55,10 +56,10 @@ const Radio = ({ active, readOnly, color, label, onPress, style }) => {
   return (
     <View style={[styles.wrapper, style]}>
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={[styles.dot, active ? styles.active : {}]}>
+        <View style={[styles.dot, sizeStyle, active ? styles.active : {}]}>
           {
             active &&
-            <Image source={source} />
+            <Image source={source} style={sizeStyle} />
           }
         </View>
       </TouchableWithoutFeedback>
@@ -77,6 +78,7 @@ Radio.propTypes = {
   label: PropTypes.string,
   onPress: PropTypes.func,
   style: ViewPropTypes.style,
+  size: PropTypes.number,
 };
 Radio.defaultProps = {
   readOnly: false,
@@ -84,6 +86,7 @@ Radio.defaultProps = {
   label: null,
   onPress: () => { },
   style: {},
+  size: null,
 };
 
 export default Radio;

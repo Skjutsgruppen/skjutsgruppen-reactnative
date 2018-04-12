@@ -37,7 +37,7 @@ class TwitterConnect extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { loading: false, showModal: false, twitterUser: {} };
+    this.state = { showModal: false, twitterUser: {} };
   }
 
   setTwitterUser = async () => {
@@ -74,10 +74,10 @@ class TwitterConnect extends PureComponent {
 
   handleTwitterLogin = async () => {
     try {
+      this.setState({ showModal: true });
+
       const { twitterUser } = this.state;
       const twitterAuth = await TwitterAuth.login();
-
-      this.setState({ showModal: true });
 
       const { rest } = twitter({
         consumerKey: Config.TWITTER_CONSUMER_KEY,

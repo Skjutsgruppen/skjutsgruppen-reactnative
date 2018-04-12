@@ -3,6 +3,7 @@ package com.skjutsgruppen;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import ga.piroro.rnt.RNTPackage;
 import com.gettipsi.reactnativetwittersdk.TwitterReactPackage;
 import com.smixx.fabric.FabricPackage;
@@ -27,8 +28,17 @@ import java.util.Arrays;
 import java.util.List;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.skjutsgruppen.react.modules.GeoLocationPackage;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 public class MainApplication extends Application implements ReactApplication {
+
+  private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+  protected static CallbackManager getCallbackManager() {
+    return mCallbackManager;
+  }
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -39,25 +49,26 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNTPackage(),
-            new FabricPackage(),
-            new GoogleAnalyticsBridgePackage(),
-            new RNFSPackage(),
-            new RCTCameraPackage(),
-            new LinearGradientPackage(),
-            SendSMSPackage.getInstance(),
-            new RNDeviceInfo(),
-            new MapsPackage(),
-            new ReactNativeContacts(),
-            new VectorIconsPackage(),
-            new ImagePickerPackage(),
-            new ReactNativeConfigPackage(),
-            new FacebookLoginPackage(),
-            new RNI18nPackage(),
-            new FIRMessagingPackage(),
-            new TwitterReactPackage(),
-            new GeoLocationPackage()
+        new MainReactPackage(),
+        new RNTPackage(),
+        new FabricPackage(),
+        new GoogleAnalyticsBridgePackage(),
+        new RNFSPackage(),
+        new RCTCameraPackage(),
+        new LinearGradientPackage(),
+        SendSMSPackage.getInstance(),
+        new RNDeviceInfo(),
+        new MapsPackage(),
+        new ReactNativeContacts(),
+        new VectorIconsPackage(),
+        new ImagePickerPackage(),
+        new ReactNativeConfigPackage(),
+        new FacebookLoginPackage(),
+        new RNI18nPackage(),
+        new FIRMessagingPackage(),
+        new TwitterReactPackage(),
+        new GeoLocationPackage(),
+        new FBSDKPackage(mCallbackManager)            
       );
     }
 

@@ -176,6 +176,7 @@ mutation createComment(
     $groupId: Int
     $newsId: Int
     $text: String!
+    $social: [SocialMediaEnum]
 ) 
 {
   createComment( 
@@ -183,6 +184,7 @@ mutation createComment(
     groupId: $groupId
     newsId: $newsId
     text: $text
+    social: $social
   )
   {
     tripId
@@ -201,6 +203,7 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
         groupId = null,
         newsId = null,
         text,
+        social = null,
       }) =>
         mutate({
           variables: {
@@ -208,6 +211,7 @@ export const submitComment = graphql(CREATE_COMMENT_QUERY, {
             groupId,
             newsId,
             text,
+            social,
           },
         }),
     }),

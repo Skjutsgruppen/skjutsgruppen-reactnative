@@ -289,7 +289,7 @@ class TripDetail extends Component {
     }
   }
 
-  onSubmit = (comment) => {
+  onSubmit = (comment, social) => {
     this.setState({ loading: true });
     const { submit } = this.props;
     const { trip } = this.state;
@@ -297,7 +297,7 @@ class TripDetail extends Component {
 
     if (validation.pass()) {
       try {
-        submit({ tripId: trip.id, text: comment }).then(() => {
+        submit({ tripId: trip.id, text: comment, social }).then(() => {
           this.setState({ comment: '', loading: false, error: '' });
           Keyboard.dismiss();
         }).catch((err) => {

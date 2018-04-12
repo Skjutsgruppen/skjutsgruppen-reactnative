@@ -86,7 +86,8 @@ class Login extends Component {
             .then(() => {
               navigation.replace('Tab');
               syncContacts();
-            });
+            })
+            .catch(err => console.warn(err));
         }
       } catch (err) {
         this.setState({ loading: false, error: getToast(err) });
