@@ -18,13 +18,13 @@ import { withGroup, withGroupTrips, withGroupParticipantIds } from '@services/ap
 import { withLocationSharedToSpecificResource, withStopSpecific } from '@services/apollo/share';
 import ShareLocation from '@components/common/shareLocation';
 import { withUpdateLocation } from '@services/apollo/location';
+import ConfirmModal from '@components/common/confirmModal';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 3;
+const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const DURATION = 10;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -48,6 +48,8 @@ class AreaMap extends PureComponent {
     super(props);
     this.mapView = null;
     this.state = ({
+      showTurnOnGpsModal: false,
+      fetchingPosition: false,
       initialRegion: {},
       origin: {},
       waypoints: [],
@@ -112,10 +114,30 @@ class AreaMap extends PureComponent {
     navigation.navigate('TripDetail', { trip: Trip });
   }
 
-  currentLocation = () => {
+  openGpsSettings = () => {
+    GeoLocation.showSettings();
+    this.setState({ showTurnOnGpsModal: false });
+  }
+
+  currentLocation = async () => {
+    this.setState({ fetchingPosition: true });
+
+    try {
+      const isGpsEnabled = await GeoLocation.isGpsEnabled();
+
+      if (!isGpsEnabled) {
+        this.setState({ showTurnOnGpsModal: true, fetchingPosition: false });
+
+        return;
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
+          fetchingPosition: false,
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -123,6 +145,7 @@ class AreaMap extends PureComponent {
         });
       },
       () => {
+        this.setState({ fetchingPosition: false });
         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
       },
       { timeout: 20000, maximumAge: 1000 },
@@ -175,8 +198,8 @@ class AreaMap extends PureComponent {
     const region = {
       longitude: coordinates[0],
       latitude: coordinates[1],
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
+      latitudeDelta: 0.00511,
+      longitudeDelta: 0.00421,
     };
 
     this.mapView.animateToRegion(region, DURATION);
@@ -191,6 +214,18 @@ class AreaMap extends PureComponent {
 
     return false;
   }
+
+  renderTurnOnGpsActionModal = () => (
+    <ConfirmModal
+      visible={this.state.showTurnOnGpsModal}
+      loading={false}
+      onDeny={() => this.setState({ showTurnOnGpsModal: false })}
+      confirmLabel={'Open settings'}
+      onConfirm={() => this.openGpsSettings()}
+      message={'Your GPS is turned off.'}
+      onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
+    />
+  )
 
   renderLiveLocations = () => {
     const { group } = this.props;
@@ -243,7 +278,7 @@ class AreaMap extends PureComponent {
 
   render() {
     const { loading, group, locationSharedToSpecificResource } = this.props;
-    const { origin, initialRegion, myPosition } = this.state;
+    const { origin, initialRegion, myPosition, fetchingPosition } = this.state;
     const { __typename } = group;
 
     if (loading || locationSharedToSpecificResource.loading) return null;
@@ -285,8 +320,10 @@ class AreaMap extends PureComponent {
             startTrackingLocation={this.startTrackingLocation}
             stopTrackingLocation={this.stopTrackingLocation}
             currentLocation={this.currentLocation}
+            fetchingPosition={fetchingPosition}
           />
         }
+        {this.renderTurnOnGpsActionModal()}
       </View>
     );
   }

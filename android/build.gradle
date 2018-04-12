@@ -9,6 +9,7 @@ buildscript {
             name 'Google'
         }
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
         classpath 'io.fabric.tools:gradle:1.+'
@@ -21,8 +22,6 @@ buildscript {
 
 allprojects {
     repositories {
-        // Add fabric repository (added by tipsi-twitter)
-        maven { url "https://maven.fabric.io/public" }
         // Add fabric repository (added by tipsi-twitter)
         maven { url "https://maven.fabric.io/public" }
         mavenLocal()

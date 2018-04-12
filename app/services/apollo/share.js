@@ -43,6 +43,7 @@ query locationSharedToSpecificResource($resourceId: Int!, $resourceType: Shareab
     interval
     duration
     timeFraction
+    isLive
   }
 }
 `;
@@ -64,6 +65,7 @@ subscription onLocationShared($userId: Int!, $tripId: Int, $groupId: Int) {
     interval
     duration
     timeFraction
+    isLive
   }
 }
 `;
@@ -100,20 +102,17 @@ export const withLocationSharedToSpecificResource = graphql(
               return prev;
             }
 
-            if (subscriptionData.data.locationShared.locationCoordinates) {
-              if (subscriptionData.data.locationShared.User.id === userId) return prev;
+            if (subscriptionData.data.locationShared.User.id === userId) return prev;
 
-              const newLocationSharedToSpecificResource = prev.locationSharedToSpecificResource
-                .filter(l => l.id !== subscriptionData.data.locationShared.id);
+            const filtered = prev.locationSharedToSpecificResource
+              .filter(l => l.id !== subscriptionData.data.locationShared.id);
 
+            if (subscriptionData.data.locationShared.isLive) {
               return {
-                locationSharedToSpecificResource: newLocationSharedToSpecificResource
+                locationSharedToSpecificResource: filtered
                   .concat(subscriptionData.data.locationShared),
               };
             }
-
-            const filtered = prev.locationSharedToSpecificResource
-              .filter(row => row.id !== subscriptionData.data.locationShared.id);
 
             return { locationSharedToSpecificResource: filtered };
           },

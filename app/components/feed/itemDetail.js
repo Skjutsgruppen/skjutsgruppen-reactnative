@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'rea
 import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import Marker from '@components/map/marker';
 import Date from '@components/date';
@@ -22,6 +23,7 @@ import {
   GROUP_FEED_TYPE_UPDATED,
   LOCATION_SHARED,
   GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED,
+  FEEDABLE_LOCATION,
 } from '@config/constant';
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -88,9 +90,25 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 12,
   },
+  sharedLocationCard: {
+    marginVertical: 6,
+    borderRadius: 12,
+    padding: 12,
+    backgroundColor: Colors.background.mutedBlue,
+    elevation: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    overflow: 'hidden',
+  },
+  map: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
   mapFeedContainer: {
-    height: 200,
-    width: 300,
+    height: 150,
+    width: '100%',
   },
 });
 
@@ -252,22 +270,37 @@ class Feed extends Component {
           <Text style={styles.commentText}>
             {this.renderUsername()} shares position
           </Text>
-          <MapView
-            scrollEnabled={false}
-            style={styles.mapFeedContainer}
-            region={{
-              longitude: coordinates.longitude,
-              latitude: coordinates.latitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,
-            }}
-          >
-            <Marker
-              onPress={() => { }}
-              coordinate={coordinates}
-              image={feed.User.avatar}
-            />
-          </MapView>
+          <View style={styles.sharedLocationCard}>
+            <View style={styles.map}>
+              <MapView
+                style={styles.mapFeedContainer}
+                region={{
+                  longitude: coordinates.longitude,
+                  latitude: coordinates.latitude,
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                }}
+                liteMode
+                showsUserLocation
+                onPress={() => onPress(FEEDABLE_LOCATION, {})}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                rotateEnabled={false}
+                pitchEnabled={false}
+              >
+                <Marker
+                  onPress={() => { }}
+                  coordinate={coordinates}
+                  image={feed.User.avatar}
+                />
+              </MapView>
+            </View>
+            {feed.Location.duration > 0 &&
+              <Text style={{ color: Colors.text.blue, fontWeight: 'bold', textAlign: 'right', marginTop: 6 }}>
+                {feed.Location.duration} more minutes
+              </Text>}
+          </View>
+          <Text style={{ textAlign: 'right' }}>{moment(new Date(feed.Location.sharedFrom)).format('dddd HH:mm')}</Text>
         </View>
       );
     }

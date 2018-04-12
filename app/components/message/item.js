@@ -20,6 +20,7 @@ import {
   NOTIFICATION_CHARACTER_COUNT,
   NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
   NOTIFICATION_TYPE_FRIEND_JOINED_MOVEMENT,
+  NOTIFICATION_TYPE_LOCATION_SHARED,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -27,6 +28,7 @@ import Date from '@components/date';
 import { connect } from 'react-redux';
 import { AppText } from '@components/utils/texts';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
+import { UcFirst } from '@config';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -544,7 +546,7 @@ class Item extends PureComponent {
       photo: (plus > 0) ?
         [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
         [Notifiers[plus].avatar],
-      text: `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`,
+      text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
@@ -576,6 +578,24 @@ class Item extends PureComponent {
       user: `${Notifiers[0].firstName}`,
       photo: [Notifiers[0].avatar],
       text: 'just joined the movement',
+      date: createdAt,
+      onPress: () => this.redirect(id, ids, route, params),
+    });
+  }
+
+  locationShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+    let route = '';
+    if (Notifiable.Group.id) {
+      if (Notifiable.Group.outreach === 'area') route = 'Area';
+      if (Notifiable.Group.outreach === 'route') route = 'Route';
+    }
+    const params = { info: Notifiable.Group.id ? Notifiable.Group : Notifiable.Trip };
+
+    return this.item({
+      userId: Notifiers[0].id,
+      user: `${Notifiers[0].firstName}`,
+      photo: [Notifiers[0].avatar],
+      text: 'has shared location',
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
@@ -721,6 +741,10 @@ class Item extends PureComponent {
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_JOINED_MOVEMENT) {
       message = this.friendJoinedMovement(notification);
+    }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_LOCATION_SHARED) {
+      message = this.locationShared(notification);
     }
 
     return (

@@ -331,6 +331,7 @@ class TripDetail extends Component {
     const { navigation } = this.props;
     const { trip } = this.state;
     navigation.navigate('Route', { info: trip });
+    this.showActionModal(false);
   }
 
   onCloseNotification = () => {
@@ -777,7 +778,7 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <ModalAction label={trans('trip.share_your_live_location')} onPress={() => { }} />
+        <ModalAction label={trans('trip.share_your_live_location')} onPress={this.onMapPress} />
         {
           trip.muted ?
             (
