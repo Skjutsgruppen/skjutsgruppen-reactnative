@@ -6,7 +6,7 @@ import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
-import { FBLoginManager } from 'react-native-facebook-login';
+import { LoginManager } from 'react-native-fbsdk';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import PropTypes from 'prop-types';
@@ -221,9 +221,9 @@ class EditProfile extends Component {
       } catch (error) {
         this.setState({ loading: false });
       }
-      FBLoginManager.logout(() => { });
+      LoginManager.logOut();
     } else {
-      FBLoginManager.logout(() => { });
+      LoginManager.logOut();
       Alert.alert('Error', 'Facebook account is already linked with another account.');
     }
   }
@@ -306,7 +306,7 @@ class EditProfile extends Component {
         .then(() => this.setConfirmModalVisibility(false))
         .then(() => {
           logout()
-            .then(() => FBLoginManager.logout(() => { }))
+            .then(() => LoginManager.logOut())
             .then(() => this.reset())
             .catch(() => this.reset());
         })
