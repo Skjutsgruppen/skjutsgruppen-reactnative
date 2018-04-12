@@ -365,6 +365,10 @@ class SearchResult extends Component {
       filters.push(param);
     }
 
+    if (filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)) {
+      this.setState({ resultsStyle: 'list' });
+    }
+
     if (filters.length > 0) {
       this.setState({ filters });
 

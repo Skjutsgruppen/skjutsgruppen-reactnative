@@ -10,7 +10,7 @@ import { FBLoginManager } from 'react-native-facebook-login';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import PropTypes from 'prop-types';
-import Connect from '@components/facebook/connect';
+import Connect from '@components/facebook/facebookConnect';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import ImagePicker from 'react-native-image-picker';
 import LangService from '@services/lang';
@@ -213,7 +213,7 @@ class EditProfile extends Component {
         const response = await socialConnect({
           id: fb.fbUser.profile.id,
           email: user.email,
-          token: fb.fbUser.token,
+          token: fb.fbUser.auth.accessToken,
           type: 'facebook',
         });
         setUser(response.data.connect.User);
@@ -342,10 +342,10 @@ class EditProfile extends Component {
   }
 
   unlinkFacebook = async () => {
-    const { facebookConnect, user, setUser } = this.props;
+    const { socialConnect, user, setUser } = this.props;
     try {
       this.setState({ loading: true });
-      const response = await facebookConnect({ id: '', email: user.email, token: '' });
+      const response = await socialConnect({ id: '', email: user.email, token: '', type: 'facebook' });
       setUser(response.data.connect.User);
       this.setState({ facebookLinked: false, loading: false });
     } catch (error) {

@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 class TwitterLogin extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { loading: false, showModal: false };
+    this.state = { showModal: false };
   }
 
   onLogin = async (twitter) => {
@@ -48,6 +48,7 @@ class TwitterLogin extends PureComponent {
 
     if (twitter.hasEmail) {
       this.setState({ showModal: false });
+
       Alert.alert(`User already exist with ${profile.email}`,
         'Would you like to connect with Twitter?',
         [
@@ -157,7 +158,6 @@ class TwitterLogin extends PureComponent {
       </Modal>
     );
   }
-
 
   render() {
     return (
