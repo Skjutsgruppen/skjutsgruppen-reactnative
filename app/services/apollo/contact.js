@@ -13,26 +13,30 @@ export const withContactSync = graphql(SYNC_CONTACTS, {
   props: ({ mutate }) => ({
     syncContacts: () => {
       InteractionManager.runAfterInteractions(() => {
-        Contacts.getAll((err, contacts) => {
-          if (err === 'denied') {
-            console.warn(err);
-          } else {
-            const contactList = [];
-            contacts.forEach(
-              (contact) => {
-                if (contact.phoneNumbers.length > 0) {
-                  const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
+        Contacts.checkPermission((err, permission) => {
+          if (permission === 'authorized') {
+            Contacts.getAll((error, contacts) => {
+              if (error === 'denied') {
+                console.warn(err);
+              } else {
+                const contactList = [];
+                contacts.forEach(
+                  (contact) => {
+                    if (contact.phoneNumbers.length > 0) {
+                      const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
 
-                  contact.phoneNumbers.forEach(phoneBook =>
-                    contactList.push({
-                      name: contactName,
-                      phoneNumber: phoneBook.number,
-                    }),
-                  );
-                }
-              },
-            );
-            mutate({ variables: { contactList } });
+                      contact.phoneNumbers.forEach(phoneBook =>
+                        contactList.push({
+                          name: contactName,
+                          phoneNumber: phoneBook.number,
+                        }),
+                      );
+                    }
+                  },
+                );
+                mutate({ variables: { contactList } });
+              }
+            });
           }
         });
       });
