@@ -53,7 +53,11 @@ class FeedItem extends PureComponent {
     if (feed.feedable === FEEDABLE_TRIP) {
       return (
         <View style={styles.profilePicWrapper}>
-          <TouchableOpacity onPress={() => onPress('Profile', feed.User.id)}>
+          <TouchableOpacity onPress={() => {
+            if (feed.User.deleted) return null;
+            return onPress('Profile', feed.User.id);
+          }}
+          >
             <Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />
           </TouchableOpacity>
           {

@@ -35,6 +35,7 @@ query search
           id 
           firstName 
           avatar 
+          deleted
         } 
         outreach
         type
@@ -68,7 +69,8 @@ query search
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
         } 
         TripStart {
           name 
@@ -110,7 +112,8 @@ query search
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
         } 
         outreach
         type
@@ -204,6 +207,7 @@ query search
           id 
           firstName 
           avatar 
+          deleted
         } 
         TripStart {
           name 
@@ -308,7 +312,8 @@ query search
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          deleted
         } 
         outreach
         type

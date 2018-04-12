@@ -7,8 +7,7 @@ import { View, Text, StyleSheet, Modal } from 'react-native';
 import { withGetUserByEmail, withgetUserByFbId } from '@services/apollo/social';
 import { compose } from 'react-apollo';
 import { Colors } from '@theme';
-import { Loading } from '@components/common';
-import { CustomButton } from '../common';
+import { Loading, CustomButton } from '@components/common';
 
 const styles = StyleSheet.create({
   actionLabel: {
