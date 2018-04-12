@@ -333,6 +333,7 @@ subscription myGroup($userId: Int!){
         duration
         timeFraction
         locationCoordinates
+        isLive
       }
     }
     remove
@@ -404,6 +405,7 @@ export const GROUPS_SUBSCRIPTION = gql`
         duration
         timeFraction
         locationCoordinates
+        isLive
       }
   }
 }
@@ -473,8 +475,9 @@ query group($id: Int!){
       duration
       timeFraction
       locationCoordinates
+      isLive
     }
-}
+  }
 }
 `;
 
@@ -533,6 +536,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
         Location {
           locationCoordinates
           interval
+          isLive
         }
       }
       ... on GroupFeed {
@@ -587,6 +591,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             duration
             timeFraction
             locationCoordinates
+            isLive
           }
         }
       }
@@ -704,6 +709,7 @@ subscription groupFeed($groupId: Int!){
         Location {
           locationCoordinates
           interval
+          isLive
         }
       }
       ... on GroupFeed {
@@ -758,6 +764,7 @@ subscription groupFeed($groupId: Int!){
             duration
             timeFraction
             locationCoordinates
+            isLive
           }
         }
       }

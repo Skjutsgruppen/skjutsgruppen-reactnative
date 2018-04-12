@@ -575,6 +575,7 @@ query trip($id: Int!) {
       duration
       timeFraction
       locationCoordinates
+      isLive
     }
     date 
     photo 
@@ -702,6 +703,7 @@ subscription onTripUpdated($id: Int!) {
       duration
       timeFraction
       locationCoordinates
+      isLive
     }
     date 
     photo 

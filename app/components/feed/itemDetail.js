@@ -22,6 +22,7 @@ import {
   GROUP_FEED_TYPE_UPDATED,
   LOCATION_SHARED,
   GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED,
+  FEEDABLE_LOCATION,
 } from '@config/constant';
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -253,7 +254,6 @@ class Feed extends Component {
             {this.renderUsername()} shares position
           </Text>
           <MapView
-            scrollEnabled={false}
             style={styles.mapFeedContainer}
             region={{
               longitude: coordinates.longitude,
@@ -261,6 +261,13 @@ class Feed extends Component {
               latitudeDelta: LATITUDE_DELTA,
               longitudeDelta: LONGITUDE_DELTA,
             }}
+            liteMode
+            showsUserLocation
+            onPress={() => onPress(FEEDABLE_LOCATION, {})}
+            scrollEnabled={false}
+            zoomEnabled={false}
+            rotateEnabled={false}
+            pitchEnabled={false}
           >
             <Marker
               onPress={() => { }}

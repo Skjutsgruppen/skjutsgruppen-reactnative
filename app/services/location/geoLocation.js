@@ -10,60 +10,83 @@ class GeoLocation {
     this.deviceEventEmitter = DeviceEventEmitter;
   }
 
+  showSettings = () => NativeModules.GeoLocation.showGpsSetting();
+
+  isGpsEnabled = () => NativeModules.GeoLocation.checkGpsStatus();
+
   async startLocationService() {
-    const geoLocationServiceStarted = await this.session.get(this.locationServiceStartedKey);
+    try {
+      const geoLocationServiceStarted = await this.session.get(this.locationServiceStartedKey);
 
-    if (geoLocationServiceStarted) return;
+      if (geoLocationServiceStarted) return Promise.resolve();
 
-    await this.session.set(this.locationServiceStartedKey, 'true');
+      await this.session.set(this.locationServiceStartedKey, 'true');
 
-    NativeModules.GeoLocation.startService();
+      return NativeModules.GeoLocation.startService();
+    } catch (e) {
+      console.warn(e);
+    }
+
+    return Promise.resolve();
   }
 
   stopLocationService() {
-    NativeModules.GeoLocation.stopService().then(() => {
+    return NativeModules.GeoLocation.stopService().then(() => {
       this.session.remove(this.locationServiceStartedKey);
-    });
+    }).catch(error => console.warn(error));
   }
 
   async listenToLocationUpdate(type, id, callback) {
-    this.startLocationService();
-    const updateLocationEventListenerArray =
-    await this.session.get(this.updateLocationEventListenerArrayKey) || [];
-    if (updateLocationEventListenerArray.length === 0) {
-      this.deviceEventEmitter.addListener('updateLocation', (geoData) => {
-        callback(geoData);
-      });
+    try {
+      const updateLocationEventListenerArray =
+        await this.session.get(this.updateLocationEventListenerArrayKey) || [];
+      if (updateLocationEventListenerArray.length === 0) {
+        this.deviceEventEmitter.addListener('updateLocation', (geoData) => {
+          callback(geoData);
+        });
+      }
+
+      if (updateLocationEventListenerArray
+        .findIndex(obj => (obj.type === type && obj.id === id)) > -1) return Promise.resolve();
+
+      updateLocationEventListenerArray.push({ type, id });
+
+      await this.session
+        .set(this.updateLocationEventListenerArrayKey, updateLocationEventListenerArray);
+
+      return this.startLocationService();
+    } catch (e) {
+      console.warn(e);
     }
 
-    if (updateLocationEventListenerArray
-      .findIndex(obj => (obj.type === type && obj.id === id)) > -1) return;
-
-    updateLocationEventListenerArray.push({ type, id });
-
-    await this.session
-      .set(this.updateLocationEventListenerArrayKey, updateLocationEventListenerArray);
+    return Promise.resolve();
   }
 
   async stopListeningToLocationUpdate(type, id) {
-    const updateLocationEventListenerArray = await this.session
-      .get(this.updateLocationEventListenerArrayKey) || [];
+    try {
+      const updateLocationEventListenerArray = await this.session
+        .get(this.updateLocationEventListenerArrayKey) || [];
 
-    if (updateLocationEventListenerArray.length === 0) return;
+      if (updateLocationEventListenerArray.length === 0) return Promise.resolve();
 
-    const newUpdateLocationEventListenerArray = updateLocationEventListenerArray
-      .filter(obj => !(obj.type === type && obj.id === id));
+      const newUpdateLocationEventListenerArray = updateLocationEventListenerArray
+        .filter(obj => !(obj.type === type && obj.id === id));
 
-    if (newUpdateLocationEventListenerArray.length > 0) {
-      await this.session
-        .set(this.updateLocationEventListenerArrayKey, newUpdateLocationEventListenerArray);
+      if (newUpdateLocationEventListenerArray.length > 0) {
+        await this.session
+          .set(this.updateLocationEventListenerArrayKey, newUpdateLocationEventListenerArray);
 
-      return;
+        return Promise.resolve();
+      }
+
+      this.deviceEventEmitter.removeListener('updateLocation');
+      this.session.remove(this.updateLocationEventListenerArrayKey);
+      return this.stopLocationService();
+    } catch (e) {
+      console.warn(e);
     }
 
-    this.deviceEventEmitter.removeListener('updateLocation');
-    this.session.remove(this.updateLocationEventListenerArrayKey);
-    this.stopLocationService();
+    return Promise.resolve();
   }
 }
 

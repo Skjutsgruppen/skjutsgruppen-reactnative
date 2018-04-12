@@ -214,6 +214,8 @@ class Detail extends PureComponent {
       navigation.navigate('Route', { info: group });
     }
 
+    this.setState({ showAction: false });
+
     return null;
   }
 
@@ -386,6 +388,7 @@ class Detail extends PureComponent {
 
     actions = actions.concat([
       <ModalAction label="Group Information" onPress={() => this.onGroupInformation()} key="group_information" />,
+      <ModalAction label="Share your location" onPress={this.onMapPress} key="share_your_location" />,
     ]);
 
     if (group.muted) {
