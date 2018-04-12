@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import { Loading } from '@components/common';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import { withContactSync } from '@services/apollo/contact';
@@ -41,7 +41,16 @@ class TwitterLogin extends PureComponent {
 
     if (twitter.hasID) {
       await setLogin(twitter.userById);
-      navigation.replace('Tab');
+      navigation.dispatch(
+        NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: 'Tab',
+            }),
+          ],
+        }),
+      );
       syncContacts();
       return;
     }
@@ -83,8 +92,17 @@ class TwitterLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
+    navigation.dispatch(
+      NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }),
+    );
     syncContacts();
-    navigation.replace('Tab');
   }
 
   register = async ({

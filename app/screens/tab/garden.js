@@ -10,7 +10,7 @@ import SupportIconActive from '@assets/icons/ic_support_active.png';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import { connect } from 'react-redux';
-import { FBLoginManager } from 'react-native-facebook-login';
+import { LoginManager } from 'react-native-fbsdk';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
 
@@ -119,7 +119,7 @@ class Garden extends Component {
     const { logout } = this.props;
     this.setState({ loading: true }, () => {
       logout()
-        .then(() => FBLoginManager.logout(() => { }))
+        .then(() => LoginManager.logOut())
         .then(() => this.reset())
         .catch(() => this.reset());
     });
