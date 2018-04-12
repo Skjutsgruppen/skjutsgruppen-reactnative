@@ -1,6 +1,17 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, FlatList, Animated, Modal, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  FlatList,
+  Animated,
+  Modal,
+  TouchableOpacity,
+  PermissionsAndroid,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { withExploreGroup, withNearByGroups } from '@services/apollo/group';
 import { withCounties } from '@services/apollo/location';
@@ -123,7 +134,13 @@ class ExploreGroup extends PureComponent {
     });
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    try {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+    } catch (err) {
+      console.warn(err);
+    }
     this.currentLocation();
   }
 
