@@ -127,7 +127,9 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
             <View style={styles.detail}>
               <View>
                 <AppText style={[styles.text]}>
-                  <AppText fontVariation="semibold" color={Colors.text.blue}>{trip.User.firstName}</AppText>
+                  <AppText fontVariation="semibold" color={trip.User.deleted ? Colors.text.black : Colors.text.blue}>
+                    {trip.User.firstName}
+                  </AppText>
                   {
                     trip.type === FEED_TYPE_OFFER &&
                     <AppText color={Colors.text.darkGray}> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
