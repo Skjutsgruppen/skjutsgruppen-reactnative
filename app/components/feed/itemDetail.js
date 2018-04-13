@@ -60,6 +60,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: 'bold',
   },
+  deleted: {
+    lineHeight: 20,
+    fontWeight: 'bold',
+  },
   commentText: {
     lineHeight: 20,
   },
@@ -323,7 +327,7 @@ class Feed extends Component {
 
     return (
       <Text
-        style={styles.name}
+        style={userDetail.deleted ? styles.deleted : styles.name}
         onPress={() => {
           if (userDetail.deleted) return null;
           return onPress('Profile', userDetail.id);

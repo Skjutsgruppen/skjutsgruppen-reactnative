@@ -360,6 +360,7 @@ query experience($id: Int!){
         id 
         firstName 
         avatar 
+        deleted
       } 
       status
     }
@@ -389,12 +390,14 @@ query experience($id: Int!){
       photo 
       mapPhoto
       totalFeeds
+      isDeleted      
     }
     User {
       id 
       firstName 
-      avatar 
-    } 
+      avatar
+      deleted
+    }
   }
 }
 `;

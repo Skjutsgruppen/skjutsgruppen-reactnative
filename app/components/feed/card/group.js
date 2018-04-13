@@ -115,7 +115,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             <View style={styles.detail}>
               <View>
                 <AppText>
-                  <AppText fontVariation="semibold" color={Colors.text.blue}>
+                  <AppText fontVariation="semibold" color={group.User.deleted ? Colors.text.black : Colors.text.blue}>
                     {group.User.firstName || group.User.email}
                   </AppText>
                   <AppText color={Colors.text.darkGray}> {trans('feed.created_a_group')}</AppText>
