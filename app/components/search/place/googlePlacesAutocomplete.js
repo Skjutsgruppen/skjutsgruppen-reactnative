@@ -115,6 +115,7 @@ class GooglePlacesAutocomplete extends Component {
       currentLocation: {},
       currentLocationLoading: false,
       selectedItem: '',
+      direction: null,
     };
     this.isComponentMounted = true;
     this.results = [];
@@ -240,6 +241,10 @@ class GooglePlacesAutocomplete extends Component {
     });
   }
 
+  directionSelected = (direction) => {
+    this.props.onPress({ place: { name: '', countryCode: '', coordinates: [] }, direction, source: 'direction' });
+  }
+
   renderItem = ({ item }) => (
     <Place
       loading={this.state.selectedItem === item}
@@ -292,11 +297,11 @@ class GooglePlacesAutocomplete extends Component {
 
   renderDirectionOption = () => (
     <FiltersWrapper title="Or choose:">
-      <Filter label="Anywhere" active={false} />
-      <Filter label="North" active />
-      <Filter label="South" active />
-      <Filter label="West" active={false} />
-      <Filter label="East" active />
+      <Filter label="Anywhere" active={this.props.directionText === 'anywhere'} onPress={() => this.directionSelected('anywhere')} />
+      <Filter label="North" active={this.props.directionText === 'north'} onPress={() => this.directionSelected('north')} />
+      <Filter label="South" active={this.props.directionText === 'south'} onPress={() => this.directionSelected('south')} />
+      <Filter label="West" active={this.props.directionText === 'west'} onPress={() => this.directionSelected('west')} />
+      <Filter label="East" active={this.props.directionText === 'east'} onPress={() => this.directionSelected('east')} />
     </FiltersWrapper>
   );
 
@@ -337,6 +342,7 @@ GooglePlacesAutocomplete.propTypes = {
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   minLength: PropTypes.number,
+  directionText: PropTypes.string,
 };
 
 GooglePlacesAutocomplete.defaultProps = {
@@ -344,6 +350,7 @@ GooglePlacesAutocomplete.defaultProps = {
   minLength: 2,
   textInputProps: {},
   currentLocation: false,
+  directionText: null,
 };
 
 export default GooglePlacesAutocomplete;

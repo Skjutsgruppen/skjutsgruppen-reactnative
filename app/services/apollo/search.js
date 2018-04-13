@@ -41,6 +41,7 @@ query search
         type
         photo
         mapPhoto
+        direction
         TripStart {
           name 
           coordinates 
@@ -72,6 +73,7 @@ query search
           avatar
           deleted
         } 
+        direction
         TripStart {
           name 
           coordinates

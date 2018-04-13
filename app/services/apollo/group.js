@@ -19,6 +19,7 @@ mutation group
     $localityId: Int
     $type: GroupTypeEnum!
     $share: ShareInput
+    $direction: directionEnum
 ) 
   {
     group(input : {
@@ -35,6 +36,7 @@ mutation group
         localityId : $localityId
         type : $type
         share : $share
+        direction: $direction
       }) 
     {
       id
@@ -50,6 +52,7 @@ mutation group
       type
       photo
       mapPhoto
+      direction
       TripStart {
         name 
         coordinates 
@@ -98,6 +101,7 @@ export const submitGroup = graphql(CREATE_GROUP_QUERY, {
         localityId,
         type,
         share,
+        direction,
       ) => mutate({
         variables: {
           outreach,
@@ -113,6 +117,7 @@ export const submitGroup = graphql(CREATE_GROUP_QUERY, {
           localityId,
           type,
           share,
+          direction,
         },
       }),
     }),
@@ -154,6 +159,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       type
       photo
       mapPhoto
+      direction
       TripStart {
         name 
         coordinates 
@@ -226,6 +232,7 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
       type
       photo
       mapPhoto
+      direction
       TripStart {
         name 
         coordinates 
@@ -293,6 +300,7 @@ subscription myGroup($userId: Int!){
       type
       photo
       mapPhoto
+      direction
       TripStart {
         name 
         coordinates 
@@ -349,6 +357,7 @@ export const GROUPS_SUBSCRIPTION = gql`
       photo
       mapPhoto
       areaCoordinates
+      direction
       TripStart {
         name 
         countryCode
@@ -417,6 +426,7 @@ query group($id: Int!){
     photo
     mapPhoto
     areaCoordinates
+    direction
     TripStart {
       name 
       countryCode
@@ -546,6 +556,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           type
           photo
           mapPhoto
+          direction
           TripStart {
             name 
             coordinates 
@@ -716,6 +727,7 @@ subscription groupFeed($groupId: Int!){
           type
           photo
           mapPhoto
+          direction
           TripStart {
             name 
             coordinates 
@@ -991,6 +1003,7 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
         avatar 
         deleted
       } 
+      direction
       TripStart {
         name 
         coordinates 

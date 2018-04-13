@@ -249,8 +249,8 @@ class Search extends Component {
     const { navigation } = this.props;
     const { from, to, direction, filters, dates } = this.state;
 
-    if (from.coordinates.length === 0) {
-      Alert.alert('Error!!', 'From is required.');
+    if (from.coordinates.length === 0 && to.coordinates.length === 0) {
+      Alert.alert('Error!!', 'Either From or To is required.');
       error += 1;
     }
 
@@ -289,6 +289,7 @@ class Search extends Component {
                   onChangeText={({ place }) => this.setState({ from: place })}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
+                  direction
                 />
                 <AppText
                   size={12}
@@ -312,6 +313,7 @@ class Search extends Component {
                   onChangeText={({ place }) => this.setState({ to: place })}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
+                  direction
                 />
                 <AppText
                   size={12}

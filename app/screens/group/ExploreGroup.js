@@ -23,6 +23,7 @@ import Card from '@components/group/discover/card';
 import Alphabet from '@components/group/discover/alphabet';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import CloseByGroupsMapWindow from '@components/group/closeByGroupsMapWindow';
+import TabBar from '@components/common/tabBar';
 
 const NearByGroupsMapWindow = withNearByGroups(CloseByGroupsMapWindow);
 
@@ -35,7 +36,6 @@ const PopularGroupsList = withExploreGroup(PopularGroupsCards);
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    backgroundColor: Colors.background.fullWhite,
   },
   header: {
     flexDirection: 'row',
@@ -323,6 +323,7 @@ class ExploreGroup extends PureComponent {
               </ScrollView>
             </View>
           </ScrollView>
+          <TabBar />
         </View>
         {this.renderSearchModal()}
       </Wrapper >

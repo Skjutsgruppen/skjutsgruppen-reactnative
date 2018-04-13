@@ -81,7 +81,17 @@ const SharedCard = ({ trip, onPress, date }) => {
         <View>
           {image}
           {title}
-          <Text style={styles.text}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+          <Text style={styles.text}>
+            {
+              trip.TripStart.name ?
+                trip.TripStart.name :
+                trip.direction
+            } - {
+              trip.TripEnd.name ?
+                trip.TripEnd.name :
+                trip.direction
+            }
+          </Text>
           <Date calendarTime style={styles.text}>{trip.date}</Date>
         </View>
       </TouchableOpacity>

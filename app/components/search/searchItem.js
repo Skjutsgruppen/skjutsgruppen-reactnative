@@ -7,6 +7,8 @@ import ListItem from '@components/search/listItem';
 import GroupItem from '@components/search/groupItem';
 import PublicTransportItem from '@components/search/publicTransportItem';
 
+const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
+
 const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
   if (resultsStyle === 'list') {
     if (searchResult.url) {
@@ -14,6 +16,8 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
     }
 
     const image = { uri: searchResult.User.avatar };
+    const startPlace = searchResult.TripStart.name || prettify(searchResult.direction);
+    const endPlace = searchResult.TripEnd.name || prettify(searchResult.direction);
 
     if (searchResult.type === FEED_TYPE_WANTED || searchResult.type === FEED_TYPE_OFFER) {
       return (
@@ -21,7 +25,7 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
           onPress={() => onPress(FEEDABLE_TRIP, searchResult)}
           type={searchResult.type}
           image={image}
-          title={`${searchResult.TripStart.name} - ${searchResult.TripEnd.name}`}
+          title={`${startPlace} - ${endPlace}`}
           date={searchResult.date}
         />
       );

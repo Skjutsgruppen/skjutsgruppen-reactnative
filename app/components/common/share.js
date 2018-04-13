@@ -147,7 +147,6 @@ class Share extends Component {
       this.setState({ selectedGroups: groups.map(id => id) });
     }
 
-
     if (detail && detail.Participants && detail.Participants.rows) {
       this.setState({
         participantsList: detail.Participants.rows.filter(participant =>

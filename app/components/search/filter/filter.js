@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   wrapper: {
     height: 24,
     borderRadius: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.background.gray,
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: Colors.text.white,
-    fontSize: 13,
+    fontSize: 12,
   },
   active: {
     backgroundColor: Colors.background.blue,
