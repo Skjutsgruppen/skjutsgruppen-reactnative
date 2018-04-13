@@ -537,6 +537,8 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           locationCoordinates
           interval
           isLive
+          duration
+          sharedFrom
         }
       }
       ... on GroupFeed {
@@ -592,6 +594,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             timeFraction
             locationCoordinates
             isLive
+            sharedFrom
           }
         }
       }
@@ -710,6 +713,8 @@ subscription groupFeed($groupId: Int!){
           locationCoordinates
           interval
           isLive
+          duration
+          sharedFrom
         }
       }
       ... on GroupFeed {
@@ -765,6 +770,7 @@ subscription groupFeed($groupId: Int!){
             timeFraction
             locationCoordinates
             isLive
+            sharedFrom
           }
         }
       }
