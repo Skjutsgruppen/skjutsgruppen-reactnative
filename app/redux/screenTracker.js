@@ -1,5 +1,4 @@
 import { NavigationActions } from 'react-navigation';
-import { GoogleAnalyticsTracker } from 'react-native-google-analytics-bridge';
 
 const getCurrentRouteName = (navigationState) => {
   if (!navigationState) {
@@ -13,7 +12,6 @@ const getCurrentRouteName = (navigationState) => {
   return route.routeName;
 };
 
-const tracker = new GoogleAnalyticsTracker('UA-112992337-1');
 
 const screenTracker = ({ getState }) => next => (action) => {
   if (
