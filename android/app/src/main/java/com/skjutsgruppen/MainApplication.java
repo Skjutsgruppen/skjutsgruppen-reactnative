@@ -7,7 +7,6 @@ import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import ga.piroro.rnt.RNTPackage;
 import com.gettipsi.reactnativetwittersdk.TwitterReactPackage;
 import com.smixx.fabric.FabricPackage;
-import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.rnfs.RNFSPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -52,7 +51,6 @@ public class MainApplication extends Application implements ReactApplication {
         new MainReactPackage(),
         new RNTPackage(),
         new FabricPackage(),
-        new GoogleAnalyticsBridgePackage(),
         new RNFSPackage(),
         new RCTCameraPackage(),
         new LinearGradientPackage(),

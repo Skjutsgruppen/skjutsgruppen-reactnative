@@ -172,7 +172,6 @@ repositories {
 
 dependencies {
     compile project(':react-native-fabric')
-    compile project(':react-native-google-analytics-bridge')
     compile project(':react-native-fs')
     compile project(':react-native-camera')
     compile project(':react-native-linear-gradient')
