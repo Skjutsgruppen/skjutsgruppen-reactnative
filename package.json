@@ -31,7 +31,6 @@
     "react-native-fbsdk": "^0.7.0",
     "react-native-fcm": "^12.0.0",
     "react-native-fs": "^2.9.7",
-    "react-native-google-analytics-bridge": "^5.5.0",
     "react-native-i18n": "^2.0.9",
     "react-native-image-picker": "^0.26.7",
     "react-native-keyboard-aware-scroll-view": "^0.4.4",
