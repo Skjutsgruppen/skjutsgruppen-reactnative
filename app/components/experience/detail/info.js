@@ -56,6 +56,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.text.white,
   },
+  deleted: {
+    fontWeight: 'bold',
+  },
 });
 
 
@@ -65,12 +68,24 @@ const Info = ({ loading, experience, navigation }) => {
       return null;
     }
 
+    let deletedParticipantCount = 0;
+
     return experience.Participants.map((row, index) => {
       let separator = ' ';
       if (index === (experience.Participants.length - 2)) {
         separator = ' and ';
       } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
+      }
+
+      if (row.User.deleted) {
+        deletedParticipantCount += 1;
+        return (<Text key={row.User.id}>
+          <Text style={styles.deleted}>
+            {deletedParticipantCount <= 1 ? 'Deleted Participant' : `${deletedParticipantCount} Deleted Participants`}
+          </Text>
+          {separator}
+        </Text>);
       }
 
       return (<Text key={row.User.id}>
@@ -92,10 +107,17 @@ const Info = ({ loading, experience, navigation }) => {
     }
 
     return (
-      <Text onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
+      <Text onPress={() => {
+        if (experience.Trip.isDeleted) return null;
+        return navigation.navigate('TripDetail', { trip: experience.Trip });
+      }}
+      >
         <Text>
           went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
-          . <Text style={styles.name}>See their trip here</Text>
+          . {experience.Trip.isDeleted
+            ? <Text style={styles.deleted}>This ride has been deleted</Text>
+            : <Text style={styles.name}>See their trip here</Text>
+          }
         </Text>
       </Text>
     );
