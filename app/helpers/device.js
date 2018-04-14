@@ -45,3 +45,5 @@ export const getCountryDialCode = () => {
 
   return dialCode;
 };
+
+export const getDeviceId = () => DeviceInfo.getDeviceId();
