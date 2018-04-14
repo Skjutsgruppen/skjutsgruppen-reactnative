@@ -401,7 +401,7 @@ class Offer extends Component {
       type: FEED_TYPE_OFFER,
       groupId,
       linkedTripId: tripId,
-      direction: route.direction,
+      direction: route.direction || null,
     };
 
     try {
