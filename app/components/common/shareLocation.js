@@ -14,6 +14,7 @@ import Share from '@components/common/share';
 import { trans } from '@lang/i18n';
 import { UcFirst } from '@config';
 import { withShareLocation } from '@services/apollo/share';
+import { updateSharedLocation } from '@services/apollo/dataSync';
 import { FEEDABLE_LOCATION } from '../../config/constant';
 import { Loading } from '.';
 
@@ -115,30 +116,11 @@ class ShareLocation extends PureComponent {
   componentWillMount() {
     const { data } = this.props.locationSharedToSpecificResource;
     const { detail, myPosition } = this.props;
+    const { __typename } = detail;
     this.setState({ sharedLocations: data, myLocation: detail.Location, myPosition });
 
     this.loadInterval = setInterval(() => {
-      const { myLocation, sharedLocations } = this.state;
-      const sharedLocationUpdated = [];
-      let myLocationUpdated = myLocation;
-
-      if (myLocation.id) {
-        const duration = myLocation.duration - 1;
-        const timeFraction = (1 - (myLocation.duration / myLocation.interval)) * 100;
-
-        myLocationUpdated = { ...myLocation, duration, timeFraction };
-      }
-
-      sharedLocations.forEach((location) => {
-        const duration = location.duration - 1;
-        const timeFraction = (1 - (location.duration / location.interval)) * 100;
-
-        if (duration > 0) {
-          sharedLocationUpdated.push({ ...location, duration, timeFraction });
-        }
-      });
-
-      this.setState({ sharedLocations: sharedLocationUpdated, myLocation: myLocationUpdated });
+      updateSharedLocation(detail.id, __typename);
     }, 60000);
   }
 
