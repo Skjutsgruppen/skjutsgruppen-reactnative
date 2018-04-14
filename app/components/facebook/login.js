@@ -5,12 +5,15 @@ import { userRegister, withUpdateProfile } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import FCM from 'react-native-fcm';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/facebookConnect';
 import { Loading } from '@components/common';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
+import { withStoreAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
 import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
@@ -28,6 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
+
 class FBLogin extends PureComponent {
   constructor(props) {
     super(props);
@@ -36,11 +40,14 @@ class FBLogin extends PureComponent {
 
   onLogin = async (fb) => {
     const { profile, auth: { accessToken } } = fb.fbUser;
-    const { setLogin, navigation, syncContacts } = this.props;
+    const { setLogin, navigation, syncContacts, storeAppToken } = this.props;
     this.setState({ showModal: true });
 
     if (fb.hasID) {
       await setLogin(fb.userById);
+      await FCM.getFCMToken()
+        .then(appToken => storeAppToken(appToken, getDeviceId()));
+
       navigation.dispatch(
         NavigationActions.reset({
           index: 0,
@@ -51,6 +58,7 @@ class FBLogin extends PureComponent {
           ],
         }),
       );
+
       syncContacts();
       return;
     }
@@ -78,7 +86,7 @@ class FBLogin extends PureComponent {
 
   connect = async ({ profile, accessToken }) => {
     this.setState({ showModal: true });
-    const { socialConnect, setLogin, navigation, syncContacts } = this.props;
+    const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
     const response = await socialConnect({
       id: profile.id,
       email: profile.email,
@@ -90,6 +98,8 @@ class FBLogin extends PureComponent {
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
+    await FCM.getFCMToken()
+      .then(appToken => storeAppToken(appToken, getDeviceId()));
 
     navigation.dispatch(
       NavigationActions.reset({
@@ -187,6 +197,7 @@ FBLogin.propTypes = {
   updateProfile: PropTypes.func.isRequired,
   socialConnect: PropTypes.func.isRequired,
   signup: PropTypes.bool,
+  storeAppToken: PropTypes.func.isRequired,
 };
 
 FBLogin.defaultProps = {
@@ -208,5 +219,6 @@ export default compose(
   withSocialConnect,
   withNavigation,
   withContactSync,
+  withStoreAppToken,
   connect(null, mapDispatchToProps),
 )(FBLogin);
