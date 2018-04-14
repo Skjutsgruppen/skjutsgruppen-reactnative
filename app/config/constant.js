@@ -102,3 +102,7 @@ export const GROUP_FEED_TYPE_UPDATED = 'group_updated';
 export const LOCATION_SHARED = 'location_shared';
 
 export const GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED = 'location_sharing_stopped';
+
+export const SHARE_LOCATION_MINUTE = 40;
+export const SHARE_EXPERIENCE_DEFAULT_MINUTE = 60;
+export const FETCH_ACTIVE_RIDE_INTERVAL = 7;
