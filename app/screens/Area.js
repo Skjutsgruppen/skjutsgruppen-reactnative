@@ -93,11 +93,27 @@ class AreaMap extends PureComponent {
     });
   }
 
-  componentWillReceiveProps({ groupTrips, locationSharedToSpecificResource }) {
+  componentWillReceiveProps({ group, groupTrips, locationSharedToSpecificResource }) {
     const sharedLocations = locationSharedToSpecificResource.data ?
       locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
 
     this.setState({
+      myPosition: {
+        latitude: (group.Location && group.Location.locationCoordinates) ?
+          group.Location.locationCoordinates[1] : null,
+        longitude: (group.Location && group.Location.locationCoordinates) ?
+          group.Location.locationCoordinates[0] : null,
+      },
+      initialRegion: {
+        longitude: group.areaCoordinates ? group.areaCoordinates[0] : 0,
+        latitude: group.areaCoordinates ? group.areaCoordinates[1] : 0,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      },
+      origin: {
+        longitude: group.areaCoordinates ? group.areaCoordinates[0] : 0,
+        latitude: group.areaCoordinates ? group.areaCoordinates[1] : 0,
+      },
       trips: groupTrips,
       sharedLocations,
     });
@@ -256,6 +272,7 @@ class AreaMap extends PureComponent {
 
     if (myPosition.latitude &&
       myPosition.longitude &&
+      group.Location &&
       group.Location.locationCoordinates &&
       group.Location.locationCoordinates.length > 0) {
       const coordinate = {
