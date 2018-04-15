@@ -74,20 +74,20 @@ class AreaMap extends PureComponent {
 
     this.setState({
       myPosition: {
-        latitude: group.Location.locationCoordinates ?
+        latitude: (group.Location && group.Location.locationCoordinates) ?
           group.Location.locationCoordinates[1] : null,
-        longitude: group.Location.locationCoordinates ?
+        longitude: (group.Location && group.Location.locationCoordinates) ?
           group.Location.locationCoordinates[0] : null,
       },
       initialRegion: {
-        longitude: group.areaCoordinates[0],
-        latitude: group.areaCoordinates[1],
+        longitude: group.areaCoordinates ? group.areaCoordinates[0] : 0,
+        latitude: group.areaCoordinates ? group.areaCoordinates[1] : 0,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
       origin: {
-        longitude: group.areaCoordinates[0],
-        latitude: group.areaCoordinates[1],
+        longitude: group.areaCoordinates ? group.areaCoordinates[0] : 0,
+        latitude: group.areaCoordinates ? group.areaCoordinates[1] : 0,
       },
       sharedLocations: data || [],
     });
