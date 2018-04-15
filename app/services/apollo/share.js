@@ -26,7 +26,7 @@ export const withShareLocation = graphql(SHARE_LOCATION_QUERY, {
   }),
 });
 
-const LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY = gql`
+export const LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY = gql`
 query locationSharedToSpecificResource($resourceId: Int!, $resourceType: ShareableEnum!) {
   locationSharedToSpecificResource(resourceId: $resourceId, resourceType: $resourceType) {
     id
