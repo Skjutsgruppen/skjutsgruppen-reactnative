@@ -41,8 +41,9 @@ const styles = StyleSheet.create({
 
 class NewNotification extends PureComponent {
   componentWillMount() {
-    const { subscribeToNotification, user, filters, notifications } = this.props;
+    const { subscribeToNotification, user, filters, notifications, setNoMessages } = this.props;
 
+    if (notifications.count < 1) setNoMessages(filters);
     if (filters === 'new') {
       subscribeToNotification({ userId: user.id });
       notifications.startPolling(15000);
@@ -51,7 +52,6 @@ class NewNotification extends PureComponent {
 
   componentWillReceiveProps() {
     const { setNoMessages, notifications, filters } = this.props;
-
 
     if (notifications.count < 1) setNoMessages(filters);
   }

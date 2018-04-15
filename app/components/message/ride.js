@@ -26,7 +26,9 @@ const styles = StyleSheet.create({
 
 class Ride extends Component {
   componentWillMount() {
-    const { subscribeToNewTrip, user } = this.props;
+    const { subscribeToNewTrip, user, setNoMessages, trips } = this.props;
+
+    if (trips.count < 1) setNoMessages('rides');
     if (user.id) {
       subscribeToNewTrip({ userId: user.id });
     }
