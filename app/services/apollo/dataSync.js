@@ -2,10 +2,11 @@
 
 import client from '@services/apollo';
 import { PROFILE_QUERY, ACCOUNT_QUERY } from '@services/apollo/profile';
-import { TRIPS_QUERY, GET_FEED_QUERY } from '@services/apollo/trip';
+import { TRIPS_QUERY, GET_FEED_QUERY, FIND_TRIP_QUERY } from '@services/apollo/trip';
 import { GROUPS_QUERY } from '@services/apollo/group';
 import {
   FEEDABLE_TRIP,
+  FEEDABLE_GROUP,
   PER_FETCH_LIMIT,
   FEED_FILTER_WANTED,
   FEED_FILTER_EVERYTHING,
@@ -16,6 +17,8 @@ import {
 } from '@config/constant';
 import { FRIEND_QUERY } from '@services/apollo/friend';
 import { NOTIFICATION_QUERY } from '@services/apollo/notification';
+import { LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY } from '@services/apollo/share';
+import { FIND_GROUP_QUERY } from './group';
 
 const isRemovableNotificationType = (type) => {
   const types = [
@@ -496,5 +499,86 @@ export const updateActiveGroups = (updatedGroup) => {
     });
   } catch (e) {
     // empty
+  }
+};
+
+export const updateSharedLocation = (id, type) => {
+  try {
+    const sharedLocation = client.readQuery({
+      query: LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY,
+      variables: {
+        resourceId: id,
+        resourceType: type,
+      },
+    });
+
+    const sharedLocationUpdated = [];
+
+    sharedLocation.locationSharedToSpecificResource.forEach((location) => {
+      const duration = location.duration - 1;
+      const timeFraction = (1 - (location.duration / location.interval)) * 100;
+
+      if (duration > 0) {
+        sharedLocationUpdated.push({ ...location, duration, timeFraction });
+      }
+    });
+
+    client.writeQuery({
+      query: LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY,
+      variables: {
+        resourceId: id,
+        resourceType: type,
+      },
+      data: { locationSharedToSpecificResource: sharedLocationUpdated },
+    });
+
+    if (type === FEEDABLE_TRIP) {
+      const resource = client.readQuery({
+        query: FIND_TRIP_QUERY,
+        variables: { id },
+      });
+
+      if (resource.trip.Location.id) {
+        const duration = resource.trip.Location.duration - 1;
+        const timeFraction =
+          (1 - (resource.trip.Location.duration / resource.trip.Location.interval)) * 100;
+
+        client.writeQuery({
+          query: FIND_TRIP_QUERY,
+          variables: { id },
+          data: {
+            trip: {
+              ...resource.trip,
+              Location: { ...resource.trip.Location, duration, timeFraction },
+            },
+          },
+        });
+      }
+    } else if (type === FEEDABLE_GROUP) {
+      const resource = client.readQuery({
+        query: FIND_GROUP_QUERY,
+        variables: { id },
+      });
+
+      if (resource.group.Location.id) {
+        const duration = resource.group.Location.duration - 1;
+        const timeFraction =
+          (1 - (resource.group.Location.duration / resource.group.Location.interval)) * 100;
+
+        client.writeQuery({
+          query: FIND_GROUP_QUERY,
+          variables: { id },
+          data: {
+            group: {
+              ...resource.group,
+              Location: { ...resource.group.Location, duration, timeFraction },
+            },
+          },
+        });
+      }
+    }
+  } catch (e) {
+    console.warn(e);
+    //
   }
 };
