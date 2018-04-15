@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
 
 class Group extends PureComponent {
   componentWillMount() {
-    const { user, subscribeToNewGroup } = this.props;
+    const { user, subscribeToNewGroup, setNoMessages, groups } = this.props;
+
+    if (groups.count < 1) setNoMessages('groups');
     if (user.id) {
       subscribeToNewGroup({ userId: user.id });
     }
