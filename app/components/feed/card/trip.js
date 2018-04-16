@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 10,
     borderRadius: 12,
-    shadowOffset: { width: 0, height: 1 },
-    shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 0,
-    shadowRadius: 5,
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     zIndex: 10,
   },
   groupName: {
@@ -99,6 +99,7 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
 
   let profileImage = null;
   if (trip.User.avatar) {
+    console.log(trip.User.avatar);
     profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
   } else {
     profileImage = (<View style={styles.imgIcon} />);
@@ -168,11 +169,11 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                 style={styles.commentGradientOverlay}
               />
             </View>
-            <View style={styles.profilePicWrapper}>
-              {profileImage}
-            </View>
           </View>
         </TouchableHighlight>
+        <View style={styles.profilePicWrapper}>
+          {profileImage}
+        </View>
         {
           typeof onSharePress === 'function' &&
           <Footer

@@ -1,22 +1,24 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import { Loading } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
     backgroundColor: Colors.background.fullWhite,
-    borderTopWidth: 2,
-    borderColor: Colors.border.lightGray,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   footerCommentSection: {
     height: 58,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 10,
   },
@@ -40,8 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.lightGray,
   },
   actionText: {
-    color: Colors.text.blue,
-    fontSize: 16,
     textAlign: 'center',
   },
   iconWrapper: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   commentInput: {
-    height: '100%',
+    height: Platform.OS === 'ios' ? 'auto' : '100%',
     flex: 1,
     fontSize: 14,
     paddingRight: 12,
@@ -182,21 +182,21 @@ class CommentBox extends PureComponent {
           onPress={() => this.handleSuggest()}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Suggest a Ride</Text>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Suggest a Ride</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => this.handleOffer()}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Offer a Ride</Text>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Offer a Ride</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => this.sendComment()}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Comment</Text>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Comment</AppText>
         </TouchableOpacity>
       </View>
     );

@@ -1,32 +1,33 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import { Loading } from '@components/common';
 import Radio from '@components/add/radio';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
     backgroundColor: Colors.background.fullWhite,
-    borderTopWidth: 2,
-    borderColor: Colors.border.lightGray,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   footerCommentSection: {
     height: 58,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingLeft: 10,
   },
   footerSocialSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 12,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
@@ -41,21 +42,20 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   commentInput: {
-    height: '100%',
+    height: Platform.OS === 'ios' ? 'auto' : '100%',
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: 14,
     paddingRight: 12,
     textAlignVertical: 'center',
+    fontFamily: 'SFUIText-Regular',
   },
   send: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
-  },
-  sendText: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
 });
 
@@ -136,7 +136,7 @@ class CommentBox extends PureComponent {
 
     return (
       <TouchableOpacity onPress={this.sendComment} style={styles.send}>
-        <Text style={styles.sendText}>Send</Text>
+        <AppText fontVariation="bold" colo={Colors.text.blue}>Send</AppText>
       </TouchableOpacity>
     );
   }
@@ -216,7 +216,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <Text style={styles.socialLabel}>{trans('trip.a_post_on_your_fb_timeline')}</Text>
+          <AppText style={styles.socialLabel}>{trans('trip.a_post_on_your_fb_timeline')}</AppText>
           <Radio
             color="blue"
             active={this.state.shareTwitter}
@@ -224,7 +224,7 @@ class CommentBox extends PureComponent {
             size={24}
             style={{ marginLeft: 16 }}
           />
-          <Text style={styles.socialLabel}>{trans('trip.a_tweet')}</Text>
+          <AppText style={styles.socialLabel}>{trans('trip.a_tweet')}</AppText>
         </View>
       );
     }
@@ -238,7 +238,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <Text style={styles.socialLabel}>A post about this ride on your Facebook timeline</Text>
+          <AppText style={styles.socialLabel}>A post about this ride on your Facebook timeline</AppText>
         </View>
       );
     }
@@ -252,7 +252,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareTwitterRadio}
             size={24}
           />
-          <Text style={styles.socialLabel}>A tweet about this ride</Text>
+          <AppText style={styles.socialLabel}>A tweet about this ride</AppText>
         </View>
       );
     }

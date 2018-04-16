@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -30,11 +31,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   text: {
-    lineHeight: 20,
-    opacity: 0.75,
+    fontSize: 12,
   },
   date: {
     marginTop: 8,
+    fontSize: 12,
     textAlign: 'right',
     width: '100%',
     color: Colors.text.gray,
@@ -55,19 +56,19 @@ const SharedCard = ({ trip, onPress, date }) => {
   let title = null;
   if (trip.type === FEED_TYPE_OFFER) {
     title = (
-      <Text style={styles.text}>
+      <AppText style={styles.text}>
         {trip.User.firstName}
-        <Text> offers {trip.seats} {trip.seats > 1 ? 'seats' : 'seat'} </Text>
-      </Text>
+        <AppText style={styles.text}> offers {trip.seats} {trip.seats > 1 ? 'seats' : 'seat'} </AppText>
+      </AppText>
     );
   }
 
   if (trip.type === FEED_TYPE_WANTED) {
     title = (
-      <Text style={styles.text}>
+      <AppText style={styles.text}>
         {trip.User.firstName}
-        <Text> asks for a ride</Text>
-      </Text>
+        <AppText> asks for a ride</AppText>
+      </AppText>
     );
   }
 
@@ -81,13 +82,13 @@ const SharedCard = ({ trip, onPress, date }) => {
         <View>
           {image}
           {title}
-          <Text style={styles.text}>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
-          <Date calendarTime style={styles.text}>{trip.date}</Date>
+          <AppText style={styles.text}>{trip.TripStart.name} - {trip.TripEnd.name}</AppText>
+          <AppText style={styles.text}><Date calendarTime>{trip.date}</Date></AppText>
         </View>
       </TouchableOpacity>
       {
         date &&
-        <Date calendarTime style={styles.date}>{date}</Date>
+        <AppText style={styles.date}><Date calendarTime>{date}</Date></AppText>
       }
     </View>
   );

@@ -3,6 +3,22 @@ package com.skjutsgruppen;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.gettipsi.reactnativetwittersdk.TwitterReactPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import ga.piroro.rnt.RNTPackage;
+import com.tkporter.sendsms.SendSMSPackage;
+import com.airbnb.android.react.maps.MapsPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
+import com.rnfs.RNFSPackage;
+import com.evollu.react.fcm.FIRMessagingPackage;
+import com.magus.fblogin.FacebookLoginPackage;
+import com.smixx.fabric.FabricPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import ga.piroro.rnt.RNTPackage;
 import com.gettipsi.reactnativetwittersdk.TwitterReactPackage;
@@ -49,6 +65,22 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new TwitterReactPackage(),
+            new VectorIconsPackage(),
+            new RNTPackage(),
+            SendSMSPackage.getInstance(),
+            new MapsPackage(),
+            new LinearGradientPackage(),
+            new ImagePickerPackage(),
+            new RNI18nPackage(),
+            new RNFSPackage(),
+            new FIRMessagingPackage(),
+            new FacebookLoginPackage(),
+            new FabricPackage(),
+            new RNDeviceInfo(),
+            new ReactNativeContacts(),
+            new ReactNativeConfigPackage(),
+            new RCTCameraPackage(),
         new RNTPackage(),
         new FabricPackage(),
         new RNFSPackage(),
