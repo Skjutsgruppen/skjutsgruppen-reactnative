@@ -40,10 +40,19 @@ class CloseByGroupsMapView extends Component {
 
     if (groups && groups.length > 0) {
       return groups.map((group) => {
-        coordinate = {
-          latitude: group.TripStart.coordinates[1],
-          longitude: group.TripStart.coordinates[0],
-        };
+        if (group.outreach === 'area') {
+          coordinate = {
+            latitude: group.areaCoordinates[1],
+            longitude: group.areaCoordinates[0],
+          };
+        } else {
+          coordinate = {
+            latitude: group.TripStart.coordinates[1],
+            longitude: group.TripStart.coordinates[0],
+          };
+        }
+
+        if (!coordinate.latitude || !coordinate.longitude) return null;
 
         return (
           <Marker
