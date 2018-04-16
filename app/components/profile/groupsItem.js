@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
+import { UcFirst } from '@config';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -51,7 +52,9 @@ const GroupsItem = ({ group, onPress }) => (
           {
             group.outreach === STRETCH_TYPE_ROUTE &&
             <Text style={styles.lightText}>
-              {group.TripStart.name} - {group.TripEnd.name}
+              {group.TripStart.name
+                || UcFirst(group.direction)} - {group.TripEnd.name
+                  || UcFirst(group.direction)}
             </Text>
           }
         </View>
