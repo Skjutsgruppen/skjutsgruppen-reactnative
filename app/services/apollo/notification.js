@@ -58,6 +58,12 @@ subscription notification($userId: Int!) {
           }
           muted
           unreadNotificationCount
+          Enablers {
+            id 
+            firstName 
+            avatar
+            deleted
+          }
         }
       }
       ... on FriendRequest {
@@ -176,6 +182,12 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             membershipStatus
             User {
               id
+            }
+            Enablers {
+              id 
+              firstName 
+              avatar
+              deleted
             }
             muted
             unreadNotificationCount
@@ -566,7 +578,13 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             } 
             country 
             county 
-            municipality 
+            municipality
+            Enablers {
+              id 
+              firstName 
+              avatar
+              deleted
+            } 
             locality 
             membershipStatus
             totalParticipants

@@ -76,16 +76,17 @@ class PlacesInput extends PureComponent {
       },
       showModal: false,
       directionText: null,
+      direction: null,
     });
   }
 
   componentWillMount() {
-    const { defaultValue } = this.props;
-    this.setState({ place: defaultValue });
+    const { defaultValue, defaultDirection } = this.props;
+    this.setState({ place: defaultValue, directionText: defaultDirection });
   }
 
-  componentWillReceiveProps({ defaultValue }) {
-    this.setState({ place: defaultValue });
+  componentWillReceiveProps({ defaultValue, defaultDirection }) {
+    this.setState({ place: defaultValue, directionText: defaultDirection });
   }
 
   onPress = ({ place, source, direction }) => {
@@ -100,13 +101,13 @@ class PlacesInput extends PureComponent {
   }
 
   getPlaceName = () => {
-    const { place, direction } = this.state;
+    const { place, directionText } = this.state;
     const { placeholder } = this.props;
 
-    if (direction) {
+    if (directionText) {
       return (
         <View>
-          <Text>{direction.charAt(0).toUpperCase() + direction.slice(1)}</Text>
+          <Text>{directionText.charAt(0).toUpperCase() + directionText.slice(1)}</Text>
         </View>
       );
     }
@@ -189,6 +190,7 @@ PlacesInput.propTypes = {
   inputStyle: TouchableHighlight.propTypes.style,
   wrapperStyle: TouchableHighlight.propTypes.style,
   direction: PropTypes.bool,
+  defaultDirection: PropTypes.string,
   currentLocation: PropTypes.bool,
 };
 
@@ -199,6 +201,7 @@ PlacesInput.defaultProps = {
   inputStyle: {},
   direction: false,
   currentLocation: false,
+  defaultDirection: null,
   wrapperStyle: {},
 };
 

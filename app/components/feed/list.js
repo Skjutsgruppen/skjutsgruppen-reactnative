@@ -292,6 +292,7 @@ class FeedList extends PureComponent {
   render() {
     const { header, footer, type } = this.props;
     const { feeds } = this.state;
+
     return (
       <View style={styles.wrapper}>
         <DataList
