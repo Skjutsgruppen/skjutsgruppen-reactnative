@@ -196,6 +196,7 @@ const CONVERSATION_QUERY = gql`
             areFriends
           }
         }
+        direction
         TripStart {
           name 
           coordinates

@@ -6,6 +6,7 @@ import Date from '@components/date';
 import Avatar from '@components/common/avatar';
 import { Colors } from '@theme';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
+import { UcFirst } from '@config';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -60,7 +61,9 @@ const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indi
       />
       <View style={styles.infoWrapper}>
         <Text>
-          {trip.TripStart.name} - {trip.TripEnd.name}
+          {trip.TripStart.name
+            || UcFirst(trip.direction)} - {trip.TripEnd.name
+              || UcFirst(trip.direction)}
         </Text>
         <Text style={styles.lightText}>
           <Date format="MMM DD, HH:mm">{trip.date}</Date>
