@@ -50,15 +50,6 @@ class PushNotification extends Component {
         this.scheduleLocalNotification(notif.custom_notification);
       }
     });
-
-    this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, (token) => {
-      storeAppToken(token).catch(err => console.warn(err));
-    });
-  }
-
-  componentWillUnmount() {
-    this.notificationListner.remove();
-    this.refreshTokenLisstener.remove();
   }
 
   showLocalNotification = (notif) => {
