@@ -179,21 +179,21 @@ class CommentBox extends PureComponent {
     return (
       <View style={styles.actions} >
         <TouchableOpacity
-          onPress={() => this.handleSuggest()}
+          onPress={this.handleSuggest}
           style={styles.action}
         >
           <Text style={styles.actionText}>Suggest a Ride</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
-          onPress={() => this.handleOffer()}
+          onPress={this.handleOffer}
           style={styles.action}
         >
           <Text style={styles.actionText}>Offer a Ride</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
-          onPress={() => this.sendComment()}
+          onPress={this.sendComment}
           style={styles.action}
         >
           <Text style={styles.actionText}>Comment</Text>

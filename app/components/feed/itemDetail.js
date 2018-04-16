@@ -327,7 +327,7 @@ class Feed extends Component {
     return (
       <View style={styles.wrapFlex}>
         <Text style={styles.commentText}>
-          {this.renderUsername()} suggests {this.renderUsername(feed.Trip.User)} ride:
+          {this.renderUsername()} suggests {`${this.renderUsername(feed.Trip.User)}'s`} ride:
         </Text>
         <Text>{feed.Suggestion.text}</Text>
       </View>

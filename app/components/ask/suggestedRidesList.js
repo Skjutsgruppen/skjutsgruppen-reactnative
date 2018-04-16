@@ -76,6 +76,7 @@ class SuggestedRidesList extends Component {
     const { defaultText } = this.props;
     this.setState({ text: defaultText });
   }
+
   onSelect = (tripId) => {
     this.setState({
       selectedId: tripId === this.state.selectedId ? null : tripId,
@@ -139,6 +140,7 @@ class SuggestedRidesList extends Component {
 
   render() {
     const { search, onSubmit, defaultText } = this.props;
+
     if (search.networkStatus === 1 && search.length < 1) {
       return (
         <View style={styles.centerWrapper}>

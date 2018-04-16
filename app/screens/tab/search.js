@@ -147,6 +147,8 @@ class Search extends Component {
         coordinates: [],
       },
       direction: 'anywhere',
+      directionFrom: null,
+      directionTo: null,
       filters: [FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_GROUP],
       markedDates: {},
       dates: [],
@@ -159,8 +161,23 @@ class Search extends Component {
     const { navigation } = this.props;
 
     if (navigation.state.params) {
-      const { fromObj, toObj, filters, direction, dates } = navigation.state.params;
-      this.setState({ from: fromObj, to: toObj, filters, direction, dates });
+      const {
+        fromObj,
+        toObj,
+        filters,
+        direction,
+        dates,
+      } = navigation.state.params;
+
+      this.setState({
+        from: fromObj,
+        to: toObj,
+        directionFrom: !fromObj.name ? direction : null,
+        directionTo: !toObj.name ? direction : null,
+        filters,
+        direction,
+        dates,
+      });
     }
 
     navigation.setParams({ scrollToTop: this.scrollToTop });
@@ -215,6 +232,14 @@ class Search extends Component {
     this.setState({ modalVisible: visible });
   }
 
+  setStartPlace = ({ place, direction }) => {
+    this.setState({ from: place, directionFrom: direction });
+  }
+
+  setEndPlace = ({ place, direction }) => {
+    this.setState({ to: place, directionTo: direction });
+  }
+
   scrollToTop = () => {
     if (this.scrollView) {
       this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
@@ -228,7 +253,12 @@ class Search extends Component {
   }
 
   switchLocation = () => {
-    const { from, to } = this.state;
+    const { from, to, directionFrom, directionTo } = this.state;
+
+    if (directionFrom || directionTo) {
+      this.setState({ directionFrom: directionTo, directionTo: directionFrom });
+    }
+
     this.setState({ from: to, to: from });
   };
 
@@ -247,7 +277,7 @@ class Search extends Component {
     let error = 0;
 
     const { navigation } = this.props;
-    const { from, to, direction, filters, dates } = this.state;
+    const { from, to, direction, directionFrom, directionTo, filters, dates } = this.state;
 
     if (from.coordinates.length === 0 && to.coordinates.length === 0) {
       Alert.alert('Error!!', 'Either From or To is required.');
@@ -255,13 +285,21 @@ class Search extends Component {
     }
 
     if (error === 0) {
-      navigation.navigate('SearchResult', { from, to, direction, filters, dates });
+      navigation.navigate('SearchResult', {
+        from,
+        to,
+        direction: directionFrom || directionTo || direction,
+        directionFrom,
+        directionTo,
+        filters,
+        dates,
+      });
     }
   }
 
   render() {
     const prettyDate = this.formatDates();
-    const { filters, direction, dates, markedDates } = this.state;
+    const { filters, directionTo, directionFrom, dates, markedDates } = this.state;
 
     return (
       <View style={styles.wrapper}>
@@ -284,9 +322,10 @@ class Search extends Component {
               <View style={styles.inputWrapper}>
                 <PlaceInput
                   defaultValue={this.state.from}
+                  defaultDirection={directionFrom}
                   currentLocation
                   placeholder={trans('search.from_where_i_am_now')}
-                  onChangeText={({ place }) => this.setState({ from: place })}
+                  onChangeText={this.setStartPlace}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
                   direction
@@ -309,8 +348,9 @@ class Search extends Component {
               <View style={styles.inputWrapper}>
                 <PlaceInput
                   placeholder={trans('global.destination')}
+                  defaultDirection={directionTo}
                   defaultValue={this.state.to}
-                  onChangeText={({ place }) => this.setState({ to: place })}
+                  onChangeText={this.setEndPlace}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
                   direction
@@ -325,56 +365,6 @@ class Search extends Component {
                 </AppText>
               </View>
             </View>
-            {false &&
-              <View style={styles.locationSuggestions}>
-                <AppText size={14} color={Colors.text.gray} style={{ marginVertical: 12 }}>{trans('search.or_choose')}:</AppText>
-                <TouchableOpacity onPress={() => this.onDirectionSelect('anywhere')} style={[styles.suggestion, direction === 'anywhere' ? styles.selected : {}]}>
-                  <AppText
-                    size={12}
-                    color={Colors.text.white}
-                    fontVariation="semibold"
-                  >
-                    {trans('global.anywhere')}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.onDirectionSelect('north')} style={[styles.suggestion, direction === 'north' ? styles.selected : {}]}>
-                  <AppText
-                    size={12}
-                    color={Colors.text.white}
-                    fontVariation="semibold"
-                  >
-                    {trans('global.north')}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.onDirectionSelect('south')} style={[styles.suggestion, direction === 'south' ? styles.selected : {}]}>
-                  <AppText
-                    size={12}
-                    color={Colors.text.white}
-                    fontVariation="semibold"
-                  >
-                    {trans('global.south')}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.onDirectionSelect('east')} style={[styles.suggestion, direction === 'east' ? styles.selected : {}]}>
-                  <AppText
-                    size={12}
-                    color={Colors.text.white}
-                    fontVariation="semibold"
-                  >
-                    {trans('global.east')}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.onDirectionSelect('west')} style={[styles.suggestion, direction === 'west' ? styles.selected : {}]}>
-                  <AppText
-                    size={12}
-                    color={Colors.text.white}
-                    fontVariation="semibold"
-                  >
-                    {trans('global.west')}
-                  </AppText>
-                </TouchableOpacity>
-              </View>
-            }
             <View style={styles.dateRow}>
               <AppText size={14} color={Colors.text.gray}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</AppText>
               <TouchableOpacity onPress={() => this.setModalVisible(true)}>
