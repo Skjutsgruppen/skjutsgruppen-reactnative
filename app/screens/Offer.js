@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
+import { StyleSheet, View, Text, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
