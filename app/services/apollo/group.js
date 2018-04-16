@@ -1591,7 +1591,7 @@ query alphabetisedGroups{
           firstName 
           avatar 
           deleted
-        } 
+        }
         TripStart {
           name 
           coordinates 
@@ -1711,7 +1711,8 @@ query nearByGroups($from: [Float]!,
         firstName 
         avatar
         deleted
-      } 
+      }
+      areaCoordinates      
       TripStart {
         name 
         coordinates 
