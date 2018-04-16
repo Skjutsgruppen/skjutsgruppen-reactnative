@@ -264,7 +264,7 @@ class AreaMap extends PureComponent {
               e.stopPropagation();
             }}
             coordinate={coordinate}
-            image={location.User.avatar}
+            image={location.Location.User.avatar}
           />
         );
       });
