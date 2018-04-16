@@ -128,6 +128,9 @@ class Ask extends Component {
         parentId,
         description,
         route: {
+          direction: route.direction,
+          directionFrom: route.directionTo,
+          directionTo: route.directionFrom,
           start: route.end,
           end: route.start,
           stops: _reverse(route.stops),
@@ -230,10 +233,6 @@ class Ask extends Component {
   };
 
   onRouteNext = (route) => {
-    // if (route.start.coordinates.length === 0) {
-    //   this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
-    // } else if (route.end.coordinates.length === 0) {
-    //   this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
     if (route.start.coordinates.length === 0 && route.end.coordinates.length === 0) {
       this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
     } else {
@@ -342,23 +341,6 @@ class Ask extends Component {
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
-  renderReturnRideText() {
-    const { isReturnedTrip, returnText } = this.state;
-    if (isReturnedTrip) {
-      return (
-        <View style={styles.returnHeader}>
-          <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
-          <Text style={styles.mainTitle}>Return ride</Text>
-          <Text style={styles.returnText}>
-            Return ride of your asked ride to {returnText}
-          </Text>
-        </View>
-      );
-    }
-
-    return null;
-  }
-
   renderFinish() {
     const { loading, trip, error, route, isReturnedTrip, group, date } = this.state;
     if (loading) {
@@ -442,7 +424,6 @@ class Ask extends Component {
             innerRef={(ref) => { this.container = ref; }}
             style={{ backgroundColor: 'transparent' }}
           >
-            {/* {this.renderReturnRideText()} */}
             {this.renderProgress()}
             {
               (activeStep === 1) &&
