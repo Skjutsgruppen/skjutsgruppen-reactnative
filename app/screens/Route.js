@@ -51,7 +51,12 @@ class RouteMap extends PureComponent {
     this.state = ({
       showTurnOnGpsModal: false,
       fetchingPosition: false,
-      initialRegion: {},
+      initialRegion: {
+        longitude: 0,
+        latitude: 0,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      },
       origin: {},
       destination: {},
       stops: [],
@@ -83,45 +88,95 @@ class RouteMap extends PureComponent {
     this.setState({
       info,
       myPosition: {
-        latitude: info.Location.locationCoordinates ? info.Location.locationCoordinates[1] : null,
-        longitude: info.Location.locationCoordinates ? info.Location.locationCoordinates[0] : null,
-      },
-      initialRegion: {
-        longitude: info.TripStart.coordinates ?
-          info.TripStart.coordinates[0] : info.TripEnd.coordinates[0],
-        latitude: info.TripStart.coordinates ?
-          info.TripStart.coordinates[1] : info.TripEnd.coordinates[1],
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
+        latitude: (info.Location && info.Location.locationCoordinates) ?
+          info.Location.locationCoordinates[1] : null,
+        longitude: (info.Location && info.Location.locationCoordinates) ?
+          info.Location.locationCoordinates[0] : null,
       },
       origin: {
-        longitude: info.TripStart.coordinates ? info.TripStart.coordinates[0] : null,
-        latitude: info.TripStart.coordinates ? info.TripStart.coordinates[1] : null,
+        longitude: (info.TripStart && info.TripStart.coordinates) ?
+          info.TripStart.coordinates[0] : null,
+        latitude: (info.TripStart && info.TripStart.coordinates) ?
+          info.TripStart.coordinates[1] : null,
       },
       destination: {
-        longitude: info.TripEnd.coordinates ? info.TripEnd.coordinates[0] : null,
-        latitude: info.TripEnd.coordinates ? info.TripEnd.coordinates[1] : null,
+        longitude: (info.TripEnd && info.TripEnd.coordinates) ? info.TripEnd.coordinates[0] : null,
+        latitude: (info.TripEnd && info.TripEnd.coordinates) ? info.TripEnd.coordinates[1] : null,
       },
       stops: info.Stops,
       sharedLocations: data,
     });
+
+    if ((info.TripStart && info.TripStart.coordinates)
+      || (info.TripEnd && info.TripEnd.coordinates)) {
+      this.setState({
+        initialRegion: {
+          longitude: info.TripStart.coordinates ?
+            info.TripStart.coordinates[0] : info.TripEnd.coordinates[0],
+          latitude: info.TripStart.coordinates ?
+            info.TripStart.coordinates[1] : info.TripEnd.coordinates[1],
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        },
+      });
+    }
   }
 
   componentDidMount() {
     this.fetchPolygon();
   }
 
-  componentWillReceiveProps({ group, groupTrips, trip, locationSharedToSpecificResource }) {
+  componentWillReceiveProps({
+    navigation,
+    group,
+    groupTrips,
+    trip,
+    locationSharedToSpecificResource }) {
     const sharedLocations = locationSharedToSpecificResource.data ?
       locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
+    const { __typename } = navigation.state.params.info;
+    let info = {};
+
+    if (__typename === 'Group') info = group;
+    else if (__typename === 'Trip') info = trip;
 
     this.setState({
+      info,
+      myPosition: {
+        latitude: (info.Location && info.Location.locationCoordinates) ?
+          info.Location.locationCoordinates[1] : null,
+        longitude: (info.Location && info.Location.locationCoordinates) ?
+          info.Location.locationCoordinates[0] : null,
+      },
+      origin: {
+        longitude: (info.TripStart && info.TripStart.coordinates) ?
+          info.TripStart.coordinates[0] : null,
+        latitude: (info.TripStart && info.TripStart.coordinates) ?
+          info.TripStart.coordinates[1] : null,
+      },
+      destination: {
+        longitude: (info.TripEnd && info.TripEnd.coordinates) ? info.TripEnd.coordinates[0] : null,
+        latitude: (info.TripEnd && info.TripEnd.coordinates) ? info.TripEnd.coordinates[1] : null,
+      },
+      stops: info.Stops,
       trips: groupTrips,
-      info: group.id ? group : trip,
       sharedLocations,
     });
-  }
 
+    if ((info.TripStart && info.TripStart.coordinates)
+      || (info.TripEnd && info.TripEnd.coordinates)) {
+      this.setState({
+        initialRegion: {
+          longitude: info.TripStart.coordinates ?
+            info.TripStart.coordinates[0] : info.TripEnd.coordinates[0],
+          latitude: info.TripStart.coordinates ?
+            info.TripStart.coordinates[1] : info.TripEnd.coordinates[1],
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        },
+      });
+    }
+  }
 
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
@@ -211,7 +266,7 @@ class RouteMap extends PureComponent {
   }
 
   async fetchPolygon() {
-    const { origin, destination, stops } = this.state;
+    const { origin, destination, stops = [] } = this.state;
     const stopsCoordinates = stops.map(row => `${row.coordinates[1]},${row.coordinates[0]}`);
 
     try {
@@ -325,6 +380,7 @@ class RouteMap extends PureComponent {
 
     if (myPosition.latitude &&
       myPosition.longitude &&
+      info.Location &&
       info.Location.locationCoordinates &&
       info.Location.locationCoordinates.length > 0) {
       const coordinate = {
