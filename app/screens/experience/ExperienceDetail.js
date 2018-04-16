@@ -11,22 +11,29 @@ import {
   EXPERIENCE_STATUS_PENDING,
   EXPERIENCE_STATUS_PUBLISHED,
 } from '@config/constant';
+import { Loading } from '@components/common';
 
 class ExperienceDetailScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { experience: {}, refetch: () => { }, isRejected: false, isAccepted: false };
+    this.state = {
+      experience: {},
+      refetch: () => { },
+      isRejected: false,
+      isAccepted: false,
+      fetch: false,
+    };
   }
 
   componentWillMount() {
-    const { navigation } = this.props;
+    const { navigation, fetch } = this.props;
     const { experience } = navigation.state.params;
-    this.setState({ experience });
+    this.setState({ experience, fetch });
   }
 
   componentWillReceiveProps({ experience, loading, refetch }) {
     if (!loading && experience.id) {
-      this.setState({ experience, refetch });
+      this.setState({ experience, refetch, fetch: false });
     }
   }
 
@@ -71,8 +78,12 @@ class ExperienceDetailScreen extends Component {
   }
 
   render() {
-    const { experience, isRejected, isAccepted } = this.state;
+    const { experience, isRejected, isAccepted, fetch } = this.state;
     const { loading, navigation } = this.props;
+
+    if (fetch) {
+      return <Loading />;
+    }
 
     if (this.isStatus(EXPERIENCE_STATUS_DELETED)) {
       return (
@@ -132,6 +143,7 @@ ExperienceDetailScreen.propTypes = {
       }),
     }),
   }).isRequired,
+  fetch: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -143,8 +155,14 @@ const ExperienceWithDetail = compose(
 
 
 const ExperienceDetail = ({ navigation }) => {
-  const { experience } = navigation.state.params;
-  return (<ExperienceWithDetail id={experience.id} navigation={navigation} />);
+  const { experience, fetch } = navigation.state.params;
+  return (
+    <ExperienceWithDetail
+      id={experience.id}
+      navigation={navigation}
+      fetch={fetch || false}
+    />
+  );
 };
 
 ExperienceDetail.propTypes = {

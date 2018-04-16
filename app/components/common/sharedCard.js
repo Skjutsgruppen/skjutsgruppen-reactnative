@@ -82,7 +82,6 @@ const SharedCard = ({ trip, onPress, date }) => {
           {image}
           {title}
           <Text style={styles.text}>
-            {console.log(trip)}
             {
               trip.TripStart.name ||
               (trip.direction.charAt(0).toUpperCase() + trip.direction.slice(1))
