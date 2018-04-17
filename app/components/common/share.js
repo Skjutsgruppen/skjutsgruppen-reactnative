@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
@@ -262,10 +262,16 @@ class Share extends Component {
     }
 
     try {
-      if (location.tripId && tripParticipants.length > 0) {
-        const obj = { ...location, users: tripParticipants.concat(friends) };
-        startTrackingLocation();
-        await shareLocation(obj);
+      if (location.tripId) {
+        if (tripParticipants.length > 0 || friends.length > 0) {
+          const obj = { ...location, users: tripParticipants.concat(friends) };
+          startTrackingLocation();
+          await shareLocation(obj);
+        } else {
+          Alert.alert('You must select at least one participants.');
+          this.setState({ loading: false });
+          return;
+        }
       } else {
         if (social.length > 0 || friends.length > 0 || groups.length > 0) {
           await share({ id, type, share: shareInput });
