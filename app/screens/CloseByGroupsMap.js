@@ -94,6 +94,7 @@ class CloseByGroupsMapView extends Component {
 
     return (
       <MapView
+        provider={'google'}
         initialRegion={origin}
         style={StyleSheet.absoluteFill}
         ref={(c) => { this.mapView = c; }}

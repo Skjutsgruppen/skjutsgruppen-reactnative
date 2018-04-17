@@ -11,7 +11,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string/>
 	<key>CFBundleIdentifier</key>
-	<string>org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>nu.skjutsgruppen.Skjutsgruppen</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -27,16 +27,17 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb{your-app-id}</string>
+				<string>fb152012658857025</string>
+				<string>fb152012658857025</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>FacebookAppID</key>
-	<string>{your-app-id}</string>
+	<string>152012658857025</string>
 	<key>FacebookDisplayName</key>
-	<string>{your-app-name}</string>
+	<string>Skjutsgruppen</string>
 	<key>LSApplicationCategoryType</key>
 	<string/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -45,6 +46,8 @@
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		<string>twitter</string>
+		<string>twitterauth</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -61,23 +64,38 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>We use your camera app to click and  upload photos related to trips, experience and groups.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Find friends by identifying people who are using this app through your contact list.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We use your gallery to upload photos related to trips and groups.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSMainNibFile</key>
+	<string>LaunchScreen</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>LaunchScreen</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
-		<string>avenir.ttf</string>
-		<string>sfuiDisplay.ttf</string>
-		<string>sfuiText.ttf</string>
-		<string>sfuiTextItalic.ttf</string>
+		<string>AvenirLTStd-Book.ttf</string>
+		<string>AvenirLTStd-Heavy.ttf</string>
+		<string>AvenirLTStd-Medium.ttf</string>
+		<string>SFUIDisplay-Bold.ttf</string>
+		<string>SFUIDisplay-Regular.ttf</string>
+		<string>SFUIText-Bold.ttf</string>
+		<string>SFUIText-Regular.ttf</string>
+		<string>SFUIDisplay-Semi-Bold.ttf</string>
+		<string>SFUIText-RegularItalic.ttf</string>
+		<string>SFUIText-SemiBold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -86,11 +104,13 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
