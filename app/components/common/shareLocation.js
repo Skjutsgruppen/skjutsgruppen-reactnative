@@ -214,9 +214,10 @@ class ShareLocation extends PureComponent {
   }
 
   showActionModal = () => {
-    const { showActionOption, fetchingPosition } = this.state;
+    const { showActionOption } = this.state;
+    const { fetchingPosition, myPosition } = this.props;
 
-    if (!showActionOption || fetchingPosition) return null;
+    if (!showActionOption || fetchingPosition || !myPosition.longitude || !myPosition.latitude) return null;
 
     return (
       <ActionModal
@@ -331,7 +332,7 @@ class ShareLocation extends PureComponent {
             stopSpecific({ id: detail.id, type: __typename })
               .catch(error => Alert.alert(error.code));
           } else if (!myPosition.latitude || !myPosition.longitude) {
-            currentLocation();
+            currentLocation().then(() => this.setState({ showActionOption: true }));
           } else {
             this.setState({ showActionOption: true });
           }
