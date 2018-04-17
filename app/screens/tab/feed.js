@@ -321,18 +321,18 @@ class Feed extends Component {
   renderFeed() {
     const { feeds } = this.props;
     const { filterType } = this.state;
-    let noResultText = 'No rides have been created yet.';
+    let noResultText = trans('feed.no_rides_have_been_created_yet');
 
     if (filterType === FEEDABLE_EXPERIENCE.toLowerCase()) {
-      noResultText = 'No experiences published yet.';
+      noResultText = trans('feed.no_experiences_published_yet');
     }
 
     if (filterType === FEEDABLE_TRIP) {
-      noResultText = 'No rides yet.';
+      noResultText = trans('feed.no_rides_yet');
     }
 
     if (filterType === FEEDABLE_NEWS.toLowerCase()) {
-      noResultText = 'No news yet.';
+      noResultText = trans('feed.no_news_yet');
     }
 
     return (
