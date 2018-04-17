@@ -151,6 +151,9 @@ class Offer extends Component {
         parentId,
         description,
         route: {
+          direction: route.direction,
+          directionFrom: route.directionTo,
+          directionTo: route.directionFrom,
           start: route.end,
           end: route.start,
           stops: _reverse(route.stops),
@@ -193,15 +196,17 @@ class Offer extends Component {
           isFlexible: (trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0) || false,
         },
         route: {
+          directionFrom: trip.TripStart.name ? null : trip.direction,
+          directionTo: trip.TripEnd.name ? null : trip.direction,
           start: {
-            name: trip.TripStart.name,
-            coordinates: trip.TripStart.coordinates,
-            countryCode: trip.TripStart.countryCode,
+            name: trip.TripStart.name ? trip.TripStart.name : '',
+            coordinates: trip.TripStart.name ? trip.TripStart.coordinates : [],
+            countryCode: trip.TripStart.name ? trip.TripStart.countryCode : '',
           },
           end: {
-            name: trip.TripEnd.name,
-            coordinates: trip.TripEnd.coordinates,
-            countryCode: trip.TripEnd.countryCode,
+            name: trip.TripEnd.name ? trip.TripEnd.name : '',
+            coordinates: trip.TripEnd.name ? trip.TripEnd.coordinates : [],
+            countryCode: trip.TripEnd.name ? trip.TripEnd.countryCode : '',
           },
           stops: [],
           isReturning: true,
@@ -297,10 +302,6 @@ class Offer extends Component {
   };
 
   onRouteNext = (route) => {
-    // if (route.start.coordinates.length === 0) {
-    //   this.setState({ error: getToast(['FROM_REQUIRED']) }, this.scrollToTop);
-    // } else if (route.end.coordinates.length === 0) {
-    //   this.setState({ error: getToast(['TO_REQUIRED']) }, this.scrollToTop);
     if (route.start.coordinates.length === 0 && route.end.coordinates.length === 0) {
       this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
     } else {
@@ -437,23 +438,6 @@ class Offer extends Component {
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');
 
-  renderReturnRideText() {
-    const { isReturnedTrip, returnText } = this.state;
-    if (isReturnedTrip) {
-      return (
-        <View style={styles.returnHeader}>
-          <Image source={require('@assets/icons/icon_return.png')} style={styles.returnIcon} />
-          <Text style={styles.mainTitle}>Return ride</Text>
-          <Text style={styles.returnText}>
-            Return ride of your offered ride to {returnText}
-          </Text>
-        </View>
-      );
-    }
-
-    return null;
-  }
-
   renderFinish() {
     const { loading, trip, error, route, isReturnedTrip, suggestion, group, date } = this.state;
 
@@ -539,7 +523,6 @@ class Offer extends Component {
             innerRef={(ref) => { this.container = ref; }}
             style={{ backgroundColor: 'transparent' }}
           >
-            {/* {this.renderReturnRideText()} */}
             {this.renderProgress()}
             {
               (activeStep === 1) &&

@@ -34,7 +34,10 @@ const SuggestedRide = ({ ride, onSelect, selectedId }) => (
         notTouchable
       />
       <View style={styles.content}>
-        <Text>{ride.TripStart.name} - {ride.TripEnd.name}</Text>
+        <Text>{ride.TripStart.name
+          || ride.direction.charAt(0).toUpperCase() + ride.direction.slice(1)
+        } - {ride.TripEnd.name ||
+          ride.direction.charAt(0).toUpperCase() + ride.direction.slice(1)}</Text>
         <Text style={styles.lightText}><Date format="MMM DD, YYYY, HH:mm">{ride.date}</Date></Text>
       </View>
       <Radio
@@ -52,11 +55,11 @@ SuggestedRide.propTypes = {
       avatar: PropTypes.string.isRequired,
     }),
     TripStart: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }),
+      name: PropTypes.string,
+    }).isRequired,
     TripEnd: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }),
+      name: PropTypes.string,
+    }).isRequired,
     date: PropTypes.string.isRequired,
   }).isRequired,
   onSelect: PropTypes.func.isRequired,

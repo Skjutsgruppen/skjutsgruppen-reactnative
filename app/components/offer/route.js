@@ -133,7 +133,7 @@ class Route extends PureComponent {
 
   componentWillMount() {
     const { defaultValue, hideReturnTripOption } = this.props;
-    const { start, end, currentLocationSelected = '', isReturning } = defaultValue;
+    const { start, end, directionFrom, directionTo, currentLocationSelected = '', isReturning } = defaultValue;
 
     let { stops } = defaultValue;
     let stopsCount = stops.length;
@@ -146,6 +146,8 @@ class Route extends PureComponent {
     this.setState({
       start,
       end,
+      directionFrom,
+      directionTo,
       stops,
       stopsCount,
       currentLocationSelected,
@@ -254,7 +256,14 @@ class Route extends PureComponent {
   }
   render() {
     const { isOffer, buttonLabel } = this.props;
-    const { start, end, isReturning, hideReturnTripOption } = this.state;
+    const {
+      start,
+      end,
+      isReturning,
+      hideReturnTripOption,
+      directionFrom,
+      directionTo,
+    } = this.state;
 
     return (
       <View style={styles.wrapper}>
@@ -265,6 +274,7 @@ class Route extends PureComponent {
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('start')}
           defaultValue={start}
+          defaultDirection={directionFrom}
           onChangeText={this.setStartPlace}
           direction
         />
@@ -294,6 +304,7 @@ class Route extends PureComponent {
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('end')}
           defaultValue={end}
+          defaultDirection={directionTo}
           onChangeText={this.setEndPlace}
           direction
         />

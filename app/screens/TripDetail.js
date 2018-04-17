@@ -762,6 +762,7 @@ class TripDetail extends Component {
         <SuggestedRides
           from={trip.TripStart.coordinates}
           to={trip.TripEnd.coordinates}
+          direction={trip.direction}
           filters={[FEED_FILTER_OFFERED]}
           tripId={trip.id}
           onSubmit={this.setSuggestedRidesVisibility}

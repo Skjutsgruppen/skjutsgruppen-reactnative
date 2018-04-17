@@ -98,6 +98,7 @@ class FeedItem extends PureComponent {
 
   render() {
     const { feed, onPress, onLongPress } = this.props;
+
     return (
       <View>
         <View style={styles.wrapper}>
