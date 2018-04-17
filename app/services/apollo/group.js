@@ -603,6 +603,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           id 
           type 
           description 
+          direction
           seats 
           User {
             id 
@@ -779,6 +780,7 @@ subscription groupFeed($groupId: Int!){
           id 
           type 
           description 
+          direction
           seats 
           User {
             id 
@@ -1728,6 +1730,12 @@ query nearByGroups($from: [Float]!,
       country 
       county 
       municipality 
+      Enablers {
+        id 
+        firstName 
+        avatar
+        deleted
+      }
       locality 
       membershipStatus
       totalParticipants

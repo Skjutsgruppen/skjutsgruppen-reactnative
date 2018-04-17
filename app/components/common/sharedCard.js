@@ -82,14 +82,13 @@ const SharedCard = ({ trip, onPress, date }) => {
           {image}
           {title}
           <Text style={styles.text}>
+            {console.log(trip)}
             {
-              trip.TripStart.name ?
-                trip.TripStart.name :
-                trip.direction
+              trip.TripStart.name ||
+              (trip.direction.charAt(0).toUpperCase() + trip.direction.slice(1))
             } - {
-              trip.TripEnd.name ?
-                trip.TripEnd.name :
-                trip.direction
+              trip.TripEnd.name ||
+              (trip.direction.charAt(0).toUpperCase() + trip.direction.slice(1))
             }
           </Text>
           <Date calendarTime style={styles.text}>{trip.date}</Date>
