@@ -1245,6 +1245,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
           seats
           type
           mapPhoto
+          direction
           User {
             id
             firstName

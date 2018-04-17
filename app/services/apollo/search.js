@@ -42,6 +42,12 @@ query search
         photo
         mapPhoto
         direction
+        Enablers {
+          id 
+          firstName 
+          avatar
+          deleted
+        }
         TripStart {
           name 
           coordinates 
@@ -118,7 +124,7 @@ export const withSearch = graphql(SEARCH, {
     notifyOnNetworkStatusChange: true,
     variables: {
       from,
-      to: to.length > 0 ? to : null,
+      to: (to && to.length > 0) ? to : null,
       direction,
       dates,
       filters,
@@ -304,6 +310,12 @@ query search
         country 
         county 
         municipality 
+        Enablers {
+          id 
+          firstName 
+          avatar
+          deleted
+        }
         locality 
         membershipStatus 
         totalParticipants
