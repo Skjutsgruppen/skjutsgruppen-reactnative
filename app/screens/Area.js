@@ -308,6 +308,7 @@ class AreaMap extends PureComponent {
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
         <MapView
+          provider={'google'}
           initialRegion={initialRegion}
           style={styles.map}
           ref={(c) => { this.mapView = c; }}
