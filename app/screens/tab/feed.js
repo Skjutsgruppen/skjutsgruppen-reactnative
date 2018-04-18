@@ -29,6 +29,7 @@ import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
 import TouchableHighlight from '@components/touchableHighlight';
+import FCM from 'react-native-fcm';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -104,9 +105,30 @@ class Feed extends Component {
     this.feedList = null;
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { feeds, subscribeToFeed, navigation } = this.props;
     const { params } = navigation.state;
+
+    const notification = await FCM.getInitialNotification();
+    if (notification && notification.screen && notification.id) {
+      const id = parseInt(notification.id, 0);
+
+      if (notification.screen === 'TripDetail') {
+        navigation.navigate(notification.screen, { trip: { id }, fetch: true });
+      }
+
+      if (notification.screen === 'GroupDetail') {
+        navigation.navigate(notification.screen, { group: { id }, fetch: true });
+      }
+
+      if (notification.screen === 'Profile') {
+        navigation.navigate(notification.screen, { profileId: id });
+      }
+
+      if (notification.screen === 'ExperienceDetail') {
+        navigation.navigate(notification.screen, { experience: { id }, fetch: true });
+      }
+    }
 
     navigation.setParams({ scrollToTop: this.scrollToTop });
 
