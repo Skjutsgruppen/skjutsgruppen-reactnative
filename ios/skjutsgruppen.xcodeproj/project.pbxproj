@@ -56,6 +56,7 @@
 		956622CF24A04E609EF945CE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */; };
 		964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EEE321C8F146089BB8413E /* libBVLinearGradient.a */; };
 		A04B18EAE7F141A5A9F46F82 /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 853E1371A6014DC69DD6B986 /* libRNFIRMessaging.a */; };
+		A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A0A6A8E9208766CF0081AA46 /* GeoLocation.m */; };
 		A0CFED7B2088B8BD00558AA7 /* SFUIText-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */; };
 		A676CC0789DC476FA3976319 /* SFUIDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 319522A7925E4A4E874D0D69 /* SFUIDisplay-Bold.ttf */; };
 		AA5AEB07D34D4BC587AEBD60 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9134256ABE9242618B1C8F1F /* Feather.ttf */; };
@@ -374,6 +375,20 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		A0A6A89520873EF30081AA46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F3A6B5B1ACFBCC500CA65F7;
+			remoteInfo = RCTFBLogin;
+		};
+		A0A6A89820873EF30081AA46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9350E0F11CE3B0920041D815;
+			remoteInfo = RCTFBSDK;
+		};
 		AF510B5C201868C800226224 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC77BB607C114F5990369EA0 /* RCTCamera.xcodeproj */;
@@ -458,6 +473,7 @@
 		06527C20DEF14B0D95964E9E /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		07F722DDBA524220949127BA /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		099D4A438991A3EABE417013 /* Pods-Skjutsgruppen.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skjutsgruppen.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skjutsgruppen/Pods-Skjutsgruppen.release.xcconfig"; sourceTree = "<group>"; };
+		0C68AF35EEE24E0E8F1B5199 /* libRCTFBLogin.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBLogin.a; sourceTree = "<group>"; };
 		0D8C121EA6C54136B0F5095C /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		1243AFB35634479EA9589AE9 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Bold.ttf"; path = "../assets/fonts/SFUIText-Bold.ttf"; sourceTree = "<group>"; };
@@ -500,7 +516,11 @@
 		8BD4B3AE8A844534BB76F13B /* libReactNativeConfig.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeConfig.a; sourceTree = "<group>"; };
 		909B73DDC7F6435BABCC23B2 /* RNFIRMessaging.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFIRMessaging.xcodeproj; path = "../node_modules/react-native-fcm/ios/RNFIRMessaging.xcodeproj"; sourceTree = "<group>"; };
 		9134256ABE9242618B1C8F1F /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
+		94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBLogin.xcodeproj; path = "../node_modules/react-native-facebook-login/RCTFBLogin.xcodeproj"; sourceTree = "<group>"; };
 		9B9A2EFAAD834B01A6223F24 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContacts.a; sourceTree = "<group>"; };
+		A0A6A8E8208766CF0081AA46 /* GeoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeoLocation.h; path = skjutsgruppen/GeoLocation.h; sourceTree = "<group>"; };
+		A0A6A8E9208766CF0081AA46 /* GeoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GeoLocation.m; path = skjutsgruppen/GeoLocation.m; sourceTree = "<group>"; };
+		A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = "SFUIText-SemiBold.ttf"; path = "../assets/fonts/SFUIText-SemiBold.ttf"; sourceTree = "<group>"; };
 		AA0ED3F963284A07ACBD2D60 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = "SFUIText-RegularItalic.ttf"; path = "../assets/fonts/SFUIText-RegularItalic.ttf"; sourceTree = "<group>"; };
@@ -520,6 +540,7 @@
 		D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		DC77BB607C114F5990369EA0 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		DD416DDDE1C849EC9701403F /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
+		E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKLoginKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E590D1208A34D000EF24AF /* Skjutsgruppen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Skjutsgruppen.entitlements; path = Skjutsgruppen/Skjutsgruppen.entitlements; sourceTree = "<group>"; };
 		FF6649D1AAAD4F1EA5203780 /* AvenirLTStd-Book.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirLTStd-Book.ttf"; path = "../assets/fonts/AvenirLTStd-Book.ttf"; sourceTree = "<group>"; };
 		FF7A7FB2859C4DB2A00EC1AB /* SFUIDisplay-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIDisplay-Regular.ttf"; path = "../assets/fonts/SFUIDisplay-Regular.ttf"; sourceTree = "<group>"; };
@@ -680,6 +701,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				A0A6A8E8208766CF0081AA46 /* GeoLocation.h */,
+				A0A6A8E9208766CF0081AA46 /* GeoLocation.m */,
 			);
 			name = Skjutsgruppen;
 			sourceTree = SOURCE_ROOT;
@@ -749,6 +772,7 @@
 				853E1371A6014DC69DD6B986 /* libRNFIRMessaging.a */,
 				BB43CD007E9F48B4955C5A06 /* libTPSTwitterModule.a */,
 				DD416DDDE1C849EC9701403F /* libRCTFBSDK.a */,
+				0C68AF35EEE24E0E8F1B5199 /* libRCTFBLogin.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -764,6 +788,7 @@
 		67A3C3DC202C72DD00FCB038 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */,
 				B0E34D7FC2FF13AA2C2A4347 /* libPods-Skjutsgruppen.a */,
 			);
 			name = Frameworks;
@@ -832,6 +857,8 @@
 				63BE2481D9954D1DAA345EE2 /* SMXCrashlytics.xcodeproj */,
 				909B73DDC7F6435BABCC23B2 /* RNFIRMessaging.xcodeproj */,
 				3C428EA63E6641C8A5898AF9 /* TPSTwitterModule.xcodeproj */,
+				94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */,
+				A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -868,6 +895,22 @@
 				00E356EE1AD99517003FC87E /* SkjutsgruppenTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* Skjutsgruppen-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* Skjutsgruppen-tvOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A0A6A89020873EF30081AA46 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0A6A89620873EF30081AA46 /* libRCTFBLogin.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A0A6A89220873EF30081AA46 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0A6A89920873EF30081AA46 /* libRCTFBSDK.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -997,7 +1040,6 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				3D2A0CB0C127EB3BE7816167 /* [CP] Copy Pods Resources */,
-				30371D79B3C4F026159D1C9B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1119,6 +1161,14 @@
 				{
 					ProductGroup = AFB679051F908F84000AB50D /* Products */;
 					ProjectRef = 1243AFB35634479EA9589AE9 /* RCTContacts.xcodeproj */;
+				},
+				{
+					ProductGroup = A0A6A89020873EF30081AA46 /* Products */;
+					ProjectRef = 94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */;
+				},
+				{
+					ProductGroup = A0A6A89220873EF30081AA46 /* Products */;
+					ProjectRef = A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -1495,6 +1545,20 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		A0A6A89620873EF30081AA46 /* libRCTFBLogin.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBLogin.a;
+			remoteRef = A0A6A89520873EF30081AA46 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A0A6A89920873EF30081AA46 /* libRCTFBSDK.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBSDK.a;
+			remoteRef = A0A6A89820873EF30081AA46 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		AF510B5D201868C800226224 /* libRCTCamera.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1651,21 +1715,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		30371D79B3C4F026159D1C9B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skjutsgruppen/Pods-Skjutsgruppen-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3D2A0CB0C127EB3BE7816167 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1679,7 +1728,9 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterKitResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1719,6 +1770,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -1799,11 +1851,16 @@
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1841,11 +1898,16 @@
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1972,10 +2034,15 @@
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2018,10 +2085,15 @@
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/tipsi-twitter/ios/TPSTwitterModule/**",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2047,7 +2119,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Skjutsgruppen-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -2069,7 +2144,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Skjutsgruppen-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
