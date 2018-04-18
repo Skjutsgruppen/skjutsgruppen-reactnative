@@ -3,7 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'rea
 import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import Marker from '@components/map/marker';
 import Date from '@components/date';
@@ -304,7 +303,7 @@ class Feed extends Component {
                 {feed.Location.duration} more minutes
               </Text>}
           </View>
-          <Text style={{ textAlign: 'right' }}>{moment(new Date(feed.Location.sharedFrom)).utc().format('dddd HH:mm')}</Text>
+          <Date style={{ textAlign: 'right' }} format={'dddd HH:mm'}>{feed.Location.sharedFrom}</Date>
         </View>
       );
     }
