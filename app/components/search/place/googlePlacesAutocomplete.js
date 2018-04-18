@@ -20,6 +20,8 @@ import LocationIcon from '@assets/icons/ic_location.png';
 import debounce from 'lodash/debounce';
 import { Loading } from '@components/common/index';
 import Place from '@components/search/place/place';
+import ConfirmModal from '@components/common/confirmModal';
+import GeoLocation from '@services/location/geoLocation';
 
 const defaultStyles = {
   container: {
@@ -109,6 +111,7 @@ class GooglePlacesAutocomplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showTurnOnGpsModal: false,
       text: '',
       dataSource: [],
       loading: false,
@@ -145,12 +148,21 @@ class GooglePlacesAutocomplete extends Component {
   }
 
   getCurrentLocation = async () => {
-    if (this.state.currentLocationLoading) {
-      return;
-    }
-    this.setState({ currentLocationLoading: true });
-
     try {
+      const isGpsEnabled = await GeoLocation.isGpsEnabled();
+
+      if (!isGpsEnabled) {
+        this.setState({ showTurnOnGpsModal: true, fetchingPosition: false });
+
+        return;
+      }
+
+      if (this.state.currentLocationLoading) {
+        return;
+      }
+
+      this.setState({ currentLocationLoading: true });
+
       const { latitude, longitude } = await getCurrentLocation();
       let response = await fetch(getPlaceByLatlngURL(latitude, longitude));
       response = await response.json();
@@ -245,6 +257,23 @@ class GooglePlacesAutocomplete extends Component {
     this.props.onPress({ place: { name: '', countryCode: '', coordinates: [] }, direction, source: 'direction' });
   }
 
+  openGpsSettings = () => {
+    GeoLocation.showSettings();
+    this.setState({ showTurnOnGpsModal: false });
+  }
+
+  renderTurnOnGpsActionModal = () => (
+    <ConfirmModal
+      visible={this.state.showTurnOnGpsModal}
+      loading={false}
+      onDeny={() => this.setState({ showTurnOnGpsModal: false })}
+      confirmLabel={'Open settings'}
+      onConfirm={() => this.openGpsSettings()}
+      message={'Your GPS is turned off.'}
+      onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
+    />
+  )
+
   renderItem = ({ item }) => (
     <Place
       loading={this.state.selectedItem === item}
@@ -324,12 +353,14 @@ class GooglePlacesAutocomplete extends Component {
 
   render() {
     const { direction, currentLocation } = this.props;
+
     return (
       <Wrapper>
         {this.renderTextInput()}
         {direction && this.renderDirectionOption()}
         {currentLocation && this.renderCurrentLocationOption()}
         {this.renderSearchResult()}
+        {this.renderTurnOnGpsActionModal()}
       </Wrapper>
     );
   }
