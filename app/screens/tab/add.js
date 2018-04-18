@@ -9,6 +9,7 @@ import { withExploreGroup } from '@services/apollo/group';
 
 import Starter from '@components/add/starter';
 
+import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 
 import AddIcon from '@assets/icons/ic_add.png';
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
 class Add extends Component {
   static navigationOptions = {
     header: null,
-    tabBarLabel: 'Add',
+    tabBarLabel: trans('add.add'),
     tabBarIcon: ({ focused }) => <Image source={focused ? AddIconActive : AddIcon} />,
     tabBarOnPress: ({ scene, jumpToIndex }) => {
       if (scene.focused) {
@@ -81,20 +82,20 @@ class Add extends Component {
             fontVariation="bold"
             style={styles.title}
           >
-            Add
+            {trans('add.add')}
           </Heading>
           <Starter
             onPress={() => navigation.navigate('Offer')}
-            label="Offer a ride"
+            label={trans('add.offer_a_ride')}
           />
           <Starter
             onPress={() => navigation.navigate('Ask')}
-            label="Ask for a ride"
+            label={trans('add.ask_a_ride')}
           />
           <Starter
             onPress={() => navigation.navigate('Group')}
-            label="Add a new group"
-            info="For a specific distance. area or subject"
+            label={trans('add.add_a_group')}
+            info={trans('add.for_specific_distance')}
           />
           <DiscoverGroup limit={1} from={null} filter="recent" />
         </ScrollView>

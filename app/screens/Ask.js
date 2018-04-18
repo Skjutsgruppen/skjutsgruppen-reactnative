@@ -21,6 +21,7 @@ import { isToday, isFuture } from '@components/date';
 import { GlobalStyles } from '@theme/styles';
 import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -356,7 +357,7 @@ class Ask extends Component {
         <View style={{ marginTop: 100 }}>
           <Toast message={error} type="error" />
           <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
-            Try Again
+            {trans('global.try_again')}
           </CustomButton>
         </View>
       );
@@ -392,8 +393,8 @@ class Ask extends Component {
           activeStep === 4 ? GlobalStyles.TextStyles.blue : {},
         ]}
         >
-          <Text style={GlobalStyles.TextStyles.blue}>Step {activeStep}</Text> of 4
-          {activeStep === 4 && <Text>, well done!</Text>}
+          <Text style={GlobalStyles.TextStyles.blue}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 4 })}
+          {activeStep === 4 && <Text>, {trans('add.well_done')}</Text>}
         </Text>
       </View>
     );
@@ -414,7 +415,7 @@ class Ask extends Component {
       <Wrapper bgColor={Colors.background.mutedBlue}>
         {activeStep !== 5 &&
           <ToolBar
-            title={!isReturnedTrip ? 'Ask for a ride' : 'Add a return ride'}
+            title={!isReturnedTrip ? trans('add.ask_a_ride') : trans('add.add_a_return_ride')}
             onBack={this.onBackButtonPress}
           />
         }

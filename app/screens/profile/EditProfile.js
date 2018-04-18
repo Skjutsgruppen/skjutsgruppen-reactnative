@@ -284,10 +284,12 @@ class EditProfile extends Component {
     const { navigation } = this.props;
 
     this.setState({ language });
-    LangService.setLanguage(language).then(() => {
-      I18n.locale = language;
-      navigation.replace('Tab');
-    });
+    LangService.setLanguage(language)
+      .then(() => {
+        I18n.locale = language;
+      });
+
+    navigation.replace('Tab');
   }
 
   setConfirmModalVisibility = (visibility) => {

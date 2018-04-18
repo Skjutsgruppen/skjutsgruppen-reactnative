@@ -6,6 +6,7 @@ import { RoundedButton } from '@components/common';
 import AddPhoto from '@components/add/photo';
 import CommentBox from '@components/add/commentBox';
 import { GROUP_NAME_LIMIT } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   addPhotoWrapper: {
@@ -101,7 +102,7 @@ class About extends Component {
           onSelect={res => this.setState({ photo: res.data })}
         />
         <CommentBox
-          label="Name of the group"
+          label={trans('add.name_of_the_group')}
           onChangeText={name => this.setState({ name })}
           value={this.state.name}
           maxLength={GROUP_NAME_LIMIT}
@@ -109,7 +110,7 @@ class About extends Component {
           showTextCount
         />
         <CommentBox
-          label="What is your group about?"
+          label={trans('add.what_is_your_group_about')}
           onChangeText={description => this.setState({ description })}
           value={this.state.description}
         />
@@ -118,7 +119,7 @@ class About extends Component {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {trans('add.next')}
         </RoundedButton>
       </View>
     );
