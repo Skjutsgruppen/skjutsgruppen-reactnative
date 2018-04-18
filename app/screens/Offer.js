@@ -24,6 +24,7 @@ import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
 import { submitSuggestion } from '@services/apollo/suggest';
 import { getDate } from '@config';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -268,10 +269,10 @@ class Offer extends Component {
     if (activeStep === 1) {
       Alert.alert(
         '',
-        'Are you sure You want to exit this screen?',
+        trans('add.are_you_sure_you_want_to_exit'),
         [
-          { text: 'Cancel', onPress: () => { }, style: 'cancel' },
-          { text: 'OK', onPress: () => navigation.goBack() },
+          { text: trans('global.cancel'), onPress: () => { }, style: 'cancel' },
+          { text: trans('global.ok'), onPress: () => navigation.goBack() },
         ],
         { cancelable: true },
       );
@@ -453,7 +454,7 @@ class Offer extends Component {
       return (
         <View style={{ marginTop: 100 }}>
           <CustomButton onPress={this.createTrip} bgColor={Colors.background.darkCyan}>
-            Try Again
+            {trans('global.try_again')}
           </CustomButton>
         </View>
       );
@@ -489,8 +490,8 @@ class Offer extends Component {
           activeStep === 5 ? GlobalStyles.TextStyles.pink : {},
         ]}
         >
-          <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 5
-          {activeStep === 5 && <Text>, well done!</Text>}
+          <Text style={GlobalStyles.TextStyles.pink}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 5 })}
+          {activeStep === 5 && <Text>, {trans('add.well_done')}</Text>}
         </Text>
       </View>
     );
@@ -512,7 +513,7 @@ class Offer extends Component {
       <Wrapper>
         {activeStep !== 6 &&
           <ToolBar
-            title={!isReturnedTrip ? 'Offer a ride' : 'Add a return ride'}
+            title={!isReturnedTrip ? trans('add.offer_a_ride') : trans('add.add_a_return_ride')}
             onBack={this.onBackButtonPress}
           />
         }

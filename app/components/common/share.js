@@ -13,13 +13,12 @@ import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
 import { connect } from 'react-redux';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION } from '@config/constant';
 import SendSMS from 'react-native-sms';
 import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
-import { FEEDABLE_LOCATION } from '../../config/constant';
 
 const styles = StyleSheet.create({
   list: {
@@ -476,7 +475,7 @@ class Share extends Component {
             color="blue"
           />}
         <FriendList
-          title="Recent"
+          title={trans('global.recent')}
           loading={bestFriends.loading}
           rows={bestFriends.rows}
           setOption={id => this.setOption('selectedFriends', id)}
@@ -484,7 +483,7 @@ class Share extends Component {
         />
         {this.showGroup() && this.renderGroups()}
         <FriendList
-          title="Your Friends"
+          title={trans('global.your_friends')}
           loading={friends.loading}
           rows={friendsList}
           setOption={id => this.setOption('selectedFriends', id)}
@@ -561,7 +560,7 @@ class Share extends Component {
             <SectionLabel label={sectionLabel} color={labelColor} />
           }
           <SearchBar
-            placeholder="Search contacts"
+            placeholder={trans('global.search_contacts')}
             onChange={this.onChangeSearchQuery}
             defaultValue={this.state.searchQuery}
             onPressClose={() => this.setState({ searchQuery: '' })}
