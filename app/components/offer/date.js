@@ -9,6 +9,7 @@ import { FLEXIBILITY_UNITS, FLEXIBILITY_TYPES } from '@config/constant';
 import TimePicker from '@components/utils/timePicker';
 import { GlobalStyles } from '@theme/styles';
 
+import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import Radio from '@components/add/radio';
 
@@ -202,7 +203,7 @@ class Date extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Date" />
+        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.date')} />
         <Calendar
           firstDay={1}
           onDayPress={this.onSelectDay}
@@ -213,12 +214,12 @@ class Date extends Component {
           current={activeMonth}
         />
         <View style={styles.section}>
-          <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Is this a recurring ride?" />
+          <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.is_this_a_recurring_ride')} />
           <Text style={[GlobalStyles.TextStyles.light, styles.info]}>
-            Place more balls in the calendar if you are doing this ride again
-            (and click on the balls to remove them as well).</Text>
+            {trans('add.place_more_balls_in_calendar')}
+          </Text>
         </View>
-        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label="Time" />
+        <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.time')} />
         <View style={styles.inputContainer}>
           <View style={[styles.inputWrapper, { paddingLeft: 20, height: 60 }]}>
             <TimePicker defaultTime={time} onChange={value => this.setState({ time: value })} />
@@ -227,13 +228,13 @@ class Date extends Component {
         <View style={styles.radioRow}>
           <Radio
             active={!isFlexible}
-            label="Exact time"
+            label={trans('add.exact_time')}
             onPress={() => this.setState({ isFlexible: false })}
             color={isOffer ? 'pink' : 'blue'}
           />
           <Radio
             active={isFlexible}
-            label="Flexible time"
+            label={trans('add.flexible_time')}
             onPress={() => this.setState({ isFlexible: true })}
             color={isOffer ? 'pink' : 'blue'}
           />
@@ -242,7 +243,7 @@ class Date extends Component {
           isFlexible &&
           <View style={styles.inputContainer}>
             <View style={[styles.inputWrapper, { justifyContent: 'center', alignItems: 'center' }]}>
-              <Text>I can go</Text>
+              <Text>{trans('add.i_can_go')}</Text>
             </View>
             <View style={styles.inputWrapper}>
               <Picker
@@ -278,7 +279,7 @@ class Date extends Component {
           bgColor={Colors.text.pink}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </RoundedButton>
       </View>
     );
