@@ -339,6 +339,7 @@ class Map extends PureComponent {
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
         <MapView
+          provider={'google'}
           ref={(c) => { this.mapView = c; }}
           cacheEnabled
           loadingEnabled

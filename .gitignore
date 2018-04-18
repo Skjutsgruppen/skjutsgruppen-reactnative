@@ -64,3 +64,4 @@ buck-out/
 *.swm
 
 create.js
+ios/skjutsgruppen.xcworkspace/xcshareddata/

@@ -12,6 +12,7 @@ import PushNotification from '@services/firebase/pushNotification';
 const initialState = {};
 const { persistor, store } = configureStore(initialState);
 
+
 const App = () => (
   <ApolloProvider store={store} client={Apollo}>
     <PersistGate
