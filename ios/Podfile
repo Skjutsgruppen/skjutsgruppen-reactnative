@@ -35,16 +35,16 @@ target 'Skjutsgruppen' do
   pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
   
   pod 'react-native-maps', path: rn_maps_path
-  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk/iOS'
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk/ios'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   # react-native-maps dependencies
-#   pod 'react-native-maps', path: rn_maps_path
+#  pod 'react-native-maps', path: rn_maps_path
   pod 'react-native-google-maps', path: rn_maps_path  # Remove this line if you don't want to support GoogleMaps on iOS
   pod 'GoogleMaps'  # Remove this line if you don't want to support GoogleMaps on iOS
   pod 'Google-Maps-iOS-Utils' # Remove this line if you don't want to support GoogleMaps on iOS
-#   pod 'GooglePlaces'
-#   pod 'GooglePlacePicker
+#  pod 'GooglePlaces'
+#  pod 'GooglePlacePicker
 
 end
 
@@ -56,8 +56,7 @@ post_install do |installer|
             end
         end
         if target.name == "React"
-           target.remove_from_project
-       end
+            target.remove_from_project
+        end
     end
 end
-

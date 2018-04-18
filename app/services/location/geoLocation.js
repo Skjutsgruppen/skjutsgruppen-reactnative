@@ -15,6 +15,7 @@ class GeoLocation {
   isGpsEnabled = () => NativeModules.GeoLocation.checkGpsStatus();
 
   async startLocationService() {
+  console.log("start service called");
     try {
       const geoLocationServiceStarted = await this.session.get(this.locationServiceStartedKey);
 
