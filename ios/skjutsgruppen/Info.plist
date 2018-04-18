@@ -114,5 +114,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Background data need</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your iOS 11 and higher background location usage description goes here.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Foreground needed</string>
 </dict>
 </plist>
