@@ -33,7 +33,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>FacebookAppID</key>
 	<string>152012658857025</string>
 	<key>FacebookDisplayName</key>
@@ -69,9 +69,13 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Find friends by identifying people who are using this app through your contact list.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string/>
+	<string></string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Background data need</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your iOS 11 and higher background location usage description goes here.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Foreground needed</string>
 	<key>NSMainNibFile</key>
 	<string>LaunchScreen</string>
 	<key>NSMainNibFile~ipad</key>

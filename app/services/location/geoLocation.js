@@ -1,4 +1,4 @@
-import { NativeModules, DeviceEventEmitter } from 'react-native';
+import { Platform, NativeModules, DeviceEventEmitter } from 'react-native';
 import Session from '@services/storage/session';
 
 class GeoLocation {
@@ -15,6 +15,7 @@ class GeoLocation {
   isGpsEnabled = () => NativeModules.GeoLocation.checkGpsStatus();
 
   async startLocationService() {
+  console.log("start service called");
     try {
       const geoLocationServiceStarted = await this.session.get(this.locationServiceStartedKey);
 
@@ -41,9 +42,24 @@ class GeoLocation {
       const updateLocationEventListenerArray =
         await this.session.get(this.updateLocationEventListenerArrayKey) || [];
       if (updateLocationEventListenerArray.length === 0) {
-        this.deviceEventEmitter.addListener('updateLocation', (geoData) => {
-          callback(geoData);
-        });
+        // if(Platform.OS === 'ios') {
+        //   this.loadInterval = setInterval(() => {
+        //     navigator.geolocation.getCurrentPosition(
+        //       (geoData) => {
+        //         console.log(geoData);
+        //         callback(geoData)
+        //       },
+        //       () => {
+        //         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
+        //       },
+        //       { timeout: 20000, maximumAge: 1000 },
+        //     );
+        //   }, 10000);
+        // } else {
+          this.deviceEventEmitter.addListener('updateLocation', (geoData) => {
+            callback(geoData);
+          });
+        // }
       }
 
       if (updateLocationEventListenerArray
@@ -79,7 +95,12 @@ class GeoLocation {
         return Promise.resolve();
       }
 
-      this.deviceEventEmitter.removeListener('updateLocation');
+      // if(Platform.OS === 'ios') {      
+      //   if (this.loadInterval) clearInterval(this.loadInterval);
+      //   this.loadInterval = false;
+      // } else {
+        this.deviceEventEmitter.removeListener('updateLocation');
+      // }
       this.session.remove(this.updateLocationEventListenerArrayKey);
       return this.stopLocationService();
     } catch (e) {

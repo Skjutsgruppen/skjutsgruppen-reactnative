@@ -163,15 +163,20 @@ class ShareLocation extends PureComponent {
   }
 
   info = () => {
-    const { type } = this.props;
-    if (type === FEEDABLE_GROUP) {
-      return this.group();
-    }
+    const { type, myPosition } = this.props;
+    // if (type === FEEDABLE_GROUP) {
+    //   return this.group();
+    // }
 
-    if (type === FEEDABLE_TRIP) {
-      return this.trip();
-    }
+    // if (type === FEEDABLE_TRIP) {
+    //   return this.trip();
+    // }
 
+    return (<View style={styles.groupName}>
+        <Text style={TextStyles.bold}>{myPosition.latitude}</Text>
+        <Text style={TextStyles.bold}>{myPosition.longitude}</Text>
+        <Text style={TextStyles.bold}>{myPosition.timestamp}</Text>
+      </View>);
     return null;
   }
 

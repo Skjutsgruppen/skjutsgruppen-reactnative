@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Alert } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert, Text } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
@@ -71,6 +71,7 @@ class RouteMap extends PureComponent {
       info: {},
       sharedLocations: [],
       myPosition: {},
+      locationUpdates: '',
     });
   }
 
@@ -216,6 +217,7 @@ class RouteMap extends PureComponent {
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            timestamp: position.timestamp,
           },
         });
       },
@@ -228,7 +230,7 @@ class RouteMap extends PureComponent {
   };
 
   startTrackingLocation = () => {
-    const { updateLocation } = this.props;
+    const { updateLocation, locationUpdates } = this.props;
     const { info } = this.state;
     const { __typename } = info;
 
@@ -238,6 +240,7 @@ class RouteMap extends PureComponent {
         myPosition: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          timestamp: position.timestamp,
         },
       });
     });
@@ -427,10 +430,10 @@ class RouteMap extends PureComponent {
       initialRegion,
       waypoints,
       info,
+      locationUpdates,
       myPosition,
       fetchingPosition } = this.state;
     const { __typename } = info;
-
     if (loading || locationSharedToSpecificResource.loading) return null;
 
     return (
@@ -441,6 +444,7 @@ class RouteMap extends PureComponent {
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
+        {/* <Text > {{ locationUpdates }} </Text> */}
         <MapView
           provider={'google'}
           initialRegion={initialRegion}
@@ -512,12 +516,14 @@ RouteMap.propTypes = {
     id: PropTypes.number,
   }).isRequired,
   updateLocation: PropTypes.func.isRequired,
+  locationUpdates: PropTypes.string,
 };
 
 RouteMap.defaultProps = {
   trip: {},
   group: {},
   groupTrips: [],
+  locationUpdates: '',
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

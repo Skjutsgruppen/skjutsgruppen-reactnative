@@ -157,6 +157,7 @@ class AreaMap extends PureComponent {
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            timestamp: position.timestamp,            
           },
         });
       },
@@ -178,6 +179,7 @@ class AreaMap extends PureComponent {
         myPosition: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          timestamp: position.timestamp,          
         },
       });
     });
