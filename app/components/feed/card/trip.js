@@ -140,12 +140,10 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                 </AppText>
                 <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                   {
-                    trip.TripStart.name ?
-                      trip.TripStart.name :
+                    trip.TripStart.name ||
                       prettify(trip.direction)
                   } - {
-                    trip.TripEnd.name ?
-                      trip.TripEnd.name :
+                    trip.TripEnd.name ||
                       prettify(trip.direction)
                   }
                 </AppText>
