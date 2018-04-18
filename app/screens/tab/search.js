@@ -153,6 +153,8 @@ class Search extends Component {
       markedDates: {},
       dates: [],
       modalVisible: false,
+      directionFrom: null,
+      directionTo: null,
     };
     this.scrollView = null;
   }
@@ -299,7 +301,7 @@ class Search extends Component {
 
   render() {
     const prettyDate = this.formatDates();
-    const { filters, directionTo, directionFrom, dates, markedDates } = this.state;
+    const { filters, dates, markedDates, directionFrom, directionTo } = this.state;
 
     return (
       <View style={styles.wrapper}>
@@ -328,7 +330,7 @@ class Search extends Component {
                   onChangeText={this.setStartPlace}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
-                  direction
+                  direction={!directionTo}
                 />
                 <AppText
                   size={12}
@@ -353,7 +355,7 @@ class Search extends Component {
                   onChangeText={this.setEndPlace}
                   style={styles.input}
                   wrapperStyle={{ flex: 1 }}
-                  direction
+                  direction={!directionFrom}
                 />
                 <AppText
                   size={12}
