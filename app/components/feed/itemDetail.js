@@ -304,7 +304,7 @@ class Feed extends Component {
                 {feed.Location.duration} more minutes
               </Text>}
           </View>
-          <Text style={{ textAlign: 'right' }}>{moment(new Date(feed.Location.sharedFrom)).format('dddd HH:mm')}</Text>
+          <Text style={{ textAlign: 'right' }}>{moment(new Date(feed.Location.sharedFrom)).utc().format('dddd HH:mm')}</Text>
         </View>
       );
     }
