@@ -1,0 +1,19 @@
+{
+  "edit_profile": "Edit Profile",
+  "change_password": "Change Password",
+  "language": "Language",
+  "facebook_connect": "Facebook Connect",
+  "twitter_connect": "Twitter Connect",
+  "sync_contacts": "Sync Contacts",
+  "logout": "Logout",
+  "update_profile_picture": "Update Profile Picture",
+  "first_name": "First name",
+  "your_first_name": "Your first name",
+  "last_name": "Last name",
+  "your_last_name": "Your last name",
+  "hi_again": "Hi again",
+  "change_password_here": "Change your password here",
+  "current_password": "Current Password",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password"
+}
