@@ -394,7 +394,7 @@ class RouteMap extends PureComponent {
             e.stopPropagation();
           }}
           coordinate={coordinate}
-          image={info.User.avatar}
+          image={info.Location.User.avatar}
         />);
     }
 
