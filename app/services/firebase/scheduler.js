@@ -47,10 +47,13 @@ class Scheduler {
       extra1: { a: 1 },
       sound: 'default',
       tripId,
+      screen: 'TripDetail',
     });
   }
 
   getScheduledNotifications = () => FCM.getScheduledLocalNotifications()
+
+  removeScheduledNotifications = () => FCM.cancelAllLocalNotifications();
 }
 
 export default new Scheduler();
