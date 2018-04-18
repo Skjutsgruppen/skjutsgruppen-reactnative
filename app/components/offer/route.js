@@ -276,7 +276,7 @@ class Route extends PureComponent {
           defaultValue={start}
           defaultDirection={directionFrom}
           onChangeText={this.setStartPlace}
-          direction
+          direction={!directionTo}
         />
         {
           isOffer &&
@@ -306,7 +306,7 @@ class Route extends PureComponent {
           defaultValue={end}
           defaultDirection={directionTo}
           onChangeText={this.setEndPlace}
-          direction
+          direction={!directionFrom}
         />
         {!hideReturnTripOption &&
           <View style={styles.returnSection}>
