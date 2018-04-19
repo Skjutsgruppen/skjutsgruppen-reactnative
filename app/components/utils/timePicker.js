@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import PropTypes from 'prop-types';

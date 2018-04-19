@@ -119,7 +119,7 @@ class About extends Component {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          {trans('add.next')}
+          {trans('global.next')}
         </RoundedButton>
       </View>
     );

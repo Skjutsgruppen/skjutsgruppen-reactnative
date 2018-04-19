@@ -39,6 +39,7 @@ mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: Trip
         mapPhoto
         totalFeeds
         isParticipant
+        direction
       }
     }
   }
