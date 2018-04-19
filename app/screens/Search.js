@@ -1,7 +1,7 @@
 import React from 'react';
 import { withSearchAllTrips, withSearchAllGroups } from '@services/apollo/search';
 import PropTypes from 'prop-types';
-import SearchResult from '@components/search/SearchResult';
+import SearchResult from '@components/search/searchResult';
 import { compose } from 'react-apollo';
 
 const AllSearchResult = compose(withSearchAllTrips, withSearchAllGroups)(SearchResult);

@@ -63,13 +63,16 @@ RCT_EXPORT_METHOD(showGpsSetting)
   });
 }
 
-RCT_EXPORT_METHOD(startService:(RCTResponseSenderBlock)callback)
+RCT_REMAP_METHOD(startService,
+                  startServiceResolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
   CLAuthorizationStatus authorizationStatus= [CLLocationManager authorizationStatus];
   NSLog(@"location fetch started");
   if(authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted){
     RCTLogInfo(@"authorizationStatus failed");
-    callback(@[@"unauthorized", [NSNull null]]);
+    reject(@"unauthorized", @"You are not authorized", nil);
+
     return;
     
     
@@ -79,16 +82,19 @@ RCT_EXPORT_METHOD(startService:(RCTResponseSenderBlock)callback)
     [self.locationManager requestAlwaysAuthorization];
   }
   [self.locationManager startUpdatingLocation];
-  callback(@[[NSNull null], @"start location update started"]);
+  resolve(@"start location update started");
 }
 
-RCT_EXPORT_METHOD(stopService:(RCTResponseSenderBlock)callback)
+RCT_REMAP_METHOD(stopService,
+                  stopServiceResolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
   CLAuthorizationStatus authorizationStatus= [CLLocationManager authorizationStatus];
   NSLog(@"location fetch started");
   if(authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted){
     RCTLogInfo(@"authorizationStatus failed");
-    callback(@[@"unauthorized", [NSNull null]]);
+//    NSError *error = [NSERROR errorWithDomain:@"Unauthorized" code: -1 userInfo: nil];
+    reject(@"unauthorized", @"You are not authorized", nil);
     return;
   }
   if(IS_OS_8_OR_LATER) {
@@ -96,7 +102,8 @@ RCT_EXPORT_METHOD(stopService:(RCTResponseSenderBlock)callback)
     [self.locationManager requestAlwaysAuthorization];
   }
   [self.locationManager stopUpdatingLocation];
-  callback(@[[NSNull null], @"stopped location update"]);
+  resolve(@"location service stopped");
+  
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {

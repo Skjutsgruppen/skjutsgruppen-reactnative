@@ -73,7 +73,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Foreground needed</string>
 	<key>NSMainNibFile</key>
 	<string>LaunchScreen</string>
 	<key>NSMainNibFile~ipad</key>
@@ -118,7 +118,5 @@
 	<string>Background data need</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your iOS 11 and higher background location usage description goes here.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Foreground needed</string>
 </dict>
 </plist>
