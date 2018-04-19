@@ -36,11 +36,13 @@ const Title = ({ style, fontVariation, size, color, centered, children, ...props
     newStyle = [baseStyles.text, fontStyle, style, fontSize, textColor, textAlign];
   }
 
-  return (
-    <Text {...props} style={newStyle}>
+  if (children !== '' && children) {
+    return (<Text {...props} style={newStyle}>
       {children}
-    </Text>
-  );
+    </Text>);
+  }
+
+  return null;
 };
 
 Title.propTypes = {
