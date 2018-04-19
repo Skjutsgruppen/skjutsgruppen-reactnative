@@ -7,7 +7,7 @@ import { Colors } from '@theme';
 import { compose } from 'react-apollo';
 import { withAddGroupEnabler } from '@services/apollo/group';
 import { connect } from 'react-redux';
-
+import { trans } from '@lang/i18n';
 import BackIcon from '@assets/icons/ic_back_white_toolbar.png';
 
 const styles = StyleSheet.create({
@@ -85,7 +85,7 @@ class NoEnabler extends Component {
         bgColor={Colors.background.pink}
         style={styles.button}
       >
-        I can do it!
+        {trans('detail.i_can_do_it')}
       </RoundedButton>
     );
   }
@@ -114,10 +114,10 @@ class NoEnabler extends Component {
             />
             <Text style={[styles.whiteText, styles.title]}>{group.name}</Text>
             <Text style={styles.whiteText}>
-              For this group to work one or more participants needs to enable it.
+              {trans('detail.for_group_to_work_one_or_more_participants_need_to_enable_it')}
             </Text>
             <Text style={styles.whiteText}>
-              Press below to be an enabler of this group.
+              {trans('detail.press_to_be_an_enabler_of_this_group')}
             </Text>
             {
               this.renderButton()

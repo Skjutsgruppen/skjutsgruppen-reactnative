@@ -1,3 +1,22 @@
 {
-  "hi": "Hi - swedish"
+  "hi": "swedish",
+  "everything": "swedish",
+  "offered_rides": "swedish",
+  "rides_that_are_asked_for": "swedish",
+  "close_to_you": "swedish",
+  "news": "swedish",
+  "experience": "swedish",
+  "offers": "swedish",
+  "seat": "swedish",
+  "seats": "swedish",
+  "asks_for_a_ride": "swedish",
+  "asking_for_ride": "swedish",
+  "offering_a_ride": "swedish",
+  "created_a_group": "swedish",
+  "read_more": "swedish",
+  "your_movement": "swedish",
+  "no_rides_have_been_created_yet": "swedish",
+  "no_experiences_published_yet": "swedish",
+  "no_rides_yet": "swedish",
+  "no_news_yet": "swedish"
 }
