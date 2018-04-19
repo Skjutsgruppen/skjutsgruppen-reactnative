@@ -13,6 +13,7 @@ import ParticipantsModal from '@components/participantsModal';
 import { Loading } from '@components/common';
 import { withGroupMembers } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
 
 const ParticipantsInModal = withGroupMembers(ParticipantsModal);
 
@@ -83,7 +84,7 @@ class Participants extends Component {
     return (
       <View style={{ backgroundColor: '#fff', justifyContent: 'center' }}>
         <Text style={{ color: Colors.text.blue, fontSize: 12 }}>
-          {groupMembers.count} PARTICIPANTS
+          {groupMembers.count} {trans('detail.PARTICIPANTS')}
         </Text>
       </View>);
   }

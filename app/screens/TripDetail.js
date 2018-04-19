@@ -276,7 +276,7 @@ class TripDetail extends Component {
           type: 'icon',
         };
 
-        const notificationMessage = 'Someone has already created an experience for this ride';
+        const notificationMessage = trans('detail.someone_has_already_created_an_experience');
         this.setState({
           trip,
           loading,
@@ -507,7 +507,7 @@ class TripDetail extends Component {
         >
           {icon}
           <Text style={styles.btnLabel}>
-            <Text style={styles.bold}>{trans('trip.return_ride')}</Text>
+            <Text style={styles.bold}>{trans('detail.return_ride')}</Text>
             <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
           </Text>
         </TouchableOpacity>
@@ -522,7 +522,7 @@ class TripDetail extends Component {
           activeOpacity={0.75}
         >
           {icon}
-          <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.return')}</Text>
+          <Text style={[styles.btnLabel, styles.bold]}>{trans('detail.return')}</Text>
         </TouchableOpacity>
       );
     }
@@ -544,7 +544,7 @@ class TripDetail extends Component {
         activeOpacity={0.75}
       >
         <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
-        <Text style={[styles.btnLabel, styles.bold]}>{trans('trip.recurring')}</Text>
+        <Text style={[styles.btnLabel, styles.bold]}>{trans('detail.recurring')}</Text>
       </TouchableOpacity>
     );
   }
@@ -717,7 +717,7 @@ class TripDetail extends Component {
         {
           trip.Stops.length > 0 &&
           <Text style={[styles.text, styles.lightText]}>
-            <Text style={styles.stopsLabel}>{trans('trip.stops_in')} </Text>
+            <Text style={styles.stopsLabel}>{trans('detail.stops_in')} </Text>
             {trip.Stops.map(place => place.name).join(', ')}
           </Text>
         }
@@ -730,7 +730,7 @@ class TripDetail extends Component {
                 style={{ fontStyle: 'italic' }}
               >
                 {' '}
-                I added this ride in the group ({trip.Group.name}). Read more about our group here.
+                {trans('detail.i_added_ride_in_this_group', { group: trip.Group.name })}
               </Text>
             }
             {
@@ -740,8 +740,7 @@ class TripDetail extends Component {
                 style={{ fontStyle: 'italic' }}
               >
                 {' '}
-                I added this ride in the trip ({trip.linkedTrip.description}).
-                Read more about our trip here.
+                {trans('i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
               </Text>
             }
           </Text>
@@ -779,34 +778,34 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <ModalAction label={trans('trip.share_your_live_location')} onPress={this.onMapPress} />
+        <ModalAction label={trans('detail.share_your_live_location')} onPress={this.onMapPress} />
         {
           trip.muted ?
             (
               <ModalAction
-                label={trans('trip.unmute')}
+                label={trans('detail.unmute')}
                 onPress={this.onUnmute}
               />
             ) :
             ([
               <ModalAction
                 key="mute_two_hours"
-                label={trans('trip.mute_two_hours')}
+                label={trans('detail.mute_two_hours')}
                 onPress={() => this.onMute(2, 'hours')}
               />,
               <ModalAction
                 key="mute_one_day"
-                label={trans('trip.mute_one_day')}
+                label={trans('detail.mute_one_day')}
                 onPress={() => this.onMute(1, 'day')}
               />,
               <ModalAction
                 key="mute_forever"
-                label={trans('trip.mute_forever')}
+                label={trans('detail.mute_forever')}
                 onPress={() => this.onMute('forever')}
               />,
             ])
         }
-        <ModalAction label={trans('trip.embeded_with_html')} onPress={() => { }} />
+        <ModalAction disabled label={trans('detail.embeded_with_html')} onPress={() => null} />
       </View>
     );
   }
@@ -823,7 +822,7 @@ class TripDetail extends Component {
         visible={showActionOption}
       >
         <ModalAction
-          label={trans('trip.create_your_experience')}
+          label={trans('detail.create_your_experience')}
           onPress={() => {
             this.setState({ showActionOption: false });
             navigation.navigate('Experience', { trip });
@@ -834,11 +833,11 @@ class TripDetail extends Component {
         {
           user.id !== trip.User.id ?
             <ModalAction
-              label={trans('trip.report_this_ride')}
+              label={trans('detail.report_this_ride')}
               onPress={this.onReport}
             /> :
             <ModalAction
-              label={trans('trip.delete_this_ride')}
+              label={trans('detail.delete_this_ride')}
               onPress={() => this.setConfirmModalVisibility(true)}
             />
         }
@@ -865,7 +864,7 @@ class TripDetail extends Component {
             <Image source={ExperienceIcon} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text>Someone has already created an experience for this ride.</Text>
+            <Text>{trans('detail.someone_has_already_created_an_experience')}</Text>
           </View>
         </View>
       );
@@ -949,11 +948,11 @@ class TripDetail extends Component {
 
     const message = (
       <Text>
-        Are you sure you want to delete this trip?
+        {trans('detail.sure_to_delete_trip_')}
         {
           ((trip.ReturnTrip && trip.ReturnTrip.length > 0) ||
             (trip.Recurring && trip.Recurring.length > 0)) &&
-          ' Deleting this trip will delete all the associated trips.'
+          trans('detail.deleting_trip_will_delete_all_trips_associated')
         }
       </Text>
     );
@@ -964,8 +963,8 @@ class TripDetail extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={retry ? 'Retry' : 'Yes'}
-        denyLabel="No"
+        confirmLabel={retry ? trans('global.retry') : trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={() => this.onDelete()}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}
@@ -979,7 +978,7 @@ class TripDetail extends Component {
 
     const message = (
       <Text>
-        This trip has been deleted.
+        {trans('detail.this_trip_has_been_deleted')}
       </Text>
     );
 

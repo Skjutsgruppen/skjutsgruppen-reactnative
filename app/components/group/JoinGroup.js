@@ -15,6 +15,7 @@ import Participants from '@components/group/participants';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
 
 const ParticipantListBubble = withGroupMembers(Participants);
 
@@ -190,7 +191,7 @@ class JoinGroup extends Component {
       return (
         <View style={styles.footer}>
           <View style={styles.msgWrapper}>
-            <Text style={styles.lightText}>Request has been sent</Text>
+            <Text style={styles.lightText}>{trans('detail.request_has_been_sent')}</Text>
           </View>
         </View>
       );
@@ -200,7 +201,7 @@ class JoinGroup extends Component {
       return (
         <View style={styles.footer}>
           <View style={styles.msgWrapper}>
-            <Text style={styles.lightText}>Your Request is pending.</Text>
+            <Text style={styles.lightText}>{trans('detail.your_request_is_pending')}</Text>
           </View>
         </View>
       );
@@ -214,8 +215,8 @@ class JoinGroup extends Component {
           onPress={this.joinGroup}
         >
           <Text style={styles.buttonText}>
-            {group.type === OPEN_GROUP && 'Participate'}
-            {group.type === CLOSE_GROUP && 'Ask to participate'}
+            {group.type === OPEN_GROUP && trans('detail.participate')}
+            {group.type === CLOSE_GROUP && trans('detail.ask_to_participate')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -263,12 +264,12 @@ class JoinGroup extends Component {
               showOverlay={group.photo === null}
             />
           }
-          <Text style={styles.sectionTitle}>{'Participants'.toUpperCase()}</Text>
+          <Text style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</Text>
           <ParticipantListBubble id={group.id} offset={0} />
-          <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
+          <Text style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</Text>
           <Text style={styles.text}>
-            {group.type === OPEN_GROUP && 'Open Group'}
-            {group.type === CLOSE_GROUP && 'Closed Group'}
+            {group.type === OPEN_GROUP && trans('detail.open_group')}
+            {group.type === CLOSE_GROUP && trans('detail.closed_group')}
           </Text>
           <Text style={styles.text}>
             {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
@@ -279,7 +280,7 @@ class JoinGroup extends Component {
             <View style={styles.stopText}>
               <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
               <Text style={{ color: '#333' }}>
-                Stops in
+                {trans('detail.stops_in')}
                 <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
               </Text>
             </View>

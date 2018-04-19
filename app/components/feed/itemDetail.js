@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'rea
 import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
-
+import { trans } from '@lang/i18n';
 import Marker from '@components/map/marker';
 import Date from '@components/date';
 import {
@@ -123,7 +123,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} Started the group
+            {trans('detail.user_started_the_group', { user: this.renderUsername() })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -134,7 +134,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} Joined the group
+            {trans('detail.user_joined_the_group', { user: this.renderUsername() })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -145,7 +145,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} Left the group
+            {trans('detail.user_left_the_group', { user: this.renderUsername() })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -233,7 +233,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} is now enabler
+            {trans('detail.user_is_now_enabler', { user: this.renderUsername() })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -244,7 +244,7 @@ class Feed extends Component {
       return (
         <View>
           <Text style={styles.commentText}>
-            {this.renderUsername()} has updated the {feed.updatedField} of the group
+            {trans('detail.user_has_updated_field_of_group', { user: this.renderUsername(), field: feed.updatedField })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -255,7 +255,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} has stopped sharing location.
+            {trans('detail.user_has_stopped_sharing_location', { user: this.renderUsername() })}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -271,7 +271,7 @@ class Feed extends Component {
       return (
         <View>
           <Text style={styles.commentText}>
-            {this.renderUsername()} shares position
+            {trans('detail.user_shares_position', { user: this.renderUsername() })}
           </Text>
           <View style={styles.sharedLocationCard}>
             <View style={styles.map}>
@@ -300,7 +300,7 @@ class Feed extends Component {
             </View>
             {feed.Location.duration > 0 &&
               <Text style={{ color: Colors.text.blue, fontWeight: 'bold', textAlign: 'right', marginTop: 6 }}>
-                {feed.Location.duration} more minutes
+                {feed.Location.duration} {trans('detail.more_minutes')}
               </Text>}
           </View>
           <Date style={{ textAlign: 'right' }} format={'dddd HH:mm'}>{feed.Location.sharedFrom}</Date>
@@ -316,7 +316,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} offers a ride:
+            {trans('detail.user_offers_a_ride', { user: this.renderUsername() })}
           </Text>
           <Text>{feed.Trip.description}</Text>
         </View>
@@ -326,7 +326,7 @@ class Feed extends Component {
     return (
       <View style={styles.wrapFlex}>
         <Text style={styles.commentText}>
-          {this.renderUsername()} suggests {`${this.renderUsername(feed.Trip.User)}'s`} ride:
+          {trans('detail.user_suggests_participants_ride', { user: this.renderUsername(), participant: this.renderUsername(feed.Trip.User) })}
         </Text>
         <Text>{feed.Suggestion.text}</Text>
       </View>
@@ -344,7 +344,7 @@ class Feed extends Component {
               {`${feed.Enabler.firstName} `}
             </Text>
             <Text style={styles.commentText}>
-              Added <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</Text> to this group
+              {trans('detail.added')} <Text style={styles.name} onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</Text> {trans('detail.to_this_group')}
             </Text>
           </View>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
@@ -378,7 +378,7 @@ class Feed extends Component {
         return (
           <View style={styles.content}>
             <Text style={styles.commentText}>
-              {this.renderUsername()} <Text style={styles.commentText}>{feed.Trip.type === FEED_FILTER_WANTED ? 'asks for a ride' : 'offers a ride'}</Text>
+              {this.renderUsername()} <Text style={styles.commentText}>{feed.Trip.type === FEED_FILTER_WANTED ? trans('feed.asks_for_a_ride') : trans('detail.offers_a_ride')}</Text>
             </Text>
             <Text>{feed.Trip.description}</Text>
             <SharedCard
@@ -393,7 +393,7 @@ class Feed extends Component {
       return (
         <View style={styles.content}>
           <Text style={styles.commentText}>
-            {this.renderUsername()} <Text style={styles.commentText}>shared <Text style={styles.name}>{`${feed.Trip.User.firstName}'s`}</Text> {feed.feedable === FEEDABLE_TRIP ? 'ride' : feed.feedable}: </Text>
+            {this.renderUsername()} <Text style={styles.commentText}>{trans('detail.shared')} <Text style={styles.name}>{trans('detail.user_s', { user: feed.Trip.User.firstName })}</Text> {feed.feedable === FEEDABLE_TRIP ? trans('detail.ride') : feed.feedable}: </Text>
           </Text>
           <SharedCard
             trip={feed.Trip}
@@ -417,7 +417,7 @@ class Feed extends Component {
       let separator = '';
       i += 1;
       if (index === feed.Experience.Participants.length - 1) {
-        separator = ' and ';
+        separator = ` ${trans('detail.and')} `;
       } else if (index !== 0) {
         separator = ', ';
       }
@@ -431,7 +431,7 @@ class Feed extends Component {
     return (
       <View style={styles.wrapFlex}>
         <Text>
-          {participants} had an Experience <Text style={styles.time}>
+          {trans('detail.user_had_an_experience', { user: participants })} <Text style={styles.time}>
             <Date calendarTime>{feed.date}</Date></Text>
         </Text>
         <View style={styles.experience}>

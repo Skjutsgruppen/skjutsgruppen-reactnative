@@ -306,7 +306,7 @@ class Detail extends PureComponent {
     const errors = [];
 
     if (comment === '') {
-      errors.push('Comment is required.');
+      errors.push(trans('detail.comment_is_required'));
     }
 
     return {
@@ -387,29 +387,29 @@ class Detail extends PureComponent {
     let actions = [];
 
     actions = actions.concat([
-      <ModalAction label="Group Information" onPress={() => this.onGroupInformation()} key="group_information" />,
-      <ModalAction label="Share your location" onPress={this.onMapPress} key="share_your_location" />,
+      <ModalAction label={trans('detail.group_information')} onPress={() => this.onGroupInformation()} key="group_information" />,
+      <ModalAction label={trans('detail.share_your_location')} onPress={this.onMapPress} key="share_your_location" />,
     ]);
 
     if (group.muted) {
-      actions = actions.concat([<ModalAction label={trans('trip.unmute')} onPress={this.onUnmute} key="unmute" />]);
+      actions = actions.concat([<ModalAction label={trans('detail.unmute')} onPress={this.onUnmute} key="unmute" />]);
     } else {
       actions = actions.concat([
-        <ModalAction label="Mute for 24 hours" onPress={() => this.onMute(24, 'hours')} key="mute_24_hours" />,
-        <ModalAction label="Mute 1 week" onPress={() => this.onMute(1, 'week')} key="mute_1_week" />,
-        <ModalAction label="Mute forever" onPress={() => this.onMute('forever')} key="mute_forever" />,
+        <ModalAction label={trans('detail.mute_for_24_hours')} onPress={() => this.onMute(24, 'hours')} key="mute_24_hours" />,
+        <ModalAction label={trans('detail.mute_1_week')} onPress={() => this.onMute(1, 'week')} key="mute_1_week" />,
+        <ModalAction label={trans('detail.mute_forever')} onPress={() => this.onMute('forever')} key="mute_forever" />,
       ]);
     }
 
     if (this.isGroupJoined()) {
       actions = actions.concat([
-        <ModalAction label={trans('group.leave_group')} onPress={() => this.setConfirmModalVisibility(true)} key="leave" />,
+        <ModalAction label={trans('detail.leave_group')} onPress={() => this.setConfirmModalVisibility(true)} key="leave" />,
       ]);
     }
 
     if (user.id !== group.User.id) {
       actions = actions.concat([
-        <ModalAction label={trans('group.report_this_group')} onPress={this.onReport} key="report" />,
+        <ModalAction label={trans('detail.report_this_group')} onPress={this.onReport} key="report" />,
       ]);
     }
 
@@ -430,7 +430,7 @@ class Detail extends PureComponent {
     const { leaveLoading, showConfirmModal } = this.state;
     const message = (
       <Text>
-        Are you sure you want to leave the group?
+        {trans('detail.are_you_sure_you_want_to_leave_group')}
       </Text>
     );
 
@@ -440,8 +440,8 @@ class Detail extends PureComponent {
         visible={showConfirmModal}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={'Yes'}
-        denyLabel="No"
+        confirmLabel={trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={() => this.leaveGroup()}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}

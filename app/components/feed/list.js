@@ -226,7 +226,7 @@ class FeedList extends PureComponent {
 
   renderConfirmModal = () => {
     const { deleting, showConfirm, type } = this.state;
-    const message = <Text>Are you sure you want to delete this {type}?</Text>;
+    const message = <Text>{trans('detail.are_you_sure_to_delete_this_type', { type })}</Text>;
 
     return (
       <ConfirmModal
@@ -254,9 +254,9 @@ class FeedList extends PureComponent {
         <View style={styles.modalContent}>
           <View style={styles.actionsWrapper}>
             {((isOwner || isAdmin) && type !== FEEDABLE_EXPERIENCE)
-              && <Action label="Delete" onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />
+              && <Action label={trans('detail.delete')} onPress={() => this.setState({ showConfirm: true, isLongPressModalOpen: false })} />
             }
-            {(!isOwner) && <Action label="Report" onPress={() => this.onReport()} />}
+            {(!isOwner) && <Action label={trans('detail.report')} onPress={() => this.onReport()} />}
           </View>
           <View style={styles.closeWrapper}>
             <TouchableOpacity
@@ -322,7 +322,7 @@ class FeedList extends PureComponent {
               return { feeds: { ...previousResult.feeds, ...{ rows } } };
             },
           }}
-          noResultText="No comments yet."
+          noResultText={trans('global.no_comments_yet')}
         />
         {this.renderShareModal()}
         {this.renderLongPressModal()}
