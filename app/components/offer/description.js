@@ -6,6 +6,7 @@ import { Container, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import AddPhoto from '@components/add/photo';
 import CommentBox from '@components/add/commentBox';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   infoText: {
@@ -51,23 +52,20 @@ class Description extends PureComponent {
       <Container>
         <AddPhoto onSelect={res => this.setState({ photo: res.data })} iconColor={isOffer ? 'pink' : 'blue'} defaultPhoto={photo} />
         <CommentBox
-          label="Comment"
+          label={trans('add.comment')}
           onChangeText={text => this.setState({ text })}
           value={this.state.text}
           labelColor={isOffer ? Colors.text.pink : Colors.text.blue}
         />
         <Text style={styles.infoText}>
-          Write about who you are and where you’re going.
-          You can also include what vehicle you have, if you
-          offer your seats for free or want to share the costs
-          equally.
+          {trans('add.write_about_who_you_are')}
         </Text>
         <RoundedButton
           onPress={this.onNext}
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </RoundedButton>
       </Container>
     );

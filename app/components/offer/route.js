@@ -8,6 +8,7 @@ import Radio from '@components/add/radio';
 import SectionLabel from '@components/add/sectionLabel';
 import _pullAt from 'lodash/pullAt';
 
+import { trans } from '@lang/i18n';
 import DragIcon from '@assets/icons/ic_drag.png';
 import AddIcon from '@assets/icons/ic_add_pink.png';
 import CrossIcon from '@assets/icons/ic_cross_pink.png';
@@ -267,10 +268,10 @@ class Route extends PureComponent {
 
     return (
       <View style={styles.wrapper}>
-        <SectionLabel label="From" color={isOffer ? Colors.text.pink : Colors.text.blue} />
+        <SectionLabel label={trans('add.from')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
         <PlaceInput
-          placeholder="Start here"
-          label="From"
+          placeholder={trans('add.start_here')}
+          label={trans('add.from')}
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('start')}
           defaultValue={start}
@@ -281,7 +282,7 @@ class Route extends PureComponent {
         {
           isOffer &&
           <View>
-            <SectionLabel label="Stops In" color={isOffer ? Colors.text.pink : Colors.text.blue} />
+            <SectionLabel label={trans('add.stops_in')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.stops}>
               {this.renderStops()}
               <View style={styles.addStopWrapper}>
@@ -289,7 +290,7 @@ class Route extends PureComponent {
                 <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
                   <View style={styles.addStop}>
                     <Image source={AddIcon} style={styles.addStopIcon} />
-                    <Text>Add stop</Text>
+                    <Text>{trans('add.add_stop')}</Text>
                   </View>
                 </TouchableHighlight>
                 <View style={styles.iconWrapper} />
@@ -297,10 +298,10 @@ class Route extends PureComponent {
             </View>
           </View>
         }
-        <SectionLabel label="To" color={isOffer ? Colors.text.pink : Colors.text.blue} />
+        <SectionLabel label={trans('add.to')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
         <PlaceInput
-          placeholder="Destination"
-          label="To"
+          placeholder={trans('add.destination')}
+          label={trans('add.to')}
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('end')}
           defaultValue={end}
@@ -310,24 +311,23 @@ class Route extends PureComponent {
         />
         {!hideReturnTripOption &&
           <View style={styles.returnSection}>
-            <SectionLabel label="Are you making a return ride?" color={isOffer ? Colors.text.pink : Colors.text.blue} />
+            <SectionLabel label={trans('add.are_you_making_a_return_ride')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.radioRow}>
               <Radio
                 active={isReturning}
-                label="Yes"
+                label={trans('add.yes')}
                 onPress={() => this.handleReturnChange(true)}
                 color={isOffer ? 'pink' : 'blue'}
               />
               <Radio
                 active={!isReturning}
-                label="No"
+                label={trans('add.no')}
                 onPress={() => this.handleReturnChange(false)}
                 color={isOffer ? 'pink' : 'blue'}
               />
             </View>
             <Text style={styles.returnInfo}>
-              If yes you will get to make a new card after you
-              are done filling in this one.
+              {trans('add.if_yes_you_will_get_to_make_new_card')}
             </Text>
           </View>
         }
@@ -370,7 +370,7 @@ Route.propTypes = {
 
 Route.defaultProps = {
   isOffer: false,
-  buttonLabel: 'Next',
+  buttonLabel: trans('global.next'),
 };
 
 export default Route;
