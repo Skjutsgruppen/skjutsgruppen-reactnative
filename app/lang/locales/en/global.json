@@ -17,7 +17,12 @@
   "share_with": "Share with",
   "search_contacts": "Search contacts",
   "try_again": "Try Again",
-  
+  "retry": "Retry",
+  "yes": "Yes",
+  "no": "No",
+  "no_comments_yet": "No comments yet.",
+  "close": "Close",
+  "your_movement": "Your movement",
   
   "done": "Done",
   "anywhere": "Anywhere",

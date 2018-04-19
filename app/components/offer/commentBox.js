@@ -216,7 +216,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <Text style={styles.socialLabel}>{trans('trip.a_post_on_your_fb_timeline')}</Text>
+          <Text style={styles.socialLabel}>{trans('detail.a_post_on_your_fb_timeline')}</Text>
           <Radio
             color="blue"
             active={this.state.shareTwitter}
@@ -224,7 +224,7 @@ class CommentBox extends PureComponent {
             size={24}
             style={{ marginLeft: 16 }}
           />
-          <Text style={styles.socialLabel}>{trans('trip.a_tweet')}</Text>
+          <Text style={styles.socialLabel}>{trans('detail.a_tweet')}</Text>
         </View>
       );
     }
