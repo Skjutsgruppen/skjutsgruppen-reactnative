@@ -71,9 +71,9 @@ const renderPic = (photo) => {
 };
 
 const ActiveGroupItem = ({ group, navigation, resetMute }) => {
-  const navigateToGroupDetail = () => {
+  const navigateToGroupDetail = async () => {
     if (group.muted) {
-      resetMute({ mutable: 'Group', mutableId: group.id, from: getDate().format() });
+      await resetMute({ mutable: 'Group', mutableId: group.id, from: getDate().format() });
     }
     navigation.navigate('GroupDetail', { group });
   };
