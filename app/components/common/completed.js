@@ -9,6 +9,7 @@ import Trip from '@components/feed/card/trip';
 import Group from '@components/feed/card/group';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
 import TabBar from '@components/common/tabBar';
+import {trans} from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -78,16 +79,16 @@ const styles = StyleSheet.create({
 
 const getTitle = (isReturnedTrip, suggestion, group, isRecurring) => {
   if (isReturnedTrip && Object.keys(suggestion).length > 0) {
-    return `Published and  offered to ${suggestion.User.firstName}`;
+    return `${trans('add.published_and_offered_to')} ${suggestion.User.firstName}`;
   }
 
   if (Object.keys(group).length > 0) {
-    return `Published in ${group.name}`;
+    return `${trans('add.published_in')} ${group.name}`;
   }
 
-  if (isRecurring) return 'All of your rides are published!';
+  if (isRecurring) return trans('add.all_of_your_rides_are_published');
 
-  return 'Published!';
+  return trans('add.published');
 };
 
 const Completed = ({
@@ -132,7 +133,7 @@ const Completed = ({
             bgColor={Colors.background.pink}
             style={styles.button}
           >
-            Add return ride
+            {trans('add.add_return_ride')}
           </RoundedButton>
         }
         {
@@ -160,7 +161,7 @@ const Completed = ({
             bgColor={Colors.background.pink}
             style={styles.button}
           >
-            Back to group
+            {trans('add.back_to_group')}
           </RoundedButton>
         }
         <TabBar />

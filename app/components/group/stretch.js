@@ -6,6 +6,7 @@ import Radio from '@components/add/radio';
 import { STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 import Route from '@components/offer/route';
 import Area from '@components/group/outreach/area';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -69,17 +70,17 @@ class Stretch extends PureComponent {
     const { outreach } = this.state;
     return (
       <View style={styles.wrapper}>
-        <SectionLabel label="Stretch" />
+        <SectionLabel label={trans('add.stretch')} />
         <View style={styles.radioRow}>
           <Radio
             active={outreach === STRETCH_TYPE_ROUTE}
-            label="Specific stretch"
+            label={trans('add.specific_stretch')}
             onPress={() => this.setState({ outreach: STRETCH_TYPE_ROUTE })}
             style={styles.radio}
           />
           <Radio
             active={outreach === STRETCH_TYPE_AREA}
-            label="Going to or from different places"
+            label={trans('add.going_to_or_from_different_places')}
             onPress={() => this.setState({ outreach: STRETCH_TYPE_AREA })}
           />
         </View>

@@ -17,6 +17,7 @@ import Toast from '@components/toast';
 import { GlobalStyles } from '@theme/styles';
 import { FEEDABLE_GROUP, OPEN_GROUP, STRETCH_TYPE_ROUTE, DEFAULT_COUNTRY_CODE } from '@config/constant';
 import ToolBar from '@components/utils/toolbar';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   progress: {
@@ -232,7 +233,7 @@ class Group extends Component {
       return (
         <View style={{ marginTop: 100, marginHorizontal: '20%' }}>
           <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
-            Try Again
+            {trans('global.try_again')}
           </CustomButton>
         </View>
       );
@@ -264,8 +265,8 @@ class Group extends Component {
           activeStep === 4 ? GlobalStyles.TextStyles.pink : {},
         ]}
         >
-          <Text style={GlobalStyles.TextStyles.pink}>Step {activeStep}</Text> of 4
-          {activeStep === 4 && <Text>, well done!</Text>}
+          <Text style={GlobalStyles.TextStyles.pink}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 4 })}
+          {activeStep === 4 && <Text>, {trans('add.well_done')}</Text>}
         </Text>
       </View>
     );
@@ -278,7 +279,7 @@ class Group extends Component {
       <Wrapper bgColor={Colors.background.mutedBlue}>
         {(activeStep !== 5) &&
           <ToolBar
-            title="Add a new group"
+            title={trans('add.add_a_new_group')}
             onBack={this.onBackButtonPress}
           />
         }

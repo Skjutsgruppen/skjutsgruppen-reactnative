@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import CommentBox from '@components/add/commentBox';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -39,7 +40,7 @@ class Seats extends Component {
     return (
       <View style={styles.wrapper}>
         <CommentBox
-          label="How many seats do you offer?"
+          label={trans('add.how_many_seats_do_you_offer')}
           defaultValue={this.state.seat}
           onChangeText={seat => this.setState({ seat })}
           value={this.state.text}
@@ -52,7 +53,7 @@ class Seats extends Component {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </RoundedButton>
       </View>
     );
