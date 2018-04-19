@@ -59,6 +59,7 @@ import Feed from '@screens/tab/feed';
 import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
 import Garden from '@screens/tab/garden';
+import YourSupport from '@screens/garden/yourSupport';
 
 import Report from '@screens/modal/Report';
 
@@ -125,6 +126,8 @@ export const Routes = {
   Ask: { screen: Ask },
   Experience: { screen: Experience },
   Group: { screen: Group },
+
+  YourSupport: { screen: YourSupport },
 
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },
