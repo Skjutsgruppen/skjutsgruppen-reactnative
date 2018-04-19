@@ -3,7 +3,6 @@ import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Colors } from '@theme';
-import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {

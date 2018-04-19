@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, View, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';

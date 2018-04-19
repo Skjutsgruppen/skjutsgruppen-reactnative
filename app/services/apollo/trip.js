@@ -50,6 +50,7 @@ subscription{
             avatar
           }
           isDeleted
+          direction
         }
       }
       ... on TripFeed {
@@ -984,7 +985,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
     },
   ) => ({
     variables: { id, offset, limit, type, active, queryString, applyQueryString, interval },
-    fetchPolicy: applyQueryString ? 'network-only' : 'cache-and-network',
+    fetchPolicy: applyQueryString || interval ? 'network-only' : 'cache-and-network',
   }),
   props: (
     { data: { loading, trips, error, networkStatus, refetch, fetchMore, subscribeToMore } },

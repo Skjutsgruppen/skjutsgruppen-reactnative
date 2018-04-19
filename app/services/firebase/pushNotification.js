@@ -14,7 +14,6 @@ class PushNotification extends Component {
     const { storeAppToken, user } = this.props;
 
     FCM.removeAllDeliveredNotifications();
-    FCM.requestPermissions();
 
     if (user && user.id) {
       await FCM.getFCMToken()

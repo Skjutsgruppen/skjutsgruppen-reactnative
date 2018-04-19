@@ -130,6 +130,18 @@ class Feed extends Component {
       if (notification.screen === 'ExperienceDetail') {
         navigation.navigate(notification.screen, { experience: { id }, fetch: true });
       }
+
+      if (notification.screen === 'TripRoute') {
+        navigation.navigate('Route', { info: { id, __typename: 'Trip' } });
+      }
+
+      if (notification.screen === 'GroupRoute') {
+        navigation.navigate('Route', { info: { id, __typename: 'Group' } });
+      }
+
+      if (notification.screen === 'GroupArea') {
+        navigation.navigate('Area', { info: { id, __typename: 'Group' } });
+      }
     }
 
     navigation.setParams({ scrollToTop: this.scrollToTop });

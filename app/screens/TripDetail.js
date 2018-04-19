@@ -40,6 +40,7 @@ import ToolBar from '@components/utils/toolbar';
 import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
 import { withMute, withUnmute } from '@services/apollo/mute';
+import Scheduler from '@services/firebase/scheduler';
 
 import ReturnIconPink from '@assets/icons/ic_return.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
@@ -349,7 +350,14 @@ class TripDetail extends Component {
       data.from = from;
       data.to = to;
     }
-    mute(data).then(refetch);
+
+    mute(data).then(async () => {
+      if (unit === 'forever') {
+        Scheduler.removeSpecificScheduledNotification(trip.id);
+      } else {
+        Scheduler.checkAndRemoveScheduledNotification(trip.id, data.to);
+      }
+    }).then(refetch);
   }
 
   onUnmute = () => {
@@ -360,6 +368,8 @@ class TripDetail extends Component {
     unmute({
       mutable: 'Trip',
       mutableId: trip.id,
+    }).then(async () => {
+      Scheduler.schedule(trip);
     }).then(refetch);
   }
 
