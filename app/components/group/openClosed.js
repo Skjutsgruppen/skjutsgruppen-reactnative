@@ -6,6 +6,7 @@ import Colors from '@theme/colors';
 import { RoundedButton } from '@components/common';
 import SectionLabel from '@components/add/sectionLabel';
 import { OPEN_GROUP, CLOSE_GROUP } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -63,30 +64,29 @@ class OpenClosed extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <SectionLabel label="Is your group open or closed?" />
+        <SectionLabel label={trans('add.is_open_or_closed')} />
         <View style={styles.radioRow}>
           <Radio
             active={type === OPEN_GROUP}
-            label="Open (recommended)"
+            label={trans('add.open_recommended')}
             onPress={this.onPressOpen}
             style={styles.radio}
           />
           <Radio
             active={type === CLOSE_GROUP}
-            label="Closed"
+            label={trans('add.closed')}
             onPress={this.onPressClosed}
           />
         </View>
         <Text style={styles.infoText}>
-          Please note that rides published in a closed group still will be
-          searchable and joinable for everyone in the movement.
+          {trans('add.rides_published_in_closed_group_still')}
         </Text>
         <RoundedButton
           onPress={this.onNext}
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Next
+          {trans('global.next')}
         </RoundedButton>
       </View>
     );

@@ -35,13 +35,13 @@ I18n.fallbacks = true;
 
 I18n.translations = {
   en: {
-    global: globalEn,
     feed: feedEn,
+    add: addEn,
+    global: globalEn,
     profile: profileEn,
     group: groupEn,
     search: searchEn,
     message: messageEn,
-    add: addEn,
     trip: tripEn,
     addGroup: addGroupEn,
     setting: settingEn,
@@ -49,13 +49,13 @@ I18n.translations = {
     interval: intervalEn,
   },
   se: {
-    global: globalSe,
     feed: feedSe,
+    add: addSe,
+    global: globalSe,
     profile: profileSe,
     group: groupSe,
     search: searchSe,
     message: messageSe,
-    add: addSe,
     trip: tripSe,
     addGroup: addGroupSe,
     setting: settingSe,
