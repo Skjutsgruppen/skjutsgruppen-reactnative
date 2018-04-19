@@ -10,6 +10,7 @@ import ParticipantAvatar from '@components/group/participantAvatar';
 import { withGroupMembers, withGroupMembershipRequest, withGroup } from '@services/apollo/group';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Share from '@components/common/share';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   contentWrapper: {
@@ -130,7 +131,7 @@ class Information extends Component {
   }
 
   renderStops = (Stops) => {
-    let stopText = 'Stops in ';
+    let stopText = `${trans('detail.stops_in')} `;
 
     Stops.forEach((stop, index) => {
       if (index > 0) {
@@ -186,8 +187,8 @@ class Information extends Component {
           <View style={{ backgroundColor: '#fff' }}>
             <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
             <Text style={styles.text}>
-              {group.type === OPEN_GROUP && 'Open Group'}
-              {group.type === CLOSE_GROUP && 'Closed Group'}
+              {group.type === OPEN_GROUP && trans('detail.open_group')}
+              {group.type === CLOSE_GROUP && trans('detail.closed_group')}
             </Text>
             <Text style={styles.text}>
               {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}

@@ -11,7 +11,6 @@ import {
 import Colors from '@theme/colors';
 import FOF from '@components/relation/friendsOfFriend';
 
-
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,

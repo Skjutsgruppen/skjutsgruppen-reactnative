@@ -4,6 +4,7 @@ import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -52,7 +53,7 @@ const NewsDetail = ({ navigation }) => {
         <View style={styles.detail}>
           <Text style={[styles.text, styles.lightText]}>
             <Text style={styles.username}>
-              Your movement
+              {trans('global.your_movement')}
             </Text>
           </Text>
           <Text style={[styles.date, styles.lightText]}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></Text>

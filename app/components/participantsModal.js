@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import MemberItem from '@components/memberItem';
 import DataList from '@components/dataList';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   returnModalContent: {
@@ -88,7 +89,7 @@ const ParticipantsModal = ({ groupMembers, onPress, setModalVisibility, showFoFM
             onPress={() =>
               setModalVisibility(false)}
           >
-            <Text style={styles.closeModalText}>Close</Text>
+            <Text style={styles.closeModalText}>{trans('global.close')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -147,7 +147,7 @@ class CommentBox extends PureComponent {
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
         placeholderTextColor="#000"
-        placeholder={trans('global.write')}
+        placeholder={trans('detail.write')}
         multiline
         underlineColorAndroid="transparent"
         autoCorrect={false}
@@ -168,8 +168,8 @@ class CommentBox extends PureComponent {
 
     return (
       <View style={styles.footerSocialSection}>
-        <Text>{trans('trip.a_post_on_your_fb_timeline')}</Text>
-        <Text style={{ marginLeft: 12 }}>{trans('trip.a_tweet')}</Text>
+        <Text>{trans('detail.a_post_on_your_fb_timeline')}</Text>
+        <Text style={{ marginLeft: 12 }}>{trans('detail.a_tweet')}</Text>
       </View>
     );
   }
