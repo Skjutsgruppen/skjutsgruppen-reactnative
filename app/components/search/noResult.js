@@ -10,6 +10,7 @@ import {
   FEED_TYPE_WANTED,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -46,11 +47,11 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 2 && isFilter(FEED_TYPE_OFFER) && isFilter(FEED_TYPE_PUBLIC_TRANSPORT)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>No search results.</Text>
+        <Text style={styles.text}>{trans('search.no_search_results')}</Text>
         <Text style={styles.text}>
-          Ask for a ride so other participants can find you.
+          {trans('search.ask_for_a_ride_so_other_participants_find_you')}
         </Text>
-        {renderRoundButton('Ask', 'Ask for a ride')}
+        {renderRoundButton('Ask', trans('search.ask_for_a_ride'))}
       </View>
     );
   }
@@ -59,11 +60,7 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
     return (
       <View style={styles.wrapper}>
         <Text style={styles.text}>
-          We did not find any offered rides.
-              May we suggest that you press
-              &quot;Public Transportation&quot; above and see if
-              there are any more ways for you
-              to get to {namePlace} ?
+          {trans('search.did_not_find_any_offered_ride_we_suggest', { namePlace })}
         </Text>
       </View>
     );
@@ -73,14 +70,13 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 1 && isFilter(FEED_TYPE_GROUP)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>There are no groups for this search.</Text>
-        <Text style={[styles.text, styles.italic]}>Yet.</Text>
+        <Text style={styles.text}>{trans('search.no_groups_for_this_search')}</Text>
+        <Text style={[styles.text, styles.italic]}>{trans('search.yet')}</Text>
         <Text style={styles.text}>
-          If you are interested of a group most likely more people are as well!
-          {"Let's"} add a group!
+          {trans('search.lets_add_a_group')}
         </Text>
-        {renderRoundButton('Group', 'Add a group')}
-        <Text onPress={() => navigation.navigate('ExploreGroup')} style={[styles.text, styles.link]}>Or explore existing group.</Text>
+        {renderRoundButton('Group', trans('search.add_a_group'))}
+        <Text onPress={() => navigation.navigate('ExploreGroup')} style={[styles.text, styles.link]}>{trans('search.or_explore_existing_group')}</Text>
       </View>
     );
   }
@@ -88,11 +84,11 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   if (filters.length === 1 && isFilter(FEED_TYPE_WANTED)) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.text}>No search results.</Text>
+        <Text style={styles.text}>{trans('search.no_search_results')}</Text>
         <Text style={styles.text}>
-          Offer a ride so other participants can find you.
+          {trans('search.offer_a_ride_so_other_participants_can_find_you')}
         </Text>
-        {renderRoundButton('Offer', 'Offer a ride')}
+        {renderRoundButton('Offer', trans('search.offer_a_ride'))}
       </View>
     );
   }
@@ -100,8 +96,8 @@ const RenderNoResult = ({ filters, renderRoundButton, navigation, namePlace }) =
   return (
     <View style={styles.wrapper}>
       <Image source={CycleIcon} />
-      <Text style={[styles.text, styles.lightText]}>No search results.</Text>
-      {renderRoundButton('Add', 'Add ride')}
+      <Text style={[styles.text, styles.lightText]}>{trans('search.no_search_results')}</Text>
+      {renderRoundButton('Add', trans('search.add_ride'))}
     </View>
   );
 };

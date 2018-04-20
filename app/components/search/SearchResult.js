@@ -422,7 +422,7 @@ class SearchResult extends Component {
     const { dates } = this.props;
 
     if (dates.length <= 0) {
-      return 'All dates and times';
+      return trans('search.all_dates_and_times');
     }
 
     const newDate = [];
@@ -481,10 +481,10 @@ class SearchResult extends Component {
           {title !== 'Group' &&
             <View style={[styles.indicators, styles.flexRow]}>
               <View style={[styles.flexRow, styles.indicatorWrapper]}>
-                <View style={[styles.indicator, styles.pink]} /><Text>Offered ride</Text>
+                <View style={[styles.indicator, styles.pink]} /><Text>{trans('search.offered_ride')}</Text>
               </View>
               <View style={[styles.flexRow, styles.indicatorWrapper]}>
-                <View style={[styles.indicator, styles.blue]} /><Text>Ride that is asked for</Text>
+                <View style={[styles.indicator, styles.blue]} /><Text>{trans('search.ride_that_is_asked_for')}</Text>
               </View>
             </View>
           }
@@ -679,16 +679,16 @@ class SearchResult extends Component {
               <FloatingBackButton onPress={this.goBack} />
               <TouchableWithoutFeedback onPress={this.goBack}>
                 <View style={styles.fromRow}>
-                  <Text>{from.name || this.prettify(direction) || 'Anywhere'}</Text>
-                  <Text style={[styles.lightText, styles.bold]}>From</Text>
+                  <Text>{from.name || this.prettify(direction) || trans('global.anywhere')}</Text>
+                  <Text style={[styles.lightText, styles.bold]}>{trans('global.from')}</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
             <Animated.View style={[styles.animatedRow, { marginTop: y }]}>
               <TouchableWithoutFeedback onPress={this.goBack}>
                 <View style={styles.toRow}>
-                  <Text>{to.name || this.prettify(direction) || 'Anywhere'}</Text>
-                  <Text style={[styles.lightText, styles.bold]}>To</Text>
+                  <Text>{to.name || this.prettify(direction) || trans('global.anywhere')}</Text>
+                  <Text style={[styles.lightText, styles.bold]}>{trans('global.to')}</Text>
                 </View>
               </TouchableWithoutFeedback>
               <TouchableWithoutFeedback onPress={this.goBack}>
