@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import StickySectionHeader from '@components/profile/stickySectionHeader';
 import SectionDivider from '@components/profile/sectionDivider';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -131,7 +132,7 @@ class UserConversation extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar title={`Rides ${username} talked about`} />
+        <ToolBar title={trans('profile.rides_user_talked_about', { username })} />
         <View style={styles.listWrapper}>
           {this.renderSectionList()}
           {this.renderSearchModal()}

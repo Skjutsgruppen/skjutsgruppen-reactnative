@@ -17,6 +17,7 @@ import { NavigationActions } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { withRemoveAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   basket: {
@@ -151,16 +152,16 @@ class Garden extends Component {
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
         <ScrollView ref={(ref) => { this.scrollView = ref; }}>
           <Image source={BasketIcon} style={styles.basket} />
-          <Text style={styles.heading}>This app is an self-sustaining garden</Text>
+          <Text style={styles.heading}>{trans('profile.this_app_is_a_self_sustaining_garden')}</Text>
           <Text style={styles.text}>
-            All of us who use the app helps the app to work with money and/or knowledge.
+            {trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money')}
           </Text>
           <RoundedButton
             onPress={() => { }}
             bgColor={Colors.background.pink}
             style={styles.button}
           >
-            Support now
+            {trans('profile.support_now')}
           </RoundedButton>
           <View style={styles.supporterWrapper}>
             <Avatar isSupporter size={62} source={require('@assets/profilePic.jpg')} style={styles.avatar} />
@@ -168,55 +169,54 @@ class Garden extends Component {
             <Avatar isSupporter size={62} source={require('@assets/profilePic.jpg')} style={styles.avatar} />
           </View>
           <Text style={[styles.heading, { color: Colors.text.blue }]}>
-            Right now your friends and others support these costs:
+            {trans('profile.right_now_your_friends_and_others_supports_cost')}
           </Text>
-          <CostCard title="Server Costs" coveredPercentage={100} totalCost="2400" />
-          <CostCard title="A programmer" coveredPercentage={50} totalCost="18000" />
-          <CostCard title="Project manager" coveredPercentage={0} totalCost="xxxx" />
+          <CostCard title={trans('profile.server_cost')} coveredPercentage={100} totalCost="2400" />
+          <CostCard title={trans('profile.a_programmer')} coveredPercentage={50} totalCost="18000" />
+          <CostCard title={trans('profile.project_manager')} coveredPercentage={0} totalCost="xxxx" />
           <View style={styles.readMore}>
             <Text style={styles.text}>
-              Participants who support the garden get a green leaf next to their profile
-              picture and can add photos to rides.
+              {trans('profile.participants_who_support_the_garden_get_a_grean')}
             </Text>
             <RoundedButton
               onPress={() => { }}
               bgColor={Colors.background.pink}
               style={styles.button}
             >
-              Read more
+              {trans('profile.read_more')}
             </RoundedButton>
           </View>
           <ProfileAction
-            title="We are Open Source!"
-            label="Help make the app better"
+            title={trans('profile.we_are_open_source')}
+            label={trans('profile.help_make_the_app_better')}
             icon={require('@assets/icons/ic_github.png')}
           />
           <ProfileAction
-            title="Open API"
-            label="Build, get statistics and more"
+            title={trans('profile.open_api')}
+            label={trans('profile.build_get_statistics_and_more')}
             icon={require('@assets/icons/ic_open_api.png')}
           />
           <ProfileAction
-            label="About the movement"
+            label={trans('profile.about_the_movement')}
           />
           <ProfileAction
-            label="The international #RidesharingDay"
+            label={trans('profile.international_ridesharingday')}
           />
           <ProfileAction
-            label="Your profile"
+            label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
           <ProfileAction
-            label="Your support of the garden"
+            label={trans('profile.your_support_of_the_garden')}
           />
           <ProfileAction
-            label="Notification setting"
+            label={trans('profile.notification_setting')}
           />
           <ProfileAction
-            label="Participant agreement"
+            label={trans('profile.participant_agreement')}
           />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
-            <Text style={{ color: Colors.text.blue }}>Log Out</Text>
+            <Text style={{ color: Colors.text.blue }}>{trans('profile.log_out')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </LinearGradient>
