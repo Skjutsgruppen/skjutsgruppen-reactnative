@@ -23,19 +23,12 @@
   "no_comments_yet": "swedish",
   "close": "swedish",
   "your_movement": "swedish",
-  "done": "swedish",
-  "anywhere": "swedish",
-  "north": "swedish",
-  "south": "swedish",
-  "east": "swedish",
-  "west": "swedish",
-  "destination": "swedish",
   "from": "swedish",
+  "destination": "swedish",
   "to": "swedish",
+  "anywhere": "swedish",
+  "done": "swedish",
   "oops_something_went_wrong": "swedish",
   "tap_to_retry": "swedish",
-  "write": "swedish",
-  "paste_wherever_you_want": "swedish",
-  "participants_who_are_part_of_movement": "swedish",
-  "search": "swedish"
+  "write": "swedish"
 }

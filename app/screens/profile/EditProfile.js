@@ -287,9 +287,8 @@ class EditProfile extends Component {
     LangService.setLanguage(language)
       .then(() => {
         I18n.locale = language;
+        navigation.navigate('Tab');
       });
-
-    navigation.replace('Tab');
   }
 
   setConfirmModalVisibility = (visibility) => {
