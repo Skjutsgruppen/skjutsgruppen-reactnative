@@ -153,8 +153,6 @@ class Search extends Component {
       markedDates: {},
       dates: [],
       modalVisible: false,
-      directionFrom: null,
-      directionTo: null,
     };
     this.scrollView = null;
   }
@@ -317,7 +315,7 @@ class Search extends Component {
             fontVariation="bold"
             style={styles.title}
           >
-            Search
+            {trans('search.search')}
           </Heading>
           <LinearGradient colors={Gradients.white} style={styles.content}>
             <View style={styles.locationWrapper}>
