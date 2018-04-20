@@ -23,20 +23,12 @@
   "no_comments_yet": "No comments yet.",
   "close": "Close",
   "your_movement": "Your movement",
-  
-  "done": "Done",
-  "anywhere": "Anywhere",
-  "north": "North",
-  "south": "South",
-  "east": "East",
-  "west": "West",
-  "destination": "Destination",
   "from": "From",
+  "destination": "Destination",
   "to": "To",
+  "anywhere": "Anywhere",
+  "done": "Done",
   "oops_something_went_wrong": "Oops! Something went wrong.",
   "tap_to_retry": "Tap to Retry",
-  "write": "Write",
-  "paste_wherever_you_want": "Paste wherever you want",
-  "participants_who_are_part_of_movement": "Participants who are part of the movement will be automatically added to the group when yo invite them. Others who are not participants yet will get a link.",
-  "search": "Search"
+  "write": "Write"
 }
