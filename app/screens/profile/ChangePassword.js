@@ -9,6 +9,7 @@ import CustomButton from '@components/common/customButton';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   profilePic: {
@@ -160,7 +161,7 @@ class ChangePassword extends Component {
         style={styles.button}
         onPress={this.onSubmit}
       >
-        Change Password
+        {trans('profile.change_password')}
       </CustomButton>
     );
   }
@@ -184,7 +185,7 @@ class ChangePassword extends Component {
           <View style={{ paddingTop: 50 }}>
             <Toast message={error} type="error" />
             <Toast message={success} type="success" />
-            <Text style={styles.label}>Current Password</Text>
+            <Text style={styles.label}>{trans('profile.current_password')}</Text>
             <View style={styles.inputWrapper}>
               <TextInput
                 value={oldPassword}
@@ -206,7 +207,7 @@ class ChangePassword extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-            <Text style={styles.label}>New Password</Text>
+            <Text style={styles.label}>{trans('profile.new_password')}</Text>
             <View style={styles.inputWrapper}>
               <TextInput
                 value={newPassword}
@@ -228,7 +229,7 @@ class ChangePassword extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-            <Text style={styles.label}>Confirm Password</Text>
+            <Text style={styles.label}>{trans('profile.confirm_password')}</Text>
             <View style={styles.inputWrapper}>
               <TextInput
                 value={confirmPassword}

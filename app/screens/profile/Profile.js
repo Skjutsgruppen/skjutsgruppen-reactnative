@@ -7,6 +7,7 @@ import Colors from '@theme/colors';
 import ProfileDetail from '@components/profile/profile';
 import { withProfile, withAccount } from '@services/apollo/profile';
 import ToolBar from '@components/utils/toolbar';
+import { trans } from '@lang/i18n';
 
 const ProfileComponent = withProfile(ProfileDetail);
 const Account = withAccount(ProfileDetail);
@@ -46,7 +47,7 @@ const Profile = ({ navigation, user }) => {
 
     return (
       <TouchableOpacity style={styles.changeButton} onPress={() => navigation.navigate('EditProfile')}>
-        <Text style={styles.whiteText}>{'Change'.toUpperCase()}</Text>
+        <Text style={styles.whiteText}>{trans('profile.CHANGE')}</Text>
       </TouchableOpacity>
     );
   };

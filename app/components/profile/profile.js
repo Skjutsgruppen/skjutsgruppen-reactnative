@@ -326,7 +326,7 @@ class Profile extends Component {
       return (
         <ProfileAction
           onPress={() => Linking.openURL(`https://www.facebook.com/${user.fbId}`)}
-          label="Facebook profile"
+          label={trans('profile.facebook_profile')}
         />
       );
     }
@@ -341,7 +341,7 @@ class Profile extends Component {
       return (
         <ProfileAction
           onPress={() => Linking.openURL(`https://twitter.com?profile_id=${user.twitterId}`)}
-          label="Twitter profile"
+          label={trans('profile.twitter_profile')}
         />
       );
     }
@@ -373,7 +373,7 @@ class Profile extends Component {
           name="ios-checkmark"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLabel}>Accept</Text>
+        /><Text style={styles.actionLabel}>{trans('profile.accept')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={this.rejectRequest}
@@ -383,7 +383,7 @@ class Profile extends Component {
           name="ios-close"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLabel}>Reject</Text>
+        /><Text style={styles.actionLabel}>{trans('profile.reject')}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -423,7 +423,7 @@ class Profile extends Component {
           style={styles.profilePic}
         />
         <Text style={styles.name}>{user.firstName} {user.lastName}</Text>
-        <Text style={[styles.lightText, styles.joinedDate]}>Joined <Date format="MMM Do YYYY">{user.createdAt}</Date></Text>
+        <Text style={[styles.lightText, styles.joinedDate]}>{trans('profile.joined')} <Date format="MMM Do YYYY">{user.createdAt}</Date></Text>
         <View style={styles.activityWrapper}>
           <View style={styles.hexagon}>
             <View style={styles.experienceCountWrapper}>
@@ -442,14 +442,14 @@ class Profile extends Component {
                 {user.totalExperiences}
               </Text>
             </View>
-            <Text style={styles.activityLabel}>{user.totalExperiences <= 1 ? 'Experience' : 'Experiences'}</Text>
+            <Text style={styles.activityLabel}>{user.totalExperiences <= 1 ? trans('profile.Experience') : trans('profile.Experiences')}</Text>
           </View>
           <View style={styles.hexagon}>
             <Image
               source={user.isSupporter ? GardenActive : GardenInactive}
               style={styles.garden}
             />
-            <Text style={styles.activityLabel}>{user.isSupporter ? 'Supporter' : 'Not supporting'}</Text>
+            <Text style={styles.activityLabel}>{user.isSupporter ? trans('profile.Supporter') : trans('profile.not_supporting')}</Text>
           </View>
         </View>
         {this.friendRelationButton()}
@@ -459,32 +459,32 @@ class Profile extends Component {
           {this.fbLink()}
           {this.twLink()}
           <ProfileAction
-            label={`${user.totalOffered || 0} offered ${(user.totalOffered || 0) <= 1 ? 'ride' : 'rides'}`}
+            label={`${user.totalOffered || 0} ${trans('profile.offered')} ${(user.totalOffered || 0) <= 1 ? trans('global.ride') : trans('global.rides')}`}
             onPress={() => this.redirect(FEED_FILTER_OFFERED)}
           />
           <ProfileAction
-            label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? 'ride' : 'rides'} asked for`}
+            label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? trans('global.ride') : trans('global.rides')} ${trans('profile.asked_for')}`}
             onPress={() => this.redirect(FEED_FILTER_WANTED)}
           />
           <ProfileAction
-            label={`${user.totalRideConversations || 0} ride ${(user.totalRideConversations || 0) <= 1 ? 'conversation' : 'conversations'}`}
+            label={`${user.totalRideConversations || 0} ${trans('global.ride')} ${(user.totalRideConversations || 0) <= 1 ? trans('global.conversation') : trans('global.conversations')}`}
             onPress={() => this.redirect('conversation')}
           />
           <ProfileAction
-            label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? 'group' : 'groups'}`}
+            label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? trans('global.group') : trans('global.groups')}`}
             onPress={() => this.redirect('groups')}
           />
           <ProfileAction
-            label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? 'friend' : 'friends'}`}
+            label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? trans('global.friend') : trans('global.friends')}`}
             onPress={() => this.redirect('friends')}
           />
           <ProfileAction
-            title={`Participant number ${user.id}`}
+            title={trans('profile.participant_number_value', { value: user.id })}
             label=""
           />
           {!this.isCurrentUser() &&
             <ProfileAction
-              label="Report user"
+              label={trans('profile.report_user')}
               onPress={() => this.redirect(REPORT_TYPE_USER)}
             />
           }
