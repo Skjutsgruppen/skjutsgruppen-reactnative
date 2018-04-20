@@ -10,6 +10,7 @@ import ListSearchModal from '@components/profile/ListSearchModal';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -89,9 +90,10 @@ class UserFriendsList extends Component {
     const { confirmModalVisibility, friend, loading, error } = this.state;
     const message = (
       <Text>
-        Are you sure you want to remove
+        {trans('profile.remove_from_friend_confirm', { firstName: friend.firstName, lastName: friend.lastName })}
+        {trans('profile.are_you_sure_you_want_to_remove')}
         <Text style={styles.boldText}> {friend.firstName} {friend.lastName} </Text>
-        from your friends list?
+        {trans('profile.from_your_friends_list')}
       </Text>
     );
 
@@ -101,8 +103,8 @@ class UserFriendsList extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error !== null ? 'Retry' : 'Yes'}
-        denyLabel="No"
+        confirmLabel={error !== null ? trans('global.retry') : trans('profile.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.removeFriend}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}

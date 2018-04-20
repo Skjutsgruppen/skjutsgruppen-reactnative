@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
+import { trans } from '@lang/i18n';
 
 const Friends = withFriends(FriendsList);
 
@@ -20,7 +21,7 @@ class UserFriends extends Component {
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar title={`${title}'s Friends`} />
+        <ToolBar title={trans('profile.users_friends', { username: title })} />
         <Friends id={id} />
       </Wrapper>
     );

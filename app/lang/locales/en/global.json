@@ -30,5 +30,16 @@
   "done": "Done",
   "oops_something_went_wrong": "Oops! Something went wrong.",
   "tap_to_retry": "Tap to Retry",
-  "write": "Write"
+  "write": "Write",
+  "ride": "ride",
+  "rides": "rides",
+  "conversation" : "conversation",
+  "conversations": "conversations",
+  "group": "group",
+  "groups": "groups",
+  "friend": "friend",
+  "friends": "friends",
+  "accept": "Accept",
+  "reject": "Reject",
+  "change": "Change"
 }
