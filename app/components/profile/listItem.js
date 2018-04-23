@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
 import { FEEDABLE_TRIP } from '@config/constant';
 import Date from '@components/date';
 import Avatar from '@components/common/avatar';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { UcFirst } from '@config';
 
@@ -39,10 +40,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.background.pink,
   },
-  seatsText: {
-    fontSize: 12,
-    color: Colors.text.white,
-  },
 });
 
 const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indicatorColor }) => (
@@ -60,18 +57,20 @@ const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indi
         indicatorColor={indicatorColor}
       />
       <View style={styles.infoWrapper}>
-        <Text>
+        <AppText>
           {trip.TripStart.name
             || UcFirst(trip.direction)} - {trip.TripEnd.name
               || UcFirst(trip.direction)}
-        </Text>
-        <Text style={styles.lightText}>
+        </AppText>
+        <AppText color={Colors.text.gray}>
           <Date format="MMM DD, HH:mm">{trip.date}</Date>
-        </Text>
+        </AppText>
       </View>
       {
         seats ?
-          <View style={styles.seats}><Text style={styles.seatsText}>{seats}</Text></View>
+          (<View style={styles.seats}>
+            <AppText size={12} color={Colors.text.white}>{seats}</AppText>
+          </View>)
           : null
       }
       {trip.experienceStatus !== 'canCreate' && trip.experienceStatus === 'published'

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Wrapper, Container } from '@components/common';
@@ -8,6 +8,7 @@ import ProfileDetail from '@components/profile/profile';
 import { withProfile, withAccount } from '@services/apollo/profile';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const ProfileComponent = withProfile(ProfileDetail);
 const Account = withAccount(ProfileDetail);
@@ -47,7 +48,7 @@ const Profile = ({ navigation, user }) => {
 
     return (
       <TouchableOpacity style={styles.changeButton} onPress={() => navigation.navigate('EditProfile')}>
-        <Text style={styles.whiteText}>{trans('profile.CHANGE')}</Text>
+        <AppText size={14} color={Colors.text.white}>{trans('profile.CHANGE')}</AppText>
       </TouchableOpacity>
     );
   };

@@ -18,11 +18,10 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: Colors.background.fullWhite,
     elevation: 2,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: { width: 3, height: 3 },
     shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    overflow: 'hidden',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   content: {
     flexDirection: 'row',
@@ -31,6 +30,7 @@ const styles = StyleSheet.create({
     height: cardHeight,
     width: '100%',
     resizeMode: 'cover',
+    borderRadius: 24,
   },
   title: {
     fontWeight: 'bold',
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     height: cardHeight,
     width: '100%',
     padding: 12,
+    borderRadius: 24,
   },
 });
 

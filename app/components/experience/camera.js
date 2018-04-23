@@ -4,14 +4,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Text,
   PermissionsAndroid,
 } from 'react-native';
 import Camera from 'react-native-camera';
 import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import { Loading } from '@components/common';
+import { AppText } from '@components/utils/texts';
+
 import CameraHead from '@assets/icons/ic_camera_head.png';
+import CameraRear from '@assets/camera/ic_camera_rear_white.png';
+import CameraFront from '@assets/camera/ic_camera_front_white.png';
+import FlashAuto from '@assets/camera/ic_flash_auto_white.png';
+import FlashOn from '@assets/camera/ic_flash_on_white.png';
+import FlashOff from '@assets/camera/ic_flash_off_white.png';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -49,9 +55,7 @@ const styles = StyleSheet.create({
     paddingVertical: '5%',
   },
   message: {
-    color: '#000',
     marginBottom: '8%',
-    fontSize: 16,
   },
   captureButton: {
     height: 84,
@@ -103,9 +107,9 @@ class Cam extends Component {
     const { back, front } = Camera.constants.Type;
 
     if (this.state.type === back) {
-      icon = require('@assets/camera/ic_camera_rear_white.png');
+      icon = CameraRear;
     } else if (this.state.type === front) {
-      icon = require('@assets/camera/ic_camera_front_white.png');
+      icon = CameraFront;
     }
 
     return icon;
@@ -116,11 +120,11 @@ class Cam extends Component {
     const { auto, on, off } = Camera.constants.FlashMode;
 
     if (this.state.flashMode === auto) {
-      icon = require('@assets/camera/ic_flash_auto_white.png');
+      icon = FlashAuto;
     } else if (this.state.flashMode === on) {
-      icon = require('@assets/camera/ic_flash_on_white.png');
+      icon = FlashOn;
     } else if (this.state.flashMode === off) {
-      icon = require('@assets/camera/ic_flash_off_white.png');
+      icon = FlashOff;
     }
 
     return icon;
@@ -272,7 +276,9 @@ class Cam extends Component {
         <Image source={CameraHead} style={styles.cameraHead} />
         {this.initializeCamera()}
         <View style={styles.captureArea}>
-          <Text style={styles.message}>Show everyone participating in this ride</Text>
+          <AppText centered style={styles.message}>
+            Show everyone participating in this ride
+          </AppText>
           {this.renderCapureButton()}
         </View>
       </View>

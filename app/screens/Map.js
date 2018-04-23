@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Loading } from '@components/common';
 import { withMapTrips } from '@services/apollo/map';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ import { getDistanceFromLatLonInKm } from '@services/map-directions';
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import Filter from '@components/feed/filter';
 import moment from 'moment';
+import { AppText } from '@components/utils/texts';
 
 import Colors from '@theme/colors';
 
@@ -53,11 +54,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 16,
-  },
-  loadingWrapper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
@@ -277,7 +273,7 @@ class Map extends PureComponent {
       return (
         <View style={styles.itemContainer}>
           <Loading />
-          <Text>Fetching data...</Text>
+          <AppText>Fetching data...</AppText>
         </View>
       );
     }
@@ -286,9 +282,7 @@ class Map extends PureComponent {
       return (
         <View style={styles.itemContainer}>
           <TouchableOpacity onPress={this.reTry}>
-            <Text>
-              Try Again
-            </Text>
+            <AppText>Try Again</AppText>
           </TouchableOpacity>
         </View>
       );

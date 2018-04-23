@@ -1,6 +1,8 @@
 import React, { PureComponent, Children } from 'react';
-import { StyleSheet, View, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -10,11 +12,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-  },
-  title: {
-    fontSize: 13,
-    marginBottom: 12,
-    opacity: 0.5,
   },
 });
 
@@ -29,7 +26,7 @@ class FiltersWrapper extends PureComponent {
       <View
         style={[styles.wrapper, style]}
       >
-        <Text style={styles.title}>{title}</Text>
+        <AppText size={13} color={Colors.text.gray} style={{ marginBottom: 12 }}>{title}</AppText>
         <View style={styles.filters}>
           {this.renderFilters()}
         </View>

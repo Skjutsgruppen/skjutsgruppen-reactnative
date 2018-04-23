@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Picker } from 'react-native';
+import { StyleSheet, View, Picker } from 'react-native';
 import Colors from '@theme/colors';
 import { Loading, RoundedButton } from '@components/common';
 import { compose } from 'react-apollo';
@@ -9,57 +9,16 @@ import countries from '@config/countries';
 import LocationList from '@components/group/outreach/locationList';
 import { DEFAULT_COUNTRY_CODE } from '@config/constant';
 import SectionLabel from '@components/add/sectionLabel';
+import { AppText } from '@components/utils/texts';
 
 const Municipality = withMunicipalities(LocationList);
 const Locality = withLocalities(LocationList);
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ca9e5',
-    marginHorizontal: 24,
-    marginTop: 24,
-    marginBottom: 12,
-    textAlign: 'center',
-
-  },
-  label: {
-    color: '#777',
-    marginBottom: 6,
-    marginHorizontal: 24,
-    fontWeight: 'bold',
-  },
   input: {
     marginBottom: 12,
     paddingHorizontal: 24,
     paddingVertical: 16,
     backgroundColor: '#ffffff',
-  },
-  buttonWrapper: {
-    padding: 8,
-    margin: 24,
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: 'normal',
-    color: '#777',
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  infoText: {
-    fontSize: 14,
-    lineHeight: 20,
-    margin: 24,
-    color: Colors.text.gray,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  optional: {
-    fontSize: 12,
-    fontWeight: 'normal',
-    color: '#777',
-    fontStyle: 'italic',
   },
   button: {
     width: 200,
@@ -168,11 +127,11 @@ class Area extends Component {
     if (this.state.country !== DEFAULT_COUNTRY_CODE) {
       return (
         <View>
-          <Text style={styles.infoText}>
+          <AppText size={14} color={Colors.text.gray} style={{ margin: 24 }}>
             We do not have counties, municipalities and places for the country you have choosen.
             Would you like to help us with adding this?
             E-mail us at samarbeta@skjutsgruppen.nu and we will do this together
-          </Text>
+          </AppText>
         </View>
       );
     }

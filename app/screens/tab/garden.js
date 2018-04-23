@@ -29,9 +29,7 @@ const styles = StyleSheet.create({
   heading: {
     alignSelf: 'center',
     maxWidth: 280,
-    fontSize: 24,
-    lineHeight: 36,
-    fontWeight: 'bold',
+    backgroundColor: 'transparent',
     color: Colors.text.yellowGreen,
     textAlign: 'center',
     marginBottom: 24,
@@ -43,6 +41,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'center',
+    backgroundColor: 'transparent',
     marginHorizontal: 24,
   },
   button: {
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   readMore: {
+    backgroundColor: 'transparent',
     paddingVertical: 16,
   },
   logout: {
@@ -216,7 +216,7 @@ class Garden extends Component {
             label={trans('profile.participant_agreement')}
           />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
-            <Text style={{ color: Colors.text.blue }}>{trans('profile.log_out')}</Text>
+            <Text style={{ color: Colors.text.blue, backgroundColor: 'transparent' }}>{trans('profile.log_out')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </LinearGradient>

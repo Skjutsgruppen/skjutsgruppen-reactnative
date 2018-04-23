@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Loading } from '@components/common';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -53,7 +54,7 @@ class DataList extends PureComponent {
     const { data } = this.props;
     return (
       <TouchableOpacity onPress={() => data.refetch()}>
-        <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+        <AppText style={styles.errorText}>{trans('global.tap_to_retry')}</AppText>
       </TouchableOpacity>
     );
   };
@@ -75,7 +76,7 @@ class DataList extends PureComponent {
           style={styles.loadMoreBtn}
           activeOpacity={0.8}
         >
-          <Text style={styles.loadMoreText}>Load more...</Text>
+          <AppText style={styles.loadMoreText}>Load more...</AppText>
         </TouchableOpacity>
       </View>
     );
@@ -127,14 +128,14 @@ class DataList extends PureComponent {
     if (error && !loading) {
       footerView = (
         <View>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <AppText style={styles.errorText}>{trans('global.oops_something_went_wrong')}</AppText>
           {this.reload()}
         </View>
       );
     } else if (count < 1 && !loading) {
       footerView = (
         <View style={{ marginTop: 24, marginBottom: 48 }}>
-          <Text style={styles.errorText}>{noResultText}</Text>
+          <AppText style={styles.errorText}>{noResultText}</AppText>
         </View>
       );
     } else if (rows.length >= count || (!infinityScroll && loadMorePosition === 'top')) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
@@ -19,6 +19,7 @@ import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
+import { Heading, AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   list: {
@@ -39,11 +40,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  pageTitle: {
-    fontWeight: 'bold',
-    color: Colors.text.gray,
-    fontSize: 18,
-  },
   map: {
     width: 54,
   },
@@ -54,13 +50,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.fullWhite,
   },
   shareCategoryTitle: {
-    fontSize: 12,
-    color: '#1ca9e5',
     marginHorizontal: 24,
     marginBottom: 12,
   },
   header: {
     backgroundColor: Colors.background.mutedBlue,
+  },
+  shadow: {
     elevation: 5,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -348,7 +344,7 @@ class Share extends Component {
 
     return (
       <View style={styles.list}>
-        <Text style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</Text>
+        <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</AppText>
         <DataList
           data={groups}
           renderItem={({ item }) => (
@@ -531,6 +527,7 @@ class Share extends Component {
 
   render() {
     const { labelColor, type } = this.props;
+    const headerShadow = this.isModal() ? styles.shadow : {};
 
     let sectionLabel = trans('global.invite_and_publish');
     if (type === FEEDABLE_GROUP) sectionLabel = trans('global.add_and_publish');
@@ -538,7 +535,7 @@ class Share extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <View style={styles.header}>
+        <View style={[styles.header, headerShadow]}>
           {
             this.isModal() &&
             <View style={styles.navBar}>
@@ -552,7 +549,7 @@ class Share extends Component {
                   </View>
                 </TouchableHighlight>
               </View>
-              <Text style={styles.pageTitle} >{trans('global.share_with')}</Text>
+              <Heading size={18} fontVariation="bold" color={Colors.text.gray}>{trans('global.share_with')}</Heading>
               <View style={styles.map} />
             </View>
           }

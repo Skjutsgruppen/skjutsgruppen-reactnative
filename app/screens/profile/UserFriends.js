@@ -4,7 +4,6 @@ import FriendsList from '@components/profile/friendsList';
 import { withFriends } from '@services/apollo/friend';
 import PropTypes from 'prop-types';
 import { Wrapper } from '@components/common';
-import Colors from '@theme/colors';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
 
@@ -20,7 +19,7 @@ class UserFriends extends Component {
     const title = username || this.props.user.firstName;
 
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
+      <Wrapper>
         <ToolBar title={trans('profile.users_friends', { username: title })} />
         <Friends id={id} />
       </Wrapper>

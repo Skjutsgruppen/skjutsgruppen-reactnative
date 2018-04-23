@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Modal, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Item from '@components/feed/item';
@@ -24,6 +24,7 @@ import { trans } from '@lang/i18n';
 import ConfirmModal from '@components/common/confirmModal';
 import { connect } from 'react-redux';
 import { withDeleteFeed } from '@services/apollo/feed';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -69,21 +70,16 @@ const styles = StyleSheet.create({
   action: {
     padding: 16,
   },
-  actionLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
-  },
   modalContent: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    backgroundColor: 'rgba(255,255,255,0.75)',
   },
 });
 
 const Action = ({ label, onPress }) => (
   <View style={styles.horizontalDivider} >
     <TouchableOpacity style={styles.action} onPress={onPress}>
-      <Text style={styles.actionLabel}>{label}</Text>
+      <AppText color={Colors.text.blue} fontVariation="bold" centered>{label}</AppText>
     </TouchableOpacity>
   </View>
 );
@@ -226,7 +222,7 @@ class FeedList extends PureComponent {
 
   renderConfirmModal = () => {
     const { deleting, showConfirm, type } = this.state;
-    const message = <Text>{trans('detail.are_you_sure_to_delete_this_type', { type })}</Text>;
+    const message = <AppText>{trans('detail.are_you_sure_to_delete_this_type', { type })}</AppText>;
 
     return (
       <ConfirmModal
@@ -263,7 +259,7 @@ class FeedList extends PureComponent {
               style={styles.closeModal}
               onPress={this.onLongPressClose}
             >
-              <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+              <AppText color={Colors.text.blue} fontVariation="bold" centered>{trans('global.cancel')}</AppText>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import { Loading } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   footer: {
@@ -39,11 +40,6 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: Colors.background.lightGray,
   },
-  actionText: {
-    color: Colors.text.blue,
-    fontSize: 16,
-    textAlign: 'center',
-  },
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -53,6 +49,7 @@ const styles = StyleSheet.create({
   commentInput: {
     height: '100%',
     flex: 1,
+    fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     paddingRight: 12,
     textAlignVertical: 'center',
@@ -62,10 +59,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
-  },
-  sendText: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
   },
 });
 
@@ -166,21 +159,21 @@ class CommentBox extends PureComponent {
           onPress={() => onOffer(this.state.text)}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Offer a Ride</Text>
+          <AppText centered color={Colors.text.blue}>Offer a Ride</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => onAsk(this.state.text)}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Ask a Ride</Text>
+          <AppText centered color={Colors.text.blue}>Ask a Ride</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => this.sendComment()}
           style={styles.action}
         >
-          <Text style={styles.actionText}>Comment</Text>
+          <AppText centered color={Colors.text.blue}>Comment</AppText>
         </TouchableOpacity>
       </View>
     );

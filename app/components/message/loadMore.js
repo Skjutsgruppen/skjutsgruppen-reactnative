@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, ViewPropTypes, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, ViewPropTypes, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   more: {
@@ -11,16 +12,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  moreText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.text.blue,
-  },
 });
 
 const LoadMore = ({ onPress, remainingCount, style }) => (
   <TouchableOpacity onPress={onPress} style={[styles.more, style]}>
-    <Text style={styles.moreText}>+ {remainingCount} {trans('message.more')}</Text>
+    <AppText size={14} fontVariation="semibold" color={Colors.text.blue}>+ {remainingCount} {trans('message.more')}</AppText>
   </TouchableOpacity>
 );
 

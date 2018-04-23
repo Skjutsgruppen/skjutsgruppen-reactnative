@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -26,9 +27,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginRight: 18,
   },
-  title: {
-    fontWeight: 'bold',
-  },
   indicator: {
     width: 18,
     height: 18,
@@ -50,7 +48,7 @@ const ListItem = ({ onPress, type, image, title, date }) => (
     <View style={styles.wrapper}>
       <Image source={image} style={styles.avatar} />
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{title}</Text>
+        <AppText fontVariation="semibold">{title}</AppText>
         {date && <Date format="MMM DD HH:mm">{date}</Date>}
       </View>
       {type === FEED_TYPE_OFFER && <View style={[styles.indicator, styles.pink]} />}

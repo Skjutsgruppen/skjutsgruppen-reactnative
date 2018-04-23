@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   backButton: {
-    textAlign: 'center',
     padding: 12,
     marginHorizontal: 24,
     marginTop: 32,
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 
 const BackButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress}>
-    <Text style={[styles.backButton, style]}>Go back</Text>
+    <AppText centered style={[styles.backButton, style]}>Go back</AppText>
   </TouchableOpacity>
 );
 

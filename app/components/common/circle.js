@@ -6,28 +6,30 @@ import { withNavigation } from 'react-navigation';
 import { Gradients } from '@theme';
 
 const windowWidth = Dimensions.get('window').width;
+const size = windowWidth * 0.78;
 
 const styles = StyleSheet.create({
   circle: {
     position: 'absolute',
-    top: -windowWidth * 0.1,
-    left: -windowWidth * 0.1,
-    height: windowWidth * 0.6,
-    width: windowWidth * 0.6,
-    borderRadius: (windowWidth * 0.6) / 2,
+    top: -(size * 0.17),
+    left: -(size * 0.23),
+    height: size,
+    width: size,
+    borderRadius: size / 2,
   },
 });
 
-const yOffset = -windowWidth * 0.1;
+const yOffset = -(size * 0.17);
 const AnimatedLinearGradient = Animated.createAnimatedComponent(
   LinearGradient,
 );
+
 
 class Circle extends PureComponent {
   render() {
     const { style, animatable, navigation } = this.props;
     const params = navigation.state.params || {};
-    let top = -windowWidth * 0.1;
+    let top = -(size * 0.17);
 
     if (animatable && params.animatedValue) {
       top = params.animatedValue.interpolate({

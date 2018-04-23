@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B4B8AE2278D72895BA4AFFA2EB363CE01D5B5D8D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "B4B8AE2278D72895BA4AFFA2EB363CE01D5B5D8D" : 9223372036854775807,
+    "7A54EB75E1F47323AAEEC6D7C0468F296EE6EDDE" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "DD81E5BB-3804-4A58-B527-A3DFB686411C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "B4B8AE2278D72895BA4AFFA2EB363CE01D5B5D8D" : "skjutsgruppen-reactnative\/",
+    "7A54EB75E1F47323AAEEC6D7C0468F296EE6EDDE" : "skjutsgruppen-reactnative\/node_modules\/react-native-facebook-login\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "skjutsgruppen",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/skjutsgruppen.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:magus\/react-native-facebook-login.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7A54EB75E1F47323AAEEC6D7C0468F296EE6EDDE"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Skjutsgruppen\/skjutsgruppen-reactnative.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B4B8AE2278D72895BA4AFFA2EB363CE01D5B5D8D"
+    }
+  ]
+}

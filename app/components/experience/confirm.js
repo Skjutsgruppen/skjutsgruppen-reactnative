@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import Button from '@components/experience/button';
 import { Loading } from '@components/common';
 import CapturedImage from '@components/experience/capturedImage';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   msgWrapper: {
@@ -12,10 +13,7 @@ const styles = StyleSheet.create({
     marginBottom: '10%',
   },
   msg: {
-    fontSize: 16,
     lineHeight: 30,
-    color: '#000',
-    textAlign: 'center',
     maxWidth: 220,
   },
   actions: {
@@ -37,7 +35,7 @@ const Preview = ({ error, loading, image, onNext, reTry }) => {
   if (error) {
     button = (
       <View>
-        <Text>{error}</Text>
+        <AppText>{error}</AppText>
         <Button onPress={reTry} label="Retry" />
       </View>
     );
@@ -47,10 +45,10 @@ const Preview = ({ error, loading, image, onNext, reTry }) => {
     <ScrollView>
       <CapturedImage imageURI={image} />
       <View style={styles.msgWrapper}>
-        <Text style={styles.msg} > All done!</Text>
-        <Text style={styles.msg} >
+        <AppText centered style={styles.msg} > All done!</AppText>
+        <AppText centered style={styles.msg} >
           When all tagged participants confirm the experience it will be published.
-        </Text>
+        </AppText>
       </View>
       <View style={styles.actions}>
         {button}

@@ -1,17 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-
-const styles = StyleSheet.create({
-  text: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
-});
+import { AppText } from '@components/utils/texts';
 
 const Username = ({ name, style, onPress }) => (
-  <Text style={[styles.text, style]} onPress={onPress}>{name} </Text>
+  <AppText color={Colors.text.blue} fontVariation="bold" style={style} onPress={onPress}>{name} </AppText>
 );
 
 

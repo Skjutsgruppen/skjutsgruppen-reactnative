@@ -20,8 +20,8 @@ const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 const styles = StyleSheet.create({
   title: {
     marginHorizontal: 20,
-    marginTop: '15%',
-    marginBottom: '5%',
+    marginTop: 84,
+    marginBottom: 46,
   },
 });
 
@@ -73,7 +73,7 @@ class Add extends Component {
   render() {
     const { navigation } = this.props;
     return (
-      <Wrapper bgColor={Colors.background.mutedBlue}>
+      <Wrapper>
         <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
           <Circle />
           <Heading

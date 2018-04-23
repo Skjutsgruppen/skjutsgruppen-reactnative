@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Modal, View } from 'react-native';
+import { StyleSheet, Modal, View } from 'react-native';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
@@ -11,15 +11,9 @@ import Toolbar from '@components/utils/toolbar';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import { withRemoveGroupEnabler } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  errorText: {
-    textAlign: 'center',
-    color: Colors.text.red,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
   footer: {
     padding: 20,
     elevation: 10,
@@ -107,11 +101,11 @@ class List extends Component {
     const { confirmModalVisibility, participant, loading, error } = this.state;
 
     const message = (
-      <Text>
+      <AppText>
         Are you sure you want to remove
-        <Text style={styles.boldText}> {participant.firstName} {participant.lastName} </Text>
+        <AppText fontVariation="bold"> {participant.firstName} {participant.lastName} </AppText>
         from enablers?
-      </Text>
+      </AppText>
     );
 
     return (

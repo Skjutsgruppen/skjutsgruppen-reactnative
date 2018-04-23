@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Image, TouchableOpacity, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   searchInputWrapper: {
@@ -26,9 +27,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     opacity: 1,
   },
-  searchPlaceholder: {
-    opacity: 0.65,
-  },
 });
 
 const ListSearchBar = ({ style, onSearchPress }) => (
@@ -37,7 +35,7 @@ const ListSearchBar = ({ style, onSearchPress }) => (
       source={require('@assets/icons/ic_search.png')}
       style={styles.searchIcon}
     />
-    <Text style={styles.searchPlaceholder}>Search</Text>
+    <AppText size={15} color={Colors.text.gray}>Search</AppText>
   </TouchableOpacity>
 );
 

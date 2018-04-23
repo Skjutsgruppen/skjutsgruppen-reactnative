@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
 import PlaceInput from '@components/search/place/placeInput';
@@ -7,6 +7,7 @@ import Colors from '@theme/colors';
 import Radio from '@components/add/radio';
 import SectionLabel from '@components/add/sectionLabel';
 import _pullAt from 'lodash/pullAt';
+import { Heading, AppText } from '@components/utils/texts';
 
 import { trans } from '@lang/i18n';
 import DragIcon from '@assets/icons/ic_drag.png';
@@ -15,7 +16,7 @@ import CrossIcon from '@assets/icons/ic_cross_pink.png';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingTop: '5%',
+    paddingTop: '2%',
   },
   title: {
     fontSize: 16,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   stop: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 20,
+    marginBottom: 20,
   },
   index: {
     width: 60,
@@ -42,11 +43,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 56,
     zIndex: 2,
-  },
-  indexText: {
-    color: Colors.text.pink,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   iconWrapper: {
     height: 60,
@@ -62,7 +58,6 @@ const styles = StyleSheet.create({
   addStopWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
   },
   addStop: {
     flex: 1,
@@ -84,8 +79,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   returnInfo: {
-    lineHeight: 24,
-    marginBottom: 8,
+    marginVertical: 12,
     marginHorizontal: 20,
     color: Colors.text.gray,
   },
@@ -233,7 +227,7 @@ class Route extends PureComponent {
             <Image source={DragIcon} style={[styles.icon, styles.drag]} />
           </View>
           <View style={styles.index}>
-            <Text style={styles.indexText}>{j}</Text>
+            <Heading size={16} color={Colors.text.pink} fontVariation="bold" centered>{j}</Heading>
           </View>
           <PlaceInput
             placeholder="Place"
@@ -272,6 +266,7 @@ class Route extends PureComponent {
         <PlaceInput
           placeholder={trans('add.start_here')}
           label={trans('add.from')}
+          height={80}
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('start')}
           defaultValue={start}
@@ -290,7 +285,7 @@ class Route extends PureComponent {
                 <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
                   <View style={styles.addStop}>
                     <Image source={AddIcon} style={styles.addStopIcon} />
-                    <Text>{trans('add.add_stop')}</Text>
+                    <AppText>{trans('add.add_stop')}</AppText>
                   </View>
                 </TouchableHighlight>
                 <View style={styles.iconWrapper} />
@@ -302,6 +297,7 @@ class Route extends PureComponent {
         <PlaceInput
           placeholder={trans('add.destination')}
           label={trans('add.to')}
+          height={80}
           inputStyle={{ paddingLeft: 20 }}
           currentLocation={this.currentLocation('end')}
           defaultValue={end}
@@ -326,9 +322,7 @@ class Route extends PureComponent {
                 color={isOffer ? 'pink' : 'blue'}
               />
             </View>
-            <Text style={styles.returnInfo}>
-              {trans('add.if_yes_you_will_get_to_make_new_card')}
-            </Text>
+            <AppText size={15} style={styles.returnInfo}>{trans('add.if_yes_you_will_get_to_make_new_card')}</AppText>
           </View>
         }
         <RoundedButton
