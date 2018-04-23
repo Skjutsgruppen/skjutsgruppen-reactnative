@@ -1,6 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text, ViewPropTypes, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, ViewPropTypes, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
+
+import DownIcon from '@assets/icons/icon_chevron_down.png';
 
 const styles = StyleSheet.create({
   button: {
@@ -13,17 +17,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: 6,
   },
-  text: {
-    color: '#999',
-    fontSize: 13,
-    fontWeight: 'bold',
-  },
 });
 
 const CloseButton = ({ style, onPress }) => (
   <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-    <Image source={require('@assets/icons/icon_chevron_down.png')} style={styles.icon} />
-    <Text style={styles.text}>Close</Text>
+    <Image source={DownIcon} style={styles.icon} />
+    <AppText size={13} color={Colors.text.gray} fontVariation="bold">Close</AppText>
   </TouchableOpacity>
 );
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -28,21 +27,18 @@ import Route from '@components/offer/route';
 import Area from '@components/group/outreach/area';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { AppText } from '@components/utils/texts';
 
 const Enablers = withGroupMembers(ParticipantAvatar);
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 16,
-    lineHeight: 28,
-    color: Colors.text.black,
-  },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   input: {
     flex: 1,
+    fontFamily: 'SFUIText-Regular',
     fontSize: 16,
     lineHeight: 28,
     color: Colors.text.black,
@@ -50,12 +46,6 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     paddingTop: 8,
     width: 150,
-  },
-  lightText: {
-    color: Colors.text.gray,
-  },
-  bold: {
-    fontWeight: '600',
   },
   nameSection: {
     flexDirection: 'row',
@@ -80,10 +70,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  actionLabel: {
-    fontSize: 16,
-    color: Colors.text.blue,
-  },
   imageWrapper: {
     marginRight: 30,
     marginLeft: 30,
@@ -94,29 +80,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 31,
   },
-  loadingWrapper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 400,
-  },
   label: {
     paddingHorizontal: 24,
     marginVertical: 8,
     color: Colors.text.gray,
-  },
-  formInput: {
-    flex: 1,
-    height: 54,
-    backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 24,
-    fontSize: 14,
-  },
-  formInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background.fullWhite,
-    marginBottom: 16,
   },
   radioRow: {
     paddingHorizontal: 20,
@@ -124,9 +91,6 @@ const styles = StyleSheet.create({
   },
   radio: {
     marginBottom: 24,
-  },
-  deleteText: {
-    color: Colors.text.red,
   },
   buttonWrapper: {
     padding: 16,
@@ -505,9 +469,7 @@ class EditGroup extends Component {
     const { confirmModal, loading, error } = this.state;
 
     const message = (
-      <Text>
-        Are you sure you want to delete the group?
-      </Text>
+      <AppText>Are you sure you want to delete the group?</AppText>
     );
 
     return (
@@ -528,11 +490,12 @@ class EditGroup extends Component {
   renderList = ({ count, title, info, status, subtext, redirect, avatars = null }) => (
     <View style={styles.row}>
       <View>
-        <Text style={styles.text}>
-          {count && `${count}`}{title} {status && (<Text style={styles.bold}> - {status}</Text>)}
-        </Text>
-        {info && info !== '' && <Text style={styles.text}>{info}</Text>}
-        {subtext && <Text style={[styles.text, styles.lightText]}>{subtext}</Text>}
+        <AppText style={{ marginVertical: 6 }}>
+          {count && `${count}`}{title} {status && (<AppText fontVariation="semibold"> - {status}</AppText>)}
+        </AppText>
+        {info && info !== '' && <AppText style={{ marginVertical: 6 }}>{info}</AppText>}
+        {subtext && <AppText color={Colors.text.gray} style={{ marginVertical: 6 }}>
+          {subtext}</AppText>}
         {avatars}
       </View>
       {
@@ -541,7 +504,7 @@ class EditGroup extends Component {
           style={styles.action}
           onPress={() => this.onChangePress(true, redirect)}
         >
-          <Text style={styles.actionLabel}>Change</Text>
+          <AppText color={Colors.text.blue}>Change</AppText>
         </TouchableOpacity>
       }
     </View >
@@ -556,7 +519,7 @@ class EditGroup extends Component {
         <ToolBar title="Change" />
         <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
-          <View style={[styles.nameSection]}>
+          <View style={styles.nameSection}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
               <Image
                 style={styles.profileImage}
@@ -611,12 +574,12 @@ class EditGroup extends Component {
           {
             this.canUserDelete() &&
             this.renderList({
-              title: <Text
+              title: <AppText
+                color={Colors.text.red}
                 onPress={() => this.setState({ confirmModal: true })}
-                style={styles.deleteText}
               >
                 Delete the group
-              </Text>,
+              </AppText>,
               redirect: 'Delete',
             })
           }

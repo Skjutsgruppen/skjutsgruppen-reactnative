@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { PropTypes } from 'prop-types';
 import Avatar from '@components/common/avatar';
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
+import { AppText } from '@components/utils/texts';
 
 import RemoveIcon from '@assets/icons/ic_cross.png';
 import CheckIcon from '@assets/icons/ic_accept.png';
@@ -20,7 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    color: Colors.text.blue,
     marginLeft: 10,
     marginRight: 5,
   },
@@ -54,7 +54,8 @@ const MembershipRequestItem = ({ request: { User, id }, onAccept, onReject, posi
   <View style={[styles.container, position === 0 ? { marginTop: 36 } : {}]}>
     <View style={styles.flexRow}>
       <Avatar size={48} imageURI={User.avatar} />
-      <Text style={styles.name}>{User.firstName} {User.lastName}</Text>
+      <AppText color={Colors.text.blue} style={styles.name}>
+        {User.firstName} {User.lastName}</AppText>
     </View>
     <View style={styles.actionsWrapper}>
       <TouchableHighlight
@@ -63,7 +64,7 @@ const MembershipRequestItem = ({ request: { User, id }, onAccept, onReject, posi
       >
         <View style={styles.actionContent}>
           <Image source={CheckIcon} style={styles.icon} />
-          <Text>Let in</Text>
+          <AppText>Let in</AppText>
         </View>
       </TouchableHighlight>
       <TouchableHighlight
@@ -73,7 +74,7 @@ const MembershipRequestItem = ({ request: { User, id }, onAccept, onReject, posi
       >
         <View style={styles.actionContent}>
           <Image source={RemoveIcon} style={styles.icon} />
-          <Text>Reject</Text>
+          <AppText>Reject</AppText>
         </View>
       </TouchableHighlight>
     </View>

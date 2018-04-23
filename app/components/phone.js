@@ -59,6 +59,7 @@ class Phone extends PureComponent {
               keyboardType="phone-pad"
               underlineColorAndroid="transparent"
               onChangeText={this.onChangePhoneNumber}
+              style={{ fontFamily: 'SFUIText-Regular' }}
               {...rest}
             />
           </View>

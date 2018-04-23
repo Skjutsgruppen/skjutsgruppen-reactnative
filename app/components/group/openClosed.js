@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Radio from '@components/add/radio';
 import Colors from '@theme/colors';
 import { RoundedButton } from '@components/common';
 import SectionLabel from '@components/add/sectionLabel';
 import { OPEN_GROUP, CLOSE_GROUP } from '@config/constant';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -78,9 +79,9 @@ class OpenClosed extends Component {
             onPress={this.onPressClosed}
           />
         </View>
-        <Text style={styles.infoText}>
+        <AppText style={styles.infoText}>
           {trans('add.rides_published_in_closed_group_still')}
-        </Text>
+        </AppText>
         <RoundedButton
           onPress={this.onNext}
           bgColor={Colors.background.pink}

@@ -1,20 +1,13 @@
 import React from 'react';
-import { StyleSheet, ViewPropTypes, Text } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import TouchableHighlight from '@components/touchableHighlight';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   action: {
     padding: 16,
-  },
-  actionLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
-  },
-  disabled: {
-    color: Colors.text.gray,
   },
 });
 
@@ -24,7 +17,9 @@ const ModalAction = ({ style, label, onPress, disabled }) => (
     onPress={onPress}
     disabled={disabled}
   >
-    <Text style={[styles.actionLabel, disabled ? styles.disabled : {}]}>{label}</Text>
+    <View>
+      <AppText centered fontVariation="bold" color={disabled ? Colors.text.gray : Colors.text.blue}>{label}</AppText>
+    </View>
   </TouchableHighlight>
 );
 

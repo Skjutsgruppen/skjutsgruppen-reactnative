@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_FILTER_WANTED } from '@config/constant';
 import Date from '@components/date';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   returnRidesWrapper: {
@@ -12,11 +13,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 24,
-  },
-  title: {
-    color: Colors.text.blue,
-    marginBottom: 16,
-    fontWeight: 'bold',
   },
   card: {
     flexDirection: 'row',
@@ -79,10 +75,10 @@ const TripList = ({ trip }) => (
         />
       </View>
       <TouchableOpacity style={styles.content}>
-        <Text>{trip.TripStart.name} - {trip.TripEnd.name}</Text>
+        <AppText>{trip.TripStart.name} - {trip.TripEnd.name}</AppText>
         {(trip.seats !== 0 && trip.seats !== '') &&
           <View style={styles.seatIndicator}>
-            {trip.seats !== 0 && <Text style={{ color: Colors.text.white, textAlign: 'center' }}>{trip.seats}</Text>}
+            {trip.seats !== 0 && <AppText color={Colors.text.white} centered >{trip.seats}</AppText>}
           </View>
         }
         <Date format="MMM DD, YYYY, HH:mm">{trip.date}</Date>

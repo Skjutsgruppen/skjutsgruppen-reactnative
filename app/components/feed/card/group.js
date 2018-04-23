@@ -10,47 +10,27 @@ import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
 
 const cardHeight = 484;
-const profilePicSize = 60;
+const imageHeight = 230;
+const profilePicSize = 64;
 
 const styles = StyleSheet.create({
   wrapper: {
     maxHeight: cardHeight,
     backgroundColor: Colors.background.fullWhite,
-    marginHorizontal: 16,
+    marginHorizontal: 19,
     marginVertical: 10,
     borderRadius: 12,
-    shadowOffset: { width: 0, height: 1 },
-    shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 0,
-    shadowRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     elevation: 4,
-  },
-  imgWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: cardHeight / 2,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: Colors.background.gray,
-  },
-  img: {
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
   },
   profilePicWrapper: {
     height: profilePicSize,
     width: profilePicSize,
     position: 'absolute',
-    top: (cardHeight / 2) - (profilePicSize / 2),
+    top: imageHeight - (profilePicSize / 2),
     right: 20,
     zIndex: 10,
   },
@@ -58,7 +38,7 @@ const styles = StyleSheet.create({
     height: profilePicSize,
     width: profilePicSize,
     resizeMode: 'cover',
-    borderRadius: 30,
+    borderRadius: (profilePicSize / 2),
     borderWidth: 2,
     borderColor: Colors.border.white,
   },
@@ -69,8 +49,9 @@ const styles = StyleSheet.create({
   },
   comment: {
     flex: 1,
-    flexBasis: 56,
-    minHeight: 56,
+    flexBasis: 72,
+    minHeight: 72,
+    paddingTop: 2,
     paddingHorizontal: 18,
     marginTop: 'auto',
     overflow: 'hidden',
@@ -114,12 +95,13 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
             />
             <View style={styles.detail}>
               <View>
-                <AppText>
+                <AppText style={{ lineHeight: 24 }}>
                   <AppText fontVariation="semibold" color={group.User.deleted ? Colors.text.black : Colors.text.blue}>
                     {group.User.firstName || group.User.email}
                   </AppText>
                   <AppText color={Colors.text.darkGray}> {trans('feed.created_a_group')}</AppText>
                 </AppText>
+                <AppText color={Colors.text.darkGray} style={{ marginBottom: 6 }}>{`"${group.name}"`}</AppText>
                 {
                   group.outreach === STRETCH_TYPE_AREA &&
                   <AppText color={Colors.text.darkGray}>
@@ -143,7 +125,7 @@ const Group = ({ group, onPress, min, onSharePress, wrapperStyle }) => {
               </View>
             </View>
             <View style={styles.comment}>
-              <AppText>{group.description}</AppText>
+              <AppText style={{ lineHeight: 24 }}>{group.description}</AppText>
               <LinearGradient
                 locations={[0, 0.3, 0.7, 0.8]}
                 colors={[

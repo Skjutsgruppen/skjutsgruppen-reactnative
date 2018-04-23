@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Loading } from '@components/common';
 import { withNavigation } from 'react-navigation';
 import CapturedImage from '@components/experience/capturedImage';
@@ -10,6 +10,7 @@ import { compose } from 'react-apollo';
 import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
 import PropTypes from 'prop-types';
 import Info from '@components/experience/detail/info';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   flex: {
@@ -19,23 +20,12 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: Colors.background.fullWhite,
   },
-  block: {
-    paddingVertical: 12,
-  },
-  name: {
-    color: Colors.text.blue,
-    fontWeight: 'bold',
-  },
   notificationWrapper: {
     height: 75,
     justifyContent: 'center',
     backgroundColor: '#F4F2FC',
     paddingHorizontal: 16,
     elevation: 5,
-  },
-  notificationText: {
-    color: '#000',
-    textAlign: 'center',
   },
   experienceTagActions: {
     flexDirection: 'row',
@@ -135,15 +125,16 @@ class AcceptExperience extends Component {
         separator = ', ';
       }
 
-      return (<Text key={row.User.id}>
-        <Text
+      return (<AppText key={row.User.id}>
+        <AppText
+          color={Colors.text.blue}
+          fontVariation="bold"
           onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
-          style={styles.name}
         >
           {row.User.firstName}
-        </Text>
+        </AppText>
         {separator}
-      </Text>);
+      </AppText>);
     });
   }
 
@@ -156,12 +147,12 @@ class AcceptExperience extends Component {
     }
 
     return (
-      <Text onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
-        <Text>
+      <AppText onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
+        <AppText>
           went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
-          . <Text style={styles.name}>See their trip here</Text>
-        </Text>
-      </Text>
+          . <AppText color={Colors.text.blue} fontVariation="bold">See their trip here</AppText>
+        </AppText>
+      </AppText>
     );
   }
 
@@ -178,7 +169,7 @@ class AcceptExperience extends Component {
     return (
       <View style={styles.flex}>
         <View style={styles.notificationWrapper}>
-          <Text style={styles.notificationText}>Are you in this Experience?</Text>
+          <AppText centered>Are you in this Experience?</AppText>
         </View>
         <ScrollView style={styles.flex}>
           {image}

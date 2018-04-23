@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, SectionList, StyleSheet } from 'react-native';
+import { View, SectionList, StyleSheet } from 'react-native';
 import ToolBar from '@components/utils/toolbar';
 import { Wrapper, Loading } from '@components/common';
 import { Colors } from '@theme';
@@ -9,6 +9,7 @@ import { compose } from 'react-apollo';
 import GroupsItem from '@components/profile/groupsItem';
 import AlphabeticalGroupsLoadMore from '@components/group/AlphabeticalGroupsLoadMore';
 import PropTypes from 'prop-types';
+import { Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   listHeader: {
@@ -17,9 +18,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 4,
     paddingHorizontal: 24,
-    color: Colors.text.darkGray,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   loadingWrapper: {
     flex: 1,
@@ -99,7 +97,7 @@ class AlphabeticalGroupsList extends Component {
         }
         keyExtractor={(item, index) => index}
         sections={alphabeticalGroups}
-        renderSectionHeader={item => <Text style={styles.listHeader}>{item.section.title}</Text>}
+        renderSectionHeader={item => <Heading fontVariation="bold" style={styles.listHeader}>{item.section.title}</Heading>}
         renderSectionFooter={item => this.sectionFooter(item)}
         stickySectionHeadersEnabled
       />

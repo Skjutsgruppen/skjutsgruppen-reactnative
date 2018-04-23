@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -20,10 +21,6 @@ const styles = StyleSheet.create({
   },
   nameWrapper: {
     flex: 1,
-  },
-  name: {
-    color: '#1db0ed',
-    fontWeight: 'bold',
   },
   profilePic: {
     height: 36,
@@ -48,7 +45,7 @@ const MemberItem = ({ user: { User }, onPress }) => {
     <TouchableOpacity onPress={() => onPress(User.id)} style={styles.wrapper}>
       {profileImage}
       <View style={styles.nameWrapper}>
-        <Text style={styles.name}>{User.firstName}</Text>
+        <AppText fontVariation="bold" color={Colors.text.blue}>{User.firstName}</AppText>
       </View>
     </TouchableOpacity>
   );

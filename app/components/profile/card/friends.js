@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View, TouchableHighlight, Image } from 'react-native';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 import RemoveIcon from '@assets/icons/ic_cross.png';
 
@@ -86,9 +87,7 @@ class Friends extends Component {
           <View style={[styles.friend, styles.flexRow]}>
             {profileImage}
             <View style={styles.nameWrapper}>
-              <Text style={styles.name}>
-                {friend.firstName} {friend.lastName}
-              </Text>
+              <AppText color={Colors.text.blue} fontVariation="semibold">{friend.firstName} {friend.lastName}</AppText>
             </View>
           </View>
           {

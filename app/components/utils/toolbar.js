@@ -1,15 +1,20 @@
 import React, { PureComponent } from 'react';
-import { Animated, StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import { Animated, StyleSheet, View, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { withNavigation } from 'react-navigation';
 
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
+import { Heading } from '@components/utils/texts';
 
 import Icon from '@assets/icons/ic_back_toolbar.png';
 
 const styles = StyleSheet.create({
+  wrapper: {
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 10,
+  },
   floated: {
     position: 'absolute',
     top: 0,
@@ -32,11 +37,6 @@ const styles = StyleSheet.create({
     height: 70,
     paddingHorizontal: 16,
     zIndex: 2,
-  },
-  title: {
-    fontWeight: 'bold',
-    color: '#707070',
-    backgroundColor: 'transparent',
   },
   button: {
     flexDirection: 'row',
@@ -100,7 +100,7 @@ class ToolBar extends PureComponent {
   title = () => {
     const { title } = this.props;
     if (title) {
-      return (<Text style={styles.title}>{title}</Text>);
+      return (<Heading size={16} fontVariation="bold" color={Colors.text.darkGray}>{title}</Heading>);
     }
 
     return <View />;
@@ -127,6 +127,8 @@ class ToolBar extends PureComponent {
     const params = navigation.state.params || {};
     let backgroundColor = transparent ? 'transparent' : Colors.background.fullWhite;
     let elevation = transparent ? 0 : 10;
+    let shadowOpacity = transparent ? 0 : 0.25;
+
     if (transparent) {
       if (params.animatedValue) {
         backgroundColor = params.animatedValue.interpolate({
@@ -139,16 +141,23 @@ class ToolBar extends PureComponent {
           outputRange: [0, 10],
           extrapolate: 'clamp',
         });
+        shadowOpacity = params.animatedValue.interpolate({
+          inputRange: [0, 50],
+          outputRange: [0, 0.25],
+          extrapolate: 'clamp',
+        });
       }
     }
 
     return (
       <Animated.View
         style={[
+          styles.wrapper,
           transparent && styles.floated,
           offset && { top: offset },
           { elevation },
           { backgroundColor },
+          { shadowOpacity },
         ]}
       >
         <View style={styles.gradientWrapper}>

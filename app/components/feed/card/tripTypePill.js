@@ -7,14 +7,14 @@ import { AppText } from '@components/utils/texts';
 const styles = StyleSheet.create({
   offerType: {
     position: 'absolute',
-    top: 20,
-    left: 20,
+    top: 21,
+    left: 18,
     zIndex: 10,
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12,
-    borderRadius: 15,
+    paddingHorizontal: 11,
+    borderRadius: 13,
     shadowOffset: { width: 0, height: 2 },
     shadowColor: '#000',
     shadowOpacity: 0.25,
@@ -34,6 +34,7 @@ const TripTypePill = ({ color, label }) => (
     <AppText
       color={Colors.text.white}
       size={12}
+      allowFontScaling={false}
     >
       {label}
     </AppText>

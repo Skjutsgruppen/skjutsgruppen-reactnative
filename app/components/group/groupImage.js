@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { Heading } from '@components/utils/texts';
 
-const cardHeight = 484;
 
 const styles = StyleSheet.create({
   roundedCorner: {
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: cardHeight / 2,
+    height: 230,
     overflow: 'hidden',
     backgroundColor: Colors.background.black,
   },

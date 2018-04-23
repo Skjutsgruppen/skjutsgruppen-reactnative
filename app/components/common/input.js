@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 48,
+    fontFamily: 'SFUIText-Regular',
     textAlign: 'center',
     paddingHorizontal: 24,
     backgroundColor: Colors.background.fullWhite,

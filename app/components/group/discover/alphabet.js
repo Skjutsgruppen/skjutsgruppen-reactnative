@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import TouchableHighlight from '@components/touchableHighlight';
 import { Colors } from '@theme';
+import { Heading } from '@components/utils/texts';
 
 const size = 84;
 
@@ -22,12 +23,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 10,
-    overflow: 'hidden',
-  },
-  letter: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text.gray,
   },
 });
 
@@ -37,7 +32,7 @@ const Alphabet = ({ style, onPress, letter }) => (
     activeOpacity={0.8}
     style={[styles.wrapper, style]}
   >
-    <Text style={styles.letter}>{letter.toUpperCase()}</Text>
+    <Heading fontVariation="bold" color={Colors.text.gray}>{letter.toUpperCase()}</Heading>
   </TouchableHighlight>
 );
 

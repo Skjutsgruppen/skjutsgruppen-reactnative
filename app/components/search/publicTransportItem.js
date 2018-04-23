@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TouchableHighlight, TouchableOpacity, Linking, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { StyleSheet, View, Image, TouchableHighlight, TouchableOpacity, Linking, Platform, UIManager, LayoutAnimation } from 'react-native';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
 import ExpandIcon from '@assets/icons/ic_chevron_down.png';
 import { PUBLIC_TRANSPORT_JOURNEY } from '@config/constant';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
-  },
-  lightText: {
-    color: Colors.text.gray,
   },
   wrapper: {
     borderRadius: 12,
@@ -49,9 +47,6 @@ const styles = StyleSheet.create({
   transportIcon: {
     zIndex: 100,
   },
-  title: {
-    fontWeight: 'bold',
-  },
   pink: {
     backgroundColor: Colors.background.pink,
   },
@@ -72,11 +67,6 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     resizeMode: 'contain',
-  },
-  flipped: {
-    transform: [
-      { rotate: '180deg' },
-    ],
   },
   connectorLine: {
     height: '80%',
@@ -195,11 +185,11 @@ class PublicTransportItem extends Component {
             <View>
               {
                 (Routes[0].type === PUBLIC_TRANSPORT_JOURNEY) &&
-                (<Text style={styles.title}>{Routes[0].Product.name}</Text>)
+                (<AppText fontVariation="bold">{Routes[0].Product.name}</AppText>)
               }
-              <Text style={styles.lightText}>
+              <AppText color={Colors.text.gray}>
                 <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
-              </Text>
+              </AppText>
             </View>
           </View>
         </TouchableHighlight>
@@ -220,11 +210,11 @@ class PublicTransportItem extends Component {
             {
               this.state.expanded && (
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.title}>{route.Point.name}</Text>
-                  <Text style={styles.lightText}><Date format="MMM DD">{route.Point.date}</Date>, {route.Point.time}</Text>
+                  <AppText fontVariation="bold">{route.Point.name}</AppText>
+                  <AppText color={Colors.text.gray}><Date format="MMM DD">{route.Point.date}</Date>, {route.Point.time}</AppText>
                   {
                     (route.type === PUBLIC_TRANSPORT_JOURNEY) &&
-                    (<Text>{route.Product.name}</Text>)
+                    (<AppText>{route.Product.name}</AppText>)
                   }
                 </View>
               )
@@ -244,10 +234,10 @@ class PublicTransportItem extends Component {
         {
           (!this.state.expanded && Routes.length > 2) && (
             <View style={{ alignSelf: 'center' }}>
-              <Text style={styles.title}>Combination</Text>
-              <Text style={styles.lightText}>
+              <AppText fontVariation="bold">Combination</AppText>
+              <AppText color={Colors.text.gray}>
                 <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
-              </Text>
+              </AppText>
             </View>
           )
         }

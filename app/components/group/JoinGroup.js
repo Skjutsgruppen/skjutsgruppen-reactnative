@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Modal } from 'react-native';
 import { compose } from 'react-apollo';
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import PropTypes from 'prop-types';
@@ -16,16 +16,11 @@ import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const ParticipantListBubble = withGroupMembers(Participants);
 
 const styles = StyleSheet.create({
-  label: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginHorizontal: 24,
-    marginTop: 32,
-  },
   sectionTitle: {
     fontSize: 12,
     color: Colors.text.blue,
@@ -36,14 +31,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 4,
     lineHeight: 20,
-    color: '#333',
-  },
-  hearderStyles: {
-    marginLeft: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    borderBottomWidth: 0,
-    borderRadius: 0,
   },
   aboutTitle: {
     marginTop: 6,
@@ -61,9 +48,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: 4,
   },
-  stops: {
-    fontWeight: 'bold',
-  },
   description: {
     marginTop: 24,
     marginBottom: 50,
@@ -72,12 +56,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 45,
-  },
-  lightText: {
-    color: Colors.text.gray,
-  },
-  whitebg: {
-    backgroundColor: Colors.background.fullWhite,
   },
   footer: {
     alignItems: 'center',
@@ -97,13 +75,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingHorizontal: 50,
     backgroundColor: Colors.background.pink,
-  },
-  buttonText: {
-    color: Colors.text.white,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 16,
-    backgroundColor: 'transparent',
   },
 });
 
@@ -191,7 +162,7 @@ class JoinGroup extends Component {
       return (
         <View style={styles.footer}>
           <View style={styles.msgWrapper}>
-            <Text style={styles.lightText}>{trans('detail.request_has_been_sent')}</Text>
+            <AppText color={Colors.text.gray}>{trans('detail.request_has_been_sent')}</AppText>
           </View>
         </View>
       );
@@ -201,7 +172,7 @@ class JoinGroup extends Component {
       return (
         <View style={styles.footer}>
           <View style={styles.msgWrapper}>
-            <Text style={styles.lightText}>{trans('detail.your_request_is_pending')}</Text>
+            <AppText color={Colors.text.gray}>{trans('detail.your_request_is_pending')}</AppText>
           </View>
         </View>
       );
@@ -214,10 +185,10 @@ class JoinGroup extends Component {
           style={styles.participateButton}
           onPress={this.joinGroup}
         >
-          <Text style={styles.buttonText}>
+          <AppText color={Colors.text.white} fontVariation="bold" centered>
             {group.type === OPEN_GROUP && trans('detail.participate')}
             {group.type === CLOSE_GROUP && trans('detail.ask_to_participate')}
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     );
@@ -264,30 +235,30 @@ class JoinGroup extends Component {
               showOverlay={group.photo === null}
             />
           }
-          <Text style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</Text>
+          <AppText style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</AppText>
           <ParticipantListBubble id={group.id} offset={0} />
-          <Text style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</Text>
-          <Text style={styles.text}>
+          <AppText style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</AppText>
+          <AppText style={styles.text}>
             {group.type === OPEN_GROUP && trans('detail.open_group')}
             {group.type === CLOSE_GROUP && trans('detail.closed_group')}
-          </Text>
-          <Text style={styles.text}>
+          </AppText>
+          <AppText style={styles.text}>
             {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
             {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name || group.direction} - ${group.TripEnd.name || group.direction}`}
-          </Text>
+          </AppText>
           {
             group.Stops && group.Stops.length > 0 &&
             <View style={styles.stopText}>
               <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
-              <Text style={{ color: '#333' }}>
+              <AppText>
                 {trans('detail.stops_in')}
-                <Text style={styles.stops}> {group.Stops.map(place => place.name).join(', ')}</Text>
-              </Text>
+                <AppText fontVariation="bold"> {group.Stops.map(place => place.name).join(', ')}</AppText>
+              </AppText>
             </View>
           }
-          <Text style={[styles.text, styles.description]}>
+          <AppText style={[styles.text, styles.description]}>
             {group.description}
-          </Text>
+          </AppText>
         </Container>
         {this.renderButton()}
         {this.renderShareModal()}

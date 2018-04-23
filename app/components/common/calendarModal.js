@@ -1,15 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Modal, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import * as Animatable from 'react-native-animatable';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  horizontalDivider: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
-  },
   modalContent: {
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.65)',
@@ -32,11 +29,6 @@ const styles = StyleSheet.create({
   },
   close: {
     padding: 16,
-  },
-  closeLabel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
 });
 
@@ -77,7 +69,7 @@ const CalendarModal = ({
           style={styles.close}
           onPress={onRequestClose}
         >
-          <Text style={styles.closeLabel}>{trans('global.done')}</Text>
+          <AppText color={Colors.text.blue} centered fontVariation="bold">{trans('global.cancel')}</AppText>
         </TouchableOpacity>
       </Animatable.View>
     </View>

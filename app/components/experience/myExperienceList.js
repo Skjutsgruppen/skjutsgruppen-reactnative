@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   Image,
   TouchableHighlight,
@@ -13,6 +12,7 @@ import SunIcon from '@assets/icons/ic_camera_head.png';
 import Arrow from '@assets/icons/ic_arrow_experience.png';
 import { withNavigation } from 'react-navigation';
 import { Loading } from '@components/common';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   header: {
@@ -26,10 +26,6 @@ const styles = StyleSheet.create({
   },
   arrow: {
     marginLeft: 24,
-  },
-  title: {
-    fontSize: 18,
-    color: Colors.text.gray,
   },
   horizontalScroller: {
     marginBottom: 24,
@@ -64,9 +60,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 12,
   },
-  msg: {
-    color: Colors.text.gray,
-  },
   centered: {
     alignSelf: 'center',
     alignItems: 'center',
@@ -78,7 +71,12 @@ class MyExperienceList extends PureComponent {
   render() {
     const { myExperiences, navigation } = this.props;
     const { rows, loading, error } = myExperiences;
-    let list = <Text style={[styles.block, styles.msg]}>No experiences has been created yet.</Text>;
+    let list = (
+      <AppText
+        color={Colors.text.gray}
+        style={styles.block}
+      >No experiences has been created yet.</AppText>
+    );
 
     if (loading && rows.length < 1) {
       return (<View style={[styles.block, styles.centered]}><Loading /></View>);
@@ -87,12 +85,14 @@ class MyExperienceList extends PureComponent {
     if (error) {
       list = (
         <View style={styles.block}>
-          <Text style={styles.msg}>{error.message}</Text>
+          <AppText color={Colors.text.gray}>{error.message}</AppText>
           <TouchableHighlight
             onPress={() => myExperiences.refetch()}
             underlayColor={Colors.background.lightGray}
           >
-            <Text style={styles.msg}>Retry</Text>
+            <View>
+              <AppText color={Colors.text.gray}>Retry</AppText>
+            </View>
           </TouchableHighlight>
         </View>
       );
@@ -117,7 +117,7 @@ class MyExperienceList extends PureComponent {
         <View style={styles.header}>
           <Image source={SunIcon} style={styles.sunIcon} />
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{myExperiences.count} {myExperiences.count <= 1 ? 'Experience!' : 'Experiences!'}</Text>
+            <AppText size={18} color={Colors.text.gray}>{myExperiences.count} {myExperiences.count <= 1 ? 'Experience!' : 'Experiences!'}</AppText>
             <Image source={Arrow} style={styles.arrow} />
           </View>
         </View>
