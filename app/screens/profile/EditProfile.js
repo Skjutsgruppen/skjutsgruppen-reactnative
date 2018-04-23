@@ -23,6 +23,7 @@ import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import { NavigationActions } from 'react-navigation';
 import { getDeviceId } from '@helpers/device';
+import { trans } from '@lang/i18n';
 
 const AvailableLanguages = {
   en: 'English',
@@ -226,7 +227,7 @@ class EditProfile extends Component {
       LoginManager.logOut();
     } else {
       LoginManager.logOut();
-      Alert.alert('Error', 'Facebook account is already linked with another account.');
+      Alert.alert('Error', trans('profile.fb_account_is_already_linked_with_another_account'));
     }
   }
 
@@ -250,7 +251,7 @@ class EditProfile extends Component {
         this.setState({ loading: false });
       }
     } else {
-      Alert.alert('Error', 'Twitter account is already linked with another account.');
+      Alert.alert('Error', trans('profile.twitter_account_is_already_linked_with_another_account'));
     }
   }
 
@@ -469,7 +470,7 @@ class EditProfile extends Component {
     return (<Text
       onPress={() => navigation.navigate('ChangePhoneNumber', { verifyPreviousNumber: true })}
       style={styles.resendVerification}
-    >Verify Phone Number</Text>);
+    >{trans('profile.verify_phone_number')}</Text>);
   }
 
   renderFacebookConnect = () => {
@@ -478,7 +479,7 @@ class EditProfile extends Component {
     if (facebookLinked) {
       return (
         <TouchableOpacity style={styles.action} onPress={this.unlinkFacebook}>
-          <Text style={styles.actionLabel}>Unlink</Text>
+          <Text style={styles.actionLabel}>{trans('profile.unlink')}</Text>
         </TouchableOpacity>
       );
     }
@@ -492,7 +493,7 @@ class EditProfile extends Component {
     if (twitterLinked) {
       return (
         <TouchableOpacity style={styles.action} onPress={this.unlinkTwitter}>
-          <Text style={styles.actionLabel}>Unlink</Text>
+          <Text style={styles.actionLabel}>{trans('profile.unlink')}</Text>
         </TouchableOpacity>
       );
     }
@@ -505,10 +506,10 @@ class EditProfile extends Component {
     return (
       <View style={styles.row}>
         <Text style={styles.text}>
-          Language <Text style={styles.bold}> - {AvailableLanguages[language]}</Text>
+          {trans('profile.language')} <Text style={styles.bold}> - {AvailableLanguages[language]}</Text>
         </Text>
         <TouchableOpacity style={styles.action}>
-          <Text style={styles.actionLabel}>Change</Text>
+          <Text style={styles.actionLabel}>{trans('global.change')}</Text>
         </TouchableOpacity>
         <Picker
           selectedValue={language}
@@ -532,7 +533,7 @@ class EditProfile extends Component {
             onChangeText={name => this.setState({ firstName: name })}
             onBlur={() => this.onSubmit({ firstNameLoading: true })}
             style={styles.input}
-            placeholder="Your first name"
+            placeholder={trans('profile.your_first_name')}
             value={firstName}
             autoCorrect={false}
             placeholderTextColor="#666"
@@ -553,7 +554,7 @@ class EditProfile extends Component {
             onChangeText={name => this.setState({ lastName: name })}
             onBlur={() => this.onSubmit({ lastNameLoading: true })}
             style={styles.input}
-            placeholder="Your last name"
+            placeholder={trans('profile.your_last_name')}
             value={lastName}
             autoCorrect={false}
             placeholderTextColor="#666"
@@ -605,7 +606,7 @@ class EditProfile extends Component {
         {
           redirect &&
           <TouchableOpacity style={styles.action} onPress={() => this.redirect(redirect)}>
-            <Text style={styles.actionLabel}>Change</Text>
+            <Text style={styles.actionLabel}>{trans('global.change')}</Text>
           </TouchableOpacity>
         }
       </View >
@@ -616,7 +617,7 @@ class EditProfile extends Component {
     const { modalVisibility, loading, error } = this.state;
     const message = (
       <Text>
-        Are you sure you want to delete yourself from the movement?
+        {trans('profile.are_you_sure_you_want_to_delete_yourself_from_this_movement')}
       </Text>
     );
 
@@ -626,8 +627,8 @@ class EditProfile extends Component {
         visible={modalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error !== null ? 'Retry' : 'Yes'}
-        denyLabel="No"
+        confirmLabel={error !== null ? trans('global.retry') : trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.deleteAccount}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}
@@ -665,31 +666,31 @@ class EditProfile extends Component {
           </View>
           {
             this.renderList({
-              title: 'E-mail',
+              title: trans('profile.email'),
               info: email,
               awaitingVerification: newEmail,
               sendVerification: newEmail ? 'email' : null,
-              subtext: 'Not visible for other participants',
+              subtext: trans('profile.not_visible_for_other_participants'),
               redirect: 'email',
             })
           }
           {
             this.renderList({
-              title: 'Phone',
+              title: trans('profile.phone'),
               info: phoneNumber,
               awaitingVerification: newPhoneNumber,
               sendVerification: newPhoneNumber ? 'phone' : null,
-              subtext: 'Not visible for other participants',
+              subtext: trans('profile.not_visible_for_other_participants'),
               redirect: 'phone',
             })
           }
           <View style={styles.row}>
             <View>
               <Text style={styles.text}>
-                Facebook - <Text style={styles.bold}>{facebookLinked ? 'connected' : 'not connected'}</Text>
+                {trans('profile.facebook')} - <Text style={styles.bold}>{facebookLinked ? 'connected' : 'not connected'}</Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
-                Visible for other participants
+                {trans('profile.visible_for_other_participants')}
               </Text>
             </View>
             {this.renderFacebookConnect()}
@@ -697,10 +698,10 @@ class EditProfile extends Component {
           <View style={styles.row}>
             <View>
               <Text style={styles.text}>
-                Twitter - <Text style={styles.bold}>{twitterLinked ? 'connected' : 'not connected'}</Text>
+                {trans('profile.twitter')} - <Text style={styles.bold}>{twitterLinked ? 'connected' : 'not connected'}</Text>
               </Text>
               <Text style={[styles.text, styles.lightText]}>
-                Visible for other participants
+                {trans('profile.visible_for_other_participants')}
               </Text>
             </View>
             {this.renderTwitterConnect()}
@@ -709,13 +710,13 @@ class EditProfile extends Component {
             this.renderList({
               count: `${totalFriends} `,
               title: (totalFriends <= 1) ? 'friend' : 'friends',
-              subtext: 'Visible for other participants',
+              subtext: trans('profile.visible_for_other_participants'),
               redirect: 'friends',
             })
           }
           {
             this.renderList({
-              title: 'Password',
+              title: trans('profile.password'),
               redirect: 'password',
             })
           }
@@ -724,7 +725,7 @@ class EditProfile extends Component {
             onPress={() => this.setConfirmModalVisibility(true)}
             style={styles.deleteRow}
           >
-            <Text style={[styles.text, styles.deleteLabel]}>Delete yourself from the movement</Text>
+            <Text style={[styles.text, styles.deleteLabel]}>{trans('profile.delete_yourself_from_this_movement')}</Text>
           </TouchableOpacity>
           {this.renderModal()}
         </ScrollView>

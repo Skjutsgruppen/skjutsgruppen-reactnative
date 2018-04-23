@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { ProgressBar } from '@components/common';
 import { Colors } from '@theme';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -41,7 +42,7 @@ const CostCard = ({ title, coveredPercentage, totalCost, wrapperStyle }) => (
     <View style={styles.info}>
       <View>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.cost}>{`${coveredPercentage}% of ${totalCost} €/year`}</Text>
+        <Text style={styles.cost}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</Text>
       </View>
       <View>
         <Text

@@ -16,6 +16,7 @@ import Toast from '@components/toast';
 import Colors from '@theme/colors';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   input: {
@@ -150,7 +151,7 @@ class ChangePhoneNumber extends Component {
         onPress={this.onSubmit}
         disabled={disableUpdateButton}
       >
-        Change Phone Number
+        {trans('profile.change_phone_number')}
       </CustomButton>
     );
   }
@@ -160,7 +161,7 @@ class ChangePhoneNumber extends Component {
       bgColor={Colors.background.green}
       style={styles.button}
       onPress={this.onVerifyPhone}
-    >Send SMS</CustomButton>
+    >{trans('profile.send_sms')}</CustomButton>
   )
 
   renderVerificationCode = () => {
@@ -171,8 +172,7 @@ class ChangePhoneNumber extends Component {
         <Text style={styles.verifyText}>Your verification code is:</Text>
         <Text style={styles.code}>{phoneVerificationCode}</Text>
         <Text style={styles.verifyText}>
-          The text message cost the same as an ordinary text message with
-          you service provider.
+          {trans('profile.text_message_cost_same_as_ordinary_text')}
         </Text>
         {this.renderVerifyButton()}
       </View>
@@ -189,12 +189,12 @@ class ChangePhoneNumber extends Component {
           <Toast message={error} type="error" />
           {(!phoneVerificationCode && !verifyPreviousNumber) &&
             <View style={{ marginTop: 50 }}>
-              <Text style={styles.label}>New phone number</Text>
+              <Text style={styles.label}>{trans('profile.new_phone_number')}</Text>
               <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
                 <Phone
                   defaultCode={countryCode}
                   style={styles.input}
-                  placeholder="Your mobile number"
+                  placeholder={trans('profile.your_mobile_number')}
                   onChange={
                     ({ code, number }) => this.setState({ countryCode: code, phone: number })
                   }

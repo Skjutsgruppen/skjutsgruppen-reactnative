@@ -3,7 +3,6 @@ import Item from '@components/feed/card/experience';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 
-
 class UserExperienceList extends PureComponent {
   componentWillMount() {
     const { subscribeToNewExperience, id } = this.props;
