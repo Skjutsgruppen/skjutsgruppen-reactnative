@@ -12,6 +12,7 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   input: {
@@ -90,7 +91,7 @@ class ChangeEmail extends Component {
         onPress={this.onSubmit}
         disabled={!(newEmail.length > 0)}
       >
-        Change Email
+        {trans('profile.change_email')}
       </CustomButton>
     );
   }
@@ -105,7 +106,7 @@ class ChangeEmail extends Component {
           <View style={{ paddingTop: 60 }}>
             <Toast message={error} type="error" />
             <Toast message={success} type="success" />
-            <Text style={styles.label}>New Email</Text>
+            <Text style={styles.label}>{trans('profile.new_email')}</Text>
             <View style={styles.inputWrapper}>
               <TextInput
                 value={newEmail}

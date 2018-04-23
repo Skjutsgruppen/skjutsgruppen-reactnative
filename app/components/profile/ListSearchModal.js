@@ -14,6 +14,7 @@ import SearchMyFriends from '@components/profile/SearchMyFriends';
 import SearchEnabler from '@components/group/enablers/enablerList';
 import SearchAddEnabler from '@components/group/enablers/addEnablerList';
 import SearchParticipant from '@components/group/participant/participantList';
+import { trans } from '@lang/i18n';
 
 const TripsSearchResult = withMyTrips(SearchMyTrips);
 const ConversationSearchResult = withConversation(SearchMyConversations);
@@ -86,7 +87,7 @@ class ListSearchModal extends PureComponent {
       <View style={{ flex: 1 }}>
         <View style={[styles.searchInputWrapper]}>
           <TextInput
-            placeholder="Search"
+            placeholder={trans('search.search')}
             onChangeText={text => this.setState({ searchQuery: text })}
             underlineColorAndroid="transparent"
             style={styles.searchInput}

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Wrapper } from '@components/common';
 import Colors from '@theme/colors';
 import { connect } from 'react-redux';
+import { trans } from '@lang/i18n';
 
 const Groups = withMyGroups(GroupsList);
 
@@ -23,11 +24,11 @@ class UserGroups extends Component {
 
   render() {
     const { userId, username } = this.props.navigation.state.params || this.props.user.id;
-    const user = this.isCurrentUser() ? 'My' : (`${username || this.props.user.firstName}'s`);
+    const user = this.isCurrentUser() ? trans('profile.my') : trans('profile.username_s', { name: username || this.props.user.firstName });
 
     return (
       <Wrapper bgColor={Colors.background.creme}>
-        <ToolBar title={`${user} groups`} />
+        <ToolBar title={trans('profile.user_groups', { user })} />
         <Groups id={userId} />
       </Wrapper>
     );
