@@ -1,4 +1,4 @@
-package com.skjutsgruppen.react.modules;
+package nu.skjutsgruppen.skjutsgruppen.react.modules;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,7 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.skjutsgruppen.GeoLocationService;
+import nu.skjutsgruppen.skjutsgruppen.GeoLocationService;
 import android.location.LocationManager;
 import android.provider.Settings;
 

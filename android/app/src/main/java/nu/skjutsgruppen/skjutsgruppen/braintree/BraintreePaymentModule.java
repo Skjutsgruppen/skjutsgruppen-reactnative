@@ -1,4 +1,4 @@
-package com.skjutsgruppen.braintree;
+package nu.skjutsgruppen.skjutsgruppen.braintree;
 
 import android.app.Activity;
 import android.content.Intent;
