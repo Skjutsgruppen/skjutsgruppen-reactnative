@@ -239,7 +239,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <AppText size={12}>A post about this ride on your Facebook timeline</AppText>
+          <AppText size={12}>{trans('detail.a_post_about_this_ride_on_your_fb')}</AppText>
         </View>
       );
     }
@@ -253,7 +253,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareTwitterRadio}
             size={24}
           />
-          <AppText size={12}>A tweet about this ride</AppText>
+          <AppText size={12}>{trans('detail.a_tweet_about_this_ride')}</AppText>
         </View>
       );
     }
