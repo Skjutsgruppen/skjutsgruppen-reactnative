@@ -1,4 +1,4 @@
-package com.skjutsgruppen;
+package nu.skjutsgruppen.skjutsgruppen;
 
 import android.Manifest;
 import android.annotation.TargetApi;

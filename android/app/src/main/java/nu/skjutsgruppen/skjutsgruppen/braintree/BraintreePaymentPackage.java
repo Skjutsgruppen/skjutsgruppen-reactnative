@@ -1,4 +1,4 @@
-package com.skjutsgruppen.braintree;
+package nu.skjutsgruppen.skjutsgruppen.braintree;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

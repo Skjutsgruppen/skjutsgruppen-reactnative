@@ -1,4 +1,4 @@
-package com.skjutsgruppen.react.modules;
+package nu.skjutsgruppen.skjutsgruppen.react.modules;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
