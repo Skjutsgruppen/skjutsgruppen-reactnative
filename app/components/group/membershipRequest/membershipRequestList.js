@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Modal, View } from 'react-native';
+import { StyleSheet, Modal, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import DataList from '@components/dataList';
@@ -9,15 +9,9 @@ import Toolbar from '@components/utils/toolbar';
 import Item from '@components/group/membershipRequest/membershipRequestItem';
 import { withAcceptGroupRequest, withRejectGroupInvitation } from '@services/apollo/notification';
 import { withNavigation } from 'react-navigation';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  errorText: {
-    textAlign: 'center',
-    color: Colors.text.red,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
   separator: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.border.lightGray,
@@ -92,9 +86,7 @@ class MembershipRequestList extends Component {
     const { membershipRequest: { loading } } = this.props;
 
     const message = (
-      <Text>
-        Are you sure you want to add participant?
-      </Text>
+      <AppText>Are you sure you want to add participant?</AppText>
     );
 
     return (
@@ -117,9 +109,7 @@ class MembershipRequestList extends Component {
     const { membershipRequest: { loading } } = this.props;
 
     const message = (
-      <Text>
-        Are you sure you want to reject?
-      </Text>
+      <AppText>Are you sure you want to reject?</AppText>
     );
 
     return (

@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 import MemberItem from '@components/memberItem';
 import DataList from '@components/dataList';
 import { trans } from '@lang/i18n';
@@ -89,7 +90,7 @@ const ParticipantsModal = ({ groupMembers, onPress, setModalVisibility, showFoFM
             onPress={() =>
               setModalVisibility(false)}
           >
-            <Text style={styles.closeModalText}>{trans('global.close')}</Text>
+            <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.close')}</AppText>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, SectionList, Text } from 'react-native';
+import { StyleSheet, SectionList } from 'react-native';
 import PropTypes from 'prop-types';
 import ListItem from '@components/profile/listItem';
 import { getDate } from '@config';
 import { Colors } from '@theme';
 import { FEED_TYPE_OFFER } from '@config/constant';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -51,7 +52,7 @@ const SharedTripList = ({ groupTrips, navigation }) => {
       }
       keyExtractor={(item, index) => index}
       renderSectionHeader={
-        ({ section }) => <Text style={styles.sectionHeader}>{section.title}</Text>
+        ({ section }) => <AppText style={styles.sectionHeader}>{section.title}</AppText>
       }
       ref={(section) => { this.sectionListRef = section; }}
     />

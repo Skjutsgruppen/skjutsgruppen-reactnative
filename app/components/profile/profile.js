@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import PropTypes from 'prop-types';
@@ -16,6 +16,7 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import _isEqual from 'lodash/isEqual';
 import FOF from '@components/relation/friendsOfFriend';
+import { Heading, AppText } from '@components/utils/texts';
 
 import {
   RELATIONSHIP_TYPE_FRIEND,
@@ -39,11 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text.black,
     marginBottom: 12,
-    textAlign: 'center',
   },
   joinedDate: {
     textAlign: 'center',
@@ -373,7 +370,7 @@ class Profile extends Component {
           name="ios-checkmark"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLabel}>{trans('profile.accept')}</Text>
+        /><AppText style={styles.actionLabel}>{trans('profile.accept')}</AppText>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={this.rejectRequest}
@@ -383,7 +380,7 @@ class Profile extends Component {
           name="ios-close"
           size={24}
           color={Colors.text.white}
-        /><Text style={styles.actionLabel}>{trans('profile.reject')}</Text>
+        /><AppText style={styles.actionLabel}>{trans('profile.reject')}</AppText>
       </TouchableOpacity>
     </View>
   )
@@ -396,9 +393,9 @@ class Profile extends Component {
     if (error) {
       errorMessage = (
         <View style={{ marginTop: 100 }}>
-          <Text style={styles.errorText}>{trans('global.oops_something_went_wrong')}</Text>
+          <AppText style={styles.errorText}>{trans('global.oops_something_went_wrong')}</AppText>
           <TouchableOpacity onPress={() => refetch()}>
-            <Text style={styles.errorText}>{trans('global.tap_to_retry')}</Text>
+            <AppText style={styles.errorText}>{trans('global.tap_to_retry')}</AppText>
           </TouchableOpacity>
         </View>
       );
@@ -422,8 +419,8 @@ class Profile extends Component {
           imageURI={user.avatar}
           style={styles.profilePic}
         />
-        <Text style={styles.name}>{user.firstName} {user.lastName}</Text>
-        <Text style={[styles.lightText, styles.joinedDate]}>{trans('profile.joined')} <Date format="MMM Do YYYY">{user.createdAt}</Date></Text>
+        <Heading fontVariation="bold" centered style={styles.name}>{user.firstName} {user.lastName}</Heading>
+        <AppText style={[styles.lightText, styles.joinedDate]}>{trans('profile.joined')} <Date format="MMM Do YYYY">{user.createdAt}</Date></AppText>
         <View style={styles.activityWrapper}>
           <View style={styles.hexagon}>
             <View style={styles.experienceCountWrapper}>
@@ -433,23 +430,23 @@ class Profile extends Component {
                   style={styles.sunRay}
                 />
               ) : null}
-              <Text
+              <AppText
                 style={[
                   styles.experienceCount,
                   { color: user.totalExperiences > 0 ? Colors.text.pink : Colors.text.gray },
                 ]}
               >
                 {user.totalExperiences}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.activityLabel}>{user.totalExperiences <= 1 ? trans('profile.Experience') : trans('profile.Experiences')}</Text>
+            <AppText style={styles.activityLabel}>{user.totalExperiences <= 1 ? trans('profile.Experience') : trans('profile.Experiences')}</AppText>
           </View>
           <View style={styles.hexagon}>
             <Image
               source={user.isSupporter ? GardenActive : GardenInactive}
               style={styles.garden}
             />
-            <Text style={styles.activityLabel}>{user.isSupporter ? trans('profile.Supporter') : trans('profile.not_supporting')}</Text>
+            <AppText style={styles.activityLabel}>{user.isSupporter ? trans('profile.Supporter') : trans('profile.not_supporting')}</AppText>
           </View>
         </View>
         {this.friendRelationButton()}

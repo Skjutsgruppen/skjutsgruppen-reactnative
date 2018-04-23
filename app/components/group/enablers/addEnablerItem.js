@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { Avatar } from '@components/common';
 import { Colors } from '@theme';
 import Radio from '@components/add/radio';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -30,23 +31,6 @@ const styles = StyleSheet.create({
   nameWrapper: {
     flex: 1,
     marginLeft: 16,
-  },
-  name: {
-    fontSize: 16,
-    color: Colors.text.blue,
-    fontWeight: '500',
-  },
-  action: {
-    height: 48,
-    width: 48,
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  errorLabel: {
-    color: Colors.text.red,
-    fontSize: 16,
-    fontWeight: '500',
   },
 });
 
@@ -90,9 +74,7 @@ class Item extends Component {
           <View style={[styles.friend, styles.flexRow]}>
             {profileImage}
             <View style={styles.nameWrapper}>
-              <Text style={styles.name}>
-                {User.firstName} {User.lastName}
-              </Text>
+              <AppText color={Colors.text.blue} fontVariation="semibold">{User.firstName} {User.lastName}</AppText>
             </View>
           </View>
           <Radio onPress={this.onParticipantSelected} active={active} />

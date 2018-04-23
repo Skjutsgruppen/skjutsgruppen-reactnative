@@ -10,7 +10,8 @@ import { AppText } from '@components/utils/texts';
 const styles = StyleSheet.create({
   wrapper: {
     paddingVertical: 20,
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -18,6 +19,9 @@ const styles = StyleSheet.create({
   commentIcon: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  shareIcon: {
+    marginLeft: 4,
   },
   commentCout: {
     marginRight: 10,
@@ -34,7 +38,7 @@ const Footer = ({ onSharePress, onCommentPress, totalFeeds, hasReadMore }) => (
         <TouchableOpacity
           onPress={onCommentPress}
         >
-          <AppText fontVariation="semibold" color={Colors.text.blue}>{trans('feed.read_more')}</AppText>
+          <AppText fontVariation="semibold" color={Colors.text.blue} style={{ marginTop: 5 }}>{trans('feed.read_more')}</AppText>
         </TouchableOpacity>
       )
     }

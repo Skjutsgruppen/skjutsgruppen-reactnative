@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import { View, StyleSheet, Modal } from 'react-native';
 import TwitterAuth from 'tipsi-twitter';
 import { CustomButton, Loading } from '@components/common';
 import twitter from 'react-native-twitter';
 import { withGetUserByEmail, withGetUserByTwitterId } from '@services/apollo/social';
 import { compose } from 'react-apollo';
 import { Colors } from '@theme';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   actionLabel: {
@@ -138,10 +139,10 @@ class TwitterConnect extends PureComponent {
 
     if (buttonType === 'link') {
       return (
-        <Text
+        <AppText
+          color={Colors.text.blue}
           onPress={this.handleTwitterLogin}
-          style={styles.actionLabel}
-        >Link</Text>
+        >Link</AppText>
       );
     }
 

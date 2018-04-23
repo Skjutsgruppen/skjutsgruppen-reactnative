@@ -1,17 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, TextInput, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image } from 'react-native';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   header: {
     padding: 24,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   searchInputWrapper: {
     flexDirection: 'row',
@@ -34,6 +30,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   searchInput: {
+    fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     height: 36,
     flex: 1,
@@ -49,7 +46,7 @@ const styles = StyleSheet.create({
 
 const Search = () => (
   <View style={styles.header}>
-    <Text style={styles.title}>Messages and groups</Text>
+    <AppText size={18} centered fontVariation="bold">Messages and groups</AppText>
     <View style={styles.searchInputWrapper}>
       <TextInput
         placeholder="Search"

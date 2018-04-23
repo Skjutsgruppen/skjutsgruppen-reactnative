@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
 import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
@@ -32,6 +32,7 @@ import { FLEXIBILITY_EARLIER_TYPE, FEED_FILTER_OFFERED, FEEDABLE_TRIP, FEED_TYPE
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { connect } from 'react-redux';
 import { withSearch } from '@services/apollo/search';
+import { AppText, Heading } from '@components/utils/texts';
 import SuggestedRidesList from '@components/ask/suggestedRidesList';
 import AskCommentBox from '@components/ask/commentBox';
 import OfferCommentBox from '@components/offer/commentBox';
@@ -42,6 +43,7 @@ import { withMute, withUnmute } from '@services/apollo/mute';
 
 import ReturnIconPink from '@assets/icons/ic_return.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
+import CalendarIcon from '@assets/icons/ic_calender.png';
 
 const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
@@ -94,21 +96,17 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   text: {
-    lineHeight: 22,
+    marginVertical: 8,
   },
   lightText: {
     color: Colors.text.darkGray,
   },
-  stopsLabel: {
-    color: Colors.text.pink,
-    fontWeight: 'bold',
-  },
   fromTo: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 2,
   },
   date: {
-    marginVertical: 12,
+    marginBottom: 12,
   },
   tripDescription: {
     marginTop: 16,
@@ -154,10 +152,6 @@ const styles = StyleSheet.create({
   btnIcon: {
     marginRight: 16,
   },
-  btnLabel: {
-    fontSize: 16,
-    color: Colors.text.gray,
-  },
   modalContent: {
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.5)',
@@ -183,8 +177,6 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     textAlign: 'center',
-    fontWeight: 'bold',
-    color: Colors.text.blue,
   },
   dividerWrapper: {
     marginHorizontal: 24,
@@ -506,10 +498,10 @@ class TripDetail extends Component {
           activeOpacity={0.75}
         >
           {icon}
-          <Text style={styles.btnLabel}>
-            <Text style={styles.bold}>{trans('detail.return_ride')}</Text>
+          <AppText color={Colors.text.gray}>
+            <AppText fontVariation="bold">{trans('detail.return_ride')}</AppText>
             <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
-          </Text>
+          </AppText>
         </TouchableOpacity>
       );
     }
@@ -522,7 +514,7 @@ class TripDetail extends Component {
           activeOpacity={0.75}
         >
           {icon}
-          <Text style={[styles.btnLabel, styles.bold]}>{trans('detail.return')}</Text>
+          <AppText color={Colors.text.blue} fontVariation="bold">{trans('detail.return')}</AppText>
         </TouchableOpacity>
       );
     }
@@ -543,8 +535,8 @@ class TripDetail extends Component {
         onPress={() => this.setRecurringRidesModalVisibility(true)}
         activeOpacity={0.75}
       >
-        <Image source={require('@assets/icons/ic_calender.png')} style={styles.btnIcon} />
-        <Text style={[styles.btnLabel, styles.bold]}>{trans('detail.recurring')}</Text>
+        <Image source={CalendarIcon} style={styles.btnIcon} />
+        <AppText fontVariation="bold">{trans('detail.recurring')}</AppText>
       </TouchableOpacity>
     );
   }
@@ -625,7 +617,7 @@ class TripDetail extends Component {
                 onPress={() =>
                   this.setRecurringRidesModalVisibility(false)}
               >
-                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                <AppText color={Colors.text.blue} fontVariation="bold">{trans('global.cancel')}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -657,7 +649,7 @@ class TripDetail extends Component {
                 style={styles.closeModal}
                 onPress={() => this.setReturnRidesModalVisibility(false)}
               >
-                <Text style={styles.actionLabel}>{trans('global.cancel')}</Text>
+                <AppText color={Colors.text.blue} fontVariation="bold">{trans('global.cancel')}</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -682,17 +674,17 @@ class TripDetail extends Component {
 
     return (
       <View style={styles.detail}>
-        <Text style={[styles.text, styles.lightText]}>
-          <Text style={styles.username}>
-            {trip.User.firstName}
-          </Text>
+        { // style={[styles.text, styles.lightText]}  style={styles.username}
+        }
+        <AppText color={Colors.text.darkGray}>
+          <AppText fontVariation="semibold" color={Colors.text.blue}>{trip.User.firstName}</AppText>
           {
             trip.type === FEED_TYPE_OFFER &&
-            <Text> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </Text>
+            <AppText> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
           }
-          {trip.type === FEED_TYPE_WANTED && <Text> {trans('feed.asks_for_a_ride')}</Text>}
-        </Text>
-        <Text style={styles.fromTo}>
+          {trip.type === FEED_TYPE_WANTED && <AppText> {trans('feed.asks_for_a_ride')}</AppText>}
+        </AppText>
+        <Heading fontVariation="bold" style={styles.fromTo}>
           {
             trip.TripStart.name ?
               trip.TripStart.name :
@@ -702,48 +694,48 @@ class TripDetail extends Component {
               trip.TripEnd.name :
               prettify(trip.direction)
           }
-        </Text>
-        <Text style={[styles.date, styles.lightText]}>
+        </Heading>
+        <AppText color={Colors.text.darkGray} style={styles.date}>
           <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
           {
             trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
-            <Text style={{ fontSize: 13, color: Colors.text.gray }}>
+            <AppText size={13}>
               {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
               {trip.flexibilityInfo.duration}
               {trip.flexibilityInfo.unit}
-            </Text>
+            </AppText>
           }
-        </Text>
+        </AppText>
         {
           trip.Stops.length > 0 &&
-          <Text style={[styles.text, styles.lightText]}>
-            <Text style={styles.stopsLabel}>{trans('detail.stops_in')} </Text>
+          <AppText size={18} color={Colors.text.darkGray} style={styles.text}>
+            <AppText size={18} color={Colors.text.pink} fontVariation="semibold">{trans('detail.stops_in')} </AppText>
             {trip.Stops.map(place => place.name).join(', ')}
-          </Text>
+          </AppText>
         }
         <View style={styles.tripDescription}>
-          <Text style={[styles.text]}>
+          <AppText style={styles.text}>
             {trip.description}
             {trip.Group && trip.Group.id &&
-              <Text
+              <AppText
                 onPress={() => navigation.navigate('GroupDetail', { group: trip.Group, fetch: true })}
-                style={{ fontStyle: 'italic' }}
+                fontVariation="italic"
               >
                 {' '}
                 {trans('detail.i_added_ride_in_this_group', { group: trip.Group.name })}
-              </Text>
+              </AppText>
             }
             {
               trip.linkedTrip && trip.linkedTrip.id &&
-              <Text
+              <AppText
                 onPress={() => navigation.navigate('TripDetail', { trip: trip.linkedTrip, fetch: true })}
-                style={{ fontStyle: 'italic' }}
+                fontVariation="italic"
               >
                 {' '}
                 {trans('i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
-              </Text>
+              </AppText>
             }
-          </Text>
+          </AppText>
         </View>
       </View>
     );
@@ -864,7 +856,7 @@ class TripDetail extends Component {
             <Image source={ExperienceIcon} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text>{trans('detail.someone_has_already_created_an_experience')}</Text>
+            <AppText>{trans('detail.someone_has_already_created_an_experience')}</AppText>
           </View>
         </View>
       );
@@ -936,7 +928,7 @@ class TripDetail extends Component {
 
   renderButton = () => {
     const { loading } = this.state;
-    const content = loading ? <Loading /> : <Text style={styles.sendText}>Send</Text>;
+    const content = loading ? <Loading /> : <AppText>Send</AppText>;
     return (
       <TouchableOpacity onPress={this.onSubmit} style={styles.send}>
         {content}
@@ -947,14 +939,14 @@ class TripDetail extends Component {
     const { loading, confirmModalVisibility, retry, trip } = this.state;
 
     const message = (
-      <Text>
+      <AppText>
         {trans('detail.sure_to_delete_trip_')}
         {
           ((trip.ReturnTrip && trip.ReturnTrip.length > 0) ||
             (trip.Recurring && trip.Recurring.length > 0)) &&
           trans('detail.deleting_trip_will_delete_all_trips_associated')
         }
-      </Text>
+      </AppText>
     );
 
     return (
@@ -977,9 +969,7 @@ class TripDetail extends Component {
     const { navigation } = this.props;
 
     const message = (
-      <Text>
-        {trans('detail.this_trip_has_been_deleted')}
-      </Text>
+      <AppText>{trans('detail.this_trip_has_been_deleted')}</AppText>
     );
 
     return (

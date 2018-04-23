@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Loading } from '@components/common';
 import Colors from '@theme/colors';
 import DataList from '@components/dataList';
 import ListItem from '@components/profile/listItem';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -14,8 +15,9 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     lineHeight: 32,
-    marginVertical: 16,
     textAlign: 'center',
+    color: Colors.text.gray,
+    marginVertical: 16,
   },
   searchInputWrapper: {
     flexDirection: 'row',
@@ -56,7 +58,7 @@ const SearchMyTrips = ({ trips, onPress, onExperiencePress, queryString }) => {
 
   if (trips.count === 0) {
     return (<View style={styles.wrapper}>
-      <Text style={styles.text}>No search data.</Text></View>);
+      <AppText style={styles.text}>No search data.</AppText></View>);
   }
 
   return (

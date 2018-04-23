@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Toolbar from '@components/utils/toolbar';
@@ -11,6 +11,7 @@ import { withGroupMembers, withGroupMembershipRequest, withGroup } from '@servic
 import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE } from '@config/constant';
 import Share from '@components/common/share';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   contentWrapper: {
@@ -28,23 +29,17 @@ const styles = StyleSheet.create({
     width: 200,
     marginBottom: 0,
   },
-  sectionTitle: {
-    fontSize: 12,
-    color: Colors.text.blue,
-    marginHorizontal: 16,
-    marginTop: 24,
-  },
   aboutTitle: {
+    marginHorizontal: 16,
     marginTop: 16,
     marginBottom: 8,
   },
   text: {
     marginHorizontal: 16,
     marginVertical: 4,
-    lineHeight: 20,
-    color: '#333',
   },
   description: {
+    marginHorizontal: 16,
     marginTop: 24,
     marginBottom: 50,
   },
@@ -185,23 +180,23 @@ class Information extends Component {
             enabler
           />
           <View style={{ backgroundColor: '#fff' }}>
-            <Text style={[styles.sectionTitle, styles.aboutTitle]}>{'About'.toUpperCase()}</Text>
-            <Text style={styles.text}>
+            <AppText size={12} color={Colors.text.blue} style={styles.aboutTitle}>{'About'.toUpperCase()}</AppText>
+            <AppText style={styles.text}>
               {group.type === OPEN_GROUP && trans('detail.open_group')}
               {group.type === CLOSE_GROUP && trans('detail.closed_group')}
-            </Text>
-            <Text style={styles.text}>
+            </AppText>
+            <AppText style={styles.text}>
               {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
               {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
-            </Text>
-            <Text style={styles.text}>
+            </AppText>
+            <AppText style={styles.text}>
               {group.outreach === STRETCH_TYPE_ROUTE
                 && group.Stops.length > 0
                 && this.renderStops(group.Stops)}
-            </Text>
-            <Text style={[styles.text, styles.description]}>
+            </AppText>
+            <AppText style={styles.description}>
               {group.description}
-            </Text>
+            </AppText>
           </View>
           {this.renderShareModal()}
         </ScrollView>

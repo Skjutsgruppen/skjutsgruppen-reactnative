@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Modal, View } from 'react-native';
+import { StyleSheet, Modal, View } from 'react-native';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
@@ -12,15 +12,9 @@ import { withAddGroupEnabler } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
+import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  errorText: {
-    textAlign: 'center',
-    color: Colors.text.red,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
   footer: {
     padding: 20,
     elevation: 10,
@@ -131,16 +125,16 @@ class AddEnabler extends Component {
       }
 
       return (
-        <Text key={participant.id} style={styles.boldText}>
+        <AppText key={participant.id} fontVariation="bold">
           {separator}{participant.firstName}
-        </Text>
+        </AppText>
       );
     });
 
     const message = (
-      <Text>
+      <AppText>
         Are you sure you want to add {participantsName} {participants.length > 3 ? ' and others ' : ''} as enablers?
-      </Text>
+      </AppText>
     );
 
     return (

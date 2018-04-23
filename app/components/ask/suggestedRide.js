@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import { AppText } from '@components/utils/texts';
 import { Avatar } from '@components/common';
 import Date from '@components/date';
 import Radio from '@components/add/radio';
@@ -15,9 +16,6 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-  },
-  lightText: {
-    color: Colors.text.gray,
   },
 });
 
@@ -34,11 +32,11 @@ const SuggestedRide = ({ ride, onSelect, selectedId }) => (
         notTouchable
       />
       <View style={styles.content}>
-        <Text>{ride.TripStart.name
+        <AppText>{ride.TripStart.name
           || ride.direction.charAt(0).toUpperCase() + ride.direction.slice(1)
         } - {ride.TripEnd.name ||
-          ride.direction.charAt(0).toUpperCase() + ride.direction.slice(1)}</Text>
-        <Text style={styles.lightText}><Date format="MMM DD, YYYY, HH:mm">{ride.date}</Date></Text>
+          ride.direction.charAt(0).toUpperCase() + ride.direction.slice(1)}</AppText>
+        <AppText color={Colors.text.gray}><Date format="MMM DD, YYYY, HH:mm">{ride.date}</Date></AppText>
       </View>
       <Radio
         active={ride.id === selectedId}

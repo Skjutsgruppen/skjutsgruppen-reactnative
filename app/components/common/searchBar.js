@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   searchInput: {
+    fontFamily: 'SFUIText-Regular',
     fontSize: 15,
     height: 36,
     flex: 1,

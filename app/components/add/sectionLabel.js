@@ -1,28 +1,27 @@
 import React from 'react';
-import { StyleSheet, Text, ViewPropTypes } from 'react-native';
+import { StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Colors from '@theme/colors';
-import { GlobalStyles } from '@theme/styles';
+import { Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   label: {
     marginBottom: 12,
     marginHorizontal: 20,
-    marginTop: 12,
+    marginTop: 32,
   },
 });
 
 const SectionLabel = ({ label, color, style }) => (
-  <Text style={[
-    styles.label,
-    GlobalStyles.TextStyles.bold,
-    style,
-    { color: color !== null ? color : Colors.text.pink },
-  ]}
+  <Heading
+    size={16}
+    style={[styles.label, style]}
+    fontVariation="bold"
+    color={color !== null ? color : Colors.text.pink}
   >
     {label}
-  </Text>
+  </Heading>
 );
 
 SectionLabel.propTypes = {

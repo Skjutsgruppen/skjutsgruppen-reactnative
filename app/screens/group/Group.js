@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert } from 'react-native';
+import { View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert } from 'react-native';
 import Stretch from '@components/group/stretch';
 import About from '@components/group/about';
 import OpenClosed from '@components/group/openClosed';
@@ -14,10 +14,10 @@ import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import { GlobalStyles } from '@theme/styles';
 import { FEEDABLE_GROUP, OPEN_GROUP, STRETCH_TYPE_ROUTE, DEFAULT_COUNTRY_CODE } from '@config/constant';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
+import { Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   progress: {
@@ -258,16 +258,15 @@ class Group extends Component {
     return (
       <View style={styles.progress}>
         <ProgressBar amount={progressAmount} changesColor={false} />
-        <Text style={[
-          styles.stepsCount,
-          GlobalStyles.TextStyles.bold,
-          GlobalStyles.TextStyles.light,
-          activeStep === 4 ? GlobalStyles.TextStyles.pink : {},
-        ]}
+        <Heading
+          size={16}
+          style={styles.stepsCount}
+          fontVariation="bold"
+          color={activeStep === 4 ? Colors.text.pink : Colors.text.lightGray}
         >
-          <Text style={GlobalStyles.TextStyles.pink}>{trans('add.step', { activeStep })}</Text> {trans('add.out_of', { value: 4 })}
-          {activeStep === 4 && <Text>, {trans('add.well_done')}</Text>}
-        </Text>
+          <Heading size={16} fontVariation="bold" color={Colors.text.pink}>{trans('add.step', { activeStep })}</Heading> {trans('add.out_of', { value: 4 })}
+          {activeStep === 4 && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>}
+        </Heading>
       </View>
     );
   }
