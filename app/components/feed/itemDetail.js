@@ -115,7 +115,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {trans('detail.user_started_the_group', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_started_the_group')}
           </AppText>
           <AppText style={styles.time}>
             <Date calendarTime>{feed.date}</Date>
@@ -128,7 +128,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {trans('detail.user_joined_the_group', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_joined_the_group')}
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -139,7 +139,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {trans('detail.user_left_the_group', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_left_the_group')}          
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -227,7 +227,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {trans('detail.user_is_now_enabler', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_is_now_enabler')}          
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -238,7 +238,7 @@ class Feed extends Component {
       return (
         <View>
           <AppText style={styles.commentText}>
-            {trans('detail.user_has_updated_field_of_group', { user: this.renderUsername(), field: feed.updatedField })}
+            {this.renderUsername()} {trans('detail.user_has_updated_field_of_group', { field: feed.updatedField })}
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -249,7 +249,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <Text style={styles.commentText}>
-            {trans('detail.user_has_stopped_sharing_location', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_has_stopped_sharing_location')}
           </Text>
           <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
         </View>
@@ -265,7 +265,7 @@ class Feed extends Component {
       return (
         <View>
           <Text style={styles.commentText}>
-            {trans('detail.user_shares_position', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_shares_position')}
           </Text>
           <View style={styles.sharedLocationCard}>
             <View style={styles.map}>
@@ -310,7 +310,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {trans('detail.user_offers_a_ride', { user: this.renderUsername() })}
+            {this.renderUsername()} {trans('detail.user_offers_a_ride')}
           </AppText>
           <AppText>{feed.Trip.description}</AppText>
         </View>
@@ -320,7 +320,7 @@ class Feed extends Component {
     return (
       <View style={styles.wrapFlex}>
         <AppText style={styles.commentText}>
-          {trans('detail.user_suggests_participants_ride', { user: this.renderUsername(), participant: this.renderUsername(feed.Trip.User) })}
+          {this.renderUsername()} {trans('detail.user_suggests_participants_ride', { participant: this.renderUsername(feed.Trip.User) })}        
         </AppText>
         <AppText>{feed.Suggestion.text}</AppText>
       </View>
