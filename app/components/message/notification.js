@@ -108,7 +108,7 @@ class NewNotification extends PureComponent {
     return (
       <View style={styles.section}>
         <AppText size={12} color={Colors.text.blue} style={styles.sectionTitle}>
-          {filters.toUpperCase()} {filters !== 'new' && trans('message.messages')}
+          {trans(`message.${filters}`)} {filters !== 'new' && trans('message.messages')}
         </AppText>
         {this.renderNotification()}
       </View>
