@@ -117,8 +117,8 @@ android {
         applicationId "com.skjutsgruppen"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 7
-        versionName "0.7-Beta"
+        versionCode 9
+        versionName "0.9-Beta"
         ndk {   
             abiFilters "armeabi-v7a", "x86"
         }
