@@ -1,6 +1,7 @@
 {
   "cancel": "Cancel",
   "ok": "OK",
+  "okay": "Okay",
   "next": "Next",
   "publish_to_whole_movement": "Share with the movement",
   "copy_to_clipboard": "Copy to clipboard",
@@ -33,7 +34,7 @@
   "write": "Write",
   "ride": "ride",
   "rides": "rides",
-  "conversation" : "conversation",
+  "conversation": "conversation",
   "conversations": "conversations",
   "group": "group",
   "groups": "groups",

@@ -8,6 +8,7 @@ import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -85,7 +86,7 @@ class Participants extends Component {
     return (
       <View style={styles.wrapper}>
         <ScrollView>
-          <AppText centered style={styles.title}>Tag who participated in the ride:</AppText>
+          <AppText centered style={styles.title}>{trans('experience.tag_who_participated_in_the_ride')}:</AppText>
           <ParticipantList
             showSelf
             loading={tripParticipants.loading}
@@ -96,10 +97,10 @@ class Participants extends Component {
           />
         </ScrollView>
         <View style={styles.actions}>
-          <Button onPress={onBack} label="Back" icon="back" />
+          <Button onPress={onBack} label={trans('experience.back')} icon="back" />
           {
             participants.length > 1 &&
-            <Button onPress={this.onNext} label="Done" icon="next" />
+            <Button onPress={this.onNext} label={trans('global.done')} icon="next" />
           }
         </View>
       </View>
