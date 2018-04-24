@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, KeyboardAvoidingView } from 'react-native';
 import configureStore from '@redux/store';
 import Router from '@routes';
 import { ApolloProvider } from 'react-apollo';
@@ -19,11 +19,11 @@ const App = () => (
       loading={<AppLoading />}
       persistor={persistor}
     >
-      <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <PushNotification />
         <Internet />
         <Router />
-      </View>
+      </KeyboardAvoidingView>
     </PersistGate>
   </ApolloProvider>
 );
