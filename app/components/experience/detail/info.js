@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { withNavigation } from 'react-navigation';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const imageSize = 48;
 const margin = 12;
@@ -62,7 +63,7 @@ const Info = ({ loading, experience, navigation }) => {
     return experience.Participants.map((row, index) => {
       let separator = ' ';
       if (index === (experience.Participants.length - 2)) {
-        separator = ' and ';
+        separator = ` ${trans('experience._and_')} `;
       } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
       }
@@ -71,7 +72,7 @@ const Info = ({ loading, experience, navigation }) => {
         deletedParticipantCount += 1;
         return (<AppText key={row.User.id}>
           <AppText fontVariation="bold">
-            {deletedParticipantCount <= 1 ? 'Deleted Participant' : `${deletedParticipantCount} Deleted Participants`}
+            {deletedParticipantCount <= 1 ? trans('experience.deleted_participant') : trans('experience.count_deleted_participants', { count: deletedParticipantCount })}
           </AppText>
           {separator}
         </AppText>);
@@ -103,10 +104,14 @@ const Info = ({ loading, experience, navigation }) => {
       }}
       >
         <AppText>
-          went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
-          . {experience.Trip.isDeleted
-            ? <AppText fontVariation="bold">This ride has been deleted</AppText>
-            : <AppText color={Colors.text.blue} fontVariation="bold">See their trip here</AppText>
+          {trans('experience.went_from_start_to_end_on',
+            {
+              tripStart: experience.Trip.TripStart.name,
+              tripEnd: experience.Trip.TripEnd.name,
+            })} <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>. {
+            experience.Trip.isDeleted
+              ? <AppText fontVariation="bold">{trans('experience.this_ride_has_been_deleted')}</AppText>
+              : <AppText color={Colors.text.blue} fontVariation="bold">{trans('experience.see_the_trip_here')}</AppText>
           }
         </AppText>
       </AppText>
