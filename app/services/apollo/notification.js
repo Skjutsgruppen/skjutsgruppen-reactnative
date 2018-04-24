@@ -652,3 +652,73 @@ export const withNotificationSearch = graphql(NOTIFICATION_SEARCH_QUERY, {
     };
   },
 });
+
+export const LOCATION_SHARED_TO_ALL_RESOURCES_QUERY = gql`
+query locationSharedToAllResources($offset: Int, $limit: Int) {
+  locationSharedToAllResources(offset: $offset, limit: $limit) {
+    rows {
+      id
+      User {
+        id
+        firstName
+        avatar
+        deleted
+      }
+      Group {
+        id
+        name
+        photo
+        outreach
+      }
+      Trip {
+        id
+        direction
+        TripStart {
+          name
+        }
+        TripEnd {
+          name
+        }
+        User {
+          id
+          avatar
+        }
+      }
+      users
+      interval
+      duration
+      timeFraction
+    }
+    count
+  }
+}
+`;
+
+export const withLocationSharedToAllResources = graphql(LOCATION_SHARED_TO_ALL_RESOURCES_QUERY, {
+  options: ({ offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
+    variables: { offset, limit },
+  }),
+  props: ({
+    data: {
+      loading,
+      locationSharedToAllResources,
+      error,
+      networkStatus,
+      refetch,
+      fetchMore,
+      subscribeToMore,
+    },
+  }) => ({
+    locationSharedToAllResources: {
+      loading,
+      rows: locationSharedToAllResources ? locationSharedToAllResources.rows : [],
+      count: locationSharedToAllResources ? locationSharedToAllResources.count : 0,
+      error,
+      networkStatus,
+      refetch,
+      fetchMore,
+      subscribeToMore,
+    },
+  }),
+})
+;

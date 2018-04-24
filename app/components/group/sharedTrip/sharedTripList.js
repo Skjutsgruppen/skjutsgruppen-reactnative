@@ -72,15 +72,28 @@ SharedTripList.propTypes = {
       }).isRequired,
       TripStart: PropTypes.shape({
         name: PropTypes.string.isRequired,
-      }).isRequired,
+      }),
       TripEnd: PropTypes.shape({
         name: PropTypes.string.isRequired,
-      }).isRequired,
+      }),
+      direction: PropTypes.string,
       date: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
       seats: PropTypes.number.isRequired,
     }).isRequired,
   ).isRequired,
+};
+
+SharedTripList.defaultProps = {
+  groupTrips: {
+    TripStart: {
+      name: '',
+    },
+    TripEnd: {
+      name: '',
+    },
+    direction: null,
+  },
 };
 
 export default SharedTripList;

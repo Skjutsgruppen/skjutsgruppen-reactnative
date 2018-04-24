@@ -295,7 +295,7 @@ class Report extends Component {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
               <AppText style={styles.label}>
-              You are reporting this {this.renderTypeText()}:
+                You are reporting this {this.renderTypeText()}:
               </AppText>
               <View style={styles.body}>
                 {this.renderAvatar()}

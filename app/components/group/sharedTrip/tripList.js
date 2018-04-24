@@ -78,8 +78,8 @@ const TripList = ({ trip }) => (
         <AppText>{trip.TripStart.name} - {trip.TripEnd.name}</AppText>
         {(trip.seats !== 0 && trip.seats !== '') &&
           <View style={styles.seatIndicator}>
-            {trip.seats !== 0
-              && <AppText color={Colors.text.white} centered >{trip.seats}</AppText>}
+            {trip.seats !== 0 &&
+              <AppText color={Colors.text.white} centered >{trip.seats}</AppText>}
           </View>
         }
         <Date format="MMM DD, YYYY, HH:mm">{trip.date}</Date>
