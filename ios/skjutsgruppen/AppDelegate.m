@@ -14,6 +14,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "RNFIRMessaging.h"
+#import <React/RCTLinkingManager.h>
 
 #import <ReactNativeConfig/ReactNativeConfig.h>
 
@@ -54,11 +55,20 @@ NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY
   [FBSDKAppEvents activateApp];
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-  return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                        openURL:url
-                                              sourceApplication:sourceApplication
-                                                     annotation:annotation];
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  
+  NSString *myUrl = url.absoluteString;
+  if ([myUrl containsString:@"skjutsgruppen"]) {
+   return [RCTLinkingManager application:application openURL:url options:options];
+  } else {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                       annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
+            ];
+  }
 }
 
 //firebase push notification
@@ -92,6 +102,5 @@ NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
     [RNFIRMessaging didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
   }
-
 
 @end
