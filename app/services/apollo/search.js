@@ -344,7 +344,7 @@ export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
       filters: [FEED_TYPE_GROUP],
       dateRange: [],
       offset: 0,
-      limit: 5,
+      limit: 1,
     },
     fetchPolicy: 'network-only',
   }),

@@ -233,7 +233,7 @@ class SearchResult extends Component {
       });
 
       if (!groupRepeated && filters.includes(FEED_TYPE_GROUP)) {
-        await this.setState({
+        this.setState({
           prevGroups: { ...searchAllGroups },
           totalGroups: this.state.totalGroups + searchAllGroups.rows.length,
         });
@@ -289,27 +289,29 @@ class SearchResult extends Component {
       const lastSection = newSections[newSections.length - 1];
       const remainingTrips = this.state.remainingTrips;
       const tripsObj = [];
+      let displayGroup = false;
+      let date = this.state.date;
+      let title = null;
 
-      if (searchAllTrips.rows.length < 1) await this.setState({ displayGroup: true });
+      if (searchAllTrips.rows.length < 1) this.setState({ displayGroup: true });
 
       if (filteredTrips.length > 0) {
-        filteredTrips.forEach(async (a) => {
+        filteredTrips.forEach((a) => {
           const titleDate = new Date(a.date);
-          const title = Moment(titleDate).format('MMM D, YYYY');
+          title = Moment(titleDate).format('MMM D, YYYY');
           const { __typename } = a;
 
           if (__typename === 'PublicTransport') {
-            await this.setState({ publicTransportEndDate: getDate(a.ServiceDays[0].planningPeriodEnd).format('YYYY-MM-DD') });
+            this.setState({ publicTransportEndDate: getDate(a.ServiceDays[0].planningPeriodEnd).format('YYYY-MM-DD') });
           }
 
-          if (!this.state.date) {
-            await this.setState({ date: title });
+          if (!date) {
+            date = title;
           }
 
-          if (this.state.date && this.state.date !== title) {
+          if (date && date !== title) {
             remainingTrips[title] = remainingTrips[title] || [];
             remainingTrips[title].push(a);
-            await this.setState({ displayGroup: true });
           } else {
             tripsObj[title] = tripsObj[title] || [];
             tripsObj[title].push(a);
@@ -317,7 +319,13 @@ class SearchResult extends Component {
         });
       }
 
-      await this.setState({ remainingTrips });
+      this.setState({ remainingTrips, date });
+
+      if (date !== title && filters.includes(FEED_TYPE_GROUP)) {
+        displayGroup = true;
+        await this.setState({ displayGroup });
+      }
+
       let trips = [];
 
       if (Object.keys(tripsObj).length > 0) {
@@ -337,7 +345,7 @@ class SearchResult extends Component {
         newSections = newSections.concat(trips.map(row => row));
       }
 
-      if (this.shouldDisplayGroup()) {
+      if (displayGroup || this.shouldDisplayGroup()) {
         let groupRepeated = false;
         let groupIndex = null;
 
@@ -389,7 +397,8 @@ class SearchResult extends Component {
         this.setState({ remainingTrips: [] });
       }
 
-      await this.setState({ trips, sections: newSections });
+
+      this.setState({ trips, sections: newSections });
     }
   }
 
@@ -468,17 +477,21 @@ class SearchResult extends Component {
       currentFetchDate = currentFetchDate.add(1, 'd').format('YYYY-MM-DD');
       this.setState({ currentFetchDate });
 
-      return currentFetchDate;
+      return [currentFetchDate];
     }
 
     return dates;
   }
 
   getAfterDate = () => {
-    const { dateSelected } = this.props;
+    const { dateSelected, fromObj, toObj } = this.props;
     const { currentFetchDate } = this.state;
     const { filters, publicTransportData } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    if (publicTransportSelected && (fromObj.name === '' || toObj.name === '')) {
+      return null;
+    }
 
     if (!publicTransportData && publicTransportSelected && !dateSelected) {
       if (currentFetchDate) {
@@ -492,11 +505,11 @@ class SearchResult extends Component {
   }
 
   getLimitValue = () => {
-    const { dateSelected } = this.props;
+    const { dateSelected, toObj, fromObj } = this.props;
     const { filters } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
 
-    if (!dateSelected && publicTransportSelected) {
+    if (!dateSelected && publicTransportSelected && toObj.name !== '' && fromObj.name !== '') {
       return null;
     }
 
@@ -504,11 +517,11 @@ class SearchResult extends Component {
   }
 
   getOffsetValue = () => {
-    const { dateSelected } = this.props;
+    const { dateSelected, toObj, fromObj } = this.props;
     const { filters, totalTrips } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
 
-    if (!dateSelected && publicTransportSelected) {
+    if (!dateSelected && publicTransportSelected && toObj.name !== '' && fromObj.name !== '') {
       return null;
     }
 
@@ -524,15 +537,19 @@ class SearchResult extends Component {
       return false;
     }
 
+    if (filters.length === 1 && filters.includes(FEED_TYPE_GROUP)) {
+      return true;
+    }
+
+    if (displayGroup) {
+      return true;
+    }
+
     if (rows.length < 1) {
       return true;
     }
 
     if (publicTransportSelected && dateSelected) {
-      return true;
-    }
-
-    if (displayGroup) {
       return true;
     }
 
@@ -601,7 +618,7 @@ class SearchResult extends Component {
     let customDate = dates;
 
     if (!dateSelected && publicTransportSelected && toObj.name !== '' && fromObj.name !== '') {
-      customDate = getDate().format('YYYY-MM-DD');
+      customDate = [getDate().format('YYYY-MM-DD')];
     }
 
     await this.setState(
@@ -642,6 +659,7 @@ class SearchResult extends Component {
         searchAllGroups.refetch({
           offset: 0,
           direction,
+          limit: 1,
         });
       });
   }
@@ -700,6 +718,7 @@ class SearchResult extends Component {
           to,
           dates,
           offset: totalGroups,
+          limit: 5,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult || fetchMoreResult.groupSearch.rows.length === 0) {
@@ -814,10 +833,10 @@ class SearchResult extends Component {
     const namePlace = `${fromObj.name || this.prettify(direction)} - ${toObj.name || this.prettify(direction)}`;
 
     if (
-      !searchAllTrips.loading && (searchAllTrips.count === 0 ||
+      !searchAllTrips.loading && (searchAllTrips.rows.length < 1 ||
         (!filters.includes(FEED_TYPE_OFFER) && !filters.includes(FEED_TYPE_WANTED)))
       && !searchAllGroups.loading &&
-      (searchAllGroups.count === 0 || !filters.includes(FEED_TYPE_GROUP))
+      (searchAllGroups.rows.length < 0 || !filters.includes(FEED_TYPE_GROUP))
     ) {
       return (
         <NoResult

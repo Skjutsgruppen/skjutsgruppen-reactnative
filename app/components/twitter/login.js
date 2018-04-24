@@ -87,7 +87,7 @@ class TwitterLogin extends PureComponent {
     this.setState({ showModal: true });
     const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
     const response = await socialConnect({
-      id: profile.id,
+      id: profile.id_str,
       email: profile.email,
       token: authToken,
       secret: authTokenSecret,

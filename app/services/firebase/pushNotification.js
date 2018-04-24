@@ -13,6 +13,12 @@ class PushNotification extends Component {
   async componentDidMount() {
     const { storeAppToken, user } = this.props;
 
+    try {
+      await FCM.requestPermissions({ badge: false, sound: true, alert: true });
+    } catch (e) {
+      console.warn(e);
+    }
+
     FCM.removeAllDeliveredNotifications();
 
     if (user && user.id) {
@@ -26,7 +32,6 @@ class PushNotification extends Component {
       }
 
       const { _notificationType } = notif;
-
       if (Platform.OS === 'ios') {
         switch (_notificationType) {
           case NotificationType.Remote:
@@ -42,24 +47,26 @@ class PushNotification extends Component {
             break;
         }
       }
+
       if (notif.fcm) {
-        this.showLocalNotification(notif.fcm);
+        this.showLocalNotification(notif);
       }
+
       if (notif.custom_notification) {
         this.scheduleLocalNotification(notif.custom_notification);
       }
     });
   }
 
-  showLocalNotification = (notif) => {
+  showLocalNotification = ({ fcm: { title, body, sound }, screen, id }) => {
     FCM.presentLocalNotification({
-      title: notif.title,
-      body: notif.body,
+      title,
+      body,
       priority: 'high',
-      click_action: notif.click_action,
+      click_action: `${screen}/${id}`,
       show_in_foreground: true,
       local: true,
-      sound: notif.sound || 'default',
+      sound: sound || 'default',
     });
   }
 

@@ -5,6 +5,7 @@ import Date from '@components/date';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEEDABLE_TRIP } from '@config/constant';
 import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -68,7 +69,7 @@ const SharedCard = ({ trip, onPress, date }) => {
     title = (
       <AppText style={styles.text}>
         {trip.User.firstName}
-        <AppText> asks for a ride</AppText>
+        <AppText style={styles.text}> {trans('feed.asks_for_a_ride')}</AppText>
       </AppText>
     );
   }
