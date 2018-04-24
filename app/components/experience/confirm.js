@@ -5,6 +5,7 @@ import { Loading } from '@components/common';
 import CapturedImage from '@components/experience/capturedImage';
 import PropTypes from 'prop-types';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   msgWrapper: {
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
 
 const Preview = ({ error, loading, image, onNext, reTry }) => {
   let button = (
-    <Button onPress={onNext} label="Okay" />
+    <Button onPress={onNext} label={trans('global.okay')} />
   );
 
   if (loading) {
@@ -36,7 +37,7 @@ const Preview = ({ error, loading, image, onNext, reTry }) => {
     button = (
       <View>
         <AppText>{error}</AppText>
-        <Button onPress={reTry} label="Retry" />
+        <Button onPress={reTry} label={trans('global.retry')} />
       </View>
     );
   }
@@ -45,9 +46,9 @@ const Preview = ({ error, loading, image, onNext, reTry }) => {
     <ScrollView>
       <CapturedImage imageURI={image} />
       <View style={styles.msgWrapper}>
-        <AppText centered style={styles.msg} > All done!</AppText>
+        <AppText centered style={styles.msg} > {trans('experience.all_done')}</AppText>
         <AppText centered style={styles.msg} >
-          When all tagged participants confirm the experience it will be published.
+          {trans('experience.when_everybody_confirms_experience_will_be_published')}
         </AppText>
       </View>
       <View style={styles.actions}>

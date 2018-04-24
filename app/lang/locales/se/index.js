@@ -10,6 +10,7 @@ import addGroup from '@lang/locales/se/addGroup.json';
 import setting from '@lang/locales/se/setting.json';
 import about from '@lang/locales/se/about.json';
 import interval from '@lang/locales/se/interval.json';
+import experience from '@lang/locales/se/experience.json';
 
 export {
   feed,
@@ -20,6 +21,7 @@ export {
   profile,
   group,
   message,
+  experience,
   addGroup,
   setting,
   about,

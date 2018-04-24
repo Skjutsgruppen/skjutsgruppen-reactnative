@@ -10,6 +10,7 @@ import { compose } from 'react-apollo';
 import { withAcceptExperience, withRejectExperience } from '@services/apollo/experience';
 import PropTypes from 'prop-types';
 import Info from '@components/experience/detail/info';
+import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
@@ -104,8 +105,8 @@ class AcceptExperience extends Component {
 
     return (
       <View style={styles.experienceTagActions}>
-        <Button onPress={this.accept} label="Yes!" />
-        <Button onPress={this.reject} label="No" />
+        <Button onPress={this.accept} label={`${trans('global.yes')}!`} />
+        <Button onPress={this.reject} label={trans('global.no')} />
       </View>
     );
   }
@@ -120,7 +121,7 @@ class AcceptExperience extends Component {
     return experience.Participants.map((row, index) => {
       let separator = ' ';
       if (index === (experience.Participants.length - 2)) {
-        separator = ' and ';
+        separator = ` ${trans('experience._and_')} `;
       } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
       }
@@ -149,8 +150,8 @@ class AcceptExperience extends Component {
     return (
       <AppText onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
         <AppText>
-          went from {experience.Trip.TripStart.name} to {experience.Trip.TripEnd.name} on <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>
-          . <AppText color={Colors.text.blue} fontVariation="bold">See their trip here</AppText>
+          {trans('experience.went_from_start_to_end_on',
+            { tripStart: experience.Trip.TripStart.name, tripEnd: experience.Trip.TripEnd.name })} <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>. <AppText color={Colors.text.blue} fontVariation="bold">{trans('experience.see_the_trip_here')}</AppText>
         </AppText>
       </AppText>
     );

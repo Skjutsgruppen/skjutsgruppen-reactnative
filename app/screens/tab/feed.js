@@ -311,7 +311,7 @@ class Feed extends Component {
       return (
         <View>
           <FeedExperience
-            title="Experiences"
+            title={trans('feed.experiences')}
             offset={offset * EXPERIENCE_FETCH_LIMIT}
             limit={EXPERIENCE_FETCH_LIMIT}
           />
