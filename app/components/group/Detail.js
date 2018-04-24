@@ -5,6 +5,7 @@ import {
   Modal,
   TouchableOpacity,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
