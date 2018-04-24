@@ -4,13 +4,11 @@ import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 
-import { withResetMute } from '@services/apollo/mute';
-import { getDate } from '@config';
-import Date from '@components/date';
 import { Colors } from '@theme';
 
 import { AppText } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
+import Timer from '@components/common/timer';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -70,73 +68,72 @@ const renderPic = (photo) => {
   return profileImage;
 };
 
-const ActiveRideItem = ({ trip, resetMute, navigation }) => {
-  let tripName = `${trip.TripStart.name ?
-    trip.TripStart.name :
-    prettify(trip.direction)
-  } - ${
-    trip.TripEnd.name ?
-      trip.TripEnd.name :
-      prettify(trip.direction)
-  }`;
+const ShareLocationItem = ({ sharedLocation, navigation }) => {
+  let name = '';
+  let avatar = '';
+  const resource = sharedLocation.Trip.id ? sharedLocation.Trip : sharedLocation.Group;
 
-  if (tripName.length > 25) {
-    tripName = `${tripName.slice(0, 25)} ...`;
+  if (sharedLocation.Trip.id) {
+    name = `${sharedLocation.Trip.TripStart.name ?
+      sharedLocation.Trip.TripStart.name :
+      prettify(sharedLocation.Trip.direction)
+    } - ${
+      sharedLocation.Trip.TripEnd.name ?
+        sharedLocation.Trip.TripEnd.name :
+        prettify(sharedLocation.Trip.direction)
+    }`;
+
+    if (name.length > 25) {
+      name = `${name.slice(0, 25)} ...`;
+    }
+    avatar = resource.User.avatar;
+  } else {
+    name = sharedLocation.Group.name;
+    avatar = resource.photo;
   }
 
   const navigateToTripDetail = async () => {
-    if (trip.muted) {
-      await resetMute({ mutable: 'Trip', mutableId: trip.id, from: getDate().format() });
+    if (sharedLocation.Trip.id) {
+      navigation.navigate('Route', { info: sharedLocation.Trip });
+    } else if (sharedLocation.Group.outreach === 'area') {
+      navigation.navigate('Area', { info: sharedLocation.Group });
+    } else {
+      navigation.navigate('Route', { info: sharedLocation.Group });
     }
-    navigation.navigate('TripDetail', { trip });
   };
 
   return (
     <TouchableHighlight
       onPress={navigateToTripDetail}
+      key={resource.id}
     >
       <View style={styles.list}>
         <View style={styles.flexRow}>
           <View style={styles.profilePicWrapper}>
-            {renderPic(trip.User.avatar)}
+            {renderPic(avatar)}
           </View>
           <View>
-            <AppText>{tripName}</AppText>
-            <AppText color={Colors.text.gray}><Date format="MMM DD, YYYY HH:mm">{trip.date}</Date></AppText>
+            <AppText>{name}</AppText>
+            {sharedLocation.Trip.id &&
+              <AppText color={Colors.text.gray}>
+                Sharing with {sharedLocation.users.length} people
+              </AppText>
+            }
           </View>
-          {
-            trip.muted &&
-            (<View style={styles.muteWrapper}>
-              <Image source={require('@assets/icons/ic_mute.png')} />
-              {
-                trip.unreadNotificationCount > 0 &&
-                <View style={styles.muteCountWrapper}>
-                  <AppText
-                    size={14}
-                    color={Colors.text.white}
-                  >
-                    {trip.unreadNotificationCount}
-                  </AppText>
-                </View>
-              }
-            </View>)
-          }
+          <View style={styles.muteWrapper}>
+            <Timer timeFraction={sharedLocation.timeFraction} duration={sharedLocation.duration} />
+          </View>
         </View>
       </View>
     </TouchableHighlight>
   );
 };
 
-ActiveRideItem.propTypes = {
-  trip: PropTypes.shape(),
-  resetMute: PropTypes.func.isRequired,
+ShareLocationItem.propTypes = {
+  sharedLocation: PropTypes.shape().isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
 };
 
-ActiveRideItem.defaultProps = {
-  trip: {},
-};
-
-export default compose(withResetMute, withNavigation)(ActiveRideItem);
+export default compose(withNavigation)(ShareLocationItem);
