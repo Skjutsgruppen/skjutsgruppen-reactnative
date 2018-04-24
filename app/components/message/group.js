@@ -85,7 +85,7 @@ class Group extends PureComponent {
     return (
       <View style={styles.section}>
         <AppText size={12} color={Colors.text.blue} style={styles.sectionTitle}>
-          {trans('message.your_groups').toUpperCase()}
+          {trans('message.your_groups')}
         </AppText>
         {this.renderList()}
       </View>

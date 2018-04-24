@@ -82,16 +82,8 @@ const styles = StyleSheet.create({
 class Message extends Component {
   static navigationOptions = {
     header: null,
-    tabBarLabel: 'Message',
+    tabBarLabel: trans('message.message'),
     tabBarIcon: ({ focused }) => <Image source={focused ? MessageIconActive : MessageIcon} />,
-    // tabBarIcon: ({ focused }) => (
-    //   <View>
-    //     <Image source={focused ? MessageIconActive : MessageIcon} />
-    //     <View style={styles.indicator}>
-    //       <Text style={styles.newMessageCount}>+10</Text>
-    //     </View>
-    //   </View>
-    // ),
     tabBarOnPress: ({ scene, jumpToIndex }) => {
       if (scene.focused) {
         const navigationInRoute = scene.route;
@@ -168,8 +160,7 @@ class Message extends Component {
     <View style={styles.noMessage}>
       <Image source={IconCycle} />
       <AppText centered color={Colors.text.gray} style={styles.noMessageText}>
-        Nothing here yet. When you start a conversation with someone
-        or join a group you will see them all here. Great right?
+        {trans('message.nothing_here_yet')}
       </AppText>
     </View>
   )
@@ -197,7 +188,7 @@ class Message extends Component {
                 style={styles.searchIcon}
               />
               <TextInput
-                placeholder={trans('message.search')}
+                placeholder={trans('message.search_messages')}
                 onFocus={() => navigation.navigate('SearchNotification')}
                 underlineColorAndroid="transparent"
                 style={styles.searchInput}

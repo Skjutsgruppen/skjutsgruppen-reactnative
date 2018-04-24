@@ -11,6 +11,7 @@ import Moment from 'moment';
 import ActiveRideItem from '@components/message/ActiveRideItem';
 import LoadMore from '@components/message/loadMore';
 import DataList from '@components/dataList';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   section: {
@@ -88,7 +89,7 @@ class Ride extends Component {
     return (
       <View style={styles.section}>
         <AppText size={12} color={Colors.text.blue} style={styles.sectionTitle}>
-          {('Your active rides'.toUpperCase())}
+          {trans('message.your_active_rides')}
         </AppText>
         {this.renderList()}
       </View>
