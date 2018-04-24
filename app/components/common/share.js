@@ -20,6 +20,7 @@ import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
 import { Heading, AppText } from '@components/utils/texts';
+import { APP_URL } from '@config';
 
 const styles = StyleSheet.create({
   list: {
@@ -248,19 +249,19 @@ class Share extends Component {
       selectedTripParticipants: tripParticipants,
     } = this.state;
     const shareInput = { social, friends, groups };
-    const { name, Trip, TripStart, TripEnd, id } = detail;
+    const { name, TripStart, TripEnd, id } = detail;
     let smsBody = '';
 
     if (type === FEEDABLE_GROUP) {
-      smsBody = `I want to share group ${name} with you.`;
+      smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
     }
 
     if (type === FEEDABLE_TRIP) {
-      smsBody = `I want to share trip ${TripStart.name} - ${TripEnd.name} with you`;
+      smsBody = trans('share.share_trip', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/t/${id})` });
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      smsBody = `I want to share an experience with you between ${Trip.TripStart.name} - ${Trip.TripEnd.name}.`;
+      smsBody = trans('share.share_experience', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/e/${id}` });
     }
 
     try {

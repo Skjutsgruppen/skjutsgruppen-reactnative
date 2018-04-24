@@ -29,7 +29,6 @@ import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
 import TouchableHighlight from '@components/touchableHighlight';
-import FCM from 'react-native-fcm';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -111,39 +110,6 @@ class Feed extends Component {
     const { feeds, subscribeToFeed, navigation } = this.props;
     const { params } = navigation.state;
 
-    const notification = await FCM.getInitialNotification();
-    if (notification && notification.screen && notification.id) {
-      const id = parseInt(notification.id, 0);
-
-      if (notification.screen === 'TripDetail') {
-        navigation.navigate(notification.screen, { trip: { id }, fetch: true });
-      }
-
-      if (notification.screen === 'GroupDetail') {
-        navigation.navigate(notification.screen, { group: { id }, fetch: true });
-      }
-
-      if (notification.screen === 'Profile') {
-        navigation.navigate(notification.screen, { profileId: id });
-      }
-
-      if (notification.screen === 'ExperienceDetail') {
-        navigation.navigate(notification.screen, { experience: { id }, fetch: true });
-      }
-
-      if (notification.screen === 'TripRoute') {
-        navigation.navigate('Route', { info: { id, __typename: 'Trip' } });
-      }
-
-      if (notification.screen === 'GroupRoute') {
-        navigation.navigate('Route', { info: { id, __typename: 'Group' } });
-      }
-
-      if (notification.screen === 'GroupArea') {
-        navigation.navigate('Area', { info: { id, __typename: 'Group' } });
-      }
-    }
-
     navigation.setParams({ scrollToTop: this.scrollToTop });
 
     navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
@@ -153,29 +119,6 @@ class Feed extends Component {
     }
     this.currentLocation();
     subscribeToFeed();
-  }
-
-  async componentDidMount() {
-    try {
-      await FCM.requestPermissions({ badge: false, sound: true, alert: true });
-    } catch (e) {
-      console.warn(e);
-    }
-
-    FCM.getFCMToken().then((token) => {
-      console.warn('TOKEN (getFCMToken)', token);
-      this.setState({ token: token || '' });
-    });
-
-    if (Platform.OS === 'ios') {
-      FCM.getAPNSToken().then((token) => {
-        console.warn('APNS TOKEN (getFCMToken)', token);
-      });
-    }
-
-    // topic example
-    // FCM.subscribeToTopic('sometopic')
-    // FCM.unsubscribeFromTopic('sometopic')
   }
 
   onPress = (type, detail) => {
@@ -199,7 +142,7 @@ class Feed extends Component {
     if (type === FEEDABLE_EXPERIENCE) {
       navigation.navigate('ExperienceDetail', { experience: detail });
     }
-  };
+  }
 
   onFilterChange = (type) => {
     const { filterType, longitude, latitude } = this.state;

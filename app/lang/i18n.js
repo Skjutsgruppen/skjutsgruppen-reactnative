@@ -14,6 +14,8 @@ import {
   experience as experienceEn,
   about as aboutEn,
   interval as intervalEn,
+  share as shareEn,
+  suggestion as suggestionEn,
 } from '@lang/locales/en';
 import {
   feed as feedSe,
@@ -27,6 +29,8 @@ import {
   experience as experienceSe,
   about as aboutSe,
   interval as intervalSe,
+  share as shareSe,
+  suggestion as suggestionSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -44,6 +48,8 @@ I18n.translations = {
     experience: experienceEn,
     about: aboutEn,
     interval: intervalEn,
+    share: shareEn,
+    suggestion: suggestionEn,
   },
   se: {
     feed: feedSe,
@@ -57,6 +63,8 @@ I18n.translations = {
     experience: experienceSe,
     about: aboutSe,
     interval: intervalSe,
+    share: shareSe,
+    suggestion: suggestionSe,
   },
 };
 
