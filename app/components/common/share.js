@@ -155,7 +155,7 @@ class Share extends Component {
     });
   }
 
-  componentWillReceiveProps({ contacts }) {
+  componentWillReceiveProps({ contacts, friends }) {
     if (contacts && !contacts.loading) {
       const contactsList = contacts.rows.map(contact => ({
         id: contact.phoneNumber,
@@ -163,6 +163,11 @@ class Share extends Component {
         lastName: '',
       }));
       this.setState({ contactsList });
+    }
+    const friendsList = [];
+    if (friends && !friends.loading) {
+      friends.rows.forEach(friend => friendsList.push(friend));
+      this.setState({ friendsList });
     }
   }
 
