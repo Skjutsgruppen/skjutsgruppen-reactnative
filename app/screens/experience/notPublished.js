@@ -6,6 +6,7 @@ import Date from '@components/date';
 import { Wrapper, FloatingBackButton, RoundedButton } from '@components/common';
 import { Colors } from '@theme';
 import { AppText, Heading } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   text: {
@@ -39,21 +40,21 @@ const ExperienceNotPublished = ({ experience, navigation, onBack, isRejected }) 
     </View>
     <ScrollView>
       <View style={styles.content}>
-        <Heading centered fontVariation="bold" style={{ marginVertical: 24 }}>Experience not published.</Heading>
+        <Heading centered fontVariation="bold" style={{ marginVertical: 24 }}>{trans('experience.experience_not_published')}</Heading>
         {
           !isRejected &&
           <Heading centered fontVariation="bold" style={{ marginVertical: 24 }}>
-            One or more participants did not agree.
+            {trans('experience.one_or_more_participants_did_not_agree')}
           </Heading>
         }
         <AppText style={styles.text}>
-          If not everyone tagged in the Experiece agrees the Experience is not published.
+          {trans('experience.if_not_everyone_tag_in_experience_not_published')}
         </AppText>
         {
           experience.Trip && experience.Trip.TripStart &&
           <AppText style={styles.text}>
-            This concers your Experience on <Date format="MMM DD">{experience.createdAt}</Date>
-            {` From ${experience.Trip.TripStart.name} to ${experience.Trip.TripEnd.name}`}
+            {trans('experience.this_concerns_your_experience_on')} <Date format="MMM DD">{experience.createdAt}</Date>
+            {trans('experience.experience_from_and_to', { tripStart: experience.Trip.TripStart.name, tripEnd: experience.Trip.TripEnd.name })}
           </AppText>
         }
         {
@@ -63,7 +64,7 @@ const ExperienceNotPublished = ({ experience, navigation, onBack, isRejected }) 
             bgColor={Colors.background.pink}
             style={styles.button}
           >
-            Go to ride
+            {trans('experience.go_to_ride')}
           </RoundedButton>
         }
       </View>

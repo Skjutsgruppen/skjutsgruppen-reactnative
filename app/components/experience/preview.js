@@ -5,6 +5,7 @@ import CapturedImage from '@components/experience/capturedImage';
 import CameraHead from '@assets/icons/ic_camera_head.png';
 import Button from '@components/experience/button';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   cameraHead: {
@@ -26,10 +27,10 @@ const Preview = ({ image, onBack, onNext }) => (
   <ScrollView>
     <Image source={CameraHead} style={styles.cameraHead} />
     <CapturedImage imageURI={image} />
-    <AppText centered style={styles.msg}>Nice! Well done!</AppText>
+    <AppText centered style={styles.msg}>{trans('experience.nice_well_done')}</AppText>
     <View style={styles.actions}>
-      <Button onPress={onBack} label="Back" icon="back" />
-      <Button onPress={onNext} label="Done" icon="next" />
+      <Button onPress={onBack} label={trans('experience.back')} icon="back" />
+      <Button onPress={onNext} label={trans('global.next')} icon="next" />
     </View>
   </ScrollView>
 );
