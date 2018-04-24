@@ -8,9 +8,6 @@ import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
     backgroundColor: Colors.background.fullWhite,
     borderTopWidth: 2,
     borderColor: Colors.border.lightGray,
