@@ -378,7 +378,7 @@ class FOF extends PureComponent {
     if (relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
-          <AppText size={11} color={Colors.text.gray }>
+          <AppText size={11} color={Colors.text.gray}>
             You have no friend connections
           </AppText>
         </View>

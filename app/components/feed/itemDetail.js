@@ -139,7 +139,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_left_the_group')}          
+            {this.renderUsername()} {trans('detail.user_left_the_group')}
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -227,7 +227,7 @@ class Feed extends Component {
       return (
         <View style={styles.wrapFlex}>
           <AppText style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_is_now_enabler')}          
+            {this.renderUsername()} {trans('detail.user_is_now_enabler')}
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>
@@ -320,7 +320,7 @@ class Feed extends Component {
     return (
       <View style={styles.wrapFlex}>
         <AppText style={styles.commentText}>
-          {this.renderUsername()} {trans('detail.user_suggests_participants_ride', { participant: this.renderUsername(feed.Trip.User) })}        
+          {this.renderUsername()} {trans('detail.user_suggests_participants_ride', { participant: this.renderUsername(feed.Trip.User) })}
         </AppText>
         <AppText>{feed.Suggestion.text}</AppText>
       </View>

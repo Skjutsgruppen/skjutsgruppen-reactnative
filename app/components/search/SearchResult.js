@@ -367,6 +367,8 @@ class SearchResult extends Component {
 
     if (filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)) {
       this.setState({ resultsStyle: 'list' });
+    } else {
+      this.setState({ resultsStyle: 'card' });
     }
 
     if (filters.length > 0) {
@@ -587,13 +589,12 @@ class SearchResult extends Component {
                 to,
                 filters: updatedFilters,
                 dates,
-                offset: searchAllTrips.rows.length,
+                offset: prevTrips.rows.length,
               },
               updateQuery: (previousResult, { fetchMoreResult }) => {
                 if (!fetchMoreResult || fetchMoreResult.tripSearch.rows.length === 0) {
                   return previousResult;
                 }
-
                 return {
                   tripSearch: {
                     ...previousResult.tripSearch,
@@ -612,7 +613,7 @@ class SearchResult extends Component {
                 from,
                 to,
                 dates,
-                offset: searchAllGroups.rows.length,
+                offset: prevGroups.rows.length,
               },
               updateQuery: (previousResult, { fetchMoreResult }) => {
                 if (!fetchMoreResult || fetchMoreResult.groupSearch.rows.length === 0) {
