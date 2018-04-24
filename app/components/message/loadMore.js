@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
 const LoadMore = ({ onPress, remainingCount, style }) => (
   <TouchableOpacity onPress={onPress} style={[styles.more, style]}>
-    <AppText size={14} fontVariation="semibold" color={Colors.text.blue}>+ {remainingCount} {trans('message.more')}</AppText>
+    <AppText size={14} fontVariation="semibold" color={Colors.text.blue}>+ {trans('message.remaining_more', { remaining: remainingCount })}</AppText>
   </TouchableOpacity>
 );
 
