@@ -163,7 +163,7 @@ class Item extends PureComponent {
                 numberOfLines={1}
                 ellipsizeMode={'tail'}
               >
-                wants to be your friend.
+                {trans('message.wants_to_be_your_friend')}
               </AppText>
             </View>
             <View>
@@ -273,7 +273,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         photo: [Notifiers[0].avatar],
-        text: `You have accepted ${Notifiers[0].firstName}'s request to join group "${Notifiable.Group.name}"`,
+        text: trans('message.have_accepted_users_request_to_join_group', { username: Notifiers[0].firstName, groupname: Notifiable.Group.name }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', { group: Notifiable.Group }),
       });
@@ -288,7 +288,7 @@ class Item extends PureComponent {
         userId: Notifiers[0].id,
         user: Notifiers[0].firstName,
         photo: [Notifiers[0].avatar],
-        text: `${trans('message.added_you_to_group')} "${Notifiable.name}"`,
+        text: trans('message.added_you_to_group', { name: Notifiable.name }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', {
           group: Notifiable,
@@ -306,7 +306,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         photo: [Notifiers[0].avatar],
-        text: `${trans('message.you_and')} ${Notifiers[0].firstName}\n${trans('message.are_now_friends')}`,
+        text: trans('message.you_and_user_are_now_friends', { username: Notifiers[0].firstName }),
         date: createdAt,
         ellipsize: false,
         onPress: () => this.redirect(id, ids, 'Profile', { profileId: Notifiers[0].id }),
@@ -383,7 +383,7 @@ class Item extends PureComponent {
         user: Notifiers[0].firstName,
         photo: [Notifiers[0].avatar],
         userId: Notifiers[0].id,
-        text: `${trans('message.tagged_you_in_an_experience')}`,
+        text: trans('message.tagged_you_in_an_experience'),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
       });
@@ -444,7 +444,7 @@ class Item extends PureComponent {
         userId: Notifiers[0].id,
         user: `${type}`,
         photo: [Notifiers[0].avatar],
-        text: `${Notifiers[0].firstName} ${trans('message.left_a_comment')}`,
+        text: trans('message.user_left_a_comment', { user: Notifiers[0].firstName }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, route, params),
       };
@@ -482,7 +482,7 @@ class Item extends PureComponent {
     let route = null;
 
     if (notifiable === FEEDABLE_GROUP) {
-      type = `${trans('message.shared_group')} ${Notifiable.name} ${trans('message.to_you')}`;
+      type = trans('message.shared_group_groupname_to_you', { groupname: Notifiable.name });
       route = 'GroupDetail';
       params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') };
     }
@@ -490,7 +490,7 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_TRIP) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: 'Shared this trip with you' };
+      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_trip_with_you') };
 
       if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
@@ -549,7 +549,7 @@ class Item extends PureComponent {
       userId: Notifiers[0].id,
       user: `${Notifiers[0].firstName}`,
       photo: [Notifiers[0].avatar],
-      text: 'just joined the movement',
+      text: trans('message.just_joined_the_movement'),
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
@@ -565,7 +565,7 @@ class Item extends PureComponent {
       userId: Notifiers[0].id,
       user: `${Notifiers[0].firstName}`,
       photo: [Notifiers[0].avatar],
-      text: 'has shared location',
+      text: trans('message.has_shared_location'),
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
@@ -610,7 +610,7 @@ class Item extends PureComponent {
             style={styles.requestResultIcon}
           />
           <View>
-            <AppText style={styles.requestResultLabel}>Accepted</AppText>
+            <AppText style={styles.requestResultLabel}>{trans('message.accepted')}</AppText>
           </View>
         </View>
       );
@@ -626,7 +626,7 @@ class Item extends PureComponent {
             style={styles.requestResultIcon}
           />
           <View>
-            <AppText color={Colors.text.gray} style={{ marginLeft: 2 }}>Rejected</AppText>
+            <AppText color={Colors.text.gray} style={{ marginLeft: 2 }}>{trans('message.rejected')}</AppText>
           </View>
         </View>
       );
