@@ -16,7 +16,7 @@ import {
   NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
 } from '@config/constant';
 import { FRIEND_QUERY } from '@services/apollo/friend';
-import { NOTIFICATION_QUERY } from '@services/apollo/notification';
+import { NOTIFICATION_QUERY, LOCATION_SHARED_TO_ALL_RESOURCES_QUERY } from '@services/apollo/notification';
 import { LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY } from '@services/apollo/share';
 import { FIND_GROUP_QUERY } from './group';
 
@@ -579,6 +579,43 @@ export const updateSharedLocation = (id, type) => {
     }
   } catch (e) {
     console.warn(e);
-    //
+  }
+};
+
+export const updateNotificationSharedLocation = () => {
+  try {
+    const sharedLocation = client.readQuery({
+      query: LOCATION_SHARED_TO_ALL_RESOURCES_QUERY,
+      variables: { offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+    });
+
+    const sharedLocationUpdated = [];
+
+    let count = sharedLocation.locationSharedToAllResources.count;
+
+    sharedLocation.locationSharedToAllResources.rows.forEach((location) => {
+      const duration = location.duration - 1;
+      const timeFraction = (1 - (location.duration / location.interval)) * 100;
+
+      if (duration > 0) {
+        sharedLocationUpdated.push({ ...location, duration, timeFraction });
+      } else {
+        count -= 1;
+      }
+    });
+
+    client.writeQuery({
+      query: LOCATION_SHARED_TO_ALL_RESOURCES_QUERY,
+      variables: { offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+      data: {
+        locationSharedToAllResources: {
+          ...sharedLocation.locationSharedToAllResources,
+          rows: sharedLocationUpdated,
+          count,
+        },
+      },
+    });
+  } catch (e) {
+    console.warn(e);
   }
 };

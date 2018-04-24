@@ -1,22 +1,20 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, Modal, Alert } from 'react-native';
-import Pie from 'react-native-pie';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { getToast } from '@config/toast';
-import { FEEDABLE_GROUP, FEEDABLE_TRIP } from '@config/constant';
+import { FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_LOCATION } from '@config/constant';
 import Date from '@components/date';
 import TouchableHighlight from '@components/touchableHighlight';
 import Colors from '@theme/colors';
 import { TextStyles } from '@theme/styles/global';
-import { ModalAction, ActionModal } from '@components/common';
+import { ModalAction, ActionModal, Loading } from '@components/common';
 import Share from '@components/common/share';
+import Timer from '@components/common/timer';
 import { trans } from '@lang/i18n';
 import { UcFirst } from '@config';
 import { withShareLocation } from '@services/apollo/share';
 import { updateSharedLocation } from '@services/apollo/dataSync';
-import { FEEDABLE_LOCATION } from '../../config/constant';
-import { Loading } from '.';
 
 const styles = StyleSheet.create({
   purpleBg: {
@@ -294,19 +292,7 @@ class ShareLocation extends PureComponent {
                   </Text> shares location
                 </Text>
               </View>
-              <View style={styles.timerWrapper}>
-                <View style={styles.timer}>
-                  <Pie
-                    radius={18}
-                    innerRadius={15}
-                    series={[100, location.timeFraction || 0]}
-                    colors={['#0057db', '#d0e2f9']}
-                  />
-                  <View style={styles.remainingTime}>
-                    <Text style={{ color: '#0057db', fontWeight: 'bold' }}>{location.duration}</Text>
-                  </View>
-                </View>
-              </View>
+              <Timer timeFraction={location.timeFraction} duration={location.duration} />
             </View>
           </TouchableHighlight>
           <View style={styles.horizontalDivider} />
@@ -363,19 +349,7 @@ class ShareLocation extends PureComponent {
                 <Text style={TextStyles.blue}>Stop sharing Location</Text>
                 <Text style={TextStyles.light}>In this {__typename}</Text>
               </View>
-              <View style={styles.timerWrapper}>
-                <View style={styles.timer}>
-                  <Pie
-                    radius={18}
-                    innerRadius={15}
-                    series={[100, myLocation.timeFraction || 0]}
-                    colors={['#0057db', '#d0e2f9']}
-                  />
-                  <View style={styles.remainingTime}>
-                    <Text style={{ color: '#0057db', fontWeight: 'bold' }}>{myLocation.duration}</Text>
-                  </View>
-                </View>
-              </View>
+              <Timer timeFraction={myLocation.timeFraction} duration={myLocation.duration} />
             </View>
           }
         </View>

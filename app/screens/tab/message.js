@@ -7,6 +7,7 @@ import { Wrapper } from '@components/common';
 import Ride from '@components/message/ride';
 import Group from '@components/message/group';
 import Notification from '@components/message/notification';
+import SharedLocation from '@components/message/sharedLocation';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 
@@ -102,6 +103,7 @@ class Message extends Component {
     this.scrollView = null;
 
     this.state = {
+      hasSharedLocations: true,
       hasNewMessages: true,
       hasActiveRides: true,
       hasGroups: true,
@@ -120,6 +122,9 @@ class Message extends Component {
   }
 
   setNoMessages = (type) => {
+    if (type === 'sharedLocation') {
+      this.setState({ hasSharedLocations: false });
+    }
     if (type === 'new') {
       this.setState({ hasNewMessages: false });
     }
@@ -167,6 +172,7 @@ class Message extends Component {
 
   renderMessages = () => (
     <View style={styles.content}>
+      <SharedLocation setNoMessages={this.setNoMessages} />
       <Notification filters="new" setNoMessages={this.setNoMessages} />
       <Ride setNoMessages={this.setNoMessages} />
       <Group setNoMessages={this.setNoMessages} />
