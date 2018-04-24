@@ -23,6 +23,7 @@ import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import ConfirmModal from '@components/common/confirmModal';
 import Info from '@components/experience/detail/info';
 import { AppText, Title } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const MoreExperiences = withMoreExperiences(List);
 
@@ -124,7 +125,7 @@ class ExperienceDetail extends Component {
     experience.Participants.forEach((row, index) => {
       let separator = ' ';
       if (index === (experience.Participants.length - 2)) {
-        separator = ' and ';
+        separator = ` ${trans('experience._and_')} `;
       } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
       }
@@ -169,7 +170,7 @@ class ExperienceDetail extends Component {
     return isParticipant;
   }
 
-  renderReport = () => (<ModalAction label="Report this experience" onPress={() => { }} />)
+  renderReport = () => (<ModalAction label={trans('experience.report_this_experience')} onPress={() => { }} />)
 
   renderShareModal() {
     if (this.props.pending) {
@@ -194,19 +195,19 @@ class ExperienceDetail extends Component {
   }
 
 
-  renderDeleteExperience = () => (<ModalAction label="Delete this experience" onPress={this.onDeletePress} />);
+  renderDeleteExperience = () => (<ModalAction label={trans('experience.delete_this_experience')} onPress={this.onDeletePress} />);
 
   renderSendEmail = () => {
     const { sent, sending } = this.state;
     if (sending) {
-      return (<ModalAction label="Sending..." onPress={() => { }} />);
+      return (<ModalAction label={trans('experience.sending')} onPress={() => { }} />);
     }
 
     if (sent) {
-      return (<ModalAction label="Email Sent!" onPress={() => { }} />);
+      return (<ModalAction label={trans('experience.email_sent')} onPress={() => { }} />);
     }
 
-    return (<ModalAction label="Send to my e-mail" onPress={this.onSendEmail} />);
+    return (<ModalAction label={trans('experience.send_to_my_email')} onPress={this.onSendEmail} />);
   }
 
   renderOptionsModal() {
@@ -235,8 +236,8 @@ class ExperienceDetail extends Component {
       <AppNotification
         image={ExperienceIcon}
         type="icon"
-        name="Experience is unpublished"
-        message="Only you can see this.We' re waiting for the other participants to accept"
+        name={trans('experience.experience_is_unpublished')}
+        message={trans('experience.only_you_can_see_this_experience')}
         handleClose={() => this.setState({ showNotification: false })}
       />
     );
@@ -244,7 +245,7 @@ class ExperienceDetail extends Component {
 
   renderConfirmModal = () => {
     const { deleting, showConfirm } = this.state;
-    const message = <AppText>{`Are you sure? This will delete the experience for ${this.getParticipantsName()}`}</AppText>;
+    const message = <AppText>{trans('experience.are_you_sure_to_delete_this_experience', { participantName: this.getParticipantsName() })}</AppText>;
 
     return (
       <ConfirmModal
@@ -283,7 +284,7 @@ class ExperienceDetail extends Component {
                   onPress={() => this.setState({ showShareModal: true })}
                   style={styles.button}
                 >
-                  <Title color={Colors.text.white}>Share</Title>
+                  <Title color={Colors.text.white}>{trans('global.share')}</Title>
                   <Image source={ShareIcon} style={styles.buttonIcon} />
                 </TouchableOpacity>
               </View>
@@ -291,7 +292,7 @@ class ExperienceDetail extends Component {
           </View>
           {
             !pending &&
-            <MoreExperiences title="Experiences!" exceptId={experience.id} />
+            <MoreExperiences title={trans('experience.experiences_!')} exceptId={experience.id} />
           }
         </Container>
         {this.renderShareModal()}

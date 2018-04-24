@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '@components/experience/button';
 import Colors from '@theme/colors';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   title: {
@@ -49,7 +50,7 @@ class Message extends Component {
   render() {
     return (
       <ScrollView>
-        <AppText centered style={styles.title}>Optional:</AppText>
+        <AppText centered style={styles.title}>{trans('experience.optional')}:</AppText>
         <View style={styles.inputWrapper}>
           <TextInput
             multiline
@@ -62,14 +63,12 @@ class Message extends Component {
           />
         </View>
         <AppText style={styles.msg}>
-          Friendly reminder: Experiences are public and may be
-          used to show how are awesome our movement is
-          (only in accordance with the <AppText color={Colors.text.blue} fontVariation="bold">participant agreement</AppText>,
-          never something stupid :)). You are awesome!
+          {trans('experience.friendly_reminder')} <AppText color={Colors.text.blue} fontVariation="bold">{trans('experience.participant_agreement')}</AppText>,
+          {trans('experience.never_something_stupid')}
         </AppText>
         <View style={styles.actions}>
-          <Button onPress={this.props.onBack} label="Back" icon="back" />
-          <Button onPress={this.onPublish} label="Publish" />
+          <Button onPress={this.props.onBack} label={trans('experience.back')} icon="back" />
+          <Button onPress={this.onPublish} label={trans('experience.publish')} />
         </View>
       </ScrollView>
     );

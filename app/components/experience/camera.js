@@ -19,6 +19,7 @@ import FlashAuto from '@assets/camera/ic_flash_auto_white.png';
 import FlashOn from '@assets/camera/ic_flash_on_white.png';
 import FlashOff from '@assets/camera/ic_flash_off_white.png';
 import PropTypes from 'prop-types';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   container: {
@@ -277,7 +278,7 @@ class Cam extends Component {
         {this.initializeCamera()}
         <View style={styles.captureArea}>
           <AppText centered style={styles.message}>
-            Show everyone participating in this ride
+            {trans('experience.show_everyone_participating_in_this_ride')}
           </AppText>
           {this.renderCapureButton()}
         </View>
