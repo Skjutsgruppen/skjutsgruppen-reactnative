@@ -35,7 +35,7 @@
     "react-native-image-picker": "^0.26.7",
     "react-native-keyboard-aware-scroll-view": "^0.4.4",
     "react-native-linear-gradient": "^2.4.0",
-    "react-native-maps": "0.19.0",
+    "react-native-maps": "0.21.0",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-pie": "^0.4.0",
     "react-native-sms": "^1.5.1",
