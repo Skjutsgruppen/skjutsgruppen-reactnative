@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
   blue: {
     backgroundColor: Colors.background.pink,
   },
+  red: {
+    backgroundColor: Colors.background.red,
+  },
 });
 
 const RoundMarker = ({ type, color }) => {

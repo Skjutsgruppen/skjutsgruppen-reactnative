@@ -403,17 +403,7 @@ class RouteMap extends PureComponent {
 
   renderStops = () => {
     const { stops } = this.state;
-    const { navigation } = this.props;
-    const { type } = navigation.state.params;
-
-    let color = null;
-    if (FEED_TYPE_WANTED === type) {
-      color = 'blue';
-    }
-
-    if (FEED_TYPE_OFFER === type) {
-      color = 'pink';
-    }
+    const color = 'red';
 
     let i = 0;
     return stops.map((row) => {
