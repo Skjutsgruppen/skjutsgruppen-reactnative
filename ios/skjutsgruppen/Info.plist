@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
-	<string></string>
+	<string/>
 	<key>CFBundleIdentifier</key>
 	<string>nu.skjutsgruppen.Skjutsgruppen</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -39,7 +39,7 @@
 	<key>FacebookDisplayName</key>
 	<string>Skjutsgruppen</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -69,9 +69,9 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Find friends by identifying people who are using this app through your contact list.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string></string>
+	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMainNibFile</key>
 	<string>LaunchScreen</string>
 	<key>NSMainNibFile~ipad</key>

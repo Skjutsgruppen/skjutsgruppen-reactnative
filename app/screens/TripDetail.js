@@ -509,7 +509,7 @@ class TripDetail extends Component {
         >
           {icon}
           <AppText color={Colors.text.gray}>
-            <AppText fontVariation="bold">{trans('detail.return_ride')}</AppText>
+            <AppText color={Colors.text.gray} fontVariation="bold">{trans('detail.return_ride')}</AppText>
             <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
           </AppText>
         </TouchableOpacity>
@@ -524,7 +524,7 @@ class TripDetail extends Component {
           activeOpacity={0.75}
         >
           {icon}
-          <AppText color={Colors.text.blue} fontVariation="bold">{trans('detail.return')}</AppText>
+          <AppText color={Colors.text.gray}>{trans('detail.return')}</AppText>
         </TouchableOpacity>
       );
     }
@@ -546,7 +546,7 @@ class TripDetail extends Component {
         activeOpacity={0.75}
       >
         <Image source={CalendarIcon} style={styles.btnIcon} />
-        <AppText fontVariation="bold">{trans('detail.recurring')}</AppText>
+        <AppText color={Colors.text.gray}>{trans('detail.recurring')}</AppText>
       </TouchableOpacity>
     );
   }
