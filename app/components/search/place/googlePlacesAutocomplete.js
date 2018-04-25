@@ -22,6 +22,7 @@ import Place from '@components/search/place/place';
 import ConfirmModal from '@components/common/confirmModal';
 import GeoLocation from '@services/location/geoLocation';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const defaultStyles = {
   container: {
@@ -314,12 +315,12 @@ class GooglePlacesAutocomplete extends Component {
   }
 
   renderDirectionOption = () => (
-    <FiltersWrapper title="Or choose:">
-      <Filter label="Anywhere" active={this.props.directionText === 'anywhere'} onPress={() => this.directionSelected('anywhere')} />
-      <Filter label="North" active={this.props.directionText === 'north'} onPress={() => this.directionSelected('north')} />
-      <Filter label="South" active={this.props.directionText === 'south'} onPress={() => this.directionSelected('south')} />
-      <Filter label="West" active={this.props.directionText === 'west'} onPress={() => this.directionSelected('west')} />
-      <Filter label="East" active={this.props.directionText === 'east'} onPress={() => this.directionSelected('east')} />
+    <FiltersWrapper title={`${trans('search.or_choose')}:`}>
+      <Filter label={trans('global.anywhere')} active={this.props.directionText === 'anywhere'} onPress={() => this.directionSelected('anywhere')} />
+      <Filter label={trans('global.north')} active={this.props.directionText === 'north'} onPress={() => this.directionSelected('north')} />
+      <Filter label={trans('global.south')} active={this.props.directionText === 'south'} onPress={() => this.directionSelected('south')} />
+      <Filter label={trans('global.west')} active={this.props.directionText === 'west'} onPress={() => this.directionSelected('west')} />
+      <Filter label={trans('global.east')} active={this.props.directionText === 'east'} onPress={() => this.directionSelected('east')} />
     </FiltersWrapper>
   );
 
@@ -333,7 +334,7 @@ class GooglePlacesAutocomplete extends Component {
       >
         <View style={defaultStyles.suggestion}>
           <Image source={LocationIcon} style={defaultStyles.locationIcon} />
-          <AppText>From where I am now</AppText>
+          <AppText>{trans('search.from_where_i_am_now')}</AppText>
           {currentLocationLoading && <Loading />}
         </View>
       </TouchableHighlight>
