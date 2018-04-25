@@ -1,5 +1,4 @@
 import React from 'react';
-import { KeyboardAvoidingView } from 'react-native';
 import configureStore from '@redux/store';
 import Router from '@routes';
 import { ApolloProvider } from 'react-apollo';
@@ -8,6 +7,7 @@ import Internet from '@components/connection/internet';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import AppLoading from '@components/appLoading';
 import PushNotification from '@services/firebase/pushNotification';
+import KeyboradView from '@components/utils/keyboardView';
 
 const initialState = {};
 const { persistor, store } = configureStore(initialState);
@@ -19,11 +19,11 @@ const App = () => (
       loading={<AppLoading />}
       persistor={persistor}
     >
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <KeyboradView style={{ flex: 1 }} behavior="padding">
         <PushNotification />
         <Internet />
         <Router />
-      </KeyboardAvoidingView>
+      </KeyboradView>
     </PersistGate>
   </ApolloProvider>
 );
