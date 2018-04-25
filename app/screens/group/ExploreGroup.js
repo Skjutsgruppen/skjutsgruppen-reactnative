@@ -24,6 +24,7 @@ import ListSearchModal from '@components/profile/ListSearchModal';
 import CloseByGroupsMapWindow from '@components/group/closeByGroupsMapWindow';
 import TabBar from '@components/common/tabBar';
 import { AppText, Heading } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 import IconSearch from '@assets/icons/ic_search.png';
 
@@ -188,7 +189,7 @@ class ExploreGroup extends PureComponent {
         this.setState({ origin, loading: false });
       },
       () => {
-        this.setState({ loading: false, error: 'Sorry, could not track your location! Please check if your GPS is turned on.' });
+        this.setState({ loading: false, error: trans('group.sorry_could_not_track_your_location') });
       },
       { timeout: 20000, maximumAge: 1000 },
     );
@@ -235,7 +236,7 @@ class ExploreGroup extends PureComponent {
             fontVariation="bold"
             style={{ paddingHorizontal: 24, marginTop: 16 }}
             onPress={this.currentLocation}
-          >Tap to retry!</AppText>
+          >{trans('global.tap_to_retry')}!</AppText>
         </View>
       );
     }
@@ -286,8 +287,8 @@ class ExploreGroup extends PureComponent {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <View>
-              <Heading style={{ marginBottom: 16 }}>Discover groups</Heading>
-              <AppText color={Colors.text.gray}>Currently {totalGroupsCount} groups</AppText>
+              <Heading style={{ marginBottom: 16 }}>{trans('group.discover_groups')}</Heading>
+              <AppText color={Colors.text.gray}>{trans('group.currently_totalCount_groups', { count: totalGroupsCount })}</AppText>
             </View>
             <View style={styles.searchIconWrapper}>
               <TouchableHighlight onPress={this.onSearchPress} style={styles.searchIcon}>
@@ -295,22 +296,22 @@ class ExploreGroup extends PureComponent {
               </TouchableHighlight>
             </View>
           </View>
-          <Heading style={styles.sectionTitle}>Popular</Heading>
+          <Heading style={styles.sectionTitle}>{trans('group.popular')}</Heading>
           <View style={styles.section}>
             <PopularGroupsList setGroupsCount={this.setGroupsCount} from={null} filter="popular" />
           </View>
-          <Heading style={styles.sectionTitle}>Close to you</Heading>
+          <Heading style={styles.sectionTitle}>{trans('group.close_to_you')}</Heading>
           <View style={styles.section}>
             <View style={styles.mapWrapper}>
               {this.renderMap()}
             </View>
           </View>
-          <Heading style={styles.sectionTitle}>County</Heading>
-          <AppText style={styles.countryName}>Sweden</AppText>
+          <Heading style={styles.sectionTitle}>{trans('group.county')}</Heading>
+          <AppText style={styles.countryName}>{trans('group.sweden')}</AppText>
           <View style={styles.section}>
             {this.renderCountiesList()}
           </View>
-          <Heading style={styles.sectionTitle}>Alphabetic order</Heading>
+          <Heading style={styles.sectionTitle}>{trans('group.alphabetic_order')}</Heading>
           <View style={styles.section}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {alphabets.map((alphabet) => {

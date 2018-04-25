@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import configureStore from '@redux/store';
 import Router from '@routes';
 import { ApolloProvider } from 'react-apollo';
