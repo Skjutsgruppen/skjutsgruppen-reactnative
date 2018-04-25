@@ -7,6 +7,7 @@ import { Loading } from '@components/common';
 import { Colors, Gradients } from '@theme';
 import { Heading } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
+import { trans } from '@lang/i18n';
 
 const cardHeight = 130;
 
@@ -93,7 +94,7 @@ class DiscoverGroupCard extends PureComponent {
                 fontVariation="bold"
                 style={styles.title}
               >
-                Discover groups
+                {trans('group.discover_groups')}
               </Heading>
             </LinearGradient>
           </View>

@@ -10,6 +10,7 @@ import GroupsItem from '@components/profile/groupsItem';
 import AlphabeticalGroupsLoadMore from '@components/group/AlphabeticalGroupsLoadMore';
 import PropTypes from 'prop-types';
 import { Heading } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   listHeader: {
@@ -107,7 +108,7 @@ class AlphabeticalGroupsList extends Component {
   render() {
     return (
       <Wrapper>
-        <ToolBar title="Alphabetical order" />
+        <ToolBar title={trans('group.alphabetical_order')} />
         {this.renderAlphabetisedGroupsList()}
       </Wrapper>
     );
