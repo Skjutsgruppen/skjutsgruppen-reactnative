@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Text,
   StyleSheet,
+  Platform,
 } from 'react-native';
 
 const baseStyles = StyleSheet.create({
@@ -12,13 +13,13 @@ const baseStyles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   semibold: {
-    fontFamily: 'SFUIText-SemiBold',
+    fontFamily: Platform.OS === 'ios' ? 'SFUIText-SemiBold' : 'SFUIText-Semi-Bold',
   },
   bold: {
     fontFamily: 'SFUIText-Bold',
   },
   italic: {
-    fontFamily: 'SFUIText-RegularItalic',
+    fontFamily: Platform.OS === 'ios' ? 'SFUIText-RegularItalic' : 'SFUIText-Regular-Italic',
   },
 });
 
