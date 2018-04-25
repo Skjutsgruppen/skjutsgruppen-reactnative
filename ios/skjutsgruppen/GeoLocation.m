@@ -11,6 +11,7 @@
 #define IS_OS_10_OR_LATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0)
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
+@property CLLocation *lastLocation;
 
 @end
 @implementation GeoLocation
@@ -28,8 +29,8 @@ RCT_EXPORT_MODULE()
     
     self.locationManager.delegate = self;
     
-    self.locationManager.distanceFilter = kCLLocationAccuracyBestForNavigation;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+    self.locationManager.distanceFilter = 5;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     self.locationManager.allowsBackgroundLocationUpdates = true;
     self.locationManager.pausesLocationUpdatesAutomatically = NO;
   }
@@ -116,25 +117,34 @@ RCT_REMAP_METHOD(stopService,
   double longitude = [defaults doubleForKey:@"longitude"];
   NSLog(@"before ========> latitude: %f ----- longitude: %f", latitude, longitude);
   NSLog(@"location update called: %@", locations);
-  CLLocation *location = [locations firstObject];
+  for (int i=0; i<locations.count; i++) {
+    CLLocation *location = [locations firstObject];
+    NSLog(@"location update called index:%d %@",i, location);
+    if(_lastLocation==nil){
+      _lastLocation = location;
+      break;
+    }
+    if(_lastLocation != location)
+      break;
+  }
   NSDictionary *locationEvent = @{
                                   @"coords": @{
-                                      @"latitude": @(location.coordinate.latitude),
-                                      @"longitude": @(location.coordinate.longitude),
-                                      @"altitude": @(location.altitude),
-                                      @"accuracy": @(location.horizontalAccuracy),
-                                      @"altitudeAccuracy": @(location.verticalAccuracy),
-                                      @"course": @(location.course),
-                                      @"speed": @(location.speed),
+                                      @"latitude": @(_lastLocation.coordinate.latitude),
+                                      @"longitude": @(_lastLocation.coordinate.longitude),
+                                      @"altitude": @(_lastLocation.altitude),
+                                      @"accuracy": @(_lastLocation.horizontalAccuracy),
+                                      @"altitudeAccuracy": @(_lastLocation.verticalAccuracy),
+                                      @"course": @(_lastLocation.course),
+                                      @"speed": @(_lastLocation.speed),
                                       },
-                                  @"timestamp": @([location.timestamp timeIntervalSince1970] * 1000) // in ms
+                                  @"timestamp": @([_lastLocation.timestamp timeIntervalSince1970] * 1000) // in ms
                                   };
   
-  NSLog(@"after =====> %@: lat: %f, long: %f, altitude: %f", location.timestamp, location.coordinate.latitude, location.coordinate.longitude, location.altitude);
+  NSLog(@"after =====> %@: lat: %f, long: %f, altitude: %f", _lastLocation.timestamp, _lastLocation.coordinate.latitude, _lastLocation.coordinate.longitude, _lastLocation.altitude);
   
   [self.bridge.eventDispatcher sendDeviceEventWithName:@"updateLocation" body:locationEvent];
-  [defaults setDouble:location.coordinate.latitude forKey:@"latitude"];
-  [defaults setDouble:location.coordinate.longitude forKey:@"longitude"];
+  [defaults setDouble:_lastLocation.coordinate.latitude forKey:@"latitude"];
+  [defaults setDouble:_lastLocation.coordinate.longitude forKey:@"longitude"];
   [defaults synchronize];}
 
 @end
