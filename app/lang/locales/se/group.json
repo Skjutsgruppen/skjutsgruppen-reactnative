@@ -1,10 +1,11 @@
 {
-  "search_for_groups": "Search for groups",
-  "near_you": "Near You",
-  "popular": "Popular",
-  "a_to_z": "A to Z",
-  "groups_near_you": "Groups Near You",
-  "popular_groups": "Popular Groups",
-  "report_this_group": "Report this group",
-  "leave_group": "Leave group"
+  "discover_groups": "se_ Discover groups",
+  "currently_totalCount_groups": "se_ Currently {{count}} groups",
+  "popular": "se_ Popular",
+  "close_to_you": "se_ Close to you",
+  "county": "se_ County",
+  "sweden": "se_ Sweden",
+  "alphabetic_order": "se_ Alphabetic order",
+  "sorry_could_not_track_your_location": "se_ Sorry, could not track your location! Please check if your GPS is turned on.",
+  "alphabetical_order": "se_ Alphabetical order"
 }
