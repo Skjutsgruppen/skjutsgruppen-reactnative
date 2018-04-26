@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import PropTypes from 'prop-types';
-import { Loading, Avatar, RoundedButton } from '@components/common';
+import { Container, Loading, Avatar, RoundedButton } from '@components/common';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import ProfileAction from '@components/profile/profileAction';
 import { withAddFriend, withAcceptFriendRequest, withRejectFriendRequest, withCancelFriendRequest } from '@services/apollo/friend';
-import Icon from 'react-native-vector-icons/Ionicons';
 import GardenActive from '@assets/icons/ic_garden_profile.png';
 import GardenInactive from '@assets/icons/ic_garden_profile_gray.png';
 import { trans } from '@lang/i18n';
@@ -17,6 +16,8 @@ import AuthAction from '@redux/actions/auth';
 import _isEqual from 'lodash/isEqual';
 import FOF from '@components/relation/friendsOfFriend';
 import { Heading, AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
+import ToolBar from '@components/utils/toolbar';
 
 import {
   RELATIONSHIP_TYPE_FRIEND,
@@ -30,10 +31,86 @@ import { withNavigation } from 'react-navigation';
 import Date from '@components/date';
 import { withMyExperiences } from '@services/apollo/experience';
 import List from '@components/experience/myExperienceList';
+import AcceptIcon from '@assets/icons/ic_accept.png';
+import RejectIcon from '@assets/icons/ic_reject.png';
+import BackIcon from '@assets/icons/ic_back_toolbar.png';
 
 const MyExperience = withMyExperiences(List);
 
 const styles = StyleSheet.create({
+  changeButton: {
+    height: 30,
+    minWidth: 115,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.pink,
+    borderRadius: 15,
+    paddingHorizontal: 12,
+  },
+  whiteText: {
+    color: Colors.text.white,
+    backgroundColor: 'transparent',
+  },
+  backIconWrapper: {
+    height: 48,
+    width: 48,
+    marginTop: 20,
+    marginBottom: 4,
+    borderRadius: 24,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 5,
+  },
+  circularTouchable: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  backbutton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    paddingHorizontal: 2,
+  },
+  backIcon: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background.fullWhite,
+  },
+  relationActions: {
+    paddingHorizontal: 20,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 10,
+    shadowOpacity: 0.25,
+    zIndex: 1,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  actionButtonWrapper: {
+    flex: 1,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    marginHorizontal: 12,
+  },
+  actionLabel: {
+    marginLeft: 16,
+    fontSize: 16,
+    color: Colors.text.blue,
+  },
   profilePic: {
     alignSelf: 'center',
     marginTop: 60,
@@ -97,28 +174,8 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.border.lightGray,
     marginHorizontal: 20,
   },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 32,
-    paddingHorizontal: 12,
-    marginHorizontal: 12,
-    backgroundColor: Colors.background.red,
-    borderRadius: 8,
-  },
   actionButtonAccept: {
     backgroundColor: Colors.background.green,
-  },
-  actionLabel: {
-    marginLeft: 6,
-    color: Colors.text.white,
   },
   loadingWrapper: {
     flex: 1,
@@ -245,6 +302,11 @@ class Profile extends Component {
     });
   }
 
+  goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+  }
+
   isCurrentUser = () => {
     const { id, user } = this.props;
 
@@ -267,7 +329,7 @@ class Profile extends Component {
     }
 
     if (user.relationshipType === RELATIONSHIP_TYPE_INCOMING) {
-      return this.renderAction();
+      return null;
     }
 
     if (user.relationshipType === RELATIONSHIP_TYPE_OUTGOING) {
@@ -312,7 +374,8 @@ class Profile extends Component {
     this.setState({ loading: true });
     rejectFriendRequest(user.friendRequestId, user.id, true)
       .then(refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_REJECTED }))
+      .then(() => this.setState({ action: ACTION_REJECTED }))
+      .then(() => this.setState({ loading: false }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -346,6 +409,25 @@ class Profile extends Component {
     return null;
   }
 
+  isCurrentUser = () => {
+    const { id, user } = this.props;
+
+    return user.id === id;
+  }
+
+  rightComponent = () => {
+    const { navigation } = this.props;
+    if (this.isCurrentUser()) {
+      return (
+        <TouchableOpacity style={styles.changeButton} onPress={() => navigation.navigate('EditProfile')}>
+          <Text style={styles.whiteText}>{trans('profile.CHANGE')}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return null;
+  };
+
   renderRelation = () => {
     const { user } = this.state;
     if (!this.isCurrentUser() && user.relation) {
@@ -360,30 +442,50 @@ class Profile extends Component {
     return null;
   }
 
-  renderAction = () => (
-    <View style={styles.actions}>
-      <TouchableOpacity
-        onPress={this.acceptRequest}
-        style={[styles.actionButton, styles.actionButtonAccept]}
-      >
-        <Icon
-          name="ios-checkmark"
-          size={24}
-          color={Colors.text.white}
-        /><AppText style={styles.actionLabel}>{trans('profile.accept')}</AppText>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={this.rejectRequest}
-        style={styles.actionButton}
-      >
-        <Icon
-          name="ios-close"
-          size={24}
-          color={Colors.text.white}
-        /><AppText style={styles.actionLabel}>{trans('profile.reject')}</AppText>
-      </TouchableOpacity>
-    </View>
-  )
+  renderFriendRequestAction = () => {
+    const { firstName } = this.state.user;
+    return (
+      <View style={styles.relationActions}>
+        <View style={styles.backIconWrapper}>
+          <View style={styles.circularTouchable}>
+            <TouchableHighlight onPress={this.goBack} style={styles.backbutton}>
+              <View style={styles.backIcon}>
+                <Image source={BackIcon} />
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <View style={{ paddingHorizontal: 20 }}>
+          <AppText centered fontVariation="semibold" color={Colors.text.darkGray}>{firstName}</AppText>
+          <AppText centered fontVariation="semibold" color={Colors.text.darkGray}>
+            asks to be your friend
+          </AppText>
+        </View>
+        {this.state.loading ? <Loading style={{ marginVertical: 20 }} /> : (
+          <View style={styles.actions}>
+            <TouchableHighlight
+              onPress={this.acceptRequest}
+              style={styles.actionButtonWrapper}
+            >
+              <View style={styles.actionButton}>
+                <Image source={AcceptIcon} />
+                <Text style={[styles.actionLabel, styles.bold]}>Accept</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={this.rejectRequest}
+              style={styles.actionButtonWrapper}
+            >
+              <View style={styles.actionButton}>
+                <Image source={RejectIcon} />
+                <Text style={[styles.actionLabel, styles.bold]}>Reject</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        )}
+      </View>
+    );
+  }
 
   render() {
     const { networkStatus, error, refetch } = this.props.data;
@@ -409,84 +511,97 @@ class Profile extends Component {
       );
     }
 
+    const hasPendingFriendRequest = (user.relationshipType === RELATIONSHIP_TYPE_INCOMING)
+      && !this.isCurrentUser();
     return (
-      <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
-        {errorMessage}
-        <Avatar
-          notTouchable
-          isSupporter={user.isSupporter}
-          size={145}
-          imageURI={user.avatar}
-          style={styles.profilePic}
-        />
-        <Heading fontVariation="bold" centered style={styles.name}>{user.firstName} {user.lastName}</Heading>
-        <AppText style={[styles.lightText, styles.joinedDate]}>{trans('profile.joined')} <Date format="MMM Do YYYY">{user.createdAt}</Date></AppText>
-        <View style={styles.activityWrapper}>
-          <View style={styles.hexagon}>
-            <View style={styles.experienceCountWrapper}>
-              {user.totalExperiences > 0 ? (
+      <View style={{ flex: 1, backgroundColor: Colors.background.fullWhite }}>
+        {!hasPendingFriendRequest && (
+          <ToolBar
+            transparent
+            right={this.isCurrentUser() ? this.rightComponent : null}
+          />
+        )}
+        {hasPendingFriendRequest && this.renderFriendRequestAction()}
+        <Container>
+          <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
+            {errorMessage}
+            <Avatar
+              notTouchable
+              isSupporter={user.isSupporter}
+              size={145}
+              imageURI={user.avatar}
+              style={styles.profilePic}
+            />
+            <Heading fontVariation="bold" centered style={styles.name}>{user.firstName} {user.lastName}</Heading>
+            <AppText style={[styles.lightText, styles.joinedDate]}>{trans('profile.joined')} <Date format="MMM Do YYYY">{user.createdAt}</Date></AppText>
+            <View style={styles.activityWrapper}>
+              <View style={styles.hexagon}>
+                <View style={styles.experienceCountWrapper}>
+                  {user.totalExperiences > 0 ? (
+                    <Image
+                      source={require('@assets/icons/ic_camera_head.png')}
+                      style={styles.sunRay}
+                    />
+                  ) : null}
+                  <AppText
+                    style={[
+                      styles.experienceCount,
+                      { color: user.totalExperiences > 0 ? Colors.text.pink : Colors.text.gray },
+                    ]}
+                  >
+                    {user.totalExperiences}
+                  </AppText>
+                </View>
+                <AppText style={styles.activityLabel}>{user.totalExperiences <= 1 ? trans('profile.Experience') : trans('profile.Experiences')}</AppText>
+              </View>
+              <View style={styles.hexagon}>
                 <Image
-                  source={require('@assets/icons/ic_camera_head.png')}
-                  style={styles.sunRay}
+                  source={user.isSupporter ? GardenActive : GardenInactive}
+                  style={styles.garden}
                 />
-              ) : null}
-              <AppText
-                style={[
-                  styles.experienceCount,
-                  { color: user.totalExperiences > 0 ? Colors.text.pink : Colors.text.gray },
-                ]}
-              >
-                {user.totalExperiences}
-              </AppText>
+                <AppText style={styles.activityLabel}>{user.isSupporter ? trans('profile.Supporter') : trans('profile.not_supporting')}</AppText>
+              </View>
             </View>
-            <AppText style={styles.activityLabel}>{user.totalExperiences <= 1 ? trans('profile.Experience') : trans('profile.Experiences')}</AppText>
-          </View>
-          <View style={styles.hexagon}>
-            <Image
-              source={user.isSupporter ? GardenActive : GardenInactive}
-              style={styles.garden}
-            />
-            <AppText style={styles.activityLabel}>{user.isSupporter ? trans('profile.Supporter') : trans('profile.not_supporting')}</AppText>
-          </View>
-        </View>
-        {this.friendRelationButton()}
-        {this.renderRelation()}
-        {user.totalExperiences > 0 && <MyExperience id={user.id} />}
-        <View style={styles.actionsWrapper}>
-          {this.fbLink()}
-          {this.twLink()}
-          <ProfileAction
-            label={`${user.totalOffered || 0} ${trans('profile.offered')} ${(user.totalOffered || 0) <= 1 ? trans('global.ride') : trans('global.rides')}`}
-            onPress={() => this.redirect(FEED_FILTER_OFFERED)}
-          />
-          <ProfileAction
-            label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? trans('global.ride') : trans('global.rides')} ${trans('profile.asked_for')}`}
-            onPress={() => this.redirect(FEED_FILTER_WANTED)}
-          />
-          <ProfileAction
-            label={`${user.totalRideConversations || 0} ${trans('global.ride')} ${(user.totalRideConversations || 0) <= 1 ? trans('global.conversation') : trans('global.conversations')}`}
-            onPress={() => this.redirect('conversation')}
-          />
-          <ProfileAction
-            label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? trans('global.group') : trans('global.groups')}`}
-            onPress={() => this.redirect('groups')}
-          />
-          <ProfileAction
-            label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? trans('global.friend') : trans('global.friends')}`}
-            onPress={() => this.redirect('friends')}
-          />
-          <ProfileAction
-            title={trans('profile.participant_number_value', { value: user.id })}
-            label=""
-          />
-          {!this.isCurrentUser() &&
-            <ProfileAction
-              label={trans('profile.report_user')}
-              onPress={() => this.redirect(REPORT_TYPE_USER)}
-            />
-          }
-        </View>
-      </LinearGradient>
+            {this.friendRelationButton()}
+            {this.renderRelation()}
+            {user.totalExperiences > 0 && <MyExperience id={user.id} />}
+            <View style={styles.actionsWrapper}>
+              {this.fbLink()}
+              {this.twLink()}
+              <ProfileAction
+                label={`${user.totalOffered || 0} ${trans('profile.offered')} ${(user.totalOffered || 0) <= 1 ? trans('global.ride') : trans('global.rides')}`}
+                onPress={() => this.redirect(FEED_FILTER_OFFERED)}
+              />
+              <ProfileAction
+                label={`${user.totalAsked || 0} ${(user.totalAsked || 0) <= 1 ? trans('global.ride') : trans('global.rides')} ${trans('profile.asked_for')}`}
+                onPress={() => this.redirect(FEED_FILTER_WANTED)}
+              />
+              <ProfileAction
+                label={`${user.totalRideConversations || 0} ${trans('global.ride')} ${(user.totalRideConversations || 0) <= 1 ? trans('global.conversation') : trans('global.conversations')}`}
+                onPress={() => this.redirect('conversation')}
+              />
+              <ProfileAction
+                label={`${user.totalGroups || 0} ${(user.totalGroups || 0) <= 1 ? trans('global.group') : trans('global.groups')}`}
+                onPress={() => this.redirect('groups')}
+              />
+              <ProfileAction
+                label={`${user.totalFriends || 0} ${(user.totalFriends || 0) <= 1 ? trans('global.friend') : trans('global.friends')}`}
+                onPress={() => this.redirect('friends')}
+              />
+              <ProfileAction
+                title={trans('profile.participant_number_value', { value: user.id })}
+                label=""
+              />
+              {!this.isCurrentUser() &&
+                <ProfileAction
+                  label={trans('profile.report_user')}
+                  onPress={() => this.redirect(REPORT_TYPE_USER)}
+                />
+              }
+            </View>
+          </LinearGradient>
+        </Container>
+      </View>
     );
   }
 }

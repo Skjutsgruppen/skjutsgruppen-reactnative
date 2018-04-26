@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DetailedAvatar from '@components/group/detailedAvatar';
+import { trans } from '@lang/i18n';
 
 class ParticipantAvatar extends Component {
   componentWillMount() {
@@ -23,10 +24,10 @@ class ParticipantAvatar extends Component {
     if (!displayNumber) return '';
 
     if (enabler) {
-      return count > 1 ? `${count} ENABLERS` : `${count} ENABLER`;
+      return count > 1 ? `${count} ${trans('group.ENABLERS')}` : `${count} ${trans('group.ENABLER')}`;
     }
 
-    return count > 1 ? `${count} PARTICIPANTS` : `${count} PARTICIPANT`;
+    return count > 1 ? `${count} ${trans('group.PARTICIPANTS')}` : `${count} ${trans('group.PARTICIPANT')}`;
   }
 
   render() {

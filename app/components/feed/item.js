@@ -5,7 +5,6 @@ import Detail from '@components/feed/itemDetail';
 import {
   CLOSE_GROUP,
   GROUP_FEED_TYPE_JOINED_GROUP,
-  FEEDABLE_TRIP,
   FEED_FILTER_WANTED,
 } from '@config/constant';
 import Colors from '@theme/colors';
@@ -22,7 +21,6 @@ const styles = StyleSheet.create({
   profilePicWrapper: {
     width: 48,
     height: 48,
-    marginRight: 8,
   },
   profilePic: {
     height: 48,
@@ -49,36 +47,36 @@ const styles = StyleSheet.create({
 class FeedItem extends PureComponent {
   renderProfilePic() {
     const { feed, onPress } = this.props;
-    if (feed.feedable === FEEDABLE_TRIP) {
-      return (
-        <View style={styles.profilePicWrapper}>
-          <TouchableOpacity onPress={() => {
-            if (feed.User.deleted) return null;
-            return onPress('Profile', feed.User.id);
-          }}
-          >
-            <Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />
-          </TouchableOpacity>
-          {
-            feed.Trip
-            &&
-            <View
-              style={[
-                styles.indicator,
-                (feed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
-              ]}
-            />
-          }
-        </View>
-      );
-    }
+    let imgSrc = '';
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
-      return (<Image source={{ uri: feed.Enabler.avatar }} style={styles.profilePic} />);
+      imgSrc = feed.Enabler.avatar;
+    } else {
+      imgSrc = feed.User.avatar;
     }
 
-    return (<Image source={{ uri: feed.User.avatar }} style={styles.profilePic} />);
+    return (
+      <View style={styles.profilePicWrapper}>
+        <TouchableOpacity onPress={() => {
+          if (feed.User.deleted) return null;
+          return onPress('Profile', feed.User.id);
+        }}
+        >
+          <Image source={{ uri: imgSrc }} style={styles.profilePic} />
+        </TouchableOpacity>
+        {
+          feed.Trip
+          &&
+          <View
+            style={[
+              styles.indicator,
+              (feed.Trip.type === FEED_FILTER_WANTED) ? styles.blueBg : styles.pinkBg,
+            ]}
+          />
+        }
+      </View>
+    );
   }
 
   renderRelation = () => {

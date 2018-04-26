@@ -101,7 +101,7 @@ class Information extends Component {
       bgColor={Colors.background.pink}
       style={styles.button}
     >
-      Change
+      {trans('global.change')}
     </RoundedButton>
   );
 
@@ -180,7 +180,7 @@ class Information extends Component {
             enabler
           />
           <View style={{ backgroundColor: '#fff' }}>
-            <AppText size={12} color={Colors.text.blue} style={styles.aboutTitle}>{'About'.toUpperCase()}</AppText>
+            <AppText size={12} color={Colors.text.blue} style={styles.aboutTitle}>{trans('global.about')}</AppText>
             <AppText style={styles.text}>
               {group.type === OPEN_GROUP && trans('detail.open_group')}
               {group.type === CLOSE_GROUP && trans('detail.closed_group')}
