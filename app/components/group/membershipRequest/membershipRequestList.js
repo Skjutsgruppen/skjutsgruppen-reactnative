@@ -10,6 +10,7 @@ import Item from '@components/group/membershipRequest/membershipRequestItem';
 import { withAcceptGroupRequest, withRejectGroupInvitation } from '@services/apollo/notification';
 import { withNavigation } from 'react-navigation';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   separator: {
@@ -86,7 +87,7 @@ class MembershipRequestList extends Component {
     const { membershipRequest: { loading } } = this.props;
 
     const message = (
-      <AppText>Are you sure you want to add participant?</AppText>
+      <AppText>{trans('group.are_you_sure_you_want_to_add_participants')}</AppText>
     );
 
     return (
@@ -95,8 +96,8 @@ class MembershipRequestList extends Component {
         visible={acceptConfirmModalVisibility}
         onRequestClose={() => this.setState({ acceptConfirmModalVisibility: false })}
         message={message}
-        confirmLabel={'Yes'}
-        denyLabel="No"
+        confirmLabel={trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.onAccept}
         onDeny={() => this.setState({ acceptConfirmModalVisibility: false })}
         confrimTextColor={Colors.text.blue}
@@ -109,7 +110,7 @@ class MembershipRequestList extends Component {
     const { membershipRequest: { loading } } = this.props;
 
     const message = (
-      <AppText>Are you sure you want to reject?</AppText>
+      <AppText>{trans('group.are_you_sure_you_want_to_reject')}</AppText>
     );
 
     return (
@@ -118,8 +119,8 @@ class MembershipRequestList extends Component {
         visible={rejectConfirmModalVisibility}
         onRequestClose={() => this.setState({ rejectConfirmModalVisibility: false })}
         message={message}
-        confirmLabel={'Yes'}
-        denyLabel="No"
+        confirmLabel={trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.onReject}
         onDeny={() => this.setState({ rejectConfirmModalVisibility: false })}
         confrimTextColor={Colors.text.blue}
@@ -133,7 +134,7 @@ class MembershipRequestList extends Component {
       bgColor={Colors.background.pink}
       style={styles.button}
     >
-      Yes to All
+      {trans('group.yes_to_all')}
     </RoundedButton>
   );
 
@@ -149,7 +150,7 @@ class MembershipRequestList extends Component {
         visible
       >
         <Wrapper>
-          <Toolbar title="Asking to participate" />
+          <Toolbar title={trans('group.asking_to_participate')} />
           <DataList
             data={membershipRequest}
             header={this.renderListSearch}
@@ -163,7 +164,7 @@ class MembershipRequestList extends Component {
                 onReject={this.setRejectConfirmModalVisibility}
               />
             )}
-            noResultText={'No any group membership request.'}
+            noResultText={trans('group.no_any_group_membership_request')}
             fetchMoreOptions={{
               variables: { offset: membershipRequest.rows.length },
               updateQuery: (previousResult, { moreResult }) => {

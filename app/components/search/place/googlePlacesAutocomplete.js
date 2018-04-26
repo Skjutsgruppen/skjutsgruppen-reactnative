@@ -9,7 +9,6 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  TouchableHighlight,
   PixelRatio,
 } from 'react-native';
 import { Wrapper } from '@components/common';
@@ -23,6 +22,8 @@ import ConfirmModal from '@components/common/confirmModal';
 import GeoLocation from '@services/location/geoLocation';
 import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
+import TouchableHighlight from '@components/touchableHighlight';
+import CrossIcon from '@assets/icons/ic_cross.png';
 
 const defaultStyles = {
   container: {
@@ -94,6 +95,19 @@ const defaultStyles = {
   },
   locationIcon: {
     marginRight: 20,
+  },
+  closeIconWrapper: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
+    marginLeft: 12,
+  },
+  closeIcon: {
+    height: 48,
+    width: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
@@ -296,7 +310,7 @@ class GooglePlacesAutocomplete extends Component {
 
   renderTextInput = () => {
     const { text } = this.state;
-    const { textInputProps, label } = this.props;
+    const { textInputProps, label, onClose } = this.props;
 
     return (
       <View style={defaultStyles.inputWrapper}>
@@ -310,6 +324,11 @@ class GooglePlacesAutocomplete extends Component {
           {...textInputProps}
         />
         <AppText size={13} color={Colors.text.gray} fontVariation="bold">{label}</AppText>
+        <View style={defaultStyles.closeIconWrapper}>
+          <TouchableHighlight style={defaultStyles.closeIcon} onPress={onClose}>
+            <Image source={CrossIcon} />
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
@@ -329,7 +348,6 @@ class GooglePlacesAutocomplete extends Component {
 
     return (
       <TouchableHighlight
-        underlayColor={Colors.background.lightGray}
         onPress={() => this.getCurrentLocation()}
       >
         <View style={defaultStyles.suggestion}>
@@ -362,6 +380,7 @@ GooglePlacesAutocomplete.propTypes = {
   textInputProps: PropTypes.shape({}),
   label: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   minLength: PropTypes.number,
   directionText: PropTypes.string,
 };
