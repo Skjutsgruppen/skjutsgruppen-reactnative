@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
@@ -35,22 +35,22 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const styles = StyleSheet.create({
-  wrapFlex: {
+  details: {
     flex: 1,
-    paddingLeft: 12,
+    paddingHorizontal: 16,
   },
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingLeft: 6,
-    paddingRight: 20,
+    marginRight: 20,
     marginTop: 4,
   },
   content: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingTop: 2,
-    marginHorizontal: 6,
+    paddingLeft: 8,
+    paddingRight: 20,
   },
   title: {
     flexDirection: 'row',
@@ -69,12 +69,13 @@ const styles = StyleSheet.create({
     width: 220,
     marginTop: 16,
     marginBottom: 16,
+    marginHorizontal: 6,
     paddingHorizontal: 12,
     paddingTop: 12,
     paddingBottom: 60,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 12,
-    elevation: 5,
+    elevation: 4,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
     shadowOpacity: 0.15,
@@ -86,11 +87,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   sharedLocationCard: {
-    marginVertical: 6,
+    marginTop: 16,
+    marginBottom: 6,
+    marginHorizontal: 6,
     borderRadius: 12,
     padding: 12,
     backgroundColor: Colors.background.mutedBlue,
-    elevation: 2,
+    elevation: 4,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -113,7 +116,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_CREATE_GROUP) {
       return (
-        <View style={styles.wrapFlex}>
+        <View>
           <AppText style={styles.commentText}>
             {this.renderUsername()} {trans('detail.user_started_the_group')}
           </AppText>
@@ -126,7 +129,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP) {
       return (
-        <View style={styles.wrapFlex}>
+        <View>
           <AppText style={styles.commentText}>
             {this.renderUsername()} {trans('detail.user_joined_the_group')}
           </AppText>
@@ -137,7 +140,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_LEFT_GROUP) {
       return (
-        <View style={styles.wrapFlex}>
+        <View>
           <AppText style={styles.commentText}>
             {this.renderUsername()} {trans('detail.user_left_the_group')}
           </AppText>
@@ -148,25 +151,22 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
       return (
-        <View>
-          <TouchableHighlight
-            onLongPress={() => onLongPress({
-              isOwner: (feed.User.id === user.id),
-              data: feed,
-              type: GROUP_FEED_TYPE_COMMENT,
-            })}
-            style={styles.wrapFlex}
-          >
-            <View>
-              <AppText style={styles.commentText}>
-                {this.renderUsername()} <AppText style={styles.time}>
-                  <Date calendarTime>{feed.date}</Date>
-                </AppText>
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: GROUP_FEED_TYPE_COMMENT,
+          })}
+        >
+          <View>
+            <AppText style={styles.commentText}>
+              {this.renderUsername()} <AppText style={styles.time}>
+                <Date calendarTime>{feed.date}</Date>
               </AppText>
-              <AppText style={styles.commentText}>{feed.Comment.text}</AppText>
-            </View>
-          </TouchableHighlight>
-        </View>
+            </AppText>
+            <AppText style={styles.commentText}>{feed.Comment.text}</AppText>
+          </View>
+        </TouchableHighlight>
       );
     }
 
@@ -192,7 +192,6 @@ class Feed extends Component {
             data: feed,
             type: FEEDABLE_SUGGESTION,
           })}
-          style={styles.wrapFlex}
         >
           <View>
             {this.renderSuggestedText(feed)}
@@ -216,7 +215,6 @@ class Feed extends Component {
             data: feed,
             type: FEEDABLE_EXPERIENCE,
           })}
-          style={styles.wrapFlex}
         >
           {this.renderExperience(feed, onPress)}
         </TouchableHighlight>
@@ -225,7 +223,7 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_ENABLER_ADDED) {
       return (
-        <View style={styles.wrapFlex}>
+        <View >
           <AppText style={styles.commentText}>
             {this.renderUsername()} {trans('detail.user_is_now_enabler')}
           </AppText>
@@ -247,11 +245,12 @@ class Feed extends Component {
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED) {
       return (
-        <View style={styles.wrapFlex}>
-          <Text style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_has_stopped_sharing_location')}
-          </Text>
-          <Text style={styles.time}><Date calendarTime>{feed.date}</Date></Text>
+        <View >
+          <AppText>
+            <AppText color={Colors.text.blue} fontVariation="semibold">{this.renderUsername()}</AppText> {trans('detail.user_has_stopped_sharing_location')}
+          </AppText>
+          <AppText size={12} color={Colors.text.gray}>
+            <Date calendarTime>{feed.date}</Date></AppText>
         </View>
       );
     }
@@ -264,9 +263,9 @@ class Feed extends Component {
 
       return (
         <View>
-          <Text style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_shares_position')}
-          </Text>
+          <AppText>
+            <AppText color={Colors.text.blue} fontVariation="semibold">{this.renderUsername()}</AppText> {trans('detail.user_shares_position')}
+          </AppText>
           <View style={styles.sharedLocationCard}>
             <View style={styles.map}>
               <MapView
@@ -293,11 +292,12 @@ class Feed extends Component {
               </MapView>
             </View>
             {feed.Location.duration > 0 &&
-              <Text style={{ color: Colors.text.blue, fontWeight: 'bold', textAlign: 'right', marginTop: 6 }}>
+              <AppText style={{ color: Colors.text.blue, fontWeight: 'bold', textAlign: 'right', marginTop: 6 }}>
                 {feed.Location.duration} {trans('detail.more_minutes')}
-              </Text>}
+              </AppText>}
           </View>
-          <Date style={{ textAlign: 'right' }} format={'dddd HH:mm'}>{feed.Location.sharedFrom}</Date>
+          <AppText size={12} color={Colors.text.gray} style={{ textAlign: 'right' }} >
+            <Date format={'dddd HH:mm'}>{feed.Location.sharedFrom}</Date></AppText>
         </View>
       );
     }
@@ -308,7 +308,7 @@ class Feed extends Component {
   renderSuggestedText = (feed) => {
     if (feed.ActivityType.type === GROUP_FEED_TYPE_OFFER_RIDE) {
       return (
-        <View style={styles.wrapFlex}>
+        <View >
           <AppText style={styles.commentText}>
             {this.renderUsername()} {trans('detail.user_offers_a_ride')}
           </AppText>
@@ -318,7 +318,7 @@ class Feed extends Component {
     }
 
     return (
-      <View style={styles.wrapFlex}>
+      <View >
         <AppText style={styles.commentText}>
           {this.renderUsername()} {trans('detail.suggests')} { this.renderUsername(feed.Trip.User) }{trans('detail.user_s_ride')}
         </AppText>
@@ -331,18 +331,16 @@ class Feed extends Component {
     const { feed, onPress } = this.props;
 
     return (
-      <View style={styles.wrapper}>
-        <View style={styles.content}>
-          <View style={styles.title}>
-            <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.Enabler.id)}>
-              {`${feed.Enabler.firstName} `}
-            </AppText>
-            <AppText style={styles.commentText}>
-              {trans('detail.added')} <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</AppText> {trans('detail.to_this_group')}
-            </AppText>
-          </View>
-          <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
+      <View>
+        <View style={styles.title}>
+          <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.Enabler.id)}>
+            {`${feed.Enabler.firstName} `}
+          </AppText>
+          <AppText style={styles.commentText}>
+            {trans('detail.added')} <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</AppText> {trans('detail.to_this_group')}
+          </AppText>
         </View>
+        <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
       </View>
     );
   }
@@ -371,7 +369,7 @@ class Feed extends Component {
     if (feed.feedable === FEEDABLE_TRIP) {
       if (feed.Trip.User.id === feed.User.id) {
         return (
-          <View style={styles.content}>
+          <View>
             <AppText style={styles.commentText}>
               {this.renderUsername()} <AppText>{feed.Trip.type === FEED_FILTER_WANTED ? trans('feed.asks_for_a_ride') : trans('detail.offers_a_ride')}</AppText>
             </AppText>
@@ -386,7 +384,7 @@ class Feed extends Component {
       }
 
       return (
-        <View style={styles.content}>
+        <View>
           <AppText style={styles.commentText}>
             {this.renderUsername()} <AppText>{trans('detail.shared')} <AppText color={Colors.text.blue} fontVariation="semibold">{trans('detail.user_s', { user: feed.Trip.User.firstName })}</AppText> {feed.feedable === FEEDABLE_TRIP ? trans('detail.ride') : feed.feedable}: </AppText>
           </AppText>
@@ -412,7 +410,7 @@ class Feed extends Component {
       let separator = '';
       i += 1;
       if (index === feed.Experience.Participants.length - 1) {
-        separator = ` ${trans('detail.and')} `;
+        separator = ` ${trans('global._and_')} `;
       } else if (index !== 0) {
         separator = ', ';
       }
@@ -424,9 +422,9 @@ class Feed extends Component {
     });
 
     return (
-      <View style={styles.wrapFlex}>
+      <View >
         <AppText>
-          {trans('detail.user_had_an_experience', { user: participants })} <AppText style={styles.time}>
+          {participants} {trans('detail.user_had_an_experience')} <AppText style={styles.time}>
             <Date calendarTime>{feed.date}</Date></AppText>
         </AppText>
         <View style={styles.experience}>
@@ -441,23 +439,15 @@ class Feed extends Component {
     );
   }
 
-  renderDescription() {
-    return (
-      <View style={styles.Wrapper}>
-        {this.renderFeed()}
-      </View>
-    );
-  }
-
   render() {
     const { feed } = this.props;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
-      return this.renderClosedGroup();
+      return <View style={styles.details}>{this.renderClosedGroup()}</View>;
     }
 
-    return this.renderDescription();
+    return <View style={styles.details}>{this.renderFeed()}</View>;
   }
 }
 

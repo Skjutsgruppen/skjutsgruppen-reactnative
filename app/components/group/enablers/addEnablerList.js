@@ -13,6 +13,7 @@ import { withNavigation } from 'react-navigation';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   footer: {
@@ -119,7 +120,7 @@ class AddEnabler extends Component {
       }
 
       if (index > 0 && index === (participants.length - 1) && participants.length < 3) {
-        separator = ' and ';
+        separator = ` ${trans('global._and_')} `;
       } else if (index > 0) {
         separator = ', ';
       }
@@ -133,7 +134,7 @@ class AddEnabler extends Component {
 
     const message = (
       <AppText>
-        Are you sure you want to add {participantsName} {participants.length > 3 ? ' and others ' : ''} as enablers?
+        {trans('group.are_you_sure_you_want_to_add')} {participantsName} {participants.length > 3 ? ` ${trans('group.and_others')} ` : ''} {trans('group.as_enablers')}
       </AppText>
     );
 
@@ -192,7 +193,7 @@ class AddEnabler extends Component {
 
     return (
       <Wrapper>
-        {!isSearching && <Toolbar title="Add Enablers" />}
+        {!isSearching && <Toolbar title={trans('group.add_enablers')} />}
         <Toast message={this.state.error} type="error" />
         <DataList
           data={groupMembers}

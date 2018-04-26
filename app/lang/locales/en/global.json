@@ -46,5 +46,9 @@
   "friends": "friends",
   "accept": "Accept",
   "reject": "Reject",
-  "change": "Change"
+  "change": "Change",
+  "_and_": "and",
+  "search": "Search",
+  "add": "Add",
+  "about": "ABOUT"
 }

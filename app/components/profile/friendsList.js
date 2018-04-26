@@ -94,7 +94,7 @@ class UserFriendsList extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error !== null ? trans('global.retry') : trans('profile.yes')}
+        confirmLabel={error !== null ? trans('global.retry') : trans('global.yes')}
         denyLabel={trans('global.no')}
         onConfirm={this.removeFriend}
         onDeny={() => this.setConfirmModalVisibility(false)}
