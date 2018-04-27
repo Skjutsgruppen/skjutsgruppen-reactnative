@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Alert } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert, Image } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
@@ -20,6 +20,9 @@ import GeoLocation from '@services/location/geoLocation';
 import { withUpdateLocation } from '@services/apollo/location';
 import { withTrip } from '@services/apollo/trip';
 import ConfirmModal from '@components/common/confirmModal';
+import TouchableHighlight from '@components/touchableHighlight';
+import Colors from '@theme/colors';
+import MyLocationIcon from '@assets/icons/ic_my_location.png';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -36,6 +39,27 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  myLocationIconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 2,
+    zIndex: 200,
+    overflow: 'hidden',
+  },
+  myLocationIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 const ShareLocationWithData = compose(withStopSpecific, withGroupParticipantIds)(ShareLocation);
@@ -49,6 +73,7 @@ class RouteMap extends PureComponent {
     super(props);
     this.mapView = null;
     this.state = ({
+      myLocationIconBottom: 20,
       showTurnOnGpsModal: false,
       fetchingPosition: false,
       initialRegion: {
@@ -194,6 +219,12 @@ class RouteMap extends PureComponent {
     this.setState({ showTurnOnGpsModal: false });
   }
 
+  updateMyLocationIconBottom = (bottom) => {
+    this.setState({
+      myLocationIconBottom: bottom + 20,
+    });
+  }
+
   currentLocation = async () => {
     this.setState({ fetchingPosition: true });
 
@@ -218,6 +249,7 @@ class RouteMap extends PureComponent {
             longitude: position.coords.longitude,
           },
         });
+        this.gotoRegion([position.coords.longitude, position.coords.latitude]);
       },
       () => {
         this.setState({ fetchingPosition: false });
@@ -353,7 +385,8 @@ class RouteMap extends PureComponent {
   )
 
   renderLiveLocations = () => {
-    const { sharedLocations, info, myPosition } = this.state;
+    const { user } = this.props;
+    const { sharedLocations, myPosition } = this.state;
     let markers = [];
 
     if (!this.isMember()) return null;
@@ -379,22 +412,19 @@ class RouteMap extends PureComponent {
     }
 
     if (myPosition.latitude &&
-      myPosition.longitude &&
-      info.Location &&
-      info.Location.locationCoordinates &&
-      info.Location.locationCoordinates.length > 0) {
+      myPosition.longitude) {
       const coordinate = {
         latitude: myPosition.latitude,
         longitude: myPosition.longitude,
       };
       markers.push(
         <Marker
-          key={`${myPosition.id}${moment().unix()}`}
+          key={`${moment().unix()}`}
           onPress={(e) => {
             e.stopPropagation();
           }}
           coordinate={coordinate}
-          image={info.Location.User.avatar}
+          image={user.avatar}
         />);
     }
 
@@ -441,6 +471,14 @@ class RouteMap extends PureComponent {
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
+        <View style={[styles.myLocationIconWrapper, { bottom: this.state.myLocationIconBottom }]}>
+          <TouchableHighlight
+            style={styles.myLocationIcon}
+            onPress={() => this.currentLocation()}
+          >
+            <Image source={MyLocationIcon} />
+          </TouchableHighlight>
+        </View>
         <MapView
           provider={'google'}
           initialRegion={initialRegion}
@@ -488,6 +526,7 @@ class RouteMap extends PureComponent {
             stopTrackingLocation={this.stopTrackingLocation}
             currentLocation={this.currentLocation}
             fetchingPosition={fetchingPosition}
+            onLayout={this.updateMyLocationIconBottom}
           />
         }
         {this.renderTurnOnGpsActionModal()}
