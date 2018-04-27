@@ -135,6 +135,8 @@ class ShareLocation extends PureComponent {
     this.loadInterval = false;
   }
 
+  onLayout = e => this.props.onLayout(e.nativeEvent.layout.height);
+
   onShareLocation = (unit) => {
     const { shareLocation, detail, startTrackingLocation } = this.props;
     const { myPosition } = this.state;
@@ -359,7 +361,7 @@ class ShareLocation extends PureComponent {
 
   render() {
     return (
-      <View style={styles.wrapper}>
+      <View style={styles.wrapper} onLayout={this.onLayout}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {this.info()}
           {this.renderLocationSharedList()}
@@ -385,12 +387,14 @@ ShareLocation.propTypes = {
   stopTrackingLocation: PropTypes.func.isRequired,
   currentLocation: PropTypes.func,
   fetchingPosition: PropTypes.bool,
+  onLayout: PropTypes.func,
 };
 
 ShareLocation.defaultProps = {
   myPosition: {},
   currentLocation: null,
   fetchingPosition: false,
+  onLayout: () => {},
 };
 
 export default compose(withShareLocation)(ShareLocation);
