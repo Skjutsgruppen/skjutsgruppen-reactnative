@@ -90,6 +90,7 @@ class CloseByGroupsMapWindow extends Component {
         style={StyleSheet.absoluteFill}
         ref={(c) => { this.mapView = c; }}
         cacheEnabled
+        scrollEnabled={false}
       >
         {this.renderCurrentLocation()}
         {this.renderGroups()}
