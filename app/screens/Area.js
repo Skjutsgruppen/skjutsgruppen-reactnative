@@ -158,7 +158,7 @@ class AreaMap extends PureComponent {
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            timestamp: position.timestamp,
+            timestamp: position.timestamp,            
           },
         });
         this.gotoRegion([position.coords.longitude, position.coords.latitude]);
@@ -181,7 +181,7 @@ class AreaMap extends PureComponent {
         myPosition: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          timestamp: position.timestamp,
+          timestamp: position.timestamp,          
         },
       });
     });
