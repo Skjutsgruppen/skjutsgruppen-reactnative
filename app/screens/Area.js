@@ -19,6 +19,7 @@ import { withLocationSharedToSpecificResource, withStopSpecific } from '@service
 import ShareLocation from '@components/common/shareLocation';
 import { withUpdateLocation } from '@services/apollo/location';
 import ConfirmModal from '@components/common/confirmModal';
+import RoundedButton from '@components/common/roundedButton';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -157,8 +158,10 @@ class AreaMap extends PureComponent {
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            timestamp: position.timestamp,
           },
         });
+        this.gotoRegion([position.coords.longitude, position.coords.latitude]);
       },
       () => {
         this.setState({ fetchingPosition: false });
@@ -178,6 +181,7 @@ class AreaMap extends PureComponent {
         myPosition: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          timestamp: position.timestamp,
         },
       });
     });
@@ -244,7 +248,7 @@ class AreaMap extends PureComponent {
   )
 
   renderLiveLocations = () => {
-    const { group } = this.props;
+    const { user } = this.props;
     const { sharedLocations, myPosition } = this.state;
 
     if (!this.isMember()) return null;
@@ -271,22 +275,19 @@ class AreaMap extends PureComponent {
     }
 
     if (myPosition.latitude &&
-      myPosition.longitude &&
-      group.Location &&
-      group.Location.locationCoordinates &&
-      group.Location.locationCoordinates.length > 0) {
+      myPosition.longitude) {
       const coordinate = {
         latitude: myPosition.latitude,
         longitude: myPosition.longitude,
       };
       markers.push(
         <Marker
-          key={`${group.Location.id}-${moment().unix()}`}
+          key={`${moment().unix()}`}
           onPress={(e) => {
             e.stopPropagation();
           }}
           coordinate={coordinate}
-          image={group.Location.User.avatar}
+          image={user.avatar}
         />);
     }
 
@@ -307,6 +308,12 @@ class AreaMap extends PureComponent {
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
+        <RoundedButton
+          style={{ position: 'absolute', bottom: 300, zIndex: 200, elevation: 20 }}
+          onPress={() => this.currentLocation()}
+        >
+          My Location
+        </RoundedButton>
         <MapView
           provider={'google'}
           initialRegion={initialRegion}
