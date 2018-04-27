@@ -38,6 +38,8 @@
 	<string>152012658857025</string>
 	<key>FacebookDisplayName</key>
 	<string>Skjutsgruppen</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>

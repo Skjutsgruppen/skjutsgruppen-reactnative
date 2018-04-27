@@ -30,27 +30,26 @@ PODS:
     - FBSDKCoreKit
   - FBSDKShareKit (4.32.0):
     - FBSDKCoreKit (~> 4.32.0)
-  - Firebase/Core (4.13.0):
-    - FirebaseAnalytics (= 4.2.0)
-    - FirebaseCore (= 4.0.20)
-  - Firebase/Messaging (4.13.0):
+  - Firebase/Core (4.0.0):
+    - FirebaseAnalytics (= 4.0.0)
+    - FirebaseCore (= 4.0.0)
+  - Firebase/Messaging (4.0.0):
     - Firebase/Core
-    - FirebaseMessaging (= 2.2.0)
-  - FirebaseAnalytics (4.2.0):
+    - FirebaseMessaging (= 2.0.0)
+  - FirebaseAnalytics (4.0.0):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-    - nanopb (~> 0.3)
-  - FirebaseCore (4.0.20):
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+  - FirebaseCore (4.0.0):
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
   - FirebaseInstanceID (2.0.10):
     - FirebaseCore (~> 4.0)
-  - FirebaseMessaging (2.2.0):
-    - FirebaseAnalytics (~> 4.1)
+  - FirebaseMessaging (2.0.0):
+    - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
-    - Protobuf (~> 3.5)
+    - Protobuf (~> 3.1)
   - Folly (2016.09.26.00):
     - boost
     - DoubleConversion
@@ -80,13 +79,8 @@ PODS:
   - GoogleToolboxForMac/Defines (2.1.3)
   - GoogleToolboxForMac/Logger (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
-  - GoogleToolboxForMac/NSData+zlib (2.1.3):
+  - "GoogleToolboxForMac/NSData+zlib (2.1.3)":
     - GoogleToolboxForMac/Defines (= 2.1.3)
-  - nanopb (0.3.8):
-    - nanopb/decode (= 0.3.8)
-    - nanopb/encode (= 0.3.8)
-  - nanopb/decode (0.3.8)
-  - nanopb/encode (0.3.8)
   - Protobuf (3.5.0)
   - React (0.51.0):
     - React/Core (= 0.51.0)
@@ -104,11 +98,13 @@ PODS:
   - react-native-fbsdk/Share (0.7.0):
     - FBSDKShareKit
     - React
-  - react-native-google-maps (0.21.0):
-    - Google-Maps-iOS-Utils (= 2.1.0)
+  - react-native-fcm (12.0.0):
+    - Firebase/Messaging
+    - React
+  - react-native-google-maps (0.19.0):
     - GoogleMaps (= 2.5.0)
     - React
-  - react-native-maps (0.21.0):
+  - react-native-maps (0.19.0):
     - React
   - React/BatchedBridge (0.51.0):
     - React/Core
@@ -176,6 +172,7 @@ DEPENDENCIES:
   - Google-Maps-iOS-Utils
   - GoogleMaps
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk/ios`)
+  - react-native-fcm (from `../node_modules/react-native-fcm`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - React/BatchedBridge (from `../node_modules/react-native`)
@@ -195,55 +192,77 @@ DEPENDENCIES:
   - TwitterKit (= 1.12.1)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Bolts
+    - boost
+    - Fabric
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - FBSDKShareKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
+    - GoogleToolboxForMac
+    - Protobuf
+    - TwitterCore
+    - TwitterKit
+
 EXTERNAL SOURCES:
   BVLinearGradient:
-    :path: ../node_modules/react-native-linear-gradient
+    :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
-    :podspec: ../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec
+    :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   Folly:
-    :podspec: ../node_modules/react-native/third-party-podspecs/Folly.podspec
+    :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   GLog:
-    :podspec: ../node_modules/react-native/third-party-podspecs/GLog.podspec
+    :podspec: "../node_modules/react-native/third-party-podspecs/GLog.podspec"
   React:
-    :path: ../node_modules/react-native
+    :path: "../node_modules/react-native"
   react-native-fbsdk:
-    :path: ../node_modules/react-native-fbsdk/ios
+    :path: "../node_modules/react-native-fbsdk/ios"
+  react-native-fcm:
+    :path: "../node_modules/react-native-fcm"
   react-native-google-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   react-native-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   yoga:
-    :path: ../node_modules/react-native/ReactCommon/yoga/yoga.podspec
+    :path: "../node_modules/react-native/ReactCommon/yoga/yoga.podspec"
 
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   boost: 30a15ffb6d9aa4646dd3caffc960753f4cb4ca4e
-  BVLinearGradient: 8913bd8fdc47b85abc801ae8bae007bbfb6b4ce5
+  BVLinearGradient: 4b3f3bdf1ac1a52a5ef5e65c9585d793a7c3f825
   DoubleConversion: ebb6747c5b66026ad4f97b789c3ceac6f18e57a6
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBSDKCoreKit: 55d7f2ac45d9c4b9b6119f4e43900fe84b9b7b1b
   FBSDKLoginKit: 32ac05c2a59952c363c2e85aafa8f73ba93bcbad
   FBSDKShareKit: 658780d0d108b8ad590a54afb5ac1427bdc8de28
-  Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
-  FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
-  FirebaseCore: 90cb1c53d69b556f112a1bf72b5fcfaad7650790
+  Firebase: 284eea779b73fdff309791817da7c68bff8dd572
+  FirebaseAnalytics: 6f08e746f7d66f5452931bc2e822b5df9c66b64a
+  FirebaseCore: 85ad466044c2f013cdb167f85d426d15b128114a
   FirebaseInstanceID: 8d20d890d65c917f9f7d9950b6e10a760ad34321
-  FirebaseMessaging: 75cdb862e86c30e0913a2ff307e48d49357c5b73
+  FirebaseMessaging: 227406c05b0dc9290702d2e9f18ab5528f0c2cf2
   Folly: b7255b29f1d693c375d642d0f04f0592181156d9
   GLog: 3e4e4ae9746ce6bf6e9420c7fc1e08ad59c8ba1a
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
-  React: 352f02f1db6e4744f9a758527e13e3fdefbbd6ba
-  react-native-fbsdk: 5ba257c1edd0a53dec698253c702d5394355d948
-  react-native-google-maps: 68a831730110823d3dadfea0e133f0f4426cd213
-  react-native-maps: fb06a43ce6884256097eec1dd69d23957b71df88
+  React: 541ba768b9855e10cdc76f55427a5cd0653ca806
+  react-native-fbsdk: 8a738a123494ae9ba69482a5a8e88aa2108b8245
+  react-native-fcm: 7de3ba1108aba709c3d2b4237594554eb5f6f026
+  react-native-google-maps: 963fc78a5ac32dad3a726e4fa08b5307faa5cab2
+  react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   TwitterCore: 2b1bdd58dfba3f21b416d2a0d1ca74173e3b0eea
   TwitterKit: 7f55ebb8d2a1476f7ef2d6fedd40090d4b349b40
-  yoga: b5d96400ca8b2936965a7a6516da7c1177f432a3
+  yoga: 17521bbb0dd54a47c0b3ac43253e78cdac7488e0
 
-PODFILE CHECKSUM: 61634cc5cc6f5b134521b8db0310fefbc7c97ed3
+PODFILE CHECKSUM: 24da81854cbe2be6a950aabaec2cb3032f5a6246
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.5.0
