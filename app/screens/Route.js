@@ -4,7 +4,7 @@ import { Dimensions, StyleSheet, View, Alert, Image } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
-import { FEED_TYPE_WANTED, FEED_TYPE_OFFER, FEED_FILTER_EVERYTHING } from '@config/constant';
+import { FEED_FILTER_EVERYTHING } from '@config/constant';
 import Marker from '@components/map/marker';
 import Navigation from '@components/map/navigation';
 import { withNavigation } from 'react-navigation';
@@ -247,6 +247,7 @@ class RouteMap extends PureComponent {
           myPosition: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            timestamp: position.timestamp,
           },
         });
         this.gotoRegion([position.coords.longitude, position.coords.latitude]);
@@ -270,6 +271,7 @@ class RouteMap extends PureComponent {
         myPosition: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          timestamp: position.timestamp,
         },
       });
     });
@@ -460,7 +462,6 @@ class RouteMap extends PureComponent {
       myPosition,
       fetchingPosition } = this.state;
     const { __typename } = info;
-
     if (loading || locationSharedToSpecificResource.loading) return null;
 
     return (
