@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: Colors.background.mutedBlue,
     paddingHorizontal: 20,
     elevation: 15,
@@ -86,8 +88,8 @@ const styles = StyleSheet.create({
     paddingBottom: '5%',
   },
   button: {
+    flex: 0,
     width: 200,
-    alignSelf: 'center',
     marginHorizontal: 20,
   },
   closeIcon: {
