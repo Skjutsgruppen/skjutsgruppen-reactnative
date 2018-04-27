@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, Alert, Image, TouchableOpacity, NativeModules } from 'react-native';
 import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfileAction from '@components/profile/profileAction';
@@ -22,6 +22,7 @@ import Header from '@components/garden/header';
 import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
+import { withSupport, withGenerateClientToken } from '@services/apollo/support';
 
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
@@ -91,14 +92,28 @@ class Garden extends Component {
     return false;
   }
 
-  scrollToTop = () => {
-    if (this.scrollView) {
-      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
-    }
+  onSupportSubscribe = (planId) => {
+    const { support, generateClientToken } = this.props;
+
+    NativeModules.BraintreePayment.setToken(generateClientToken);
+    NativeModules.BraintreePayment.showPayment((paymentMethodNonce) => {
+      support({ planId, paymentMethodNonce })
+        .then(() => {
+          Alert.alert(trans('profile.subscribed_success'));
+        });
+    }, (error) => {
+      console.warn(error);
+    });
   }
 
   tabEvent = (e, type) => {
     if (this.scrollView && type === 'didBlur') {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }
+
+  scrollToTop = () => {
+    if (this.scrollView) {
       this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
     }
   }
@@ -151,15 +166,21 @@ class Garden extends Component {
             elevation={0}
             durationLabel="Support six month"
             monthlyAmount={9}
+            planId={1}
+            supportSubscribe={this.onSupportSubscribe}
             info="Total of 54 kr, auto-renewed every six month. Stop when ever you want."
           />
           <Package
             elevation={20}
             durationLabel="Support one month"
             monthlyAmount={29}
+            planId={2}
+            supportSubscribe={this.onSupportSubscribe}
             info="Total of 29 kr, auto-renewed every six month. Stop when ever you want."
           />
-          <HelpMore />
+          <HelpMore
+            supportSubscribe={this.onSupportSubscribe}
+          />
           <HowItWorks />
           <Costs supporter={supporter} />
           <ProfileAction
@@ -207,6 +228,17 @@ Garden.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   removeAppToken: PropTypes.func.isRequired,
+  support: PropTypes.func.isRequired,
+  generateClientToken: PropTypes.string,
 };
 
-export default compose(withRemoveAppToken, connect(mapStateToProps, mapDispatchToProps))(Garden);
+Garden.defaultProps = {
+  generateClientToken: null,
+};
+
+export default compose(
+  withGenerateClientToken,
+  withRemoveAppToken,
+  withSupport,
+  connect(mapStateToProps, mapDispatchToProps),
+)(Garden);

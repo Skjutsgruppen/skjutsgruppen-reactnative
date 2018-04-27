@@ -73,5 +73,6 @@
   "confirm_password": "Confirm Password",
   "year": "year",
   "accept": "Accept",
-  "reject": "Reject"
+  "reject": "Reject",
+  "subscribed_success": "Subscribed successfully."
 }
