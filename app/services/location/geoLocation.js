@@ -1,4 +1,5 @@
-import { NativeModules, DeviceEventEmitter } from 'react-native';
+/* global navigator */
+import { Platform, NativeModules, DeviceEventEmitter, Alert } from 'react-native';
 import Session from '@services/storage/session';
 
 class GeoLocation {
