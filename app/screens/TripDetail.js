@@ -320,10 +320,10 @@ class TripDetail extends Component {
     navigation.navigate('Profile', { profileId: id });
   }
 
-  onMapPress = () => {
+  onMapPress = (pressShareLocation = false) => {
     const { navigation } = this.props;
     const { trip } = this.state;
-    navigation.navigate('Route', { info: trip });
+    navigation.navigate('Route', { info: trip, pressShareLocation });
     this.showActionModal(false);
   }
 
@@ -563,7 +563,7 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <DetailHeader trip={trip} handleMapPress={this.onMapPress} />
+        <DetailHeader trip={trip} handleMapPress={() => this.onMapPress()} />
         <TouchableOpacity
           onPress={() => this.onProfilePress(trip.User.id)}
           style={styles.profilePicWrapper}
@@ -780,7 +780,7 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <ModalAction label={trans('detail.share_your_live_location')} onPress={this.onMapPress} />
+        <ModalAction label={trans('detail.share_your_live_location')} onPress={() => this.onMapPress(true)} />
         {
           trip.muted ?
             (
