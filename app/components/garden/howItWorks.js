@@ -1,5 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Colors from '@theme/colors';
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HowItWorks = () => (
+const HowItWorks = ({ user }) => (
   <View style={styles.wrapper}>
     <Title
       size={15}
@@ -51,7 +54,7 @@ const HowItWorks = () => (
     </View>
     <View style={styles.row}>
       <View style={styles.iconWrapper}>
-        <Avatar size={62} isSupporter imageURI="http://skjuts.staging.yipl.com.np/assets/img/user/1523455188140.jpg" />
+        <Avatar size={62} isSupporter imageURI={user.avatar} />
       </View>
       <AppText style={styles.text}>
         All the costs are transparent.(scroll down to see them)
@@ -75,4 +78,10 @@ const HowItWorks = () => (
   </View>
 );
 
-export default HowItWorks;
+HowItWorks.propTypes = {
+  user: PropTypes.shape().isRequired,
+};
+
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(connect(mapStateToProps))(HowItWorks);

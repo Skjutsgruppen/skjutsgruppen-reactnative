@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 import { Title, Heading } from '@components/utils/texts';
 import Colors from '@theme/colors';
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Header = ({ showTitle, showAvatar, headingLabel, infoLabel }) => (
+const Header = ({ showTitle, showAvatar, headingLabel, infoLabel, user }) => (
   <View style={styles.wrapper}>
     <Image source={Curves} style={styles.curves} />
     <View style={styles.content}>
@@ -47,7 +49,7 @@ const Header = ({ showTitle, showAvatar, headingLabel, infoLabel }) => (
         >{headingLabel}</Heading>
         {
           showAvatar &&
-            <Avatar isSupporter size={120} imageURI="http://skjuts.staging.yipl.com.np/assets/img/user/1523455188140.jpg" />
+            <Avatar isSupporter size={120} imageURI={user.avatar} />
         }
       </View>
       <View style={styles.miniDivider} />
@@ -67,10 +69,13 @@ Header.propTypes = {
   showTitle: PropTypes.bool.isRequired,
   headingLabel: PropTypes.string.isRequired,
   infoLabel: PropTypes.string,
+  user: PropTypes.shape().isRequired,
 };
 
 Header.defaultProps = {
   infoLabel: null,
 };
 
-export default Header;
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(connect(mapStateToProps))(Header);
