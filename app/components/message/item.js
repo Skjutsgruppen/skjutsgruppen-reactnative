@@ -555,9 +555,10 @@ class Item extends PureComponent {
     });
   }
 
-  locationShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  locationShared = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
     let route = 'Route';
-    if (Notifiable.Group.id && Notifiable.Group.outreach === 'area') route = 'Area';
+
+    if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
 
     const params = { info: Notifiable.Group.id ? Notifiable.Group : Notifiable.Trip };
 

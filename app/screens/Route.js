@@ -452,7 +452,7 @@ class RouteMap extends PureComponent {
   }
 
   render() {
-    const { loading, locationSharedToSpecificResource } = this.props;
+    const { loading, locationSharedToSpecificResource, navigation } = this.props;
     const {
       origin,
       destination,
@@ -462,6 +462,8 @@ class RouteMap extends PureComponent {
       myPosition,
       fetchingPosition } = this.state;
     const { __typename } = info;
+    const { pressShareLocation } = navigation.state.params;
+
     if (loading || locationSharedToSpecificResource.loading) return null;
 
     return (
@@ -528,6 +530,7 @@ class RouteMap extends PureComponent {
             currentLocation={this.currentLocation}
             fetchingPosition={fetchingPosition}
             onLayout={this.updateMyLocationIconBottom}
+            pressShareLocation={pressShareLocation}
           />
         }
         {this.renderTurnOnGpsActionModal()}

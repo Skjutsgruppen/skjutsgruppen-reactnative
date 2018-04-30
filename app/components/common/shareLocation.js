@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, Modal, Alert } from 'react-native';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
-import { getToast } from '@config/toast';
 import { FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_LOCATION } from '@config/constant';
 import Date from '@components/date';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -15,6 +14,7 @@ import { trans } from '@lang/i18n';
 import { UcFirst } from '@config';
 import { withShareLocation } from '@services/apollo/share';
 import { updateSharedLocation } from '@services/apollo/dataSync';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   purpleBg: {
@@ -108,14 +108,23 @@ class ShareLocation extends PureComponent {
       myLocation: {},
       myPosition: {},
       location: {},
+      shareLocationLoading: false,
     });
   }
 
   componentWillMount() {
     const { data } = this.props.locationSharedToSpecificResource;
-    const { detail, myPosition } = this.props;
+    const { detail, myPosition, pressShareLocation, currentLocation } = this.props;
     const { __typename } = detail;
-    this.setState({ sharedLocations: data, myLocation: detail.Location, myPosition });
+
+    if (pressShareLocation) currentLocation();
+
+    this.setState({
+      sharedLocations: data,
+      myLocation: detail.Location,
+      myPosition,
+      showActionOption: pressShareLocation,
+    });
 
     this.loadInterval = setInterval(() => {
       updateSharedLocation(detail.id, __typename);
@@ -142,7 +151,7 @@ class ShareLocation extends PureComponent {
     const { myPosition } = this.state;
     const { __typename } = detail;
 
-    this.setState({ showActionOption: false });
+    this.setState({ showActionOption: false, shareLocationLoading: true });
 
     const obj = {
       point: [myPosition.longitude, myPosition.latitude],
@@ -154,9 +163,8 @@ class ShareLocation extends PureComponent {
       obj.groupId = detail.id;
       startTrackingLocation();
       shareLocation(obj)
-        .catch((error) => {
-          Alert.alert(getToast(error));
-        });
+        .then(() => this.setState({ shareLocationLoading: false }))
+        .catch(() => this.setState({ shareLocationLoading: false }));
     }
     if (__typename === 'Trip') {
       obj.tripId = detail.id;
@@ -178,38 +186,42 @@ class ShareLocation extends PureComponent {
   }
 
   trip = () => {
-    const { detail } = this.props;
+    const { detail, navigation } = this.props;
 
     return (
       <View>
-        <View style={[styles.row, styles.spacerTop]}>
-          <View style={styles.thumbnail}>
-            <Image source={{ uri: detail.User.avatar }} style={styles.avatar} />
+        <TouchableHighlight onPress={() => navigation.navigate('TripDetail', { trip: detail })}>
+          <View style={[styles.row, styles.spacerTop]}>
+            <View style={styles.thumbnail}>
+              <Image source={{ uri: detail.User.avatar }} style={styles.avatar} />
+            </View>
+            <View>
+              <Text style={TextStyles.light}>
+                {
+                  detail.TripStart.name ||
+                  UcFirst(detail.direction)
+                } - {detail.TripEnd.name ||
+                  UcFirst(detail.direction)
+                }
+              </Text>
+              <Text style={TextStyles.light}><Date format="MMM DD, YYYY HH:mm">{detail.date}</Date></Text>
+            </View>
           </View>
-          <View>
-            <Text style={TextStyles.light}>
-              {
-                detail.TripStart.name ||
-                UcFirst(detail.direction)
-              } - {detail.TripEnd.name ||
-                UcFirst(detail.direction)
-              }
-            </Text>
-            <Text style={TextStyles.light}><Date format="MMM DD, YYYY HH:mm">{detail.date}</Date></Text>
-          </View>
-        </View>
+        </TouchableHighlight>
         <View style={styles.horizontalDivider} />
       </View>
     );
   }
 
   group = () => {
-    const { detail } = this.props;
+    const { detail, navigation } = this.props;
 
     return (
-      <View style={styles.groupName}>
-        <Text style={TextStyles.bold}>{detail.name}</Text>
-      </View>
+      <TouchableHighlight onPress={() => navigation.navigate('GroupDetail', { group: detail })}>
+        <View style={styles.groupName}>
+          <Text style={TextStyles.bold}>{detail.name}</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 
@@ -311,7 +323,7 @@ class ShareLocation extends PureComponent {
       myPosition,
       currentLocation,
       fetchingPosition } = this.props;
-    const { myLocation } = this.state;
+    const { myLocation, shareLocationLoading } = this.state;
     const { __typename } = detail;
 
     return (
@@ -334,24 +346,29 @@ class ShareLocation extends PureComponent {
           <View style={[styles.thumbnail, styles.purpleBg]}>
             <Image source={require('@assets/icons/ic_location_white.png')} style={{ alignSelf: 'center' }} />
           </View>
-          {!myLocation.id && !fetchingPosition &&
+          {shareLocationLoading && <Loading />}
+          {!shareLocationLoading &&
             <View>
-              <Text style={TextStyles.blue}>Share my live location for...</Text>
-              <Text style={TextStyles.light}>Choose with who and for how long you share</Text>
-            </View>
-          }
-          {!myLocation.id && fetchingPosition &&
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={TextStyles.light}>Fetching your position.</Text><Loading />
-            </View>
-          }
-          {myLocation.id && myLocation.duration > 0 &&
-            <View style={[styles.row, { flex: 1, justifyContent: 'space-between' }]}>
-              <View>
-                <Text style={TextStyles.blue}>Stop sharing Location</Text>
-                <Text style={TextStyles.light}>In this {__typename}</Text>
-              </View>
-              <Timer timeFraction={myLocation.timeFraction} duration={myLocation.duration} />
+              {!myLocation.id && !fetchingPosition &&
+                <View>
+                  <Text style={TextStyles.blue}>Share my live location for...</Text>
+                  <Text style={TextStyles.light}>Choose with who and for how long you share</Text>
+                </View>
+              }
+              {!myLocation.id && fetchingPosition &&
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={TextStyles.light}>Fetching your position.</Text><Loading />
+                </View>
+              }
+              {myLocation.id && myLocation.duration > 0 &&
+                <View style={[styles.row, { flex: 1, justifyContent: 'space-between' }]}>
+                  <View>
+                    <Text style={TextStyles.blue}>Stop sharing Location</Text>
+                    <Text style={TextStyles.light}>In this {__typename}</Text>
+                  </View>
+                  <Timer timeFraction={myLocation.timeFraction} duration={myLocation.duration} />
+                </View>
+              }
             </View>
           }
         </View>
@@ -375,6 +392,9 @@ class ShareLocation extends PureComponent {
 }
 
 ShareLocation.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
   shareLocation: PropTypes.func.isRequired,
   locationSharedToSpecificResource: PropTypes.shape().isRequired,
   detail: PropTypes.shape().isRequired,
@@ -388,13 +408,15 @@ ShareLocation.propTypes = {
   currentLocation: PropTypes.func,
   fetchingPosition: PropTypes.bool,
   onLayout: PropTypes.func,
+  pressShareLocation: PropTypes.bool,
 };
 
 ShareLocation.defaultProps = {
+  pressShareLocation: false,
   myPosition: {},
   currentLocation: null,
   fetchingPosition: false,
-  onLayout: () => {},
+  onLayout: () => { },
 };
 
-export default compose(withShareLocation)(ShareLocation);
+export default compose(withShareLocation, withNavigation)(ShareLocation);
