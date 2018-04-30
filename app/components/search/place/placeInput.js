@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Countries from '@config/countries';
 import _find from 'lodash/find';
-import { trans } from '@lang/i18n';
 
 import TouchableHighlight from '@components/touchableHighlight';
 import { AppText } from '@components/utils/texts';
@@ -134,18 +133,11 @@ class PlacesInput extends PureComponent {
           label={label}
           minLength={2}
           onPress={this.onPress}
+          onClose={() => this.setState({ showModal: false })}
           direction={direction}
           directionText={this.state.directionText}
           currentLocation={currentLocation}
         />
-        <View style={styles.closeWrapper}>
-          <TouchableHighlight
-            style={styles.close}
-            onPress={() => this.setState({ showModal: false })}
-          >
-            <AppText color={Colors.text.blue} fontVariation="bold" centered>{trans('global.cancel')}</AppText>
-          </TouchableHighlight>
-        </View>
       </Modal>
     );
   }

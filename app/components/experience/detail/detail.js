@@ -125,7 +125,7 @@ class ExperienceDetail extends Component {
     experience.Participants.forEach((row, index) => {
       let separator = ' ';
       if (index === (experience.Participants.length - 2)) {
-        separator = ` ${trans('experience._and_')} `;
+        separator = ` ${trans('global._and_')} `;
       } else if (index < (experience.Participants.length - 1)) {
         separator = ', ';
       }

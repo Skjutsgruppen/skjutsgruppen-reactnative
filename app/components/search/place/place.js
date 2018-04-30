@@ -2,13 +2,12 @@ import React from 'react';
 import {
   View,
   ScrollView,
-  TouchableHighlight,
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Loading } from '@components/common';
-import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const Styles = StyleSheet.create({
   suggestion: {
@@ -27,7 +26,6 @@ const Place = ({ item, loading, onPress }) => (
     showsVerticalScrollIndicator={false}
   >
     <TouchableHighlight
-      underlayColor={Colors.background.lightGray}
       onPress={() => onPress(item)}
     >
       <View style={Styles.suggestion}>
