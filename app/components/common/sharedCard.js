@@ -9,19 +9,20 @@ import { AppText } from '@components/utils/texts';
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 8,
-    width: '100%',
   },
   card: {
     maxWidth: 500,
     backgroundColor: '#f6f9fc',
     padding: 10,
     marginTop: 16,
+    marginHorizontal: 6,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 2,
     elevation: 4,
     borderRadius: 12,
+    overflow: 'visible',
   },
   img: {
     width: '100%',

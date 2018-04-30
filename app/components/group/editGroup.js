@@ -28,6 +28,7 @@ import Area from '@components/group/outreach/area';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const Enablers = withGroupMembers(ParticipantAvatar);
 
@@ -337,7 +338,7 @@ class EditGroup extends Component {
 
     return (
       <CommentBox
-        label="What is your group about?"
+        label={trans('group.what_is_your_group_about')}
         onChangeText={text => this.updateGroup('description', text)}
         value={description}
       />
@@ -349,17 +350,17 @@ class EditGroup extends Component {
 
     return (
       <View style={{ paddingTop: '5%' }}>
-        <SectionLabel label="Is your group open or closed?" />
+        <SectionLabel label={trans('group.is_your_group_open_or_closed')} />
         <View style={styles.radioRow}>
           <Radio
             active={type === OPEN_GROUP}
-            label="Open"
+            label={trans('group.open')}
             onPress={() => this.updateGroup('type', OPEN_GROUP)}
             style={styles.radio}
           />
           <Radio
             active={type === CLOSE_GROUP}
-            label="Closed"
+            label={trans('group.closed')}
             onPress={() => this.updateGroup('type', CLOSE_GROUP)}
           />
         </View>
@@ -403,7 +404,7 @@ class EditGroup extends Component {
           isOffer
           hideReturnTripOption
           defaultValue={route}
-          buttonLabel={'Done'}
+          buttonLabel={trans('global.done')}
           onNext={this.updateOutreach}
         />
       );
@@ -416,7 +417,7 @@ class EditGroup extends Component {
       locality: localityId,
     };
 
-    return (<Area defaultValue={area} onNext={this.updateOutreach} buttonLabel={'Done'} />);
+    return (<Area defaultValue={area} onNext={this.updateOutreach} buttonLabel={trans('global.done')} />);
   }
 
   renderButton = () => {
@@ -433,7 +434,7 @@ class EditGroup extends Component {
           bgColor={Colors.background.pink}
           style={styles.button}
         >
-          Done
+          {trans('global.done')}
         </RoundedButton>
       </View>
     );
@@ -469,7 +470,7 @@ class EditGroup extends Component {
     const { confirmModal, loading, error } = this.state;
 
     const message = (
-      <AppText>Are you sure you want to delete the group?</AppText>
+      <AppText>{trans('group.are_you_sure_you_want_to_delete_the_group')}</AppText>
     );
 
     return (
@@ -478,8 +479,8 @@ class EditGroup extends Component {
         visible={confirmModal}
         onRequestClose={() => this.setState({ confirmModal: false })}
         message={message}
-        confirmLabel={error ? 'Retry' : 'Yes'}
-        denyLabel="No"
+        confirmLabel={error ? trans('global.retry') : trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.deleteGroup}
         onDeny={() => this.setState({ confirmModal: false })}
         confrimTextColor={Colors.text.blue}
@@ -504,7 +505,7 @@ class EditGroup extends Component {
           style={styles.action}
           onPress={() => this.onChangePress(true, redirect)}
         >
-          <AppText color={Colors.text.blue}>Change</AppText>
+          <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
         </TouchableOpacity>
       }
     </View >
@@ -516,7 +517,7 @@ class EditGroup extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <ToolBar title="Change" />
+        <ToolBar title={trans('global.change')} />
         <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={styles.nameSection}>
@@ -547,14 +548,14 @@ class EditGroup extends Component {
           }
           {
             this.renderList({
-              title: updatedGroup.type === OPEN_GROUP ? 'Open group' : 'Closed group',
-              subtext: updatedGroup.type === OPEN_GROUP ? 'Open for everyone to join' : 'Need to ask to join',
+              title: updatedGroup.type === OPEN_GROUP ? trans('group.open_group') : trans('group.closed_group'),
+              subtext: updatedGroup.type === OPEN_GROUP ? trans('group.open_for_everyone_to_join') : trans('group.need_to_ask_to_join'),
               redirect: 'Type',
             })
           }
           {
             this.renderList({
-              title: 'Enablers',
+              title: trans('group.Enablers'),
               avatars: (<Enablers
                 id={updatedGroup.id}
                 onPress={() => { }}
@@ -578,7 +579,7 @@ class EditGroup extends Component {
                 color={Colors.text.red}
                 onPress={() => this.setState({ confirmModal: true })}
               >
-                Delete the group
+                {trans('group.delete_the_group')}
               </AppText>,
               redirect: 'Delete',
             })

@@ -11,7 +11,7 @@ import { withFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import FriendList from '@components/friend/selectable';
 import SendSMS from 'react-native-sms';
-// import FriendsWithNoMembership from '@components/group/participant/friendsWithNoMembership';
+import { trans } from '@lang/i18n';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
 import { AppText } from '@components/utils/texts';
@@ -145,7 +145,7 @@ class AddParticipant extends Component {
       bgColor={Colors.background.pink}
       style={styles.button}
     >
-      Add
+      {trans('global.add')}
     </RoundedButton>
   );
 
@@ -155,7 +155,7 @@ class AddParticipant extends Component {
 
     const message = (
       <AppText>
-        Are you sure you want to add {totalFriends > 1 ? `${totalFriends} friends` : ''}?
+        {trans('group.are_you_sure_you_want_to_add')} {totalFriends > 1 ? `${totalFriends} ${trans('global.friends')}` : ''}?
       </AppText>
     );
 
@@ -165,8 +165,8 @@ class AddParticipant extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={'Yes'}
-        denyLabel="No"
+        confirmLabel={trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.onAdd}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}
@@ -233,11 +233,11 @@ class AddParticipant extends Component {
         visible
       >
         <Wrapper>
-          <Toolbar title="Add Participants" />
+          <Toolbar title={trans('group.add_participants')} />
           <Toast message={this.state.error} type="error" />
           <ScrollView>
             <SearchBar
-              placeholder="Search"
+              placeholder={trans('global.search')}
               onChange={this.onChangeSearchQuery}
               defaultValue={this.state.searchQuery}
               onPressClose={() => this.setState({ searchQuery: '' })}
