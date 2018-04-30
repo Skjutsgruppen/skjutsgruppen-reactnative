@@ -117,15 +117,15 @@ class Detail extends PureComponent {
     navigation.navigate('Profile', { profileId: group.User.id });
   }
 
-  onMapPress = () => {
+  onMapPress = (pressShareLocation) => {
     const { navigation, group } = this.props;
 
     if (group.outreach === STRETCH_TYPE_AREA && group.areaCoordinates) {
-      navigation.navigate('Area', { info: group });
+      navigation.navigate('Area', { info: group, pressShareLocation });
     }
 
     if (group.outreach === STRETCH_TYPE_ROUTE) {
-      navigation.navigate('Route', { info: group });
+      navigation.navigate('Route', { info: group, pressShareLocation });
     }
 
     this.setState({ showAction: false });
@@ -246,7 +246,7 @@ class Detail extends PureComponent {
     return (
       <View>
         <GroupImage group={group} />
-        <MapToggle handlePress={this.onMapPress} />
+        <MapToggle handlePress={() => this.onMapPress()} />
       </View>);
   }
 
@@ -302,7 +302,7 @@ class Detail extends PureComponent {
 
     actions = actions.concat([
       <ModalAction label={trans('detail.group_information')} onPress={() => this.onGroupInformation()} key="group_information" />,
-      <ModalAction label={trans('detail.share_your_location')} onPress={this.onMapPress} key="share_your_location" />,
+      <ModalAction label={trans('detail.share_your_location')} onPress={() => this.onMapPress(true)} key="share_your_location" />,
     ]);
 
     if (group.muted) {

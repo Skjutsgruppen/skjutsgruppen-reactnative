@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Alert } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert, Image } from 'react-native';
 import MapView from 'react-native-maps';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -19,7 +19,9 @@ import { withLocationSharedToSpecificResource, withStopSpecific } from '@service
 import ShareLocation from '@components/common/shareLocation';
 import { withUpdateLocation } from '@services/apollo/location';
 import ConfirmModal from '@components/common/confirmModal';
-import RoundedButton from '@components/common/roundedButton';
+import TouchableHighlight from '@components/touchableHighlight';
+import MyLocationIcon from '@assets/icons/ic_my_location.png';
+import Colors from '@theme/colors';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -36,6 +38,27 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  myLocationIconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: Colors.background.fullWhite,
+    elevation: 2,
+    zIndex: 200,
+    overflow: 'hidden',
+  },
+  myLocationIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 const ShareLocationWithData = compose(withStopSpecific, withGroupParticipantIds)(ShareLocation);
@@ -49,6 +72,7 @@ class AreaMap extends PureComponent {
     super(props);
     this.mapView = null;
     this.state = ({
+      myLocationIconBottom: 20,
       showTurnOnGpsModal: false,
       fetchingPosition: false,
       initialRegion: {},
@@ -170,6 +194,12 @@ class AreaMap extends PureComponent {
       { timeout: 20000, maximumAge: 1000 },
     );
   };
+
+  updateMyLocationIconBottom = (bottom) => {
+    this.setState({
+      myLocationIconBottom: bottom + 20,
+    });
+  }
 
   startTrackingLocation = () => {
     const { updateLocation, group } = this.props;
@@ -295,9 +325,10 @@ class AreaMap extends PureComponent {
   }
 
   render() {
-    const { loading, group, locationSharedToSpecificResource } = this.props;
+    const { loading, group, locationSharedToSpecificResource, navigation } = this.props;
     const { origin, initialRegion, myPosition, fetchingPosition } = this.state;
     const { __typename } = group;
+    const { pressShareLocation } = navigation.state.params;
 
     if (loading || locationSharedToSpecificResource.loading) return null;
 
@@ -308,12 +339,14 @@ class AreaMap extends PureComponent {
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
-        <RoundedButton
-          style={{ position: 'absolute', bottom: 300, zIndex: 200, elevation: 20 }}
-          onPress={() => this.currentLocation()}
-        >
-          My Location
-        </RoundedButton>
+        <View style={[styles.myLocationIconWrapper, { bottom: this.state.myLocationIconBottom }]}>
+          <TouchableHighlight
+            style={styles.myLocationIcon}
+            onPress={() => this.currentLocation()}
+          >
+            <Image source={MyLocationIcon} />
+          </TouchableHighlight>
+        </View>
         <MapView
           provider={'google'}
           initialRegion={initialRegion}
@@ -346,6 +379,8 @@ class AreaMap extends PureComponent {
             stopTrackingLocation={this.stopTrackingLocation}
             currentLocation={this.currentLocation}
             fetchingPosition={fetchingPosition}
+            onLayout={this.updateMyLocationIconBottom}
+            pressShareLocation={pressShareLocation}
           />
         }
         {this.renderTurnOnGpsActionModal()}

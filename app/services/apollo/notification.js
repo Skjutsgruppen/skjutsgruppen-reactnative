@@ -22,11 +22,11 @@ subscription notification($userId: Int!) {
       ... on Trip {
         id
         TripStart {
-          name 
-        } 
+          name
+        }
         TripEnd {
-          name 
-        } 
+          name
+        }
         muted
         unreadNotificationCount
         direction
@@ -59,8 +59,8 @@ subscription notification($userId: Int!) {
           muted
           unreadNotificationCount
           Enablers {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
           }
@@ -101,9 +101,9 @@ subscription notification($userId: Int!) {
         }
         userStatus
         User {
-          id 
-          firstName 
-          avatar 
+          id
+          firstName
+          avatar
         }
         Participants {
           User {
@@ -118,10 +118,31 @@ subscription notification($userId: Int!) {
         id
         Trip {
           id
+          TripStart {
+            name
+          }
+          TripEnd {
+            name
+          }
+          muted
+          unreadNotificationCount
+          direction
         }
         Group {
           id
           outreach
+          name
+          membershipStatus
+          User {
+            id
+          }
+          Enablers {
+            id
+            firstName
+            avatar
+          }
+          muted
+          unreadNotificationCount
         }
       }
     }
@@ -149,14 +170,14 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         ... on Trip {
           id
           TripStart {
-            name 
-          } 
+            name
+          }
           TripEnd {
-            name 
+            name
           }
           muted
           unreadNotificationCount
-          direction          
+          direction
         }
         ... on Group {
           id
@@ -184,8 +205,8 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
               id
             }
             Enablers {
-              id 
-              firstName 
+              id
+              firstName
               avatar
               deleted
             }
@@ -228,9 +249,9 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           }
           userStatus
           User {
-            id 
-            firstName 
-            avatar 
+            id
+            firstName
+            avatar
           }
           Participants {
             User {
@@ -245,10 +266,31 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
           id
           Trip {
             id
+            TripStart {
+              name
+            }
+            TripEnd {
+              name
+            }
+            muted
+            unreadNotificationCount
+            direction
           }
           Group {
             id
             outreach
+            name
+            membershipStatus
+            User {
+              id
+            }
+            Enablers {
+              id
+              firstName
+              avatar
+            }
+            muted
+            unreadNotificationCount
           }
         }
       }
@@ -370,12 +412,20 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           } else if (newNotification.notifiable === 'Experience') {
             if (newNotification.Notifiable.Trip.muted) {
               exists = true;
-              updateActiveRides(newNotification.Notifiaidsble.Trip);
+              updateActiveRides(newNotification.Notifiable.Trip);
             }
           } else if (newNotification.notifiable === 'GroupMembershipRequest') {
             if (newNotification.Notifiable.Group.muted) {
               exists = true;
               updateActiveGroups(newNotification.Notifiable.Group);
+            }
+          } else if (newNotification.notifiable === 'Location') {
+            if (newNotification.Notifiable.Group.id && newNotification.Notifiable.Group.muted) {
+              exists = true;
+              updateActiveGroups(newNotification.Notifiable.Group);
+            } else {
+              exists = true;
+              updateActiveRides(newNotification.Notifiable.Trip);
             }
           }
 
@@ -483,29 +533,29 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
       notifiable
       Notifiable {
         ... on Trip {
-          id 
-          tripType:type 
-          description 
-          seats 
+          id
+          tripType:type
+          description
+          seats
           User {
-            id 
-            firstName 
-            avatar 
-          } 
+            id
+            firstName
+            avatar
+          }
           TripStart {
-            name 
+            name
             coordinates
-          } 
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          photo 
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          photo
           mapPhoto
           totalFeeds
           isParticipant
@@ -515,39 +565,39 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           name
           description
           User {
-            id 
-            firstName 
-            avatar 
+            id
+            firstName
+            avatar
           }
           Enablers {
             id
             firstName
             avatar
-          } 
+          }
           outreach
           type
           photo
           mapPhoto
           TripStart {
-            name 
-            coordinates 
-          } 
+            name
+            coordinates
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
+          }
           Stops {
-            name 
+            name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
+          }
+          country
+          county
+          municipality
+          locality
           membershipStatus
           totalParticipants
           isAdmin
-          } 
+          }
         ... on GroupMembershipRequest {
           id
           gmrStatus:status
@@ -556,36 +606,36 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             name
             description
             User {
-              id 
-              firstName 
-              avatar 
-            } 
+              id
+              firstName
+              avatar
+            }
             outreach
             type
             photo
             mapPhoto
             TripStart {
-              name 
-              coordinates 
-            } 
+              name
+              coordinates
+            }
             TripEnd {
-              name 
+              name
               coordinates
-            } 
+            }
             Stops {
-              name 
+              name
               coordinates
-            } 
-            country 
-            county 
+            }
+            country
+            county
             municipality
             Enablers {
-              id 
-              firstName 
+              id
+              firstName
               avatar
               deleted
-            } 
-            locality 
+            }
+            locality
             membershipStatus
             totalParticipants
             isAdmin
@@ -614,10 +664,10 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
           }
           userStatus
           User {
-            id 
-            firstName 
-            avatar 
-          } 
+            id
+            firstName
+            avatar
+          }
         }
       }
       read
