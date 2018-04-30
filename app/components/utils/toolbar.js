@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   wrapper: {
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 10,
+    zIndex: 100,
   },
   floated: {
     position: 'absolute',
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
 
 class ToolBar extends PureComponent {
   backButton = () => {
-    const { navigation, onBack, transparent } = this.props;
+    const { navigation, onBack, transparent, animatable } = this.props;
     const params = navigation.state.params || {};
     let backHandler = navigation.goBack;
 
@@ -76,7 +77,7 @@ class ToolBar extends PureComponent {
     }
 
     let elevation = transparent ? 5 : 0;
-    if (transparent) {
+    if (transparent && animatable) {
       if (params.animatedValue) {
         elevation = params.animatedValue.interpolate({
           inputRange: [0, 50],
@@ -123,13 +124,13 @@ class ToolBar extends PureComponent {
   }
 
   render() {
-    const { navigation, transparent, offset } = this.props;
+    const { navigation, transparent, offset, showsGradientBackground, animatable } = this.props;
     const params = navigation.state.params || {};
     let backgroundColor = transparent ? 'transparent' : Colors.background.fullWhite;
     let elevation = transparent ? 0 : 10;
     let shadowOpacity = transparent ? 0 : 0.25;
 
-    if (transparent) {
+    if (transparent && animatable) {
       if (params.animatedValue) {
         backgroundColor = params.animatedValue.interpolate({
           inputRange: [0, 50],
@@ -160,9 +161,11 @@ class ToolBar extends PureComponent {
           { shadowOpacity },
         ]}
       >
-        <View style={styles.gradientWrapper}>
-          <LinearGradient colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0)']} style={{ height: 70 }} />
-        </View>
+        {
+          showsGradientBackground && <View style={styles.gradientWrapper}>
+            <LinearGradient colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0)']} style={{ height: 70 }} />
+          </View>
+        }
         <Animated.View style={[
           styles.toolbar,
           { backgroundColor },
@@ -179,6 +182,8 @@ class ToolBar extends PureComponent {
 ToolBar.propTypes = {
   title: PropTypes.string,
   transparent: PropTypes.bool,
+  showsGradientBackground: PropTypes.bool,
+  animatable: PropTypes.bool,
   offset: PropTypes.number,
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
@@ -190,6 +195,8 @@ ToolBar.propTypes = {
 ToolBar.defaultProps = {
   title: '',
   transparent: false,
+  showsGradientBackground: true,
+  animatable: true,
   offset: null,
   onBack: null,
   right: null,

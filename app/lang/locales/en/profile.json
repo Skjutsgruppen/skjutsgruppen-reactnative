@@ -35,7 +35,7 @@
   "my_asked_rides": "My asked rides",
   "users_offered_rides": "{{username}}'s offered rides",
   "rides_user_asked_for": "Rides {{username}} asked for",
-  "users_friends": "{{username}}'s Friends",
+  "users_friends": "{{user}} Friends",
   "are_you_sure_you_want_to_remove": "Are you sure you want to remove",
   "from_your_friends_list": "from your friends list?",
   "facebook_profile": "Facebook profile",

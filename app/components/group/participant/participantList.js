@@ -12,6 +12,7 @@ import ListSearchModal from '@components/profile/ListSearchModal';
 import { withRemoveGroupParticipant } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   errorText: {
@@ -93,7 +94,7 @@ class ParticipantList extends Component {
       bgColor={Colors.background.pink}
       style={styles.button}
     >
-      Add
+      {trans('global.add')}
     </RoundedButton>
   )
 
@@ -102,9 +103,9 @@ class ParticipantList extends Component {
 
     const message = (
       <AppText>
-        Are you sure you want to remove
+        {trans('group.are_you_sure_you_want_to_remove')}
         <AppText fontVarition="bold"> {participant.firstName} {participant.lastName} </AppText>
-        from participants?
+        {trans('group.from_participants')}
       </AppText>
     );
 
@@ -114,8 +115,8 @@ class ParticipantList extends Component {
         visible={confirmModalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error ? 'Retry' : 'Yes'}
-        denyLabel="No"
+        confirmLabel={error ? trans('global.retry') : trans('global.yes')}
+        denyLabel={trans('global.no')}
         onConfirm={this.removeParticipant}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}
@@ -165,7 +166,7 @@ class ParticipantList extends Component {
 
     return (
       <Wrapper>
-        {!isSearching && <Toolbar title="Participants" />}
+        {!isSearching && <Toolbar title={trans('group.participants')} />}
         <DataList
           data={groupMembers}
           header={this.renderListSearch}

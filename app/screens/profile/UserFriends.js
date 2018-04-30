@@ -14,13 +14,20 @@ class UserFriends extends Component {
     header: null,
   };
 
+  isCurrentUser = () => {
+    const { navigation, user } = this.props;
+    const { id } = navigation.state.params;
+
+    return user.id === id;
+  }
+
   render() {
     const { id, username } = this.props.navigation.state.params || this.props.user.id;
-    const title = username || this.props.user.firstName;
+    const user = this.isCurrentUser() ? trans('profile.my') : trans('profile.username_s', { name: username || this.props.user.firstName });
 
     return (
       <Wrapper>
-        <ToolBar title={trans('profile.users_friends', { username: title })} />
+        <ToolBar title={trans('profile.users_friends', { user })} />
         <Friends id={id} />
       </Wrapper>
     );
