@@ -21,6 +21,9 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
+import { getDate } from '@config';
+import AppText from '@components/utils/texts/appText';
+import LoadMore from '@components/message/loadMore';
 
 const AnimatedSectionList = Animated.createAnimatedComponent(
   SectionList,
@@ -187,13 +190,19 @@ class SearchResult extends Component {
       arrowX: 0,
       groups: {},
       trips: [],
-      offset: 0,
-      groupOffset: 0,
-      groupOffsetArray: [],
       sections: [],
-      prevGroups: {},
-      prevTrips: {},
+      prevGroups: { rows: [] },
+      totalTrips: 0,
+      totalGroups: 0,
       filters: [],
+      remainingTrips: [],
+      displayGroup: false,
+      date: null,
+      currentFetchDate: null,
+      prevTrips: { rows: [] },
+      publicTransportEndDate: null,
+      publicTransportData: false,
+      publicTransportRemoved: false,
     };
   }
 
@@ -211,89 +220,109 @@ class SearchResult extends Component {
 
   async componentWillReceiveProps({ searchAllTrips, searchAllGroups }) {
     const { filters } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
 
     if (searchAllGroups && !searchAllGroups.loading && searchAllGroups.rows.length > 0) {
-      if (Object.keys(this.state.prevGroups).length < 1) {
-        await this.setState({ prevGroups: searchAllGroups });
-      } else {
-        let groupRepeated = false;
-        searchAllGroups.rows.forEach((newGroup) => {
-          this.state.groups.data.forEach((prevGroup) => {
-            if (prevGroup.id === newGroup.id) {
-              groupRepeated = true;
-            }
-          });
+      let groupRepeated = false;
+      searchAllGroups.rows.forEach((newGroup) => {
+        this.state.prevGroups.rows.forEach((prevGroup) => {
+          if (prevGroup.id === newGroup.id) {
+            groupRepeated = true;
+          }
+        });
+      });
+
+      if (!groupRepeated && filters.includes(FEED_TYPE_GROUP)) {
+        await this.setState({
+          prevGroups: { ...searchAllGroups },
+          totalGroups: this.state.totalGroups + searchAllGroups.rows.length,
         });
 
-        if (!groupRepeated) {
-          await this.setState({
-            prevGroups: {
-              ...searchAllGroups,
-              ...{ rows: this.state.prevGroups.rows.concat(searchAllGroups.rows) },
-            },
-          });
-        }
+        const groups = {
+          title: 'Group',
+          data: searchAllGroups.rows,
+        };
+
+        await this.setState({ groups });
       }
-
-      const groups = {
-        title: 'Group',
-        data: searchAllGroups.rows,
-      };
-
-
-      if (filters.includes(FEEDABLE_GROUP) && filters.length === 1) {
-        this.state.sections = this.state.groups.concat([groups]);
-      }
-
-      await this.setState({ groups });
     }
 
     if (searchAllTrips && !searchAllTrips.loading) {
-      const { sections } = this.state;
-      let filteredTrips = [];
+      const filteredTrips = [];
+      let publicTransportData = false;
+      let tripCount = 0;
+      let repeated = false;
 
-      if (Object.keys(this.state.prevTrips).length < 1) {
-        filteredTrips = searchAllTrips.rows;
-        await this.setState({ prevTrips: searchAllTrips });
-      } else {
-        searchAllTrips.rows.forEach((newTrip) => {
-          let repeated = false;
-          this.state.prevTrips.rows.forEach((prevTrip) => {
-            if (newTrip.id === prevTrip.id) {
-              repeated = true;
-            }
-          });
-          if (!repeated) {
-            filteredTrips.push(newTrip);
+      searchAllTrips.rows.forEach((newTrip) => {
+        const { __typename } = newTrip;
+        this.state.prevTrips.rows.forEach((prevTrip) => {
+          if (__typename !== 'PublicTransport' && newTrip.id === prevTrip.id) {
+            repeated = true;
+          } else if (__typename === 'PublicTransport' && newTrip.date === prevTrip.date) {
+            repeated = true;
           }
         });
+        if (!repeated) {
+          if (__typename === 'PublicTransport' && publicTransportSelected) {
+            filteredTrips.push(newTrip);
+            publicTransportData = true;
+          } else if (__typename !== 'PublicTransport') {
+            tripCount += 1;
+            filteredTrips.push(newTrip);
+          }
+        }
+      });
 
-        this.setState({
-          prevTrips: {
-            ...searchAllTrips,
-            ...{ rows: this.state.prevTrips.rows.concat(filteredTrips) },
-          },
+      if (repeated && this.state.publicTransportData) {
+        publicTransportData = true;
+      }
+
+      this.setState(
+        {
+          totalTrips: this.state.totalTrips + tripCount,
+          publicTransportData,
+          prevTrips: { ...searchAllTrips },
+        },
+      );
+
+      let newSections = this.state.sections;
+      const lastSection = newSections[newSections.length - 1];
+      const remainingTrips = this.state.remainingTrips;
+      const tripsObj = [];
+
+      if (searchAllTrips.rows.length < 1) await this.setState({ displayGroup: true });
+
+      if (filteredTrips.length > 0) {
+        filteredTrips.forEach(async (a) => {
+          const titleDate = new Date(a.date);
+          const title = Moment(titleDate).format('MMM D, YYYY');
+          const { __typename } = a;
+
+          if (__typename === 'PublicTransport') {
+            await this.setState({ publicTransportEndDate: getDate(a.ServiceDays[0].planningPeriodEnd).format('YYYY-MM-DD') });
+          }
+
+          if (!this.state.date) {
+            await this.setState({ date: title });
+          }
+
+          if (this.state.date && this.state.date !== title) {
+            remainingTrips[title] = remainingTrips[title] || [];
+            remainingTrips[title].push(a);
+            await this.setState({ displayGroup: true });
+          } else {
+            tripsObj[title] = tripsObj[title] || [];
+            tripsObj[title].push(a);
+          }
         });
       }
 
-      let newSections = this.state.sections;
-
-      const tripsObj = filteredTrips.reduce((r, a) => {
-        let title = new Date(a.date);
-        title = Moment(title).format('MMM D, YYYY');
-        r[title] = r[title] || [];
-        r[title].push(a);
-
-        return r;
-      }, Object.create(null));
-
+      await this.setState({ remainingTrips });
       let trips = [];
 
       if (Object.keys(tripsObj).length > 0) {
         trips = Object.keys(tripsObj).map(key => ({ title: key, data: tripsObj[key] }));
       }
-
-      const lastSection = newSections[newSections.length - 1];
 
       if (lastSection && lastSection.title !== 'Group' && trips.length > 0) {
         trips.forEach((trip) => {
@@ -308,14 +337,13 @@ class SearchResult extends Component {
         newSections = newSections.concat(trips.map(row => row));
       }
 
-      await this.setState({ trips });
-
-      if (Object.keys(this.state.groups).length > 0 &&
-        this.props.filters.includes(FEED_TYPE_GROUP)) {
+      if (this.shouldDisplayGroup()) {
         let groupRepeated = false;
+        let groupIndex = null;
 
-        newSections.forEach((section) => {
+        newSections.forEach((section, index) => {
           if (section.title === 'Group') {
+            groupIndex = index;
             section.data.forEach((group) => {
               this.state.groups.data.forEach((newGroup) => {
                 if (newGroup.id === group.id) {
@@ -327,8 +355,8 @@ class SearchResult extends Component {
         });
 
         if (!groupRepeated && this.state.groups) {
-          if (lastSection && lastSection.title === 'Group' && newSections.length > 0) {
-            newSections[newSections.length - 1].data = newSections[newSections.length - 1]
+          if (groupIndex !== null) {
+            newSections[groupIndex].data = newSections[groupIndex]
               .data.concat(this.state.groups.data);
           } else {
             newSections = newSections.concat(this.state.groups);
@@ -336,7 +364,32 @@ class SearchResult extends Component {
         }
       }
 
-      await this.setState({ sections: newSections, offset: sections.length });
+      let remainingTripsObj = [];
+
+      if (Object.keys(remainingTrips).length > 0 &&
+        (Object.keys(this.state.groups).length > 0 || !filters.includes(FEED_TYPE_GROUP))) {
+        remainingTripsObj = Object.keys(remainingTrips)
+          .map(key => ({ title: key, data: remainingTrips[key] }));
+      }
+
+      if (Object.keys(remainingTripsObj).length > 0) {
+        const lastIndex = newSections[newSections.length - 1];
+        if (lastIndex && lastIndex.title !== 'Group' && Object.keys(remainingTripsObj).length > 0) {
+          remainingTripsObj.forEach((trip) => {
+            if (trip.title === lastIndex.title) {
+              newSections[newSections.length - 1].data = newSections[newSections.length - 1]
+                .data.concat(trip.data);
+            } else {
+              newSections = newSections.concat(trip);
+            }
+          });
+        } else {
+          newSections = newSections.concat(remainingTripsObj.map(row => row));
+        }
+        this.setState({ remainingTrips: [] });
+      }
+
+      await this.setState({ trips, sections: newSections });
     }
   }
 
@@ -358,28 +411,33 @@ class SearchResult extends Component {
 
   onFilterSelect = (param) => {
     const { filters } = this.state;
+    const { searchAllGroups, searchAllTrips } = this.props;
 
-    if (filters.includes(param)) {
-      filters.splice(filters.indexOf(param), 1);
-    } else {
-      filters.push(param);
-    }
-
-    if (filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)) {
-      this.setState({ resultsStyle: 'list' });
-    } else {
-      this.setState({ resultsStyle: 'card' });
-    }
-
-    if (filters.length > 0) {
-      this.setState({ filters });
-
-      if (filters.includes(FEED_TYPE_OFFER) || filters.includes(FEED_TYPE_WANTED)) {
-        this.refetchTrips();
+    if (!searchAllGroups.loading || !searchAllTrips.loading) {
+      if (filters.includes(param)) {
+        filters.splice(filters.indexOf(param), 1);
+      } else {
+        filters.push(param);
       }
 
-      if (filters.includes(FEED_TYPE_GROUP)) {
-        this.refetchGroups();
+      if (filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)) {
+        this.setState({ resultsStyle: 'list' });
+      } else {
+        this.setState({ resultsStyle: 'card' });
+      }
+
+      if (filters.length > 0) {
+        this.setState({ filters, currentFetchDate: null });
+
+        if (filters.includes(FEED_TYPE_OFFER) ||
+          filters.includes(FEED_TYPE_WANTED) ||
+          filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)) {
+          this.refetchTrips();
+        }
+
+        if (filters.includes(FEED_TYPE_GROUP)) {
+          this.refetchGroups();
+        }
       }
     }
   }
@@ -387,6 +445,146 @@ class SearchResult extends Component {
   setArrowOffset = (x, width) => {
     const xOffset = x + 20 + (width / 2);
     this.setState({ arrowX: xOffset });
+  }
+
+  getFetchDate = () => {
+    const { dateSelected, dates } = this.props;
+    const { filters, publicTransportData } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    let { currentFetchDate } = this.state;
+
+    if (!publicTransportData && publicTransportSelected && !dateSelected) {
+      return [];
+    }
+
+    if (!dateSelected && publicTransportSelected) {
+      if (!currentFetchDate) {
+        currentFetchDate = getDate();
+      } else {
+        currentFetchDate = getDate(currentFetchDate);
+      }
+
+      currentFetchDate = currentFetchDate.add(1, 'd').format('YYYY-MM-DD');
+      this.setState({ currentFetchDate });
+
+      return currentFetchDate;
+    }
+
+    return dates;
+  }
+
+  getAfterDate = () => {
+    const { dateSelected } = this.props;
+    const { currentFetchDate } = this.state;
+    const { filters, publicTransportData } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    if (!publicTransportData && publicTransportSelected && !dateSelected) {
+      if (currentFetchDate) {
+        return currentFetchDate;
+      }
+
+      return getDate().format('YYYY-MM-DD');
+    }
+
+    return null;
+  }
+
+  getLimitValue = () => {
+    const { dateSelected } = this.props;
+    const { filters } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    if (!dateSelected && publicTransportSelected) {
+      return null;
+    }
+
+    return 10;
+  }
+
+  getOffsetValue = () => {
+    const { dateSelected } = this.props;
+    const { filters, totalTrips } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    if (!dateSelected && publicTransportSelected) {
+      return null;
+    }
+
+    return totalTrips;
+  }
+
+  shouldDisplayGroup = () => {
+    const { dateSelected, searchAllTrips: { rows, count } } = this.props;
+    const { filters, displayGroup, groups, totalTrips } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    if (Object.keys(groups).length < 1 || !filters.includes(FEED_TYPE_GROUP)) {
+      return false;
+    }
+
+    if (rows.length < 1) {
+      return true;
+    }
+
+    if (publicTransportSelected && dateSelected) {
+      return true;
+    }
+
+    if (displayGroup) {
+      return true;
+    }
+
+    if (!publicTransportSelected && dateSelected && count >= totalTrips) {
+      return true;
+    }
+
+    return displayGroup;
+  }
+
+  shouldRefetchMore = () => {
+    const { dateSelected, searchAllTrips } = this.props;
+    const {
+      publicTransportEndDate,
+      totalTrips,
+      publicTransportData,
+      publicTransportRemoved,
+      filters,
+    } = this.state;
+    const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+    const fetchDate = this.getFetchDate();
+
+    if (dateSelected && publicTransportSelected) {
+      return false;
+    }
+
+    if (publicTransportSelected &&
+      publicTransportEndDate &&
+      !Moment(fetchDate).isBefore(publicTransportEndDate)
+    ) {
+      return false;
+    }
+
+    if (!publicTransportSelected && !dateSelected && totalTrips >= searchAllTrips.count) {
+      return false;
+    }
+
+    if (!publicTransportSelected && dateSelected && totalTrips >= searchAllTrips.count) {
+      return false;
+    }
+
+    if (!publicTransportData && publicTransportSelected &&
+      searchAllTrips.rows.length > 1 && totalTrips >= searchAllTrips.count) {
+      return false;
+    }
+
+    if (publicTransportRemoved && totalTrips >= searchAllTrips.count) {
+      return false;
+    }
+
+    return true;
   }
 
   redirect = (page) => {
@@ -397,33 +595,61 @@ class SearchResult extends Component {
 
   refetchTrips = async () => {
     const { filters } = this.state;
-    const { searchAllTrips, direction } = this.props;
+    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj } = this.props;
     const newfilter = filters.filter(row => !(row === FEED_TYPE_GROUP));
+    const publicTransportSelected = this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+    let customDate = dates;
 
-    await this.setState({ prevTrips: [], trips: [], sections: [] }, () => {
-      searchAllTrips.refetch({
-        filters: newfilter,
-        offset: 0,
-        direction,
+    if (!dateSelected && publicTransportSelected && toObj.name !== '' && fromObj.name !== '') {
+      customDate = getDate().format('YYYY-MM-DD');
+    }
+
+    await this.setState(
+      {
+        totalTrips: 0,
+        prevTrips: { rows: [] },
+        date: null,
+        trips: [],
+        remainingTrips: [],
+        sections: [],
+        displayGroup: false,
+        currentFetchDate: null,
+        publicTransportData: false,
+        publicTransportEndDate: null,
+        publicTransportRemoved: false,
+      },
+      () => {
+        searchAllTrips.refetch({
+          filters: newfilter,
+          direction,
+          dates: customDate,
+          limit: this.getLimitValue(),
+          offset: this.getOffsetValue(),
+        });
       });
-    });
   }
 
   refetchGroups = async () => {
     const { searchAllGroups, direction } = this.props;
 
-    await this.setState({ prevGroups: [], groups: {}, sections: [] }, () => {
-      searchAllGroups.refetch({
-        offset: 0,
-        direction,
+    await this.setState(
+      {
+        prevGroups: { rows: [] },
+        groups: {},
+        sections: [],
+        totalGroups: 0,
+      }, () => {
+        searchAllGroups.refetch({
+          offset: 0,
+          direction,
+        });
       });
-    });
   }
 
   formatDates() {
-    const { dates } = this.props;
+    const { dates, dateSelected } = this.props;
 
-    if (dates.length <= 0) {
+    if (dates.length <= 0 || !dateSelected) {
       return trans('search.all_dates_and_times');
     }
 
@@ -441,13 +667,59 @@ class SearchResult extends Component {
   switchResultsStyle = style => this.setState({ resultsStyle: style });
 
   goBack = () => {
-    const { navigation, filters, fromObj, toObj, dates, direction } = this.props;
+    const { navigation, fromObj, toObj, direction, dateSelected } = this.props;
+    const { filters } = this.state;
+    let { dates } = this.props;
+
+    if (!dateSelected) {
+      dates = [];
+    }
 
     navigation.navigate('Search', { filters, fromObj, toObj, dates, direction });
   }
 
+  loadMoreGroups = () => {
+    const {
+      from,
+      dates,
+      searchAllGroups,
+    } = this.props;
+    let { to } = this.props;
+    const { totalGroups } = this.state;
+
+    if (to && to.length === 0) {
+      to = null;
+    }
+
+    if (!(searchAllGroups.loading ||
+      (totalGroups >= searchAllGroups.count))
+      && this.props.filters.includes(FEED_TYPE_GROUP)) {
+      searchAllGroups.fetchMore({
+        variables: {
+          from,
+          to,
+          dates,
+          offset: totalGroups,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult || fetchMoreResult.groupSearch.rows.length === 0) {
+            return previousResult;
+          }
+
+          return {
+            groupSearch: {
+              ...previousResult.groupSearch,
+              ...{ rows: fetchMoreResult.groupSearch.rows },
+            },
+          };
+        },
+      });
+    }
+  }
+
   renderListType = () => {
-    const { searchAllTrips, searchAllGroups, filters } = this.props;
+    const { searchAllTrips, searchAllGroups } = this.props;
+    const { filters } = this.state;
 
     if ((searchAllTrips.count > 0 || searchAllGroups.count > 0)
       && !filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)
@@ -479,7 +751,7 @@ class SearchResult extends Component {
     if (this.state.resultsStyle === 'list') {
       return (
         <View style={styles.sectionHeaderWrapper}>
-          <Text style={styles.sectionHeader}>{title === 'Group' ? 'Groups' : title}</Text>
+          <AppText style={styles.sectionHeader}>{title === 'Group' ? 'Groups' : title}</AppText>
           {title !== 'Group' &&
             <View style={[styles.indicators, styles.flexRow]}>
               <View style={[styles.flexRow, styles.indicatorWrapper]}>
@@ -497,11 +769,31 @@ class SearchResult extends Component {
     return null;
   }
 
-  renderSectionFooter = () => <View style={styles.sectionDivider} />;
+  renderSectionFooter = (title) => {
+    const { totalGroups } = this.state;
+    const { searchAllGroups: { loading, count } } = this.props;
+    const groupCount = count - totalGroups;
+
+    return (
+      <View style={styles.sectionDivider}>
+        {title === 'Group' && loading &&
+          <Loading style={{ marginBottom: 16 }} />
+        }
+        {title === 'Group' && !loading &&
+          groupCount > 0 &&
+          <LoadMore
+            onPress={() => this.loadMoreGroups()}
+            remainingCount={groupCount}
+            style={{ height: 60 }}
+          />
+        }
+      </View>
+    );
+  }
 
   renderFooter = () => {
-    const { searchAllGroups, searchAllTrips } = this.props;
-    if (searchAllGroups.loading || searchAllTrips.loading) {
+    const { searchAllTrips } = this.props;
+    if (searchAllTrips.loading) {
       return (<Loading style={{ marginVertical: 32 }} />);
     }
 
@@ -514,17 +806,18 @@ class SearchResult extends Component {
       fromObj,
       toObj,
       direction,
-      filters,
-      dates,
       searchAllTrips,
       searchAllGroups,
     } = this.props;
     let { to } = this.props;
-    const { sections } = this.state;
+    const { sections, filters } = this.state;
     const namePlace = `${fromObj.name || this.prettify(direction)} - ${toObj.name || this.prettify(direction)}`;
 
-    if (!searchAllTrips.loading && searchAllTrips.count === 0
-      && !searchAllGroups.loading && searchAllGroups.count === 0
+    if (
+      !searchAllTrips.loading && (searchAllTrips.count === 0 ||
+        (!filters.includes(FEED_TYPE_OFFER) && !filters.includes(FEED_TYPE_WANTED)))
+      && !searchAllGroups.loading &&
+      (searchAllGroups.count === 0 || !filters.includes(FEED_TYPE_GROUP))
     ) {
       return (
         <NoResult
@@ -546,50 +839,64 @@ class SearchResult extends Component {
             onPress={this.onPress}
             searchResult={item}
             resultsStyle={this.state.resultsStyle}
+            displayGroup={this.shouldDisplayGroup()}
           />
         )}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])}
         keyExtractor={(item, index) => index}
         renderSectionHeader={({ section }) => this.renderSectionHeader(section.title)}
-        renderSectionFooter={this.renderSectionFooter}
-        onEndReachedThreshold={0.8}
+        renderSectionFooter={({ section }) => this.renderSectionFooter(section.title)}
+        onEndReachedThreshold={0.01}
         ListHeaderComponent={this.renderListType}
         ListFooterComponent={this.renderFooter}
         refreshing={false}
+        bounces={false}
         onRefresh={() => {
           if (this.state.filters.includes(FEED_TYPE_GROUP)) {
             this.refetchGroups();
           }
           if (this.state.filters.includes(FEED_TYPE_OFFER) ||
-            this.state.filters.includes(FEED_TYPE_OFFER)) {
+            this.state.filters.includes(FEED_TYPE_OFFER) ||
+            this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)
+          ) {
             this.refetchTrips();
           }
         }}
         onEndReached={() => {
-          const { prevTrips, prevGroups } = this.state;
-          if (searchAllTrips.loading ||
-            (prevTrips.rows && prevTrips.rows.length >= prevTrips.count)) {
-            if (searchAllGroups.loading || searchAllGroups.rows.length >= searchAllGroups.count) {
-              return;
-            }
+          if (searchAllTrips.loading || searchAllGroups.loading) {
+            return;
           }
 
           if (to && to.length === 0) {
             to = null;
           }
 
-          if (!(searchAllTrips.loading ||
-            (prevTrips.rows && prevTrips.rows.length >= prevTrips.count))
-            && (this.props.filters.includes(FEED_TYPE_OFFER)
-              || this.props.filters.includes(FEED_TYPE_WANTED))) {
-            const updatedFilters = filters.filter(row => !(row === FEED_TYPE_GROUP));
+          const fetchDate = this.getFetchDate();
+          const { publicTransportData } = this.state;
+          const publicTransportSelected = this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
+
+          if (!(searchAllTrips.loading) &&
+            (this.state.filters.includes(FEED_TYPE_OFFER)
+              || this.state.filters.includes(FEED_TYPE_WANTED)
+              || publicTransportSelected
+            ) &&
+            this.shouldRefetchMore()) {
+            let updatedFilters = this.state.filters.filter(row => !(row === FEED_TYPE_GROUP));
+
+            if (publicTransportSelected && !publicTransportData) {
+              updatedFilters = updatedFilters.filter(row => row !== FEED_TYPE_PUBLIC_TRANSPORT);
+              this.setState({ publicTransportRemoved: true });
+            }
+
             searchAllTrips.fetchMore({
               variables: {
                 from,
                 to,
                 filters: updatedFilters,
-                dates,
-                offset: prevTrips.rows.length,
+                dates: fetchDate,
+                limit: this.getLimitValue(),
+                offset: this.getOffsetValue(),
+                afterDate: this.getAfterDate(),
               },
               updateQuery: (previousResult, { fetchMoreResult }) => {
                 if (!fetchMoreResult || fetchMoreResult.tripSearch.rows.length === 0) {
@@ -598,32 +905,10 @@ class SearchResult extends Component {
                 return {
                   tripSearch: {
                     ...previousResult.tripSearch,
-                    ...{ rows: fetchMoreResult.tripSearch.rows },
-                  },
-                };
-              },
-            });
-          }
-
-          if (!(searchAllGroups.loading ||
-            (prevGroups.rows && prevGroups.rows.length >= prevGroups.count))
-            && this.props.filters.includes(FEED_TYPE_GROUP)) {
-            searchAllGroups.fetchMore({
-              variables: {
-                from,
-                to,
-                dates,
-                offset: prevGroups.rows.length,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                if (!fetchMoreResult || fetchMoreResult.groupSearch.rows.length === 0) {
-                  return previousResult;
-                }
-
-                return {
-                  groupSearch: {
-                    ...previousResult.groupSearch,
-                    ...{ rows: fetchMoreResult.groupSearch.rows },
+                    ...{
+                      rows: fetchMoreResult.tripSearch.rows,
+                      count: fetchMoreResult.tripSearch.count,
+                    },
                   },
                 };
               },
@@ -803,6 +1088,7 @@ SearchResult.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.number,
   }),
+  dateSelected: PropTypes.bool.isRequired,
 };
 
 SearchResult.defaultProps = {

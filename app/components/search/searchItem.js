@@ -8,7 +8,7 @@ import GroupItem from '@components/search/groupItem';
 import PublicTransportItem from '@components/search/publicTransportItem';
 import { UcFirst } from '@config';
 
-const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
+const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle, displayGroup }) => {
   if (resultsStyle === 'list') {
     if (searchResult.url) {
       return (<PublicTransportItem publicTransport={searchResult} />);
@@ -30,14 +30,18 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle }) => {
       );
     }
 
-    return (
-      <GroupItem
-        onPress={() => onPress(FEEDABLE_GROUP, searchResult)}
-        imageURI={searchResult.photo ? searchResult.photo : searchResult.mapPhoto}
-        title={searchResult.name}
-        colorOverlay={!searchResult.photo}
-      />
-    );
+    if (displayGroup) {
+      return (
+        <GroupItem
+          onPress={() => onPress(FEEDABLE_GROUP, searchResult)}
+          imageURI={searchResult.photo ? searchResult.photo : searchResult.mapPhoto}
+          title={searchResult.name}
+          colorOverlay={!searchResult.photo}
+        />
+      );
+    }
+
+    return null;
   }
 
   if (searchResult.type === FEED_TYPE_WANTED || searchResult.type === FEED_TYPE_OFFER) {
@@ -56,10 +60,12 @@ SearchItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
   resultsStyle: PropTypes.string,
+  displayGroup: PropTypes.bool,
 };
 
 SearchItem.defaultProps = {
   resultsStyle: 'card',
+  displayGroup: false,
 };
 
 export default SearchItem;
