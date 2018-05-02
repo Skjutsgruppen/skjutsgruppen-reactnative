@@ -11,14 +11,14 @@ import Share from '@components/common/share';
 import { withShare } from '@services/apollo/share';
 import GroupImage from '@components/group/groupImage';
 import GroupMap from '@components/group/groupMap';
-import Participants from '@components/group/participants';
+import ParticipantAvatar from '@components/group/participantAvatar';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
 
-const ParticipantListBubble = withGroupMembers(Participants);
+const ParticipantListBubble = withGroupMembers(ParticipantAvatar);
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -102,6 +102,14 @@ class JoinGroup extends Component {
 
   componentWillReceiveProps(props) {
     this.updateState(props);
+  }
+
+  onPress = (type) => {
+    const { navigation, group } = this.props;
+
+    if (type === 'Participants') {
+      navigation.navigate('Participants', { group });
+    }
   }
 
   onMapPress = () => {
@@ -236,7 +244,13 @@ class JoinGroup extends Component {
             />
           }
           <AppText style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</AppText>
-          <ParticipantListBubble id={group.id} offset={0} />
+          <ParticipantListBubble
+            id={group.id}
+            offset={0}
+            onPress={this.onPress}
+            enabler={false}
+            displayNumber={false}
+          />
           <AppText style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</AppText>
           <AppText style={styles.text}>
             {group.type === OPEN_GROUP && trans('detail.open_group')}
