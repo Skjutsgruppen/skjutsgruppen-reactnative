@@ -273,7 +273,7 @@ class Profile extends Component {
     }
 
     if (type === 'conversation') {
-      navigation.navigate('UserConversation', { username: user.firstName });
+      navigation.navigate('UserConversation', { username: user.firstName, userId: id });
     }
 
     if (type === REPORT_TYPE_USER) {
@@ -363,7 +363,8 @@ class Profile extends Component {
     this.setState({ loading: true });
     acceptFriendRequest(user.friendRequestId, currentUser.id, user.id, true)
       .then(refetch)
-      .then(() => this.setState({ loading: false, action: ACTION_ACCEPTED }))
+      .then(() => this.setState({ action: ACTION_ACCEPTED }))
+      .then(() => this.setState({ loading: false }))
       .catch(() => this.setState({ loading: false }));
   }
 
@@ -458,7 +459,7 @@ class Profile extends Component {
         <View style={{ paddingHorizontal: 20 }}>
           <AppText centered fontVariation="semibold" color={Colors.text.darkGray}>{firstName}</AppText>
           <AppText centered fontVariation="semibold" color={Colors.text.darkGray}>
-            asks to be your friend
+            {trans('profile.asks_to_be_your_friend')}
           </AppText>
         </View>
         {this.state.loading ? <Loading style={{ marginVertical: 20 }} /> : (
@@ -469,7 +470,7 @@ class Profile extends Component {
             >
               <View style={styles.actionButton}>
                 <Image source={AcceptIcon} />
-                <Text style={[styles.actionLabel, styles.bold]}>Accept</Text>
+                <Text style={[styles.actionLabel, styles.bold]}>{trans('profile.accept')}</Text>
               </View>
             </TouchableHighlight>
             <TouchableHighlight
@@ -478,7 +479,7 @@ class Profile extends Component {
             >
               <View style={styles.actionButton}>
                 <Image source={RejectIcon} />
-                <Text style={[styles.actionLabel, styles.bold]}>Reject</Text>
+                <Text style={[styles.actionLabel, styles.bold]}>{trans('profile.reject')}</Text>
               </View>
             </TouchableHighlight>
           </View>
