@@ -12,6 +12,8 @@ import ListSearchModal from '@components/profile/ListSearchModal';
 import StickySectionHeader from '@components/profile/stickySectionHeader';
 import SectionDivider from '@components/profile/sectionDivider';
 import { trans } from '@lang/i18n';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   listWrapper: {
@@ -61,6 +63,13 @@ class UserConversation extends PureComponent {
     const { navigation } = this.props;
     this.onClose();
     navigation.navigate('ExperienceDetail', { experience });
+  }
+
+  isCurrentUser = () => {
+    const { navigation, user } = this.props;
+    const { userId } = navigation.state.params;
+
+    return user.id === userId;
   }
 
   renderSearchModal = () => (
@@ -129,10 +138,11 @@ class UserConversation extends PureComponent {
 
   render() {
     const { username } = this.props.navigation.state.params;
+    const user = this.isCurrentUser() ? trans('profile.I') : (username || this.props.user.firstName);
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar title={trans('profile.rides_user_talked_about', { username })} />
+        <ToolBar title={trans('profile.rides_user_talked_about', { user })} />
         <View style={styles.listWrapper}>
           {this.renderSectionList()}
           {this.renderSearchModal()}
@@ -151,6 +161,12 @@ UserConversation.propTypes = {
   conversations: PropTypes.shape({
     rows: PropTypes.array,
   }).isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default withConversation(UserConversation);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(withConversation, connect(mapStateToProps))(UserConversation);

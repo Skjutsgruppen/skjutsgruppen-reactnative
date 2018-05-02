@@ -451,6 +451,40 @@ class RouteMap extends PureComponent {
     });
   }
 
+  renderTrips = () => {
+    let coordinate = {};
+    const { trips } = this.state;
+
+    if (trips.length < 1) {
+      return null;
+    }
+
+    try {
+      return trips.map((trip) => {
+        coordinate = {
+          latitude: trip.TripStart.coordinates[1],
+          longitude: trip.TripStart.coordinates[0],
+        };
+        return (
+          <Marker
+            key={`${trip.id}-${moment().unix()}`}
+            onPress={(e) => {
+              e.stopPropagation();
+              this.onMarkerPress(trip);
+            }}
+            coordinate={coordinate}
+            image={trip.User.avatar}
+            count={trip.seats}
+            tripType={trip.type}
+          />
+        );
+      });
+    } catch (err) {
+      console.warn(err);
+      return null;
+    }
+  }
+
   render() {
     const { loading, locationSharedToSpecificResource, navigation } = this.props;
     const {
@@ -470,7 +504,6 @@ class RouteMap extends PureComponent {
       <View style={styles.container}>
         <Navigation
           arrowBackIcon
-          showMenu={false}
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
         />
@@ -500,6 +533,7 @@ class RouteMap extends PureComponent {
               <TripMarker type="destination" />
             </MapView.Marker.Animated>
           }
+          {this.renderTrips()}
           {this.renderLiveLocations()}
           {this.renderStops()}
           {(waypoints.length > 0) &&

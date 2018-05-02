@@ -24,5 +24,6 @@
   "cards": "Cards",
   "offered_ride": "Offered ride",
   "ride_that_is_asked_for": "Ride that is asked for",
-  "or_explore_existing_group": "Or explore existing group."
+  "or_explore_existing_group": "Or explore existing group.",
+  "either_from_of_to_is_required": "Either From or To is required."
 }

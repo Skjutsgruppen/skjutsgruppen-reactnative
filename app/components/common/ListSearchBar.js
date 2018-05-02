@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import { AppText } from '@components/utils/texts';
 
@@ -35,7 +35,7 @@ const ListSearchBar = ({ style, onSearchPress }) => (
       source={require('@assets/icons/ic_search.png')}
       style={styles.searchIcon}
     />
-    <AppText size={15} color={Colors.text.gray}>Search</AppText>
+    <AppText size={15} color={Colors.text.gray}>{trans('global.search')}</AppText>
   </TouchableOpacity>
 );
 

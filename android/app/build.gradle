@@ -117,8 +117,8 @@ android {
         applicationId "com.skjutsgruppen"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 13
-        versionName "0.13-Beta"
+        versionCode 15
+        versionName "0.15-Beta"
         ndk {   
             abiFilters "armeabi-v7a", "x86"
         }
@@ -174,7 +174,6 @@ repositories {
 dependencies {
     implementation project(':tipsi-twitter')
     implementation project(':react-native-vector-icons')
-    implementation project(':react-native-maps')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-i18n')
     implementation project(':react-native-fcm')

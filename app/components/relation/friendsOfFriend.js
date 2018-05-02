@@ -8,6 +8,7 @@ import Colors from '@theme/colors';
 import FatArrow from '@assets/icons/icon_arrow_fat.png';
 import ThinArrow from '@assets/icons/ic_arrow_gray.png';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   labelWrapper: {
@@ -165,14 +166,14 @@ class FOF extends PureComponent {
     if (relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={styles.labelWrapper}>
-          <AppText size={13} style={{ textAlign: 'center' }}>You have no friend connections</AppText>
+          <AppText size={13} style={{ textAlign: 'center' }}>{trans('global.you_have_no_friend_connections')}</AppText>
         </View>
       );
     }
 
     return (
       <View style={styles.labelWrapper}>
-        <AppText size={13} style={{ textAlign: 'center' }}>This is how you know {viewee.firstName}</AppText>
+        <AppText size={13} style={{ textAlign: 'center' }}>{trans('global.this_is_how_you_know_user', { user: viewee.firstName })}</AppText>
         <TouchableHighlight
           onPress={this.handleExpand}
           underlayColor={Colors.background.mutedBlue}
@@ -379,7 +380,7 @@ class FOF extends PureComponent {
       return (
         <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
           <AppText size={11} color={Colors.text.gray}>
-            You have no friend connections
+            {trans('global.you_have_no_friend_connections')}
           </AppText>
         </View>
       );
@@ -395,7 +396,7 @@ class FOF extends PureComponent {
         <View>
           <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
             <AppText size={11} color={Colors.text.gray}>
-              {relation.areFriends ? 'You are friends' : 'You are Friends of Friend!'}
+              {relation.areFriends ? trans('detail.you_are_friends') : trans('detail.you_are_friends_of_friends')}
             </AppText>
           </View>
           <View style={[styles.list, styles.listLeft]}>

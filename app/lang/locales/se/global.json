@@ -50,5 +50,21 @@
   "_and_": "se_ and",
   "search": "se_ Search",
   "add": "se_ Add",
-  "about": "se_ ABOUT"  
+  "about": "se_ ABOUT",
+  "is_your_ride_about_to_start": "se_ Is your ride about to start? Would you like to share your location?",
+  "your_ride_is_about_to_start": "se_ Your ride is about to start. Would you like to share your location?",
+  "enjoying_your_ride_make_experience": "se_ Enjoying the ride? Make an experience.",
+  "this_is_how_you_know_user": "se_ This is how you know {{user}}",
+  "you_have_no_friend_connections": "se_ You have no friend connections",
+  "share_my_live_location_for": "se_ Share my live location for...",
+  "choose_with_who_and_for_how_long_you_share": "se_ Choose with who and for how long you share",
+  "fetching_your_position": "se_ Fetching your position.",
+  "stop_sharing_location": "se_ Stop sharing Location",
+  "in_this": "se_ In this",
+  "suggest_a_ride": "se_ Suggest a Ride",
+  "offer_a_ride": "se_ Offer a Ride",
+  "comment": "se_ comment",
+  "send": "se_ Send",
+  "participants_in_this_ride":"se_ PARTICIPANTS IN THIS RIDE",
+  "share_live_location_for": "se_ Share live location for"  
 }

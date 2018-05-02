@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Package from '@components/garden/subscriptionPackage';
 import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -25,43 +26,42 @@ const HelpMore = ({ supportSubscribe }) => (
       <View style={styles.flexRow}>
         <View style={{ flex: 1, marginRight: 12 }}>
           <Title size={15} color={Colors.text.blue} style={{ marginBottom: 16 }}>
-            HELP US MORE</Title>
+            {trans('profile.help_us_more')}
+          </Title>
           <Heading size={26} color={Colors.text.pink} style={{ lineHeight: 36 }}>
-            Show your logo and brand
+            {trans('profile.show_your_logo_and_brand')}
           </Heading>
         </View>
         <Image source={require('@assets/tiny_card.png')} />
       </View>
       <AppText style={{ marginTop: 24, lineHeight: 26 }}>
-        If you’re showing your logo and/or brand
-        in this app you have to choose one of the below options.
-        The more you support the more you help our non-profit movement.
-        Thank you!</AppText>
+        {trans('profile.if_you_are_showing_your_logo')}
+      </AppText>
     </View>
     <Package
       noBackgroud
       elevation={0}
-      durationLabel="Support one year"
+      durationLabel={trans('profile.support_one_year')}
       monthlyAmount={49}
       planId={3}
       supportSubscribe={supportSubscribe}
-      info="Total of 54 kr, auto-renewed every year. Stop when ever you want."
+      info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
     />
     <Package
       elevation={20}
-      durationLabel="Support one year"
+      durationLabel={trans('profile.support_one_year')}
       monthlyAmount={149}
       planId={4}
       supportSubscribe={supportSubscribe}
-      info="Total of 588 kr, auto-renewed every year. Stop when ever you want."
+      info={trans('profile.auto_renewed_every_six_month', { krona: 588 })}
     />
     <Package
       elevation={21}
-      durationLabel="Support one year"
+      durationLabel={trans('profile.support_one_year')}
       monthlyAmount={599}
       planId={5}
       supportSubscribe={supportSubscribe}
-      info="Total of 7188 kr, auto-renewed every year. Stop when ever you want."
+      info={trans('profile.auto_renewed_every_six_month', { krona: 7188 })}
     />
   </View>
 );
