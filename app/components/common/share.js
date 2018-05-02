@@ -438,7 +438,7 @@ class Share extends Component {
         }
         {this.showRideParticipants() &&
           <FriendList
-            title="PARTICIPANTS IN THIS RIDE"
+            title={trans('global.participants_in_this_ride')}
             rows={participantsList}
             defaultAvatar
             setOption={id => this.setOption('selectedTripParticipants', id)}

@@ -24,5 +24,6 @@
   "cards": "se_Cards",
   "offered_ride": "se_Offered ride",
   "ride_that_is_asked_for": "se_Ride that is asked for",
-  "or_explore_existing_group": "se_Or explore existing group."
+  "or_explore_existing_group": "se_Or explore existing group.",
+  "either_from_of_to_is_required": "se_ Either From or To is required."  
 }

@@ -9,6 +9,7 @@ import Colors from '@theme/colors';
 import Avatar from '@components/common/avatar';
 import WateringCan from '@assets/icons/ic_watering_can.png';
 import AddPhoto from '@assets/icons/ic_add_photo.png';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -40,16 +41,16 @@ const HowItWorks = ({ user }) => (
       size={15}
       color={Colors.text.blue}
       style={{ marginBottom: 16 }}
-    >THIS IS HOW IT WORKS</Title>
+    >{trans('profile.this_is_how_it_works')}</Title>
     <Heading size={26} color={Colors.text.pink} style={{ lineHeight: 36 }}>
-      Everything is transparent
+      {trans('profile.everything_is_transparent')}
     </Heading>
     <View style={styles.row}>
       <View style={styles.iconWrapper}>
         <Image source={WateringCan} />
       </View>
       <AppText style={styles.text}>
-        All the costs are transparent.(scroll down to see them)
+        {trans('profile.all_the_costs_are_transparent')}
       </AppText>
     </View>
     <View style={styles.row}>
@@ -57,7 +58,7 @@ const HowItWorks = ({ user }) => (
         <Avatar size={62} isSupporter imageURI={user.avatar} />
       </View>
       <AppText style={styles.text}>
-        All the costs are transparent.(scroll down to see them)
+        {trans('profile.all_the_costs_are_transparent')}
       </AppText>
     </View>
     <View style={styles.row}>
@@ -65,15 +66,11 @@ const HowItWorks = ({ user }) => (
         <Image source={AddPhoto} style={{ resizeMode: 'contain' }} />
       </View>
       <AppText style={styles.text}>
-        All the costs are transparent.(scroll down to see them)
+        {trans('profile.all_the_costs_are_transparent')}
       </AppText>
     </View>
     <AppText style={{ lineHeight: 26, marginTop: 48 }}>
-      Your support is payed with your iTunes account or Google Play depending
-      on your device. If you like to continue to support the movement you
-      don’t have to do anything, your support will be auto-renewed.
-      You can turn of auto-renewal by going to your settings
-      in the iTunes store or Google Play.
+      {trans('profile.your_support_is_payed_via')}
     </AppText>
   </View>
 );

@@ -164,19 +164,19 @@ class Garden extends Component {
           <Package
             noBackgroud
             elevation={0}
-            durationLabel="Support six month"
+            durationLabel={trans('profile.support_six_month')}
             monthlyAmount={9}
             planId={1}
             supportSubscribe={this.onSupportSubscribe}
-            info="Total of 54 kr, auto-renewed every six month. Stop when ever you want."
+            info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
           />
           <Package
             elevation={20}
-            durationLabel="Support one month"
+            durationLabel={trans('profile.support_one_month')}
             monthlyAmount={29}
             planId={2}
             supportSubscribe={this.onSupportSubscribe}
-            info="Total of 29 kr, auto-renewed every six month. Stop when ever you want."
+            info={trans('profile.auto_renewed_every_six_month', { krona: 29 })}
           />
           <HelpMore
             supportSubscribe={this.onSupportSubscribe}
@@ -200,7 +200,10 @@ class Garden extends Component {
             onPress={() => this.redirect('Profile')}
           />
           <ProfileAction label={trans('profile.your_support_of_the_garden')} />
-          <ProfileAction label={trans('profile.notification_setting')} />
+          <ProfileAction
+            label={trans('profile.setting')}
+            onPress={() => this.redirect('Settings')}
+          />
           <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText

@@ -1,6 +1,7 @@
 import FCM from 'react-native-fcm';
 import { getDate } from '@config';
 import { SHARE_LOCATION_MINUTE, SHARE_EXPERIENCE_DEFAULT_MINUTE } from '@config/constant';
+import { trans } from '@lang/i18n';
 
 class Scheduler {
   getMillisecond = date => new Date(date.format('YYYY-MM-DD HH:mm:ss')).getTime();
@@ -32,16 +33,16 @@ class Scheduler {
       let locationBody = '';
 
       if (payload.flexibilityInfo && payload.flexibilityInfo.duration > 0) {
-        locationBody = 'Is your ride about to start? Would you like to share your location?';
+        locationBody = trans('global.is_your_ride_about_to_start');
       } else {
-        locationBody = 'Your ride is about to start. Would you like to share your location?';
+        locationBody = trans('global.your_ride_is_about_to_start');
       }
 
       this.scheduleNotification(`${payload.id}-location`, locationSharingTime, payload.title, locationBody, payload.id);
     }
 
     if (this.shouldScheduleExperienceSharing(payload.duration, date)) {
-      const experienceBody = 'Enjoying the ride? Make an experience.';
+      const experienceBody = trans('global.enjoying_your_ride_make_experience');
       const experienceSharingTime = this.getTimeForExperienceSharing(payload.duration, date);
 
       this.scheduleNotification(`${payload.id}-experience`, experienceSharingTime, payload.title, experienceBody, payload.id);
