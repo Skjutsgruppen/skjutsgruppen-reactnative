@@ -7,6 +7,7 @@ import { Title } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1,
     height: 48,
     borderRadius: 24,
     overflow: 'hidden',

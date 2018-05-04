@@ -4,34 +4,16 @@ import PropTypes from 'prop-types';
 import { ProgressBar } from '@components/common';
 import { Colors } from '@theme';
 import { trans } from '@lang/i18n';
-import { AppText, Heading } from '@components/utils/texts';
+import { Title, Heading } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-    backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    marginHorizontal: 18,
-    marginBottom: 24,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
+    paddingVertical: 20,
   },
   info: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  title: {
-    color: Colors.text.pink,
-    fontSize: 16,
-    marginBottom: 6,
-  },
-  percentage: {
-    color: Colors.text.yellowGreen,
   },
 });
 
@@ -39,15 +21,16 @@ const CostCard = ({ title, coveredPercentage, totalCost, wrapperStyle }) => (
   <View style={[styles.wrapper, wrapperStyle]}>
     <View style={styles.info}>
       <View>
-        <Heading size={16} fontVariation="bold" style={styles.title}>{title}</Heading>
-        <AppText size={15}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</AppText>
+        <Heading size={18} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6 }}>{title}</Heading>
+        <Title size={15} color={Colors.text.gray}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</Title>
       </View>
       <View>
         <Heading
           fontVariation="bold"
           style={[
             styles.percentage,
-            coveredPercentage === 0 ? { color: Colors.text.lightGray } : {},
+            coveredPercentage === 0 ? { color: Colors.text.lightGray }
+              : { color: Colors.text.yellowGreen },
           ]}
         >
           {`${coveredPercentage}%`}

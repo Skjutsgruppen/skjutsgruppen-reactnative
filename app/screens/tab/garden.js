@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
-import { RoundedButton, Avatar, CostCard } from '@components/common';
 import ProfileAction from '@components/profile/profileAction';
 import { Colors, Gradients } from '@theme';
-import BasketIcon from '@assets/icons/ic_sustain_basket.png';
 import SupportIcon from '@assets/icons/ic_support.png';
 import SupportIconActive from '@assets/icons/ic_support_active.png';
 import AuthService from '@services/auth';
@@ -18,52 +16,37 @@ import { compose } from 'react-apollo';
 import { withRemoveAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
+import Package from '@components/garden/subscriptionPackage';
+import Header from '@components/garden/header';
+import HelpMore from '@components/garden/helpMore';
+import HowItWorks from '@components/garden/howItWorks';
+import Costs from '@components/garden/costs';
+
+import GithubIcon from '@assets/icons/ic_github.png';
+import OpenAPIIcon from '@assets/icons/ic_open_api.png';
 
 const styles = StyleSheet.create({
-  basket: {
-    alignSelf: 'center',
-    marginTop: 40,
-    marginBottom: 24,
-    marginHorizontal: 24,
+  curves: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+  header: {
+    padding: 30,
+    paddingTop: 50,
   },
   heading: {
-    alignSelf: 'center',
-    maxWidth: 280,
-    backgroundColor: 'transparent',
-    color: Colors.text.yellowGreen,
-    textAlign: 'center',
-    marginBottom: 24,
-    marginHorizontal: 24,
-  },
-  text: {
-    alignSelf: 'center',
     maxWidth: 220,
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    backgroundColor: 'transparent',
-    marginHorizontal: 24,
+    lineHeight: 46,
+    marginBottom: 24,
   },
-  button: {
-    marginTop: 36,
-    marginBottom: 36,
-    width: '100%',
-    maxWidth: 200,
-    alignSelf: 'center',
-  },
-  supporterWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+  headerDivider: {
+    height: 1,
+    width: 64,
+    backgroundColor: Colors.text.lightGray,
     marginTop: 24,
-    marginBottom: 50,
-  },
-  avatar: {
-    marginHorizontal: 10,
-  },
-  readMore: {
-    backgroundColor: 'transparent',
-    paddingVertical: 16,
+    marginBottom: 32,
   },
   logout: {
     flexDirection: 'row',
@@ -148,75 +131,60 @@ class Garden extends Component {
   }
 
   render() {
+    const supporter = true;
+    const headingLabel = supporter ? trans('profile.you_are_awesome')
+      : trans('profile.this_app_is_a_self_sustaining_garden');
+    const infoLabel = supporter ? trans('profile.right_now_you_support')
+      : trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
+
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
-        <ScrollView ref={(ref) => { this.scrollView = ref; }}>
-          <Image source={BasketIcon} style={styles.basket} />
-          <Text style={styles.heading}>{trans('profile.this_app_is_a_self_sustaining_garden')}</Text>
-          <Text style={styles.text}>
-            {trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money')}
-          </Text>
-          <RoundedButton
-            onPress={() => { }}
-            bgColor={Colors.background.pink}
-            style={styles.button}
-          >
-            {trans('profile.support_now')}
-          </RoundedButton>
-          <View style={styles.supporterWrapper}>
-            <Avatar isSupporter size={62} source={require('@assets/profilePic.jpg')} style={styles.avatar} />
-            <Avatar isSupporter size={62} source={require('@assets/profilePic.jpg')} style={styles.avatar} />
-            <Avatar isSupporter size={62} source={require('@assets/profilePic.jpg')} style={styles.avatar} />
-          </View>
-          <Text style={[styles.heading, { color: Colors.text.blue }]}>
-            {trans('profile.right_now_your_friends_and_others_supports_cost')}
-          </Text>
-          <CostCard title={trans('profile.server_cost')} coveredPercentage={100} totalCost="2400" />
-          <CostCard title={trans('profile.a_programmer')} coveredPercentage={50} totalCost="18000" />
-          <CostCard title={trans('profile.project_manager')} coveredPercentage={0} totalCost="xxxx" />
-          <View style={styles.readMore}>
-            <Text style={styles.text}>
-              {trans('profile.participants_who_support_the_garden_get_a_grean')}
-            </Text>
-            <RoundedButton
-              onPress={() => { }}
-              bgColor={Colors.background.pink}
-              style={styles.button}
-            >
-              {trans('profile.read_more')}
-            </RoundedButton>
-          </View>
+        <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
+          <Header
+            showTitle={!supporter}
+            showAvatar={supporter}
+            headingLabel={headingLabel}
+            infoLabel={infoLabel}
+          />
+          <Package
+            noBackgroud
+            elevation={0}
+            durationLabel="Support six month"
+            monthlyAmount={9}
+            info="Total of 54 kr, auto-renewed every six month. Stop when ever you want."
+          />
+          <Package
+            elevation={20}
+            durationLabel="Support one month"
+            monthlyAmount={29}
+            info="Total of 29 kr, auto-renewed every six month. Stop when ever you want."
+          />
+          <HelpMore />
+          <HowItWorks />
+          <Costs supporter={supporter} />
           <ProfileAction
             title={trans('profile.we_are_open_source')}
             label={trans('profile.help_make_the_app_better')}
-            icon={require('@assets/icons/ic_github.png')}
+            icon={GithubIcon}
           />
           <ProfileAction
             title={trans('profile.open_api')}
             label={trans('profile.build_get_statistics_and_more')}
-            icon={require('@assets/icons/ic_open_api.png')}
+            icon={OpenAPIIcon}
           />
-          <ProfileAction
-            label={trans('profile.about_the_movement')}
-          />
-          <ProfileAction
-            label={trans('profile.international_ridesharingday')}
-          />
+          <ProfileAction label={trans('profile.about_the_movement')} />
+          <ProfileAction label={trans('profile.international_ridesharingday')} />
           <ProfileAction
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          <ProfileAction
-            label={trans('profile.your_support_of_the_garden')}
-          />
-          <ProfileAction
-            label={trans('profile.notification_setting')}
-          />
-          <ProfileAction
-            label={trans('profile.participant_agreement')}
-          />
+          <ProfileAction label={trans('profile.your_support_of_the_garden')} />
+          <ProfileAction label={trans('profile.notification_setting')} />
+          <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
-            <Text style={{ color: Colors.text.blue, backgroundColor: 'transparent' }}>{trans('profile.log_out')}</Text>
+            <AppText
+              color={Colors.text.blue}
+            >{trans('profile.log_out')}</AppText>
           </TouchableOpacity>
         </ScrollView>
       </LinearGradient>
