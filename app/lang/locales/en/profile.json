@@ -1,9 +1,11 @@
 {
   "this_app_is_a_self_sustaining_garden": "This app is an self-sustaining garden",
+  "you_are_awesome": "You are awesome!",
+  "right_now_you_support" : "Right now you and other participants support:",
   "all_of_us_who_use_the_app_helps_to_work_with_money": "All of us who use the app helps the app to work with money and/or knowledge.",
   "support_now": "Support now",
   "right_now_your_friends_and_others_supports_cost": "Right now your friends and others support these costs:",
-  "server_cost": "Server Costs",
+  "server_cost": "Server, domains",
   "a_programmer": "A programmer",
   "project_manager": "Project manager",
   "participants_who_support_the_garden_get_a_grean": "Participants who support the garden get a green leaf next to their profile picture and can add photos to rides.",
