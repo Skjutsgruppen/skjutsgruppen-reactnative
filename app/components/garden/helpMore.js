@@ -1,5 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
+import PropTypes from 'prop-types';
+
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Package from '@components/garden/subscriptionPackage';
 import Colors from '@theme/colors';
@@ -17,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HelpMore = () => (
+const HelpMore = ({ supportSubscribe }) => (
   <View style={[styles.wrapper, { elevation: 22 }]}>
     <View style={{ paddingBottom: 30, paddingTop: 50, paddingHorizontal: 30 }}>
       <View style={styles.flexRow}>
@@ -41,21 +43,31 @@ const HelpMore = () => (
       elevation={0}
       durationLabel="Support one year"
       monthlyAmount={49}
+      planId={3}
+      supportSubscribe={supportSubscribe}
       info="Total of 54 kr, auto-renewed every year. Stop when ever you want."
     />
     <Package
       elevation={20}
       durationLabel="Support one year"
       monthlyAmount={149}
+      planId={4}
+      supportSubscribe={supportSubscribe}
       info="Total of 588 kr, auto-renewed every year. Stop when ever you want."
     />
     <Package
       elevation={21}
       durationLabel="Support one year"
       monthlyAmount={599}
+      planId={5}
+      supportSubscribe={supportSubscribe}
       info="Total of 7188 kr, auto-renewed every year. Stop when ever you want."
     />
   </View>
 );
+
+HelpMore.propTypes = {
+  supportSubscribe: PropTypes.func.isRequired,
+};
 
 export default HelpMore;

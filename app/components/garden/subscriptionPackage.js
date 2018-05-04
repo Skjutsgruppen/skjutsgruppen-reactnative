@@ -30,7 +30,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const Package = ({ noBackgroud, elevation, durationLabel, monthlyAmount, info }) => {
+const Package = ({
+  noBackgroud,
+  elevation,
+  durationLabel,
+  monthlyAmount,
+  info,
+  planId,
+  supportSubscribe,
+}) => {
   let transparentStyle = {};
   transparentStyle = noBackgroud && { backgroundColor: 'transparent' };
   return (
@@ -40,7 +48,11 @@ const Package = ({ noBackgroud, elevation, durationLabel, monthlyAmount, info })
     >
       <View style={styles.content}>
         <View style={styles.flexRow}>
-          <RoundedButton bgColor={Colors.text.pink} onPress={() => {}} style={{ maxWidth: 200 }}>
+          <RoundedButton
+            bgColor={Colors.text.pink}
+            onPress={() => supportSubscribe(planId)}
+            style={{ maxWidth: 200 }}
+          >
             {durationLabel}
           </RoundedButton>
           <View style={{ marginLeft: 12 }}>
@@ -64,6 +76,8 @@ Package.propTypes = {
   durationLabel: PropTypes.string.isRequired,
   monthlyAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   info: PropTypes.string,
+  planId: PropTypes.number.isRequired,
+  supportSubscribe: PropTypes.func.isRequired,
 };
 
 Package.defaultProps = {
