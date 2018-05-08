@@ -66,5 +66,6 @@
   "comment": "se_ comment",
   "send": "se_ Send",
   "participants_in_this_ride":"se_ PARTICIPANTS IN THIS RIDE",
-  "share_live_location_for": "se_ Share live location for"  
+  "share_live_location_for": "se_ Share live location for",
+  "cancel_auto_renewal": "se_ Cancel auto renewal?"
 }
