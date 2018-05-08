@@ -24,6 +24,7 @@ import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
 import { withSupport, withGenerateClientToken } from '@services/apollo/support';
+import { showPayment } from '@services/braintree/braintreePayment';
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
 import ConfirmModal from '@components/common/confirmModal';
@@ -103,19 +104,20 @@ class Garden extends Component {
   onSupportSubscribe = (planId) => {
     const { support, generateClientToken } = this.props;
 
-    NativeModules.BraintreePayment.setToken(generateClientToken);
-    NativeModules.BraintreePayment.showPayment((paymentMethodNonce) => {
-      this.setState({ subscribing: true, showConfirmModal: true });
+    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+      if (error) {
+        this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
+        return;
+      }
 
       support({ planId, paymentMethodNonce })
         .then(() => {
-          this.setState({
-            subscribing: false,
-            alertMessage: trans('profile.subscribed_success'),
-          });
+          this.setState({ subscribing: false, alertMessage: trans('profile.subscribed_success') });          
+        })
+        .catch((e) => {
+          console.warn(e);
+          this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
         });
-    }, (error) => {
-      console.warn(error);
     });
   }
 
@@ -164,7 +166,7 @@ class Garden extends Component {
 
     if (!data.profile) return null;
 
-    const supporter = data.profile.isSupporter;
+    const supporter = data.profile.isSupporter || false;
     const headingLabel = supporter ? trans('profile.you_are_awesome')
       : trans('profile.this_app_is_a_self_sustaining_garden');
     const infoLabel = supporter ? trans('profile.right_now_you_support')

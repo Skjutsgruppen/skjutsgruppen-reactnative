@@ -56,6 +56,7 @@
 		956622CF24A04E609EF945CE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */; };
 		964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EEE321C8F146089BB8413E /* libBVLinearGradient.a */; };
 		A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A0A6A8E9208766CF0081AA46 /* GeoLocation.m */; };
+		A0B36E8E20A19AFD007F752A /* BraintreePayment.m in Sources */ = {isa = PBXBuildFile; fileRef = A0B36E8D20A19AFD007F752A /* BraintreePayment.m */; };
 		A0CFED7B2088B8BD00558AA7 /* SFUIText-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */; };
 		A0F4DA142091A2F400E7CE8F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0F4D9E02091A2F300E7CE8F /* GoogleService-Info.plist */; };
 		A676CC0789DC476FA3976319 /* SFUIDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 319522A7925E4A4E874D0D69 /* SFUIDisplay-Bold.ttf */; };
@@ -520,6 +521,8 @@
 		9B9A2EFAAD834B01A6223F24 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContacts.a; sourceTree = "<group>"; };
 		A0A6A8E8208766CF0081AA46 /* GeoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeoLocation.h; path = skjutsgruppen/GeoLocation.h; sourceTree = "<group>"; };
 		A0A6A8E9208766CF0081AA46 /* GeoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GeoLocation.m; path = skjutsgruppen/GeoLocation.m; sourceTree = "<group>"; };
+		A0B36E8C20A19AFD007F752A /* BraintreePayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BraintreePayment.h; sourceTree = "<group>"; };
+		A0B36E8D20A19AFD007F752A /* BraintreePayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BraintreePayment.m; sourceTree = "<group>"; };
 		A0F4D9E02091A2F300E7CE8F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = "SFUIText-SemiBold.ttf"; path = "../assets/fonts/SFUIText-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -704,6 +707,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				A0A6A8E8208766CF0081AA46 /* GeoLocation.h */,
 				A0A6A8E9208766CF0081AA46 /* GeoLocation.m */,
+				A0B36E8C20A19AFD007F752A /* BraintreePayment.h */,
+				A0B36E8D20A19AFD007F752A /* BraintreePayment.m */,
 			);
 			name = Skjutsgruppen;
 			sourceTree = SOURCE_ROOT;
@@ -1724,12 +1729,14 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Skjutsgruppen/Pods-Skjutsgruppen-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/BraintreeDropIn/Braintree-UIKit-Localization.bundle",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/TwitterKit/TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Braintree-UIKit-Localization.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterKitResources.bundle",
@@ -1775,6 +1782,7 @@
 				A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A0B36E8E20A19AFD007F752A /* BraintreePayment.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
