@@ -61,6 +61,7 @@ import Message from '@screens/tab/message';
 import Search from '@screens/tab/search';
 import Garden from '@screens/tab/garden';
 import YourSupport from '@screens/garden/yourSupport';
+import SupportReadMore from '@screens/garden/ReadMore';
 
 import Report from '@screens/modal/Report';
 
@@ -129,6 +130,7 @@ export const Routes = {
   Group: { screen: Group },
   Settings: { screen: Settings },
   YourSupport: { screen: YourSupport },
+  SupportReadMore: { screen: SupportReadMore },
 
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },
