@@ -20,6 +20,24 @@ PODS:
   - boost/preprocessor-includes (1.59.0)
   - boost/shared_ptr-includes (1.59.0)
   - boost/string_algorithms-includes (1.59.0)
+  - Braintree/Card (4.14.0):
+    - Braintree/Core
+  - Braintree/Core (4.14.0)
+  - Braintree/PaymentFlow (4.14.0):
+    - Braintree/Card
+    - Braintree/Core
+  - Braintree/UnionPay (4.14.0):
+    - Braintree/Card
+    - Braintree/Core
+  - BraintreeDropIn (6.1.0):
+    - BraintreeDropIn/DropIn (= 6.1.0)
+  - BraintreeDropIn/DropIn (6.1.0):
+    - Braintree/Card (~> 4.11)
+    - Braintree/Core (~> 4.11)
+    - Braintree/PaymentFlow (~> 4.11)
+    - Braintree/UnionPay (~> 4.11)
+    - BraintreeDropIn/UIKit
+  - BraintreeDropIn/UIKit (6.1.0)
   - BVLinearGradient (2.4.0):
     - React
   - DoubleConversion (1.1.5)
@@ -40,7 +58,8 @@ PODS:
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-  - FirebaseCore (4.0.0):
+    - nanopb (~> 0.3)
+  - FirebaseCore (4.0.20):
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
   - FirebaseInstanceID (2.0.10):
     - FirebaseCore (~> 4.0)
@@ -162,6 +181,7 @@ PODS:
   - yoga (0.51.0.React)
 
 DEPENDENCIES:
+  - BraintreeDropIn
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Fabric
@@ -196,6 +216,8 @@ SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Bolts
     - boost
+    - Braintree
+    - BraintreeDropIn
     - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
@@ -208,6 +230,7 @@ SPEC REPOS:
     - Google-Maps-iOS-Utils
     - GoogleMaps
     - GoogleToolboxForMac
+    - nanopb
     - Protobuf
     - TwitterCore
     - TwitterKit
@@ -237,6 +260,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   boost: 30a15ffb6d9aa4646dd3caffc960753f4cb4ca4e
+  Braintree: a538846b544c5785cb0040f86cc97079af74b950
+  BraintreeDropIn: 2e8bba4facf6cc925176637030454d8308223b95
   BVLinearGradient: 4b3f3bdf1ac1a52a5ef5e65c9585d793a7c3f825
   DoubleConversion: ebb6747c5b66026ad4f97b789c3ceac6f18e57a6
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
@@ -264,5 +289,6 @@ SPEC CHECKSUMS:
   yoga: 17521bbb0dd54a47c0b3ac43253e78cdac7488e0
 
 PODFILE CHECKSUM: 24da81854cbe2be6a950aabaec2cb3032f5a6246
+PODFILE CHECKSUM: f1ecbbbbc0c1b24d0253bde81cca77b521e0dc3c
 
 COCOAPODS: 1.5.0

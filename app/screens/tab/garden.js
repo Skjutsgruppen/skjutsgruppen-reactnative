@@ -24,6 +24,8 @@ import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
 import { withSupport, withGenerateClientToken } from '@services/apollo/support';
+import {showPayment} from '@services/braintree/braintreePayment';
+
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
 import ConfirmModal from '@components/common/confirmModal';
@@ -103,6 +105,7 @@ class Garden extends Component {
   onSupportSubscribe = (planId) => {
     const { support, generateClientToken } = this.props;
 
+<<<<<<< HEAD
     NativeModules.BraintreePayment.setToken(generateClientToken);
     NativeModules.BraintreePayment.showPayment((paymentMethodNonce) => {
       this.setState({ subscribing: true, showConfirmModal: true });
@@ -113,9 +116,22 @@ class Garden extends Component {
             subscribing: false,
             alertMessage: trans('profile.subscribed_success'),
           });
+=======
+    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+      if (error) {
+        Alert.alert(trans('profile.subscribe_failed'));
+        return;
+      }
+
+      support({ planId, paymentMethodNonce })
+        .then(() => {
+          Alert.alert(trans('profile.subscribed_success'));
+        })
+        .catch((e) => {
+          console.warn(e);
+          Alert.alert(trans('profile.subscribe_failed'));
+>>>>>>> * braintree integration for ios
         });
-    }, (error) => {
-      console.warn(error);
     });
   }
 

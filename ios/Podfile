@@ -48,6 +48,8 @@ target 'Skjutsgruppen' do
 
 pod 'react-native-fcm', :path => '../node_modules/react-native-fcm'
 
+#braintree
+  pod 'BraintreeDropIn'
 end
 
 post_install do |installer|
