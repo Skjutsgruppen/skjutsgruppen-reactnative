@@ -17,6 +17,7 @@ import { withAccount } from '@services/apollo/profile';
 import { trans } from '@lang/i18n';
 import CrossIcon from '@assets/icons/ic_cross.png';
 import ConfirmModal from '@components/common/confirmModal';
+import { showPayment } from '@services/braintree/braintreePayment';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -67,18 +68,23 @@ class YourSupport extends Component {
   onSupportSubscribe = (planId) => {
     const { support, generateClientToken, mySupport } = this.props;
 
-    NativeModules.BraintreePayment.setToken(generateClientToken);
-    NativeModules.BraintreePayment.showPayment((paymentMethodNonce) => {
-      this.setState({ subscribing: true, showConfirmModal: true });
+    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+      if (error) {
+        this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
+        return;
+      }
+
       support({ planId, paymentMethodNonce })
         .then(() => {
           mySupport.refetch()
             .then(() => {
               this.setState({ subscribing: false, alertMessage: trans('profile.subscribed_success') });
             });
+        })
+        .catch((e) => {
+          console.warn(e);
+          this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
         });
-    }, (error) => {
-      console.warn(error);
     });
   }
 
