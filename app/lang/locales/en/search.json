@@ -25,5 +25,6 @@
   "offered_ride": "Offered ride",
   "ride_that_is_asked_for": "Ride that is asked for",
   "or_explore_existing_group": "Or explore existing group.",
-  "either_from_of_to_is_required": "Either From or To is required."
+  "either_from_of_to_is_required": "Either From or To is required.",
+  "public_transport_message": "Public transportation information may vary. Read more about your trip on resrobot.se"
 }

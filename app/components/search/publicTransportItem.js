@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, TouchableHighlight, TouchableOpacity, Linking, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Linking, Platform, UIManager, LayoutAnimation } from 'react-native';
 import Colors from '@theme/colors';
 import Date from '@components/date';
 import PropTypes from 'prop-types';
 import ExpandIcon from '@assets/icons/ic_chevron_down.png';
 import { PUBLIC_TRANSPORT_JOURNEY } from '@config/constant';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -14,14 +16,19 @@ const styles = StyleSheet.create({
   wrapper: {
     borderRadius: 12,
     backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 12,
     marginHorizontal: 16,
     marginBottom: 24,
     elevation: 2,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: { width: 0, height: 1 },
     shadowColor: '#000',
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 5,
+  },
+  list: {
+    backgroundColor: Colors.background.fullWhite,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   single: {
     flex: 1,
@@ -83,6 +90,24 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.gray,
     borderRadius: 5,
     zIndex: 100,
+  },
+  footerWrapper: {
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    overflow: 'hidden',
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.background.pink,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  chevron: {
+    marginLeft: 16,
   },
 });
 
@@ -229,35 +254,49 @@ class PublicTransportItem extends Component {
     const { Routes } = this.props.publicTransport;
 
     return (
-      <View style={[styles.wrapper, this.state.expanded ? {} : styles.flexRow]}>
-        {this.renderPublicTransports()}
-        {
-          (!this.state.expanded && Routes.length > 2) && (
-            <View style={{ alignSelf: 'center' }}>
-              <AppText fontVariation="bold">Combination</AppText>
-              <AppText color={Colors.text.gray}>
-                <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
-              </AppText>
-            </View>
-          )
-        }
-        {
-          (Routes.length > 2) && (
-            <TouchableOpacity
-              onPress={this.handleToggle}
-              style={styles.expandButton}
-            >
-              <Image
-                source={ExpandIcon}
-                style={[styles.expandIcon]}
-              />
-            </TouchableOpacity>
-          )
-        }
-        {
-          this.state.expanded && (
-            <View style={styles.connectorLine} />
-          )
+      <View style={styles.wrapper}>
+        <View style={[styles.list, this.state.expanded ? {} : styles.flexRow]}>
+          {this.renderPublicTransports()}
+          {
+            (!this.state.expanded && Routes.length > 2) && (
+              <View style={{ alignSelf: 'center' }}>
+                <AppText fontVariation="bold">Combination</AppText>
+                <AppText color={Colors.text.gray}>
+                  <Date format="MMM DD">{Routes[0].Point.date}</Date>, {Routes[0].Point.time}
+                </AppText>
+              </View>
+            )
+          }
+          {
+            (Routes.length > 2) && (
+              <TouchableOpacity
+                onPress={this.handleToggle}
+                style={styles.expandButton}
+              >
+                <Image
+                  source={ExpandIcon}
+                  style={[styles.expandIcon]}
+                />
+              </TouchableOpacity>
+            )
+          }
+          {
+            this.state.expanded && (
+              <View style={styles.connectorLine} />
+            )
+          }
+        </View>
+        {this.state.expanded &&
+          <View style={styles.footerWrapper}>
+            <TouchableHighlight onPress={() => Linking.openURL('https://resrobot.se/')}>
+              <View style={styles.footer}>
+                <AppText color={Colors.text.white} style={{ flex: 1 }}>
+                  {trans('search.public_transport_message')}
+                </AppText>
+                <Image source={require('@assets/icons/ic_chevron_right.png')} style={styles.chevron} />
+              </View>
+            </TouchableHighlight>
+          </View>
         }
       </View>
     );
