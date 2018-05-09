@@ -280,7 +280,7 @@ class Search extends Component {
     const { from, to, direction, directionFrom, directionTo, filters, dates } = this.state;
 
     if (from.coordinates.length === 0 && to.coordinates.length === 0) {
-      Alert.alert('Error!!', 'Either From or To is required.');
+      Alert.alert('Error!!', trans('search.either_from_of_to_is_required'));
       error += 1;
     }
 

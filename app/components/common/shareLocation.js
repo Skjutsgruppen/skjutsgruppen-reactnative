@@ -236,7 +236,7 @@ class ShareLocation extends PureComponent {
 
     return (
       <ActionModal
-        title="Share live location for:"
+        title={`${trans('global.share_live_location_for')}:`}
         animationType="fade"
         transparent
         onRequestClose={() => this.setState({ showActionOption: false })}
@@ -351,20 +351,20 @@ class ShareLocation extends PureComponent {
             <View>
               {!myLocation.id && !fetchingPosition &&
                 <View>
-                  <Text style={TextStyles.blue}>Share my live location for...</Text>
-                  <Text style={TextStyles.light}>Choose with who and for how long you share</Text>
+                  <Text style={TextStyles.blue}>{trans('global.share_my_live_location_for')}</Text>
+                  <Text style={TextStyles.light}>{trans('global.choose_with_who_and_for_how_long_you_share')}</Text>
                 </View>
               }
               {!myLocation.id && fetchingPosition &&
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={TextStyles.light}>Fetching your position.</Text><Loading />
+                  <Text style={TextStyles.light}>{trans('global.fetching_your_position')}</Text><Loading />
                 </View>
               }
               {myLocation.id && myLocation.duration > 0 &&
                 <View style={[styles.row, { flex: 1, justifyContent: 'space-between' }]}>
                   <View>
-                    <Text style={TextStyles.blue}>Stop sharing Location</Text>
-                    <Text style={TextStyles.light}>In this {__typename}</Text>
+                    <Text style={TextStyles.blue}>{trans('global.stop_sharing_location')}</Text>
+                    <Text style={TextStyles.light}>{trans('global.in_this')} {__typename}</Text>
                   </View>
                   <Timer timeFraction={myLocation.timeFraction} duration={myLocation.duration} />
                 </View>

@@ -31,7 +31,7 @@ const Costs = ({ supporter }) => (
       size={15}
       color={Colors.text.blue}
       style={{ marginBottom: 16 }}
-    >OUR COSTS</Title>
+    >{trans('profile.our_costs')}</Title>
     <Heading size={26} color={Colors.text.pink} style={{ lineHeight: 36 }}>
       The money goes to:
     </Heading>
@@ -42,9 +42,7 @@ const Costs = ({ supporter }) => (
       {
         !supporter && (
           <AppText style={{ lineHeight: 26 }}>
-            We fill up one bar at the time.
-            The money is handled transparantly by our non-profit assocation.
-            See more about the association and the costs under “Read more”.
+            {trans('profile.we_will_fill_up_one_bar_at_the_time')}
           </AppText>
         )
       }

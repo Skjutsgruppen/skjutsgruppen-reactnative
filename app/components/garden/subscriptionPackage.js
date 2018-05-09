@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { Heading, Title } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -57,7 +58,7 @@ const Package = ({
           </RoundedButton>
           <View style={{ marginLeft: 12 }}>
             <Heading centered color={Colors.text.yellowGreen}>{`${monthlyAmount}kr`}</Heading>
-            <Heading size={13} centered color={Colors.text.yellowGreen}>per month</Heading>
+            <Heading size={13} centered color={Colors.text.yellowGreen}>{trans('profile.per_month')}</Heading>
           </View>
         </View>
         {

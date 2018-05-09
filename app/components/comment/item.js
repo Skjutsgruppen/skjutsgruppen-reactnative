@@ -6,6 +6,7 @@ import RelationBubbleList from '@components/relationBubbleList';
 import { connect } from 'react-redux';
 import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   commentWrapper: {
@@ -58,9 +59,9 @@ const Item = ({ user, comment, onPress, onCommentLongPress }) => {
           {comment.showRelation &&
             <View style={styles.commentRelation}>
               {comment.User.relation.relation.length > 2
-                ? (<AppText size={12}>You are friends of friends!</AppText>)
+                ? (<AppText size={12}>{trans('detail.you_are_friends_of_friends')}</AppText>)
                 : (comment.User.relation.relation.length >= 1)
-              && (<AppText size={12}>You are friends!</AppText>)
+              && (<AppText size={12}>{trans('detail.you_are_friends')}</AppText>)
               }
               <RelationBubbleList
                 users={comment.User.relation}
