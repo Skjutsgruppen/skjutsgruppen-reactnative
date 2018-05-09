@@ -15,6 +15,8 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.WalletConstants;
 
 /**
  * Created by umesh on 4/19/18.
@@ -67,6 +69,10 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.tokenizationKey(token);
         GooglePaymentRequest googlePayRequest = new GooglePaymentRequest()
+                .transactionInfo(TransactionInfo.newBuilder()
+                        .setTotalPrice("1.00")
+                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                        .setCurrencyCode("USD").build())
                 .phoneNumberRequired(false)
                 .emailRequired(false)
                 .shippingAddressRequired(false);
