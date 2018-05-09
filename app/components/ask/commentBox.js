@@ -183,21 +183,21 @@ class CommentBox extends PureComponent {
           onPress={this.handleSuggest}
           style={styles.action}
         >
-          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Suggest a Ride</AppText>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>{trans('global.suggest_a_ride')}</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={this.handleOffer}
           style={styles.action}
         >
-          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Offer a Ride</AppText>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>{trans('global.offer_a_ride')}</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={this.sendComment}
           style={styles.action}
         >
-          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>Comment</AppText>
+          <AppText size={13} color={Colors.text.blue} fontVariation="semibold" centered>{trans('global.comment')}</AppText>
         </TouchableOpacity>
       </View>
     );

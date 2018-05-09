@@ -3,6 +3,7 @@ import Splash from '@screens/Splash';
 
 import Offer from '@screens/Offer';
 import Ask from '@screens/Ask';
+import Settings from '@screens/Settings';
 import Group from '@screens/group/Group';
 import Experience from '@screens/experience/Experience';
 
@@ -126,7 +127,7 @@ export const Routes = {
   Ask: { screen: Ask },
   Experience: { screen: Experience },
   Group: { screen: Group },
-
+  Settings: { screen: Settings },
   YourSupport: { screen: YourSupport },
 
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
