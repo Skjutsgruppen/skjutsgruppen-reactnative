@@ -158,6 +158,7 @@ query search
     $filters: [SearchFilterEnum]
     $limit: Int
     $offset: Int
+    $afterDate: String
 )
 {
   tripSearch: search(input: {
@@ -169,6 +170,7 @@ query search
       filters: $filters
       limit: $limit
       offset: $offset
+      afterDate: $afterDate
   })
   { 
     rows{
@@ -216,6 +218,9 @@ query search
         }
         date
         url
+        ServiceDays {
+          planningPeriodEnd
+        }
       }
     }
     count
@@ -224,7 +229,7 @@ query search
 `;
 
 export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
-  options: ({ from, to, direction, filters, dates }) => {
+  options: ({ from, to, direction, filters, dates, afterDate, limit }) => {
     const updatedFilters = filters.filter(row => !(row === FEED_TYPE_GROUP));
 
     return ({
@@ -237,7 +242,8 @@ export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
         filters: updatedFilters,
         dateRange: [],
         offset: 0,
-        limit: 10,
+        limit: limit || null,
+        afterDate: afterDate || null,
       },
       fetchPolicy: 'network-only',
     });
@@ -354,3 +360,4 @@ export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
     return { searchAllGroups: { loading, rows, count, error, refetch, networkStatus, fetchMore } };
   },
 });
+
