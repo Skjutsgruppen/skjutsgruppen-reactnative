@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Picker, Clipboard } from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard } from 'react-native';
 import FCM from 'react-native-fcm';
 import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
@@ -14,8 +14,6 @@ import PropTypes from 'prop-types';
 import Connect from '@components/facebook/facebookConnect';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import ImagePicker from 'react-native-image-picker';
-import LangService from '@services/lang';
-import I18n from 'react-native-i18n';
 import { withAccount, withDeleteAccount, withRemoveAppToken } from '@services/apollo/profile';
 import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
@@ -25,21 +23,6 @@ import { NavigationActions } from 'react-navigation';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
-
-const AvailableLanguages = {
-  en: 'English',
-  'en-GB': 'English',
-  'en-US': 'English',
-  'en-AU': 'English',
-  'en-CA': 'English',
-  'en-NZ': 'English',
-  'en-SG': 'English',
-  'en-IN': 'English',
-  'en-IE': 'English',
-  'en-ZA': 'English',
-  se: 'Swedish',
-  'sv-SE': 'Swedish',
-};
 
 const styles = StyleSheet.create({
   text: {
@@ -148,7 +131,6 @@ class EditProfile extends Component {
       twitterLinked: false,
       error: '',
       success: '',
-      language: 'en',
       totalFriends: null,
       newEmail: null,
       newPhoneNumber: null,
@@ -158,10 +140,6 @@ class EditProfile extends Component {
   }
 
   componentWillMount() {
-    LangService.getLanguage().then((language) => {
-      this.setState({ language: language || I18n.locale });
-    });
-
     const {
       firstName,
       lastName,
@@ -273,19 +251,6 @@ class EditProfile extends Component {
     } else {
       this.setState({ loading: false, firstNameLoading: false, lastNameLoading: false, error: getToast(validation.errors), success: '' });
     }
-  }
-
-  setLanguage = (language) => {
-    if (language === this.state.language) return;
-
-    const { navigation } = this.props;
-
-    this.setState({ language });
-    LangService.setLanguage(language)
-      .then(() => {
-        I18n.locale = language;
-        navigation.navigate('Tab');
-      });
   }
 
   setConfirmModalVisibility = (visibility) => {
@@ -499,28 +464,6 @@ class EditProfile extends Component {
     return (<TwitterConnect buttonType="link" onLogin={this.onConnectTwitter} />);
   }
 
-  renderLanguage = () => {
-    const { language } = this.state;
-    return (
-      <View style={styles.row}>
-        <AppText style={styles.text}>
-          {trans('profile.language')} <AppText fontVariation="bold"> - {AvailableLanguages[language]}</AppText>
-        </AppText>
-        <TouchableOpacity style={styles.action}>
-          <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
-        </TouchableOpacity>
-        <Picker
-          selectedValue={language}
-          onValueChange={this.setLanguage}
-          style={{ width: '20%', height: '100%', opacity: 0, position: 'absolute', top: 36, right: 20, backgroundColor: 'red' }}
-        >
-          <Picker.Item label="English" value="en" />
-          <Picker.Item label="Swedish" value="se" />
-        </Picker>
-      </View>
-    );
-  }
-
   renderInfoEdit = () => {
     const { firstName, lastName, firstNameLoading, lastNameLoading } = this.state;
 
@@ -718,7 +661,6 @@ class EditProfile extends Component {
               redirect: 'password',
             })
           }
-          {this.renderLanguage()}
           <TouchableOpacity
             onPress={() => this.setConfirmModalVisibility(true)}
             style={styles.deleteRow}

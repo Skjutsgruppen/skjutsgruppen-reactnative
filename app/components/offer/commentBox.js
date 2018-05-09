@@ -137,7 +137,7 @@ class CommentBox extends PureComponent {
 
     return (
       <TouchableOpacity onPress={this.sendComment} style={styles.send}>
-        <AppText fontVariation="bold" color={Colors.text.blue}>Send</AppText>
+        <AppText fontVariation="bold" color={Colors.text.blue}>{trans('global.send')}</AppText>
       </TouchableOpacity>
     );
   }
