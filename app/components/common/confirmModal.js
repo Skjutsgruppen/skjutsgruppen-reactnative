@@ -53,6 +53,8 @@ const ConfirmModal = ({
   onDeny,
   confrimTextColor,
   denyTextColor,
+  cancelable,
+
 }) => (
   <Modal
     transparent
@@ -73,12 +75,15 @@ const ConfirmModal = ({
                 onPress={onConfirm}
                 color={confrimTextColor}
               />
-              <View style={styles.verticalDivider} />
-              <GhostButton
-                label={denyLabel}
-                onPress={onDeny}
-                color={denyTextColor}
-              />
+              { cancelable && <View style={styles.verticalDivider} /> }
+
+              { cancelable && (
+                <GhostButton
+                  label={denyLabel}
+                  onPress={onDeny}
+                  color={denyTextColor}
+                />
+              )}
             </View>
           </View>
         }
@@ -99,6 +104,7 @@ ConfirmModal.propTypes = {
   onDeny: PropTypes.func.isRequired,
   confrimTextColor: PropTypes.string,
   denyTextColor: PropTypes.string,
+  cancelable: PropTypes.bool,
 };
 
 ConfirmModal.defaultProps = {
@@ -108,6 +114,8 @@ ConfirmModal.defaultProps = {
   denyTextColor: null,
   confirmLabel: 'Ok',
   denyLabel: 'Cancel',
+  cancelable: true,
+
 };
 
 export default ConfirmModal;
