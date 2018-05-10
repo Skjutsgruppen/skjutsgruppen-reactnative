@@ -13,6 +13,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "RNFIRMessaging.h"
 
 @import GoogleMaps;
 
@@ -37,6 +38,10 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  // firebase push notification
+  [FIRApp configure];
+  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+
   // return YES;
   return [[FBSDKApplicationDelegate sharedInstance] application:application
                                   didFinishLaunchingWithOptions:launchOptions];
@@ -53,5 +58,38 @@
                                               sourceApplication:sourceApplication
                                                      annotation:annotation];
 }
+
+//firebase push notification
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
+{
+[RNFIRMessaging willPresentNotification:notification withCompletionHandler:completionHandler];
+  }
+
+#if defined(__IPHONE_11_0)
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+{
+  NSLog(@"didReceiveLocalNotification: 11.0");
+
+    [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+  }
+#else
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)())completionHandler
+{
+  NSLog(@"didReceiveNotificationResponse: ");
+    [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+  }
+#endif
+
+//You can skip this method if you don't want to use local notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  NSLog(@"didReceiveLocalNotification: ");
+    [RNFIRMessaging didReceiveLocalNotification:notification];
+  }
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
+    [RNFIRMessaging didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  }
+
 
 @end
