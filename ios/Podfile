@@ -46,6 +46,8 @@ target 'Skjutsgruppen' do
 #  pod 'GooglePlaces'
 #  pod 'GooglePlacePicker
 
+pod 'react-native-fcm', :path => '../node_modules/react-native-fcm'
+
 end
 
 post_install do |installer|
