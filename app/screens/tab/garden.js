@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Alert, Image, TouchableOpacity, NativeModules } from 'react-native';
+import { StyleSheet, ScrollView, Image, TouchableOpacity, NativeModules, View } from 'react-native';
 import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
+import { connect } from 'react-redux';
+import { LoginManager } from 'react-native-fbsdk';
+import PropTypes from 'prop-types';
+import { NavigationActions } from 'react-navigation';
+import { compose } from 'react-apollo';
+
 import ProfileAction from '@components/profile/profileAction';
 import { Colors, Gradients } from '@theme';
 import SupportIcon from '@assets/icons/ic_support.png';
 import SupportIconActive from '@assets/icons/ic_support_active.png';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
-import { connect } from 'react-redux';
-import { LoginManager } from 'react-native-fbsdk';
-import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
-import { compose } from 'react-apollo';
-import { withRemoveAppToken } from '@services/apollo/profile';
+import { withRemoveAppToken, withAccount } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
@@ -23,9 +24,9 @@ import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
 import { withSupport, withGenerateClientToken } from '@services/apollo/support';
-
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
+import ConfirmModal from '@components/common/confirmModal';
 
 const styles = StyleSheet.create({
   curves: {
@@ -79,17 +80,24 @@ class Garden extends Component {
   constructor(props) {
     super(props);
     this.scrollView = null;
+    this.state = {
+      subscribing: false,
+      showConfirmModal: false,
+      alertMessage: '',
+    };
   }
-
 
   componentWillMount() {
     const { navigation } = this.props;
+
     navigation.setParams({ scrollToTop: this.scrollToTop });
     navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
   }
 
-  shouldComponentUpdate() {
-    return false;
+  componentDidMount() {
+    const { subscribeToUpdatedProfile, data } = this.props;
+
+    subscribeToUpdatedProfile({ id: data.profile.id });
   }
 
   onSupportSubscribe = (planId) => {
@@ -97,9 +105,14 @@ class Garden extends Component {
 
     NativeModules.BraintreePayment.setToken(generateClientToken);
     NativeModules.BraintreePayment.showPayment((paymentMethodNonce) => {
+      this.setState({ subscribing: true, showConfirmModal: true });
+
       support({ planId, paymentMethodNonce })
         .then(() => {
-          Alert.alert(trans('profile.subscribed_success'));
+          this.setState({
+            subscribing: false,
+            alertMessage: trans('profile.subscribed_success'),
+          });
         });
     }, (error) => {
       console.warn(error);
@@ -146,7 +159,12 @@ class Garden extends Component {
   }
 
   render() {
-    const supporter = true;
+    const { data } = this.props;
+    const { subscribing, showConfirmModal, alertMessage } = this.state;
+
+    if (!data.profile) return null;
+
+    const supporter = data.profile.isSupporter;
     const headingLabel = supporter ? trans('profile.you_are_awesome')
       : trans('profile.this_app_is_a_self_sustaining_garden');
     const infoLabel = supporter ? trans('profile.right_now_you_support')
@@ -160,29 +178,34 @@ class Garden extends Component {
             showAvatar={supporter}
             headingLabel={headingLabel}
             infoLabel={infoLabel}
+            user={data.profile}
           />
-          <Package
-            noBackgroud
-            elevation={0}
-            durationLabel={trans('profile.support_six_month')}
-            monthlyAmount={9}
-            planId={1}
-            supportSubscribe={this.onSupportSubscribe}
-            info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
-          />
-          <Package
-            elevation={20}
-            durationLabel={trans('profile.support_one_month')}
-            monthlyAmount={29}
-            planId={2}
-            supportSubscribe={this.onSupportSubscribe}
-            info={trans('profile.auto_renewed_every_six_month', { krona: 29 })}
-          />
-          <HelpMore
-            supportSubscribe={this.onSupportSubscribe}
-          />
-          <HowItWorks />
-          <Costs supporter={supporter} />
+          {!supporter &&
+            <View>
+              <Package
+                noBackgroud
+                elevation={0}
+                durationLabel={trans('profile.support_six_month')}
+                monthlyAmount={9}
+                planId={1}
+                supportSubscribe={this.onSupportSubscribe}
+                info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
+              />
+              <Package
+                elevation={20}
+                durationLabel={trans('profile.support_one_month')}
+                monthlyAmount={29}
+                planId={2}
+                supportSubscribe={this.onSupportSubscribe}
+                info={trans('profile.auto_renewed_every_six_month', { krona: 29 })}
+              />
+              <HelpMore
+                supportSubscribe={this.onSupportSubscribe}
+              />
+              <HowItWorks />
+            </View>
+          }
+          <Costs supporter={supporter} showCostTitle={!supporter} />
           <ProfileAction
             title={trans('profile.we_are_open_source')}
             label={trans('profile.help_make_the_app_better')}
@@ -199,11 +222,13 @@ class Garden extends Component {
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          <ProfileAction label={trans('profile.your_support_of_the_garden')} />
-          <ProfileAction
-            label={trans('profile.setting')}
-            onPress={() => this.redirect('Settings')}
-          />
+          {supporter &&
+            <ProfileAction
+              label={trans('profile.your_support_of_the_garden')}
+              onPress={() => this.redirect('YourSupport')}
+            />
+          }
+          <ProfileAction label={trans('profile.settings')} />
           <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText
@@ -211,12 +236,20 @@ class Garden extends Component {
             >{trans('profile.log_out')}</AppText>
           </TouchableOpacity>
         </ScrollView>
+        <ConfirmModal
+          loading={subscribing}
+          message={alertMessage}
+          visible={showConfirmModal}
+          onRequestClose={() => this.setState({ showConfirmModal: false })}
+          confirmLabel={trans('global.ok')}
+          onConfirm={() => this.setState({ showConfirmModal: false })}
+          onDeny={() => this.setState({ showConfirmModal: false })}
+          cancelable={false}
+        />
       </LinearGradient>
     );
   }
 }
-
-const mapStateToProps = state => ({ user: state.auth.user });
 
 const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
@@ -225,6 +258,9 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Garden.propTypes = {
+  data: PropTypes.shape({
+    profile: PropTypes.shape(),
+  }).isRequired,
   logout: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -233,6 +269,7 @@ Garden.propTypes = {
   removeAppToken: PropTypes.func.isRequired,
   support: PropTypes.func.isRequired,
   generateClientToken: PropTypes.string,
+  subscribeToUpdatedProfile: PropTypes.func.isRequired,
 };
 
 Garden.defaultProps = {
@@ -243,5 +280,6 @@ export default compose(
   withGenerateClientToken,
   withRemoveAppToken,
   withSupport,
-  connect(mapStateToProps, mapDispatchToProps),
+  withAccount,
+  connect(mapDispatchToProps),
 )(Garden);

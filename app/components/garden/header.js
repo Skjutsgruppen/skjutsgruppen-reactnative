@@ -1,8 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'react-apollo';
 
 import { Title, Heading } from '@components/utils/texts';
 import Colors from '@theme/colors';
@@ -76,6 +74,5 @@ Header.defaultProps = {
   infoLabel: null,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(connect(mapStateToProps))(Header);
+export default Header;
