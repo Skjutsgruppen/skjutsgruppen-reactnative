@@ -38,23 +38,30 @@ class GeoLocation {
   }
 
   async listenToLocationUpdate(type, id, callback) {
+    let coords = {};
     try {
       const updateLocationEventListenerArray =
         await this.session.get(this.updateLocationEventListenerArrayKey) || [];
+
       if (updateLocationEventListenerArray.length === 0) {
-        // if (Platform.OS === 'ios') {
-        //   this.loadInterval = setInterval(() => {
-        //     navigator.geolocation.getCurrentPosition(
-        //       (geoData) => {
-        //         callback(geoData);
-        //       },
-        //       () => {
-        //         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
-        //       },
-        //       { timeout: 20000, maximumAge: 1000 },
-        //     );
-        //   }, 60000);
-        // }
+        if (Platform.OS === 'ios') {
+          this.loadInterval = setInterval(() => {
+            navigator.geolocation.getCurrentPosition(
+              (geoData) => {
+                if(geoData && geoData.coords && geoData.coords.latitude){
+                  if (!(coords.latitude === geoData.coords.latitude && coords.longitude === geoData.coords.longitude)) {
+                    callback(geoData);
+                    coords = geoData.coords;
+                  }
+                }
+              },
+              () => {
+                Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
+              },
+              { timeout: 20000, maximumAge: 1000 },
+            );
+          }, 10000);
+        }
         this.deviceEventEmitter.addListener('updateLocation', (geoData) => {
           callback(geoData);
         });
@@ -93,10 +100,10 @@ class GeoLocation {
         return Promise.resolve();
       }
 
-      // if (Platform.OS === 'ios') {
-      //   if (this.loadInterval) clearInterval(this.loadInterval);
-      //   this.loadInterval = false;
-      // }
+      if (Platform.OS === 'ios') {
+        if (this.loadInterval) clearInterval(this.loadInterval);
+        this.loadInterval = false;
+      }
       this.deviceEventEmitter.removeListener('updateLocation');
       this.session.remove(this.updateLocationEventListenerArrayKey);
       return this.stopLocationService();
