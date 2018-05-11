@@ -68,16 +68,16 @@ class CommentBox extends PureComponent {
       writing: false,
       text: '',
       offset: 0,
-      shareFacebook: false,
+      // shareFacebook: false,
       shareTwitter: false,
     };
   }
 
   componentWillMount() {
     const { user } = this.props;
-    if (user.fbId) {
-      this.setState({ shareFacebook: true });
-    }
+    // if (user.fbId) {
+    //   this.setState({ shareFacebook: true });
+    // }
 
     if (user.twitterId) {
       this.setState({ shareTwitter: true });
@@ -91,13 +91,14 @@ class CommentBox extends PureComponent {
   handleFocus = () => this.setState({ writing: true });
 
   sendComment = () => {
-    const { text, shareFacebook, shareTwitter } = this.state;
+    // const { text, shareFacebook, shareTwitter } = this.state;
+    const { text, shareTwitter } = this.state;
     const { handleSend } = this.props;
     const social = [];
 
-    if (shareFacebook) {
-      social.push('Facebook');
-    }
+    // if (shareFacebook) {
+    //   social.push('Facebook');
+    // }
 
     if (shareTwitter) {
       social.push('Twitter');
@@ -107,11 +108,11 @@ class CommentBox extends PureComponent {
     this.setState({ text: '' });
   };
 
-  shareFacebookRadio = () => {
-    const { shareFacebook } = this.state;
+  // shareFacebookRadio = () => {
+  //   const { shareFacebook } = this.state;
 
-    this.setState({ shareFacebook: !shareFacebook });
-  }
+  //   this.setState({ shareFacebook: !shareFacebook });
+  // }
 
   shareTwitterRadio = () => {
     const { shareTwitter } = this.state;
@@ -211,13 +212,13 @@ class CommentBox extends PureComponent {
     if (!!user.fbId && !!user.twitterId) {
       return (
         <View style={styles.footerSocialSection}>
-          <Radio
+          {/* <Radio
             color="blue"
             active={this.state.shareFacebook}
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <AppText size={12}>{trans('detail.a_post_on_your_fb_timeline')}</AppText>
+          <AppText size={12}>{trans('detail.a_post_on_your_fb_timeline')}</AppText> */}
           <Radio
             color="blue"
             active={this.state.shareTwitter}
@@ -230,19 +231,19 @@ class CommentBox extends PureComponent {
       );
     }
 
-    if (!!user.fbId && !user.twitterId) {
-      return (
-        <View style={styles.footerSocialSection}>
-          <Radio
-            color="blue"
-            active={this.state.shareFacebook}
-            onPress={this.shareFacebookRadio}
-            size={24}
-          />
-          <AppText size={12}>{trans('detail.a_post_about_this_ride_on_your_fb')}</AppText>
-        </View>
-      );
-    }
+    // if (!!user.fbId && !user.twitterId) {
+    //   return (
+    //     <View style={styles.footerSocialSection}>
+    //       <Radio
+    //         color="blue"
+    //         active={this.state.shareFacebook}
+    //         onPress={this.shareFacebookRadio}
+    //         size={24}
+    //       />
+    //       <AppText size={12}>{trans('detail.a_post_about_this_ride_on_your_fb')}</AppText>
+    //     </View>
+    //   );
+    // }
 
     if (!user.fbId && !!user.twitterId) {
       return (

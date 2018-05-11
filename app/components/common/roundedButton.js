@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ViewPropTypes } from 'react-native';
+import { View, StyleSheet, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 import TouchableHighlight from '@components/touchableHighlight';
@@ -8,30 +8,51 @@ import { Title } from '@components/utils/texts';
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    height: 48,
+    height: 42,
     borderRadius: 24,
     overflow: 'hidden',
   },
   button: {
+    width: '100%',
+  },
+  content: {
     flexDirection: 'row',
-    height: 48,
-    borderRadius: 24,
+    height: 42,
+    borderRadius: 21,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  text: {
+  icon: {
+    position: 'absolute',
+    left: 24,
+    top: 9,
+  },
+  label: {
     flex: 1,
   },
 });
 
-const RoundedButton = ({ children, style, onPress, bgColor, textColor }) => (
+const RoundedButton = ({ children, style, onPress, bgColor, textColor, icon, ...props }) => (
   <View style={[styles.wrapper, style]}>
     <TouchableHighlight
-      style={[styles.button, { backgroundColor: bgColor }]}
       onPress={onPress}
+      {...props}
+      style={styles.button}
     >
-      <Title fontVariation="bold" centered style={[styles.text, { color: textColor }]}>{children}</Title>
+      <View style={[styles.content, { backgroundColor: bgColor }]}>
+        {
+          icon && icon !== '' && <Image source={icon} style={styles.icon} />
+        }
+        <Title
+          centered
+          fontVariation="bold"
+          style={[
+            styles.label,
+            { color: textColor },
+          ]}
+        >{children}</Title>
+      </View>
     </TouchableHighlight>
   </View>
 );
@@ -42,12 +63,14 @@ RoundedButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   bgColor: PropTypes.string,
   textColor: PropTypes.string,
+  icon: PropTypes.number,
 };
 
 RoundedButton.defaultProps = {
   style: {},
   bgColor: '#333',
   textColor: '#fff',
+  icon: null,
 };
 
 export default RoundedButton;

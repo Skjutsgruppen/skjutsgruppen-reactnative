@@ -84,6 +84,8 @@ const Colors = {
     pink: '#ea4c89',
     mutedPink: 'rgba(234, 76, 137, 0.08)',
     orange: '#fabf5e',
+    facebook: '#3c579c',
+    twitter: '#5caaf4',
   },
   text: {
     blue: '#00aeef',
