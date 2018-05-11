@@ -51,7 +51,7 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
-    public void showPayment(Callback successCallback, Callback errorCallback) {
+    public void showPayment(Callback errorCallback, Callback successCallback) {
         Log.e(TAG, "show payment token: " + token);
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
@@ -99,7 +99,7 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
                 + resultCode + "\n" + data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                errorCallback.invoke("user_canceled");
+                // errorCallback.invoke("user_canceled");
                 return;
             }
             if (resultCode == Activity.RESULT_OK) {
