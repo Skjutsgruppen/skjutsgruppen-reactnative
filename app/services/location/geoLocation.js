@@ -48,8 +48,9 @@ class GeoLocation {
           this.loadInterval = setInterval(() => {
             navigator.geolocation.getCurrentPosition(
               (geoData) => {
-                if(geoData && geoData.coords && geoData.coords.latitude){
-                  if (!(coords.latitude === geoData.coords.latitude && coords.longitude === geoData.coords.longitude)) {
+                if (geoData && geoData.coords && geoData.coords.latitude) {
+                  if (!(coords.latitude === geoData.coords.latitude &&
+                    coords.longitude === geoData.coords.longitude)) {
                     callback(geoData);
                     coords = geoData.coords;
                   }
