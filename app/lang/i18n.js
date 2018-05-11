@@ -16,6 +16,7 @@ import {
   interval as intervalEn,
   share as shareEn,
   suggestion as suggestionEn,
+  onboarding as onboardingEn,
 } from '@lang/locales/en';
 import {
   feed as feedSe,
@@ -31,6 +32,7 @@ import {
   interval as intervalSe,
   share as shareSe,
   suggestion as suggestionSe,
+  onboarding as onboardingSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -50,6 +52,7 @@ I18n.translations = {
     interval: intervalEn,
     share: shareEn,
     suggestion: suggestionEn,
+    onboarding: onboardingEn,
   },
   se: {
     feed: feedSe,
@@ -65,6 +68,7 @@ I18n.translations = {
     interval: intervalSe,
     share: shareSe,
     suggestion: suggestionSe,
+    onboarding: onboardingSe,
   },
 };
 

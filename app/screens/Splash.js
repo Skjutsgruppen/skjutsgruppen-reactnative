@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
-import Onboarding from '@components/auth/onboarding';
+import WelcomeInfo from '@components/auth/welcomeInfo';
 import AppLoading from '@components/appLoading';
 import FCM, { FCMEvent } from 'react-native-fcm';
 
@@ -36,24 +36,32 @@ class Splash extends PureComponent {
       return;
     }
 
-    const { emailVerified, phoneVerified, phoneNumber } = user;
+    const { emailVerified, phoneVerified, phoneNumber, agreementRead, agreementAccepted } = user;
     const token = await AuthService.getToken();
+
+    if (!agreementRead) {
+      navigation.replace('Agreement');
+    }
+
+    if (!agreementAccepted) {
+      navigation.replace('Registration');
+    }
 
     if (!emailVerified) {
       await setRegister({ user, token });
-      navigation.replace('CheckMail');
+      navigation.replace('Onboarding', { activeStep: 5 });
       return;
     }
 
     if (phoneNumber === null) {
       await setRegister({ user, token });
-      navigation.replace('EmailVerified');
+      navigation.replace('Onboarding', { activeStep: 6 });
       return;
     }
 
     if (!phoneVerified) {
       await setRegister({ user, token });
-      navigation.replace('SendText');
+      navigation.replace('Onboarding', { activeStep: 8 });
       return;
     }
     await setLogin({ user, token });
@@ -157,17 +165,11 @@ class Splash extends PureComponent {
   handleOpenURL = event => this.navigate(event.url);
 
   render() {
-    const { navigation } = this.props;
-
     if (this.state.loading) {
       return (<AppLoading />);
     }
 
-    return (<Onboarding
-      handleLogin={() => navigation.navigate('LoginMethod')}
-      handleRegister={() => navigation.navigate('OnBoardingFirst')}
-      loading={false}
-    />);
+    return (<WelcomeInfo />);
   }
 }
 

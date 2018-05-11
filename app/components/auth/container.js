@@ -28,7 +28,7 @@ const Container = ({ children, style }) => (
 );
 
 Container.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element).isRequired,
+  children: PropTypes.node.isRequired,
   style: ViewPropTypes.style,
 };
 

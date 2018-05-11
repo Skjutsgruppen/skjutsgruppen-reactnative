@@ -6,6 +6,7 @@ import { ColoredText, GreetText } from '@components/auth/texts';
 import { CustomButton } from '@components/common';
 import PropTypes from 'prop-types';
 import { Icons } from '@assets/icons';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -30,7 +31,7 @@ class AddPhoto extends Component {
     return (
       <Container>
         <Image source={Icons.Garden} style={styles.garderIcon} resizeMethod="resize" />
-        <GreetText>How about a photo?</GreetText>
+        <GreetText>{trans('onboarding.how_about_a_photo')}</GreetText>
         <ColoredText color={Colors.text.purple}>We love to see each other!</ColoredText>
         <ColoredText color={Colors.text.purple}>A photo of you adds trust</ColoredText>
         <ColoredText color={Colors.text.blue}>If you want you can upload a photo here,
@@ -40,7 +41,7 @@ class AddPhoto extends Component {
           bgColor={Colors.background.green}
           onPress={() => navigation.replace('SendText')}
         >
-          Next
+          {trans('global.next')}
         </CustomButton>
       </Container>
     );

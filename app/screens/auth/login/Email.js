@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, Image } from 'react-native';
+import { View, StyleSheet, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -8,43 +8,40 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
 import { withContactSync } from '@services/apollo/contact';
-import { Loading } from '@components/common';
+import { Loading, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
-import { ColoredText, GreetText } from '@components/auth/texts';
-import BackButton from '@components/auth/backButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { NavigationActions } from 'react-navigation';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
+import StepsHeading from '@components/onBoarding/stepsHeading';
+import StepsTitle from '@components/onBoarding/stepsTitle';
+import { trans } from '@lang/i18n';
+import BackButton from '@components/onBoarding/backButton';
 
 const styles = StyleSheet.create({
-  garderIcon: {
-    height: 100,
-    width: 100,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
   inputWrapper: {
     width: '100%',
   },
   input: {
-    width: '100%',
-    height: 54,
-    paddingHorizontal: 16,
-    fontSize: 14,
-    textAlign: 'center',
-    backgroundColor: Colors.background.fullWhite,
-    marginBottom: 32,
-  },
-  userNameInput: {
-    marginBottom: 16,
+    fontFamily: 'SFUIText-Regular',
+    fontSize: 15,
+    height: 80,
+    marginTop: 30,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    paddingHorizontal: 30,
+    backgroundColor: Colors.background.mutedBlue,
   },
   button: {
-    marginHorizontal: 24,
+    width: 200,
+    marginVertical: 50,
+  },
+  paddedSection: {
+    paddingHorizontal: 30,
   },
 });
 
@@ -77,13 +74,14 @@ class Login extends Component {
       try {
         const { data } = await submit(username, password);
         const { User, token } = data.login;
+
         if (!User.emailVerified) {
           setRegister({ token, user: User }).then(() => {
-            navigation.replace('CheckMail');
+            navigation.replace('Onboarding', { activeStep: 5 });
           });
         } else if (!User.phoneVerified) {
           setRegister({ token, user: User }).then(() => {
-            navigation.replace('SendText');
+            navigation.replace('Onboarding', { activeStep: 8 });
           });
         } else {
           setLogin({ token, user: User })
@@ -91,18 +89,24 @@ class Login extends Component {
               await FCM.getFCMToken()
                 .then(appToken => storeAppToken(appToken, getDeviceId()));
 
-              navigation.dispatch(
-                NavigationActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({
-                      routeName: 'Tab',
-                    }),
-                  ],
-                }),
-              );
+              if (!User.agreementRead) {
+                navigation.replace('Agreement');
+              } else if (!User.agreementAccepted) {
+                navigation.replace('Registration');
+              } else {
+                navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({
+                        routeName: 'Tab',
+                      }),
+                    ],
+                  }),
+                );
 
-              syncContacts();
+                syncContacts();
+              }
             })
             .catch(err => console.warn(err));
         }
@@ -144,37 +148,38 @@ class Login extends Component {
 
   renderButton = () => {
     const { loading } = this.state;
+
     if (loading) {
-      return <Loading />;
+      return <Loading style={{ marginVertical: 24 }} />;
     }
 
     return (
-      <CustomButton
-        bgColor={Colors.background.green}
-        onPress={this.onSubmit}
-        style={styles.button}
-      >
-        Next
-      </CustomButton>
+      <View style={styles.paddedSection}>
+        <RoundedButton
+          onPress={this.onSubmit}
+          style={styles.button}
+          bgColor={Colors.background.pink}
+        >
+          {trans('global.next')}
+        </RoundedButton>
+      </View>
     );
   }
-
   render() {
     const { error, inputs } = this.state;
 
     return (
-      <Container>
-        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
-        <GreetText>Sign in</GreetText>
-        <ColoredText color={Colors.text.purple}>
+      <Container style={{ backgroundColor: Colors.background.fullWhite }}>
+        <StepsHeading style={styles.paddedSection}>Sign in</StepsHeading>
+        <StepsTitle style={styles.paddedSection}>
           You can use your cellphone number or e-mail to sign in
-        </ColoredText>
+        </StepsTitle>
         <Toast message={error} type="error" />
         <View style={styles.inputWrapper}>
           <TextInput
             autoCapitalize="none"
             onChangeText={username => this.setState({ username })}
-            style={[styles.input, styles.userNameInput]}
+            style={styles.input}
             placeholder="Your cellphone number or e-mail"
             underlineColorAndroid="transparent"
             value={this.state.username}
@@ -201,7 +206,9 @@ class Login extends Component {
           />
         </View>
         {this.renderButton()}
-        <BackButton onPress={this.onPressBack} />
+        <View style={styles.paddedSection}>
+          <BackButton leftAligned onPress={this.onPressBack} />
+        </View>
       </Container>
     );
   }
