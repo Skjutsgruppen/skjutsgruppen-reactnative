@@ -28,7 +28,7 @@ target 'Skjutsgruppen' do
   'RCTImage',
   'RCTLinkingIOS',
   'RCTSettings',
-  'RCTVibration'
+  'RCTVibration',
   ]
   pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
   pod 'GLog', :podspec => "#{rn_path}/third-party-podspecs/GLog.podspec"
@@ -50,6 +50,8 @@ target 'Skjutsgruppen' do
 
 #braintree
   pod 'BraintreeDropIn'
+#applepay
+  pod 'Braintree/Apple-Pay'
 end
 
 post_install do |installer|

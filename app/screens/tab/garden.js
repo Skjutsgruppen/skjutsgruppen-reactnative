@@ -104,7 +104,7 @@ class Garden extends Component {
   onSupportSubscribe = (planId) => {
     const { support, generateClientToken } = this.props;
 
-    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+    showPayment({generateClientToken, planId}, (error, paymentMethodNonce) => {
       if (error) {
         console.warn(error);
         return;

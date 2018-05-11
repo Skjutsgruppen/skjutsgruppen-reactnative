@@ -45,7 +45,7 @@ const HelpMore = ({ supportSubscribe }) => (
       monthlyAmount={49}
       planId={3}
       supportSubscribe={supportSubscribe}
-      info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
+      info={trans('profile.auto_renewed_every_six_month', { krona: 588 })}
     />
     <Package
       elevation={20}
@@ -53,7 +53,7 @@ const HelpMore = ({ supportSubscribe }) => (
       monthlyAmount={149}
       planId={4}
       supportSubscribe={supportSubscribe}
-      info={trans('profile.auto_renewed_every_six_month', { krona: 588 })}
+      info={trans('profile.auto_renewed_every_six_month', { krona: 1788 })}
     />
     <Package
       elevation={21}

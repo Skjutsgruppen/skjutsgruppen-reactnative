@@ -20,6 +20,8 @@ PODS:
   - boost/preprocessor-includes (1.59.0)
   - boost/shared_ptr-includes (1.59.0)
   - boost/string_algorithms-includes (1.59.0)
+  - Braintree/Apple-Pay (4.15.0):
+    - Braintree/Core
   - Braintree/Card (4.15.0):
     - Braintree/Core
   - Braintree/Core (4.15.0)
@@ -188,6 +190,7 @@ PODS:
   - yoga (0.51.0.React)
 
 DEPENDENCIES:
+  - Braintree/Apple-Pay
   - BraintreeDropIn
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
@@ -296,6 +299,6 @@ SPEC CHECKSUMS:
   TwitterKit: 7f55ebb8d2a1476f7ef2d6fedd40090d4b349b40
   yoga: 17521bbb0dd54a47c0b3ac43253e78cdac7488e0
 
-PODFILE CHECKSUM: fc73cf56420890422defbd65d590542c478d2f9d
+PODFILE CHECKSUM: 11f490ad50daf15c359e1ce22a63c5657218c905
 
 COCOAPODS: 1.5.0
