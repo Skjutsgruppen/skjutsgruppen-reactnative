@@ -117,5 +117,6 @@
   "month_s": "se_ month(s)",
   "you_are_in": "se_ Your are in",
   "of_this_support_and_have_not_been_auto_renewed_yet": "se_ of this support and have not been auto renewed yet.",
-  "stop_auto_renewal": "se_ Stop auto renewal"
+  "stop_auto_renewal": "se_ Stop auto renewal",
+  "auto_renewal_canceled": "se_ Auto renewal cancelled"
 }
