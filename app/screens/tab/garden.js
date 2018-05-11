@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, TouchableOpacity, NativeModules, View } from 'react-native';
+import { StyleSheet, ScrollView, Image, TouchableOpacity, View } from 'react-native';
 import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
@@ -106,13 +106,15 @@ class Garden extends Component {
 
     showPayment(generateClientToken, (error, paymentMethodNonce) => {
       if (error) {
-        this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
+        console.warn(error);
         return;
       }
 
+      this.setState({ subscribing: true, showConfirmModal: true });
+
       support({ planId, paymentMethodNonce })
         .then(() => {
-          this.setState({ subscribing: false, alertMessage: trans('profile.subscribed_success') });          
+          this.setState({ subscribing: false, alertMessage: trans('profile.subscribed_success') });
         })
         .catch((e) => {
           console.warn(e);

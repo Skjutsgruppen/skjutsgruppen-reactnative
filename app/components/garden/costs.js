@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { compose, renderToStringWithData } from 'react-apollo';
+import { compose } from 'react-apollo';
 import { withNavigation } from 'react-navigation';
 
 import { trans } from '@lang/i18n';
