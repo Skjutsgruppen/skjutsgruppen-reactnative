@@ -3,13 +3,22 @@ import { StyleSheet, View, TextInput } from 'react-native';
 import countries from '@config/countries';
 import Picker from '@components/picker';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    height: 80,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    paddingHorizontal: 30,
+    backgroundColor: Colors.background.mutedBlue,
+  },
+  input: {
+    fontFamily: 'SFUIText-Regular',
+    flex: 1,
+    height: 80,
   },
 });
 
@@ -46,24 +55,18 @@ class Phone extends PureComponent {
     const list = this.getList();
     return (
       <View style={styles.wrapper}>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ flex: 1 }}>
-            <Picker
-              defaultValue={this.state.code}
-              list={list}
-              onChange={this.onChangeCountryCode}
-            />
-          </View>
-          <View style={{ flex: 4 }}>
-            <TextInput
-              keyboardType="phone-pad"
-              underlineColorAndroid="transparent"
-              onChangeText={this.onChangePhoneNumber}
-              style={{ fontFamily: 'SFUIText-Regular' }}
-              {...rest}
-            />
-          </View>
-        </View>
+        <Picker
+          defaultValue={this.state.code}
+          list={list}
+          onChange={this.onChangeCountryCode}
+        />
+        <TextInput
+          keyboardType="phone-pad"
+          underlineColorAndroid="transparent"
+          onChangeText={this.onChangePhoneNumber}
+          style={styles.input}
+          {...rest}
+        />
       </View>
     );
   }

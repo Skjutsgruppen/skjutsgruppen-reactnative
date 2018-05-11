@@ -63,7 +63,7 @@ class FBLogin extends PureComponent {
 
       return;
     }
-    
+
     if (fb.hasEmail) {
       this.setState({ showModal: false });
 
@@ -138,6 +138,8 @@ class FBLogin extends PureComponent {
         lastName: profile.last_name,
         fbId: profile.id,
         fbToken,
+        agreementRead: true,
+        agreementAccepted: true,
       });
 
       await setRegister({
@@ -145,7 +147,7 @@ class FBLogin extends PureComponent {
         user: response.data.updateUser.User,
       });
 
-      navigation.replace('EmailVerified');
+      navigation.replace('Onboarding', { activeStep: 6 });
     } catch (error) {
       console.warn(error);
     }

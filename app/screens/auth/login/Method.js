@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
-import CustomButton from '@components/common/customButton';
-import { ColoredText, GreetText } from '@components/auth/texts';
+import { trans } from '@lang/i18n';
+import { RoundedButton } from '@components/common';
 import PropTypes from 'prop-types';
 import FBLogin from '@components/facebook/login';
 import TwitterLogin from '@components/twitter/login';
+import StepsHeading from '@components/onBoarding/stepsHeading';
+import { withNavigation } from 'react-navigation';
+import BackButton from '@components/onBoarding/backButton';
 
 const styles = StyleSheet.create({
-  garderIcon: {
-    height: 100,
-    width: 100,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 16,
+  mainContainer: {
+    flex: 1,
+    marginHorizontal: 30,
+    backgroundColor: Colors.background.fullWhite,
   },
   divider: {
     alignSelf: 'center',
@@ -35,7 +36,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    marginHorizontal: 24,
+    width: 200,
+    marginVertical: 20,
   },
 });
 
@@ -54,28 +56,25 @@ class Method extends Component {
 
   render() {
     return (
-      <Container>
-        <Image source={require('@assets/icons/icon_garden.png')} style={styles.garderIcon} resizeMethod="resize" />
-        <GreetText>Welcome back!</GreetText>
-
-        <View style={styles.button}>
-          <FBLogin />
+      <Container style={{ backgroundColor: Colors.background.fullWhite }}>
+        <View style={styles.mainContainer}>
+          <StepsHeading>Welcome Back!</StepsHeading>
+          <View style={styles.button}>
+            <FBLogin />
+          </View>
+          <View style={styles.button}>
+            <TwitterLogin />
+          </View>
+          <View style={styles.divider} />
+          <RoundedButton
+            onPress={this.onPressEmail}
+            style={styles.button}
+            bgColor={Colors.background.pink}
+          >
+            {trans('onboarding.the_long_way')}
+          </RoundedButton>
+          <BackButton style={{ paddingVertical: 50 }} leftAligned onPress={this.onPressBack} />
         </View>
-        <View style={styles.button}>
-          <TwitterLogin />
-        </View>
-        <View style={styles.divider} />
-        <ColoredText color={Colors.text.purple}>Or</ColoredText>
-        <CustomButton
-          bgColor={Colors.background.gray}
-          onPress={this.onPressEmail}
-          style={styles.button}
-        >
-          Sign in with number or name
-        </CustomButton>
-        <TouchableOpacity style={styles.notParticipantWrapper} onPress={this.onPressBack}>
-          <Text style={styles.notParticipant}>{'I\'m not a participant yet'}</Text>
-        </TouchableOpacity>
       </Container>
     );
   }
@@ -88,4 +87,4 @@ Method.propTypes = {
   }).isRequired,
 };
 
-export default Method;
+export default withNavigation(Method);
