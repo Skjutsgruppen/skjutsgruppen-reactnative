@@ -120,5 +120,6 @@
   "you_are_in": "Your are in",
   "of_this_support_and_have_not_been_auto_renewed_yet": "of this support and have not been auto renewed yet.",
   "stop_auto_renewal": "Stop auto renewal",
-  "subscribe_failed": "Subscribe failed."
+  "subscribe_failed": "Subscribe failed.",
+  "auto_renewal_canceled": "Auto renewal cancelled"
 }

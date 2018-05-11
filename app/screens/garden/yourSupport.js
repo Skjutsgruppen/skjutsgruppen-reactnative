@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, NativeModules, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 
@@ -70,9 +70,11 @@ class YourSupport extends Component {
 
     showPayment(generateClientToken, (error, paymentMethodNonce) => {
       if (error) {
-        this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
+        console.warn(error);
         return;
       }
+
+      this.setState({ subscribing: true, showConfirmModal: true });
 
       support({ planId, paymentMethodNonce })
         .then(() => {
@@ -101,7 +103,7 @@ class YourSupport extends Component {
       .then(() => {
         mySupport.refetch()
           .then(() => {
-            this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_cancel') });
+            this.setState({ subscribing: false, alertMessage: trans('profile.auto_renewal_canceled') });
           });
       });
   }
