@@ -28,8 +28,7 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
     private static final String TAG = BraintreePaymentModule.class.getSimpleName();
     private BraintreeFragment braintreeFragment;
     private String token;
-    private Callback errorCallback;
-    private Callback successCallback;
+    private Callback callback;
 
     public BraintreePaymentModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,17 +50,16 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
-    public void showPayment(Callback errorCallback, Callback successCallback) {
+    public void showPayment(Callback callback) {
         Log.e(TAG, "show payment token: " + token);
-        this.successCallback = successCallback;
-        this.errorCallback = errorCallback;
+        this.callback = callback;
         if (braintreeFragment == null) {
             try {
                 braintreeFragment = BraintreeFragment.newInstance(getCurrentActivity(), token);
 
             } catch (InvalidArgumentException e) {
                 e.printStackTrace();
-                errorCallback.invoke(e.getMessage());
+                callback.invoke(e.getMessage());
                 return;
             }
         }
@@ -105,7 +103,7 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
             if (resultCode == Activity.RESULT_OK) {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 Log.e("Braintree Payment", result.getDeviceData() + "\n " + result.getPaymentMethodType());
-                successCallback.invoke(null, result.getPaymentMethodNonce().getNonce());
+                callback.invoke(null, result.getPaymentMethodNonce().getNonce());
             }
         }
     }
