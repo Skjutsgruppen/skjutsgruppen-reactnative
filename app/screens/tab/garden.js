@@ -107,6 +107,7 @@ class Garden extends Component {
     showPayment(generateClientToken, (error, paymentMethodNonce) => {
       if (error) {
         console.warn(error);
+        this.setState({ showConfirmModal: true, alertMessage: trans('profile.subscribe_failed') });
         return;
       }
 
