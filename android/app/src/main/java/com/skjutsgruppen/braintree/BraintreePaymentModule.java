@@ -105,7 +105,7 @@ public class BraintreePaymentModule extends ReactContextBaseJavaModule implement
             if (resultCode == Activity.RESULT_OK) {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 Log.e("Braintree Payment", result.getDeviceData() + "\n " + result.getPaymentMethodType());
-                successCallback.invoke(result.getPaymentMethodNonce().getNonce());
+                successCallback.invoke(null, result.getPaymentMethodNonce().getNonce());
             }
         }
     }
