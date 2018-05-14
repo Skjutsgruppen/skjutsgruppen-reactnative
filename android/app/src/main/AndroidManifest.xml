@@ -5,92 +5,104 @@
     android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
 
     <application
-      android:name=".MainApplication"
-      android:allowBackup="true"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:theme="@style/AppTheme">
-      <activity
-        android:name=".MainActivity"
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-        android:windowSoftInputMode="adjustPan"
-        android:launchMode="singleTop"
-        android:screenOrientation="portrait"
-        >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-      </activity>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-        <activity tools:replace="android:theme"
-                android:name="com.facebook.FacebookActivity"
-                android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-                android:label="@string/app_name"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            tools:replace="android:theme" />
 
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
+
+                <data android:scheme="@string/FB_LOGIN_SCHEME" />
             </intent-filter>
         </activity>
 
-       <meta-data
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCBMzgTWtH7moPJIGGDOaC_Dg7RqElbVWA"/>
-        
+            android:value="@string/GOOGLE_MAP_API_KEY" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/fb_app_id"/>
+            android:value="@string/FB_ID" />
         <meta-data
-          android:name="io.fabric.ApiKey"
-          android:value="b0952dc47e19b024e7d091319b728ec982138914"
-      />
-        <service android:name="com.evollu.react.fcm.MessagingService" android:enabled="true" android:exported="true">
-            <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-        <service android:name="GeoLocationService"/>
+            android:name="io.fabric.ApiKey"
+            android:value="${FABRIC_API_KEY}" />
 
-        <service android:name="com.evollu.react.fcm.InstanceIdService" android:exported="false">
+        <service
+            android:name="com.evollu.react.fcm.MessagingService"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-            <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher"/>
-        <receiver android:enabled="true" android:exported="true"  android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver">
+        <service android:name="GeoLocationService" />
+
+        <service
+            android:name="com.evollu.react.fcm.InstanceIdService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher" />
+        <receiver
+            android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
