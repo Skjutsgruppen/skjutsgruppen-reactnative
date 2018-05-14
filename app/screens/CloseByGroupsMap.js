@@ -28,10 +28,10 @@ class CloseByGroupsMapView extends Component {
     this.setState({ groups: nearByGroups.rows });
   }
 
-  onMarkerPress = (detail) => {
+  onMarkerPress = ({ id }) => {
     const { navigation } = this.props;
 
-    navigation.navigate('GroupDetail', { group: detail });
+    navigation.navigate('GroupDetail', { id });
   }
 
   renderGroups = () => {

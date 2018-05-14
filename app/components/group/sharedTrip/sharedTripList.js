@@ -42,7 +42,7 @@ const SharedTripList = ({ groupTrips, navigation }) => {
         ({ item }) => (
           <ListItem
             trip={item}
-            onPress={() => navigation.navigate('TripDetail', { trip: item })}
+            onPress={() => navigation.navigate('TripDetail', { id: item.id })}
             onExperiencePress={() => { }}
             showIndicator
             indicatorColor={item.type === FEED_TYPE_OFFER ?

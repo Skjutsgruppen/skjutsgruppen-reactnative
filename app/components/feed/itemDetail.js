@@ -310,7 +310,7 @@ class Feed extends Component {
       return (
         <View >
           <AppText style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_offers_a_ride')}
+            {this.renderUsername()} {trans('detail.offers_a_ride')}
           </AppText>
           <AppText>{feed.Trip.description}</AppText>
         </View>
@@ -333,11 +333,11 @@ class Feed extends Component {
     return (
       <View>
         <View style={styles.title}>
-          <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.Enabler.id)}>
+          <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', { id: feed.Enabler.id })}>
             {`${feed.Enabler.firstName} `}
           </AppText>
           <AppText style={styles.commentText}>
-            {trans('detail.added')} <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', feed.User.id)}>{feed.User.firstName}</AppText> {trans('detail.to_this_group')}
+            {trans('detail.added')} <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', { id: feed.User.id })}>{feed.User.firstName}</AppText> {trans('detail.to_this_group')}
           </AppText>
         </View>
         <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
@@ -355,7 +355,7 @@ class Feed extends Component {
         fontVariation="semibold"
         onPress={() => {
           if (userDetail.deleted) return null;
-          return onPress('Profile', userDetail.id);
+          return onPress('Profile', { id: userDetail.id });
         }}
       >
         {userDetail.firstName}

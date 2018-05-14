@@ -46,23 +46,23 @@ class UserConversation extends PureComponent {
     this.setState({ isOpen: false });
   }
 
-  onPress = (type, detail) => {
+  onPress = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === FEEDABLE_TRIP) {
-      navigation.navigate('TripDetail', { trip: detail });
+      navigation.navigate('TripDetail', { id });
     }
 
     if (type === FEEDABLE_GROUP) {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
     this.onClose();
   }
 
-  onExperienceIconPress = (experience) => {
+  onExperienceIconPress = ({ id }) => {
     const { navigation } = this.props;
     this.onClose();
-    navigation.navigate('ExperienceDetail', { experience });
+    navigation.navigate('ExperienceDetail', { id });
   }
 
   isCurrentUser = () => {

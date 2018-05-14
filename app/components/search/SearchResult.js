@@ -402,19 +402,19 @@ class SearchResult extends Component {
     }
   }
 
-  onPress = (type, detail) => {
+  onPress = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === FEEDABLE_GROUP) {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
 
     if (type === FEEDABLE_TRIP) {
-      navigation.navigate('TripDetail', { trip: detail });
+      navigation.navigate('TripDetail', { id });
     }
 
     if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('Profile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: id });
     }
   };
 

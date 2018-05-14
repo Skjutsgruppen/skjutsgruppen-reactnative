@@ -106,7 +106,7 @@ class MyExperienceList extends PureComponent {
       <TouchableHighlight
         underlayColor={Colors.background.lightGray}
         key={experience.id}
-        onPress={() => navigation.navigate('ExperienceDetail', { experience })}
+        onPress={() => navigation.navigate('ExperienceDetail', { id: experience.id })}
         style={styles.experience}
       >
         <Image source={{ uri: experience.photoUrl }} style={styles.image} />

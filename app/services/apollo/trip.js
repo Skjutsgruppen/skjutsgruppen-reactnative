@@ -36,45 +36,27 @@ subscription{
           Stops {
             name
             coordinates
-          }
-          country
-          county
-          municipality
-          locality
-          membershipStatus
-          totalParticipants
-          isAdmin
-          Enablers {
-            id
-            firstName
-            avatar
-          }
-          isDeleted
+          } 
+          country 
+          county 
+          municipality 
+          locality 
           direction
         }
       }
       ... on TripFeed {
         Trip {
-          id
-          type
-          description
-          seats
+          id 
+          type 
+          description  
           direction
+          seats
           User {
             id
             firstName
             avatar
             deleted
-            relation {
-              path{
-                id
-                firstName
-                avatar
-                deleted
-              }
-              areFriends
-            }
-          }
+          } 
           TripStart {
             name
             coordinates
@@ -91,21 +73,11 @@ subscription{
           photo
           mapPhoto
           totalFeeds
-          isParticipant
           flexibilityInfo {
             duration
             unit
             type
           }
-          Group {
-            id
-            name
-          }
-          linkedTrip {
-            id
-            description
-          }
-          isDeleted
         }
       }
       ... on NewsFeed {
@@ -124,26 +96,7 @@ subscription{
       ... on ExperienceFeed{
         Experience{
           id
-          createdAt
-          description
           photoUrl
-          publishedStatus
-          userStatus
-          User {
-            id
-            firstName
-            avatar
-            deleted
-          }
-          Participants{
-            User {
-              id
-              avatar
-              firstName
-              deleted
-            }
-            status
-          }
         }
       }
     }
@@ -167,7 +120,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         description
         User {
           id
-          firstName
+          firstName  
           avatar
           deleted
         }
@@ -175,7 +128,6 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         type
         photo
         mapPhoto
-        direction
         TripStart {
           name
           coordinates
@@ -187,44 +139,27 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         Stops {
           name
           coordinates
-        }
-        country
-        county
-        municipality
+        } 
+        country 
+        county 
+        municipality 
         locality
-        membershipStatus
-        totalParticipants
-        isAdmin
-        Enablers {
-          id
-          firstName
-          avatar
-        }
-        isDeleted
+        direction
       }
     }
     ... on TripFeed {
       Trip {
-        id
-        type
-        description
-        seats
+        id 
+        type 
+        description  
         direction
+        seats
         User {
           id
           firstName
           avatar
           deleted
-          relation {
-            path{
-              id
-              firstName
-              avatar
-              deleted
-            }
-            areFriends
-          }
-        }
+        } 
         TripStart {
           name
           coordinates
@@ -241,21 +176,11 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         photo
         mapPhoto
         totalFeeds
-        isParticipant
         flexibilityInfo {
           duration
           unit
           type
         }
-        Group {
-          id
-          name
-        }
-        linkedTrip {
-          id
-          description
-        }
-        isDeleted
       }
     }
     ... on NewsFeed {
@@ -274,26 +199,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
     ... on ExperienceFeed{
       Experience{
         id
-        createdAt
-        description
         photoUrl
-        publishedStatus
-        userStatus
-        User {
-          id
-          firstName
-          avatar
-          deleted
-        }
-        Participants{
-          User {
-            id
-            avatar
-            firstName
-            deleted
-          }
-          status
-        }
       }
     }
    }
@@ -408,44 +314,37 @@ mutation createTrip(
     linkedTripId: $linkedTripId
     direction: $direction
   }) {
-      id
+    id 
+    type 
+    description  
+    direction
+    User {
+      id 
+      firstName 
+      avatar
+      deleted
+    } 
+    TripStart {
+      name 
+      coordinates
+    } 
+    TripEnd {
+      name 
+      coordinates
+    } 
+    Stops { 
+      name 
+      coordinates 
+    } 
+    date 
+    photo 
+    mapPhoto
+    totalFeeds
+    flexibilityInfo {
+      duration
+      unit
       type
-      description
-      seats
-      User {
-        id
-        firstName
-        avatar
-        deleted
-      }
-      direction
-      TripStart {
-        name
-        coordinates
-      }
-      TripEnd {
-        name
-        coordinates
-      }
-      Stops {
-        name
-        coordinates
-      }
-      date
-      photo
-      mapPhoto
-      totalFeeds
-      isParticipant
-      url
-      recurring
-      Group {
-        id
-        name
-      }
-      linkedTrip {
-        id
-        description
-      }
+    }
   }
 }
 `;
@@ -1128,6 +1027,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
             seats
             type
             mapPhoto
+            direction
             User {
               id
               firstName
