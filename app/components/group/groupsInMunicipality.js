@@ -32,11 +32,11 @@ class GroupsInMunicipality extends Component {
     this.setState({ section, remaining });
   }
 
-  redirect = (type, detail) => {
+  redirect = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
   }
 

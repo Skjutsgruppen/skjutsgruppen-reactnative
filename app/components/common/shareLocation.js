@@ -190,7 +190,7 @@ class ShareLocation extends PureComponent {
 
     return (
       <View>
-        <TouchableHighlight onPress={() => navigation.navigate('TripDetail', { trip: detail })}>
+        <TouchableHighlight onPress={() => navigation.navigate('TripDetail', { id: detail.id })}>
           <View style={[styles.row, styles.spacerTop]}>
             <View style={styles.thumbnail}>
               <Image source={{ uri: detail.User.avatar }} style={styles.avatar} />
@@ -214,12 +214,12 @@ class ShareLocation extends PureComponent {
   }
 
   group = () => {
-    const { detail, navigation } = this.props;
+    const { detail: { id, name }, navigation } = this.props;
 
     return (
-      <TouchableHighlight onPress={() => navigation.navigate('GroupDetail', { group: detail })}>
+      <TouchableHighlight onPress={() => navigation.navigate('GroupDetail', { id })}>
         <View style={styles.groupName}>
-          <Text style={TextStyles.bold}>{detail.name}</Text>
+          <Text style={TextStyles.bold}>{name}</Text>
         </View>
       </TouchableHighlight>
     );

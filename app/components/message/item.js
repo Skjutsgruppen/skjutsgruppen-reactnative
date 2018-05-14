@@ -195,7 +195,7 @@ class Item extends PureComponent {
     const { filters } = this.props;
 
     return (
-      <TouchableOpacity onPress={() => this.redirect(id, ids, 'GroupDetail', { notifier: User, group: Notifiable.Group, notificationMessage: 'is requesting to join this group.' })}>
+      <TouchableOpacity onPress={() => this.redirect(id, ids, 'GroupDetail', { notifier: User, id: Notifiable.Group.id, notificationMessage: 'is requesting to join this group.' })}>
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
@@ -292,7 +292,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: trans('message.have_accepted_users_request_to_join_group', { username: Notifiers[0].firstName, groupname: Notifiable.Group.name }),
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'GroupDetail', { group: Notifiable.Group }),
+        onPress: () => this.redirect(id, ids, 'GroupDetail', { id: Notifiable.Group.id }),
       });
     }
 
@@ -308,7 +308,7 @@ class Item extends PureComponent {
         text: trans('message.added_you_to_group', { name: Notifiable.name }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', {
-          group: Notifiable,
+          id: Notifiable.id,
           notifier: Notifiers[0],
           notificationMessage: trans('message.added_you_to_this_group'),
         }),
@@ -341,7 +341,7 @@ class Item extends PureComponent {
         date: createdAt,
         noAvatarAction: true,
         experience: {},
-        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { id: Notifiable.id }),
       });
     }
 
@@ -356,7 +356,7 @@ class Item extends PureComponent {
         date: createdAt,
         noAvatarAction: true,
         experience: {},
-        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { id: Notifiable.id }),
       });
     }
 
@@ -372,7 +372,7 @@ class Item extends PureComponent {
         noAvatarAction: true,
         text: trans('message.your_experience_has_been_published'),
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'TripDetail', { trip: Notifiable.Trip }),
+        onPress: () => this.redirect(id, ids, 'TripDetail', { id: Notifiable.Trip.id }),
       });
     }
 
@@ -387,7 +387,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: trans('message.shared_experience_with_you'),
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { id: Notifiable.id }),
       });
     }
 
@@ -402,7 +402,7 @@ class Item extends PureComponent {
         userId: Notifiers[0].id,
         text: trans('message.tagged_you_in_an_experience'),
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { experience: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'ExperienceDetail', { id: Notifiable.id }),
       });
     }
 
@@ -425,7 +425,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: `${type}`,
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'TripDetail', { trip: Notifiable }),
+        onPress: () => this.redirect(id, ids, 'TripDetail', { id: Notifiable.id }),
       });
     }
 
@@ -440,7 +440,7 @@ class Item extends PureComponent {
         photo: [Notifiers[0].avatar],
         text: trans('message.shared_a_trip_on_your_group'),
         date: createdAt,
-        onPress: () => this.redirect(id, ids, 'TripDetail', { group: Notifiable, notifier: Notifiers[0], notificationMessage: 'Group' }),
+        onPress: () => this.redirect(id, ids, 'GroupDetail', { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: 'Group' }),
       });
     }
 
@@ -456,7 +456,7 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_GROUP) {
       type = `${Notifiable.name}`;
       route = 'GroupDetail';
-      params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_group') };
+      params = { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_group') };
       itemFields = {
         userId: Notifiers[0].id,
         user: `${type}`,
@@ -470,7 +470,7 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_TRIP) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_ride') };
+      params = { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: trans('message.commented_on_this_ride') };
 
       if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
@@ -501,7 +501,7 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_GROUP) {
       type = trans('message.shared_group_groupname_to_you', { groupname: Notifiable.name });
       route = 'GroupDetail';
-      params = { group: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') };
+      params = { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') };
     }
 
     if (notifiable === FEEDABLE_TRIP) {
@@ -526,7 +526,7 @@ class Item extends PureComponent {
 
   tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     const route = 'TripDetail';
-    const params = { trip: Notifiable };
+    const params = { id: Notifiable.id };
     const plus = Notifiers.length - 1;
 
     return this.item({
@@ -543,7 +543,7 @@ class Item extends PureComponent {
 
   groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     const route = 'GroupDetail';
-    const params = { group: Notifiable };
+    const params = { id: Notifiable.id };
     const plus = Notifiers.length - 1;
 
     return this.item({
@@ -574,7 +574,6 @@ class Item extends PureComponent {
 
   locationShared = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
     let route = 'Route';
-
     if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
 
     const params = { info: Notifiable.Group.id ? Notifiable.Group : Notifiable.Trip };
@@ -608,7 +607,7 @@ class Item extends PureComponent {
 
     if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
 
-    const params = { info: Notifiable.Trip };
+    const params = { info: Notifiable };
 
     return this.item({
       userId: Notifiers[0].id,
@@ -713,7 +712,7 @@ class Item extends PureComponent {
     let profileImage = null;
 
     profileImage = (
-      <TouchableOpacity onPress={() => this.redirect(null, [], 'ExperienceDetail', { experience: Notifiable })}>
+      <TouchableOpacity onPress={() => this.redirect(null, [], 'ExperienceDetail', { id: Notifiable.id })}>
         <Image source={ExperienceIcon} style={styles.profilePic} />
       </TouchableOpacity>
     );

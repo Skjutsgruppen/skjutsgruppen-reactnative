@@ -3,22 +3,19 @@
 import client from '@services/apollo';
 import { PROFILE_QUERY, ACCOUNT_QUERY } from '@services/apollo/profile';
 import { TRIPS_QUERY, GET_FEED_QUERY, FIND_TRIP_QUERY } from '@services/apollo/trip';
-import { GROUPS_QUERY } from '@services/apollo/group';
+import { GROUPS_QUERY, FIND_GROUP_QUERY } from '@services/apollo/group';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
   PER_FETCH_LIMIT,
-  FEED_FILTER_WANTED,
   FEED_FILTER_EVERYTHING,
   NOTIFICATION_FETCH_LIMIT,
-  FEED_FILTER_OFFERED,
   NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
   NOTIFICATION_TYPE_EXPERIENCE_REJECTED,
 } from '@config/constant';
 import { FRIEND_QUERY } from '@services/apollo/friend';
 import { NOTIFICATION_QUERY, LOCATION_SHARED_TO_ALL_RESOURCES_QUERY } from '@services/apollo/notification';
 import { LOCATION_SHARED_TO_SPECIFIC_RESOURCE_QUERY } from '@services/apollo/share';
-import { FIND_GROUP_QUERY } from './group';
 
 const isRemovableNotificationType = (type) => {
   const types = [
@@ -114,17 +111,6 @@ export const updateFeedCount = (id, isOwner = false, increase = true) => {
   }
 };
 
-export const increaseProfileFriendsCount = () => {
-  try {
-    const myAccount = getAccount();
-
-    myAccount.account.totalFriends += 1;
-    setAccount(myAccount);
-  } catch (err) {
-    // empty
-  }
-};
-
 export const increaseProfileFriend = (userId, friend) => {
   try {
     const friends = client.readQuery(
@@ -196,129 +182,6 @@ export const updateNewNotificationToOld = (id, apollo) => {
   }
 };
 
-export const increaseProfileTripCount = (userId, tripId, type) => {
-  let repeated = false;
-
-  try {
-    const activeRides = client.readQuery(
-      {
-        query: TRIPS_QUERY,
-        variables: {
-          id: null,
-          offset: 0,
-          limit: PER_FETCH_LIMIT,
-          type: FEED_FILTER_OFFERED,
-          active: true,
-        },
-      },
-    );
-
-    activeRides.trips.rows.map((row) => {
-      if (row.id === tripId) {
-        repeated = true;
-      }
-
-      return row;
-    });
-  } catch (err) {
-    // empty
-  }
-
-  try {
-    if (!repeated) {
-      const myRides = client.readQuery(
-        {
-          query: TRIPS_QUERY,
-          variables: {
-            id: userId,
-            offset: 0,
-            limit: PER_FETCH_LIMIT,
-            type,
-            active: null,
-          },
-        },
-      );
-
-      myRides.trips.rows.map((row) => {
-        if (row.id === tripId) {
-          repeated = true;
-        }
-
-        return row;
-      });
-    }
-  } catch (err) {
-    // empty
-  }
-
-  try {
-    if (!repeated) {
-      const myAccount = getAccount();
-
-      if (type === FEED_FILTER_WANTED) {
-        myAccount.account.totalAsked += 1;
-      } else {
-        myAccount.account.totalOffered += 1;
-      }
-
-      setAccount(myAccount);
-    }
-  } catch (err) {
-    // empty
-  }
-};
-
-export const increaseProfileGroupCount = (userId, groupId) => {
-  let repeated = false;
-
-  try {
-    const myGroups = client.readQuery({
-      query: GROUPS_QUERY,
-      variables: { id: null, offset: 0, limit: PER_FETCH_LIMIT },
-    });
-
-    myGroups.groups.rows.map((row) => {
-      if (row.id === groupId) {
-        repeated = true;
-      }
-
-      return row;
-    });
-  } catch (err) {
-    // empty
-  }
-
-  try {
-    if (!repeated) {
-      const profileMyGroups = client.readQuery({
-        query: GROUPS_QUERY,
-        variables: { id: userId, offset: 0, limit: PER_FETCH_LIMIT },
-      });
-
-      profileMyGroups.groups.rows.map((row) => {
-        if (row.id === groupId) {
-          repeated = true;
-        }
-
-        return row;
-      });
-    }
-  } catch (err) {
-    // empty
-  }
-
-  try {
-    if (!repeated) {
-      const myAccount = getAccount();
-
-      myAccount.account.totalGroups += 1;
-      setAccount(myAccount);
-    }
-  } catch (err) {
-    // error
-  }
-};
-
 export const increaseProfileExperience = () => {
   try {
     const myAccount = getAccount();
@@ -327,39 +190,6 @@ export const increaseProfileExperience = () => {
     setAccount(myAccount);
   } catch (err) {
     // empty
-  }
-};
-
-export const updateProfileFriendCount = (userId, apollo, decrease = false) => {
-  try {
-    apollo.readQuery(
-      {
-        query: FRIEND_QUERY,
-        variables: {
-          id: userId,
-          offset: 0,
-          limit: PER_FETCH_LIMIT,
-        },
-      },
-    );
-  } catch (err) {
-    try {
-      const myAccount = apollo.readQuery(
-        { query: ACCOUNT_QUERY },
-      );
-
-      if (decrease) {
-        myAccount.account.totalFriends -= 1;
-      } else {
-        myAccount.account.totalFriends += 1;
-      }
-
-      apollo.writeQuery(
-        { query: ACCOUNT_QUERY, data: myAccount },
-      );
-    } catch (e) {
-      // empty
-    }
   }
 };
 
@@ -398,59 +228,6 @@ export const removeNotification = (notificationId, apollo) => {
     });
   } catch (err) {
     // empty
-  }
-};
-
-export const updateOtherProfileFriendCount = (friendId, apollo, decrease = false) => {
-  try {
-    apollo.readQuery(
-      {
-        query: FRIEND_QUERY,
-        variables: {
-          id: friendId,
-          offset: 0,
-          limit: PER_FETCH_LIMIT,
-        },
-      },
-    );
-  } catch (err) {
-    try {
-      if (apollo) {
-        const friendProfile = apollo.readQuery({
-          query: PROFILE_QUERY,
-          variables: { id: friendId },
-        });
-        if (decrease) {
-          friendProfile.profile.totalFriends -= 1;
-        } else {
-          friendProfile.profile.totalFriends += 1;
-        }
-
-        apollo.writeQuery({
-          query: PROFILE_QUERY,
-          data: friendProfile,
-          variables: { id: friendId },
-        });
-      } else {
-        const friendProfile = client.readQuery({
-          query: PROFILE_QUERY,
-          variables: { id: friendId },
-        });
-        if (decrease) {
-          friendProfile.profile.totalFriends -= 1;
-        } else {
-          friendProfile.profile.totalFriends += 1;
-        }
-
-        client.writeQuery({
-          query: PROFILE_QUERY,
-          data: friendProfile,
-          variables: { id: friendId },
-        });
-      }
-    } catch (e) {
-      // empty
-    }
   }
 };
 
@@ -622,4 +399,84 @@ export const updateNotificationSharedLocation = () => {
 
 export const resetLocalStorage = () => {
   client.resetStore();
+};
+
+const objectGenerator = (details) => {
+  const { data } = client.getInitialState();
+  const fullData = { ...details };
+
+  Object.keys(details).forEach((key) => {
+    if (typeof details[key] === 'object' && details[key] !== null) {
+      const id = details[key].id;
+      if (id in data) {
+        fullData[key] = data[id];
+      }
+    }
+  });
+
+  return fullData;
+};
+
+export const getTripDetails = (id) => {
+  try {
+    const storeId = client.dataIdFromObject({ __typename: 'Trip', id });
+    const { data } = client.getInitialState();
+
+    if (storeId in data) {
+      const tripDetails = data[storeId];
+
+      return objectGenerator(tripDetails);
+    }
+
+    return [];
+  } catch (err) {
+    return [];
+  }
+};
+
+export const getGroupDetails = (id) => {
+  try {
+    const storeId = client.dataIdFromObject({ __typename: 'Group', id });
+    const { data } = client.getInitialState();
+
+    if (storeId in data) {
+      const groupDetails = data[storeId];
+
+      return objectGenerator(groupDetails);
+    }
+
+    return [];
+  } catch (err) {
+    return [];
+  }
+};
+
+export const getExperienceDetails = (id) => {
+  try {
+    const storeId = client.dataIdFromObject({ __typename: 'Experience', id });
+    const { data } = client.getInitialState();
+
+    if (storeId in data) {
+      const experienceDetails = data[storeId];
+
+      return objectGenerator(experienceDetails);
+    }
+
+    return [];
+  } catch (err) {
+    return [];
+  }
+};
+
+export const getProfile = (id) => {
+  try {
+    const profileDetails = client.readQuery({
+      query: PROFILE_QUERY,
+      variables: { id },
+    });
+
+    return profileDetails.profile;
+  } catch (err) {
+    return {};
+  }
 };

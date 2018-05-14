@@ -23,9 +23,9 @@ class UserExperience extends PureComponent {
     header: null,
   };
 
-  onPress = (type, experience) => {
+  onPress = (type, { id }) => {
     const { navigation } = this.props;
-    navigation.navigate('ExperienceDetail', { experience });
+    navigation.navigate('ExperienceDetail', { id });
   }
 
   goBack = () => {

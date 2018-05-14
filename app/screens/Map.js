@@ -116,9 +116,9 @@ class Map extends PureComponent {
     this.ismounted = false;
   }
 
-  onMarkerPress = (Trip) => {
+  onMarkerPress = ({ id }) => {
     const { navigation } = this.props;
-    navigation.navigate('TripDetail', { trip: Trip });
+    navigation.navigate('TripDetail', { id });
   }
 
   onRegionChange = async (region) => {

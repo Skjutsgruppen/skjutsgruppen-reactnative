@@ -147,21 +147,22 @@ class FeedList extends PureComponent {
 
   onPress = (type, detail) => {
     const { navigation } = this.props;
+    const { id } = detail;
 
     if (type === FEEDABLE_GROUP) {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
 
     if (type === FEEDABLE_TRIP) {
-      navigation.navigate('TripDetail', { trip: detail });
+      navigation.navigate('TripDetail', { id });
     }
 
     if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('Profile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: id });
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      navigation.navigate('ExperienceDetail', { experience: detail });
+      navigation.navigate('ExperienceDetail', { id });
     }
 
     if (type === FEEDABLE_LOCATION) {

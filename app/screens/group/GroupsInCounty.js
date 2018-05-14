@@ -92,11 +92,11 @@ class GroupsListByCounty extends Component {
     }
   }
 
-  onPress = (type, detail) => {
+  onPress = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
   }
 
@@ -140,6 +140,10 @@ class GroupsListByCounty extends Component {
 
     if (loading) {
       return (<Loading style={{ marginTop: 85, marginBottom: 24 }} />);
+    }
+
+    if (groupsByCounty.length < 1) {
+      return null;
     }
 
     return (
@@ -189,7 +193,7 @@ GroupsListByCounty.defaultProps = {
 const GroupCountiesList = compose(withGroupsInCounty, withNavigation)(GroupsListByCounty);
 
 const GroupsInCounty = ({ navigation }) => (
-  <GroupCountiesList countyId={navigation.state.params.county.id} />
+  <GroupCountiesList countyId={navigation.state.params.id} />
 );
 
 GroupsInCounty.propTypes = {
