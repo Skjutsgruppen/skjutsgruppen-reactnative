@@ -88,7 +88,7 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
     if (trip.muted) {
       await resetMute({ mutable: 'Trip', mutableId: trip.id, from: getDate().format() });
     }
-    navigation.navigate('TripDetail', { trip });
+    navigation.navigate('TripDetail', { id: trip.id });
   };
 
   return (

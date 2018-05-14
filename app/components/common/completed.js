@@ -112,7 +112,7 @@ const Completed = ({
         {
           (type === FEEDABLE_TRIP) &&
           <Trip
-            onPress={() => navigation.navigate('TripDetail', { trip: detail })}
+            onPress={() => navigation.navigate('TripDetail', { id: detail.id })}
             trip={detail}
             shouldHandleRecurring
           />
@@ -121,7 +121,7 @@ const Completed = ({
         {
           (type === FEEDABLE_GROUP) &&
           <Group
-            onPress={() => navigation.navigate('GroupDetail', { group: detail })}
+            onPress={() => navigation.navigate('GroupDetail', { id: detail.id })}
             group={detail}
           />
         }
@@ -144,7 +144,7 @@ const Completed = ({
             color={Colors.text.blue}
             fontVariation="bold"
             style={styles.link}
-            onPress={() => navigation.navigate('TripDetail', { trip: suggestion })}
+            onPress={() => navigation.navigate('TripDetail', { id: suggestion.id })}
           >
             Back to {suggestion.User.firstName}{"'"}s ride
           </AppText>
@@ -156,7 +156,7 @@ const Completed = ({
             color={Colors.text.blue}
             fontVariation="bold"
             style={styles.link}
-            onPress={() => navigation.navigate('GroupDetail', { group, fetch: true })}
+            onPress={() => navigation.navigate('GroupDetail', { id: group.id })}
           >
             Back to {group.name}
           </AppText>
@@ -164,7 +164,7 @@ const Completed = ({
         {
           Object.keys(group).length > 0 && !isReturnedTrip &&
           <RoundedButton
-            onPress={() => navigation.navigate('GroupDetail', { group, fetch: true })}
+            onPress={() => navigation.navigate('GroupDetail', { id: group.id })}
             bgColor={Colors.background.pink}
             style={styles.button}
           >
