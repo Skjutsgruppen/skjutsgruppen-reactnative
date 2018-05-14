@@ -20,6 +20,7 @@ subscription{
             firstName
             avatar
             deleted
+            isSupporter
           }
           outreach
           type
@@ -36,11 +37,21 @@ subscription{
           Stops {
             name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
+          }
+          country
+          county
+          municipality
+          locality
+          membershipStatus
+          totalParticipants
+          isAdmin
+          Enablers {
+            id
+            firstName
+            avatar
+            isSupporter
+          }
+          isDeleted
           direction
           url
           isDeleted
@@ -62,7 +73,18 @@ subscription{
             firstName
             avatar
             deleted
-          } 
+            isSupporter
+            relation {
+              path{
+                id
+                firstName
+                avatar
+                deleted
+                isSupporter
+              }
+              areFriends
+            }
+          }
           TripStart {
             name
             coordinates
@@ -105,6 +127,25 @@ subscription{
         Experience{
           id
           photoUrl
+          publishedStatus
+          userStatus
+          User {
+            id
+            firstName
+            avatar
+            deleted
+            isSupporter
+          }
+          Participants{
+            User {
+              id
+              avatar
+              firstName
+              deleted
+              isSupporter
+            }
+            status
+          }
         }
       }
     }
@@ -131,6 +172,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName  
           avatar
           deleted
+          isSupporter
         }
         outreach
         type
@@ -154,6 +196,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         locality
         direction
         url
+        membershipStatus
+        totalParticipants
+        isAdmin
+        Enablers {
+          id
+          firstName
+          avatar
+          isSupporter
+        }
         isDeleted
         membershipStatus
         Enablers {
@@ -173,7 +224,18 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName
           avatar
           deleted
-        } 
+          isSupporter
+          relation {
+            path{
+              id
+              firstName
+              avatar
+              deleted
+              isSupporter
+            }
+            areFriends
+          }
+        }
         TripStart {
           name
           coordinates
@@ -216,6 +278,25 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
       Experience{
         id
         photoUrl
+        publishedStatus
+        userStatus
+        User {
+          id
+          firstName
+          avatar
+          deleted
+          isSupporter
+        }
+        Participants{
+          User {
+            id
+            avatar
+            firstName
+            deleted
+            isSupporter
+          }
+          status
+        }
       }
     }
    }
@@ -340,6 +421,7 @@ mutation createTrip(
       firstName 
       avatar
       deleted
+      isSupporter
     } 
     TripStart {
       name 
@@ -417,6 +499,7 @@ query tripParticipants($id: Int, $offset: Int, $limit: Int) {
       firstName
       lastName
       avatar
+      isSupporter
     }
     count
   }
@@ -456,12 +539,14 @@ query trip($id: Int!) {
       firstName
       avatar
       deleted
+      isSupporter
       relation {
           path{
           id
           firstName
           avatar
           deleted
+          isSupporter
         }
         areFriends
       }
@@ -487,6 +572,7 @@ query trip($id: Int!) {
         id
         avatar
         deleted
+        isSupporter
       }
       interval
       duration
@@ -516,6 +602,7 @@ query trip($id: Int!) {
         firstName
         lastName
         avatar
+        isSupporter
       }
       count
     }
@@ -537,6 +624,7 @@ query trip($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Recurring {
@@ -557,6 +645,7 @@ query trip($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Group {
@@ -589,12 +678,14 @@ subscription onTripUpdated($id: Int!) {
       firstName
       avatar
       deleted
+      isSupporter
       relation {
           path{
           id
           firstName
           avatar
           deleted
+          isSupporter
         }
         areFriends
       }
@@ -620,6 +711,7 @@ subscription onTripUpdated($id: Int!) {
         id
         avatar
         deleted
+        isSupporter
       }
       interval
       duration
@@ -649,6 +741,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         lastName
         avatar
+        isSupporter
       }
       count
     }
@@ -670,6 +763,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Recurring {
@@ -690,6 +784,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Group {
@@ -747,12 +842,14 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
           firstName
           avatar
           deleted
+          isSupporter
           relation {
             path{
               id
               firstName
               avatar
               deleted
+              isSupporter
             }
             areFriends
           }
@@ -789,6 +886,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
             firstName
             avatar
             deleted
+            isSupporter
           }
         }
         Participants{
@@ -826,6 +924,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         id
         firstName
         avatar
+        isSupporter
         deleted
         relation {
           path{
@@ -833,6 +932,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
             firstName
             avatar
             deleted
+            isSupporter
           }
           areFriends
         }
@@ -869,6 +969,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           firstName
           avatar
           deleted
+          isSupporter
         }
       }
       Participants {
@@ -877,6 +978,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           firstName
           lastName
           avatar
+          isSupporter
           deleted
         }
         count
@@ -991,12 +1093,14 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
           lastName
           avatar
           deleted
+          isSupporter
           relation {
             path{
               id
               firstName
               avatar
               deleted
+              isSupporter
             }
             areFriends
           }
@@ -1018,6 +1122,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
           }
         }
@@ -1030,6 +1135,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
             description
             Participants {
@@ -1039,6 +1145,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
                 lastName
                 avatar
                 deleted
+                isSupporter
               }
               status
             }
@@ -1076,6 +1183,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
             TripStart {
               name
@@ -1144,12 +1252,14 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
         lastName
         avatar
         deleted
+        isSupporter
         relation {
           path{
             id
             firstName
             avatar
             deleted
+            isSupporter
           }
           areFriends
         }
@@ -1171,6 +1281,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             lastName
             avatar
             deleted
+            isSupporter
           }
         }
       }
@@ -1183,6 +1294,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             lastName
             avatar
             deleted
+            isSupporter
           }
           description
           Participants {
@@ -1192,6 +1304,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
               lastName
               avatar
               deleted
+              isSupporter
             }
             status
           }

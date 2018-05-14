@@ -61,7 +61,7 @@ class Enabler extends Component {
 
     if (User.avatar) {
       profileImage = (
-        <Avatar imageURI={User.avatar} size={48} onPress={() => onPress(User.id)} />
+        <Avatar imageURI={User.avatar} size={48} onPress={() => onPress(User.id)} isSupporter={User.isSupporter} />
       );
     } else {
       profileImage = (<View style={styles.imgIcon} />);

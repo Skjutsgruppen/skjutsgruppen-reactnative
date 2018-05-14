@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   content: {
+    maxWidth: '100%',
+    minWidth: 300,
     margin: 20,
     paddingTop: 20,
     borderRadius: 12,

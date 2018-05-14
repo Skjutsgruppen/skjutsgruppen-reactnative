@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 const MembershipRequestItem = ({ request: { User, id }, onAccept, onReject, position }) => (
   <View style={[styles.container, position === 0 ? { marginTop: 36 } : {}]}>
     <View style={styles.flexRow}>
-      <Avatar size={48} imageURI={User.avatar} />
+      <Avatar size={48} imageURI={User.avatar} isSupporter={User.isSupporter} />
       <AppText color={Colors.text.blue} style={styles.name}>
         {User.firstName} {User.lastName}</AppText>
     </View>

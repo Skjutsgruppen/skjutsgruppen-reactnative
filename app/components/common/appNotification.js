@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, TouchableOpacity, ViewPropTypes } from 'react-
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
+import Avatar from '@components/common/avatar';
 import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
@@ -20,9 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 48,
-    width: 48,
-    borderRadius: 24,
     marginRight: 12,
   },
   icon: {
@@ -35,18 +33,21 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
     return null;
   }
 
-  let imgIcon = image;
-  let imageStyle = { marginRight: 12 };
+  let imgIcon = <Image source={image} style={styles.image} />;
 
   if (type === 'image') {
-    imgIcon = { uri: image };
-    imageStyle = styles.image;
+    imgIcon = (<Avatar
+      imageURI={image}
+      size={48}
+      notTouchable
+      style={styles.image}
+    />);
   }
 
   return (
     <View style={[styles.wrapper, style]}>
       <View style={styles.content}>
-        <Image source={imgIcon} style={imageStyle} />
+        {imgIcon}
         <View style={{ flex: 1 }}>
           {name !== '' && <AppText color={Colors.text.white} fontVariation="bold">{name}</AppText>}
           <AppText color={Colors.text.white}>{message}</AppText>

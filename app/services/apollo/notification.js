@@ -17,6 +17,7 @@ subscription notification($userId: Int!) {
       id
       firstName
       avatar
+      isSupporter
     }
     Notifiable {
       ... on Trip {
@@ -42,6 +43,7 @@ subscription notification($userId: Int!) {
           id
           firstName
           avatar
+          isSupporter
         }
         muted
         unreadNotificationCount
@@ -62,6 +64,7 @@ subscription notification($userId: Int!) {
             id
             firstName
             avatar
+            isSupporter
             deleted
           }
         }
@@ -104,12 +107,14 @@ subscription notification($userId: Int!) {
           id
           firstName
           avatar
+          isSupporter
         }
         Participants {
           User {
             id
             firstName
             avatar
+            isSupporter
           }
           status
         }
@@ -140,6 +145,7 @@ subscription notification($userId: Int!) {
             id
             firstName
             avatar
+            isSupporter
           }
           muted
           unreadNotificationCount
@@ -165,6 +171,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
         id
         firstName
         avatar
+        isSupporter
       }
       Notifiable {
         ... on Trip {
@@ -190,6 +197,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             id
             firstName
             avatar
+            isSupporter
           }
           muted
           unreadNotificationCount
@@ -208,6 +216,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
               id
               firstName
               avatar
+              isSupporter
               deleted
             }
             muted
@@ -252,12 +261,14 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
             id
             firstName
             avatar
+            isSupporter
           }
           Participants {
             User {
               id
               firstName
               avatar
+              isSupporter
             }
             status
           }
@@ -288,6 +299,7 @@ query  notifications ($filters: NotificationFilterEnum, $offset: Int, $limit: In
               id
               firstName
               avatar
+              isSupporter
             }
             muted
             unreadNotificationCount
@@ -547,6 +559,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
         id
         firstName
         avatar
+        isSupporter
       }
       notifiable
       Notifiable {
@@ -559,6 +572,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id
             firstName
             avatar
+            isSupporter
           }
           TripStart {
             name
@@ -586,11 +600,13 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id
             firstName
             avatar
+            isSupporter
           }
           Enablers {
             id
             firstName
             avatar
+            isSupporter
           }
           outreach
           type
@@ -627,6 +643,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
               id
               firstName
               avatar
+              isSupporter
             }
             outreach
             type
@@ -651,6 +668,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
               id
               firstName
               avatar
+              isSupporter
               deleted
             }
             locality
@@ -685,6 +703,7 @@ query searchMessages ($keyword: String, $offset: Int, $limit: Int) {
             id
             firstName
             avatar
+            isSupporter
           }
         }
       }
@@ -730,6 +749,7 @@ query locationSharedToAllResources($offset: Int, $limit: Int) {
         id
         firstName
         avatar
+        isSupporter
         deleted
       }
       Group {
@@ -750,6 +770,7 @@ query locationSharedToAllResources($offset: Int, $limit: Int) {
         User {
           id
           avatar
+          isSupporter
         }
       }
       users

@@ -13,6 +13,7 @@ import Arrow from '@assets/icons/ic_arrow_experience.png';
 import { withNavigation } from 'react-navigation';
 import { AppText } from '@components/utils/texts';
 import { Loading } from '@components/common';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   header: {
@@ -72,7 +73,7 @@ class List extends PureComponent {
     const { experiences, navigation, title } = this.props;
     const { rows, loading, error } = experiences;
     let list = (<AppText style={[styles.block, styles.msg]}>
-      No experiences has been created yet.
+      {trans('experience.no_experience_has_been_created_yet')}
     </AppText>);
 
     if (loading) {
@@ -88,7 +89,7 @@ class List extends PureComponent {
             underlayColor={Colors.background.lightGray}
           >
             <View>
-              <AppText color={Colors.text.lightGray}>Retry</AppText>
+              <AppText color={Colors.text.lightGray}>{trans('experience.retry')}</AppText>
             </View>
           </TouchableHighlight>
         </View>

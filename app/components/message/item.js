@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import TouchableHighlight from '@components/touchableHighlight';
 import Colors from '@theme/colors';
-import { Loading } from '@components/common';
+import { Loading, Avatar } from '@components/common';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -80,9 +80,6 @@ const styles = StyleSheet.create({
   profilePic: {
     width: 56,
     height: 56,
-    borderWidth: 4,
-    borderColor: '#fff',
-    borderRadius: 28,
     zIndex: 10,
     overflow: 'hidden',
   },
@@ -91,9 +88,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   avatar: {
-    height: 48,
-    width: 48,
-    resizeMode: 'cover',
+    borderWidth: 4,
+    borderColor: '#fff',
   },
   actions: {
     flexDirection: 'row',
@@ -165,7 +161,9 @@ class Item extends PureComponent {
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
-              {this.renderPic([Notifiers[0].avatar])}
+              {this.renderPic([
+                { imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter },
+              ])}
             </View>
             <View style={styles.textContent}>
               <AppText
@@ -200,7 +198,7 @@ class Item extends PureComponent {
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
-              {this.renderPic([User.avatar])}
+              {this.renderPic([{ imageURI: User.avatar, isSupporter: User.isSupporter }])}
             </View>
             <View style={styles.textContent}>
               <AppText
@@ -290,7 +288,7 @@ class Item extends PureComponent {
     if (Notifiable && Notifiable.gmrStatus === 'accepted') {
       return this.item({
         userId: Notifiers[0].id,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: trans('message.have_accepted_users_request_to_join_group', { username: Notifiers[0].firstName, groupname: Notifiable.Group.name }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', { id: Notifiable.Group.id }),
@@ -305,7 +303,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         user: Notifiers[0].firstName,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: trans('message.added_you_to_group', { name: Notifiable.name }),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', {
@@ -323,7 +321,7 @@ class Item extends PureComponent {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: trans('message.you_and_user_are_now_friends', { username: Notifiers[0].firstName }),
         date: createdAt,
         ellipsize: false,
@@ -385,7 +383,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         user: Notifiers[0].firstName,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: trans('message.shared_experience_with_you'),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'ExperienceDetail', { id: Notifiable.id }),
@@ -399,7 +397,7 @@ class Item extends PureComponent {
     if (Notifiable) {
       return this.item({
         user: Notifiers[0].firstName,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         userId: Notifiers[0].id,
         text: trans('message.tagged_you_in_an_experience'),
         date: createdAt,
@@ -423,7 +421,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         user: Notifiers[0].firstName,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: `${type}`,
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'TripDetail', { id: Notifiable.id }),
@@ -438,7 +436,7 @@ class Item extends PureComponent {
       return this.item({
         userId: Notifiers[0].id,
         user: Notifiers[0].firstName,
-        photo: [Notifiers[0].avatar],
+        photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
         text: trans('message.shared_a_trip_on_your_group'),
         date: createdAt,
         onPress: () => this.redirect(id, ids, 'GroupDetail', { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: 'Group' }),
@@ -542,8 +540,11 @@ class Item extends PureComponent {
         userId: Notifiers[0],
         user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
         photo: (plus > 0) ?
-          [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
-          [Notifiers[plus].avatar],
+          [
+            { imageURI: Notifiers[plus].avatar, isSupporter: Notifiers[plus].isSupporter },
+            { imageURI: Notifiers[plus - 1].avatar, isSupporter: Notifiers[plus - 1].isSupporter }
+          ]
+          : [{ imageURI: Notifiers[plus].avatar, isSupporter: Notifiers[plus].isSupporter }],
         text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
         date: createdAt,
         onPress: () => this.redirect(id, ids, route, params),
@@ -580,8 +581,11 @@ class Item extends PureComponent {
         userId: Notifiers ? Notifiers[0] : User.id,
         user: `${Notifiable.name}`,
         photo: (plus > 0) ?
-          [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
-          [Notifiers[plus].avatar],
+          [
+            { imageURI: Notifiers[plus].avatar, isSupporter: Notifiers[plus].isSupporter },
+            { imageURI: Notifiers[plus - 1].avatar, isSupporter: Notifiers[plus - 1].isSupporter }
+          ]
+          : [{ imageURI: Notifiers[plus].avatar, isSupporter: Notifiers[plus].isSupporter }],
         text: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
         date: createdAt,
         onPress: () => this.redirect(id, ids, route, params),
@@ -632,7 +636,7 @@ class Item extends PureComponent {
     return this.item({
       userId: Notifiers[0].id,
       user: `${Notifiers[0].firstName}`,
-      photo: [Notifiers[0].avatar],
+      photo: [{ imageURI: Notifiers[0].avatar, isSupporter: Notifiers[0].isSupporter }],
       text: trans('message.has_shared_location'),
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
@@ -755,12 +759,17 @@ class Item extends PureComponent {
     return null;
   }
 
-  renderPic = photo => photo.map((imageURI, index) => {
+  renderPic = users => users.map(({ imageURI, isSupporter }, index) => {
     const style = index === 1 ? [styles.profilePic, styles.shiftedProfilePic] : styles.profilePic;
     const key = `avatar${index}`;
     return (
       <View style={style} key={key}>
-        <Image source={{ uri: imageURI }} style={styles.avatar} />
+        <Avatar
+          size={56}
+          isSupporter={isSupporter}
+          imageURI={imageURI}
+          style={styles.avatar}
+        />
       </View>
     );
   });

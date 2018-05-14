@@ -14,7 +14,8 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle, display
       return (<PublicTransportItem publicTransport={searchResult} />);
     }
 
-    const image = { uri: searchResult.User.avatar };
+    const image = searchResult.User.avatar;
+    const isSupporter = searchResult.User.isSupporter;
     const startPlace = searchResult.TripStart.name || UcFirst(searchResult.direction);
     const endPlace = searchResult.TripEnd.name || UcFirst(searchResult.direction);
 
@@ -24,6 +25,7 @@ const SearchItem = ({ searchResult, onPress, onSharePress, resultsStyle, display
           onPress={() => onPress(FEEDABLE_TRIP, searchResult)}
           type={searchResult.type}
           image={image}
+          isSupporter={isSupporter}
           title={`${startPlace} - ${endPlace}`}
           date={searchResult.date}
         />

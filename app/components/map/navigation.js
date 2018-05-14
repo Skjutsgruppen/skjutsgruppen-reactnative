@@ -52,7 +52,7 @@ const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon, showMenu }) 
   <View style={styles.wrapper}>
     {arrowBackIcon
       ? <TouchableOpacity style={styles.backIconWrapper} onPress={onPressBack}>
-        <Image style={{ transform: [{ rotate: '90deg' }] }} source={BackIcon} />
+        <Image source={BackIcon} />
       </TouchableOpacity>
       : <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />}
     {showMenu &&

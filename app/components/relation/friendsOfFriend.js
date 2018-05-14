@@ -8,6 +8,7 @@ import Colors from '@theme/colors';
 import FatArrow from '@assets/icons/icon_arrow_fat.png';
 import ThinArrow from '@assets/icons/ic_arrow_gray.png';
 import { AppText } from '@components/utils/texts';
+import Avatar from '@components/common/avatar';
 import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
@@ -251,46 +252,49 @@ class FOF extends PureComponent {
     const { navigation } = this.props;
     if (item && item.length === 1) {
       return ([
-        <TouchableHighlight
+        <Avatar
+          imageURI={item[0].avatar}
+          size={48}
           key={item[0].id}
           onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
-          underlayColor={Colors.background.mutedBlue}
-        >
-          <Image source={{ uri: item[0].avatar }} style={styles.avatar} />
-        </TouchableHighlight>,
+          style={styles.avatar}
+          isSupporter={item[0].isSupporter}
+        />,
         arrow,
       ]);
     }
 
     if (item && item.length === 2) {
       return ([
-        <TouchableHighlight
+        <Avatar
+          imageURI={item[0].avatar}
+          size={48}
           key={item[0].id}
           onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
-          underlayColor={Colors.background.mutedBlue}
-        >
-          <Image source={{ uri: item[0].avatar }} style={styles.bunddledAvatar} />
-        </TouchableHighlight>,
-        <TouchableHighlight
+          style={styles.bunddledAvatar}
+          isSupporter={item[0].isSupporter}
+        />,
+        <Avatar
+          imageURI={item[1].avatar}
+          size={48}
           key={item[1].id}
           onPress={() => navigation.navigate('Profile', { profileId: item[1].id })}
-          underlayColor={Colors.background.mutedBlue}
-          style={styles.shifted}
-        >
-          <Image source={{ uri: item[1].avatar }} style={styles.bunddledAvatar} />
-        </TouchableHighlight>,
+          style={[styles.bunddledAvatar, styles.shifted]}
+          isSupporter={item[1].isSupporter}
+        />,
         arrow,
       ]);
     }
 
     return [
-      <TouchableHighlight
+      <Avatar
         key={item[0].id}
+        imageURI={item[0].avatar}
+        size={48}
         onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
-        underlayColor={Colors.background.mutedBlue}
-      >
-        <Image source={{ uri: item[0].avatar }} style={styles.bunddledAvatar} />
-      </TouchableHighlight>,
+        style={styles.bunddledAvatar}
+        isSupporter={item[0].isSupporter}
+      />,
       <View key={item[1].id} style={[styles.remainingCount, styles.shifted]}>
         <AppText size={14} color={Colors.text.white}>{item.length - 1}</AppText>
       </View>,
@@ -313,20 +317,20 @@ class FOF extends PureComponent {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.list}>
           <View style={styles.spacer} />
-          <TouchableHighlight
+          <Avatar
+            imageURI={user.avatar}
+            size={48}
             onPress={() => navigation.navigate('Profile', { profileId: user.id })}
-            underlayColor={Colors.background.mutedBlue}
-          >
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          </TouchableHighlight>
+            isSupporter={user.isSupporter}
+          />
           {arrow}
           {relation.path.map(row => this.renderBunddled(row, arrow))}
-          <TouchableHighlight
+          <Avatar
+            imageURI={viewee.avatar}
+            size={48}
             onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
-            underlayColor={Colors.background.mutedBlue}
-          >
-            <Image source={{ uri: viewee.avatar }} style={styles.avatar} />
-          </TouchableHighlight>
+            isSupporter={viewee.isSupporter}
+          />
           <View style={styles.spacer} />
         </View>
       </ScrollView>
@@ -344,29 +348,44 @@ class FOF extends PureComponent {
   renderBunddledMini = (item, arrow) => {
     if (item && item.length === 1) {
       return ([
-        <Image key={item[0].id} source={{ uri: item[0].avatar }} style={styles.avatarMini} />,
+        <Avatar
+          key={item[0].id}
+          imageURI={item[0].avatar}
+          size={24}
+          isSupporter={item[0].isSupporter}
+        />,
         arrow,
       ]);
     }
 
     if (item && item.length === 2) {
       return ([
-        <Image
+        <Avatar
           key={item[0].id}
-          source={{ uri: item[0].avatar }}
+          imageURI={item[0].avatar}
+          size={24}
           style={styles.bunddledAvatarMini}
+          isSupporter={item[0].isSupporter}
         />,
-        <Image
+        <Avatar
           key={item[1].id}
-          source={{ uri: item[1].avatar }}
+          imageURI={item[1].avatar}
+          size={24}
           style={[styles.bunddledAvatarMini, styles.shiftedMini]}
+          isSupporter={item[1].isSupporter}
         />,
         arrow,
       ]);
     }
 
     return [
-      <Image key={item[0].id} source={{ uri: item[0].avatar }} style={styles.bunddledAvatarMini} />,
+      <Avatar
+        key={item[0].id}
+        imageURI={item[0].avatar}
+        size={24}
+        style={styles.bunddledAvatarMini}
+        isSupporter={item[0].isSupporter}
+      />,
       <View key={item[1].id} style={[styles.remainingCountMini, styles.shiftedMini]}>
         <AppText size={10} color={Colors.text.white}>{item.length - 1}</AppText>
       </View>,
@@ -406,10 +425,10 @@ class FOF extends PureComponent {
           </View>
           <View style={[styles.list, styles.listLeft]}>
             <View style={styles.spacer} />
-            <Image source={{ uri: user.avatar }} style={styles.avatarMini} />
+            <Avatar imageURI={user.avatar} size={24} isSupporter={user.isSupporter} />
             {arrow}
             {relation.path.map(row => this.renderBunddledMini(row, arrow))}
-            <Image source={{ uri: viewee.avatar }} style={styles.avatarMini} />
+            <Avatar imageURI={viewee.avatar} size={24} isSupporter={viewee.isSupporter} />
             <View style={styles.spacer} />
           </View>
         </View>

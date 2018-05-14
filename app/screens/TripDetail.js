@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Modal, Keyboard, BackHandler } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity, Modal, Keyboard, BackHandler, Dimensions, Platform } from 'react-native';
 import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
@@ -14,6 +14,7 @@ import {
   ModalAction,
   ConfirmModal,
   DeletedModal,
+  Avatar,
 } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
@@ -80,21 +81,19 @@ const styles = StyleSheet.create({
   },
   profilePicWrapper: {
     position: 'absolute',
-    top: 224 - (60 / 2),
+    top: 224 - (64 / 2),
     right: 20,
     zIndex: 20,
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: 64,
+    width: 64,
+    borderRadius: 32,
     borderWidth: 2,
     borderColor: Colors.border.white,
     backgroundColor: Colors.background.lightGray,
-    overflow: 'hidden',
   },
   profilePic: {
     height: '100%',
     width: '100%',
-    resizeMode: 'cover',
   },
   detail: {
     paddingHorizontal: 24,
@@ -150,14 +149,21 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    maxHeight: Dimensions.get('window').height * 0.7,
     backgroundColor: '#f6f9fc',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    shadowOffset: { width: 0, height: 0 },
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    elevation: 4,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   btnIcon: {
     marginRight: 16,
@@ -196,14 +202,24 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.lightGray,
   },
   closeWrapper: {
-    height: 42,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 21,
     backgroundColor: Colors.background.fullWhite,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   closeModal: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
   },
   experienceWrapper: {
     flexDirection: 'row',
@@ -611,10 +627,17 @@ class TripDetail extends Component {
 
   header = () => {
     const { error, success, trip } = this.state;
-
     let profileImage = null;
     if (trip.User.avatar) {
-      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
+      profileImage = (
+        <Avatar
+          notTouchable
+          isSupporter={trip.User.isSupporter}
+          size={64}
+          imageURI={trip.User.avatar}
+          style={styles.profilePic}
+        />
+      );
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }
@@ -704,13 +727,19 @@ class TripDetail extends Component {
                 onPress={() =>
                   this.setRecurringRidesModalVisibility(false)}
               >
-                <AppText color={Colors.text.blue} fontVariation="bold">{trans('global.cancel')}</AppText>
+                <AppText color={Colors.text.blue}>{trans('global.cancel')}</AppText>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
     );
+  }
+
+  navigateOnDelete = () => {
+    const { navigation } = this.props;
+    navigation.popToTop();
+    navigation.replace('Tab');
   }
 
   returnRideModal = () => {
@@ -725,18 +754,20 @@ class TripDetail extends Component {
       >
         <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
           <View style={styles.returnModalContent}>
-            <ReturnRides
-              avatar={trip.User.avatar}
-              trips={trip.ReturnTrip}
-              type={trip.type}
-              onPress={this.redirectToSelectedReturnTrip}
-            />
+            <ScrollView>
+              <ReturnRides
+                avatar={trip.User.avatar}
+                trips={trip.ReturnTrip}
+                type={trip.type}
+                onPress={this.redirectToSelectedReturnTrip}
+              />
+            </ScrollView>
             <View style={styles.closeWrapper}>
               <TouchableOpacity
                 style={styles.closeModal}
                 onPress={() => this.setReturnRidesModalVisibility(false)}
               >
-                <AppText color={Colors.text.blue} fontVariation="bold">{trans('global.cancel')}</AppText>
+                <AppText color={Colors.text.blue}>{trans('global.cancel')}</AppText>
               </TouchableOpacity>
             </View>
           </View>
