@@ -85,6 +85,7 @@ const FRIEND_SUBSCRIPTION_QUERY = gql`
       firstName
       lastName
       avatar
+      isSupporter
       inPhoneContact
     }
   }
@@ -98,6 +99,7 @@ query friends($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQu
         firstName
         lastName
         avatar
+        isSupporter
         inPhoneContact
       }
       count
@@ -171,6 +173,7 @@ query bestFriends($id:Int, $limit: Int, $offset: Int,){
         firstName
         lastName
         avatar
+        isSupporter
       }
       count
      } 

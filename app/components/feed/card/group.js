@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
+import { Avatar } from '@components/common';
 import { Footer } from '@components/feed/card';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '@theme';
@@ -35,10 +36,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   profilePic: {
-    height: profilePicSize,
-    width: profilePicSize,
-    resizeMode: 'cover',
-    borderRadius: (profilePicSize / 2),
     borderWidth: 2,
     borderColor: Colors.border.white,
   },
@@ -95,7 +92,12 @@ class Group extends Component {
 
     if (!min) {
       if (group.User.avatar) {
-        profileImage = (<Image source={{ uri: group.User.avatar }} style={styles.profilePic} />);
+        profileImage = (<Avatar
+          size={64}
+          isSupporter={group.User.isSupporter}
+          imageURI={group.User.avatar}
+          style={styles.profilePic}
+        />);
       } else {
         profileImage = (<View style={styles.imgIcon} />);
       }

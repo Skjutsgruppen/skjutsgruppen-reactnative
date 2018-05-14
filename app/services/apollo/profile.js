@@ -184,7 +184,8 @@ const CONVERSATION_QUERY = gql`
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          isSupporter
           deleted
           relation {
             path{
@@ -226,7 +227,8 @@ const CONVERSATION_QUERY = gql`
           User {
             id 
             firstName 
-            avatar 
+            avatar
+            isSupporter
             deleted
           } 
         }

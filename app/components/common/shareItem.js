@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import TouchableHighlight from '@components/touchableHighlight';
 import Radio from '@components/add/radio';
 import { AppText } from '@components/utils/texts';
+import Avatar from '@components/common/avatar';
 
 const styles = StyleSheet.create({
   shareItem: {
@@ -22,7 +23,6 @@ const styles = StyleSheet.create({
   image: {
     height: 46,
     width: 46,
-    borderRadius: 23,
   },
   radio: {
     marginLeft: 'auto',
@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
 });
 
 const ShareItem = ({
-  imageSource,
-  hasPhoto,
+  imageURI,
+  isStatic,
+  isSupporter,
   readOnly,
   selected,
   label,
@@ -42,12 +43,15 @@ const ShareItem = ({
   (
     <TouchableHighlight onPress={onPress}>
       <View style={[styles.shareItem, style]}>
-        {
-          imageSource &&
-          <View style={styles.imageContainer}>
-            <Image source={imageSource} style={hasPhoto ? styles.image : {}} />
-          </View>
-        }
+        <View style={styles.imageContainer}>
+          {
+            isStatic ? (
+              <Image source={imageURI} style={styles.image} />
+            ) : (
+              <Avatar size={48} imageURI={imageURI} isSupporter={isSupporter} />
+            )
+          }
+        </View>
         <AppText style={{ flex: 1, marginRight: 16 }}>{label}</AppText>
         <Radio
           active={selected}
@@ -61,13 +65,12 @@ const ShareItem = ({
   );
 
 ShareItem.propTypes = {
-  imageSource: PropTypes.oneOfType([
+  imageURI: PropTypes.oneOfType([
     PropTypes.number,
-    PropTypes.shape({
-      uri: PropTypes.string,
-    }),
+    PropTypes.string,
   ]),
-  hasPhoto: PropTypes.bool,
+  isStatic: PropTypes.bool,
+  isSupporter: PropTypes.bool,
   readOnly: PropTypes.bool,
   selected: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
@@ -78,8 +81,9 @@ ShareItem.propTypes = {
 
 ShareItem.defaultProps = {
   key: null,
-  imageSource: null,
-  hasPhoto: false,
+  imageURI: null,
+  isStatic: false,
+  isSupporter: false,
   readOnly: false,
   onPress: () => { },
   style: {},

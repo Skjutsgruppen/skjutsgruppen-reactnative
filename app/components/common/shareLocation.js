@@ -348,7 +348,7 @@ class ShareLocation extends PureComponent {
           </View>
           {shareLocationLoading && <Loading />}
           {!shareLocationLoading &&
-            <View>
+            <View style={{ flex: 1 }}>
               {!myLocation.id && !fetchingPosition &&
                 <View>
                   <Text style={TextStyles.blue}>{trans('global.share_my_live_location_for')}</Text>

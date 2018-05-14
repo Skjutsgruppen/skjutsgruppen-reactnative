@@ -20,6 +20,7 @@ subscription{
             firstName
             avatar
             deleted
+            isSupporter
           }
           outreach
           type
@@ -48,6 +49,7 @@ subscription{
             id
             firstName
             avatar
+            isSupporter
           }
           isDeleted
           direction
@@ -65,6 +67,7 @@ subscription{
             firstName
             avatar
             deleted
+            isSupporter
             relation {
               path{
                 id
@@ -134,6 +137,7 @@ subscription{
             firstName
             avatar
             deleted
+            isSupporter
           }
           Participants{
             User {
@@ -141,6 +145,7 @@ subscription{
               avatar
               firstName
               deleted
+              isSupporter
             }
             status
           }
@@ -170,6 +175,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName
           avatar
           deleted
+          isSupporter
         }
         outreach
         type
@@ -199,6 +205,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           id
           firstName
           avatar
+          isSupporter
         }
         isDeleted
       }
@@ -215,6 +222,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName
           avatar
           deleted
+          isSupporter
           relation {
             path{
               id
@@ -284,6 +292,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           firstName
           avatar
           deleted
+          isSupporter
         }
         Participants{
           User {
@@ -291,6 +300,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
             avatar
             firstName
             deleted
+            isSupporter
           }
           status
         }
@@ -540,6 +550,7 @@ query trip($id: Int!) {
       firstName
       avatar
       deleted
+      isSupporter
       relation {
           path{
           id
@@ -571,6 +582,7 @@ query trip($id: Int!) {
         id
         avatar
         deleted
+        isSupporter
       }
       interval
       duration
@@ -599,6 +611,7 @@ query trip($id: Int!) {
         firstName
         lastName
         avatar
+        isSupporter
       }
       count
     }
@@ -620,6 +633,7 @@ query trip($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Recurring {
@@ -640,6 +654,7 @@ query trip($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Group {
@@ -668,6 +683,7 @@ subscription onTripUpdated($id: Int!) {
       firstName
       avatar
       deleted
+      isSupporter
       relation {
           path{
           id
@@ -699,6 +715,7 @@ subscription onTripUpdated($id: Int!) {
         id
         avatar
         deleted
+        isSupporter
       }
       interval
       duration
@@ -727,6 +744,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         lastName
         avatar
+        isSupporter
       }
       count
     }
@@ -748,6 +766,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Recurring {
@@ -768,6 +787,7 @@ subscription onTripUpdated($id: Int!) {
         firstName
         avatar
         deleted
+        isSupporter
       }
     }
     Group {
@@ -821,6 +841,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
           firstName
           avatar
           deleted
+          isSupporter
           relation {
             path{
               id
@@ -863,6 +884,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
             firstName
             avatar
             deleted
+            isSupporter
           }
         }
         Participants{
@@ -896,6 +918,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         id
         firstName
         avatar
+        isSupporter
         deleted
         relation {
           path{
@@ -947,6 +970,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
           firstName
           lastName
           avatar
+          isSupporter
           deleted
         }
         count
@@ -1052,6 +1076,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
           lastName
           avatar
           deleted
+          isSupporter
           relation {
             path{
               id
@@ -1079,6 +1104,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
           }
         }
@@ -1091,6 +1117,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
             description
             Participants {
@@ -1100,6 +1127,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
                 lastName
                 avatar
                 deleted
+                isSupporter
               }
               status
             }
@@ -1134,6 +1162,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               lastName
               avatar
               deleted
+              isSupporter
             }
             TripStart {
               name
@@ -1191,6 +1220,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
         lastName
         avatar
         deleted
+        isSupporter
         relation {
           path{
             id
@@ -1218,6 +1248,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             lastName
             avatar
             deleted
+            isSupporter
           }
         }
       }
@@ -1230,6 +1261,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             lastName
             avatar
             deleted
+            isSupporter
           }
           description
           Participants {
@@ -1239,6 +1271,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
               lastName
               avatar
               deleted
+              isSupporter
             }
             status
           }

@@ -5,6 +5,7 @@ import Colors from '@theme/colors';
 import Date from '@components/date';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
 import { AppText } from '@components/utils/texts';
+import Avatar from '@components/common/avatar';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -43,10 +44,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListItem = ({ onPress, type, image, title, date }) => (
+const ListItem = ({ onPress, type, image, isSupporter, title, date }) => (
   <TouchableOpacity onPress={onPress}>
     <View style={styles.wrapper}>
-      <Image source={image} style={styles.avatar} />
+      <Avatar size={48} imageURI={image} style={styles.avatar} isSupporter={isSupporter} />
       <View style={{ flex: 1 }}>
         <AppText fontVariation="semibold">{title}</AppText>
         {date && <Date format="MMM DD HH:mm">{date}</Date>}
@@ -60,14 +61,14 @@ const ListItem = ({ onPress, type, image, title, date }) => (
 ListItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   type: PropTypes.string,
-  image: PropTypes.shape(),
+  image: PropTypes.string.isRequired,
+  isSupporter: PropTypes.bool.isRequired,
   title: PropTypes.string,
   date: PropTypes.string,
 };
 
 ListItem.defaultProps = {
   type: null,
-  image: {},
   title: null,
   date: null,
 };

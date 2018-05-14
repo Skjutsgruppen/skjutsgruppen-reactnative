@@ -34,7 +34,8 @@ query search
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          isSupporter
           deleted
         } 
         outreach
@@ -46,6 +47,7 @@ query search
           id 
           firstName 
           avatar
+          isSupporter
           deleted
         }
         TripStart {
@@ -77,6 +79,7 @@ query search
           id 
           firstName 
           avatar
+          isSupporter
           deleted
         } 
         direction
@@ -182,7 +185,8 @@ query search
         User {
           id 
           firstName 
-          avatar 
+          avatar
+          isSupporter
           deleted
         } 
         direction
@@ -294,6 +298,7 @@ query search
           id 
           firstName 
           avatar
+          isSupporter
           deleted
         } 
         outreach

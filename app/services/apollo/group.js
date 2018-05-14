@@ -20,7 +20,7 @@ mutation group
     $type: GroupTypeEnum!
     $share: ShareInput
     $direction: directionEnum
-) 
+)
   {
     group(input : {
         outreach : $outreach
@@ -37,38 +37,38 @@ mutation group
         type : $type
         share : $share
         direction: $direction
-      }) 
+      })
     {
       id
       name
       description
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       outreach
       type
       photo
       mapPhoto
       direction
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -150,32 +150,32 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       name
       description
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       outreach
       type
       photo
       mapPhoto
       direction
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -223,32 +223,32 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
       name
       description
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       outreach
       type
       photo
       mapPhoto
       direction
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -284,39 +284,39 @@ export const withSearchGroup = graphql(SEARCH_GROUPS_QUERY, {
 });
 
 const GROUPS_SUBSCRIPTION_QUERY = gql`
-subscription myGroup($userId: Int!){ 
-  myGroup(userId: $userId) { 
+subscription myGroup($userId: Int!){
+  myGroup(userId: $userId) {
     Group {
       id
       name
       description
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       outreach
       type
       photo
       mapPhoto
       direction
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -348,11 +348,11 @@ export const GROUPS_SUBSCRIPTION = gql`
       name
       description
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       outreach
       type
       photo
@@ -360,24 +360,24 @@ export const GROUPS_SUBSCRIPTION = gql`
       areaCoordinates
       direction
       TripStart {
-        name 
+        name
         countryCode
-        coordinates 
-      } 
+        coordinates
+      }
       TripEnd {
         name
-        countryCode 
+        countryCode
         coordinates
-      } 
+      }
       Stops {
         name
-        countryCode 
+        countryCode
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -418,11 +418,11 @@ query group($id: Int!){
     name
     description
     User {
-      id 
-      firstName 
-      avatar 
+      id
+      firstName
+      avatar
       deleted
-    } 
+    }
     outreach
     type
     photo
@@ -430,24 +430,24 @@ query group($id: Int!){
     areaCoordinates
     direction
     TripStart {
-      name 
+      name
       countryCode
-      coordinates 
-    } 
+      coordinates
+    }
     TripEnd {
       name
-      countryCode 
+      countryCode
       coordinates
-    } 
+    }
     Stops {
       name
-      countryCode 
+      countryCode
       coordinates
-    } 
-    country 
-    county 
-    municipality 
-    locality 
+    }
+    country
+    county
+    municipality
+    locality
     membershipStatus
     totalParticipants
     isAdmin
@@ -513,10 +513,11 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       id
       date
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
+        isSupporter
         relation {
           path {
             id
@@ -543,9 +544,10 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       }
       ... on GroupFeed {
         Enabler {
-          id 
-          firstName 
+          id
+          firstName
           avatar
+          isSupporter
         }
         updatedField
         Group {
@@ -553,32 +555,33 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           name
           description
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+            isSupporter
+          }
           outreach
           type
           photo
           mapPhoto
           direction
           TripStart {
-            name 
-            coordinates 
-          } 
+            name
+            coordinates
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
+          }
           Stops {
-            name 
+            name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
+          }
+          country
+          county
+          municipality
+          locality
           membershipStatus
           totalParticipants
           isAdmin
@@ -586,6 +589,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             id
             firstName
             avatar
+            isSupporter
           }
           Location {
             id
@@ -600,31 +604,32 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
       }
       ... on TripFeed {
         Trip {
-          id 
-          type 
-          description 
+          id
+          type
+          description
           direction
-          seats 
+          seats
           User {
-            id 
-            firstName 
-            avatar 
+            id
+            firstName
+            avatar
             deleted
-          } 
+            isSupporter
+          }
           TripStart {
-            name 
+            name
             coordinates
-          } 
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          photo 
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          photo
           mapPhoto
           totalFeeds
         }
@@ -640,6 +645,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             avatar
             firstName
             deleted
+            isSupporter
             relation {
               path{
                 id
@@ -661,20 +667,22 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           publishedStatus
           userStatus
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          }     
+            isSupporter
+          }
           Participants {
             User {
-              id 
-              firstName 
+              id
+              firstName
               avatar
               deleted
+              isSupporter
             }
             status
-          }  
+          }
         }
       }
     }
@@ -685,15 +693,16 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
 const GROUP_FEED_SUBSCRIPTION = gql`
 subscription groupFeed($groupId: Int!){
   groupFeed(groupId: $groupId){
-    remove 
+    remove
     Feed {
       id
       date
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
+        isSupporter
          relation {
           path {
             id
@@ -723,6 +732,7 @@ subscription groupFeed($groupId: Int!){
           id
           firstName
           avatar
+          isSupporter
         }
         updatedField
         Group {
@@ -730,39 +740,41 @@ subscription groupFeed($groupId: Int!){
           name
           description
           User {
-            id 
-            firstName 
-            avatar 
+            id
+            firstName
+            avatar
             deleted
-          } 
+            isSupporter
+          }
           outreach
           type
           photo
           mapPhoto
           direction
           TripStart {
-            name 
-            coordinates 
-          } 
+            name
+            coordinates
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
+          }
           Stops {
-            name 
+            name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
+          }
+          country
+          county
+          municipality
+          locality
           membershipStatus
           totalParticipants
           isAdmin
           Enablers {
-            id 
+            id
             firstName
             avatar
+            isSupporter
           }
           Location {
             id
@@ -777,31 +789,32 @@ subscription groupFeed($groupId: Int!){
       }
       ... on TripFeed {
         Trip {
-          id 
-          type 
-          description 
+          id
+          type
+          description
           direction
-          seats 
+          seats
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+            isSupporter
+          }
           TripStart {
-            name 
+            name
             coordinates
-          } 
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          photo 
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          photo
           mapPhoto
           totalFeeds
         }
@@ -817,6 +830,7 @@ subscription groupFeed($groupId: Int!){
             avatar
             firstName
             deleted
+            isSupporter
             relation {
               path {
                 id
@@ -906,7 +920,7 @@ subscription updatedGroupMember($groupId: Int, $enabler: Boolean){
         lastName
         avatar
         deleted
-      }      
+      }
       admin
       enabler
     }
@@ -1002,8 +1016,8 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
 });
 
 export const GROUPS_QUERY = gql`
-query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){ 
-  groups(userId:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) { 
+query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){
+  groups(userId:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) {
     rows{
       id
       outreach
@@ -1013,28 +1027,28 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
       photo
       mapPhoto
       User {
-        id 
-        firstName 
-        avatar 
+        id
+        firstName
+        avatar
         deleted
-      } 
+      }
       direction
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -1128,13 +1142,13 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 const GROUP_TRIPS_QUERY = gql`
   query groupTrips($id: Int, $filter: TripTypeEnum){
     groupTrips(groupId: $id, filter: $filter){
-      id 
-      type 
-      description 
-      seats 
+      id
+      type
+      description
+      seats
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
         relation {
@@ -1146,23 +1160,23 @@ const GROUP_TRIPS_QUERY = gql`
           }
           areFriends
         }
-      } 
+      }
       direction
       TripStart {
-        name 
+        name
         coordinates
-      } 
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
-      Stops { 
-        name 
-        coordinates 
-      } 
-      date 
-      time 
-      photo 
+      }
+      Stops {
+        name
+        coordinates
+      }
+      date
+      time
+      photo
       mapPhoto
       totalFeeds
       isParticipant
@@ -1220,27 +1234,27 @@ const GROUPS_IN_COUNTY_QUERY = gql`
           photo
           mapPhoto
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+          }
           TripStart {
-            name 
-            coordinates 
-          } 
+            name
+            coordinates
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
+          }
           Stops {
-            name 
+            name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
+          }
+          country
+          county
+          municipality
+          locality
           membershipStatus
           totalParticipants
           isAdmin
@@ -1277,27 +1291,27 @@ mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
       photo
       mapPhoto
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -1339,7 +1353,7 @@ query membershipRequest($id: Int!){
         lastName
         avatar
       }
-    }    
+    }
   }
 }
 `;
@@ -1590,27 +1604,27 @@ query alphabetisedGroups{
         photo
         mapPhoto
         User {
-          id 
-          firstName 
-          avatar 
+          id
+          firstName
+          avatar
           deleted
         }
         TripStart {
-          name 
-          coordinates 
-        } 
+          name
+          coordinates
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
+        }
         Stops {
-          name 
+          name
           coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
+        }
+        country
+        county
+        municipality
+        locality
         membershipStatus
         totalParticipants
         isAdmin
@@ -1644,27 +1658,27 @@ mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int)
       photo
       mapPhoto
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
-      locality 
+      }
+      country
+      county
+      municipality
+      locality
       membershipStatus
       totalParticipants
       isAdmin
@@ -1710,34 +1724,34 @@ query nearByGroups($from: [Float]!,
       photo
       mapPhoto
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
-      areaCoordinates      
+      areaCoordinates
       TripStart {
-        name 
-        coordinates 
-      } 
+        name
+        coordinates
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
+      }
       Stops {
-        name 
+        name
         coordinates
-      } 
-      country 
-      county 
-      municipality 
+      }
+      country
+      county
+      municipality
       Enablers {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
-      locality 
+      locality
       membershipStatus
       totalParticipants
       isAdmin

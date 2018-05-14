@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Detail from '@components/feed/itemDetail';
 import {
@@ -14,6 +14,7 @@ import Colors from '@theme/colors';
 import FOF from '@components/relation/friendsOfFriend';
 import ShareLocation from '@components/feed/shareLocation';
 import MakeExperience from '@components/feed/makeExperience';
+import { Avatar } from '@components/common';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -53,12 +54,15 @@ class FeedItem extends PureComponent {
   renderProfilePic() {
     const { feed, onPress } = this.props;
     let imgSrc = '';
+    let isSupporter = false;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && feed.Group.type === CLOSE_GROUP) {
       imgSrc = feed.Enabler.avatar;
+      isSupporter = feed.Enabler.isSupporter;
     } else {
       imgSrc = feed.User.avatar;
+      isSupporter = feed.User.isSupporter;
     }
 
     return (
@@ -68,7 +72,13 @@ class FeedItem extends PureComponent {
           return onPress('Profile', feed.User.id);
         }}
         >
-          <Image source={{ uri: imgSrc }} style={styles.profilePic} />
+          <Avatar
+            notTouchable
+            isSupporter={isSupporter}
+            size={48}
+            imageURI={imgSrc}
+            style={styles.profilePic}
+          />
         </TouchableOpacity>
         {
           feed.Trip

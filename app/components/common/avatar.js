@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Image, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import LeafIcon from '@assets/icons/ic_leaf.png';
+import Colors from '@theme/colors';
 
 const styles = StyleSheet.create({
   leaf: {
@@ -38,10 +39,11 @@ const Avatar = ({
     height: size,
     width: size,
     borderRadius: size / 2,
+    backgroundColor: Colors.background.lightGray,
   };
   const avatarStyle = {
-    height: size,
-    width: size,
+    height: '100%',
+    width: '100%',
     resizeMode: 'cover',
     borderRadius: size / 2,
   };

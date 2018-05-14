@@ -14,6 +14,7 @@ import {
   ModalAction,
   ConfirmModal,
   DeletedModal,
+  Avatar,
 } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
@@ -75,15 +76,11 @@ const styles = StyleSheet.create({
   },
   profilePicWrapper: {
     position: 'absolute',
-    top: 224 - (60 / 2),
+    top: 224 - (64 / 2),
     right: 20,
     zIndex: 20,
   },
   profilePic: {
-    height: 60,
-    width: 60,
-    resizeMode: 'cover',
-    borderRadius: 30,
     borderWidth: 2,
     borderColor: Colors.border.white,
   },
@@ -573,10 +570,17 @@ class TripDetail extends Component {
 
   header = () => {
     const { error, success, trip } = this.state;
-
     let profileImage = null;
     if (trip.User.avatar) {
-      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
+      profileImage = (
+        <Avatar
+          notTouchable
+          isSupporter={trip.User.isSupporter}
+          size={64}
+          imageURI={trip.User.avatar}
+          style={styles.profilePic}
+        />
+      );
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }

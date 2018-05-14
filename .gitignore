@@ -64,6 +64,7 @@ buck-out/
 *.swm
 android/app/google-services.json
 ios/GoogleService-Info.plist
+ios/Podfile.lock
 android/app/src/main/assets/crashlytics-build.properties
 android/app/src/main/res/values/com_crashlytics_export_strings.xml
 
