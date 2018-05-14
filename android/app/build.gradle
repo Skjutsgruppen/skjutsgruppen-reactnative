@@ -123,6 +123,9 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         multiDexEnabled true
+        manifestPlaceholders = [
+                FABRIC_API_KEY:project.env.get("FABRIC_API_KEY")
+        ]
     }
     signingConfigs {
         release {
