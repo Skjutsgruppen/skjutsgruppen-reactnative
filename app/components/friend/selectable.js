@@ -100,8 +100,8 @@ const Selectable = ({
         <ShareItem
           key={user.id}
           color={hasDisabled(user.id) ? '' : 'blue'}
-          imageSource={user.avatar ? { uri: user.avatar } : require('@assets/icons/ic_user_default.png')}
-          hasPhoto
+          imageURI={user.avatar}
+          isSupporter={user.avatar.isSupporter}
           selected={hasOption(user.id)}
           label="You"
           onPress={() => { }}
@@ -113,8 +113,9 @@ const Selectable = ({
           <ShareItem
             key={row.id}
             color={hasDisabled(row.id) ? 'gray' : 'blue'}
-            imageSource={row.avatar ? { uri: row.avatar } : require('@assets/icons/ic_user_default.png')}
-            hasPhoto
+            imageURI={row.avatar ? row.avatar : require('@assets/icons/ic_user_default.png')}
+            isStatic={typeof (row.avatar) === 'undefined'}
+            isSupporter={row.isSupporter}
             selected={hasOption(row.id)}
             label={`${row.firstName} ${row.lastName}`}
             onPress={() => !hasDisabled(row.id) && setOption(row.id)}

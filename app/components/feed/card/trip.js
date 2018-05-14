@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, Platform } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
@@ -10,6 +10,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import LinearGradient from 'react-native-linear-gradient';
 import { AppText } from '@components/utils/texts';
 import { UcFirst } from '@config';
+import Avatar from '@components/common/avatar';
 
 const cardHeight = 484;
 const imageHeight = 230;
@@ -53,12 +54,10 @@ const styles = StyleSheet.create({
     top: imageHeight - (profilePicSize / 2),
     right: 20,
     zIndex: 10,
-    overflow: 'hidden',
   },
   profilePic: {
     height: '100%',
     width: '100%',
-    resizeMode: 'cover',
   },
   detail: {
     paddingHorizontal: 18,
@@ -126,7 +125,12 @@ class Trip extends Component {
 
     let profileImage = null;
     if (trip.User.avatar) {
-      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
+      profileImage = (<Avatar
+        size={64}
+        isSupporter={trip.User.isSupporter}
+        imageURI={trip.User.avatar}
+        style={styles.profilePic}
+      />);
     } else {
       profileImage = (<View style={styles.imgIcon} />);
     }

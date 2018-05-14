@@ -10,6 +10,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -2,
     right: 0,
+    minHeight: 14,
+    minWidth: 14,
   },
   indicator: {
     height: 16,
@@ -42,8 +44,8 @@ const Avatar = ({
     backgroundColor: Colors.background.lightGray,
   };
   const avatarStyle = {
-    height: size,
-    width: size,
+    height: '100%',
+    width: '100%',
     resizeMode: 'cover',
     borderRadius: size / 2,
   };

@@ -1,13 +1,15 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import Colors from '@theme/colors';
-import { trans } from '@lang/i18n';
-import Curves from '@assets/curves.png';
-import HRVLogo from '@assets/HRV_logo.png';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import Colors from '@theme/colors';
+import { trans } from '@lang/i18n';
+import { Avatar } from '@components/common';
 import { AppText, Heading } from '@components/utils/texts';
+
+import Curves from '@assets/curves.png';
+import HRVLogo from '@assets/HRV_logo.png';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -46,10 +48,7 @@ const styles = StyleSheet.create({
     marginRight: 32,
   },
   avatar: {
-    height: 48,
-    width: 48,
-    borderRadius: 24,
-    marginRight: 32,
+    marginRight: 24,
   },
   infoTitle: {
     lineHeight: 20,
@@ -76,7 +75,7 @@ const About = ({ user }) => (
     <View style={styles.horizontalDivider} />
     <View style={styles.infoRow}>
       <Image source={require('@assets/icons/ic_conversation.png')} style={styles.infoRowIcon} />
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginLeft: -2 }}>
         <Heading fontVariation="bold" size={16} style={styles.infoTitle}>{trans('about.we_believe_in_conversation')}</Heading>
         <AppText style={styles.text}>
           {trans('about.good_time_digitally')}
@@ -100,8 +99,13 @@ const About = ({ user }) => (
       </View>
     </View>
     <View style={[styles.infoRow, { marginBottom: 0 }]}>
-      <Image source={{ uri: user.avatar }} style={styles.avatar} />
-      <View style={{ flex: 1 }}>
+      <Avatar
+        imageURI={user.avatar}
+        size={48}
+        isSupporter={user.isSupporter}
+        style={styles.avatar}
+      />
+      <View style={{ flex: 1, marginLeft: -2 }}>
         <Heading fontVariation="bold" size={16} style={styles.infoTitle}>{trans('about.you_are_awesome')}</Heading>
         <AppText style={styles.text}>
           {trans('about.the_movement_is_self_regulating')}

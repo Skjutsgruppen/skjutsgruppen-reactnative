@@ -71,7 +71,12 @@ class Friends extends Component {
 
     if (friend.avatar) {
       profileImage = (
-        <Avatar imageURI={friend.avatar} size={46} onPress={() => onPress(friend.id)} />
+        <Avatar
+          imageURI={friend.avatar}
+          size={46}
+          onPress={() => onPress(friend.id)}
+          isSupporter={friend.isSupporter}
+        />
       );
     } else {
       profileImage = (<View style={styles.imgIcon} />);

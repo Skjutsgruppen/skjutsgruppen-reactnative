@@ -48,6 +48,7 @@ query profile($id: Int){
         id
         firstName
         avatar
+        isSupporter
       }
       areFriends
     }
@@ -193,9 +194,10 @@ const CONVERSATION_QUERY = gql`
         description
         seats
         User {
-          id
-          firstName
+          id 
+          firstName 
           avatar
+          isSupporter
           deleted
           relation {
             path{
@@ -235,9 +237,10 @@ const CONVERSATION_QUERY = gql`
           publishedStatus
           userStatus
           User {
-            id
-            firstName
+            id 
+            firstName 
             avatar
+            isSupporter
             deleted
           }
         }

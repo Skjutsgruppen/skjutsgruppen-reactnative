@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   Dimensions,
 } from 'react-native';
@@ -10,6 +9,7 @@ import Colors from '@theme/colors';
 import { Loading } from '@components/common';
 import TouchableHighlight from '@components/touchableHighlight';
 import { AppText } from '@components/utils/texts';
+import Avatar from '@components/common/avatar';
 
 const imageSize = 48;
 const margin = 12;
@@ -45,12 +45,6 @@ const styles = StyleSheet.create({
     left: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  profilePic: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
   },
   remainingCount: {
     width: imageSize,
@@ -107,9 +101,10 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                       ]}
                       key={member.User.id}
                     >
-                      <Image
-                        source={{ uri: member.User.avatar }}
-                        style={styles.profilePic}
+                      <Avatar
+                        imageURI={member.User.avatar}
+                        isSupporter={member.User.isSupporter}
+                        size={40}
                       />
                     </View>
                   );
@@ -146,9 +141,10 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                         ]}
                         key={member.id}
                       >
-                        <Image
-                          source={{ uri: member.User.avatar }}
-                          style={styles.profilePic}
+                        <Avatar
+                          imageURI={member.User.avatar}
+                          isSupporter={member.User.isSupporter}
+                          size={40}
                         />
                       </View>
                     );

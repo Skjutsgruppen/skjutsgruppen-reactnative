@@ -459,8 +459,7 @@ class Share extends Component {
           data={groups}
           renderItem={({ item }) => (
             <ShareItem
-              imageSource={{ uri: item.photo || item.mapPhoto }}
-              hasPhoto
+              imageURI={item.photo || item.mapPhoto}
               selected={this.hasOption('selectedGroups', item.id)}
               label={item.name}
               onPress={() => this.setOption('selectedGroups', item.id)}
@@ -537,6 +536,7 @@ class Share extends Component {
                 {'Your friends'.toUpperCase()}
               </AppText>
               <FriendList
+                title="Your Friends"
                 loading={friends.loading}
                 rows={friendsListSearch}
                 setOption={id => this.setOption('selectedFriends', id)}
@@ -547,6 +547,7 @@ class Share extends Component {
                 loading={friends.loading}
                 rows={contactsListSearch}
                 defaultAvatar
+                fromContact
                 setOption={id => this.setOption('selectedContacts', id)}
                 selected={selectedContacts}
               />
@@ -561,12 +562,11 @@ class Share extends Component {
         {offeredUser && Object.keys(offeredUser).length > 0 &&
           <ShareItem
             readOnly
-            imageSource={{ uri: offeredUser.avatar }}
+            imageURI={offeredUser.avatar}
             label={offeredUser.firstName}
             onPress={() => { }}
             color="blue"
             selected
-            hasPhoto
           />
         }
         {this.showRideParticipants() &&
@@ -582,13 +582,15 @@ class Share extends Component {
           <ShareItem
             readOnly
             selected={this.hasOption('social', 'publish_to_whole_movement')}
+            isStatic
             label={trans('global.publish_to_whole_movement')}
             onPress={() => { }}
             color="blue"
           />
         }
         <ShareItem
-          imageSource={require('@assets/icons/ic_copy.png')}
+          imageURI={require('@assets/icons/ic_copy.png')}
+          isStatic
           selected={this.hasOption('clipboard', 'copy_to_clip')}
           label={trans('global.copy_to_clipboard')}
           onPress={() => this.setOption('clipboard', 'copy_to_clip')}
@@ -596,7 +598,8 @@ class Share extends Component {
         />
         {this.hasFacebook() &&
           <ShareItem
-            imageSource={require('@assets/icons/ic_facebook.png')}
+            imageURI={require('@assets/icons/ic_facebook.png')}
+            isStatic
             selected={this.hasOption('social', 'Facebook')}
             label={trans('global.your_fb_timeline')}
             onPress={() => this.setOption('social', 'Facebook')}
@@ -604,7 +607,8 @@ class Share extends Component {
           />}
         {this.hasTwitter() &&
           <ShareItem
-            imageSource={require('@assets/icons/ic_twitter.png')}
+            imageURI={require('@assets/icons/ic_twitter.png')}
+            isStatic
             selected={this.hasOption('social', 'Twitter')}
             label={trans('global.tweet')}
             onPress={() => this.setOption('social', 'Twitter')}
@@ -631,6 +635,7 @@ class Share extends Component {
           loading={friends.loading}
           rows={contactsList}
           defaultAvatar
+          isStatic
           setOption={id => this.setOption('selectedContacts', id)}
           selected={selectedContacts}
         />
