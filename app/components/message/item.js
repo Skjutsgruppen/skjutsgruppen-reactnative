@@ -21,14 +21,18 @@ import {
   NOTIFICATION_TYPE_EXPERIENCE_REMOVED,
   NOTIFICATION_TYPE_FRIEND_JOINED_MOVEMENT,
   NOTIFICATION_TYPE_LOCATION_SHARED,
+  NOTIFICATION_TYPE_CREATE_EXPERIENCE,
+  NOTIFICATION_TYPE_SHARE_YOUR_LOCATION,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import Date from '@components/date';
 import { connect } from 'react-redux';
 import { AppText } from '@components/utils/texts';
-import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { UcFirst } from '@config';
+
+import ExperienceIcon from '@assets/icons/ic_make_experience.png';
+import PinIcon from '@assets/icons/ic_location_white.png';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -58,6 +62,14 @@ const styles = StyleSheet.create({
     maxHeight: '100%',
     maxWidth: '100%',
     resizeMode: 'contain',
+  },
+  locationIconWrapper: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#9e049e',
   },
   profilePicWrapper: {
     flexDirection: 'row',
@@ -220,6 +232,7 @@ class Item extends PureComponent {
     noAvatarAction,
     date,
     ellipsize = true,
+    showPin = false,
   }) => {
     const { filters } = this.props;
 
@@ -228,11 +241,9 @@ class Item extends PureComponent {
         <View style={styles.list}>
           <View style={styles.flexRow}>
             <View style={styles.profilePicWrapper}>
-              {
-                experience
-                  ? this.renderExperiencePic(experience, noAvatarAction)
-                  : this.renderPic(photo, userId)
-              }
+              {showPin && this.renderPinPic()}
+              {experience && this.renderExperiencePic(experience, noAvatarAction)}
+              {!experience && !showPin && this.renderPic(photo, userId)}
             </View>
             <View style={styles.textContent}>
               {
@@ -572,6 +583,37 @@ class Item extends PureComponent {
     });
   }
 
+  makeAnExperience = ({ Notifiable, createdAt, id, ids }) => {
+    const route = 'Experience';
+    const params = { trip: Notifiable };
+
+    return this.item({
+      user: 'Make an experience',
+      experience: true,
+      text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
+      noAvatarAction: true,
+      date: createdAt,
+      onPress: () => this.redirect(id, ids, route, params),
+    });
+  }
+
+  shareYourLocation = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
+    let route = 'Route';
+
+    if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
+
+    const params = { info: Notifiable.Trip };
+
+    return this.item({
+      userId: Notifiers[0].id,
+      user: 'Share your location.',
+      showPin: true,
+      text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
+      date: createdAt,
+      onPress: () => this.redirect(id, ids, route, params),
+    });
+  }
+
   renderAction = (id, bundleId, accept, reject) => {
     const { action } = this.state;
 
@@ -666,6 +708,12 @@ class Item extends PureComponent {
     return profileImage;
   }
 
+  renderPinPic = () => (
+    <View style={styles.locationIconWrapper}>
+      <Image source={PinIcon} style={styles.experienceIcon} />
+    </View>
+  )
+
   render() {
     const { notification } = this.props;
     let message = null;
@@ -677,6 +725,15 @@ class Item extends PureComponent {
     if (notification.notifiable === 'Group') {
       message = this.groupNotificationBundle(notification);
     }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_CREATE_EXPERIENCE) {
+      message = this.makeAnExperience(notification);
+    }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_SHARE_YOUR_LOCATION) {
+      message = this.shareYourLocation(notification);
+    }
+
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
       message = this.memberRequest(notification);
