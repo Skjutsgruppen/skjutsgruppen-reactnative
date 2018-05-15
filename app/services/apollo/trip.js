@@ -16,32 +16,32 @@ subscription{
           name
           description
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+          }
           outreach
           type
           photo
           mapPhoto
           TripStart {
-            name 
-            coordinates 
-          } 
+            name
+            coordinates
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
+          }
           Stops {
-            name 
+            name
             coordinates
-          } 
-          country 
-          county 
-          municipality 
-          locality 
-          membershipStatus 
+          }
+          country
+          county
+          municipality
+          locality
+          membershipStatus
           totalParticipants
           isAdmin
           Enablers {
@@ -55,14 +55,14 @@ subscription{
       }
       ... on TripFeed {
         Trip {
-          id 
-          type 
-          description 
-          seats 
+          id
+          type
+          description
+          seats
           direction
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
             relation {
@@ -74,21 +74,21 @@ subscription{
               }
               areFriends
             }
-          } 
+          }
           TripStart {
-            name 
+            name
             coordinates
-          } 
+          }
           TripEnd {
-            name 
+            name
             coordinates
-          } 
-          Stops { 
-            name 
-            coordinates 
-          } 
-          date 
-          photo 
+          }
+          Stops {
+            name
+            coordinates
+          }
+          date
+          photo
           mapPhoto
           totalFeeds
           isParticipant
@@ -102,21 +102,21 @@ subscription{
             name
           }
           linkedTrip {
-            id 
+            id
             description
           }
           isDeleted
         }
       }
-      ... on NewsFeed { 
+      ... on NewsFeed {
         News {
-          id 
-          title 
-          body 
-          links 
-          photo 
-          visibleFrom 
-          visibleUntil 
+          id
+          title
+          body
+          links
+          photo
+          visibleFrom
+          visibleUntil
           updatedAt
           totalComments
         }
@@ -130,11 +130,11 @@ subscription{
           publishedStatus
           userStatus
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+          }
           Participants{
             User {
               id
@@ -166,33 +166,33 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         name
         description
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           deleted
-        } 
+        }
         outreach
         type
         photo
         mapPhoto
         direction
         TripStart {
-          name 
-          coordinates 
-        } 
+          name
+          coordinates
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
+        }
         Stops {
-          name 
+          name
           coordinates
-        } 
-        country 
-        county 
-        municipality 
-        locality 
-        membershipStatus 
+        }
+        country
+        county
+        municipality
+        locality
+        membershipStatus
         totalParticipants
         isAdmin
         Enablers {
@@ -203,16 +203,16 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         isDeleted
       }
     }
-    ... on TripFeed { 
+    ... on TripFeed {
       Trip {
-        id 
-        type 
-        description 
-        seats 
+        id
+        type
+        description
+        seats
         direction
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           deleted
           relation {
@@ -224,21 +224,21 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
             }
             areFriends
           }
-        } 
+        }
         TripStart {
-          name 
+          name
           coordinates
-        } 
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        photo
         mapPhoto
         totalFeeds
         isParticipant
@@ -258,15 +258,15 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         isDeleted
       }
     }
-    ... on NewsFeed { 
+    ... on NewsFeed {
       News {
-        id 
-        title 
-        body 
-        links 
-        photo 
-        visibleFrom 
-        visibleUntil 
+        id
+        title
+        body
+        links
+        photo
+        visibleFrom
+        visibleUntil
         updatedAt
         totalComments
       }
@@ -280,8 +280,8 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         publishedStatus
         userStatus
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           deleted
         }
@@ -374,7 +374,7 @@ export const withFeed = graphql(GET_FEED_QUERY, {
 const CREATE_TRIP_QUERY = gql`
 mutation createTrip(
   $parentId:Int,
-  $description:String, 
+  $description:String,
   $type:TripTypeEnum!,
   $tripStart:PlaceInput!,
   $tripEnd:PlaceInput!,
@@ -408,31 +408,31 @@ mutation createTrip(
     linkedTripId: $linkedTripId
     direction: $direction
   }) {
-      id 
-      type 
-      description 
-      seats 
+      id
+      type
+      description
+      seats
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
-      } 
+      }
       direction
       TripStart {
-        name 
+        name
         coordinates
-      } 
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
-      Stops { 
-        name 
-        coordinates 
-      } 
-      date 
-      photo 
+      }
+      Stops {
+        name
+        coordinates
+      }
+      date
+      photo
       mapPhoto
       totalFeeds
       isParticipant
@@ -497,10 +497,10 @@ export const TRIP_PARTICIPANTS_QUERY = gql`
 query tripParticipants($id: Int, $offset: Int, $limit: Int) {
   tripParticipants(id:$id, offset:$offset, limit:$limit){
     rows {
-      id 
-      firstName 
+      id
+      firstName
       lastName
-      avatar 
+      avatar
     }
     count
   }
@@ -530,15 +530,15 @@ export const withParticipants = graphql(TRIP_PARTICIPANTS_QUERY, {
 export const FIND_TRIP_QUERY = gql`
 query trip($id: Int!) {
   trip(id: $id) {
-    id 
-    type 
-    description 
-    seats 
+    id
+    type
+    description
+    seats
     direction
     User {
-      id 
-      firstName 
-      avatar 
+      id
+      firstName
+      avatar
       deleted
       relation {
           path{
@@ -549,20 +549,20 @@ query trip($id: Int!) {
         }
         areFriends
       }
-    } 
+    }
     TripStart {
-      name 
+      name
       coordinates
       countryCode
-    } 
+    }
     TripEnd {
-      name 
+      name
       coordinates
       countryCode
-    } 
-    Stops { 
-      name 
-      coordinates 
+    }
+    Stops {
+      name
+      coordinates
       countryCode
     }
     Location {
@@ -578,14 +578,14 @@ query trip($id: Int!) {
       locationCoordinates
       isLive
     }
-    date 
-    photo 
+    date
+    photo
     mapPhoto
     totalFeeds
     isParticipant
     duration
     experienceStatus
-    isAdmin    
+    isAdmin
     muted
     unreadNotificationCount
     flexibilityInfo {
@@ -616,8 +616,8 @@ query trip($id: Int!) {
         name
       }
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
@@ -636,8 +636,8 @@ query trip($id: Int!) {
         name
       }
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
@@ -658,14 +658,14 @@ query trip($id: Int!) {
 export const TRIP_SUBSCRIPTION = gql`
 subscription onTripUpdated($id: Int!) {
   tripUpdated(tripId: $id){
-    id 
-    type 
-    description 
-    seats 
+    id
+    type
+    description
+    seats
     direction
     User {
-      id 
-      firstName 
+      id
+      firstName
       avatar
       deleted
       relation {
@@ -677,20 +677,20 @@ subscription onTripUpdated($id: Int!) {
         }
         areFriends
       }
-    } 
+    }
     TripStart {
-      name 
+      name
       coordinates
       countryCode
-    } 
+    }
     TripEnd {
-      name 
+      name
       coordinates
       countryCode
-    } 
-    Stops { 
-      name 
-      coordinates 
+    }
+    Stops {
+      name
+      coordinates
       countryCode
     }
     Location {
@@ -706,14 +706,14 @@ subscription onTripUpdated($id: Int!) {
       locationCoordinates
       isLive
     }
-    date 
-    photo 
+    date
+    photo
     mapPhoto
     totalFeeds
     isParticipant
     duration
     experienceStatus
-    isAdmin    
+    isAdmin
     muted
     unreadNotificationCount
     flexibilityInfo {
@@ -744,8 +744,8 @@ subscription onTripUpdated($id: Int!) {
         name
       }
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
@@ -764,8 +764,8 @@ subscription onTripUpdated($id: Int!) {
         name
       }
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
       }
@@ -812,13 +812,13 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
   subscription myTrip($userId: Int!){
     myTrip(userId:$userId){
       Trip {
-        id 
-        type 
-        description 
-        seats 
+        id
+        type
+        description
+        seats
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           deleted
           relation {
@@ -830,23 +830,23 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
             }
             areFriends
           }
-        } 
+        }
         direction
         TripStart {
-          name 
+          name
           coordinates
-        } 
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        time 
-        photo 
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
         mapPhoto
         totalFeeds
         isParticipant
@@ -859,11 +859,11 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
           publishedStatus
           userStatus
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
-          } 
+          }
         }
         Participants{
           count
@@ -885,16 +885,16 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
 `;
 
 export const TRIPS_QUERY = gql`
-query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, $limit: Int, $offset: Int, $applyQueryString: Boolean, $interval: Int ){ 
-  trips(input:{userId:$id, type:$type, active:$active, queryString: $queryString, applyQueryString: $applyQueryString, interval: $interval}, limit: $limit, offset: $offset) { 
+query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, $limit: Int, $offset: Int, $applyQueryString: Boolean, $interval: Int ){
+  trips(input:{userId:$id, type:$type, active:$active, queryString: $queryString, applyQueryString: $applyQueryString, interval: $interval}, limit: $limit, offset: $offset) {
     rows {
       id
-      type 
-      description 
-      seats 
+      type
+      description
+      seats
       User {
-        id 
-        firstName 
+        id
+        firstName
         avatar
         deleted
         relation {
@@ -909,20 +909,20 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       }
       direction
       TripStart {
-        name 
+        name
         coordinates
-      } 
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
-      Stops { 
-        name 
-        coordinates 
-      } 
-      date 
-      time 
-      photo 
+      }
+      Stops {
+        name
+        coordinates
+      }
+      date
+      time
+      photo
       mapPhoto
       totalFeeds
       isParticipant
@@ -935,11 +935,11 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         publishedStatus
         userStatus
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           deleted
-        } 
+        }
       }
       Participants {
         rows {
@@ -1152,6 +1152,27 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
             text
           }
         }
+        ...on ShareYourLocationFeed {
+          Trip {
+            id
+            TripStart {
+              coordinates
+            }
+            TripEnd {
+              coordinates
+            }
+            isParticipant
+          }
+        }
+        ...on CreateYourExperienceFeed {
+          Trip {
+            id
+            User {
+              id
+            }
+            isParticipant
+          }
+        }
       }
     }
   }
@@ -1253,6 +1274,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             lastName
             avatar
             deleted
+            isSupporter
           }
           TripStart {
             name
@@ -1269,6 +1291,27 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
         }
         Suggestion {
           text
+        }
+      }
+      ...on ShareYourLocationFeed {
+        Trip {
+          id
+          TripStart {
+            coordinates
+          }
+          TripEnd {
+            coordinates
+          }
+          isParticipant
+        }
+      }
+      ...on CreateYourExperienceFeed {
+        Trip {
+          id
+          User {
+            id
+          }
+          isParticipant
         }
       }
     }

@@ -6,9 +6,14 @@ import {
   CLOSE_GROUP,
   GROUP_FEED_TYPE_JOINED_GROUP,
   FEED_FILTER_WANTED,
+  ACTIVITY_TYPE_SHARE_LOCATION_FEED,
+  ACTIVITY_TYPE_CREATE_EXPERIENCE,
 } from '@config/constant';
+
 import Colors from '@theme/colors';
 import FOF from '@components/relation/friendsOfFriend';
+import ShareLocation from '@components/feed/shareLocation';
+import MakeExperience from '@components/feed/makeExperience';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -95,6 +100,27 @@ class FeedItem extends PureComponent {
 
   render() {
     const { feed, onPress, onLongPress } = this.props;
+
+    if (feed.ActivityType.type === ACTIVITY_TYPE_SHARE_LOCATION_FEED && feed.Trip) {
+      if (!feed.Trip.id || !feed.Trip.isParticipant) return null;
+
+      return (
+        <ShareLocation
+          onPress={onPress}
+          detail={feed.Trip}
+        />
+      );
+    }
+
+    if (feed.ActivityType.type === ACTIVITY_TYPE_CREATE_EXPERIENCE && feed.Trip) {
+      if (!feed.Trip.id || !feed.Trip.isParticipant) return null;
+
+      return (
+        <MakeExperience
+          onPress={onPress}
+          detail={feed.Trip}
+        />);
+    }
 
     return (
       <View>
