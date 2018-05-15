@@ -17,6 +17,8 @@ import {
   FEEDABLE_LOCATION,
   STRETCH_TYPE_AREA,
   STRETCH_TYPE_ROUTE,
+  ACTIVITY_TYPE_SHARE_LOCATION_FEED,
+  ACTIVITY_TYPE_CREATE_EXPERIENCE,
 } from '@config/constant';
 import DataList from '@components/dataList';
 import { withNavigation } from 'react-navigation';
@@ -167,6 +169,14 @@ class FeedList extends PureComponent {
 
       if (group.outreach === STRETCH_TYPE_AREA) navigation.navigate('Area', { info: group });
       if (group.outreach === STRETCH_TYPE_ROUTE) navigation.navigate('Route', { info: group });
+    }
+
+    if (type === ACTIVITY_TYPE_SHARE_LOCATION_FEED) {
+      navigation.navigate('Route', { info: detail, pressShareLocation: true });
+    }
+
+    if (type === ACTIVITY_TYPE_CREATE_EXPERIENCE) {
+      navigation.navigate('Experience', { trip: detail });
     }
   };
 

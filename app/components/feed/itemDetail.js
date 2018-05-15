@@ -320,7 +320,7 @@ class Feed extends Component {
     return (
       <View >
         <AppText style={styles.commentText}>
-          {this.renderUsername()} {trans('detail.suggests')} { this.renderUsername(feed.Trip.User) }{trans('detail.user_s_ride')}
+          {this.renderUsername()} {trans('detail.suggests')} {this.renderUsername(feed.Trip.User)}{trans('detail.user_s_ride')}
         </AppText>
         <AppText>{feed.Suggestion.text}</AppText>
       </View>
