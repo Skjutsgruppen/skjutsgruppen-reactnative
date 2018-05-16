@@ -27,15 +27,15 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb152012658857025</string>
-				<string>fb152012658857025</string>
+				<string>__RN_CONFIG_FB_LOGIN_SCHEME</string>
+				<string>__RN_CONFIG_FB_LOGIN_SCHEME</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>8</string>
 	<key>FacebookAppID</key>
-	<string>152012658857025</string>
+	<string>__RN_CONFIG_FB_ID</string>
 	<key>FacebookDisplayName</key>
 	<string>Skjutsgruppen</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
