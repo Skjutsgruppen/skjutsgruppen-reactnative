@@ -65,6 +65,8 @@ export const NOTIFICATION_TYPE_EXPERIENCE_REJECTED = 'experience_rejected';
 export const NOTIFICATION_TYPE_EXPERIENCE_REMOVED = 'experience_removed';
 export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
 export const NOTIFICATION_TYPE_LOCATION_SHARED = 'location_shared';
+export const NOTIFICATION_TYPE_CREATE_EXPERIENCE = 'create_experience';
+export const NOTIFICATION_TYPE_SHARE_YOUR_LOCATION = 'share_your_location';
 
 export const NOTIFICATION_TYPE_TRIP_SHARED = 'trip_shared';
 export const NOTIFICATION_TYPE_TRIP_SHARED_GROUP = 'trip_shared_group';
@@ -106,3 +108,6 @@ export const GROUP_FEED_TYPE_LOCATION_SHARING_STOPPED = 'location_sharing_stoppe
 export const SHARE_LOCATION_MINUTE = 40;
 export const SHARE_EXPERIENCE_DEFAULT_MINUTE = 60;
 export const FETCH_ACTIVE_RIDE_INTERVAL = 7;
+
+export const ACTIVITY_TYPE_SHARE_LOCATION_FEED = 'feed_share_location';
+export const ACTIVITY_TYPE_CREATE_EXPERIENCE = 'feed_create_experience';
