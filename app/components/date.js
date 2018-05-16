@@ -9,13 +9,13 @@ import PropTypes from 'prop-types';
 Moment.globalElement = Text;
 Moment.startPooledTimer();
 
-export const isToday = dateTime => (moment.tz(dateTime, getTimezone()).format('YYYYMMDD') === moment().format('YYYYMMDD'));
+export const isToday = dateTime => (moment(new Date(dateTime)).format('YYYYMMDD') === moment().format('YYYYMMDD'));
 
-export const isWithinAWeek = dateTime => moment.tz(dateTime, getTimezone()).isAfter(moment().subtract(7, 'days'));
+export const isWithinAWeek = dateTime => moment(new Date(dateTime)).isAfter(moment().subtract(7, 'days'));
 
-export const isBeforeAWeek = dateTime => moment.tz(dateTime, getTimezone()).isBefore(moment().subtract(7, 'days'));
+export const isBeforeAWeek = dateTime => moment(new Date(dateTime)).isBefore(moment().subtract(7, 'days'));
 
-export const isDifferentYear = dateTime => (moment.tz(dateTime, getTimezone()).format('YYYY') !== moment().format('YYYY'));
+export const isDifferentYear = dateTime => (moment(new Date(dateTime)).format('YYYY') !== moment().format('YYYY'));
 
 export const isFuture = dateTime => moment.tz(dateTime, getTimezone()).isAfter(moment());
 
