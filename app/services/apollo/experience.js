@@ -5,13 +5,13 @@ import { increaseProfileExperience } from '@services/apollo/dataSync';
 
 const EXPERIENCE_QUERY = gql`
 mutation experience(
-  $id: Int,  
-  $description: String,  
-  $photo: String,  
-  $tripId: Int!, 
+  $id: Int,
+  $description: String,
+  $photo: String,
+  $tripId: Int!,
   $participants: [Int!],
   $share: ShareInput
-) 
+)
 {
   experience(
       input : {
@@ -85,10 +85,10 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
       publishedStatus
       userStatus
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -129,10 +129,10 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
       publishedStatus
       userStatus
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -173,10 +173,10 @@ query getExperiences($limit: Int, $offset: Int) {
       publishedStatus
       userStatus
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -207,8 +207,8 @@ export const withGetExperiences = graphql(GET_EXPERIENCE_QUERY, {
 });
 
 const MY_EXPERIENCES_QUERY = gql`
-query myExperiences($id:Int, $limit: Int, $offset: Int,){ 
-  myExperiences(userId:$id, limit: $limit, offset: $offset) { 
+query myExperiences($id:Int, $limit: Int, $offset: Int,){
+  myExperiences(userId:$id, limit: $limit, offset: $offset) {
     rows{
       id
       createdAt
@@ -217,10 +217,10 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
       publishedStatus
       userStatus
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
     }
     count
   }
@@ -228,8 +228,8 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
 `;
 
 const MY_EXPERIENCES_SUBSCRIPTION_QUERY = gql`
-subscription myExperience($userId:Int!){ 
-  myExperience(userId:$userId) { 
+subscription myExperience($userId:Int!){
+  myExperience(userId:$userId) {
     id
       createdAt
       description
@@ -238,44 +238,44 @@ subscription myExperience($userId:Int!){
       userStatus
       Participants {
         User {
-          id 
-          firstName 
-          avatar 
-        } 
+          id
+          firstName
+          avatar
+        }
         status
       }
       Trip {
-        id 
-        type 
-        description 
-        seats 
+        id
+        type
+        description
+        seats
         User {
-          id 
-          firstName 
-          avatar 
-        } 
+          id
+          firstName
+          avatar
+        }
         TripStart {
-          name 
+          name
           coordinates
-        } 
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        photo 
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        photo
         mapPhoto
         totalFeeds
       }
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
   }
 }
 `;
@@ -357,44 +357,45 @@ query experience($id: Int!){
     userStatus
     Participants {
       User {
-        id 
-        firstName 
-        avatar 
+        id
+        firstName
+        avatar
         deleted
-      } 
+      }
       status
     }
     Trip {
-      id 
-      type 
-      description 
-      seats 
+      id
+      type
+      description
+      seats
       User {
-        id 
-        firstName 
-        avatar 
-      } 
+        id
+        firstName
+        avatar
+      }
       TripStart {
-        name 
+        name
         coordinates
-      } 
+      }
       TripEnd {
-        name 
+        name
         coordinates
-      } 
-      Stops { 
-        name 
-        coordinates 
-      } 
-      date 
-      photo 
+      }
+      Stops {
+        name
+        coordinates
+      }
+      direction
+      date
+      photo
       mapPhoto
       totalFeeds
-      isDeleted      
+      isDeleted
     }
     User {
-      id 
-      firstName 
+      id
+      firstName
       avatar
       deleted
     }
