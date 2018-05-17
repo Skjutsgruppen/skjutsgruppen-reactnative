@@ -62,6 +62,9 @@ buck-out/
 *.swp
 *.swo
 *.swm
+android/app/google-services.json
+ios/GoogleService-Info.plist
+
 
 create.js
 ios/skjutsgruppen.xcworkspace/xcshareddata/
