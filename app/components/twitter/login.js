@@ -136,11 +136,18 @@ class TwitterLogin extends PureComponent {
       await setRegister({ token, user: User });
 
       const twitterNameArray = profile.name.split(' ');
-      const firstName = twitterNameArray.slice(0, twitterNameArray.length - 1);
-      const lastName = twitterNameArray[twitterNameArray.length - 1];
+      let firstName = '';
+      let lastName = '';
+      if (twitterNameArray.length > 1) {
+        firstName = twitterNameArray.slice(0, twitterNameArray.length - 1);
+        firstName = firstName.join(' ');
+        lastName = twitterNameArray[twitterNameArray.length - 1];
+      } else {
+        lastName = twitterNameArray[twitterNameArray.length - 1];
+      }
 
       const response = await updateProfile({
-        firstName: firstName.join(' '),
+        firstName,
         lastName,
         twitterId: profile.id_str,
         twitterToken,
