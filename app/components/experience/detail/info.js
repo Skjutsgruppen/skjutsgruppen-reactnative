@@ -12,6 +12,7 @@ import Colors from '@theme/colors';
 import { withNavigation } from 'react-navigation';
 import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
+import { UcFirst } from '@config';
 
 const imageSize = 48;
 const margin = 12;
@@ -106,8 +107,8 @@ const Info = ({ loading, experience, navigation }) => {
         <AppText>
           {trans('experience.went_from_start_to_end_on',
             {
-              tripStart: experience.Trip.TripStart.name,
-              tripEnd: experience.Trip.TripEnd.name,
+              tripStart: experience.Trip.TripStart.name || UcFirst(experience.Trip.direction),
+              tripEnd: experience.Trip.TripEnd.name || UcFirst(experience.Trip.direction),
             })} <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>. {
             experience.Trip.isDeleted
               ? <AppText fontVariation="bold">{trans('experience.this_ride_has_been_deleted')}</AppText>
