@@ -9,6 +9,8 @@ import message from '@lang/locales/se/message.json';
 import about from '@lang/locales/se/about.json';
 import interval from '@lang/locales/se/interval.json';
 import experience from '@lang/locales/se/experience.json';
+import share from '@lang/locales/se/share.json';
+import suggestion from '@lang/locales/se/suggestion.json';
 
 export {
   feed,
@@ -22,4 +24,6 @@ export {
   experience,
   about,
   interval,
+  share,
+  suggestion,
 };

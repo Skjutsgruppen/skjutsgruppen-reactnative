@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
 import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
@@ -7,6 +7,8 @@ import { withGroup } from '@services/apollo/group';
 import NoEnabler from '@components/group/enablers/noEnabler';
 import { Loading, DeletedModal } from '@components/common';
 import { AppText } from '@components/utils/texts';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 class GroupDetail extends Component {
   constructor(props) {
@@ -22,6 +24,10 @@ class GroupDetail extends Component {
     subscribeToGroup(group.id);
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
   componentWillReceiveProps({ group, loading, refetch }) {
     if (!loading && group && group.isDeleted) {
       this.setState({ deletedModal: true });
@@ -30,6 +36,22 @@ class GroupDetail extends Component {
     if (!loading && group.id) {
       this.setState({ group, loading, refetch, fetch: false });
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { navigation, nav } = this.props;
+
+    if (nav && nav.routes.length <= 1) {
+      navigation.replace('Tab');
+    } else {
+      navigation.goBack();
+    }
+
+    return true;
   }
 
   refresh = () => {
@@ -126,6 +148,9 @@ GroupDetail.propTypes = {
   }).isRequired,
   fetch: PropTypes.bool,
   subscribeToGroup: PropTypes.func.isRequired,
+  nav: PropTypes.shape({
+    routes: PropTypes.array,
+  }).isRequired,
 };
 
 GroupDetail.defaultProps = {
@@ -136,8 +161,9 @@ GroupDetail.defaultProps = {
   subscribeToGroup: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({ nav: state.nav });
 
-const GroupWithDetail = withGroup(GroupDetail);
+const GroupWithDetail = compose(connect(mapStateToProps), withGroup)(GroupDetail);
 
 const GroupScreen = ({ navigation }) => {
   const { group, fetch } = navigation.state.params;

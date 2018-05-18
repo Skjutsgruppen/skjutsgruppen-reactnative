@@ -3,6 +3,8 @@ import { Animated, StyleSheet, View, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 
 import Colors from '@theme/colors';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -68,13 +70,8 @@ const styles = StyleSheet.create({
 
 class ToolBar extends PureComponent {
   backButton = () => {
-    const { navigation, onBack, transparent, animatable } = this.props;
+    const { navigation, transparent, animatable } = this.props;
     const params = navigation.state.params || {};
-    let backHandler = navigation.goBack;
-
-    if (typeof onBack === 'function') {
-      backHandler = onBack;
-    }
 
     let elevation = transparent ? 5 : 0;
     if (transparent && animatable) {
@@ -89,13 +86,27 @@ class ToolBar extends PureComponent {
 
     return (
       <View style={styles.iconWrapper}>
-        <TouchableHighlight onPress={() => backHandler()} style={styles.button}>
+        <TouchableHighlight onPress={() => this.backHandler()} style={styles.button}>
           <Animated.View style={[styles.icon, { elevation }]}>
             <Image source={Icon} />
           </Animated.View>
         </TouchableHighlight>
       </View>
     );
+  }
+
+  backHandler = () => {
+    const { navigation, onBack, nav } = this.props;
+
+    if (typeof onBack === 'function') {
+      return onBack();
+    }
+
+    if (nav.routes.length <= 1) {
+      return navigation.replace('Tab');
+    }
+
+    return navigation.goBack();
   }
 
   title = () => {
@@ -190,6 +201,9 @@ ToolBar.propTypes = {
   }).isRequired,
   onBack: PropTypes.func,
   right: PropTypes.func,
+  nav: PropTypes.shape({
+    routes: PropTypes.array,
+  }).isRequired,
 };
 
 ToolBar.defaultProps = {
@@ -202,4 +216,6 @@ ToolBar.defaultProps = {
   right: null,
 };
 
-export default withNavigation(ToolBar);
+const mapStateToProps = state => ({ nav: state.nav });
+
+export default compose(connect(mapStateToProps), withNavigation)(ToolBar);

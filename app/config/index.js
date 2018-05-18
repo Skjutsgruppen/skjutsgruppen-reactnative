@@ -6,6 +6,7 @@ const API_URL = Config.API_URL;
 const GOOGLE_MAP_API_KEY = Config.GOOGLE_MAP_API_KEY;
 const WS_API_URL = Config.WS_API_URL;
 const SMS_NUMBER = Config.SMS_NUMBER;
+const APP_URL = `http://${Config.APP_URL}`;
 
 const getDate = date => Moment.utc(date).tz(getTimezone());
 
@@ -18,4 +19,5 @@ export {
   WS_API_URL,
   SMS_NUMBER,
   UcFirst,
+  APP_URL,
 };
