@@ -277,7 +277,7 @@ class Item extends PureComponent {
 
   memberRequest = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
     if (Notifiable && Notifiable.gmrStatus === 'pending') {
-      return this.requestJoinGroup({ User: Notifiers[0], Notifiable, id });
+      return this.requestJoinGroup({ User: Notifiers[0], Notifiable, id, ids });
     }
 
     if (Notifiable && Notifiable.gmrStatus === 'accepted') {

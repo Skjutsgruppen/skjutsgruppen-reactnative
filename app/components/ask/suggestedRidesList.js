@@ -10,6 +10,8 @@ import { submitSuggestion } from '@services/apollo/suggest';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { Colors } from '@theme';
+import { getDate } from '@config';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -110,13 +112,13 @@ class SuggestedRidesList extends Component {
 
     return (
       <View style={styles.centerWrapper}>
-        <AppText style={{ marginBottom: 20 }}>No any suggestion found for the trip.</AppText>
+        <AppText style={{ marginBottom: 20 }}>{trans('suggestion.no_suggested_ride')}</AppText>
         <RoundedButton
           bgColor={Colors.background.pink}
           onPress={() => onSubmit(false)}
           style={styles.button}
         >
-          Go Back
+          {trans('suggestion.go_back')}
         </RoundedButton>
       </View>
     );
@@ -135,7 +137,7 @@ class SuggestedRidesList extends Component {
         onPress={() => this.onSuggest()}
         style={styles.button}
       >
-        Suggest
+        {trans('suggestion.suggest')}
       </RoundedButton>
     );
   }
@@ -179,15 +181,20 @@ class SuggestedRidesList extends Component {
         <View style={{ flex: 1 }}>
           <DataList
             data={search}
-            renderItem={({ item }) => (
-              <SuggestedRide
-                ride={item}
-                key={item.id}
-                onSelect={this.onSelect}
-                selectedId={this.state.selectedId}
-              />
-            )}
-            header={<AppText style={styles.label}>SUGGEST A RIDE </AppText>}
+            renderItem={({ item }) => {
+              if (getDate(item.date).format('YYYY-MM-DD HH:mm:ss') > getDate().format('YYYY-MM-DD HH:mm:ss')) {
+                return (
+                  <SuggestedRide
+                    ride={item}
+                    key={item.id}
+                    onSelect={this.onSelect}
+                    selectedId={this.state.selectedId}
+                  />
+                );
+              }
+              return null;
+            }}
+            header={<AppText style={styles.label}>{trans('suggestion.suggest_a_ride')}</AppText>}
             shouldRefresh={false}
             fetchMoreOptions={{
               variables: { offset: search.rows.length },
