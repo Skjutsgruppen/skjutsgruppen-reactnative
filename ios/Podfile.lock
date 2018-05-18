@@ -180,6 +180,8 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - RNIap (1.0.3):
+    - React
   - TwitterCore (1.12.1):
     - Fabric
   - TwitterKit (1.12.1):
@@ -215,6 +217,7 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - TwitterKit (= 1.12.1)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
@@ -260,6 +263,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/yoga.podspec"
 
@@ -291,10 +296,11 @@ SPEC CHECKSUMS:
   react-native-fcm: 7de3ba1108aba709c3d2b4237594554eb5f6f026
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
+  RNIap: 04fbe6c8f9c7b3ad96f7fa4e7b893ab85b38cce8
   TwitterCore: 2b1bdd58dfba3f21b416d2a0d1ca74173e3b0eea
   TwitterKit: 7f55ebb8d2a1476f7ef2d6fedd40090d4b349b40
   yoga: 17521bbb0dd54a47c0b3ac43253e78cdac7488e0
 
-PODFILE CHECKSUM: fc73cf56420890422defbd65d590542c478d2f9d
+PODFILE CHECKSUM: 85ad6d263149f9919e0c059971578e0d9fcbe0c3
 
 COCOAPODS: 1.5.0

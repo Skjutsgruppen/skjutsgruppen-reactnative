@@ -48,6 +48,10 @@ target 'Skjutsgruppen' do
 
   pod 'react-native-fcm', :path => '../node_modules/react-native-fcm'
 
+# Add new pods below this line
+pod 'RNIap', :path => '../node_modules/react-native-iap'
+
+
 #braintree
   pod 'BraintreeDropIn'
 end

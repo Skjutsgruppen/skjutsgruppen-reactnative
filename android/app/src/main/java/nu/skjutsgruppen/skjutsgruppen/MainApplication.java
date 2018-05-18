@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.dooboolab.RNIap.RNIapPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -42,13 +43,14 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
-            return BuildConfig.DEBUG;
+            return false;
         }
 
         @Override
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new RNIapPackage(),
                     new RNTPackage(),
                     new FabricPackage(),
                     new RNFSPackage(),

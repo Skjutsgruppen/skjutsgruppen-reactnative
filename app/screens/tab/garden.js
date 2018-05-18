@@ -115,7 +115,7 @@ class Garden extends Component {
   onSupportSubscribe = (planId) => {
     const { support, generateClientToken } = this.props;
 
-    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+    showPayment(planId, (error, paymentMethodNonce) => {
       if (error) {
         console.warn(error);
         this.setState({ showConfirmModal: true, alertMessage: trans('profile.subscribe_failed') });
@@ -236,7 +236,7 @@ class Garden extends Component {
               {trans('profile.we_are_currently_also_building')}
             </Title>
           </View>
-          {/* {!supporter &&
+          {!supporter &&
             <View>
               <Package
                 noBackgroud
@@ -261,7 +261,7 @@ class Garden extends Component {
               <HowItWorks />
             </View>
           }
-          <Costs supporter={supporter} showCostTitle={!supporter} /> */}
+          <Costs supporter={supporter} showCostTitle={!supporter} />
           <ProfileAction
             title={trans('profile.we_are_open_source')}
             label={trans('profile.help_make_the_app_better')}
@@ -278,12 +278,12 @@ class Garden extends Component {
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          {/* {supporter &&
+          {supporter &&
             <ProfileAction
               label={trans('profile.your_support_of_the_garden')}
               onPress={() => this.redirect('YourSupport')}
             />
-          } */}
+          }
           <ProfileAction onPress={() => this.redirect('Settings')} label={trans('profile.settings')} />
           <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>

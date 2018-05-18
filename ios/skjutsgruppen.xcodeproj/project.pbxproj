@@ -69,6 +69,7 @@
 		D7638FF680604004A0F16138 /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */; };
 		DA5298E5A9C5445CAC07CECC /* AvenirLTStd-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC6659E3C51A43179F8EB745 /* AvenirLTStd-Medium.ttf */; };
 		DBD102003E414728B4450B1F /* libSendSMS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29AF3B7B2AEC4D3294661D92 /* libSendSMS.a */; };
+		E715824720B5371700718C58 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E715824620B5371700718C58 /* StoreKit.framework */; };
 		EA76B759739440E787D89AB7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C135225297084723854B2D48 /* FontAwesome.ttf */; };
 		ED4A81B246C3430A8BD5FF3C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCF7C40CC9284742BB6D862E /* Octicons.ttf */; };
 		FEECD3057E2C47F9BE2C887D /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06527C20DEF14B0D95964E9E /* libRNImagePicker.a */; };
@@ -544,6 +545,7 @@
 		D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		DC77BB607C114F5990369EA0 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		DD416DDDE1C849EC9701403F /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
+		E715824620B5371700718C58 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKLoginKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E590D1208A34D000EF24AF /* Skjutsgruppen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Skjutsgruppen.entitlements; path = Skjutsgruppen/Skjutsgruppen.entitlements; sourceTree = "<group>"; };
 		FF6649D1AAAD4F1EA5203780 /* AvenirLTStd-Book.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirLTStd-Book.ttf"; path = "../assets/fonts/AvenirLTStd-Book.ttf"; sourceTree = "<group>"; };
@@ -566,6 +568,7 @@
 				67A3C3DD202C72DD00FCB038 /* libReactNativeConfig.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
+				E715824720B5371700718C58 /* StoreKit.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -794,6 +797,7 @@
 		67A3C3DC202C72DD00FCB038 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E715824620B5371700718C58 /* StoreKit.framework */,
 				E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */,
 				B0E34D7FC2FF13AA2C2A4347 /* libPods-Skjutsgruppen.a */,
 			);
@@ -1115,6 +1119,9 @@
 								enabled = 0;
 							};
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
 							com.apple.Push = {
