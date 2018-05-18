@@ -69,7 +69,7 @@ class FacebookConnect extends PureComponent {
   handleFacebookLogin = () => {
     try {
       this.setState({ showModal: true });
-      LoginManager.logInWithPublishPermissions(['publish_actions'])
+      LoginManager.logInWithReadPermissions(['public_profile', 'email'])
         .then((result) => {
           if (result.isCancelled) {
             this.setState({ showModal: false });
