@@ -22,7 +22,7 @@ const Search = ({ navigation }) => {
     }
   }
 
-  if (!dateSelected && !publicTransportSelected) {
+  if (!dateSelected && (!publicTransportSelected || (to.name !== '' || from.name !== ''))) {
     limit = 10;
     offset = 0;
   }

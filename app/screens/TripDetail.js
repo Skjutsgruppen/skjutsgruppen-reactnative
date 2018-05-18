@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Modal, Keyboard, BackHandler } from 'react-native';
 import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
@@ -256,6 +256,10 @@ class TripDetail extends Component {
     this.setState(initialState);
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
   componentWillReceiveProps({ trip, loading }) {
     if (!loading && trip && trip.isDeleted) {
       this.setState({ deletedModal: true });
@@ -282,6 +286,22 @@ class TripDetail extends Component {
         this.setState({ trip, loading });
       }
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { navigation, nav } = this.props;
+
+    if (nav && nav.routes.length <= 1) {
+      navigation.replace('Tab');
+    } else {
+      navigation.goBack();
+    }
+
+    return true;
   }
 
   onSubmit = (comment, social) => {
@@ -742,7 +762,7 @@ class TripDetail extends Component {
                 fontVariation="italic"
               >
                 {' '}
-                {trans('i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
+                {trans('detail.i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
               </AppText>
             }
           </AppText>
@@ -950,7 +970,7 @@ class TripDetail extends Component {
 
     const message = (
       <AppText>
-        {trans('detail.sure_to_delete_trip_')}
+        {trans('detail.sure_to_delete_trip_?')}
         {
           ((trip.ReturnTrip && trip.ReturnTrip.length > 0) ||
             (trip.Recurring && trip.Recurring.length > 0)) &&
@@ -1056,9 +1076,12 @@ TripDetail.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   deleteTrip: PropTypes.func.isRequired,
+  nav: PropTypes.shape({
+    routes: PropTypes.array,
+  }).isRequired,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
+const mapStateToProps = state => ({ user: state.auth.user, nav: state.nav });
 
 const TripWithDetail = compose(
   withShare,

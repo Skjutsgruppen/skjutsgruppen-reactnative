@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BackHandler } from 'react-native';
 import { withExperience } from '@services/apollo/experience';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -31,10 +32,30 @@ class ExperienceDetailScreen extends Component {
     this.setState({ experience, fetch });
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
   componentWillReceiveProps({ experience, loading, refetch }) {
     if (!loading && experience.id) {
       this.setState({ experience, refetch, fetch: false });
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { navigation, nav } = this.props;
+
+    if (nav && nav.routes.length <= 1) {
+      navigation.replace('Tab');
+    } else {
+      navigation.goBack();
+    }
+
+    return true;
   }
 
   onDelete = () => {
@@ -144,9 +165,12 @@ ExperienceDetailScreen.propTypes = {
     }),
   }).isRequired,
   fetch: PropTypes.bool.isRequired,
+  nav: PropTypes.shape({
+    route: PropTypes.array,
+  }).isRequired,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
+const mapStateToProps = state => ({ user: state.auth.user, nav: state.nav });
 
 const ExperienceWithDetail = compose(
   withExperience,

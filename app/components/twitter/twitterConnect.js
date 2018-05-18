@@ -79,7 +79,6 @@ class TwitterConnect extends PureComponent {
 
       const { twitterUser } = this.state;
       const twitterAuth = await TwitterAuth.login();
-
       const { rest } = twitter({
         consumerKey: Config.TWITTER_CONSUMER_KEY,
         consumerSecret: Config.TWITTER_CONSUMER_SECRET,
