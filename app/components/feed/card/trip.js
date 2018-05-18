@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
@@ -55,15 +55,16 @@ const styles = StyleSheet.create({
   detail: {
     paddingHorizontal: 18,
     paddingTop: 20,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   comment: {
-    flex: 1,
-    flexBasis: 72,
-    maxHeight: 72,
+    minHeight: 48,
+    maxHeight: 50,
     paddingTop: 2,
     paddingHorizontal: 18,
     marginTop: 'auto',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
     overflow: 'hidden',
   },
   commentGradientOverlay: {
@@ -84,115 +85,142 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     shadowOffset: { width: 0, height: 1 },
     shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 0,
+    shadowOpacity: 0.15,
     shadowRadius: 5,
     elevation: 2,
     zIndex: 1,
   },
 });
 
-const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring }) => {
-  if (trip.isDeleted) {
-    return null;
+class Trip extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showOverlay: false,
+    };
   }
 
-  let profileImage = null;
-  if (trip.User.avatar) {
-    profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
-  } else {
-    profileImage = (<View style={styles.imgIcon} />);
-  }
+  onLayout = (e) => {
+    const height = e.nativeEvent.layout.height;
+    const showOverlay = height > 48;
 
-  let tripColor = null;
-  if (trip.type === FEED_TYPE_OFFER) { tripColor = 'pink'; }
-  if (trip.type === FEED_TYPE_WANTED) { tripColor = 'blue'; }
+    this.setState({
+      showOverlay,
+    });
+  };
 
-  let tripLabel = null;
-  if (trip.type === FEED_TYPE_OFFER) { tripLabel = trans('feed.offering_a_ride'); }
-  if (trip.type === FEED_TYPE_WANTED) { tripLabel = trans('feed.asking_for_ride'); }
+  render() {
+    const { trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring } = this.props;
+    if (trip.isDeleted) {
+      return null;
+    }
 
-  return (
-    <View>
-      <View style={[styles.wrapper, wrapperStyle]}>
-        <TouchableHighlight
-          onPress={() => onPress(FEEDABLE_TRIP, trip)}
-        >
-          <View>
-            <TripImage
-              imageURI={trip.photo ? trip.photo : trip.mapPhoto}
-              height={imageHeight}
-            />
-            {trip.type && <TripTypePill color={tripColor} label={tripLabel} />}
-            <View style={styles.detail}>
-              <View>
-                <AppText style={{ lineHeight: 24 }}>
-                  <AppText fontVariation="semibold" color={trip.User.deleted ? Colors.text.black : Colors.text.blue}>
-                    {trip.User.firstName}
-                  </AppText>
-                  {
-                    trip.type === FEED_TYPE_OFFER &&
-                    <AppText color={Colors.text.darkGray}> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
-                  }
-                  {trip.type === FEED_TYPE_WANTED && (<AppText color={Colors.text.darkGray}> {trans('feed.asks_for_a_ride')}</AppText>)}
-                </AppText>
-                <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
-                  {
-                    trip.TripStart.name ||
-                      UcFirst(trip.direction)
-                  } - {
-                    trip.TripEnd.name ||
-                      UcFirst(trip.direction)
-                  }
-                </AppText>
-                <AppText color={Colors.text.darkGray} style={{ marginTop: 6 }}>
-                  <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
-                  {
-                    trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
-                    <AppText
-                      size={13}
-                      color={Colors.text.darkGray}
-                    >
-                      {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
-                      {trip.flexibilityInfo.duration}
-                      {trip.flexibilityInfo.unit}
+    let profileImage = null;
+    if (trip.User.avatar) {
+      profileImage = (<Image source={{ uri: trip.User.avatar }} style={styles.profilePic} />);
+    } else {
+      profileImage = (<View style={styles.imgIcon} />);
+    }
+
+    let tripColor = null;
+    if (trip.type === FEED_TYPE_OFFER) { tripColor = 'pink'; }
+    if (trip.type === FEED_TYPE_WANTED) { tripColor = 'blue'; }
+
+    let tripLabel = null;
+    if (trip.type === FEED_TYPE_OFFER) { tripLabel = trans('feed.offering_a_ride'); }
+    if (trip.type === FEED_TYPE_WANTED) { tripLabel = trans('feed.asking_for_ride'); }
+
+    return (
+      <View>
+        <View style={[styles.wrapper, wrapperStyle]}>
+          <TouchableHighlight onPress={() => onPress(FEEDABLE_TRIP, trip)} >
+            <View>
+              <TripImage
+                imageURI={trip.photo ? trip.photo : trip.mapPhoto}
+                height={imageHeight}
+              />
+              {trip.type && <TripTypePill color={tripColor} label={tripLabel} />}
+              <View style={styles.detail}>
+                <View>
+                  <AppText style={{ lineHeight: 24 }}>
+                    <AppText fontVariation="semibold" color={trip.User.deleted ? Colors.text.black : Colors.text.blue}>
+                      {trip.User.firstName}
                     </AppText>
-                  }
-                </AppText>
+                    {
+                      trip.type === FEED_TYPE_OFFER &&
+                      <AppText color={Colors.text.darkGray}> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
+                    }
+                    {trip.type === FEED_TYPE_WANTED && (<AppText color={Colors.text.darkGray}> {trans('feed.asks_for_a_ride')}</AppText>)}
+                  </AppText>
+                  <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
+                    {
+                      trip.TripStart.name ||
+                      UcFirst(trip.direction)
+                    } - {
+                      trip.TripEnd.name ||
+                      UcFirst(trip.direction)
+                    }
+                  </AppText>
+                  <AppText color={Colors.text.darkGray} style={{ marginTop: 6 }}>
+                    <Date format="MMM DD, YYYY HH:mm">{trip.date}</Date>
+                    {
+                      trip.flexibilityInfo && trip.flexibilityInfo.duration !== 0 &&
+                      <AppText
+                        size={13}
+                        color={Colors.text.darkGray}
+                      >
+                        {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
+                        {trip.flexibilityInfo.duration}
+                        {trip.flexibilityInfo.unit}
+                      </AppText>
+                    }
+                  </AppText>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.comment,
+                  this.state.showOverlay ? { minHeight: 48 } : { minHeight: 24 },
+                  typeof onSharePress === 'function' ? {} : { marginBottom: 20 },
+                ]}
+                onLayout={this.onLayout}
+              >
+                <AppText style={{ lineHeight: 24 }}>{trip.description}</AppText>
+                {
+                  this.state.showOverlay && <LinearGradient
+                    locations={[0, 0.3, 0.7, 0.8]}
+                    colors={[
+                      'rgba(255, 255, 255, 0)',
+                      'rgba(255, 255, 255, 0.5)',
+                      'rgba(255, 255, 255, 0.85)',
+                      'rgba(255, 255, 255, 1)',
+                    ]}
+                    style={styles.commentGradientOverlay}
+                  />
+                }
+              </View>
+              <View style={styles.profilePicWrapper}>
+                {profileImage}
               </View>
             </View>
-            <View style={styles.comment}>
-              <AppText style={{ lineHeight: 24 }}>{trip.description}</AppText>
-              <LinearGradient
-                locations={[0, 0.3, 0.7, 0.8]}
-                colors={[
-                  'rgba(255, 255, 255, 0)',
-                  'rgba(255, 255, 255, 0.5)',
-                  'rgba(255, 255, 255, 0.85)',
-                  'rgba(255, 255, 255, 1)',
-                ]}
-                style={styles.commentGradientOverlay}
-              />
-            </View>
-            <View style={styles.profilePicWrapper}>
-              {profileImage}
-            </View>
-          </View>
-        </TouchableHighlight>
+          </TouchableHighlight>
+          {
+            typeof onSharePress === 'function' &&
+            <Footer
+              onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
+              onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
+              totalFeeds={trip.totalFeeds}
+            />
+          }
+        </View>
         {
-          typeof onSharePress === 'function' &&
-          <Footer
-            onSharePress={() => onSharePress(FEEDABLE_TRIP, trip)}
-            onCommentPress={() => onPress(FEEDABLE_TRIP, trip)}
-            totalFeeds={trip.totalFeeds}
-          />
+          shouldHandleRecurring && trip.recurring && <View style={styles.recurringShadow} />
         }
-      </View>
-      {
-        shouldHandleRecurring && trip.recurring && <View style={styles.recurringShadow} />
-      }
-    </View>
-  );
-};
+      </View >
+    );
+  }
+}
 
 Trip.propTypes = {
   trip: PropTypes.shape({

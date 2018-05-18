@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View, ScrollView } from 'react-native';
+import { StyleSheet, Modal, View, ScrollView, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
@@ -19,10 +19,19 @@ import { AppText } from '@components/utils/texts';
 const styles = StyleSheet.create({
   footer: {
     padding: 20,
-    elevation: 10,
     backgroundColor: Colors.background.fullWhite,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   button: {
     width: 200,

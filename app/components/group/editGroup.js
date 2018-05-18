@@ -96,7 +96,16 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     padding: 16,
     backgroundColor: Colors.background.fullWhite,
-    elevation: 15,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
     alignItems: 'center',
   },
   button: {
@@ -490,7 +499,7 @@ class EditGroup extends Component {
 
   renderList = ({ count, title, info, status, subtext, redirect, avatars = null }) => (
     <View style={styles.row}>
-      <View>
+      <View style={{ flex: 1, marginRight: 16 }}>
         <AppText style={{ marginVertical: 6 }}>
           {count && `${count}`}{title} {status && (<AppText fontVariation="semibold"> - {status}</AppText>)}
         </AppText>

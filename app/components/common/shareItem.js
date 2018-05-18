@@ -48,7 +48,7 @@ const ShareItem = ({
             <Image source={imageSource} style={hasPhoto ? styles.image : {}} />
           </View>
         }
-        <AppText>{label}</AppText>
+        <AppText style={{ flex: 1, marginRight: 16 }}>{label}</AppText>
         <Radio
           active={selected}
           readOnly={readOnly}
