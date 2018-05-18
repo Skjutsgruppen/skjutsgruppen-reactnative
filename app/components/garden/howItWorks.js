@@ -55,7 +55,7 @@ const HowItWorks = ({ user }) => (
     </View>
     <View style={styles.row}>
       <View style={styles.iconWrapper}>
-        <Avatar size={62} isSupporter imageURI={user.avatar} />
+        <Avatar size={62} isSupporter={user.isSupporter} imageURI={user.avatar} />
       </View>
       <AppText style={styles.text}>
         {trans('profile.all_the_costs_are_transparent')}

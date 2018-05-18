@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View } from 'react-native';
+import { StyleSheet, Modal, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import DataList from '@components/dataList';
 import { Colors } from '@theme';
@@ -24,10 +24,19 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 20,
-    elevation: 10,
     backgroundColor: Colors.background.fullWhite,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   button: {
     width: 200,

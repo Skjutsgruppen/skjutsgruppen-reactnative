@@ -14,9 +14,6 @@ import AuthService from '@services/auth/auth';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import { getToast } from '@config/toast';
-import Toast from '@components/toast';
-
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 30,
@@ -48,21 +45,17 @@ const styles = StyleSheet.create({
     lineHeight: 30,
   },
 });
-
 class Agreement extends Component {
   static navigationOptions = {
     header: null,
   }
-
   constructor(props) {
     super(props);
     this.state = {
       agreementRead: false,
       loading: false,
-      error: '',
     };
   }
-
   onSubmit = () => {
     this.setState({ loading: true });
     const {
@@ -70,9 +63,7 @@ class Agreement extends Component {
       updateUser,
       navigation,
     } = this.props;
-
     const { agreementRead } = this.state;
-
     try {
       updateProfile({
         agreementRead,
@@ -84,26 +75,22 @@ class Agreement extends Component {
               navigation.replace('Registration');
             }
           });
-        }).catch((err) => {
-          this.setState({ loading: false, error: getToast(err) });
+        }).catch(() => {
+          this.setState({ loading: false });
         });
     } catch (err) {
-      this.setState({ loading: false, error: getToast(err) });
+      this.setState({ loading: false });
     }
   }
-
   onAgreementCheck = () => {
     const { agreementRead } = this.state;
-
     this.setState({ agreementRead: !agreementRead });
   }
-
   renderButton = () => {
     const { loading, agreementRead } = this.state;
     if (loading) {
       return (<Loading style={{ marginVertical: 24 }} />);
     }
-
     return (
       <RoundedButton
         onPress={this.onSubmit}
@@ -115,13 +102,10 @@ class Agreement extends Component {
       </RoundedButton>
     );
   }
-
   render() {
-    const { agreementRead, error } = this.state;
-
+    const { agreementRead } = this.state;
     return (
       <ScrollView style={styles.wrapper}>
-        <Toast message={error} type="error" />
         <StepsHeading>
           {trans('onboarding.we_are_friends_of_friends_of_friends')}
         </StepsHeading>
@@ -152,13 +136,11 @@ class Agreement extends Component {
     );
   }
 }
-
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
-
 Agreement.propTypes = {
   updateUser: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
@@ -166,7 +148,6 @@ Agreement.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
 };
-
 export default compose(
   withNavigation,
   withUpdateProfile,

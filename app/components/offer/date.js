@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Picker } from 'react-native';
+import { StyleSheet, View, Picker, Platform } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
@@ -42,14 +42,40 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: '#ddd',
   },
+  flexibleSection: {
+    marginVertical: 16,
+  },
+  flexibleLabel: {
+    paddingHorizontal: 20,
+  },
   inputContainer: {
     flexDirection: 'row',
-    marginBottom: 32,
+    justifyContent: 'space-between',
+    marginTop: 16,
+    backgroundColor: Colors.background.fullWhite,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    ...Platform.select({
+      android: {
+        paddingHorizontal: 12,
+      },
+    }),
+  },
+  inputWrapper: {
+    width: '33.33%',
+    minHeight: 80,
+  },
+  picker: {
+    minHeight: 80,
   },
   input: {
     height: 48,
     backgroundColor: '#ffffff',
-    paddingHorizontal: 12,
+    ...Platform.select({
+      ios: {
+        paddingHorizontal: 12,
+      },
+    }),
   },
   button: {
     width: 200,
@@ -235,36 +261,39 @@ class Date extends Component {
         </View>
         {
           isFlexible &&
-          <View style={styles.inputContainer}>
-            <View style={[styles.inputWrapper, { justifyContent: 'center', alignItems: 'center' }]}>
-              <AppText>{trans('add.i_can_go')}</AppText>
-            </View>
-            <View style={styles.inputWrapper}>
-              <Picker
-                mode="dropdown"
-                onValueChange={duration => this.setDuration(duration)}
-                selectedValue={pad(flexibilityInfo.duration.toString())}
-              >
-                {this.renderMinutesOptions('flexible')}
-              </Picker>
-            </View>
-            <View style={styles.inputWrapper}>
-              <Picker
-                mode="dropdown"
-                onValueChange={unit => this.setUnit(unit)}
-                selectedValue={flexibilityInfo.unit}
-              >
-                {this.renderUnit()}
-              </Picker>
-            </View>
-            <View style={styles.inputWrapper}>
-              <Picker
-                mode="dropdown"
-                onValueChange={type => this.setType(type)}
-                selectedValue={flexibilityInfo.type}
-              >
-                {this.renderType()}
-              </Picker>
+          <View style={styles.flexibleSection}>
+            <AppText color={Colors.text.blue} fontVariation="semibold" style={styles.flexibleLabel}>{trans('add.i_can_go')}</AppText>
+            <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <Picker
+                  mode="dropdown"
+                  onValueChange={duration => this.setDuration(duration)}
+                  selectedValue={pad(flexibilityInfo.duration.toString())}
+                  style={styles.picker}
+                >
+                  {this.renderMinutesOptions('flexible')}
+                </Picker>
+              </View>
+              <View style={styles.inputWrapper}>
+                <Picker
+                  mode="dropdown"
+                  onValueChange={unit => this.setUnit(unit)}
+                  selectedValue={flexibilityInfo.unit}
+                  style={styles.picker}
+                >
+                  {this.renderUnit()}
+                </Picker>
+              </View>
+              <View style={styles.inputWrapper}>
+                <Picker
+                  mode="dropdown"
+                  onValueChange={type => this.setType(type)}
+                  selectedValue={flexibilityInfo.type}
+                  style={styles.picker}
+                >
+                  {this.renderType()}
+                </Picker>
+              </View>
             </View>
           </View>
         }
