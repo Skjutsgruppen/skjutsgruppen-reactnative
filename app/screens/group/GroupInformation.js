@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, Modal, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import Toolbar from '@components/utils/toolbar';
@@ -20,7 +20,16 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 20,
-    elevation: 10,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 15,
+      },
+    }),
     backgroundColor: Colors.background.fullWhite,
     alignItems: 'center',
     justifyContent: 'center',
@@ -187,7 +196,7 @@ class Information extends Component {
             </AppText>
             <AppText style={styles.text}>
               {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-              {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name} - ${group.TripEnd.name}`}
+              {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name || group.direction} - ${group.TripEnd.name || group.direction}`}
             </AppText>
             <AppText style={styles.text}>
               {group.outreach === STRETCH_TYPE_ROUTE
