@@ -233,7 +233,7 @@ class Garden extends Component {
               onPress={() => this.redirect('YourSupport')}
             />
           }
-          <ProfileAction label={trans('profile.settings')} />
+          <ProfileAction onPress={() => this.redirect('Settings')} label={trans('profile.settings')} />
           <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText
