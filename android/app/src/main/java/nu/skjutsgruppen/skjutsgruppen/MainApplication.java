@@ -1,4 +1,4 @@
-package com.skjutsgruppen;
+package nu.skjutsgruppen.skjutsgruppen;
 
 import android.support.multidex.MultiDexApplication;
 
@@ -23,8 +23,7 @@ import com.magus.fblogin.FacebookLoginPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
-import com.skjutsgruppen.braintree.BraintreePaymentPackage;
-import com.skjutsgruppen.react.modules.GeoLocationPackage;
+import nu.skjutsgruppen.skjutsgruppen.braintree.BraintreePaymentPackage;
 import com.smixx.fabric.FabricPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.twitter.sdk.android.Twitter;
@@ -35,6 +34,7 @@ import java.util.List;
 
 import ga.piroro.rnt.RNTPackage;
 import io.fabric.sdk.android.Fabric;
+import nu.skjutsgruppen.skjutsgruppen.react.modules.GeoLocationPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 

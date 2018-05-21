@@ -286,5 +286,5 @@ export default compose(
   withRemoveAppToken,
   withSupport,
   withAccount,
-  connect(mapDispatchToProps),
+  connect(null, mapDispatchToProps),
 )(Garden);
