@@ -1,8 +1,7 @@
 import React from 'react';
 import Moment from 'react-moment';
-import moment from 'moment';
 import { Text } from 'react-native';
-import 'moment-timezone';
+import moment from 'moment-timezone';
 import { getTimezone } from '@helpers/device';
 import PropTypes from 'prop-types';
 
@@ -19,7 +18,9 @@ export const isDifferentYear = dateTime => (moment(new Date(dateTime)).format('Y
 
 export const isFuture = dateTime => moment.tz(dateTime, getTimezone()).isAfter(moment());
 
-const DateView = ({ children, format, calendarTime, ...rest }) => {
+const DateView = ({
+  children, format, calendarTime, ...rest
+}) => {
   let autoFormat = 'MMM Do';
   let defaultFormat = format;
 

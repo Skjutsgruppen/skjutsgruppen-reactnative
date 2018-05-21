@@ -27,18 +27,11 @@ const styles = StyleSheet.create({
 
 class Ride extends Component {
   componentWillMount() {
-    const { subscribeToNewTrip, user, setNoMessages, trips } = this.props;
+    const { subscribeToNewTrip, user } = this.props;
 
-    if (trips.count < 1) setNoMessages('rides');
     if (user.id) {
       subscribeToNewTrip({ userId: user.id });
     }
-  }
-
-  componentWillReceiveProps() {
-    const { setNoMessages, trips } = this.props;
-
-    if (trips.count < 1) setNoMessages('rides');
   }
 
   loadMore = (onPress) => {
@@ -70,9 +63,7 @@ class Ride extends Component {
               return previousResult;
             }
 
-            const rows = previousResult.trips.rows.concat(
-              fetchMoreResult.trips.rows,
-            );
+            const rows = previousResult.trips.rows.concat(fetchMoreResult.trips.rows );
 
             return { trips: { ...previousResult.trips, ...{ rows } } };
           },
@@ -100,11 +91,10 @@ class Ride extends Component {
 Ride.propTypes = {
   trips: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object),
-    count: PropTypes.numeric,
+    count: PropTypes.number,
     error: PropTypes.object,
     refetch: PropTypes.func,
   }).isRequired,
-  setNoMessages: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

@@ -190,12 +190,15 @@ class GooglePlacesAutocomplete extends Component {
       onSuccess: (response) => {
         if (response.status === 'OK' && this.isComponentMounted === true) {
           const details = response.result;
+          const countryCode = details.address_components.filter(row => (row.types.indexOf('country') > -1));
+          const place = {
+            name: details.formatted_address,
+            countryCode: countryCode.length > 0 ? countryCode[0].short_name : '',
+            coordinates: [details.geometry.location.lng, details.geometry.location.lat],
+          };
+
           this.props.onPress({
-            place: {
-              name: details.formatted_address.split(',')[0],
-              countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
-              coordinates: [details.geometry.location.lng, details.geometry.location.lat],
-            },
+            place,
             source: 'googlePlaceAPI',
           });
         }
@@ -271,9 +274,9 @@ class GooglePlacesAutocomplete extends Component {
       visible={this.state.showTurnOnGpsModal}
       loading={false}
       onDeny={() => this.setState({ showTurnOnGpsModal: false })}
-      confirmLabel={'Open settings'}
+      confirmLabel="Open settings"
       onConfirm={() => this.openGpsSettings()}
-      message={'Your GPS is turned off.'}
+      message="Your GPS is turned off."
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )

@@ -27,7 +27,7 @@ import Date from '@components/date';
 import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
 import About from '@components/common/about';
-import { getDate } from '@config';
+import { getDate, UcFirst } from '@config';
 import { FLEXIBILITY_EARLIER_TYPE, FEED_FILTER_OFFERED, FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, EXPERIENCE_STATUS_PENDING, EXPERIENCE_STATUS_CAN_CREATE } from '@config/constant';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
 import { connect } from 'react-redux';
@@ -209,8 +209,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
-
 class TripDetail extends Component {
   constructor(props) {
     super(props);
@@ -249,7 +247,9 @@ class TripDetail extends Component {
     if (notifier) {
       initialState = {
         ...initialState,
-        ...{ notifier, notificationMessage, notification: true, notifierOffset: 75 },
+        ...{
+          notifier, notificationMessage, notification: true, notifierOffset: 75,
+        },
       };
     }
 
@@ -621,7 +621,9 @@ class TripDetail extends Component {
 
         tripColor = (row.type === FEED_TYPE_WANTED) ?
           Colors.background.blue : Colors.background.pink;
-        markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
+        markedDates[selectedDate.format('YYYY-MM-DD')] = {
+          startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true,
+        };
       });
     }
 
@@ -637,7 +639,7 @@ class TripDetail extends Component {
             <Calendar
               current={tripDate}
               markedDates={markedDates}
-              markingType={'period'}
+              markingType="period"
               hideExtraDays
               onDayPress={day => this.redirectToSelectedTripDate(day)}
             />
@@ -718,11 +720,11 @@ class TripDetail extends Component {
           {
             trip.TripStart.name ?
               trip.TripStart.name :
-              prettify(trip.direction)
+              UcFirst(trip.direction)
           } - {
             trip.TripEnd.name ?
               trip.TripEnd.name :
-              prettify(trip.direction)
+              UcFirst(trip.direction)
           }
         </Heading>
         <AppText color={Colors.text.darkGray} style={styles.date}>
@@ -966,7 +968,9 @@ class TripDetail extends Component {
   }
 
   renderConfirmModal = () => {
-    const { loading, confirmModalVisibility, retry, trip } = this.state;
+    const {
+      loading, confirmModalVisibility, retry, trip,
+    } = this.state;
 
     const message = (
       <AppText>

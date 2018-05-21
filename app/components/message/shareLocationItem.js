@@ -9,6 +9,7 @@ import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
 import Timer from '@components/common/timer';
+import { UcFirst } from '@config';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -56,8 +57,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
-
 const renderPic = (photo) => {
   let profileImage = null;
 
@@ -76,11 +75,11 @@ const ShareLocationItem = ({ sharedLocation, navigation }) => {
   if (sharedLocation.Trip.id) {
     name = `${sharedLocation.Trip.TripStart.name ?
       sharedLocation.Trip.TripStart.name :
-      prettify(sharedLocation.Trip.direction)
+      UcFirst(sharedLocation.Trip.direction)
     } - ${
       sharedLocation.Trip.TripEnd.name ?
         sharedLocation.Trip.TripEnd.name :
-        prettify(sharedLocation.Trip.direction)
+        UcFirst(sharedLocation.Trip.direction)
     }`;
 
     if (name.length > 25) {

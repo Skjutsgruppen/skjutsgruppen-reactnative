@@ -16,7 +16,7 @@ import { ColoredText, GreetText } from '@components/auth/texts';
 import BackButton from '@components/auth/backButton';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 
@@ -56,7 +56,9 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ username: '', password: '', loading: false, error: '', inputs: {} });
+    this.state = ({
+      username: '', password: '', loading: false, error: '', inputs: {},
+    });
   }
 
   async componentWillMount() {
@@ -69,7 +71,9 @@ class Login extends Component {
 
   onSubmit = async () => {
     this.setState({ loading: true });
-    const { submit, setLogin, setRegister, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      submit, setLogin, setRegister, navigation, syncContacts, storeAppToken,
+    } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
@@ -91,16 +95,14 @@ class Login extends Component {
               await FCM.getFCMToken()
                 .then(appToken => storeAppToken(appToken, getDeviceId()));
 
-              navigation.dispatch(
-                NavigationActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({
-                      routeName: 'Tab',
-                    }),
-                  ],
-                }),
-              );
+              navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({
+                    routeName: 'Tab',
+                  }),
+                ],
+              }));
 
               syncContacts();
             })

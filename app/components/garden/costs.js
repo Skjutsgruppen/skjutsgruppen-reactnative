@@ -36,7 +36,9 @@ class Costs extends Component {
   }
 
   render() {
-    const { supporter, showCostTitle, gardenInfo, navigation } = this.props;
+    const {
+      supporter, showCostTitle, gardenInfo, navigation,
+    } = this.props;
 
     if (!gardenInfo.data) return null;
 
@@ -48,7 +50,9 @@ class Costs extends Component {
               size={15}
               color={Colors.text.blue}
               style={{ marginBottom: 16 }}
-            >OUR COSTS</Title>
+            >
+              OUR COSTS
+            </Title>
             <Heading size={26} color={Colors.text.pink} style={{ lineHeight: 36 }}>
               The money goes to:
             </Heading>
@@ -87,7 +91,7 @@ Costs.propTypes = {
       programmer: PropTypes.number,
       projectManager: PropTypes.number,
     }),
-  }).isRequired,
+  }),
   subscribeToSupportReceived: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

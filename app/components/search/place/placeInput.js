@@ -81,14 +81,16 @@ class PlacesInput extends PureComponent {
   }
 
   onPress = ({ place, source, direction }) => {
-    this.setState({ place, directionText: direction, direction, showModal: false }, () => {
+    this.setState({
+      place, directionText: direction, direction, showModal: false,
+    }, () => {
       this.props.onChangeText({ place, source, direction });
     });
   }
 
   getCountryName = (code) => {
     const country = _find(Countries, { code });
-    return country.name ? country.name : code;
+    return (country && country.name) ? country.name : code;
   }
 
   getPlaceName = () => {
@@ -118,7 +120,9 @@ class PlacesInput extends PureComponent {
   }
 
   renderModal() {
-    const { placeholder, label, direction, currentLocation } = this.props;
+    const {
+      placeholder, label, direction, currentLocation,
+    } = this.props;
     return (
       <Modal
         visible={this.state.showModal}

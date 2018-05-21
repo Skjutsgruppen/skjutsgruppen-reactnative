@@ -6,7 +6,7 @@ import { compose } from 'react-apollo';
 import FCM from 'react-native-fcm';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { withNavigation, NavigationActions } from 'react-navigation';
+import { withNavigation, NavigationActions, StackActions } from 'react-navigation';
 import { Loading } from '@components/common';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import { withContactSync } from '@services/apollo/contact';
@@ -39,7 +39,9 @@ class TwitterLogin extends PureComponent {
 
   onLogin = async (twitter) => {
     const { profile, auth: { authToken, authTokenSecret } } = twitter.twitterUser;
-    const { setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      setLogin, navigation, syncContacts, storeAppToken,
+    } = this.props;
     this.setState({ showModal: true });
 
     if (twitter.hasID) {
@@ -47,16 +49,14 @@ class TwitterLogin extends PureComponent {
       await FCM.getFCMToken()
         .then(token => storeAppToken(token, getDeviceId()));
 
-      navigation.dispatch(
-        NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({
-              routeName: 'Tab',
-            }),
-          ],
-        }),
-      );
+      navigation.dispatch(StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }));
 
       syncContacts();
       return;
@@ -65,7 +65,8 @@ class TwitterLogin extends PureComponent {
     if (twitter.hasEmail) {
       this.setState({ showModal: false });
 
-      Alert.alert(`User already exist with ${profile.email}`,
+      Alert.alert(
+        `User already exist with ${profile.email}`,
         'Would you like to connect with Twitter?',
         [
           { text: 'Cancel', onPress: () => null },
@@ -85,7 +86,9 @@ class TwitterLogin extends PureComponent {
 
   connect = async ({ profile, authToken, authTokenSecret }) => {
     this.setState({ showModal: true });
-    const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      socialConnect, setLogin, navigation, syncContacts, storeAppToken,
+    } = this.props;
     const response = await socialConnect({
       id: profile.id_str,
       email: profile.email,
@@ -102,16 +105,14 @@ class TwitterLogin extends PureComponent {
     await FCM.getFCMToken()
       .then(token => storeAppToken(token, getDeviceId()));
 
-    navigation.dispatch(
-      NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({
-            routeName: 'Tab',
-          }),
-        ],
-      }),
-    );
+    navigation.dispatch(StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: 'Tab',
+        }),
+      ],
+    }));
     syncContacts();
   }
 
@@ -124,7 +125,9 @@ class TwitterLogin extends PureComponent {
       return;
     }
 
-    const { register, setRegister, updateProfile, navigation } = this.props;
+    const {
+      register, setRegister, updateProfile, navigation,
+    } = this.props;
 
     try {
       const { data } = await register({
@@ -166,7 +169,8 @@ class TwitterLogin extends PureComponent {
   }
 
   signUpWithTwitter = (register) => {
-    Alert.alert('Sign up with twitter',
+    Alert.alert(
+      'Sign up with twitter',
       'You are not signed up with Twitter. Please tap on sign up button to continue with Twitter.',
       [
         { text: 'Not now', onPress: () => null },
@@ -181,7 +185,7 @@ class TwitterLogin extends PureComponent {
     return (
       <Modal
         transparent
-        animationType={'fade'}
+        animationType="fade"
         visible={showModal}
         onRequestClose={() => null}
       >
@@ -225,10 +229,12 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.warn(error)),
 });
 
-export default compose(withNavigation,
+export default compose(
+  withNavigation,
   userRegister,
   withContactSync,
   withSocialConnect,
   withUpdateProfile,
   withStoreAppToken,
-  connect(null, mapDispatchToProps))(TwitterLogin);
+  connect(null, mapDispatchToProps),
+)(TwitterLogin);

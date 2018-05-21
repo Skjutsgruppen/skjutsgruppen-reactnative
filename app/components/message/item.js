@@ -144,7 +144,9 @@ class Item extends PureComponent {
   }
 
   redirect = (id, ids, route, params) => {
-    const { navigation, filters, notification, markRead } = this.props;
+    const {
+      navigation, filters, notification, markRead,
+    } = this.props;
 
     if (id && filters === 'new') {
       markRead(id, ids).then(notification.refetch);
@@ -153,7 +155,9 @@ class Item extends PureComponent {
     navigation.navigate(route, params);
   }
 
-  friendRequest = ({ Notifiers, id, ids, createdAt }) => {
+  friendRequest = ({
+    Notifiers, id, ids, createdAt,
+  }) => {
     const { filters } = this.props;
     return (
       <TouchableOpacity onPress={() => this.redirect(id, ids, 'Profile', { profileId: Notifiers[0].id })}>
@@ -166,20 +170,20 @@ class Item extends PureComponent {
               <AppText
                 fontVariation={filters === 'new' ? 'semibold' : null}
                 numberOfLines={1}
-                ellipsizeMode={'tail'}
+                ellipsizeMode="tail"
               >
                 {Notifiers[0].firstName}
               </AppText>
               <AppText
                 fontVariation={filters === 'new' ? 'semibold' : null}
                 numberOfLines={1}
-                ellipsizeMode={'tail'}
+                ellipsizeMode="tail"
               >
                 {trans('message.wants_to_be_your_friend')}
               </AppText>
             </View>
             <View>
-              <AppText fontVariation={'semibold'}><Date calenderTime>{createdAt}</Date></AppText>
+              <AppText fontVariation="semibold"><Date calenderTime>{createdAt}</Date></AppText>
             </View>
           </View>
         </View>
@@ -187,7 +191,9 @@ class Item extends PureComponent {
     );
   }
 
-  requestJoinGroup = ({ User, Notifiable, id, ids }) => {
+  requestJoinGroup = ({
+    User, Notifiable, id, ids,
+  }) => {
     const { filters } = this.props;
 
     return (
@@ -202,11 +208,11 @@ class Item extends PureComponent {
                 fontVariation={filters === 'new' ? 'semibold' : null}
                 onPress={() => this.redirect(id, ids, 'Profile', { profileId: User.id })}
                 numberOfLines={1}
-                ellipsizeMode={'tail'}
+                ellipsizeMode="tail"
               >
                 {Notifiable.Group.name}
               </AppText>
-              <AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode={'tail'}>Participation request</AppText>
+              <AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode="tail">Participation request</AppText>
             </View>
           </View>
           {this.state.loading ?
@@ -251,19 +257,19 @@ class Item extends PureComponent {
                 <AppText
                   fontVariation={filters === 'new' ? 'semibold' : null}
                   numberOfLines={1}
-                  ellipsizeMode={'tail'}
+                  ellipsizeMode="tail"
                 >
                   {user}
                 </AppText>
               }
               {
                 ellipsize ?
-                  (<AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode={'tail'}>
+                  (<AppText fontVariation={filters === 'new' ? 'semibold' : null} numberOfLines={1} ellipsizeMode="tail">
                     {text}
-                  </AppText>) :
+                   </AppText>) :
                   (<AppText fontVariation={filters === 'new' ? 'semibold' : null}>
                     {text}
-                  </AppText>)
+                   </AppText>)
               }
             </View>
           </View>
@@ -275,9 +281,13 @@ class Item extends PureComponent {
     );
   };
 
-  memberRequest = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  memberRequest = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable && Notifiable.gmrStatus === 'pending') {
-      return this.requestJoinGroup({ User: Notifiers[0], Notifiable, id, ids });
+      return this.requestJoinGroup({
+        User: Notifiers[0], Notifiable, id, ids,
+      });
     }
 
     if (Notifiable && Notifiable.gmrStatus === 'accepted') {
@@ -293,7 +303,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  membershipRequestAccepted = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  membershipRequestAccepted = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -312,7 +324,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  friendRequestAccepted = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  friendRequestAccepted = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -327,7 +341,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceRejected = ({ Notifiable, createdAt, id, ids }) => {
+  experienceRejected = ({
+    Notifiable, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         photo: [Notifiable.photo],
@@ -342,7 +358,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceRemoved = ({ Notifiable, createdAt, id, ids }) => {
+  experienceRemoved = ({
+    Notifiable, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         photo: [Notifiable.photo],
@@ -357,7 +375,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  experiencePublished = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  experiencePublished = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -373,7 +393,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  experienceShared = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -388,7 +410,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  experienceTagged = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  experienceTagged = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         user: Notifiers[0].firstName,
@@ -403,7 +427,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  tripShared = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  tripShared = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     let type = null;
 
     if (Notifiable) {
@@ -426,7 +452,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  tripSharedGroup = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  tripSharedGroup = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     if (Notifiable) {
       return this.item({
         userId: Notifiers[0].id,
@@ -441,7 +469,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  comment = ({ notifiable, Notifiable, Notifiers, id, ids, createdAt }) => {
+  comment = ({
+    notifiable, Notifiable, Notifiers, id, ids, createdAt,
+  }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -487,7 +517,9 @@ class Item extends PureComponent {
     return null;
   }
 
-  invitation = ({ notifiable, Notifiable, Notifiers, createdAt, id, ids }) => {
+  invitation = ({
+    notifiable, Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     let type = null;
     let params = null;
     let route = null;
@@ -518,7 +550,9 @@ class Item extends PureComponent {
     });
   }
 
-  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  tripNotificationBundle = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     const route = 'TripDetail';
     const params = { trip: Notifiable };
     const plus = Notifiers.length - 1;
@@ -535,7 +569,9 @@ class Item extends PureComponent {
     });
   }
 
-  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  groupNotificationBundle = ({
+    Notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     const route = 'GroupDetail';
     const params = { group: Notifiable };
     const plus = Notifiers.length - 1;
@@ -552,7 +588,9 @@ class Item extends PureComponent {
     });
   }
 
-  friendJoinedMovement = ({ Notifiers, createdAt, id, ids }) => {
+  friendJoinedMovement = ({
+    Notifiers, createdAt, id, ids,
+  }) => {
     const route = 'Profile';
     const params = { profileId: Notifiers[0].id };
 
@@ -566,7 +604,9 @@ class Item extends PureComponent {
     });
   }
 
-  locationShared = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
+  locationShared = ({
+    Notifiable, notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     let route = 'Route';
 
     if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
@@ -583,7 +623,9 @@ class Item extends PureComponent {
     });
   }
 
-  makeAnExperience = ({ Notifiable, createdAt, id, ids }) => {
+  makeAnExperience = ({
+    Notifiable, createdAt, id, ids,
+  }) => {
     const route = 'Experience';
     const params = { trip: Notifiable };
 
@@ -597,12 +639,14 @@ class Item extends PureComponent {
     });
   }
 
-  shareYourLocation = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
+  shareYourLocation = ({
+    Notifiable, notifiable, Notifiers, createdAt, id, ids,
+  }) => {
     let route = 'Route';
 
     if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
 
-    const params = { info: Notifiable.Trip };
+    const params = { info: Notifiable, pressShareLocation: true };
 
     return this.item({
       userId: Notifiers[0].id,
@@ -733,7 +777,6 @@ class Item extends PureComponent {
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_SHARE_YOUR_LOCATION) {
       message = this.shareYourLocation(notification);
     }
-
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
       message = this.memberRequest(notification);

@@ -92,6 +92,7 @@ class AreaMap extends PureComponent {
   }
 
   componentWillMount() {
+    this.mounted = true;
     const { group, user } = this.props;
     const { data, subscribeToLocationShared } = this.props.locationSharedToSpecificResource;
 
@@ -144,6 +145,10 @@ class AreaMap extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onFilterChange = (type) => {
     if (type !== this.state.filterType) {
       this.setState({ filterType: type, filterOpen: false, loading: true }, this.fetchTripsByType);
@@ -177,18 +182,22 @@ class AreaMap extends PureComponent {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.setState({
-          fetchingPosition: false,
-          myPosition: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            timestamp: position.timestamp,
-          },
-        });
-        this.gotoRegion([position.coords.longitude, position.coords.latitude]);
+        if (this.mounted) {
+          this.setState({
+            fetchingPosition: false,
+            myPosition: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              timestamp: position.timestamp,
+            },
+          });
+          this.gotoRegion([position.coords.longitude, position.coords.latitude]);
+        }
       },
       () => {
-        this.setState({ fetchingPosition: false });
+        if (this.mounted) {
+          this.setState({ fetchingPosition: false });
+        }
         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
       },
       { timeout: 20000, maximumAge: 1000 },
@@ -270,9 +279,9 @@ class AreaMap extends PureComponent {
       visible={this.state.showTurnOnGpsModal}
       loading={false}
       onDeny={() => this.setState({ showTurnOnGpsModal: false })}
-      confirmLabel={'Open settings'}
+      confirmLabel="Open settings"
       onConfirm={() => this.openGpsSettings()}
-      message={'Your GPS is turned off.'}
+      message="Your GPS is turned off."
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )
@@ -310,23 +319,26 @@ class AreaMap extends PureComponent {
         latitude: myPosition.latitude,
         longitude: myPosition.longitude,
       };
-      markers.push(
-        <Marker
-          key={`${moment().unix()}`}
-          onPress={(e) => {
-            e.stopPropagation();
-          }}
-          coordinate={coordinate}
-          image={user.avatar}
-        />);
+      markers.push(<Marker
+        key={`${moment().unix()}`}
+        onPress={(e) => {
+          e.stopPropagation();
+        }}
+        coordinate={coordinate}
+        image={user.avatar}
+      />);
     }
 
     return markers;
   }
 
   render() {
-    const { loading, group, locationSharedToSpecificResource, navigation } = this.props;
-    const { origin, initialRegion, myPosition, fetchingPosition } = this.state;
+    const {
+      loading, group, locationSharedToSpecificResource, navigation,
+    } = this.props;
+    const {
+      origin, initialRegion, myPosition, fetchingPosition,
+    } = this.state;
     const { __typename } = group;
     const { pressShareLocation } = navigation.state.params;
 
@@ -348,7 +360,7 @@ class AreaMap extends PureComponent {
           </TouchableHighlight>
         </View>
         <MapView
-          provider={'google'}
+          provider="google"
           initialRegion={initialRegion}
           style={styles.map}
           ref={(c) => { this.mapView = c; }}
@@ -412,7 +424,8 @@ const RenderAreaMap = compose(
   withLocationSharedToSpecificResource,
   withGroup,
   withUpdateLocation,
-  withGroupTrips, connect(mapStateToProps))(AreaMap);
+  withGroupTrips, connect(mapStateToProps),
+)(AreaMap);
 
 const Area = ({ navigation }) => {
   const { id, __typename } = navigation.state.params.info;

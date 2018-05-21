@@ -35,9 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const AnimatedFlatlist = Animated.createAnimatedComponent(
-  FlatList,
-);
+const AnimatedFlatlist = Animated.createAnimatedComponent(FlatList);
 
 class DataList extends PureComponent {
   constructor(props) {
@@ -60,7 +58,9 @@ class DataList extends PureComponent {
   };
 
   loadMoreBtn = () => {
-    const { data, infinityScroll, fetchMoreOptions, loadMoreButton } = this.props;
+    const {
+      data, infinityScroll, fetchMoreOptions, loadMoreButton,
+    } = this.props;
     const { rows, count, loading } = data;
 
     if (loading || infinityScroll || rows.length >= count) return null;
@@ -101,7 +101,9 @@ class DataList extends PureComponent {
   };
 
   renderHeader = () => {
-    const { data, infinityScroll, header, loadMorePosition } = this.props;
+    const {
+      data, infinityScroll, header, loadMorePosition,
+    } = this.props;
     const { networkStatus, rows } = data;
     let headerView = null;
 
@@ -121,8 +123,12 @@ class DataList extends PureComponent {
   };
 
   renderFooter = () => {
-    const { data, noResultText, infinityScroll, footer, loadMorePosition } = this.props;
-    const { networkStatus, loading, rows, error, count } = data;
+    const {
+      data, noResultText, infinityScroll, footer, loadMorePosition,
+    } = this.props;
+    const {
+      networkStatus, loading, rows, error, count,
+    } = data;
     let footerView = null;
 
     if (error && !loading) {
@@ -166,7 +172,7 @@ class DataList extends PureComponent {
         {...this.props}
         ref={innerRef}
         data={data.rows}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         refreshing={data.networkStatus === 4 || data.networkStatus === 2}
         onRefresh={() => this.shouldRefetch()}
         onEndReachedThreshold={onEndReachedThreshold}
@@ -190,9 +196,9 @@ DataList.propTypes = {
     fetchMore: PropTypes.func,
     refetch: PropTypes.func,
     loading: PropTypes.bool,
-    count: PropTypes.numeric,
+    count: PropTypes.number,
     error: PropTypes.object,
-    networkStatus: PropTypes.numeric,
+    networkStatus: PropTypes.number,
   }).isRequired,
   header: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   footer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),

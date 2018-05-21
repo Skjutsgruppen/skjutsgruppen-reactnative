@@ -197,7 +197,9 @@ class Feed extends Component {
     } catch (error) {
       const { latitude, longitude } = getCountryLocation();
       if (latitude) {
-        this.setState({ latitude, longitude, currentLocation: false, locationError: false });
+        this.setState({
+          latitude, longitude, currentLocation: false, locationError: false,
+        });
       } else {
         this.setState({ locationError: true });
       }
@@ -234,27 +236,29 @@ class Feed extends Component {
 
   renderHeader = () => {
     const hiStyle = Platform.OS === 'ios' ? { marginTop: 8 } : {};
-    return (<View style={styles.header}>
-      <View style={styles.menuWrapper}>
-        <Heading
-          fontVariation="bold"
-          size={24}
-          color={Colors.text.white}
-          style={[{ lineHeight: 24 }, hiStyle]}
-        >
-          {trans('feed.hi')}!
-        </Heading>
-        <View style={styles.menuIconWrapper}>
-          <TouchableHighlight
-            style={styles.menuIcon}
-            onPress={() => this.setFilterVisibility(true)}
+    return (
+      <View style={styles.header}>
+        <View style={styles.menuWrapper}>
+          <Heading
+            fontVariation="bold"
+            size={24}
+            color={Colors.text.white}
+            style={[{ lineHeight: 24 }, hiStyle]}
           >
-            <Image source={require('@assets/icons/ic_menu.png')} />
-          </TouchableHighlight>
+            {trans('feed.hi')}!
+          </Heading>
+          <View style={styles.menuIconWrapper}>
+            <TouchableHighlight
+              style={styles.menuIcon}
+              onPress={() => this.setFilterVisibility(true)}
+            >
+              <Image source={require('@assets/icons/ic_menu.png')} />
+            </TouchableHighlight>
+          </View>
         </View>
+        {this.renderMap()}
       </View>
-      {this.renderMap()}
-    </View>);
+    );
   }
 
   renderExperience = (index) => {
@@ -366,12 +370,12 @@ class Feed extends Component {
 
 Feed.propTypes = {
   feeds: PropTypes.shape({
-    totalExperiences: PropTypes.numeric,
+    totalExperiences: PropTypes.number,
     rows: PropTypes.arrayOf(PropTypes.object),
     fetchMore: PropTypes.func.isRequired,
     refetch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    count: PropTypes.numeric,
+    count: PropTypes.number,
     error: PropTypes.object,
   }).isRequired,
   navigation: PropTypes.shape({

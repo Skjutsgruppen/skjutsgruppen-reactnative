@@ -10,7 +10,7 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/facebookConnect';
 import { Loading } from '@components/common';
-import { withNavigation, NavigationActions } from 'react-navigation';
+import { withNavigation, NavigationActions, StackActions } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
@@ -35,12 +35,14 @@ const styles = StyleSheet.create({
 class FBLogin extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { loading: false, showModal: false };
+    this.state = { showModal: false };
   }
 
   onLogin = async (fb) => {
     const { profile, auth: { accessToken } } = fb.fbUser;
-    const { setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      setLogin, navigation, syncContacts, storeAppToken,
+    } = this.props;
     this.setState({ showModal: true });
 
     if (fb.hasID) {
@@ -48,16 +50,14 @@ class FBLogin extends PureComponent {
       await FCM.getFCMToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
 
-      navigation.dispatch(
-        NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({
-              routeName: 'Tab',
-            }),
-          ],
-        }),
-      );
+      navigation.dispatch(StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }));
 
       syncContacts();
 
@@ -67,7 +67,8 @@ class FBLogin extends PureComponent {
     if (fb.hasEmail) {
       this.setState({ showModal: false });
 
-      Alert.alert(`User already exist with ${profile.email}`,
+      Alert.alert(
+        `User already exist with ${profile.email}`,
         'Would you like to connect with facebook?',
         [
           { text: 'Cancel', onPress: () => null },
@@ -87,7 +88,9 @@ class FBLogin extends PureComponent {
 
   connect = async ({ profile, accessToken }) => {
     this.setState({ showModal: true });
-    const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      socialConnect, setLogin, navigation, syncContacts, storeAppToken,
+    } = this.props;
     const response = await socialConnect({
       id: profile.id,
       email: profile.email,
@@ -103,26 +106,25 @@ class FBLogin extends PureComponent {
     await FCM.getFCMToken()
       .then(appToken => storeAppToken(appToken, getDeviceId()));
 
-    navigation.dispatch(
-      NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({
-            routeName: 'Tab',
-          }),
-        ],
-      }),
-    );
-
+    navigation.dispatch(StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: 'Tab',
+        }),
+      ],
+    }));
     syncContacts();
   }
 
-  async register({ profile, auth: { accessToken: fbToken } }) {
+  async register ({ profile, auth: { accessToken: fbToken } }) {
     if (profile.email === '') {
       Alert.alert('Error!', 'Email is required');
       return;
     }
-    const { register, setRegister, updateProfile, navigation } = this.props;
+    const {
+      register, setRegister, updateProfile, navigation,
+    } = this.props;
 
     try {
       const { data } = await register({
@@ -152,7 +154,8 @@ class FBLogin extends PureComponent {
   }
 
   signupWithFacebook = (register) => {
-    Alert.alert('Sign up with facebook',
+    Alert.alert(
+      'Sign up with facebook',
       'You are not signed up with facebook. Please tap on sign up button to continue with facebook.',
       [
         { text: 'Not Now', onPress: () => this.setState({ loading: false }) },
@@ -167,7 +170,7 @@ class FBLogin extends PureComponent {
     return (
       <Modal
         transparent
-        animationType={'fade'}
+        animationType="fade"
         visible={showModal}
         onRequestClose={() => null}
       >
@@ -180,7 +183,7 @@ class FBLogin extends PureComponent {
     );
   }
 
-  render() {
+  render () {
     return (
       <View>
         <Connect buttonType={this.props.signup ? 'signup' : 'login'} onLogin={this.onLogin} />

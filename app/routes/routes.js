@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { BackHandler, ToastAndroid, Platform } from 'react-native';
 import { AppNavigator } from '@routes/routeProvider';
-import {
-  createReduxBoundAddListener,
-} from 'react-navigation-redux-helpers';
+import { createReduxBoundAddListener } from 'react-navigation-redux-helpers';
 
 class Router extends Component {
   constructor(props) {
@@ -59,7 +57,7 @@ class Router extends Component {
   render() {
     const addListener = createReduxBoundAddListener('root');
     const { dispatch, nav } = this.props;
-    const navigation = addNavigationHelpers({
+    const navigation = ({
       dispatch,
       state: nav,
       addListener,

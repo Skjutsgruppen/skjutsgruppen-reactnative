@@ -25,18 +25,13 @@ const styles = StyleSheet.create({
 
 class Group extends PureComponent {
   componentWillMount() {
-    const { user, subscribeToNewGroup, setNoMessages, groups } = this.props;
+    const {
+      user, subscribeToNewGroup,
+    } = this.props;
 
-    if (groups.count < 1) setNoMessages('groups');
     if (user.id) {
       subscribeToNewGroup({ userId: user.id });
     }
-  }
-
-  componentWillReceiveProps() {
-    const { setNoMessages, groups } = this.props;
-
-    if (groups.count < 1) setNoMessages('groups');
   }
 
   loadMore = (onPress) => {
@@ -66,9 +61,7 @@ class Group extends PureComponent {
               return previousResult;
             }
 
-            const rows = previousResult.groups.rows.concat(
-              fetchMoreResult.groups.rows,
-            );
+            const rows = previousResult.groups.rows.concat(fetchMoreResult.groups.rows);
 
             return { groups: { ...previousResult.groups, ...{ rows } } };
           },
@@ -99,7 +92,6 @@ Group.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     loading: PropTypes.bool.isRequired,
   }).isRequired,
-  setNoMessages: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

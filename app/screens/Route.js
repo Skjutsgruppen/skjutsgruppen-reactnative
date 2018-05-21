@@ -100,7 +100,10 @@ class RouteMap extends PureComponent {
   }
 
   componentWillMount() {
-    const { navigation, group, trip, user } = this.props;
+    this.mounted = true;
+    const {
+      navigation, group, trip, user,
+    } = this.props;
     const { data, subscribeToLocationShared } = this.props.locationSharedToSpecificResource;
     const { __typename } = navigation.state.params.info;
     let info = {};
@@ -156,7 +159,8 @@ class RouteMap extends PureComponent {
     group,
     groupTrips,
     trip,
-    locationSharedToSpecificResource }) {
+    locationSharedToSpecificResource,
+  }) {
     const sharedLocations = locationSharedToSpecificResource.data ?
       locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
     const { __typename } = navigation.state.params.info;
@@ -203,6 +207,10 @@ class RouteMap extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onMarkerPress = (Trip) => {
     const { navigation } = this.props;
     navigation.navigate('TripDetail', { trip: Trip });
@@ -242,18 +250,22 @@ class RouteMap extends PureComponent {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.setState({
-          fetchingPosition: false,
-          myPosition: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            timestamp: position.timestamp,
-          },
-        });
-        this.gotoRegion([position.coords.longitude, position.coords.latitude]);
+        if (this.mounted) {
+          this.setState({
+            fetchingPosition: false,
+            myPosition: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              timestamp: position.timestamp,
+            },
+          });
+          this.gotoRegion([position.coords.longitude, position.coords.latitude]);
+        }
       },
       () => {
-        this.setState({ fetchingPosition: false });
+        if (this.mounted) {
+          this.setState({ fetchingPosition: false });
+        }
         Alert.alert('Sorry, could not track your location! Please check if your GPS is turned on.');
       },
       { timeout: 20000, maximumAge: 1000 },
@@ -379,9 +391,9 @@ class RouteMap extends PureComponent {
       visible={this.state.showTurnOnGpsModal}
       loading={false}
       onDeny={() => this.setState({ showTurnOnGpsModal: false })}
-      confirmLabel={'Open settings'}
+      confirmLabel="Open settings"
       onConfirm={() => this.openGpsSettings()}
-      message={'Your GPS is turned off.'}
+      message="Your GPS is turned off."
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )
@@ -419,15 +431,14 @@ class RouteMap extends PureComponent {
         latitude: myPosition.latitude,
         longitude: myPosition.longitude,
       };
-      markers.push(
-        <Marker
-          key={`${moment().unix()}`}
-          onPress={(e) => {
-            e.stopPropagation();
-          }}
-          coordinate={coordinate}
-          image={user.avatar}
-        />);
+      markers.push(<Marker
+        key={`${moment().unix()}`}
+        onPress={(e) => {
+          e.stopPropagation();
+        }}
+        coordinate={coordinate}
+        image={user.avatar}
+      />);
     }
 
     return markers;
@@ -494,7 +505,8 @@ class RouteMap extends PureComponent {
       waypoints,
       info,
       myPosition,
-      fetchingPosition } = this.state;
+      fetchingPosition,
+    } = this.state;
     const { __typename } = info;
     const { pressShareLocation } = navigation.state.params;
 
@@ -516,7 +528,7 @@ class RouteMap extends PureComponent {
           </TouchableHighlight>
         </View>
         <MapView
-          provider={'google'}
+          provider="google"
           initialRegion={initialRegion}
           style={styles.map}
           ref={(c) => { this.mapView = c; }}
@@ -603,13 +615,15 @@ const RenderGroupRouteMap = compose(
   withLocationSharedToSpecificResource,
   withGroup,
   withUpdateLocation,
-  withGroupTrips, connect(mapStateToProps))(RouteMap);
+  withGroupTrips, connect(mapStateToProps),
+)(RouteMap);
 
 const RenderTripRouteMap = compose(
   withLocationSharedToSpecificResource,
   withTrip,
   withUpdateLocation,
-  connect(mapStateToProps))(RouteMap);
+  connect(mapStateToProps),
+)(RouteMap);
 
 const Route = ({ navigation }) => {
   const { id, __typename } = navigation.state.params.info;

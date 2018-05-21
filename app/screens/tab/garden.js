@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { LoginManager } from 'react-native-fbsdk';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { compose } from 'react-apollo';
 
 import ProfileAction from '@components/profile/profileAction';
@@ -150,7 +150,7 @@ class Garden extends Component {
 
   reset = () => {
     const { navigation } = this.props;
-    const resetAction = NavigationActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],
     });
@@ -187,7 +187,7 @@ class Garden extends Component {
           />
           {!supporter &&
             <View>
-              <Package
+              {/* <Package
                 noBackgroud
                 elevation={0}
                 durationLabel={trans('profile.support_six_month')}
@@ -206,7 +206,7 @@ class Garden extends Component {
               />
               <HelpMore
                 supportSubscribe={this.onSupportSubscribe}
-              />
+              /> */}
               <HowItWorks />
             </View>
           }
@@ -227,7 +227,7 @@ class Garden extends Component {
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          {supporter &&
+          {supporter && false &&
             <ProfileAction
               label={trans('profile.your_support_of_the_garden')}
               onPress={() => this.redirect('YourSupport')}
@@ -238,7 +238,8 @@ class Garden extends Component {
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText
               color={Colors.text.blue}
-            >{trans('profile.log_out')}</AppText>
+            >{trans('profile.log_out')}
+            </AppText>
           </TouchableOpacity>
         </ScrollView>
         <ConfirmModal

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 
 import { withResetMute } from '@services/apollo/mute';
-import { getDate } from '@config';
+import { getDate, UcFirst } from '@config';
 import Date from '@components/date';
 import { Colors } from '@theme';
 
@@ -58,8 +58,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
-
 const renderPic = (photo) => {
   let profileImage = null;
 
@@ -73,11 +71,11 @@ const renderPic = (photo) => {
 const ActiveRideItem = ({ trip, resetMute, navigation }) => {
   let tripName = `${trip.TripStart.name ?
     trip.TripStart.name :
-    prettify(trip.direction)
+    UcFirst(trip.direction)
   } - ${
     trip.TripEnd.name ?
       trip.TripEnd.name :
-      prettify(trip.direction)
+      UcFirst(trip.direction)
   }`;
 
   if (tripName.length > 25) {

@@ -7,7 +7,6 @@ import ToolBar from '@components/utils/toolbar';
 import { RoundedButton, Avatar, Loading } from '@components/common';
 import { Colors } from '@theme';
 import { withReport } from '@services/apollo/report';
-import { propType } from 'graphql-anywhere/lib/src/utilities';
 import {
   FEEDABLE_TRIP,
   FEED_TYPE_OFFER,
@@ -93,7 +92,9 @@ class Report extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { description: '', sending: false, isReported: false, error: '' };
+    this.state = {
+ description: '', sending: false, isReported: false, error: '' 
+};
   }
 
   onReport = () => {
@@ -387,7 +388,7 @@ Report.propTypes = {
                 name: PropTypes.string,
               }),
               TripEnd: PropTypes.shape({
-                name: propType.string,
+                name: PropTypes.string,
               }),
               User: PropTypes.shape({
                 firstName: PropTypes.string,

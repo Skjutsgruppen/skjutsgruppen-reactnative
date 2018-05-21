@@ -11,7 +11,7 @@ target 'Skjutsgruppen' do
 
   rn_path = '../node_modules/react-native'
   rn_maps_path = '../node_modules/react-native-maps'
-  
+
 
   pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
   pod 'React', path: rn_path, subspecs: [
@@ -33,7 +33,7 @@ target 'Skjutsgruppen' do
   pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
   pod 'GLog', :podspec => "#{rn_path}/third-party-podspecs/GLog.podspec"
   pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
-  
+
   pod 'react-native-maps', path: rn_maps_path
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk/ios'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
@@ -50,6 +50,8 @@ target 'Skjutsgruppen' do
 
 #braintree
   pod 'BraintreeDropIn'
+# Add new pods below this line
+pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 end
 
 post_install do |installer|

@@ -114,7 +114,9 @@ class ShareLocation extends PureComponent {
 
   componentWillMount() {
     const { data } = this.props.locationSharedToSpecificResource;
-    const { detail, myPosition, pressShareLocation, currentLocation } = this.props;
+    const {
+      detail, myPosition, pressShareLocation, currentLocation,
+    } = this.props;
     const { __typename } = detail;
 
     if (pressShareLocation) currentLocation();
@@ -322,7 +324,8 @@ class ShareLocation extends PureComponent {
       stopTrackingLocation,
       myPosition,
       currentLocation,
-      fetchingPosition } = this.props;
+      fetchingPosition,
+    } = this.props;
     const { myLocation, shareLocationLoading } = this.state;
     const { __typename } = detail;
 

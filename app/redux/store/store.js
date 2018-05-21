@@ -7,9 +7,7 @@ import reducers from '@redux/reducers/reducers';
 import Apollo from '@services/apollo';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import {
-  createReactNavigationReduxMiddleware,
-} from 'react-navigation-redux-helpers';
+import { createReactNavigationReduxMiddleware } from 'react-navigation-redux-helpers';
 
 const NavMiddleware = createReactNavigationReduxMiddleware(
   'root',

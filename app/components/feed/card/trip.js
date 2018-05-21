@@ -91,7 +91,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring }) => {
+const Trip = ({
+  trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring,
+}) => {
   if (trip.isDeleted) {
     return null;
   }
@@ -138,10 +140,10 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                 <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                   {
                     trip.TripStart.name ||
-                      UcFirst(trip.direction)
+                    UcFirst(trip.direction)
                   } - {
                     trip.TripEnd.name ||
-                      UcFirst(trip.direction)
+                    UcFirst(trip.direction)
                   }
                 </AppText>
                 <AppText color={Colors.text.darkGray} style={{ marginTop: 6 }}>

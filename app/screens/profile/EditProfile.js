@@ -19,7 +19,7 @@ import { withUpdateProfile, withResendEmailVerification, withRegeneratePhoneVeri
 import { withSocialConnect } from '@services/apollo/social';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
@@ -130,7 +130,6 @@ class EditProfile extends Component {
       facebookLinked: false,
       twitterLinked: false,
       error: '',
-      success: '',
       totalFriends: null,
       newEmail: null,
       newPhoneNumber: null,
@@ -175,10 +174,14 @@ class EditProfile extends Component {
 
   componentWillReceiveProps({ data }) {
     const { loading, profile } = data;
-    const { email, phoneNumber, totalFriends, newEmail, newPhoneNumber } = profile;
+    const {
+      email, phoneNumber, totalFriends, newEmail, newPhoneNumber,
+    } = profile;
 
     if (!loading) {
-      this.setState({ email, phoneNumber, totalFriends, newEmail, newPhoneNumber });
+      this.setState({
+        email, phoneNumber, totalFriends, newEmail, newPhoneNumber,
+      });
     }
   }
 
@@ -244,12 +247,18 @@ class EditProfile extends Component {
         }
         const res = await updateProfile(postData);
         setUser(res.data.updateUser.User);
-        this.setState({ loading: false, firstNameLoading: false, lastNameLoading: false, error: '', success: getToast(['PROFILE_UPDATED']) });
+        this.setState({
+          loading: false, firstNameLoading: false, lastNameLoading: false, error: '', success: getToast(['PROFILE_UPDATED']),
+        });
       } catch (err) {
-        this.setState({ loading: false, firstNameLoading: false, lastNameLoading: false, error: getToast(err), success: '' });
+        this.setState({
+          loading: false, firstNameLoading: false, lastNameLoading: false, error: getToast(err), success: '',
+        });
       }
     } else {
-      this.setState({ loading: false, firstNameLoading: false, lastNameLoading: false, error: getToast(validation.errors), success: '' });
+      this.setState({
+        loading: false, firstNameLoading: false, lastNameLoading: false, error: getToast(validation.errors), success: '',
+      });
     }
   }
 
@@ -283,7 +292,7 @@ class EditProfile extends Component {
 
   reset = () => {
     const { navigation } = this.props;
-    const resetAction = NavigationActions.reset({
+    const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],
     });
@@ -312,7 +321,9 @@ class EditProfile extends Component {
     const { socialConnect, user, setUser } = this.props;
     try {
       this.setState({ loading: true });
-      const response = await socialConnect({ id: '', email: user.email, token: '', type: 'facebook' });
+      const response = await socialConnect({
+        id: '', email: user.email, token: '', type: 'facebook',
+      });
       setUser(response.data.connect.User);
       this.setState({ facebookLinked: false, loading: false });
     } catch (error) {
@@ -324,7 +335,9 @@ class EditProfile extends Component {
     const { socialConnect, user, setUser } = this.props;
     try {
       this.setState({ loading: true });
-      const response = await socialConnect({ id: '', email: user.email, token: '', secret: '', type: 'twitter' });
+      const response = await socialConnect({
+        id: '', email: user.email, token: '', secret: '', type: 'twitter',
+      });
       setUser(response.data.connect.User);
       this.setState({ twitterLinked: false, loading: false });
     } catch (error) {
@@ -418,7 +431,8 @@ class EditProfile extends Component {
       color={Colors.text.blue}
       style={styles.text}
       onPress={this.resendEmailVerification}
-    >Resend Verification</AppText>);
+    >Resend Verification
+    </AppText>);
   }
 
   renderPhoneVerificationButton = () => {
@@ -433,7 +447,8 @@ class EditProfile extends Component {
       color={Colors.text.blue}
       style={styles.text}
       onPress={() => navigation.navigate('ChangePhoneNumber', { verifyPreviousNumber: true })}
-    >{trans('profile.verify_phone_number')}</AppText>);
+    >{trans('profile.verify_phone_number')}
+    </AppText>);
   }
 
   renderFacebookConnect = () => {
@@ -465,7 +480,9 @@ class EditProfile extends Component {
   }
 
   renderInfoEdit = () => {
-    const { firstName, lastName, firstNameLoading, lastNameLoading } = this.state;
+    const {
+      firstName, lastName, firstNameLoading, lastNameLoading,
+    } = this.state;
 
     return (
       <View style={{ flex: 1, alignItems: 'flex-start' }}>
@@ -668,7 +685,8 @@ class EditProfile extends Component {
             <AppText
               color={Colors.text.red}
               style={styles.text}
-            >{trans('profile.delete_yourself_from_this_movement')}</AppText>
+            >{trans('profile.delete_yourself_from_this_movement')}
+            </AppText>
           </TouchableOpacity>
           {this.renderModal()}
         </ScrollView>

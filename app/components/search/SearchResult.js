@@ -21,13 +21,11 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
-import { getDate } from '@config';
+import { getDate, UcFirst } from '@config';
 import AppText from '@components/utils/texts/appText';
 import LoadMore from '@components/message/loadMore';
 
-const AnimatedSectionList = Animated.createAnimatedComponent(
-  SectionList,
-);
+const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -277,13 +275,11 @@ class SearchResult extends Component {
         publicTransportData = true;
       }
 
-      this.setState(
-        {
-          totalTrips: this.state.totalTrips + tripCount,
-          publicTransportData,
-          prevTrips: { ...searchAllTrips },
-        },
-      );
+      this.setState({
+        totalTrips: this.state.totalTrips + tripCount,
+        publicTransportData,
+        prevTrips: { ...searchAllTrips },
+      });
 
       let newSections = this.state.sections;
       const lastSection = newSections[newSections.length - 1];
@@ -362,7 +358,7 @@ class SearchResult extends Component {
           }
         });
 
-        if (!groupRepeated && this.state.groups) {
+        if (!groupRepeated && Object.keys(this.state.groups).length > 0) {
           if (groupIndex !== null) {
             newSections[groupIndex].data = newSections[groupIndex]
               .data.concat(this.state.groups.data);
@@ -396,7 +392,6 @@ class SearchResult extends Component {
         }
         this.setState({ remainingTrips: [] });
       }
-
 
       this.setState({ trips, sections: newSections });
     }
@@ -530,7 +525,9 @@ class SearchResult extends Component {
 
   shouldDisplayGroup = () => {
     const { dateSelected, searchAllTrips: { rows, count } } = this.props;
-    const { filters, displayGroup, groups, totalTrips } = this.state;
+    const {
+      filters, displayGroup, groups, totalTrips,
+    } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
 
     if (Object.keys(groups).length < 1 || !filters.includes(FEED_TYPE_GROUP)) {
@@ -612,7 +609,9 @@ class SearchResult extends Component {
 
   refetchTrips = async () => {
     const { filters } = this.state;
-    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj } = this.props;
+    const {
+      searchAllTrips, direction, dateSelected, dates, toObj, fromObj,
+    } = this.props;
     const newfilter = filters.filter(row => !(row === FEED_TYPE_GROUP));
     const publicTransportSelected = this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
     let customDate = dates;
@@ -643,25 +642,25 @@ class SearchResult extends Component {
           limit: this.getLimitValue(),
           offset: this.getOffsetValue(),
         });
-      });
+      },
+    );
   }
 
   refetchGroups = async () => {
     const { searchAllGroups, direction } = this.props;
 
-    await this.setState(
-      {
-        prevGroups: { rows: [] },
-        groups: {},
-        sections: [],
-        totalGroups: 0,
-      }, () => {
-        searchAllGroups.refetch({
-          offset: 0,
-          direction,
-          limit: 1,
-        });
+    await this.setState({
+      prevGroups: { rows: [] },
+      groups: {},
+      sections: [],
+      totalGroups: 0,
+    }, () => {
+      searchAllGroups.refetch({
+        offset: 0,
+        direction,
+        limit: 1,
       });
+    });
   }
 
   formatDates() {
@@ -680,12 +679,12 @@ class SearchResult extends Component {
     return newDate.join(', ');
   }
 
-  prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
-
   switchResultsStyle = style => this.setState({ resultsStyle: style });
 
   goBack = () => {
-    const { navigation, fromObj, toObj, direction, dateSelected } = this.props;
+    const {
+      navigation, fromObj, toObj, direction, dateSelected,
+    } = this.props;
     const { filters } = this.state;
     let { dates } = this.props;
 
@@ -693,7 +692,9 @@ class SearchResult extends Component {
       dates = [];
     }
 
-    navigation.navigate('Search', { filters, fromObj, toObj, dates, direction });
+    navigation.navigate('Search', {
+      filters, fromObj, toObj, dates, direction,
+    });
   }
 
   loadMoreGroups = () => {
@@ -830,7 +831,7 @@ class SearchResult extends Component {
     } = this.props;
     let { to } = this.props;
     const { sections, filters } = this.state;
-    const namePlace = `${fromObj.name || this.prettify(direction)} - ${toObj.name || this.prettify(direction)}`;
+    const namePlace = `${fromObj.name || UcFirst(direction)} - ${toObj.name || UcFirst(direction)}`;
 
     if (
       !searchAllTrips.loading && (searchAllTrips.rows.length < 1 ||
@@ -943,7 +944,8 @@ class SearchResult extends Component {
       bgColor={Colors.background.pink}
       onPress={() => this.redirect(redirectPage)}
       style={styles.button}
-    >{text}</RoundedButton>
+    >{text}
+    </RoundedButton>
   )
 
   renderShareModal() {
@@ -966,7 +968,9 @@ class SearchResult extends Component {
   }
 
   render() {
-    const { fromObj: from, toObj: to, direction, searchAllTrips } = this.props;
+    const {
+      fromObj: from, toObj: to, direction, searchAllTrips,
+    } = this.props;
     const { filters } = this.state;
 
     let y = 0;
@@ -984,7 +988,7 @@ class SearchResult extends Component {
               <FloatingBackButton onPress={this.goBack} />
               <TouchableWithoutFeedback onPress={this.goBack}>
                 <View style={styles.fromRow}>
-                  <Text>{from.name || this.prettify(direction) || trans('global.anywhere')}</Text>
+                  <Text>{from.name || UcFirst(direction) || trans('global.anywhere')}</Text>
                   <Text style={[styles.lightText, styles.bold]}>{trans('global.from')}</Text>
                 </View>
               </TouchableWithoutFeedback>
@@ -992,7 +996,7 @@ class SearchResult extends Component {
             <Animated.View style={[styles.animatedRow, { marginTop: y }]}>
               <TouchableWithoutFeedback onPress={this.goBack}>
                 <View style={styles.toRow}>
-                  <Text>{to.name || this.prettify(direction) || trans('global.anywhere')}</Text>
+                  <Text>{to.name || UcFirst(direction) || trans('global.anywhere')}</Text>
                   <Text style={[styles.lightText, styles.bold]}>{trans('global.to')}</Text>
                 </View>
               </TouchableWithoutFeedback>
@@ -1115,7 +1119,9 @@ SearchResult.defaultProps = {
   filters: [],
   direction: '',
   groupFilter: true,
-  searchAllTrips: { loading: false, networkStatus: 4, rows: [], count: 0 },
+  searchAllTrips: {
+    loading: false, networkStatus: 4, rows: [], count: 0,
+  },
 };
 
 export default compose(withShare, withNavigation)(SearchResult);

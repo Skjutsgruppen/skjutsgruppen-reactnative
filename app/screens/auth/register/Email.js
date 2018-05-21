@@ -14,7 +14,7 @@ import { compose } from 'react-apollo';
 import FBLogin from '@components/facebook/login';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 const styles = StyleSheet.create({
   garderIcon: {
@@ -60,16 +60,14 @@ class Email extends Component {
   componentWillMount() {
     const { auth, navigation } = this.props;
     if (auth.login) {
-      navigation.dispatch(
-        NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({
-              routeName: 'Tab',
-            }),
-          ],
-        }),
-      );
+      navigation.dispatch(StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }));
     }
   }
 
