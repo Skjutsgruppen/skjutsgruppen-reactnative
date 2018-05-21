@@ -1,9 +1,7 @@
-package com.skjutsgruppen;
+package nu.skjutsgruppen.skjutsgruppen;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
 import android.content.Intent;
 
 public class MainActivity extends ReactActivity {
