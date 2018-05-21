@@ -21,7 +21,7 @@ class Splash extends PureComponent {
 
   async componentWillMount() {
     try {
-      if (Platform === 'android') {
+      if (Platform === 'android' || Platform.OS === 'android') {
         await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
       }
     } catch (err) {

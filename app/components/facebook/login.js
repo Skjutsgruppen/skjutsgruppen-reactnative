@@ -60,6 +60,7 @@ class FBLogin extends PureComponent {
       );
 
       syncContacts();
+
       return;
     }
 
@@ -98,6 +99,7 @@ class FBLogin extends PureComponent {
       token: response.data.connect.token,
       user: response.data.connect.User,
     });
+
     await FCM.getFCMToken()
       .then(appToken => storeAppToken(appToken, getDeviceId()));
 
@@ -111,6 +113,7 @@ class FBLogin extends PureComponent {
         ],
       }),
     );
+
     syncContacts();
   }
 
