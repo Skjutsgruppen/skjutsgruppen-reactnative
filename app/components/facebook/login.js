@@ -63,7 +63,7 @@ class FBLogin extends PureComponent {
 
       return;
     }
-
+    
     if (fb.hasEmail) {
       this.setState({ showModal: false });
 
@@ -147,7 +147,7 @@ class FBLogin extends PureComponent {
 
       navigation.replace('EmailVerified');
     } catch (error) {
-      console.warn(error, error.graphQLErrors[0].code);
+      console.warn(error);
     }
   }
 
