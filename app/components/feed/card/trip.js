@@ -9,6 +9,7 @@ import { FEEDABLE_TRIP, FEED_TYPE_OFFER, FEED_TYPE_WANTED, FLEXIBILITY_EARLIER_T
 import TouchableHighlight from '@components/touchableHighlight';
 import LinearGradient from 'react-native-linear-gradient';
 import { AppText } from '@components/utils/texts';
+import { UcFirst } from '@config';
 
 const cardHeight = 484;
 const imageHeight = 230;
@@ -90,8 +91,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
-
 const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring }) => {
   if (trip.isDeleted) {
     return null;
@@ -139,10 +138,10 @@ const Trip = ({ trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring
                 <AppText color={Colors.text.darkGray} style={[styles.text, styles.lightText]}>
                   {
                     trip.TripStart.name ||
-                      prettify(trip.direction)
+                      UcFirst(trip.direction)
                   } - {
                     trip.TripEnd.name ||
-                      prettify(trip.direction)
+                      UcFirst(trip.direction)
                   }
                 </AppText>
                 <AppText color={Colors.text.darkGray} style={{ marginTop: 6 }}>

@@ -81,7 +81,7 @@ class FacebookConnect extends PureComponent {
                 const api = `https://graph.facebook.com/v2.3/${data.userID}?fields=picture,first_name,last_name,email,name&access_token=${data.accessToken}`;
                 const response = await fetch(api);
                 fbUser.profile = await response.json();
-                this.setState({ fbUser }, this.setFBUser);
+                this.setState({ fbUser, showModal: false }, this.setFBUser);
               });
           }
         });
