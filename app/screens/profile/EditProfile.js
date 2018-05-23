@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard } from 'react-native';
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
@@ -271,7 +271,7 @@ class EditProfile extends Component {
         .then(() => this.setConfirmModalVisibility(false))
         .then(async () => {
           await removeAppToken(getDeviceId());
-          await FCM.cancelAllLocalNotifications();
+          await firebase.notifications().cancelAllNotifications();
           logout()
             .then(() => LoginManager.logOut())
             .then(() => this.reset())

@@ -69,3 +69,4 @@ android/app/src/main/res/values/com_crashlytics_export_strings.xml
 
 create.js
 ios/skjutsgruppen.xcworkspace/xcshareddata/
+ios/Podfile.lock

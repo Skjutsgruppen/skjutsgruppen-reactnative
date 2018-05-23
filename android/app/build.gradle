@@ -175,11 +175,14 @@ repositories {
 }
 
 dependencies {
+    compile(project(':react-native-firebase')) {
+        transitive = false
+    }
     implementation project(':tipsi-twitter')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-i18n')
-    implementation project(':react-native-fcm')
+    implementation project(':react-native-firebase')
     implementation project(':react-native-facebook-login')
     implementation project(':react-native-contacts')
     implementation project(':react-native-config')
@@ -201,7 +204,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:15.0.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.0'
-    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation "com.google.firebase:firebase-messaging:15.0.2"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     // implementation "com.android.support:appcompat-v7:27.1.0"
