@@ -7,7 +7,7 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import WelcomeInfo from '@components/auth/welcomeInfo';
 import AppLoading from '@components/appLoading';
-import FCM, { FCMEvent } from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 
 class Splash extends PureComponent {
   static navigationOptions = {
@@ -66,29 +66,16 @@ class Splash extends PureComponent {
     }
     await setLogin({ user, token });
 
-    const notification = await FCM.getInitialNotification();
-
-    FCM.on(FCMEvent.Notification, async (notif) => {
-      if (notif.opened_from_tray) {
-        let screen = '';
-        let id = '';
-
-        if (Platform.OS === 'android' && notif.fcm && notif.fcm.action) {
-          const { action } = notif.fcm;
-          const routes = action.split('/');
-          screen = routes[0];
-          id = parseInt(routes[1], 0);
-        } else {
-          screen = notif.screen;
-          id = notif.id;
-        }
-        this.redirect(screen, id, 'navigate');
-      }
+    firebase.notifications().onNotificationOpened((notif) => {
+      const { notification: { _data: { id, screen } } } = notif;
+      this.redirect(screen, id, 'navigate');
     });
 
-    if (notification && notification.screen && notification.id) {
-      const id = parseInt(notification.id, 0);
-      this.redirect(notification.screen, id, 'replace');
+    const initialNotification = await firebase.notifications().getInitialNotification();
+
+    if (initialNotification) {
+      const { notification: { _data: { id, screen } } } = initialNotification;
+      this.redirect(screen, id, 'replace');
     } else {
       navigation.replace('Tab');
     }

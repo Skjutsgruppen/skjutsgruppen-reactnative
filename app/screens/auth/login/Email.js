@@ -3,7 +3,7 @@ import { View, StyleSheet, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin } from '@services/apollo/auth';
@@ -86,7 +86,7 @@ class Login extends Component {
         } else {
           setLogin({ token, user: User })
             .then(async () => {
-              await FCM.getFCMToken()
+              await firebase.messaging().getToken()
                 .then(appToken => storeAppToken(appToken, getDeviceId()));
 
               if (!User.agreementRead) {

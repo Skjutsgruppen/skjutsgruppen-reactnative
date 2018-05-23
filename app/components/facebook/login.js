@@ -5,7 +5,7 @@ import { userRegister, withUpdateProfile } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/facebookConnect';
@@ -45,7 +45,7 @@ class FBLogin extends PureComponent {
 
     if (fb.hasID) {
       await setLogin(fb.userById);
-      await FCM.getFCMToken()
+      await firebase.messaging().getToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
 
       navigation.dispatch(
@@ -100,7 +100,7 @@ class FBLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
-    await FCM.getFCMToken()
+    firebase.messaging().getToken()
       .then(appToken => storeAppToken(appToken, getDeviceId()));
 
     navigation.dispatch(
