@@ -30,5 +30,9 @@
   "your_active_rides": "se_YOUR ACTIVE RIDES",
   "old": "se_OLD",
   "new": "se_NEW",
-  "sharing_your_location": "se_SHARING YOUR LOCATION"
+  "sharing_your_location": "se_ SHARING YOUR LOCATION",
+  "make_an_experience": "se_ Make an experience",
+  "share_your_location": "se_ Share your location",
+  "welcome_to_skjutsgruppen": "se_ Welcome to Skjutsgruppen",
+  "tap_here_to_add_a_ride": "se_ Tap here to add a ride"
 }

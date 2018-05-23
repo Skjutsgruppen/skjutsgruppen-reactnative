@@ -41,19 +41,12 @@ const styles = StyleSheet.create({
 
 class NewNotification extends PureComponent {
   componentWillMount() {
-    const { subscribeToNotification, user, filters, notifications, setNoMessages } = this.props;
+    const { subscribeToNotification, user, filters, notifications } = this.props;
 
-    if (notifications.count < 1) setNoMessages(filters);
     if (filters === 'new') {
       subscribeToNotification({ userId: user.id });
       notifications.startPolling(15000);
     }
-  }
-
-  componentWillReceiveProps() {
-    const { setNoMessages, notifications, filters } = this.props;
-
-    if (notifications.count < 1) setNoMessages(filters);
   }
 
   loadMore = (onPress) => {
@@ -89,9 +82,8 @@ class NewNotification extends PureComponent {
               return previousResult;
             }
 
-            const rows = previousResult.notifications.rows.concat(
-              fetchMoreResult.notifications.rows,
-            );
+            const rows = previousResult.notifications.rows
+              .concat(fetchMoreResult.notifications.rows);
 
             return { notifications: { ...previousResult.notifications, ...{ rows } } };
           },
@@ -124,7 +116,6 @@ NewNotification.propTypes = {
     count: PropTypes.numeric,
     error: PropTypes.object,
   }).isRequired,
-  setNoMessages: PropTypes.func.isRequired,
   subscribeToNotification: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.numeric,

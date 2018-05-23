@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, ScrollView, Image, TouchableOpacity, View, Linking } from 'react-native';
 import FCM from 'react-native-fcm';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
@@ -17,7 +17,7 @@ import AuthAction from '@redux/actions/auth';
 import { withRemoveAppToken, withAccount } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
-import { AppText } from '@components/utils/texts';
+import { AppText, Title } from '@components/utils/texts';
 import Package from '@components/garden/subscriptionPackage';
 import Header from '@components/garden/header';
 import HelpMore from '@components/garden/helpMore';
@@ -28,6 +28,7 @@ import { showPayment } from '@services/braintree/braintreePayment';
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
 import ConfirmModal from '@components/common/confirmModal';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   curves: {
@@ -57,6 +58,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 36,
     paddingHorizontal: 20,
+  },
+  linkContent: {
+    padding: 30,
+    marginBottom: 32,
+  },
+  miniDivider: {
+    height: 1,
+    width: 64,
+    backgroundColor: Colors.text.lightGray,
+    marginTop: 24,
+    marginBottom: 26,
   },
 });
 
@@ -163,6 +175,16 @@ class Garden extends Component {
     navigation.navigate(path);
   }
 
+  openLink = (link) => {
+    Linking.canOpenURL(link).then((supported) => {
+      if (supported) {
+        Linking.openURL(link);
+      } else {
+        console.warn('Cannot open given URL.');
+      }
+    });
+  };
+
   render() {
     const { data } = this.props;
     const { subscribing, showConfirmModal, alertMessage } = this.state;
@@ -170,10 +192,15 @@ class Garden extends Component {
     if (!data.profile) return null;
 
     const supporter = data.profile.isSupporter || false;
+    // const headingLabel = supporter ? trans('profile.you_are_awesome')
+    //   : trans('profile.this_app_is_a_self_sustaining_garden');
+    // const infoLabel = supporter ? trans('profile.right_now_you_support')
+    //   : trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
+
     const headingLabel = supporter ? trans('profile.you_are_awesome')
-      : trans('profile.this_app_is_a_self_sustaining_garden');
+      : trans('profile.this_app_is_soon_a_self_sustaining_garden');
     const infoLabel = supporter ? trans('profile.right_now_you_support')
-      : trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
+      : trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
 
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
@@ -185,7 +212,32 @@ class Garden extends Component {
             infoLabel={infoLabel}
             user={data.profile}
           />
-          {!supporter &&
+          <View style={styles.linkContent}>
+            <TouchableHighlight onPress={() => this.openLink(trans('feed.trello_url'))}>
+              <AppText
+                size={26}
+                fontVariation="semibold"
+                color={Colors.text.blue}
+              >
+                {trans('profile.go_to_trello')}
+              </AppText>
+            </TouchableHighlight>
+            <View style={styles.miniDivider} />
+            <TouchableHighlight onPress={() => this.openLink(trans('feed.github_url'))}>
+              <AppText
+                fontVariation="semibold"
+                size={26}
+                color={Colors.text.blue}
+                style={{ marginBottom: 48 }}
+              >
+                {trans('profile.go_to_github')}
+              </AppText>
+            </TouchableHighlight>
+            <Title size={23} color={Colors.text.gray} style={{ lineHeight: 36 }}>
+              {trans('profile.we_are_currently_also_building')}
+            </Title>
+          </View>
+          {/* {!supporter &&
             <View>
               <Package
                 noBackgroud
@@ -210,7 +262,7 @@ class Garden extends Component {
               <HowItWorks />
             </View>
           }
-          <Costs supporter={supporter} showCostTitle={!supporter} />
+          <Costs supporter={supporter} showCostTitle={!supporter} /> */}
           <ProfileAction
             title={trans('profile.we_are_open_source')}
             label={trans('profile.help_make_the_app_better')}
@@ -227,12 +279,12 @@ class Garden extends Component {
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          {supporter &&
+          {/* {supporter &&
             <ProfileAction
               label={trans('profile.your_support_of_the_garden')}
               onPress={() => this.redirect('YourSupport')}
             />
-          }
+          } */}
           <ProfileAction onPress={() => this.redirect('Settings')} label={trans('profile.settings')} />
           <ProfileAction label={trans('profile.participant_agreement')} />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
