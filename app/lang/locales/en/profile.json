@@ -1,6 +1,6 @@
 {
   "self_sustaining_garden": "Self-sustaining garden",
-  "this_app_is_a_self_sustaining_garden": "This app is an self-sustaining garden",
+  "this_app_is_a_self_sustaining_garden": "This app is a self-sustaining garden.",
   "you_are_awesome": "You are awesome!",
   "right_now_you_support": "Right now you and other participants support:",
   "all_of_us_who_use_the_app_helps_to_work_with_money": "All of us who use the app helps the app to work with money and/or knowledge.",
@@ -121,5 +121,10 @@
   "of_this_support_and_have_not_been_auto_renewed_yet": "of this support and have not been auto renewed yet.",
   "stop_auto_renewal": "Stop auto renewal",
   "subscribe_failed": "Subscribe failed.",
-  "auto_renewal_canceled": "Auto renewal cancelled"
+  "auto_renewal_canceled": "Auto renewal cancelled",
+  "go_to_trello": "Go to Trello",
+  "go_to_github": "Go to Github",
+  "this_app_is_soon_a_self_sustaining_garden": "This app soon a self-sustaining garden.",
+  "as_you_can_see_all_of_are_right_now_co_creating": "As you can see all of are right now co-creating this app. If you find something wrong you can add this to our Trello and you can also help improve the code on our Github",
+  "we_are_currently_also_building": "We are currently also building a feature where you can help the movement with the money we need to keep this app running. More in the next update of the app!"
 }
