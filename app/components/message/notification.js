@@ -84,7 +84,8 @@ class NewNotification extends PureComponent {
               return previousResult;
             }
 
-            const rows = previousResult.notifications.rows.concat(fetchMoreResult.notifications.rows);
+            const rows = previousResult.notifications.rows
+              .concat(fetchMoreResult.notifications.rows);
 
             return { notifications: { ...previousResult.notifications, ...{ rows } } };
           },
