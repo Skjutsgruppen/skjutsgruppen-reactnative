@@ -3,7 +3,7 @@ import { View, Alert, Modal, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withNavigation, NavigationActions } from 'react-navigation';
@@ -44,8 +44,8 @@ class TwitterLogin extends PureComponent {
 
     if (twitter.hasID) {
       await setLogin(twitter.userById);
-      await FCM.getFCMToken()
-        .then(token => storeAppToken(token, getDeviceId()));
+      await firebase.messaging().getToken()
+        .then(appToken => storeAppToken(appToken, getDeviceId()));
 
       navigation.dispatch(
         NavigationActions.reset({
@@ -99,8 +99,8 @@ class TwitterLogin extends PureComponent {
       user: response.data.connect.User,
     });
 
-    await FCM.getFCMToken()
-      .then(token => storeAppToken(token, getDeviceId()));
+    await firebase.messaging().getToken()
+      .then(appToken => storeAppToken(appToken, getDeviceId()));
 
     navigation.dispatch(
       NavigationActions.reset({
