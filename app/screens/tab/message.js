@@ -101,14 +101,6 @@ class Message extends Component {
   constructor(props) {
     super(props);
     this.scrollView = null;
-
-    this.state = {
-      hasSharedLocations: true,
-      hasNewMessages: true,
-      hasActiveRides: true,
-      hasGroups: true,
-      hasOldMessages: true,
-    };
   }
 
   componentWillMount() {
@@ -119,34 +111,6 @@ class Message extends Component {
 
   shouldComponentUpdate() {
     return true;
-  }
-
-  setNoMessages = (type) => {
-    if (type === 'sharedLocation') {
-      this.setState({ hasSharedLocations: false });
-    }
-    if (type === 'new') {
-      this.setState({ hasNewMessages: false });
-    }
-    if (type === 'old') {
-      this.setState({ hasOldMessages: false });
-    }
-    if (type === 'groups') {
-      this.setState({ hasGroups: false });
-    }
-    if (type === 'rides') {
-      this.setState({ hasActiveRides: false });
-    }
-  }
-
-  hasAnyMessage = () => {
-    const {
-      hasActiveRides,
-      hasNewMessages,
-      hasOldMessages,
-      hasGroups,
-    } = this.state;
-    return hasActiveRides || hasNewMessages || hasOldMessages || hasGroups;
   }
 
   scrollToTop = () => {
@@ -161,22 +125,13 @@ class Message extends Component {
     }
   }
 
-  renderNoMessages = () => (
-    <View style={styles.noMessage}>
-      <Image source={IconCycle} />
-      <AppText centered color={Colors.text.gray} style={styles.noMessageText}>
-        {trans('message.nothing_here_yet')}
-      </AppText>
-    </View>
-  )
-
   renderMessages = () => (
     <View style={styles.content}>
-      <SharedLocation setNoMessages={this.setNoMessages} />
-      <Notification filters="new" setNoMessages={this.setNoMessages} />
-      <Ride setNoMessages={this.setNoMessages} />
-      <Group setNoMessages={this.setNoMessages} />
-      <Notification filters="old" setNoMessages={this.setNoMessages} />
+      <SharedLocation />
+      <Notification filters="new" />
+      <Ride />
+      <Group />
+      <Notification filters="old" />
     </View>
   )
 
@@ -201,10 +156,7 @@ class Message extends Component {
               />
             </View>
           </LinearGradient>
-          {
-            !this.hasAnyMessage() ? this.renderNoMessages()
-              : this.renderMessages()
-          }
+          {this.renderMessages()}
         </ScrollView>
       </Wrapper>
     );
