@@ -29,19 +29,9 @@ const styles = StyleSheet.create({
 
 class SharedLocation extends Component {
   componentWillMount() {
-    const { locationSharedToAllResources, setNoMessages } = this.props;
-
-    if (locationSharedToAllResources.count < 1) setNoMessages('sharedLocation');
-
     this.loadInterval = setInterval(() => {
       updateNotificationSharedLocation();
     }, 60000);
-  }
-
-  componentWillReceiveProps() {
-    const { locationSharedToAllResources, setNoMessages } = this.props;
-
-    if (locationSharedToAllResources.count < 1) setNoMessages('sharedLocation');
   }
 
   componentWillUnmount() {
@@ -111,7 +101,6 @@ class SharedLocation extends Component {
 
 SharedLocation.propTypes = {
   locationSharedToAllResources: PropTypes.shape().isRequired,
-  setNoMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
