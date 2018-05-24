@@ -24,7 +24,7 @@ const ProfileAction = ({ title, label, icon, onPress }) => (
   <View style={styles.borderBottom}>
     <TouchableHighlight onPress={onPress}>
       <View style={styles.action}>
-        <View>
+        <View style={{ flex: 1, marginRight: 16 }}>
           {title !== '' && <AppText>{title}</AppText>}
           <AppText color={Colors.text.blue}>{label}</AppText>
         </View>
