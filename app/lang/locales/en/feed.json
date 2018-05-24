@@ -19,5 +19,13 @@
   "no_rides_have_been_created_yet": "No rides have been created yet.",
   "no_experiences_published_yet": "No experiences published yet.",
   "no_rides_yet": "No rides yet.",
-  "no_news_yet": "No news yet."
+  "no_news_yet": "No news yet.",
+  "cocreate_this_app": "Co-create this app!",
+  "found_something_wrong": "Found something wrong?",
+  "add_what_you_found_on_our_trello": "Add what you found on our Trello",
+  "improve_the_code": "Improve the code",
+  "contribute_to_our_open_source_code": "Contribute to our open source code",
+  "start_using_the_app": "Start using the app",
+  "trello_url": "http://bit.ly/skjts",
+  "github_url": "https://github.com/skjutsgruppen"
 }
