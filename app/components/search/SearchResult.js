@@ -362,7 +362,7 @@ class SearchResult extends Component {
           }
         });
 
-        if (!groupRepeated && this.state.groups) {
+        if (!groupRepeated && Object.keys(this.state.groups).length > 0) {
           if (groupIndex !== null) {
             newSections[groupIndex].data = newSections[groupIndex]
               .data.concat(this.state.groups.data);
