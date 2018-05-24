@@ -6,7 +6,6 @@ import { RoundedButton } from '@components/common';
 import { AppText, Title } from '@components/utils/texts';
 import StepsHeading from '@components/onBoarding/stepsHeading';
 import StepsTitle from '@components/onBoarding/stepsTitle';
-import BackButton from '@components/onBoarding/backButton';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -139,7 +138,6 @@ class SendMessage extends Component {
           >
             {trans('onboarding.send_text_message')}
           </RoundedButton>
-          <BackButton leftAligned />
         </View>
       </ScrollView>
     );
