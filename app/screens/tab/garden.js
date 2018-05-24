@@ -28,7 +28,6 @@ import { showPayment } from '@services/braintree/braintreePayment';
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
 import ConfirmModal from '@components/common/confirmModal';
-import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   curves: {
@@ -213,7 +212,7 @@ class Garden extends Component {
             user={data.profile}
           />
           <View style={styles.linkContent}>
-            <TouchableHighlight onPress={() => this.openLink(trans('feed.trello_url'))}>
+            <TouchableOpacity onPress={() => this.openLink(trans('feed.trello_url'))}>
               <AppText
                 size={26}
                 fontVariation="semibold"
@@ -221,9 +220,9 @@ class Garden extends Component {
               >
                 {trans('profile.go_to_trello')}
               </AppText>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <View style={styles.miniDivider} />
-            <TouchableHighlight onPress={() => this.openLink(trans('feed.github_url'))}>
+            <TouchableOpacity onPress={() => this.openLink(trans('feed.github_url'))}>
               <AppText
                 fontVariation="semibold"
                 size={26}
@@ -232,7 +231,7 @@ class Garden extends Component {
               >
                 {trans('profile.go_to_github')}
               </AppText>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <Title size={23} color={Colors.text.gray} style={{ lineHeight: 36 }}>
               {trans('profile.we_are_currently_also_building')}
             </Title>

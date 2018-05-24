@@ -9,9 +9,8 @@ import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: 20,
+    paddingVertical: 16,
     paddingHorizontal: 20,
-    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

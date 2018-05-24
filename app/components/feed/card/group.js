@@ -48,9 +48,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   comment: {
-    flex: 1,
-    flexBasis: 48,
     minHeight: 48,
+    maxHeight: 50,
     paddingTop: 2,
     paddingHorizontal: 18,
     marginTop: 'auto',
@@ -78,7 +77,7 @@ class Group extends Component {
 
   onLayout = (e) => {
     const height = e.nativeEvent.layout.height;
-    const showOverlay = height > 72;
+    const showOverlay = height > 48;
 
     this.setState({
       showOverlay,
@@ -144,7 +143,14 @@ class Group extends Component {
                   }
                 </View>
               </View>
-              <View style={styles.comment} onLayout={this.onLayout}>
+              <View
+                style={[
+                  styles.comment,
+                  this.state.showOverlay ? { minHeight: 48 } : { minHeight: 24 },
+                  typeof onSharePress === 'function' ? {} : { marginBottom: 20 },
+                ]}
+                onLayout={this.onLayout}
+              >
                 <AppText style={{ lineHeight: 24 }}>{group.description}</AppText>
                 {
                   this.state.showOverlay && <LinearGradient
