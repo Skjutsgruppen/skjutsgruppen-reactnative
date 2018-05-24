@@ -11,6 +11,7 @@ import interval from '@lang/locales/se/interval.json';
 import experience from '@lang/locales/se/experience.json';
 import share from '@lang/locales/se/share.json';
 import suggestion from '@lang/locales/se/suggestion.json';
+import onboarding from '@lang/locales/se/onboarding.json';
 
 export {
   feed,
@@ -26,4 +27,5 @@ export {
   interval,
   share,
   suggestion,
+  onboarding,
 };

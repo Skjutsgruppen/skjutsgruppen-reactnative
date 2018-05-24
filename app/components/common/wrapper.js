@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 
@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const Wrapper = ({ children, bgColor }) => (
-  <View style={[styles.mainView, { backgroundColor: bgColor }]}>
+const Wrapper = ({ children, bgColor, style, ...props }) => (
+  <View style={[styles.mainView, style, { backgroundColor: bgColor }]} {...props}>
     {children}
   </View>
 );
@@ -18,10 +18,12 @@ const Wrapper = ({ children, bgColor }) => (
 Wrapper.propTypes = {
   children: PropTypes.node.isRequired,
   bgColor: PropTypes.string,
+  style: ViewPropTypes.style,
 };
 
 Wrapper.defaultProps = {
   bgColor: Colors.background.mutedBlue,
+  style: {},
 };
 
 export default Wrapper;

@@ -462,14 +462,14 @@ class Share extends Component {
           onPress={() => this.setOption('clipboard', 'copy_to_clip')}
           color="blue"
         />
-        {this.hasFacebook() &&
+        {/* {this.hasFacebook() &&
           <ShareItem
             imageSource={require('@assets/icons/ic_facebook.png')}
             selected={this.hasOption('social', 'Facebook')}
             label={trans('global.your_fb_timeline')}
             onPress={() => this.setOption('social', 'Facebook')}
             color="blue"
-          />}
+          />} */}
         {this.hasTwitter() &&
           <ShareItem
             imageSource={require('@assets/icons/ic_twitter.png')}

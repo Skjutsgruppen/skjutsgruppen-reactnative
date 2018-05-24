@@ -28,6 +28,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'center',
   },
+  textWrapper: {
+    minWidth: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 4,
+  },
   text: {
     fontSize: 14,
     color: '#333',
@@ -121,10 +127,11 @@ class Picker extends PureComponent {
   }
 
   render() {
+    const { height } = this.props;
     return (
       <View style={styles.wrapper}>
         {this.modal()}
-        <TouchableOpacity style={{ backgroundColor: '#ccc', paddingLeft: 10, paddingTop: 10, height: 40, width: 60, marginTop: 15 }} onPress={this.showModal}>
+        <TouchableOpacity style={[styles.textWrapper, { height }]} onPress={this.showModal}>
           <AppText>{this.state.selected}</AppText>
         </TouchableOpacity>
       </View>
@@ -136,10 +143,12 @@ Picker.propTypes = {
   list: PropTypes.arrayOf(PropTypes.object).isRequired,
   defaultValue: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  height: PropTypes.number,
 };
 
 Picker.defaultProps = {
   defaultValue: '',
+  height: 80,
 };
 
 export default Picker;

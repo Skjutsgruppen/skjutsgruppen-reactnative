@@ -152,6 +152,8 @@ class TwitterLogin extends PureComponent {
         twitterId: profile.id_str,
         twitterToken,
         twitterSecret,
+        agreementRead: true,
+        agreementAccepted: true,
       });
 
       await setRegister({
