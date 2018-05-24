@@ -21,5 +21,13 @@
   "no_rides_yet": "se_ No rides yet.",
   "no_news_yet": "se_ No news yet.",
   "suggest_ride": "se_SUGGEST A RIDE",
-  "no_suggested_ride": "se_No any suggestion found for the trip."
+  "no_suggested_ride": "se_No any suggestion found for the trip.",
+  "cocreate_this_app": "se_ Co-create this app!",
+  "found_something_wrong": "se_ Found something wrong?",
+  "add_what_you_found_on_our_trello": "se_ Add what you found on our Trello",
+  "improve_the_code": "se_ Improve the code",
+  "contribute_to_our_open_source_code": "se_ Contribute to our open source code",
+  "start_using_the_app": "se_ Start using the app",
+  "trello_url": "http://bit.ly/skjts",
+  "github_url": "https://github.com/skjutsgruppen"
 }
