@@ -27,6 +27,8 @@ mutation login($username: String!, $password:String!) {
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -64,6 +66,8 @@ mutation register($email: String!, $verified:Boolean) {
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -101,6 +105,8 @@ mutation verifyEmail($email:String!, $code:String!) {
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -136,6 +142,8 @@ mutation updateUser($firstName:String,
   $twitterId: String,
   $twitterToken: String,
   $twitterSecret: String,
+  $agreementRead: Boolean,
+  $agreementAccepted: Boolean
 ) {
   updateUser(input:{
     firstName:$firstName,
@@ -148,7 +156,9 @@ mutation updateUser($firstName:String,
     fbToken: $fbToken,
     twitterId: $twitterId,
     twitterToken: $twitterToken,
-    twitterSecret: $twitterSecret
+    twitterSecret: $twitterSecret,
+    agreementRead: $agreementRead,
+    agreementAccepted: $agreementAccepted
   }) {
     token,
     User {
@@ -173,6 +183,8 @@ mutation updateUser($firstName:String,
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -192,6 +204,8 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
       twitterId,
       twitterToken,
       twitterSecret,
+      agreementRead,
+      agreementAccepted,
     }) =>
       mutate({
         variables: {
@@ -206,6 +220,8 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
           twitterId,
           twitterToken,
           twitterSecret,
+          agreementRead,
+          agreementAccepted,
         },
       }),
   }),
@@ -238,6 +254,8 @@ mutation {
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 } 
@@ -301,6 +319,8 @@ mutation changeEmail($email: String!){
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -340,6 +360,8 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }`;

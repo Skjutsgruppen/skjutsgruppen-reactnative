@@ -3,7 +3,7 @@ import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, Modal } from 'react-native';
 import TwitterAuth from 'tipsi-twitter';
-import { CustomButton, Loading } from '@components/common';
+import { RoundedButton, Loading } from '@components/common';
 import twitter from 'react-native-twitter';
 import { withGetUserByEmail, withGetUserByTwitterId } from '@services/apollo/social';
 import { compose } from 'react-apollo';
@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.background.fullWhite,
     elevation: 5,
+  },
+  button: {
+    width: 200,
+    marginVertical: 20,
   },
 });
 
@@ -119,21 +123,14 @@ class TwitterConnect extends PureComponent {
 
     if (buttonType === 'login') {
       return (
-        <CustomButton
+        <RoundedButton
           onPress={this.handleTwitterLogin}
-          bgColor="#1da1f2"
+          style={styles.button}
+          bgColor={Colors.background.twitter}
+          icon={require('@assets/icons/ic_twitter_white.png')}
         >
-          Sign in with Twitter
-        </CustomButton>);
-    }
-
-    if (buttonType === 'signup') {
-      return (<CustomButton
-        onPress={this.handleTwitterLogin}
-        bgColor="#1da1f2"
-      >
-        Sign up with Twitter
-      </CustomButton>);
+          Twitter
+        </RoundedButton>);
     }
 
     if (buttonType === 'link') {

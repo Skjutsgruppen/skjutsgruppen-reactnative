@@ -17,11 +17,17 @@ import ExploreGroup from '@screens/group/ExploreGroup';
 import GroupsInCounty from '@screens/group/GroupsInCounty';
 import SharedTrip from '@screens/group/SharedTrip';
 
-import OnBoardingFirst from '@screens/auth/onboarding/first';
-import OnBoardingSecond from '@screens/auth/onboarding/second';
-import OnBoardingThird from '@screens/auth/onboarding/third';
-import OnBoardingFourth from '@screens/auth/onboarding/fourth';
-import OnBoardingFifth from '@screens/auth/onboarding/fifth';
+import Welcome from '@screens/auth/welcome/Welcome';
+import WelcomeTwo from '@screens/auth/welcome/WelcomeTwo';
+import Boarding from '@screens/auth/boarding/Boarding';
+import Onboarding from '@screens/auth/onboarding/new/Onboarding';
+import Agreement from '@screens/auth/login/Agreement';
+import Registration from '@screens/auth/login/Registration';
+// import OnBoardingFirst from '@screens/auth/onboarding/first';
+// import OnBoardingSecond from '@screens/auth/onboarding/second';
+// import OnBoardingThird from '@screens/auth/onboarding/third';
+// import OnBoardingFourth from '@screens/auth/onboarding/fourth';
+// import OnBoardingFifth from '@screens/auth/onboarding/fifth';
 
 import RegisterMethod from '@screens/auth/register/Method';
 import RegisterViaEmail from '@screens/auth/register/Email';
@@ -142,11 +148,17 @@ export const Routes = {
   GroupsInCounty: { screen: GroupsInCounty },
   SearchResult: { screen: SearchResult },
 
-  OnBoardingFirst: { screen: OnBoardingFirst },
-  OnBoardingSecond: { screen: OnBoardingSecond },
-  OnBoardingThird: { screen: OnBoardingThird },
-  OnBoardingFourth: { screen: OnBoardingFourth },
-  OnBoardingFifth: { screen: OnBoardingFifth },
+  Welcome: { screen: Welcome },
+  WelcomeTwo: { screen: WelcomeTwo },
+  Boarding: { screen: Boarding },
+  Onboarding: { screen: Onboarding },
+  Agreement: { screen: Agreement },
+  Registration: { screen: Registration },
+  // OnBoardingFirst: { screen: OnBoardingFirst },
+  // OnBoardingSecond: { screen: OnBoardingSecond },
+  // OnBoardingThird: { screen: OnBoardingThird },
+  // OnBoardingFourth: { screen: OnBoardingFourth },
+  // OnBoardingFifth: { screen: OnBoardingFifth },
 
   RegisterMethod: { screen: RegisterMethod },
   RegisterViaEmail: { screen: RegisterViaEmail },

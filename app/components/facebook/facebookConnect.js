@@ -7,7 +7,7 @@ import { View, Text, StyleSheet, Modal } from 'react-native';
 import { withGetUserByEmail, withgetUserByFbId } from '@services/apollo/social';
 import { compose } from 'react-apollo';
 import { Colors } from '@theme';
-import { Loading, CustomButton } from '@components/common';
+import { Loading, RoundedButton } from '@components/common';
 
 const styles = StyleSheet.create({
   actionLabel: {
@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.background.fullWhite,
     elevation: 5,
+  },
+  button: {
+    width: 200,
+    marginVertical: 20,
   },
 });
 
@@ -95,21 +99,14 @@ class FacebookConnect extends PureComponent {
 
     if (buttonType === 'login') {
       return (
-        <CustomButton
+        <RoundedButton
           onPress={this.handleFacebookLogin}
-          bgColor="#3b5998"
+          style={styles.button}
+          bgColor={Colors.background.facebook}
+          icon={require('@assets/icons/ic_facebook_white.png')}
         >
-          Sign in with Facebook
-        </CustomButton>);
-    }
-
-    if (buttonType === 'signup') {
-      return (<CustomButton
-        onPress={this.handleFacebookLogin}
-        bgColor="#3b5998"
-      >
-        Sign up with Facebook
-      </CustomButton>);
+          Facebook
+        </RoundedButton>);
     }
 
     if (buttonType === 'link') {

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "364691494957",
+    "firebase_url": "https://skjutsgruppen-app.firebaseio.com",
+    "project_id": "skjutsgruppen-app",
+    "storage_bucket": "skjutsgruppen-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364691494957:android:f1e2f65ebec27d20",
+        "android_client_info": {
+          "package_name": "nu.skjutsgruppen.skjutsgruppen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364691494957-rm84b9pv0qmlkjjnv1eqi9m79j4qup1r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTBsIozygxnNwoZX5x6EvNg8Ld00ZJdsc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

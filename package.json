@@ -8,7 +8,8 @@
     "eslint": "./node_modules/.bin/eslint app --fix",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "devmenu": "adb shell input keyevent 82"
+    "devmenu": "adb shell input keyevent 82",
+    "release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "apollo-client": "^1.9.2",
