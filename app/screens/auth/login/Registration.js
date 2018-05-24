@@ -13,7 +13,6 @@ import AuthService from '@services/auth/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
-import Toast from '@components/toast';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -117,14 +116,13 @@ class Registration extends Component {
   }
 
   render() {
-    const { agreementAccepted, error } = this.state;
+    const { agreementAccepted } = this.state;
 
     return (
       <View style={styles.mainContainer}>
         <ScrollView>
           <View style={styles.content}>
             <Heading size={32} color={Colors.text.pink} style={styles.header}>{trans('onboarding.we_are_participants')}</Heading>
-            <Toast message={error} type="error" />
             <Title size={24} color={Colors.text.gray} style={styles.title}>
               {trans('onboarding.all_of_us_are_the_movement')}
             </Title>
