@@ -23,6 +23,7 @@ import {
   NOTIFICATION_TYPE_LOCATION_SHARED,
   NOTIFICATION_TYPE_CREATE_EXPERIENCE,
   NOTIFICATION_TYPE_SHARE_YOUR_LOCATION,
+  NOTIFICATION_TYPE_WELCOME_MESSAGE,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -112,6 +113,9 @@ const styles = StyleSheet.create({
   },
   requestResultIcon: {
     marginTop: 3,
+  },
+  welcomeMessageIcon: {
+    backgroundColor: Colors.background.blue,
   },
 });
 
@@ -233,6 +237,7 @@ class Item extends PureComponent {
     date,
     ellipsize = true,
     showPin = false,
+    showWelcome = false,
   }) => {
     const { filters } = this.props;
 
@@ -243,7 +248,8 @@ class Item extends PureComponent {
             <View style={styles.profilePicWrapper}>
               {showPin && this.renderPinPic()}
               {experience && this.renderExperiencePic(experience, noAvatarAction)}
-              {!experience && !showPin && this.renderPic(photo, userId)}
+              {showWelcome && this.renderWelcomePic()}
+              {!experience && !showPin && !showWelcome && this.renderPic(photo, userId)}
             </View>
             <View style={styles.textContent}>
               {
@@ -588,7 +594,7 @@ class Item extends PureComponent {
     const params = { trip: Notifiable };
 
     return this.item({
-      user: 'Make an experience',
+      user: trans('message.make_an_experience'),
       experience: true,
       text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
       noAvatarAction: true,
@@ -606,10 +612,25 @@ class Item extends PureComponent {
 
     return this.item({
       userId: Notifiers[0].id,
-      user: 'Share your location.',
+      user: trans('message.share_your_location'),
       showPin: true,
       text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
       date: createdAt,
+      onPress: () => this.redirect(id, ids, route, params),
+    });
+  }
+
+  welcomeMessage = ({
+    createdAt, id, ids,
+  }) => {
+    const route = 'Add';
+    const params = {};
+
+    return this.item({
+      user: trans('message.welcome_to_skjutsgruppen'),
+      text: trans('message.tap_here_to_add_a_ride'),
+      date: createdAt,
+      showWelcome: true,
       onPress: () => this.redirect(id, ids, route, params),
     });
   }
@@ -714,6 +735,10 @@ class Item extends PureComponent {
     </View>
   )
 
+  renderWelcomePic = () => (
+    <View style={[styles.locationIconWrapper, styles.welcomeMessageIcon]} />
+  )
+
   render() {
     const { notification } = this.props;
     let message = null;
@@ -724,6 +749,10 @@ class Item extends PureComponent {
 
     if (notification.notifiable === 'Group') {
       message = this.groupNotificationBundle(notification);
+    }
+
+    if (notification.Notifications[0].type === NOTIFICATION_TYPE_WELCOME_MESSAGE) {
+      message = this.welcomeMessage(notification);
     }
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_CREATE_EXPERIENCE) {

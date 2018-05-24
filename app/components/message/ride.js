@@ -27,18 +27,11 @@ const styles = StyleSheet.create({
 
 class Ride extends Component {
   componentWillMount() {
-    const { subscribeToNewTrip, user, setNoMessages, trips } = this.props;
+    const { subscribeToNewTrip, user } = this.props;
 
-    if (trips.count < 1) setNoMessages('rides');
     if (user.id) {
       subscribeToNewTrip({ userId: user.id });
     }
-  }
-
-  componentWillReceiveProps() {
-    const { setNoMessages, trips } = this.props;
-
-    if (trips.count < 1) setNoMessages('rides');
   }
 
   loadMore = (onPress) => {
@@ -104,7 +97,6 @@ Ride.propTypes = {
     error: PropTypes.object,
     refetch: PropTypes.func,
   }).isRequired,
-  setNoMessages: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,

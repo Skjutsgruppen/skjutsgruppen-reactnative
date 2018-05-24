@@ -67,6 +67,7 @@ export const NOTIFICATION_TYPE_EXPERIENCE_PUBLISHED = 'experience_published';
 export const NOTIFICATION_TYPE_LOCATION_SHARED = 'location_shared';
 export const NOTIFICATION_TYPE_CREATE_EXPERIENCE = 'create_experience';
 export const NOTIFICATION_TYPE_SHARE_YOUR_LOCATION = 'share_your_location';
+export const NOTIFICATION_TYPE_WELCOME_MESSAGE = 'welcome_message';
 
 export const NOTIFICATION_TYPE_TRIP_SHARED = 'trip_shared';
 export const NOTIFICATION_TYPE_TRIP_SHARED_GROUP = 'trip_shared_group';
