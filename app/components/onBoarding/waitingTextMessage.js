@@ -13,6 +13,10 @@ import { withPhoneVerified } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
+import { withRemoveAppToken } from '@services/apollo/profile';
+import { getDeviceId } from '@helpers/device';
+import FCM from 'react-native-fcm';
+import { LoginManager } from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
   paddedSection: {
@@ -74,9 +78,16 @@ class WaitingTextMessage extends Component {
     }, 10000);
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
+  logout = () => {
+    const { logout, removeAppToken } = this.props;
+    this.setState({ loading: true }, async () => {
+      await removeAppToken(getDeviceId());
+      await FCM.cancelAllLocalNotifications();
+      logout()
+        .then(() => LoginManager.logOut())
+        .then(() => this.reset())
+        .catch(() => this.reset());
+    });
   }
 
   render() {
@@ -90,7 +101,7 @@ class WaitingTextMessage extends Component {
           <AppText style={styles.text}>
             {trans('onboarding.did_something_go_wrong_press_back')}
           </AppText>
-          <BackButton onPress={this.goBack} leftAligned />
+          <BackButton onPress={this.logout} leftAligned />
         </View>
       </ScrollView>
     );
@@ -101,17 +112,20 @@ WaitingTextMessage.propTypes = {
   isPhoneVerified: PropTypes.func.isRequired,
   setLogin: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    goBack: PropTypes.func,
-  }).isRequired,
+  removeAppToken: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerification });
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token }))),
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withPhoneVerified,
   withNavigation,
+  withRemoveAppToken,
   connect(mapStateToProps, mapDispatchToProps))(WaitingTextMessage);

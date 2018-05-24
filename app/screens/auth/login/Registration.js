@@ -81,7 +81,11 @@ class Registration extends Component {
         .then(({ data }) => {
           const { token, User } = data.updateUser;
           updateUser({ token, user: User }).then(() => {
-            navigation.replace('Tab');
+            if (!User.phoneVerified) {
+              navigation.replace('Onboarding', { activeStep: 8 });
+            } else {
+              navigation.replace('Tab');
+            }
           });
         }).catch((err) => {
           this.setState({ loading: false, error: getToast(err) });
