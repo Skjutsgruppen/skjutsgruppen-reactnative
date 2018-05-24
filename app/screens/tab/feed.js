@@ -29,6 +29,7 @@ import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
 import TouchableHighlight from '@components/touchableHighlight';
+import CoCreateModal from '@components/coCreateModal';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -101,6 +102,7 @@ class Feed extends Component {
       currentLocation: false,
       totalExperiences: 0,
       loading: false,
+      showCoCreateModal: true,
     });
 
     this.feedList = null;
@@ -347,6 +349,15 @@ class Feed extends Component {
     </TouchableOpacity>
   );
 
+  renderCoCreateModal = () => {
+    const { showCoCreateModal } = this.state;
+
+    return (<CoCreateModal
+      visible={showCoCreateModal}
+      toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
+    />);
+  }
+
   render() {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
@@ -359,6 +370,7 @@ class Feed extends Component {
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setFilterVisibility(false)}
         />
+        {this.renderCoCreateModal()}
       </Wrapper>
     );
   }
