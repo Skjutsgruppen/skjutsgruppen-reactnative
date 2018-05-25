@@ -2,7 +2,7 @@ import firebase from 'react-native-firebase';
 import { getDate } from '@config';
 import { SHARE_LOCATION_MINUTE, SHARE_EXPERIENCE_DEFAULT_MINUTE } from '@config/constant';
 import { trans } from '@lang/i18n';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import moment from 'moment';
 
 class Scheduler {

@@ -14,6 +14,7 @@ import AuthService from '@services/auth/auth';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 30,
