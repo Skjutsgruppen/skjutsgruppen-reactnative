@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, BackHandler, Linking } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, BackHandler } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';

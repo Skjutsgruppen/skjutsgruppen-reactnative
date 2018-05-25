@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Image, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
-import { Heading, AppText } from '@components/utils/texts';
+import { Heading } from '@components/utils/texts';
 import { Wrapper } from '@components/common';
 import Ride from '@components/message/ride';
 import Group from '@components/message/group';
@@ -14,7 +14,6 @@ import { trans } from '@lang/i18n';
 import MessageIcon from '@assets/icons/ic_message.png';
 import MessageIconActive from '@assets/icons/ic_message_active.png';
 import IconSearch from '@assets/icons/ic_search.png';
-import IconCycle from '@assets/icons/ic_cycle.png';
 
 const styles = StyleSheet.create({
   header: {

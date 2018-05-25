@@ -57,7 +57,7 @@ class Method extends Component {
         <View style={styles.mainContainer}>
           <StepsHeading>{trans('onboarding.welcome_back')}</StepsHeading>
           <StepsTitle>
-            Log in with Facebook, Twitter or your e-mail or cell phone number.
+            {trans('onboarding.login_with_fb_twitter_or_your_email')}
           </StepsTitle>
           <View style={styles.button}>
             <FBLogin />
