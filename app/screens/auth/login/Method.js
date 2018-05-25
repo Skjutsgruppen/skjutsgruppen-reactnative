@@ -10,19 +10,13 @@ import TwitterLogin from '@components/twitter/login';
 import StepsHeading from '@components/onBoarding/stepsHeading';
 import { withNavigation } from 'react-navigation';
 import BackButton from '@components/onBoarding/backButton';
+import StepsTitle from '@components/onBoarding/stepsTitle';
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     marginHorizontal: 30,
     backgroundColor: Colors.background.fullWhite,
-  },
-  divider: {
-    alignSelf: 'center',
-    width: '70%',
-    height: 1,
-    marginVertical: 32,
-    backgroundColor: Colors.background.lightGray,
   },
   notParticipantWrapper: {
     marginHorizontal: 32,
@@ -37,7 +31,10 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 200,
-    marginVertical: 20,
+  },
+  emailButton: {
+    width: 200,
+    marginVertical: 24,
   },
 });
 
@@ -58,22 +55,24 @@ class Method extends Component {
     return (
       <Container style={{ backgroundColor: Colors.background.fullWhite }}>
         <View style={styles.mainContainer}>
-          <StepsHeading>Welcome Back!</StepsHeading>
+          <StepsHeading>{trans('onboarding.welcome_back')}</StepsHeading>
+          <StepsTitle>
+            Log in with Facebook, Twitter or your e-mail or cell phone number.
+          </StepsTitle>
           <View style={styles.button}>
             <FBLogin />
           </View>
           <View style={styles.button}>
             <TwitterLogin />
           </View>
-          <View style={styles.divider} />
           <RoundedButton
             onPress={this.onPressEmail}
-            style={styles.button}
+            style={styles.emailButton}
             bgColor={Colors.background.pink}
           >
-            {trans('onboarding.the_long_way')}
+            {trans('onboarding.email_phone')}
           </RoundedButton>
-          <BackButton style={{ paddingVertical: 50 }} leftAligned onPress={this.onPressBack} />
+          <BackButton style={{ paddingVertical: 70 }} leftAligned onPress={this.onPressBack} />
         </View>
       </Container>
     );
