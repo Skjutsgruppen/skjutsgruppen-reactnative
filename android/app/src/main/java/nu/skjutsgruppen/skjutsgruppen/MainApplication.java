@@ -6,9 +6,9 @@ import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.crashlytics.android.Crashlytics;
-import com.evollu.react.fcm.FIRMessagingPackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -36,6 +36,9 @@ import ga.piroro.rnt.RNTPackage;
 import io.fabric.sdk.android.Fabric;
 import nu.skjutsgruppen.skjutsgruppen.react.modules.GeoLocationPackage;
 
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
     private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
@@ -49,6 +52,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new RNFirebasePackage(),
                     new RNTPackage(),
                     new FabricPackage(),
                     new RNFSPackage(),
@@ -63,11 +67,12 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
                     new ReactNativeConfigPackage(),
                     new FacebookLoginPackage(),
                     new RNI18nPackage(),
-                    new FIRMessagingPackage(),
                     new TwitterReactPackage(),
                     new GeoLocationPackage(),
                     new FBSDKPackage(mCallbackManager),
-                    new BraintreePaymentPackage()
+                    new BraintreePaymentPackage(),
+                    new RNFirebaseNotificationsPackage(),
+                    new RNFirebaseMessagingPackage()
             );
         }
 

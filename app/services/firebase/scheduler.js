@@ -1,12 +1,14 @@
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import { getDate } from '@config';
 import { SHARE_LOCATION_MINUTE, SHARE_EXPERIENCE_DEFAULT_MINUTE } from '@config/constant';
 import { trans } from '@lang/i18n';
+import { Platform, Alert } from 'react-native';
+import moment from 'moment';
 
 class Scheduler {
-  getMillisecond = date => new Date(date.format('YYYY-MM-DD HH:mm:ss')).getTime();
+  currentDateTime = () => getDate(moment());
 
-  currentDateTime = () => getDate(new Date());
+  getMillisecond = date => getDate(date).valueOf();
 
   getTimeForLocationSharing = date => this.getMillisecond(date) - (SHARE_LOCATION_MINUTE * 60000);
 
@@ -19,10 +21,10 @@ class Scheduler {
   }
 
   shouldScheduleLocationSharing = date =>
-    this.getMillisecond(this.currentDateTime()) <= this.getTimeForLocationSharing(date);
+    this.currentDateTime().valueOf() <= this.getTimeForLocationSharing(date);
 
   shouldScheduleExperienceSharing = (duration, date) =>
-    this.getMillisecond(this.currentDateTime()) <= this.getTimeForExperienceSharing(duration, date);
+    this.currentDateTime().valueOf() <= this.getTimeForExperienceSharing(duration, date);
 
 
   schedule = (payload) => {
@@ -49,31 +51,35 @@ class Scheduler {
     }
   }
 
-  scheduleNotification = (id, fireDate, title, body, tripId) => {
-    FCM.scheduleLocalNotification({
-      id: id.toString(),
-      fire_date: fireDate,
-      vibrate: 500,
-      title,
-      body,
-      sub_text: 'Ride',
-      priority: 'high',
-      large_icon: '',
-      show_in_foreground: true,
-      wake_screen: true,
-      sound: 'default',
-      tripId,
-      screen: 'TripDetail',
+  scheduleNotification = (id, date, title, body, tripId) => {
+    let notification = new firebase.notifications.Notification();
+
+    notification = notification.setNotificationId(id.toString())
+      .setTitle(title)
+      .setBody(body)
+      .setSubtitle('Ride')
+      .setSound('default')
+      .setData({ screen: 'TripDetail', id: tripId });
+
+    if (Platform.OS === 'android') {
+      notification.android.setChannelId('skjuts-channel');
+      notification.android.setAutoCancel(true);
+      notification.android.setPriority(firebase.notifications.Android.Priority.High);
+      notification.android.setVibrate([300]);
+    }
+
+    firebase.notifications().scheduleNotification(notification, {
+      fireDate: date,
     });
   }
 
-  getScheduledNotifications = () => FCM.getScheduledLocalNotifications()
+  getScheduledNotifications = () => firebase.notifications().getScheduledNotifications()
 
-  removeScheduledNotifications = () => FCM.cancelAllLocalNotifications();
+  removeScheduledNotifications = () => firebase.notifications().cancelAllNotifications();
 
   removeSpecificScheduledNotification = async (id) => {
-    await FCM.cancelLocalNotification(`${id}-location`);
-    await FCM.cancelLocalNotification(`${id}-experience`);
+    await firebase.notifications().cancelNotification(`${id} - location`);
+    await firebase.notifications().cancelNotification(`${id} - experience`);
   }
 
   checkAndRemoveScheduledNotification = async (id, muteTime) => {
@@ -82,8 +88,8 @@ class Scheduler {
 
     targetNotifications.map(async (notification) => {
       if (notification.fire_date <= (new Date(muteTime).getTime())) {
-        await FCM.cancelLocalNotification(`${id}-location`);
-        await FCM.cancelLocalNotification(`${id}-experience`);
+        await firebase.notifications().cancelNotification(`${id} - location`);
+        await firebase.notifications().cancelNotification(`${id} - experience`);
       }
     });
   }
