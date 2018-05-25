@@ -161,7 +161,7 @@ class TwitterLogin extends PureComponent {
         user: response.data.updateUser.User,
       });
 
-      navigation.replace('EmailVerified');
+      navigation.replace('Onboarding', { activeStep: 6 });
     } catch (err) {
       console.warn(err, err.graphQLErrors[0].code);
     }

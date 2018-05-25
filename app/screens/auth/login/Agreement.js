@@ -73,6 +73,10 @@ class Agreement extends Component {
           updateUser({ token, user: User }).then(() => {
             if (!User.agreementAccepted) {
               navigation.replace('Registration');
+            } else if (!User.phoneVerified) {
+              navigation.replace('Onboarding', { activeStep: 8 });
+            } else {
+              navigation.replace('Tab');
             }
           });
         }).catch(() => {
@@ -82,10 +86,12 @@ class Agreement extends Component {
       this.setState({ loading: false });
     }
   }
+
   onAgreementCheck = () => {
     const { agreementRead } = this.state;
     this.setState({ agreementRead: !agreementRead });
   }
+
   renderButton = () => {
     const { loading, agreementRead } = this.state;
     if (loading) {
