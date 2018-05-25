@@ -249,7 +249,7 @@ class Share extends Component {
       selectedTripParticipants: tripParticipants,
     } = this.state;
     const shareInput = { social, friends, groups };
-    const { name, TripStart, TripEnd, id } = detail;
+    const { name, TripStart, TripEnd, id, isAdmin } = detail;
     let smsBody = '';
 
     if (type === FEEDABLE_GROUP) {
@@ -257,7 +257,7 @@ class Share extends Component {
     }
 
     if (type === FEEDABLE_TRIP) {
-      smsBody = trans('share.share_trip', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/t/${id})` });
+      smsBody = trans('share.share_trip', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/t/${id}` });
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
@@ -281,7 +281,7 @@ class Share extends Component {
         }
 
         if (contacts.length > 0) {
-          if (type === FEEDABLE_GROUP) {
+          if (type === FEEDABLE_GROUP && isAdmin) {
             storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
           }
 

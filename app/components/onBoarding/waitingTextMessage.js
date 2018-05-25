@@ -15,7 +15,7 @@ import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import { withRemoveAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
-import FCM from 'react-native-fcm';
+import firebase from 'react-native-firebase';
 import { LoginManager } from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
@@ -82,7 +82,7 @@ class WaitingTextMessage extends Component {
     const { logout, removeAppToken } = this.props;
     this.setState({ loading: true }, async () => {
       await removeAppToken(getDeviceId());
-      await FCM.cancelAllLocalNotifications();
+      await firebase.notifications().cancelAllNotifications();
       logout()
         .then(() => LoginManager.logOut())
         .then(() => this.reset())
