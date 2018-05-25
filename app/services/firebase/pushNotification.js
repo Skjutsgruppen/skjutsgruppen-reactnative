@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
-import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
@@ -8,66 +6,66 @@ import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import ScheduledNotification from '@services/firebase/scheduleNotification';
 import Scheduler from '@services/firebase/scheduler';
+import firebase from 'react-native-firebase';
+import { Platform } from 'react-native';
 
 class PushNotification extends Component {
   async componentDidMount() {
     const { storeAppToken, user } = this.props;
-
     try {
-      await FCM.requestPermissions({ badge: false, sound: true, alert: true });
-    } catch (e) {
-      console.warn(e);
+      await firebase.messaging().requestPermission();
+    } catch (error) {
+      console.warn(error);
     }
-
-    FCM.removeAllDeliveredNotifications();
 
     if (user && user.id) {
-      await FCM.getFCMToken()
-        .then(appToken => storeAppToken(appToken, getDeviceId()));
+      this.onTokenRefreshListener = firebase.messaging().onTokenRefresh((fcmToken) => {
+        storeAppToken(fcmToken, getDeviceId());
+      });
+      firebase.messaging().getToken().then(appToken => storeAppToken(appToken, getDeviceId()));
     }
 
-    this.notificationListner = FCM.on(FCMEvent.Notification, (notif) => {
-      if (notif.local_notification || notif.opened_from_tray) {
-        return;
-      }
+    const channel = new firebase.notifications.Android.Channel(
+      'skjuts-channel', 'Skjutsgruppen Channel', firebase.notifications.Android.Importance.Max,
+    )
+      .setDescription('Skjutsgruppen app channel');
 
-      const { _notificationType } = notif;
-      if (Platform.OS === 'ios') {
-        switch (_notificationType) {
-          case NotificationType.Remote:
-            notif.finish(RemoteNotificationResult.NewData);
-            break;
-          case NotificationType.NotificationResponse:
-            notif.finish();
-            break;
-          case NotificationType.WillPresent:
-            notif.finish(WillPresentNotificationResult.All);
-            break;
-          default:
-            break;
-        }
-      }
+    firebase.notifications().removeAllDeliveredNotifications();
+    firebase.notifications().android.createChannel(channel);
 
-      if (notif.fcm) {
-        this.showLocalNotification(notif);
-      }
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      this.showLocalNotification(notification);
+    });
 
-      if (notif.custom_notification) {
-        this.scheduleLocalNotification(notif.custom_notification);
-      }
+    this.messageListener = firebase.messaging().onMessage((message) => {
+      const { _data: { custom_notification: customNotification } } = message;
+      this.scheduleLocalNotification(customNotification);
     });
   }
 
-  showLocalNotification = ({ fcm: { title, body, sound }, screen, id }) => {
-    FCM.presentLocalNotification({
-      title,
-      body,
-      priority: 'high',
-      click_action: `${screen}/${id}`,
-      show_in_foreground: true,
-      local: true,
-      sound: sound || 'default',
-    });
+  componentWillUnmount() {
+    this.messageListener();
+    this.notificationListener();
+  }
+
+  showLocalNotification = (message) => {
+    const { _body, _title, _data: { screen, id } } = message;
+
+    const notification = new firebase.notifications.Notification()
+      .setNotificationId(new Date().valueOf().toString())
+      .setTitle(_title)
+      .setBody(_body)
+      .setSound('default')
+      .setData({ screen, id });
+
+    if (Platform.OS === 'android') {
+      notification.android.setChannelId('skjuts-channel');
+      notification.android.setAutoCancel(true);
+      notification.android.setPriority(firebase.notifications.Android.Priority.High);
+      notification.android.setVibrate([300]);
+    }
+
+    firebase.notifications().displayNotification(notification)
   }
 
   scheduleLocalNotification = (data) => {

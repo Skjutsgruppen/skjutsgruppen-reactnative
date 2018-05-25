@@ -10,9 +10,9 @@ class ScheduleNotification extends Component {
       const { rows } = trips;
       if (rows.length > 0) {
         await LocalNotification.removeScheduledNotifications();
-        rows.map(async (row) => {
+        rows.forEach((row) => {
           if (!row.muted) {
-            await LocalNotification.schedule(row);
+            LocalNotification.schedule(row);
           }
         });
       }
