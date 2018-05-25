@@ -21,6 +21,7 @@
     "react-apollo": "^1.4.15",
     "react-moment": "^0.6.8",
     "react-native": "0.51.0",
+    "react-native-android-open-settings": "^1.0.1",
     "react-native-animatable": "^1.2.4",
     "react-native-calendars": "^1.17.1",
     "react-native-camera": "^0.12.0",

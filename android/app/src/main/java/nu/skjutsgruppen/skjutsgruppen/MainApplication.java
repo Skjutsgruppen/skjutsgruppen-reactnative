@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
 import io.invertase.firebase.RNFirebasePackage;
+import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -52,7 +53,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+<<<<<<< HEAD
                     new RNFirebasePackage(),
+=======
+            new AndroidOpenSettingsPackage(),
+>>>>>>> - [x] contact permission for android required modal implemented
                     new RNTPackage(),
                     new FabricPackage(),
                     new RNFSPackage(),
