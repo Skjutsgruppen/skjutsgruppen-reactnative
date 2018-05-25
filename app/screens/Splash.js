@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from 'react';
-import { PermissionsAndroid, Linking, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
@@ -20,14 +20,6 @@ class Splash extends PureComponent {
   }
 
   async componentWillMount() {
-    try {
-      if (Platform === 'android' || Platform.OS === 'android') {
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-
     const { setLogin, setRegister, navigation } = this.props;
     const user = await AuthService.getUser();
 
