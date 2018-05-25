@@ -263,6 +263,7 @@ class Garden extends Component {
           }
           <Costs supporter={supporter} showCostTitle={!supporter} /> */}
           <ProfileAction
+            onPress={() => this.openLink(trans('feed.github_url'))}
             title={trans('profile.we_are_open_source')}
             label={trans('profile.help_make_the_app_better')}
             icon={GithubIcon}
@@ -285,7 +286,10 @@ class Garden extends Component {
             />
           } */}
           <ProfileAction onPress={() => this.redirect('Settings')} label={trans('profile.settings')} />
-          <ProfileAction label={trans('profile.participant_agreement')} />
+          <ProfileAction
+            onPress={() => this.openLink('https://web.skjutsgruppen.nu/participant-agreement')}
+            label={trans('profile.participant_agreement')}
+          />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText
               color={Colors.text.blue}
