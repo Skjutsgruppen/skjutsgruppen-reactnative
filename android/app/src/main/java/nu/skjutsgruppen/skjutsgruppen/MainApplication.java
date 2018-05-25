@@ -53,11 +53,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
-<<<<<<< HEAD
                     new RNFirebasePackage(),
-=======
-            new AndroidOpenSettingsPackage(),
->>>>>>> - [x] contact permission for android required modal implemented
+                    new AndroidOpenSettingsPackage(),
                     new RNTPackage(),
                     new FabricPackage(),
                     new RNFSPackage(),
