@@ -175,14 +175,14 @@ repositories {
 }
 
 dependencies {
-    compile(project(':react-native-firebase')) {
-        transitive = false
-    }
+    implementation project(':react-native-android-open-settings')
     implementation project(':tipsi-twitter')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-i18n')
-    implementation project(':react-native-firebase')
+    implementation (project(':react-native-firebase')) {
+        transitive = false
+    }
     implementation project(':react-native-facebook-login')
     implementation project(':react-native-contacts')
     implementation project(':react-native-config')

@@ -69,5 +69,8 @@
   "send": "Send",
   "participants_in_this_ride":"PARTICIPANTS IN THIS RIDE",
   "share_live_location_for": "Share live location for",
-  "cancel_auto_renewal": "Cancel auto renewal?"
+  "cancel_auto_renewal": "Cancel auto renewal?",
+  "well_thats_sad": "Well, that’s sad. We cannot let you in unless you allow the app to access your contacts. Don’t worry, we won’t misuse this information.",
+  "no_thanks_close_this_app": "No, thanks. Close this app",
+  "open_permission_settings": "Open permission settings"
 }
