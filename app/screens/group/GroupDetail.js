@@ -9,19 +9,22 @@ import { Loading, DeletedModal } from '@components/common';
 import { AppText } from '@components/utils/texts';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
+import { getGroupDetails } from '@services/apollo/dataSync';
 
 class GroupDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ group: {}, refetch: null, fetch: false, deletedModal: false });
+    this.state = ({ group: {}, refetch: null, deletedModal: false });
   }
 
   componentWillMount() {
-    const { navigation, fetch, subscribeToGroup } = this.props;
-    const { group } = navigation.state.params;
-    this.setState({ group, fetch });
+    const { navigation, subscribeToGroup } = this.props;
+    const { id } = navigation.state.params;
+    const group = getGroupDetails(id);
 
-    subscribeToGroup(group.id);
+    this.setState({ group });
+
+    subscribeToGroup(id);
   }
 
   componentDidMount() {
@@ -34,7 +37,7 @@ class GroupDetail extends Component {
     }
 
     if (!loading && group.id) {
-      this.setState({ group, loading, refetch, fetch: false });
+      this.setState({ group, loading, refetch });
     }
   }
 
@@ -122,9 +125,9 @@ class GroupDetail extends Component {
   }
 
   render() {
-    const { fetch, group } = this.state;
+    const { group } = this.state;
 
-    if (fetch) {
+    if (Object.keys(group).length < 1) {
       return <Loading />;
     }
 
@@ -146,7 +149,6 @@ GroupDetail.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
-  fetch: PropTypes.bool,
   subscribeToGroup: PropTypes.func.isRequired,
   nav: PropTypes.shape({
     routes: PropTypes.array,
@@ -154,7 +156,6 @@ GroupDetail.propTypes = {
 };
 
 GroupDetail.defaultProps = {
-  fetch: false,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
@@ -166,8 +167,8 @@ const mapStateToProps = state => ({ nav: state.nav });
 const GroupWithDetail = compose(connect(mapStateToProps), withGroup)(GroupDetail);
 
 const GroupScreen = ({ navigation }) => {
-  const { group, fetch } = navigation.state.params;
-  return (<GroupWithDetail id={group.id} navigation={navigation} fetch={fetch || false} />);
+  const { id } = navigation.state.params;
+  return (<GroupWithDetail id={id} navigation={navigation} />);
 };
 
 GroupScreen.propTypes = {

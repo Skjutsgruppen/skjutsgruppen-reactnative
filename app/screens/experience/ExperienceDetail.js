@@ -13,6 +13,7 @@ import {
   EXPERIENCE_STATUS_PUBLISHED,
 } from '@config/constant';
 import { Loading } from '@components/common';
+import { getExperienceDetails } from '@services/apollo/dataSync';
 
 class ExperienceDetailScreen extends Component {
   constructor(props) {
@@ -22,14 +23,15 @@ class ExperienceDetailScreen extends Component {
       refetch: () => { },
       isRejected: false,
       isAccepted: false,
-      fetch: false,
     };
   }
 
   componentWillMount() {
-    const { navigation, fetch } = this.props;
-    const { experience } = navigation.state.params;
-    this.setState({ experience, fetch });
+    const { navigation } = this.props;
+    const { id } = navigation.state.params;
+    const experience = getExperienceDetails(id);
+
+    this.setState({ experience });
   }
 
   componentDidMount() {
@@ -38,7 +40,7 @@ class ExperienceDetailScreen extends Component {
 
   componentWillReceiveProps({ experience, loading, refetch }) {
     if (!loading && experience.id) {
-      this.setState({ experience, refetch, fetch: false });
+      this.setState({ experience, refetch });
     }
   }
 
@@ -71,6 +73,7 @@ class ExperienceDetailScreen extends Component {
     this.refetch().then(() => {
       if (pending.length <= 1) {
         this.props.navigation.navigate('TripDetail', {
+          id: experience.Trip.id,
           trip: {
             ...experience.Trip,
             ...{
@@ -99,10 +102,10 @@ class ExperienceDetailScreen extends Component {
   }
 
   render() {
-    const { experience, isRejected, isAccepted, fetch } = this.state;
+    const { experience, isRejected, isAccepted } = this.state;
     const { loading, navigation } = this.props;
 
-    if (fetch) {
+    if (Object.keys(experience).length < 1) {
       return <Loading />;
     }
 
@@ -164,7 +167,6 @@ ExperienceDetailScreen.propTypes = {
       }),
     }),
   }).isRequired,
-  fetch: PropTypes.bool.isRequired,
   nav: PropTypes.shape({
     route: PropTypes.array,
   }).isRequired,
@@ -179,12 +181,12 @@ const ExperienceWithDetail = compose(
 
 
 const ExperienceDetail = ({ navigation }) => {
-  const { experience, fetch } = navigation.state.params;
+  const { id } = navigation.state.params;
+
   return (
     <ExperienceWithDetail
-      id={experience.id}
+      id={id}
       navigation={navigation}
-      fetch={fetch || false}
     />
   );
 };

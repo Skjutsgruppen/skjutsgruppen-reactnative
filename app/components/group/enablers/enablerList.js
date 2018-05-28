@@ -91,7 +91,7 @@ class List extends Component {
       .then(() => {
         this.setState({ confirmModalVisibility: false, loading: false, error: false });
         if (selfDelete) {
-          navigation.replace('GroupDetail', { group: navigation.state.params.group });
+          navigation.replace('GroupDetail', { id });
         }
       })
       .catch(() => this.setState({ confirmModalVisibility: true, loading: false, error: true }));

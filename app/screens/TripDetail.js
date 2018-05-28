@@ -45,6 +45,7 @@ import Scheduler from '@services/firebase/scheduler';
 import ReturnIconPink from '@assets/icons/ic_return.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
 import CalendarIcon from '@assets/icons/ic_calender.png';
+import { getTripDetails } from '@services/apollo/dataSync';
 
 const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
@@ -239,11 +240,13 @@ class TripDetail extends Component {
       right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
 
-    const { notifier, notificationMessage, trip } = navigation.state.params;
+    const { notifier, notificationMessage, id } = navigation.state.params;
+    const trip = getTripDetails(id);
+
+    this.setState({ trip });
+    subscribeToTrip(id);
+
     let initialState = { trip };
-
-    subscribeToTrip(trip.id);
-
     if (notifier) {
       initialState = {
         ...initialState,
@@ -475,7 +478,7 @@ class TripDetail extends Component {
     trip.Recurring.forEach((ride) => {
       if (getDate(ride.date).format('YYYY-MM-DD') === day.dateString) {
         this.setRecurringRidesModalVisibility(false);
-        navigation.navigate('TripDetail', { trip: ride });
+        navigation.navigate('TripDetail', { id: ride.id });
       }
     });
   }
@@ -487,7 +490,7 @@ class TripDetail extends Component {
     trip.ReturnTrip.forEach((ride) => {
       if (ride.id === id) {
         this.setReturnRidesModalVisibility(false);
-        navigation.navigate('TripDetail', { trip: ride });
+        navigation.navigate('TripDetail', { id: ride.id });
       }
     });
   }
@@ -746,7 +749,7 @@ class TripDetail extends Component {
             {trip.description}
             {trip.Group && trip.Group.id &&
               <AppText
-                onPress={() => navigation.navigate('GroupDetail', { group: trip.Group, fetch: true })}
+                onPress={() => navigation.navigate('GroupDetail', { id: trip.Group.id, fetch: true })}
                 fontVariation="italic"
               >
                 {' '}
@@ -756,7 +759,7 @@ class TripDetail extends Component {
             {
               trip.linkedTrip && trip.linkedTrip.id &&
               <AppText
-                onPress={() => navigation.navigate('TripDetail', { trip: trip.linkedTrip, fetch: true })}
+                onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
                 fontVariation="italic"
               >
                 {' '}
@@ -1092,8 +1095,9 @@ const TripWithDetail = compose(
 )(TripDetail);
 
 const TripScreen = ({ navigation }) => {
-  const { trip } = navigation.state.params;
-  return (<TripWithDetail id={trip.id} navigation={navigation} />);
+  const { id } = navigation.state.params;
+
+  return (<TripWithDetail id={id} navigation={navigation} />);
 };
 
 TripScreen.propTypes = {

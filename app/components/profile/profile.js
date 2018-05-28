@@ -34,6 +34,7 @@ import List from '@components/experience/myExperienceList';
 import AcceptIcon from '@assets/icons/ic_accept.png';
 import RejectIcon from '@assets/icons/ic_reject.png';
 import BackIcon from '@assets/icons/ic_back_toolbar.png';
+import { getProfile } from '@services/apollo/dataSync';
 
 const MyExperience = withMyExperiences(List);
 
@@ -216,6 +217,9 @@ class Profile extends Component {
     if (this.isCurrentUser()) {
       const { user } = this.props;
       this.setState({ user });
+    } else {
+      const profile = getProfile(id);
+      this.setState({ user: profile });
     }
 
     subscribeToUpdatedProfile({ id });

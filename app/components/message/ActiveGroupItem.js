@@ -75,7 +75,7 @@ const ActiveGroupItem = ({ group, navigation, resetMute }) => {
     if (group.muted) {
       await resetMute({ mutable: 'Group', mutableId: group.id, from: getDate().format() });
     }
-    navigation.navigate('GroupDetail', { group });
+    navigation.navigate('GroupDetail', { id: group.id });
   };
 
   return (
