@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:__RN_CONFIG_APP_URL</string>
+		<string>applinks:web.skjutsgruppen.nu</string>
 	</array>
 </dict>
 </plist>
