@@ -11,12 +11,13 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { withPhoneVerified } from '@services/apollo/auth';
 import PropTypes from 'prop-types';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import { trans } from '@lang/i18n';
 import { withRemoveAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import firebase from 'react-native-firebase';
 import { LoginManager } from 'react-native-fbsdk';
+import { resetLocalStorage } from '@services/apollo/dataSync';
 
 const styles = StyleSheet.create({
   paddedSection: {
@@ -90,6 +91,16 @@ class WaitingTextMessage extends Component {
     });
   }
 
+  reset = () => {
+    const { navigation } = this.props;
+    resetLocalStorage();
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
+  }
+
   render() {
     return (
       <ScrollView>
@@ -114,6 +125,9 @@ WaitingTextMessage.propTypes = {
   onNext: PropTypes.func.isRequired,
   removeAppToken: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({
+    dispatch: PropTypes.func,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerification });

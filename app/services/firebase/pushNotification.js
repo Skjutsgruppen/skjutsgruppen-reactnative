@@ -65,7 +65,7 @@ class PushNotification extends Component {
       notification.android.setVibrate([300]);
     }
 
-    firebase.notifications().displayNotification(notification)
+    firebase.notifications().displayNotification(notification);
   }
 
   scheduleLocalNotification = (data) => {
