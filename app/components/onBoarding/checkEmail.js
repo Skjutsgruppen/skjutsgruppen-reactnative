@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
     color: Colors.text.gray,
     lineHeight: 26,
   },
+  resendVerification: {
+    paddingVertical: 24,
+    color: Colors.text.blue,
+  },
 });
 
 class CheckEmail extends Component {
@@ -147,6 +151,21 @@ class CheckEmail extends Component {
     );
   }
 
+  renderResendVerification = () => {
+    const { resendVerificationLoading } = this.state;
+
+    if (resendVerificationLoading) {
+      return <Loading />;
+    }
+
+    return (
+      <AppText
+        style={styles.resendVerification}
+        onPress={this.resendVerificationCode}
+      >Resend Verification Code</AppText>
+    );
+  }
+
   render() {
     const { error } = this.state;
     return (
@@ -167,6 +186,7 @@ class CheckEmail extends Component {
         />
         <View style={styles.paddedSection}>
           {this.renderButton()}
+          {this.renderResendVerification()}
           <AppText style={styles.text}>
             {trans('onboarding.you_cannot_proceed_without_confirming_your_email')}
           </AppText>
