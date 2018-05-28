@@ -619,3 +619,7 @@ export const updateNotificationSharedLocation = () => {
     console.warn(e);
   }
 };
+
+export const resetLocalStorage = () => {
+  client.resetStore();
+};
