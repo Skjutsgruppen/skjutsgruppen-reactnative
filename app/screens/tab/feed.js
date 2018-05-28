@@ -32,7 +32,8 @@ import TouchableHighlight from '@components/touchableHighlight';
 import CoCreateModal from '@components/coCreateModal';
 import AppText from '@components/utils/texts/appText';
 import Button from '@components/experience/button';
-import AndroidOpenSettings from 'react-native-android-open-settings';
+import Contacts from 'react-native-contacts';
+import OpenSettings from 'react-native-open-settings';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -149,6 +150,16 @@ class Feed extends Component {
 
           this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
         }
+      } else {
+        Contacts.checkPermission((err, permission) => {
+          if (err || permission !== 'authorized') {
+            Contacts.requestPermission((error, contactPermission) => {
+              this.setState({ contactPermission: contactPermission === 'authorized' });
+            });
+          } else {
+            this.setState({ contactPermission: permission === 'authorized' });
+          }
+        });
       }
     } catch (err) {
       console.warn(err);
@@ -217,11 +228,15 @@ class Feed extends Component {
         }
 
         if (this.state.contactPermissionResponse === 'never_ask_again') {
-          AndroidOpenSettings.appDetailsSettings();
+          OpenSettings.openSettings();
           return;
         }
 
         this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
+      } else {
+        Contacts.checkPermission((error, permission) => {
+          if (error || permission === 'denied' || permission === 'undefined') OpenSettings.openSettings();
+        });
       }
     } catch (e) {
       console.warn(e);
@@ -413,8 +428,8 @@ class Feed extends Component {
   );
 
   renderCoCreateModal = () => {
-    const { showCoCreateModal } = this.state;
-
+    const { showCoCreateModal, contactPermission } = this.state;
+    if (!contactPermission) return null;
     return (<CoCreateModal
       visible={showCoCreateModal}
       toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
@@ -422,41 +437,39 @@ class Feed extends Component {
   }
 
   renderContactPermission = () => {
-    if (Platform === 'android' || Platform.OS === 'android') {
-      return (
-        <Modal
-          transparent
-          visible={!this.state.contactPermission}
-          onRequestClose={() => { }}
-        >
-          <View style={styles.backdrop}>
-            <View style={styles.permissionModal}>
-              <AppText
-                fontVariation="semibold"
-                size={16}
-                centered
-                style={{ marginBottom: 24, paddingVertical: 10, paddingHorizontal: 20 }}
-              >
-                {trans('global.well_thats_sad')}
-              </AppText>
-              <Button
-                style={{ padding: 20, width: 250, alignSelf: 'center', marginBottom: 20 }}
-                onPress={() => BackHandler.exitApp()}
-                label={trans('global.no_thanks_close_this_app')}
-
-              />
-              <Button
-                style={{ padding: 20, width: 250, alignSelf: 'center' }}
-                onPress={() => this.askForPermission()}
-                label={trans('global.open_permission_settings')}
-              />
-            </View>
-          </View>
-        </Modal>
-      );
+    if (this.state.contactPermission) {
+      return null;
     }
-
-    return null;
+    return (<Modal
+      transparent
+      visible={!this.state.contactPermission}
+      onRequestClose={() => { }}
+    >
+      <View style={styles.backdrop}>
+        <View style={styles.permissionModal}>
+          <AppText
+            fontVariation="semibold"
+            size={16}
+            centered
+            style={{ marginBottom: 24, paddingVertical: 10, paddingHorizontal: 20 }}
+          >
+            {trans('global.well_thats_sad')}
+          </AppText>
+          {(Platform === 'android' || Platform.OS === 'android') &&
+            <Button
+              style={{ padding: 20, width: 250, alignSelf: 'center', marginBottom: 20 }}
+              onPress={() => BackHandler.exitApp()}
+              label={trans('global.no_thanks_close_this_app')}
+            />
+          }
+          <Button
+            style={{ padding: 20, width: 250, alignSelf: 'center' }}
+            onPress={() => this.askForPermission()}
+            label={trans('global.open_permission_settings')}
+          />
+        </View>
+      </View>
+    </Modal>);
   }
 
   render() {
