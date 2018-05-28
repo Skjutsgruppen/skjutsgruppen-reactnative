@@ -7,7 +7,7 @@ import { LoginManager } from 'react-native-fbsdk';
 import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
 import { compose } from 'react-apollo';
-
+import { resetLocalStorage } from '@services/apollo/dataSync';
 import ProfileAction from '@components/profile/profileAction';
 import { Colors, Gradients } from '@theme';
 import SupportIcon from '@assets/icons/ic_support.png';
@@ -161,6 +161,7 @@ class Garden extends Component {
 
   reset = () => {
     const { navigation } = this.props;
+    resetLocalStorage();
     const resetAction = NavigationActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],

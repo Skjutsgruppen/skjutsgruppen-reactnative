@@ -9,6 +9,7 @@ import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
 import { LoginManager } from 'react-native-fbsdk';
 import AuthService from '@services/auth';
+import { resetLocalStorage } from '@services/apollo/dataSync';
 import AuthAction from '@redux/actions/auth';
 import PropTypes from 'prop-types';
 import Connect from '@components/facebook/facebookConnect';
@@ -283,6 +284,7 @@ class EditProfile extends Component {
 
   reset = () => {
     const { navigation } = this.props;
+    resetLocalStorage();
     const resetAction = NavigationActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],
