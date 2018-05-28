@@ -67,11 +67,11 @@ class AlphabeticalGroupsList extends Component {
     return (<AlphabeticalGroupsLoadMore section={section} />);
   }
 
-  redirect = (type, detail) => {
+  redirect = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
   }
 

@@ -203,9 +203,9 @@ class RouteMap extends PureComponent {
     }
   }
 
-  onMarkerPress = (Trip) => {
+  onMarkerPress = ({ id }) => {
     const { navigation } = this.props;
-    navigation.navigate('TripDetail', { trip: Trip });
+    navigation.navigate('TripDetail', { id });
   }
 
   onFilterChange = (type) => {

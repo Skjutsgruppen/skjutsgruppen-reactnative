@@ -101,7 +101,7 @@ const Info = ({ loading, experience, navigation }) => {
     return (
       <AppText onPress={() => {
         if (experience.Trip.isDeleted) return null;
-        return navigation.navigate('TripDetail', { trip: experience.Trip });
+        return navigation.navigate('TripDetail', { id: experience.Trip.id });
       }}
       >
         <AppText>

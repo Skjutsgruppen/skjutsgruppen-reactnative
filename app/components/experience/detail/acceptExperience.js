@@ -148,7 +148,7 @@ class AcceptExperience extends Component {
     }
 
     return (
-      <AppText onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}>
+      <AppText onPress={() => navigation.navigate('TripDetail', { id: experience.Trip.id })}>
         <AppText>
           {trans('experience.went_from_start_to_end_on',
             { tripStart: experience.Trip.TripStart.name, tripEnd: experience.Trip.TripEnd.name })} <Date format="MMM DD, YYYY">{experience.Trip.date}</Date>. <AppText color={Colors.text.blue} fontVariation="bold">{trans('experience.see_the_trip_here')}</AppText>

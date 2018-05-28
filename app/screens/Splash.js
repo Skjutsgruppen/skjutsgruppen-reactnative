@@ -93,11 +93,11 @@ class Splash extends PureComponent {
     const { navigation } = this.props;
 
     if (screen === 'TripDetail') {
-      navigation[type](screen, { trip: { id }, fetch: true });
+      navigation[type](screen, { id });
     }
 
     if (screen === 'GroupDetail') {
-      navigation[type](screen, { group: { id }, fetch: true });
+      navigation[type](screen, { id });
     }
 
     if (screen === 'Profile') {
@@ -105,7 +105,7 @@ class Splash extends PureComponent {
     }
 
     if (screen === 'ExperienceDetail') {
-      navigation[type](screen, { experience: { id }, fetch: true });
+      navigation[type](screen, { id });
     }
 
     if (screen === 'TripRoute') {
@@ -129,15 +129,15 @@ class Splash extends PureComponent {
     const routeName = routes[1];
 
     if (routeName === 't') {
-      navigation.navigate('TripDetail', { trip: { id }, fetch: true });
+      navigation.navigate('TripDetail', { id });
     }
 
     if (routeName === 'g') {
-      navigation.navigate('GroupDetail', { group: { id }, fetch: true });
+      navigation.navigate('GroupDetail', { id });
     }
 
     if (routeName === 'e') {
-      navigation.navigate('ExperienceDetail', { experience: { id }, fetch: true });
+      navigation.navigate('ExperienceDetail', { id });
     }
   }
 

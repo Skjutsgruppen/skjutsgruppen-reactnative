@@ -60,7 +60,7 @@ const ExperienceNotPublished = ({ experience, navigation, onBack, isRejected }) 
         {
           experience.Trip && experience.Trip.TripStart &&
           <RoundedButton
-            onPress={() => navigation.navigate('TripDetail', { trip: experience.Trip })}
+            onPress={() => navigation.navigate('TripDetail', { id: experience.Trip.id })}
             bgColor={Colors.background.pink}
             style={styles.button}
           >
