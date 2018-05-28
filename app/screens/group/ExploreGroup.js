@@ -153,19 +153,20 @@ class ExploreGroup extends PureComponent {
     this.setState({ isOpen: false });
   }
 
-  onPress = (type, detail) => {
+  onPress = (type, details = {}) => {
     const { navigation } = this.props;
+    const { id } = details;
 
     if (type === 'profile') {
-      navigation.navigate('Profile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: id });
     }
 
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
 
     if (type === 'GroupsInCounty') {
-      navigation.navigate('GroupsInCounty', { county: detail });
+      navigation.navigate('GroupsInCounty', { id });
     }
 
     if (type === 'AlphabeticalGroups') {

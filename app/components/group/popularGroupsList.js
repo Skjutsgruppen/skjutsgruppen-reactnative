@@ -88,10 +88,10 @@ class PopularGroupsCard extends Component {
     setGroupsCount(exploreGroups.count);
   }
 
-  redirect = (type, detail) => {
+  redirect = (type, { id }) => {
     const { navigation } = this.props;
 
-    navigation.navigate('GroupDetail', { group: detail });
+    navigation.navigate('GroupDetail', { id });
   }
 
   renderAllGroups() {

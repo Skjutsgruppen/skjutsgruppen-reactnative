@@ -409,7 +409,7 @@ class Share extends Component {
             title="Your Friends"
             loading={friends.loading}
             rows={friendsListSearch}
-            setOption={id => this.setOption('friends', id)}
+            setOption={id => this.setOption('selectedFriends', id)}
             selected={selectedFriends}
             readOnlyUserId={offeredUser ? offeredUser.id : null}
           />
@@ -417,7 +417,7 @@ class Share extends Component {
             loading={friends.loading}
             rows={contactsListSearch}
             defaultAvatar
-            setOption={id => this.setOption('contacts', id)}
+            setOption={id => this.setOption('selectedContacts', id)}
             selected={selectedContacts}
           />
         </View>

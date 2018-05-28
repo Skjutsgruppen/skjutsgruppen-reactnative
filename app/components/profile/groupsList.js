@@ -19,15 +19,15 @@ class UsersGroupsList extends PureComponent {
   }
 
 
-  onPress = (type, detail) => {
+  onPress = (type, { id }) => {
     const { navigation } = this.props;
 
     if (type === 'profile') {
-      navigation.navigate('Profile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: id });
     }
 
     if (type === 'group') {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
     this.onClose();
   }

@@ -161,26 +161,28 @@ class Feed extends Component {
     subscribeToFeed();
   }
 
-  onPress = (type, detail) => {
+  onPress = (type, details) => {
     const { navigation } = this.props;
+    const { id } = details;
+
     if (type === FEEDABLE_GROUP) {
-      navigation.navigate('GroupDetail', { group: detail });
+      navigation.navigate('GroupDetail', { id });
     }
 
     if (type === FEEDABLE_TRIP) {
-      navigation.navigate('TripDetail', { trip: detail });
+      navigation.navigate('TripDetail', { id });
     }
 
     if (type === FEEDABLE_PROFILE) {
-      navigation.navigate('Profile', { profileId: detail });
+      navigation.navigate('Profile', { profileId: id });
     }
 
     if (type === FEEDABLE_NEWS) {
-      navigation.navigate('NewsDetail', { news: detail });
+      navigation.navigate('NewsDetail', { news: details });
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      navigation.navigate('ExperienceDetail', { experience: detail });
+      navigation.navigate('ExperienceDetail', { id });
     }
   }
 
