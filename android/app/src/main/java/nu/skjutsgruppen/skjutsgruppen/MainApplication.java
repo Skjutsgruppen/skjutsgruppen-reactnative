@@ -8,6 +8,7 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.opensettings.OpenSettingsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
 import com.facebook.react.ReactNativeHost;
@@ -53,6 +54,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new OpenSettingsPackage(),
                     new RNFirebasePackage(),
                     new AndroidOpenSettingsPackage(),
                     new RNTPackage(),

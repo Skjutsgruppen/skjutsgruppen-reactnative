@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -54,6 +55,7 @@
 		9286F760F61745A19EEEF499 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C00192AEA23445FAA09B6AF /* Entypo.ttf */; };
 		956622CF24A04E609EF945CE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */; };
 		964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EEE321C8F146089BB8413E /* libBVLinearGradient.a */; };
+		A03257A325A849139EEB11D5 /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AA6C48A04374052879B6F18 /* libReact Native Open Settings.a */; };
 		A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A0A6A8E9208766CF0081AA46 /* GeoLocation.m */; };
 		A0B36E8E20A19AFD007F752A /* BraintreePayment.m in Sources */ = {isa = PBXBuildFile; fileRef = A0B36E8D20A19AFD007F752A /* BraintreePayment.m */; };
 		A0CFED7B2088B8BD00558AA7 /* SFUIText-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */; };
@@ -460,6 +462,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = TPSTwitterModule;
 		};
+		E74DC9FE20BBEB0E00E5E254 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0FDB0616634E4CD99A0B8B1F /* React Native Open Settings.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 190C8BAA1BEAADCC00CD505E;
+			remoteInfo = "React Native Open Settings";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -476,6 +485,7 @@
 		099D4A438991A3EABE417013 /* Pods-Skjutsgruppen.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skjutsgruppen.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skjutsgruppen/Pods-Skjutsgruppen.release.xcconfig"; sourceTree = "<group>"; };
 		0C68AF35EEE24E0E8F1B5199 /* libRCTFBLogin.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBLogin.a; sourceTree = "<group>"; };
 		0D8C121EA6C54136B0F5095C /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
+		0FDB0616634E4CD99A0B8B1F /* React Native Open Settings.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = "React Native Open Settings.xcodeproj"; path = "../node_modules/react-native-open-settings/React Native Open Settings.xcodeproj"; sourceTree = "<group>"; };
 		1243AFB35634479EA9589AE9 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Bold.ttf"; path = "../assets/fonts/SFUIText-Bold.ttf"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
@@ -518,6 +528,7 @@
 		8BD4B3AE8A844534BB76F13B /* libReactNativeConfig.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeConfig.a; sourceTree = "<group>"; };
 		9134256ABE9242618B1C8F1F /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBLogin.xcodeproj; path = "../node_modules/react-native-facebook-login/RCTFBLogin.xcodeproj"; sourceTree = "<group>"; };
+		9AA6C48A04374052879B6F18 /* libReact Native Open Settings.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libReact Native Open Settings.a"; sourceTree = "<group>"; };
 		9B9A2EFAAD834B01A6223F24 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContacts.a; sourceTree = "<group>"; };
 		A0A6A8E8208766CF0081AA46 /* GeoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeoLocation.h; path = skjutsgruppen/GeoLocation.h; sourceTree = "<group>"; };
 		A0A6A8E9208766CF0081AA46 /* GeoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GeoLocation.m; path = skjutsgruppen/GeoLocation.m; sourceTree = "<group>"; };
@@ -587,6 +598,7 @@
 				C4C14A4D3BD2D3A0DE574D31 /* libPods-Skjutsgruppen.a in Frameworks */,
 				BB17D4872085BC4100F7187C /* libTPSTwitterModule.a in Frameworks */,
 				C7C6AB816D244F60B5C115B6 /* libRNFirebase.a in Frameworks */,
+				A03257A325A849139EEB11D5 /* libReact Native Open Settings.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +784,7 @@
 				DD416DDDE1C849EC9701403F /* libRCTFBSDK.a */,
 				0C68AF35EEE24E0E8F1B5199 /* libRCTFBLogin.a */,
 				413B164B3E6A4AEB8E7EBE8A /* libRNFirebase.a */,
+				9AA6C48A04374052879B6F18 /* libReact Native Open Settings.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -858,6 +871,7 @@
 				94F2E9307C9A4878BF7BD8F1 /* RCTFBLogin.xcodeproj */,
 				A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */,
 				42216F1EEBA64C26B0A69527 /* RNFirebase.xcodeproj */,
+				0FDB0616634E4CD99A0B8B1F /* React Native Open Settings.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1014,6 +1028,14 @@
 				A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		E74DC9FB20BBEB0E00E5E254 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E74DC9FF20BBEB0E00E5E254 /* libReact Native Open Settings.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1211,6 +1233,10 @@
 				{
 					ProductGroup = 139FDEE71B06529A00C62182 /* Products */;
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
+				},
+				{
+					ProductGroup = E74DC9FB20BBEB0E00E5E254 /* Products */;
+					ProjectRef = 0FDB0616634E4CD99A0B8B1F /* React Native Open Settings.xcodeproj */;
 				},
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
@@ -1639,6 +1665,13 @@
 			remoteRef = BB17D4852085BC2200F7187C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		E74DC9FF20BBEB0E00E5E254 /* libReact Native Open Settings.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReact Native Open Settings.a";
+			remoteRef = E74DC9FE20BBEB0E00E5E254 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1867,11 +1900,15 @@
 					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-open-settings",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1911,11 +1948,15 @@
 					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-open-settings",
 				);
 				INFOPLIST_FILE = SkjutsgruppenTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2049,10 +2090,14 @@
 					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-open-settings",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2097,10 +2142,14 @@
 					"$(SRCROOT)/../node_modules/react-native-facebook-login/RCTFBLogin/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-open-settings",
 				);
 				INFOPLIST_FILE = "Skjutsgruppen-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2126,7 +2175,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Skjutsgruppen-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -2148,7 +2200,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Skjutsgruppen-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Skjutsgruppen-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
