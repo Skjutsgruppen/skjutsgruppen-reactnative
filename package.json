@@ -39,6 +39,7 @@
     "react-native-linear-gradient": "^2.4.0",
     "react-native-maps": "0.21.0",
     "react-native-modal-datetime-picker": "^4.13.0",
+    "react-native-open-settings": "^1.0.1",
     "react-native-pie": "^0.4.0",
     "react-native-sms": "^1.5.1",
     "react-native-swiper": "^1.5.6",
