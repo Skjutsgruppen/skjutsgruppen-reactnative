@@ -72,5 +72,8 @@
   "cancel_auto_renewal": "Cancel auto renewal?",
   "well_thats_sad": "Well, that’s sad. We cannot let you in unless you allow the app to access your contacts. Don’t worry, we won’t misuse this information.",
   "no_thanks_close_this_app": "No, thanks. Close this app",
-  "open_permission_settings": "Open permission settings"
+  "open_permission_settings": "Open permission settings",
+  "gps_turned_off_ios": "Your GPS is turned off. Please turn it on from Settings -> Privacy -> Location Services.",
+  "gps_turned_off_android": "Your GPS is turned off. Turn on your GPS goto settings",
+  "open_settings": "Open Settings"
 }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import Camera from 'react-native-camera';
 import ToolBar from '@components/utils/toolbar';
@@ -134,7 +135,8 @@ class Cam extends Component {
 
   takePicture = () => {
     if (this.camera) {
-      this.camera.capture().then(this.props.takePicture);
+      this.camera.capture({ target: Camera.constants.CaptureTarget.disk })
+        .then(this.props.takePicture);
     }
   }
 
@@ -168,18 +170,23 @@ class Cam extends Component {
 
   grantCameraPermission = async () => {
     try {
-      const cameraGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA);
-      const interalStorageGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-      const externalStorageGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-      if (cameraGranted === PermissionsAndroid.RESULTS.GRANTED
-        && interalStorageGranted === PermissionsAndroid.RESULTS.GRANTED
-        && externalStorageGranted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.setState({ loading: false, permissionDenied: false });
+      if (Platform === 'ios' || Platform.OS === 'ios') {
+        const permission = await Camera.checkDeviceAuthorizationStatus();
+        this.setState({ loading: false, permissionDenied: !permission });
       } else {
-        this.setState({ loading: false, permissionDenied: true });
+        const cameraGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA);
+        const interalStorageGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+        const externalStorageGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+        if (cameraGranted === PermissionsAndroid.RESULTS.GRANTED
+          && interalStorageGranted === PermissionsAndroid.RESULTS.GRANTED
+          && externalStorageGranted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.setState({ loading: false, permissionDenied: false });
+        } else {
+          this.setState({ loading: false, permissionDenied: true });
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -188,12 +195,10 @@ class Cam extends Component {
 
   initializeCamera = () => {
     const { permissionDenied } = this.state;
-
     if (permissionDenied) {
       return (
         <View style={[styles.viewFinder, { backgroundColor: '#000' }]} />);
     }
-
     return (
       <View style={styles.viewFinder}>
         {this.renderCamera()}
@@ -245,7 +250,6 @@ class Cam extends Component {
 
   renderCapureButton = () => {
     const { permissionDenied } = this.state;
-
     if (permissionDenied) {
       return (
         <TouchableOpacity onPress={this.grantCameraPermission} >

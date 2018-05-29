@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Alert, Image } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert, Image, Platform } from 'react-native';
 import MapView from 'react-native-maps';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -22,6 +22,7 @@ import ConfirmModal from '@components/common/confirmModal';
 import TouchableHighlight from '@components/touchableHighlight';
 import MyLocationIcon from '@assets/icons/ic_my_location.png';
 import Colors from '@theme/colors';
+import { trans } from '../lang/i18n';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -269,10 +270,11 @@ class AreaMap extends PureComponent {
     <ConfirmModal
       visible={this.state.showTurnOnGpsModal}
       loading={false}
+      cancelable={(Platform === 'android' || Platform.OS === 'android')}
       onDeny={() => this.setState({ showTurnOnGpsModal: false })}
-      confirmLabel={'Open settings'}
+      confirmLabel={Platform === 'android' || Platform.OS === 'android' ? trans('global.open_settings') : trans('global.ok')}
       onConfirm={() => this.openGpsSettings()}
-      message={'Your GPS is turned off.'}
+      message={trans(Platform === 'android' || Platform.OS === 'android' ? 'global.gps_turned_off_android' : 'global.gps_turned_off_ios')}
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )

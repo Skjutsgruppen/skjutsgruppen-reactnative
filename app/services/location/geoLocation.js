@@ -11,8 +11,11 @@ class GeoLocation {
     this.deviceEventEmitter = DeviceEventEmitter;
   }
 
-  showSettings = () => NativeModules.GeoLocation.showGpsSetting();
-
+  showSettings = () => {
+    if (Platform === 'android' || Platform.OS === 'android') {
+      NativeModules.GeoLocation.showGpsSetting();
+    }
+  }
   isGpsEnabled = () => NativeModules.GeoLocation.checkGpsStatus();
 
   async startLocationService() {

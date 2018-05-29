@@ -69,5 +69,8 @@
   "send": "se_ Send",
   "participants_in_this_ride":"se_ PARTICIPANTS IN THIS RIDE",
   "share_live_location_for": "se_ Share live location for",
-  "cancel_auto_renewal": "se_ Cancel auto renewal?"
+  "cancel_auto_renewal": "se_ Cancel auto renewal?",
+  "gps_turned_off_ios": "se_ Your GPS is turned off. Please turn it on from Settings -> Privacy -> Location Services.",
+  "gps_turned_off_android": "se_ Your GPS is turned off. Turn on your GPS goto settings",
+  "open_settings": "se_ Open Settings"
 }

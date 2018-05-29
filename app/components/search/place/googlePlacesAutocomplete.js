@@ -10,6 +10,7 @@ import {
   Image,
   StyleSheet,
   PixelRatio,
+  Platform,
 } from 'react-native';
 import { Wrapper } from '@components/common';
 import { FiltersWrapper, Filter } from '@components/search/filter';
@@ -270,10 +271,11 @@ class GooglePlacesAutocomplete extends Component {
     <ConfirmModal
       visible={this.state.showTurnOnGpsModal}
       loading={false}
+      cancelable={(Platform === 'android' || Platform.OS === 'android')}
       onDeny={() => this.setState({ showTurnOnGpsModal: false })}
-      confirmLabel={'Open settings'}
+      confirmLabel={Platform === 'android' || Platform.OS === 'android' ? trans('global.open_settings') : trans('global.ok')}
       onConfirm={() => this.openGpsSettings()}
-      message={'Your GPS is turned off.'}
+      message={trans(Platform === 'android' || Platform.OS === 'android' ? 'global.gps_turned_off_android' : 'global.gps_turned_off_ios')}
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )
