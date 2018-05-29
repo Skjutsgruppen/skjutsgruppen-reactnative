@@ -26,10 +26,12 @@ mutation getUserByFbId($id: String!) {
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -66,10 +68,12 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!)
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
