@@ -24,12 +24,14 @@ subscription updatedProfile($id: Int){
     totalExperiences
     totalGroups
     totalFriends
-    relationshipType 
+    relationshipType
     friendRequestId
     createdAt
     isSupporter
     deleted
     twitterId
+    agreementRead
+    agreementAccepted
   }
 }`;
 
@@ -55,12 +57,14 @@ query profile($id: Int){
     totalExperiences
     totalGroups
     totalFriends
-    relationshipType 
+    relationshipType
     friendRequestId
     createdAt
     isSupporter
     deleted
     twitterId
+    agreementRead
+    agreementAccepted
   }
 }`;
 
@@ -111,10 +115,12 @@ subscription updatedAccount($id: Int) {
     totalExperiences
     totalGroups
     totalFriends
-    fbId      
+    fbId
     createdAt
     isSupporter
     twitterId
+    agreementRead
+    agreementAccepted
   }
 }`;
 
@@ -138,10 +144,12 @@ query account {
     totalExperiences
     totalGroups
     totalFriends
-    fbId      
+    fbId
     createdAt
     isSupporter
     twitterId
+    agreementRead
+    agreementAccepted
   }
 }`;
 
@@ -178,13 +186,13 @@ const CONVERSATION_QUERY = gql`
     conversations (queryString: $queryString, applyQueryString: $applyQueryString, offset: $offset, limit: $limit) {
       rows {
         id
-        type 
-        description 
-        seats 
+        type
+        description
+        seats
         User {
-          id 
-          firstName 
-          avatar 
+          id
+          firstName
+          avatar
           deleted
           relation {
             path{
@@ -198,20 +206,20 @@ const CONVERSATION_QUERY = gql`
         }
         direction
         TripStart {
-          name 
+          name
           coordinates
-        } 
+        }
         TripEnd {
-          name 
+          name
           coordinates
-        } 
-        Stops { 
-          name 
-          coordinates 
-        } 
-        date 
-        time 
-        photo 
+        }
+        Stops {
+          name
+          coordinates
+        }
+        date
+        time
+        photo
         mapPhoto
         totalFeeds
         isParticipant
@@ -224,11 +232,11 @@ const CONVERSATION_QUERY = gql`
           publishedStatus
           userStatus
           User {
-            id 
-            firstName 
-            avatar 
+            id
+            firstName
+            avatar
             deleted
-          } 
+          }
         }
         Participants{
           count

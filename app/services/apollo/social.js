@@ -26,10 +26,12 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!,
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -72,10 +74,12 @@ mutation getUserByEmail($email: String!) {
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
@@ -112,7 +116,7 @@ mutation getUserByTwitterId($id: String!){
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
@@ -152,10 +156,12 @@ mutation getUserByFbId($id: String!) {
       totalExperiences
       totalGroups
       totalFriends
-      fbId      
+      fbId
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }
