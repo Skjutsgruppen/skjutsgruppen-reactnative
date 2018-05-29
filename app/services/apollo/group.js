@@ -186,6 +186,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       }
       muted
       unreadNotificationCount
+      url
     }
     count
   }
@@ -259,6 +260,7 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
       }
       muted
       unreadNotificationCount
+      url
     }
     count
   }
@@ -335,6 +337,7 @@ subscription myGroup($userId: Int!){
         locationCoordinates
         isLive
       }
+      url
     }
     remove
   }
@@ -407,6 +410,7 @@ export const GROUPS_SUBSCRIPTION = gql`
         locationCoordinates
         isLive
       }
+      url
   }
 }
 `;
@@ -477,6 +481,7 @@ query group($id: Int!){
       locationCoordinates
       isLive
     }
+    url
   }
 }
 `;
@@ -627,6 +632,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           photo 
           mapPhoto
           totalFeeds
+          url
         }
       }
       ... on CommentFeed {
@@ -804,6 +810,7 @@ subscription groupFeed($groupId: Int!){
           photo 
           mapPhoto
           totalFeeds
+          url
         }
       }
       ... on CommentFeed {
@@ -1045,6 +1052,7 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
         firstName
         avatar
       }
+      url
     }
     count
   }
@@ -1169,6 +1177,7 @@ const GROUP_TRIPS_QUERY = gql`
       seats
       muted
       unreadNotificationCount
+      url
     }
   }
 `;
@@ -1246,6 +1255,7 @@ const GROUPS_IN_COUNTY_QUERY = gql`
           isAdmin
           muted
           unreadNotificationCount
+          url
         }
         count
       }
@@ -1303,6 +1313,7 @@ mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
       isAdmin
       muted
       unreadNotificationCount
+      url
     }
     count
   }
@@ -1616,6 +1627,7 @@ query alphabetisedGroups{
         isAdmin
         muted
         unreadNotificationCount
+        url
       }
       count
     }
@@ -1670,6 +1682,7 @@ mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int)
       isAdmin
       muted
       unreadNotificationCount
+      url
     }
     count
   }
@@ -1743,6 +1756,7 @@ query nearByGroups($from: [Float]!,
       isAdmin
       muted
       unreadNotificationCount
+      url
     }
     count
   }

@@ -79,16 +79,22 @@ const Info = ({ loading, experience, navigation }) => {
         </AppText>);
       }
 
-      return (<AppText key={row.User.id}>
-        <AppText
-          color={Colors.text.blue}
-          fontVariation="bold"
-          onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
-        >
-          {row.User.firstName}
-        </AppText>
-        {separator}
-      </AppText>);
+      if (row.User.firstName) {
+        return (
+          <AppText key={row.User.id}>
+            <AppText
+              color={Colors.text.blue}
+              fontVariation="bold"
+              onPress={() => navigation.navigate('Profile', { profileId: row.User.id })}
+            >
+              {row.User.firstName}
+            </AppText>
+            {separator}
+          </AppText>
+        );
+      }
+
+      return null;
     });
   };
 

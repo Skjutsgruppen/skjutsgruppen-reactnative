@@ -27,9 +27,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background.fullWhite,
     marginBottom: 16,
   },
   label: {
@@ -190,10 +187,9 @@ class ChangePhoneNumber extends Component {
           {(!phoneVerificationCode && !verifyPreviousNumber) &&
             <View style={{ marginTop: 50 }}>
               <Text style={styles.label}>{trans('profile.new_phone_number')}</Text>
-              <View style={[styles.inputWrapper, styles.firstInputWrapper]}>
+              <View style={styles.inputWrapper}>
                 <Phone
                   defaultCode={countryCode}
-                  style={styles.input}
                   placeholder={trans('profile.your_mobile_number')}
                   onChange={
                     ({ code, number }) => this.setState({ countryCode: code, phone: number })

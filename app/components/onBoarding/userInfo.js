@@ -67,8 +67,6 @@ class UserInfo extends Component {
       updateProfile,
       updateUser,
       regeneratePhoneVerification,
-      setPhoneVerificationCode,
-      syncContacts,
     } = this.props;
     const { firstName, lastName, countryCode, phone, password } = this.state;
 
@@ -85,17 +83,13 @@ class UserInfo extends Component {
           agreementRead: true,
           agreementFalse: true,
         })
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             const { token, User } = data.updateUser;
-            regeneratePhoneVerification(User.phoneNumber).then((verification) => {
-              setPhoneVerificationCode(verification.data.regeneratePhoneVerification)
-                .catch((err) => {
-                  this.setState({ loading: false, error: getToast(err) });
-                });
-            });
+            const code = await regeneratePhoneVerification(null, User.email);
+            User.verificationCode = code.data.regeneratePhoneVerification;
             updateUser({ token, user: User }).then(() => {
               // navigation.replace('SendText');
-              syncContacts();
+              // syncContacts();
               this.onNext();
             });
           }).catch((err) => {
@@ -130,9 +124,9 @@ class UserInfo extends Component {
       errors.push('COUNTRY_CODE_REQUIRED');
     }
 
-    if (!phone || phone.length < 1) {
-      errors.push('PHONE_REQUIRED');
-    }
+    // if (!phone || phone.length < 1) {
+    //   errors.push('PHONE_REQUIRED');
+    // }
 
     if (password === '') {
       errors.push('PASSWORD_REQUIRED');
@@ -203,13 +197,13 @@ class UserInfo extends Component {
           ref={(input) => { inputs.two = input; }}
           underlineColorAndroid="transparent"
         />
-        <View style={styles.phoneInput}>
+        {/* <View style={styles.phoneInput}>
           <Phone
             defaultCode={this.state.countryCode}
             placeholder={trans('onboarding.your_mobile_number')}
             onChange={({ code, number }) => this.setState({ countryCode: code, phone: number })}
           />
-        </View>
+        </View> */}
         <TextInput
           style={styles.input}
           placeholder={trans('onboarding.password')}

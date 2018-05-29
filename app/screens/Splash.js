@@ -28,7 +28,15 @@ class Splash extends PureComponent {
       return;
     }
 
-    const { emailVerified, phoneVerified, phoneNumber, agreementRead, agreementAccepted } = user;
+    const {
+      emailVerified,
+      phoneVerified,
+      phoneNumber,
+      agreementRead,
+      agreementAccepted,
+      verificationCode,
+    } = user;
+
     const token = await AuthService.getToken();
 
     if (!agreementRead) {
@@ -47,7 +55,7 @@ class Splash extends PureComponent {
 
     if (phoneNumber === null) {
       await setRegister({ user, token });
-      navigation.replace('Onboarding', { activeStep: 6 });
+      navigation.replace('Onboarding', { activeStep: 8 });
       return;
     }
 

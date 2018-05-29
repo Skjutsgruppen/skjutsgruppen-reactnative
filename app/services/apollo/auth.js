@@ -268,14 +268,15 @@ export const withPhoneVerified = graphql(CHECK_PHONE_VERIFICATION_QUERY, {
 });
 
 const REGENERATE_PHONE_VERIFICATION_QUERY = gql`
-mutation regeneratePhoneVerification($phoneNumber: String){
-  regeneratePhoneVerification(phoneNumber: $phoneNumber)
+mutation regeneratePhoneVerification($phoneNumber: String, $email: String){
+  regeneratePhoneVerification(phoneNumber: $phoneNumber, email: $email)
 }
 `;
 
 export const withRegeneratePhoneVerification = graphql(REGENERATE_PHONE_VERIFICATION_QUERY, {
   props: ({ mutate }) => ({
-    regeneratePhoneVerification: phoneNumber => mutate({ variables: { phoneNumber } }),
+    regeneratePhoneVerification: (phoneNumber, email) =>
+      mutate({ variables: { phoneNumber, email } }),
   }),
 });
 

@@ -65,6 +65,7 @@ class Agreement extends Component {
       navigation,
     } = this.props;
     const { agreementRead } = this.state;
+
     try {
       updateProfile({
         agreementRead,

@@ -407,9 +407,21 @@ const objectGenerator = (details) => {
 
   Object.keys(details).forEach((key) => {
     if (typeof details[key] === 'object' && details[key] !== null) {
-      const id = details[key].id;
-      if (id in data) {
-        fullData[key] = data[id];
+      if (Array.isArray(details[key])) {
+        const arrayData = details[key].map((detail) => {
+          const arrayId = detail.id;
+          if (arrayId in data) {
+            return data[arrayId];
+          }
+
+          return [];
+        });
+        fullData[key] = arrayData;
+      } else {
+        const id = details[key].id;
+        if (id in data) {
+          fullData[key] = data[id];
+        }
       }
     }
   });

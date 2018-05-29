@@ -1074,7 +1074,7 @@ TripDetail.propTypes = {
     navigate: PropTypes.func,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
   }).isRequired,
   deleteTrip: PropTypes.func.isRequired,
   nav: PropTypes.shape({

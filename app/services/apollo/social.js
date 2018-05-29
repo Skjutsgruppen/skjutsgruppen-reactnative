@@ -120,6 +120,8 @@ mutation getUserByTwitterId($id: String!){
       createdAt
       isSupporter
       twitterId
+      agreementRead
+      agreementAccepted
     }
   }
 }

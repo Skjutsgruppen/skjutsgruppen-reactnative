@@ -8,6 +8,8 @@ import StepsHeading from '@components/onBoarding/stepsHeading';
 import StepsTitle from '@components/onBoarding/stepsTitle';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
+import { withContactSync } from '@services/apollo/contact';
 
 const styles = StyleSheet.create({
   paddedSection: {
@@ -28,7 +30,8 @@ const styles = StyleSheet.create({
 
 class NumberConfirmed extends Component {
   onNext = () => {
-    const { onNext } = this.props;
+    const { onNext, syncContacts } = this.props;
+    syncContacts();
     onNext();
   }
 
@@ -64,8 +67,9 @@ NumberConfirmed.propTypes = {
     user: PropTypes.object,
     login: PropTypes.bool,
   }).isRequired,
+  syncContacts: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
 
-export default connect(mapStateToProps)(NumberConfirmed);
+export default compose(withContactSync, connect(mapStateToProps))(NumberConfirmed);
