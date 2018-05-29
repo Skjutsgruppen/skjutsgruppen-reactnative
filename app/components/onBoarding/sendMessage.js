@@ -14,7 +14,7 @@ import AuthService from '@services/auth/auth';
 import Toast from '@components/toast';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
-import { withPhoneVerified } from '@services/apollo/auth';
+import { withPhoneVerified, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
@@ -52,8 +52,21 @@ class SendMessage extends Component {
   }
 
   async componentWillMount() {
+    const {
+      regeneratePhoneVerification,
+      setPhoneVerificationCode,
+      phoneVerificationCode,
+    } = this.props;
+
     const user = await AuthService.getUser();
+
     this.setState({ user }, this.setPolling);
+
+    if (!user.phoneVerified && !phoneVerificationCode) {
+      regeneratePhoneVerification(user.phoneNumber).then((verification) => {
+        setPhoneVerificationCode(verification.data.regeneratePhoneVerification);
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -129,7 +142,7 @@ class SendMessage extends Component {
             color={Colors.text.gray}
             style={styles.code}
           >
-            {phoneVerificationCode}
+            {phoneVerificationCode || ''}
           </Title>
           <RoundedButton
             onPress={() => this.onSubmitSendText()}
@@ -152,6 +165,7 @@ SendMessage.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 SendMessage.defaultProps = {
@@ -162,8 +176,12 @@ const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerif
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token }))),
+  setPhoneVerificationCode: code => AuthService.setPhoneVerification(code)
+    .then(() => dispatch(AuthAction.phoneVerification(code)))
+    .catch(error => console.warn(error)),
 });
 
 export default compose(withPhoneVerified,
   withNavigation,
+  withRegeneratePhoneVerification,
   connect(mapStateToProps, mapDispatchToProps))(SendMessage);

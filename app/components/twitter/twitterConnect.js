@@ -93,7 +93,7 @@ class TwitterConnect extends PureComponent {
       twitterUser.auth = twitterAuth;
       twitterUser.profile = await rest.get('account/verify_credentials', { include_email: true });
 
-      this.setState({ twitterUser }, this.setTwitterUser);
+      this.setState({ twitterUser, showModal: false }, this.setTwitterUser);
     } catch (error) {
       this.setState({ showModal: false });
     }
