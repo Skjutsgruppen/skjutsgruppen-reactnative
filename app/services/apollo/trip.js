@@ -42,6 +42,7 @@ subscription{
           municipality 
           locality 
           direction
+          url
         }
       }
       ... on TripFeed {
@@ -78,6 +79,7 @@ subscription{
             unit
             type
           }
+          url
         }
       }
       ... on NewsFeed {
@@ -145,6 +147,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         municipality 
         locality
         direction
+        url
       }
     }
     ... on TripFeed {
@@ -181,6 +184,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           unit
           type
         }
+        url
       }
     }
     ... on NewsFeed {
@@ -486,6 +490,7 @@ query trip($id: Int!) {
     experienceStatus
     isAdmin
     muted
+    url
     unreadNotificationCount
     flexibilityInfo {
       duration

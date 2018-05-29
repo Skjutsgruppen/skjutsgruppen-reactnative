@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: 'SFUIText-Regular',
+    fontSize: 16,
     flex: 1,
     height: 80,
   },

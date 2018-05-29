@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Alert, Clipboard } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
@@ -175,12 +175,14 @@ class Share extends Component {
   }
 
   onNext = () => {
-    const { onNext } = this.props;
+    const { onNext, detail } = this.props;
     this.setState({ loading: true });
     const { social, clipboard, selectedFriends: friends, selectedGroups: groups } = this.state;
     if (typeof onNext === 'function') {
       onNext({ social, friends, groups, clipboard });
     } else {
+      const { url } = detail;
+      Clipboard.setString(url || '');
       this.submitShare();
     }
   }

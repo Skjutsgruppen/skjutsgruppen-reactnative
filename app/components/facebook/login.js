@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Alert, StyleSheet, View, Modal } from 'react-native';
 import PropTypes from 'prop-types';
-import { userRegister, withUpdateProfile } from '@services/apollo/auth';
+import { userRegister, withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -40,10 +40,35 @@ class FBLogin extends PureComponent {
 
   onLogin = async (fb) => {
     const { profile, auth: { accessToken } } = fb.fbUser;
-    const { setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      setLogin,
+      navigation,
+      syncContacts,
+      storeAppToken,
+      regeneratePhoneVerification,
+    } = this.props;
     this.setState({ showModal: true });
 
     if (fb.hasID) {
+      const userById = fb.userById;
+      if (!userById.user.agreementRead) {
+        navigation.replace('Agreement');
+      }
+
+      if (!userById.user.agreementAccepted) {
+        navigation.replace('Registration');
+      }
+
+      if (!userById.user.phoneVerified) {
+        const code = await regeneratePhoneVerification(null, userById.user.email);
+        userById.user.verificationCode = code.data.regeneratePhoneVerification;
+
+        await setLogin(fb.userById);
+        navigation.replace('Onboarding', { activeStep: 8 });
+
+        return;
+      }
+
       await setLogin(fb.userById);
       await firebase.messaging().getToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
@@ -87,7 +112,15 @@ class FBLogin extends PureComponent {
 
   connect = async ({ profile, accessToken }) => {
     this.setState({ showModal: true });
-    const { socialConnect, setLogin, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      socialConnect,
+      setLogin,
+      navigation,
+      syncContacts,
+      storeAppToken,
+      regeneratePhoneVerification,
+    } = this.props;
+
     const response = await socialConnect({
       id: profile.id,
       email: profile.email,
@@ -95,9 +128,35 @@ class FBLogin extends PureComponent {
       type: 'facebook',
     });
 
+    const { User, token } = response.data.connect;
+
+    if (!User.agreementRead) {
+      navigation.replace('Agreement');
+    }
+
+    if (!User.agreementAccepted) {
+      navigation.replace('Registration');
+    }
+
+    if (!User.phoneNumber) {
+      const code = await regeneratePhoneVerification(null, User.email);
+      User.verificationCode = code.data.regeneratePhoneVerification;
+      await setLogin({ user: User });
+
+      navigation.replace('Onboarding', { activeStep: 8 });
+
+      return;
+    }
+
+    if (!User.phoneVerified) {
+      navigation.replace('Onboarding', { activeStep: 8 });
+
+      return;
+    }
+
     await setLogin({
-      token: response.data.connect.token,
-      user: response.data.connect.User,
+      token,
+      user: User,
     });
 
     firebase.messaging().getToken()
@@ -203,6 +262,7 @@ FBLogin.propTypes = {
   socialConnect: PropTypes.func.isRequired,
   signup: PropTypes.bool,
   storeAppToken: PropTypes.func.isRequired,
+  regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 FBLogin.defaultProps = {
@@ -225,5 +285,6 @@ export default compose(
   withNavigation,
   withContactSync,
   withStoreAppToken,
+  withRegeneratePhoneVerification,
   connect(null, mapDispatchToProps),
 )(FBLogin);

@@ -47,25 +47,26 @@ const styles = StyleSheet.create({
 class SendMessage extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ loading: false, error: '', warning: '', success: '', user: {}, token: null });
+    this.state = ({ loading: false, error: '', warning: '', success: '', user: {}, token: null, code: '' });
     this.interval = null;
   }
 
   async componentWillMount() {
-    const {
-      regeneratePhoneVerification,
-      setPhoneVerificationCode,
-      phoneVerificationCode,
-    } = this.props;
+    const { phoneVerificationCode } = this.props;
 
     const user = await AuthService.getUser();
 
     this.setState({ user }, this.setPolling);
+    this.setState({ code: phoneVerificationCode });
+  }
 
-    if (!user.phoneVerified && !phoneVerificationCode) {
-      regeneratePhoneVerification(user.phoneNumber).then((verification) => {
-        setPhoneVerificationCode(verification.data.regeneratePhoneVerification);
-      });
+  async componentWillReceiveProps() {
+    const { regeneratePhoneVerification } = this.props;
+    const { code, user } = this.state;
+
+    if (!code) {
+      const verificationCode = await regeneratePhoneVerification(null, user.email);
+      this.setState({ code: verificationCode });
     }
   }
 
@@ -119,8 +120,7 @@ class SendMessage extends Component {
   }
 
   render() {
-    const { phoneVerificationCode } = this.props;
-    const { error, warning, success } = this.state;
+    const { error, warning, success, code } = this.state;
 
     return (
       <ScrollView>
@@ -142,7 +142,7 @@ class SendMessage extends Component {
             color={Colors.text.gray}
             style={styles.code}
           >
-            {phoneVerificationCode || ''}
+            {code}
           </Title>
           <RoundedButton
             onPress={() => this.onSubmitSendText()}
@@ -169,10 +169,10 @@ SendMessage.propTypes = {
 };
 
 SendMessage.defaultProps = {
-  phoneVerificationCode: null,
+  phoneVerificationCode: '',
 };
 
-const mapStateToProps = state => ({ phoneVerificationCode: state.auth.phoneVerification });
+const mapStateToProps = state => ({ phoneVerificationCode: state.auth.user.verificationCode });
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token }))),

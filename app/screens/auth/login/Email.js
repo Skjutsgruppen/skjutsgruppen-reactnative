@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import firebase from 'react-native-firebase';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import { userLogin } from '@services/apollo/auth';
+import { userLogin, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withContactSync } from '@services/apollo/contact';
 import { Loading, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
@@ -66,7 +66,15 @@ class Login extends Component {
 
   onSubmit = async () => {
     this.setState({ loading: true });
-    const { submit, setLogin, setRegister, navigation, syncContacts, storeAppToken } = this.props;
+    const {
+      submit,
+      setLogin,
+      setRegister,
+      navigation,
+      syncContacts,
+      storeAppToken,
+      regeneratePhoneVerification,
+    } = this.props;
     const { username, password } = this.state;
     const validation = this.checkValidation();
 
@@ -74,13 +82,22 @@ class Login extends Component {
       try {
         const { data } = await submit(username, password);
         const { User, token } = data.login;
+        await setLogin({ token, user: User });
 
-        if (!User.emailVerified) {
+        if (!User.agreementRead) {
+          navigation.replace('Agreement');
+        } else if (!User.agreementAccepted) {
+          navigation.replace('Registration');
+        } else if (!User.emailVerified) {
           setRegister({ token, user: User }).then(() => {
             navigation.replace('Onboarding', { activeStep: 5 });
           });
         } else if (!User.phoneVerified) {
-          setRegister({ token, user: User }).then(() => {
+          setRegister({ token, user: User }).then(async () => {
+            if (!User.verificationCode) {
+              const code = await regeneratePhoneVerification(null, User.email);
+              User.verificationCode = code.data.regeneratePhoneVerification;
+            }
             navigation.replace('Onboarding', { activeStep: 8 });
           });
         } else {
@@ -245,6 +262,7 @@ Login.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   storeAppToken: PropTypes.func.isRequired,
+  regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
@@ -260,5 +278,6 @@ export default compose(
   userLogin,
   withContactSync,
   withStoreAppToken,
+  withRegeneratePhoneVerification,
   connect(mapStateToProps, mapDispatchToProps),
 )(Login);
