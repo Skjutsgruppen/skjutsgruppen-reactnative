@@ -90,9 +90,27 @@ class Login extends Component {
                 .then(appToken => storeAppToken(appToken, getDeviceId()));
 
               if (!User.agreementRead) {
-                navigation.replace('Agreement');
+                navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({
+                        routeName: 'Agreement',
+                      }),
+                    ],
+                  }),
+                );
               } else if (!User.agreementAccepted) {
-                navigation.replace('Registration');
+                navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({
+                        routeName: 'Registration',
+                      }),
+                    ],
+                  }),
+                );
               } else {
                 navigation.dispatch(
                   NavigationActions.reset({
