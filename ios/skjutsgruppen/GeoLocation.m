@@ -45,13 +45,8 @@ RCT_REMAP_METHOD(checkGpsStatus,
 
 RCT_EXPORT_METHOD(showGpsSetting)
 {
-  NSString* url = IS_OS_10_OR_LATER ? @"prefs:root=LOCATION_SERVICES" : @"App-Prefs:root=Privacy&path=LOCATION";
   dispatch_sync(dispatch_get_main_queue(), ^{
-    @try{
-      [[UIApplication sharedApplication] openURL:[NSURL URLWithString: url]];
-    }@catch(NSException *ex){
-      NSLog(@"%@", ex.reason);
-    }
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
   });
 }
 
