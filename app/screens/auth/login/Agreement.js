@@ -66,6 +66,12 @@ class Agreement extends Component {
     } = this.props;
     const { agreementRead } = this.state;
 
+    if (navigation.state.params && navigation.state.params.skipUpdateProfile) {
+      this.setState({ loading: false }, () => navigation.replace('Registration', { ...navigation.state.params }));
+
+      return;
+    }
+
     try {
       updateProfile({
         agreementRead,
@@ -154,8 +160,10 @@ Agreement.propTypes = {
   updateProfile: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
+    user: PropTypes.shape(),
   }).isRequired,
 };
+
 export default compose(
   withNavigation,
   withUpdateProfile,

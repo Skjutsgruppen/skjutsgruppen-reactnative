@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Linking } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 import Colors from '@theme/colors';
@@ -7,7 +7,7 @@ import { trans } from '@lang/i18n';
 import { RoundedButton, Loading } from '@components/common';
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Radio from '@components/add/radio';
-import { withUpdateProfile } from '@services/apollo/auth';
+import { withUpdateProfile, userRegister } from '@services/apollo/auth';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { connect } from 'react-redux';
@@ -64,7 +64,7 @@ class Registration extends Component {
     };
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     this.setState({ loading: true });
     const {
       updateProfile,
@@ -73,6 +73,17 @@ class Registration extends Component {
     } = this.props;
 
     const { agreementAccepted } = this.state;
+    const { skipUpdateProfile, user } = navigation.state.params;
+
+    if (skipUpdateProfile) {
+      this.setState({ loading: false });
+
+      await this.register(user);
+
+      navigation.replace('Onboarding');
+
+      return;
+    }
 
     try {
       updateProfile({
@@ -99,6 +110,70 @@ class Registration extends Component {
     const { agreementAccepted } = this.state;
 
     this.setState({ agreementAccepted: !agreementAccepted });
+  }
+
+  register = async ({
+    profile,
+    auth: { accessToken: fbToken, authToken: twitterToken, authTokenSecret: twitterSecret },
+  }) => {
+    if (profile.email === '') {
+      Alert.alert('Error!', 'Email is required');
+      return;
+    }
+    const { register, setRegister, navigation, updateProfile } = this.props;
+
+    try {
+      const data = await register({
+        email: profile.email,
+        verified: true,
+      });
+
+      const { token, User } = data.data.register;
+      await setRegister({ token, user: User });
+
+      let response = {};
+
+      if (fbToken) {
+        response = await updateProfile({
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          fbId: profile.id,
+          fbToken,
+          agreementRead: true,
+          agreementAccepted: true,
+        });
+      } else {
+        const twitterNameArray = profile.name.split(' ');
+        let firstName = '';
+        let lastName = '';
+        if (twitterNameArray.length > 1) {
+          firstName = twitterNameArray.slice(0, twitterNameArray.length - 1);
+          firstName = firstName.join(' ');
+          lastName = twitterNameArray[twitterNameArray.length - 1];
+        } else {
+          lastName = twitterNameArray[twitterNameArray.length - 1];
+        }
+
+        response = await updateProfile({
+          firstName,
+          lastName,
+          twitterId: profile.id_str,
+          twitterToken,
+          twitterSecret,
+          agreementRead: true,
+          agreementAccepted: true,
+        });
+      }
+
+      await setRegister({
+        token: response.data.updateUser.token,
+        user: response.data.updateUser.User,
+      });
+
+      navigation.replace('Onboarding', { activeStep: 8 });
+    } catch (error) {
+      console.warn(error);
+    }
   }
 
   renderButton = () => {
@@ -256,6 +331,9 @@ class Registration extends Component {
 
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
+  setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.register({ user, token })))
+    .catch(error => console.warn(error)),
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
 });
@@ -266,9 +344,17 @@ Registration.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
   }).isRequired,
+  register: PropTypes.func,
+};
+
+Registration.defaultProps = {
+  signup: false,
+  user: {},
+  register: null,
 };
 
 export default compose(
+  userRegister,
   withNavigation,
   withUpdateProfile,
   connect(mapStateToProps, mapDispatchToProps))(Registration);

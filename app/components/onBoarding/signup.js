@@ -64,8 +64,8 @@ class Signup extends Component {
           <StepsTitle>
             {trans('onboarding.we_will_never_publish_without_you_knowing')}
           </StepsTitle>
-          <FBLogin />
-          <TwitterLogin />
+          <FBLogin signup />
+          <TwitterLogin signup />
           <View style={styles.horizontalDivider} />
           <AppText style={styles.text}>
             {trans('onboarding.sign_up_the_long_way')}

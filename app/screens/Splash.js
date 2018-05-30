@@ -34,7 +34,6 @@ class Splash extends PureComponent {
       phoneNumber,
       agreementRead,
       agreementAccepted,
-      verificationCode,
     } = user;
 
     const token = await AuthService.getToken();

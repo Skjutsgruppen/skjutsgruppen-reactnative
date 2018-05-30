@@ -121,7 +121,7 @@ class TwitterConnect extends PureComponent {
   renderButton = () => {
     const { buttonType } = this.props;
 
-    if (buttonType === 'login') {
+    if (buttonType === 'login' || buttonType === 'signup') {
       return (
         <RoundedButton
           onPress={this.handleTwitterLogin}
