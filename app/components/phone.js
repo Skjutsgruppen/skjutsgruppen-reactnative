@@ -10,16 +10,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
+  },
+  pickerWrapper: {
+    height: 80,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    paddingLeft: 22,
+    backgroundColor: Colors.background.mutedBlue,
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  input: {
+    fontFamily: 'SFUIText-Regular',
+    flex: 1,
+    height: 80,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border.lightGray,
     paddingHorizontal: 30,
     backgroundColor: Colors.background.mutedBlue,
-  },
-  input: {
-    fontFamily: 'SFUIText-Regular',
-    fontSize: 16,
-    flex: 1,
-    height: 80,
   },
 });
 
@@ -56,11 +64,13 @@ class Phone extends PureComponent {
     const list = this.getList();
     return (
       <View style={styles.wrapper}>
-        <Picker
-          defaultValue={this.state.code}
-          list={list}
-          onChange={this.onChangeCountryCode}
-        />
+        <View style={styles.pickerWrapper}>
+          <Picker
+            defaultValue={this.state.code}
+            list={list}
+            onChange={this.onChangeCountryCode}
+          />
+        </View>
         <TextInput
           keyboardType="phone-pad"
           underlineColorAndroid="transparent"

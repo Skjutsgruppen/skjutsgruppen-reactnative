@@ -10,7 +10,7 @@ import CheckEmail from '@components/onBoarding/checkEmail';
 import UserInfo from '@components/onBoarding/userInfo';
 import AddPhoto from '@components/onBoarding/addPhoto';
 import SendMessage from '@components/onBoarding/sendMessage';
-import WaitingTextMessage from '@components/onBoarding/waitingTextMessage';
+// import WaitingTextMessage from '@components/onBoarding/waitingTextMessage';
 import NumberConfirmed from '@components/onBoarding/numberConfirmed';
 import { Wrapper, ProgressBar } from '@components/common';
 import { trans } from '@lang/i18n';
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class OnboardingFirst extends Component {
+class Onboarding extends Component {
   static navigationOptions = {
     header: null,
   }
@@ -83,9 +83,9 @@ class OnboardingFirst extends Component {
     this.setState({ activeStep: 9 });
   }
 
-  onWaitingTextMessageNext = () => {
-    this.setState({ activeStep: 10 });
-  }
+  // onWaitingTextMessageNext = () => {
+  //   this.setState({ activeStep: 10 });
+  // }
 
   onNumberConfirmedNext = () => {
     const { navigation } = this.props;
@@ -153,12 +153,12 @@ class OnboardingFirst extends Component {
           (activeStep === 8) &&
           <SendMessage onNext={this.onSendMessageNext} />
         }
-        {
+        {/* {
           (activeStep === 9) &&
           <WaitingTextMessage onNext={this.onWaitingTextMessageNext} />
-        }
+        } */}
         {
-          (activeStep === 10) &&
+          (activeStep === 9) &&
           <NumberConfirmed onNext={this.onNumberConfirmedNext} />
         }
       </Wrapper>
@@ -166,10 +166,10 @@ class OnboardingFirst extends Component {
   }
 }
 
-OnboardingFirst.propTypes = {
+Onboarding.propTypes = {
   navigation: PropTypes.shape({
     reset: PropTypes.func,
   }).isRequired,
 };
 
-export default withNavigation(OnboardingFirst);
+export default withNavigation(Onboarding);

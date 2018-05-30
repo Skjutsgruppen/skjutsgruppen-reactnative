@@ -215,9 +215,6 @@ const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user))),
-  logout: () => AuthService.logout()
-    .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.warn(error)),
 });
 
 export default compose(withNavigation,

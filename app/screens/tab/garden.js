@@ -159,9 +159,9 @@ class Garden extends Component {
     });
   }
 
-  reset = () => {
+  reset = async () => {
     const { navigation } = this.props;
-    resetLocalStorage();
+    await resetLocalStorage();
     const resetAction = NavigationActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],

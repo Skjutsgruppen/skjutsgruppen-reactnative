@@ -52,7 +52,6 @@ class PopupMenu extends Component {
 
   render() {
     const popupStyle = {
-      // opacity: this.state.popupAnim.o,
       height: this.state.popupAnim.y,
       width: this.state.popupAnim.x,
     };

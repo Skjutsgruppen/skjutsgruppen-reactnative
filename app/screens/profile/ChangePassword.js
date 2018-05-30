@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import ToolBar from '@components/utils/toolbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Wrapper, Loading } from '@components/common';
@@ -11,50 +11,29 @@ import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { trans } from '@lang/i18n';
 
+import RoundedButton from '@components/common/roundedButton';
+import PasswordInput from '@components/common/passwordInput';
+
 const styles = StyleSheet.create({
-  profilePic: {
-    height: 80,
-    width: 80,
-    resizeMode: 'cover',
-    alignSelf: 'center',
-    borderRadius: 40,
-    margin: 24,
-  },
-  greet: {
-    fontSize: 16,
-  },
   label: {
     paddingHorizontal: 24,
     marginVertical: 8,
     color: Colors.text.gray,
   },
   input: {
-    flex: 1,
-    height: 54,
+    marginTop: 0,
+    marginBottom: 30,
     backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 24,
-    fontSize: 14,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background.fullWhite,
-    marginBottom: 16,
-  },
-  iconWrapper: {
-    width: 54,
-    height: 54,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  disabled: {
-    opacity: 0.5,
   },
   button: {
-    margin: 24,
+    width: 200,
+    marginVertical: 50,
   },
   lodingWrapper: {
     padding: 24,
+  },
+  buttonWrapper: {
+    alignItems: 'center',
   },
 });
 class ChangePassword extends Component {
@@ -156,13 +135,15 @@ class ChangePassword extends Component {
     }
 
     return (
-      <CustomButton
-        bgColor={Colors.background.green}
-        style={styles.button}
-        onPress={this.onSubmit}
-      >
-        {trans('profile.change_password')}
-      </CustomButton>
+      <View style={styles.buttonWrapper}>
+        <RoundedButton
+          onPress={this.onSubmit}
+          style={styles.button}
+          bgColor={Colors.background.pink}
+        >
+          {trans('profile.change_password')}
+        </RoundedButton>
+      </View>
     );
   }
 
@@ -172,77 +153,44 @@ class ChangePassword extends Component {
       success,
       inputs,
       oldPassword,
-      hideOldPassword,
       newPassword,
-      hideNewPassword,
       confirmPassword,
     } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        <ToolBar />
+        <ToolBar title={trans('profile.change_password')} />
         <ScrollView>
           <View style={{ paddingTop: 50 }}>
             <Toast message={error} type="error" />
             <Toast message={success} type="success" />
             <Text style={styles.label}>{trans('profile.current_password')}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                value={oldPassword}
-                secureTextEntry={hideOldPassword}
-                style={styles.input}
-                onChangeText={text => this.setState({ oldPassword: text })}
-                placeholderTextColor="#ccc"
-                underlineColorAndroid="transparent"
-                onSubmitEditing={() => this.focusNextField('two')}
-                ref={(input) => { inputs.one = input; }}
-                returnKeyType="next"
-              />
-              <TouchableOpacity
-                onPress={this.showCurrentPassword}
-                disabled={oldPassword.length < 1}
-              >
-                <View style={styles.iconWrapper}>
-                  {this.secretIcon(hideOldPassword, oldPassword)}
-                </View>
-              </TouchableOpacity>
-            </View>
+            <PasswordInput
+              style={styles.input}
+              value={oldPassword}
+              onChangeText={text => this.setState({ oldPassword: text })}
+              // onSubmitEditing={() => this.focusNextField('two')}
+              ref={(input) => { inputs.one = input; }}
+              // returnKeyType="next"
+            />
             <Text style={styles.label}>{trans('profile.new_password')}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                value={newPassword}
-                secureTextEntry={hideNewPassword}
-                style={styles.input}
-                onChangeText={text => this.setState({ newPassword: text })}
-                placeholderTextColor="#ccc"
-                underlineColorAndroid="transparent"
-                onSubmitEditing={() => this.focusNextField('three')}
-                ref={(input) => { inputs.two = input; }}
-                returnKeyType="next"
-              />
-              <TouchableOpacity
-                onPress={this.showNewPassword}
-                disabled={newPassword.length < 1}
-              >
-                <View style={styles.iconWrapper}>
-                  {this.secretIcon(hideNewPassword, newPassword)}
-                </View>
-              </TouchableOpacity>
-            </View>
+            <PasswordInput
+              style={styles.input}
+              value={newPassword}
+              onChangeText={text => this.setState({ newPassword: text })}
+              // onSubmitEditing={() => this.focusNextField('three')}
+              ref={(input) => { inputs.two = input; }}
+              // returnKeyType="next"
+            />
             <Text style={styles.label}>{trans('profile.confirm_password')}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                value={confirmPassword}
-                secureTextEntry
-                style={styles.input}
-                onChangeText={text => this.setState({ confirmPassword: text })}
-                placeholderTextColor="#ccc"
-                underlineColorAndroid="transparent"
-                onSubmitEditing={this.onSubmit}
-                ref={(input) => { inputs.three = input; }}
-                returnKeyType="send"
-              />
-            </View>
+            <PasswordInput
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={text => this.setState({ confirmPassword: text })}
+              // onSubmitEditing={() => this.focusNextField('three')}
+              ref={(input) => { inputs.three = input; }}
+              returnKeyType="send"
+            />
             {this.renderUpdateButton()}
           </View>
         </ScrollView>

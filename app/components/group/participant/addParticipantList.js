@@ -39,8 +39,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// const Friends = withFriends(FriendsWithNoMembership);
-
 class AddParticipant extends Component {
   constructor(props) {
     super(props);

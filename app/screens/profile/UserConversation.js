@@ -6,7 +6,7 @@ import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import PortionList from '@components/portionList';
 import ListItem from '@components/profile/listItem';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_PROFILE } from '@config/constant';
 import PropTypes from 'prop-types';
 import ListSearchModal from '@components/profile/ListSearchModal';
 import StickySectionHeader from '@components/profile/stickySectionHeader';
@@ -56,6 +56,11 @@ class UserConversation extends PureComponent {
     if (type === FEEDABLE_GROUP) {
       navigation.navigate('GroupDetail', { id });
     }
+
+    if (type === FEEDABLE_PROFILE) {
+      navigation.navigate('Profile', { profileId: id });
+    }
+
     this.onClose();
   }
 

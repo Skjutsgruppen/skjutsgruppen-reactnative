@@ -13,13 +13,16 @@ import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, withNavigation } from 'react-navigation';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import StepsHeading from '@components/onBoarding/stepsHeading';
 import StepsTitle from '@components/onBoarding/stepsTitle';
+import Phone from '@components/phone';
 import { trans } from '@lang/i18n';
 import BackButton from '@components/onBoarding/backButton';
+import { AppText } from '@components/utils/texts';
+import PasswordInput from '@components/common/passwordInput';
 
 const styles = StyleSheet.create({
   inputWrapper: {
@@ -43,6 +46,17 @@ const styles = StyleSheet.create({
   paddedSection: {
     paddingHorizontal: 30,
   },
+  bottomPadding: {
+    paddingBottom: 30,
+  },
+  or: {
+    paddingTop: 30,
+    paddingHorizontal: 30,
+  },
+  forgotPassword: {
+    paddingTop: 30,
+    paddingHorizontal: 30,
+  },
 });
 
 class Login extends Component {
@@ -53,7 +67,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.secureText = true;
-    this.state = ({ username: '', password: '', loading: false, error: '', inputs: {} });
+    this.state = ({ username: '', password: '', loading: false, error: '', inputs: {}, number: '', email: '' });
   }
 
   async componentWillMount() {
@@ -159,9 +173,16 @@ class Login extends Component {
     this.props.navigation.goBack();
   }
 
+  onPhoneNumberChange = (code, number) => {
+    this.setState({ email: '', number, username: `${code}${number}` });
+  }
+
+  onEmailChange = (email) => {
+    this.setState({ email, number: '', username: email });
+  }
+
   focusNextField = (id) => {
     const { inputs } = this.state;
-
     inputs[id].focus();
   }
 
@@ -197,51 +218,64 @@ class Login extends Component {
           style={styles.button}
           bgColor={Colors.background.pink}
         >
-          {trans('global.next')}
+          {trans('onboarding.login')}
         </RoundedButton>
       </View>
     );
   }
+
   render() {
     const { error, inputs } = this.state;
+    const { navigation } = this.props;
 
     return (
-      <Container style={{ backgroundColor: Colors.background.fullWhite }}>
-        <StepsHeading style={styles.paddedSection}>Sign in</StepsHeading>
+      <Container>
+        <StepsHeading style={styles.paddedSection}>{trans('onboarding.login')}</StepsHeading>
         <StepsTitle style={styles.paddedSection}>
-          You can use your cellphone number or e-mail to sign in
+          {trans('onboarding.you_can_use_your_cellphone_number_or_email_to_sign_in')}
         </StepsTitle>
         <Toast message={error} type="error" />
+        <View style={{ marginTop: 32 }} />
+        <Phone
+          defaultCode="+977"
+          placeholder={trans('profile.your_mobile_number')}
+          onChange={({ code, number }) => this.onPhoneNumberChange(code, number)}
+          value={this.state.number}
+          autoFocus
+        />
+        <AppText color={Colors.text.blue} style={styles.or}>{trans('onboarding.or')}</AppText>
         <View style={styles.inputWrapper}>
           <TextInput
             autoCapitalize="none"
-            onChangeText={username => this.setState({ username })}
+            onChangeText={username => this.onEmailChange(username)}
             style={styles.input}
-            placeholder="Your cellphone number or e-mail"
+            placeholder={trans('onboarding.your_email')}
             underlineColorAndroid="transparent"
-            value={this.state.username}
             keyboardType="email-address"
-            autoFocus
-            onSubmitEditing={() => {
-              this.focusNextField('two');
-            }}
+            value={this.state.email}
+            // onSubmitEditing={() => {
+            //   this.focusNextField('two');
+            // }}
             ref={(input) => { inputs.one = input; }}
-            returnKeyType="next"
+            // returnKeyType="next"
           />
         </View>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            onChangeText={password => this.setState({ password })}
-            style={styles.input}
-            secureTextEntry
-            placeholder="Your Password"
-            underlineColorAndroid="transparent"
-            value={this.state.password}
-            returnKeyType="send"
-            onSubmitEditing={this.onSubmit}
-            ref={(input) => { inputs.two = input; }}
-          />
-        </View>
+        <PasswordInput
+          placeholder={trans('onboarding.your_password')}
+          onChangeText={password => this.setState({ password })}
+          value={this.state.password}
+          onSubmitEditing={this.onSubmit}
+          ref={(input) => { inputs.two = input; }}
+          returnKeyType="send"
+        />
+        <AppText
+          color={Colors.text.blue}
+          onPress={() => navigation.navigate('ForgotPassword')}
+          style={styles.forgotPassword}
+          fontVariation="semibold"
+        >
+          {trans('onboarding.forgot_password')}
+        </AppText>
         {this.renderButton()}
         <View style={styles.paddedSection}>
           <BackButton leftAligned onPress={this.onPressBack} />
@@ -281,5 +315,6 @@ export default compose(
   withContactSync,
   withStoreAppToken,
   withRegeneratePhoneVerification,
+  withNavigation,
   connect(mapStateToProps, mapDispatchToProps),
 )(Login);

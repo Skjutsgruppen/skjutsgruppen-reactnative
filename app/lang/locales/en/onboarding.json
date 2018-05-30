@@ -68,5 +68,20 @@
   "add_or_join_groups_for_a_specific_distance": "Add or join groups for a specific distance, an area or a subject.",
   "welcome_back": "Welcome Back!",
   "email_phone": "E-mail / phone",
-  "login_with_fb_twitter_or_your_email": "Log in with Facebook, Twitter or your e-mail or cell phone number."
+  "login_with_fb_twitter_or_your_email": "Log in with Facebook, Twitter or your e-mail or cell phone number.",
+  "your_email": "Your e-mail",
+  "your_password": "Your Password",
+  "you_can_use_your_cellphone_number_or_email_to_sign_in": "Use your cellphone number or email to log in.",
+  "login": "Log in",
+  "forgot_password": "I forgot my password",
+  "an_email_will_be_sent_to_your_address": "A link to reset your password will be sent to the email address you provide below.",
+  "or": "OR",
+  "resend_text_message": "Resend message",
+  "number_already_confirmed": "This number is already confirmed",
+  "number_already_confirmed_description": "This number is already confirmed by {{firstName}} {{lastName}}, with e-mail {{email}}.",
+  "go_to_log_in": "If this is you, go to login. If something went wrong you can start over.",
+  "start_over": "Start over",
+  "will_reset_your_session": "Are you sure you want to go back? This will reset your current session.",
+  "new_number": "It seems you are using new phone number. Do you want to update your phone number?",
+  "generating_code": "generating code"
 }

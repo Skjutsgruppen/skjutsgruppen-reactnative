@@ -20,30 +20,17 @@ import SharedTrip from '@screens/group/SharedTrip';
 import Welcome from '@screens/auth/welcome/Welcome';
 import WelcomeTwo from '@screens/auth/welcome/WelcomeTwo';
 import Boarding from '@screens/auth/boarding/Boarding';
-import Onboarding from '@screens/auth/onboarding/new/Onboarding';
+import Onboarding from '@screens/auth/onboarding/Onboarding';
 import Agreement from '@screens/auth/login/Agreement';
 import Registration from '@screens/auth/login/Registration';
-// import OnBoardingFirst from '@screens/auth/onboarding/first';
-// import OnBoardingSecond from '@screens/auth/onboarding/second';
-// import OnBoardingThird from '@screens/auth/onboarding/third';
-// import OnBoardingFourth from '@screens/auth/onboarding/fourth';
-// import OnBoardingFifth from '@screens/auth/onboarding/fifth';
-
-import RegisterMethod from '@screens/auth/register/Method';
-import RegisterViaEmail from '@screens/auth/register/Email';
-import CheckEMail from '@screens/auth/email/Check';
-import EmailVerified from '@screens/auth/email/Verified';
 
 import LoginMethod from '@screens/auth/login/Method';
 import LoginViaEmail from '@screens/auth/login/Email';
 import ChangePassword from '@screens/profile/ChangePassword';
 import ChangeEmail from '@screens/profile/ChangeEmail';
 import ChangePhoneNumber from '@screens/profile/ChangePhoneNumber';
+import ForgotPassword from '@screens/auth/login/ForgotPassword';
 
-
-import AddPhoto from '@screens/auth/AddPhoto';
-import SendText from '@screens/auth/sms/SendText';
-import MobileVerified from '@screens/auth/sms/MobileVerified';
 import SearchResult from '@screens/Search';
 
 import Profile from '@screens/profile/Profile';
@@ -154,22 +141,10 @@ export const Routes = {
   Onboarding: { screen: Onboarding },
   Agreement: { screen: Agreement },
   Registration: { screen: Registration },
-  // OnBoardingFirst: { screen: OnBoardingFirst },
-  // OnBoardingSecond: { screen: OnBoardingSecond },
-  // OnBoardingThird: { screen: OnBoardingThird },
-  // OnBoardingFourth: { screen: OnBoardingFourth },
-  // OnBoardingFifth: { screen: OnBoardingFifth },
-
-  RegisterMethod: { screen: RegisterMethod },
-  RegisterViaEmail: { screen: RegisterViaEmail },
-  CheckMail: { screen: CheckEMail },
-  EmailVerified: { screen: EmailVerified },
-  AddPhoto: { screen: AddPhoto },
-  SendText: { screen: SendText },
-  MobileVerified: { screen: MobileVerified },
 
   LoginMethod: { screen: LoginMethod },
   LoginViaEmail: { screen: LoginViaEmail },
+  ForgotPassword: { screen: ForgotPassword },
   ChangePassword: { screen: ChangePassword },
   ChangeEmail: { screen: ChangeEmail },
   ChangePhoneNumber: { screen: ChangePhoneNumber },

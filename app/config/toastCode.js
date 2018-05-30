@@ -80,6 +80,7 @@ export const AppToastCode = {
   TIME_REQUIRED: 'Time is required.',
   INVALID_TIME: 'Time must be greater than current time',
   PASSWORD_UPDATED: 'Password successfully updated.',
+  PASSWORD_UPADTE_EMAIL_SEND: 'An email has been sent to your email address. Please check your email.',
   ENTER_NEW_PASSWORD: 'Please enter new password.',
   ENTER_OLD_PASSWORD: 'Please enter old password.',
   PASSWORD_UNMATCH: 'New passwords do not match.',
