@@ -762,7 +762,6 @@ class Item extends PureComponent {
       message = this.shareYourLocation(notification);
     }
 
-
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_MEMBERSHIP_REQUEST) {
       message = this.memberRequest(notification);
     }

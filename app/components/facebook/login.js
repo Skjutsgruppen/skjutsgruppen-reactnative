@@ -62,12 +62,19 @@ class FBLogin extends PureComponent {
 
     if (fb.hasID) {
       const userById = fb.userById;
+
+      await setLogin(fb.userById);
+
       if (!userById.user.agreementRead) {
         navigation.replace('Agreement');
+
+        return;
       }
 
       if (!userById.user.agreementAccepted) {
         navigation.replace('Registration');
+
+        return;
       }
 
       if (!userById.user.phoneVerified) {
@@ -80,7 +87,6 @@ class FBLogin extends PureComponent {
         return;
       }
 
-      await setLogin(fb.userById);
       await firebase.messaging().getToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
 
@@ -107,7 +113,7 @@ class FBLogin extends PureComponent {
         'Would you like to connect with facebook?',
         [
           { text: 'Cancel', onPress: () => null },
-          { text: 'OK', onPress: () => this.connect({ profile, accessToken }) },
+          { text: 'OK', onPress: () => this.connect({ profile, accessToken, fb }) },
         ],
       );
       return;
@@ -121,7 +127,7 @@ class FBLogin extends PureComponent {
     }
   }
 
-  connect = async ({ profile, accessToken }) => {
+  connect = async ({ profile, accessToken, fb }) => {
     this.setState({ showModal: true });
     const {
       socialConnect,
@@ -131,6 +137,18 @@ class FBLogin extends PureComponent {
       storeAppToken,
       regeneratePhoneVerification,
     } = this.props;
+
+    if (!fb.userByEmail.user.agreementRead) {
+      navigation.replace('Agreement', { skipUpdateProfile: true, user: fb.fbUser, connectToFacebook: true });
+
+      return;
+    }
+
+    if (!fb.userByEmail.user.agreementAccepted) {
+      navigation.replace('Registration', { skipUpdateProfile: true, user: fb.fbUser, connectToFacebook: true });
+
+      return;
+    }
 
     const response = await socialConnect({
       id: profile.id,
@@ -143,10 +161,14 @@ class FBLogin extends PureComponent {
 
     if (!User.agreementRead) {
       navigation.replace('Agreement');
+
+      return;
     }
 
     if (!User.agreementAccepted) {
       navigation.replace('Registration');
+
+      return;
     }
 
     if (!User.phoneNumber) {

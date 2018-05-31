@@ -11,7 +11,7 @@ import { Loading } from '@components/common';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import { withContactSync } from '@services/apollo/contact';
 import { withSocialConnect } from '@services/apollo/social';
-import { userRegister, withUpdateProfile } from '@services/apollo/auth';
+import { userRegister, withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { Colors } from '@theme';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
@@ -62,12 +62,18 @@ class TwitterLogin extends PureComponent {
     if (twitter.hasID) {
       const userById = twitter.userById;
 
+      await setLogin(twitter.userById);
+
       if (!userById.user.agreementRead) {
         navigation.replace('Agreement');
+
+        return;
       }
 
       if (!userById.user.agreementAccepted) {
         navigation.replace('Registration');
+
+        return;
       }
 
       if (!userById.user.phoneVerified) {
@@ -77,7 +83,6 @@ class TwitterLogin extends PureComponent {
         return;
       }
 
-      await setLogin(twitter.userById);
       await firebase.messaging().getToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
 
@@ -93,6 +98,7 @@ class TwitterLogin extends PureComponent {
       );
 
       syncContacts();
+
       return;
     }
 
@@ -103,7 +109,7 @@ class TwitterLogin extends PureComponent {
         'Would you like to connect with Twitter?',
         [
           { text: 'Cancel', onPress: () => null },
-          { text: 'Ok', onPress: () => this.connect({ profile, authToken, authTokenSecret }) },
+          { text: 'Ok', onPress: () => this.connect({ profile, authToken, authTokenSecret, twitter }) },
         ],
       );
       return;
@@ -117,7 +123,7 @@ class TwitterLogin extends PureComponent {
     }
   }
 
-  connect = async ({ profile, authToken, authTokenSecret }) => {
+  connect = async ({ profile, authToken, authTokenSecret, twitter }) => {
     this.setState({ showModal: true });
     const {
       socialConnect,
@@ -125,7 +131,20 @@ class TwitterLogin extends PureComponent {
       navigation,
       syncContacts,
       storeAppToken,
+      regeneratePhoneVerification,
     } = this.props;
+
+    if (!twitter.userByEmail.user.agreementRead) {
+      navigation.replace('Agreement', { skipUpdateProfile: true, user: twitter.twitterUser, connectToTwitter: true });
+
+      return;
+    }
+
+    if (!twitter.userByEmail.user.agreementAccepted) {
+      navigation.replace('Registration', { skipUpdateProfile: true, user: twitter.twitterUser, connectToTwitter: true });
+
+      return;
+    }
 
     const response = await socialConnect({
       id: profile.id_str,
@@ -139,13 +158,19 @@ class TwitterLogin extends PureComponent {
 
     if (!User.agreementRead) {
       navigation.replace('Agreement');
+
+      return;
     }
 
     if (!User.agreementAccepted) {
       navigation.replace('Registration');
+
+      return;
     }
 
     if (!User.phoneNumber) {
+      const code = await regeneratePhoneVerification(null, User.email);
+      User.verificationCode = code.data.regeneratePhoneVerification;
       await setLogin({ user: User });
 
       navigation.replace('Onboarding', { activeStep: 8 });
@@ -177,6 +202,7 @@ class TwitterLogin extends PureComponent {
         ],
       }),
     );
+
     syncContacts();
   }
 
@@ -277,6 +303,7 @@ TwitterLogin.propTypes = {
   }).isRequired,
   signup: PropTypes.bool,
   storeAppToken: PropTypes.func.isRequired,
+  regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 TwitterLogin.defaultProps = {
@@ -298,4 +325,5 @@ export default compose(withNavigation,
   withSocialConnect,
   withUpdateProfile,
   withStoreAppToken,
+  withRegeneratePhoneVerification,
   connect(null, mapDispatchToProps))(TwitterLogin);
