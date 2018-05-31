@@ -53,8 +53,10 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: '600',
   },
-  wrapper: {
+  loading: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
   },
   section: {
@@ -78,14 +80,18 @@ const styles = StyleSheet.create({
     top: 224 - (60 / 2),
     right: 20,
     zIndex: 20,
-  },
-  profilePic: {
     height: 60,
     width: 60,
-    resizeMode: 'cover',
     borderRadius: 30,
     borderWidth: 2,
     borderColor: Colors.border.white,
+    backgroundColor: Colors.background.lightGray,
+    overflow: 'hidden',
+  },
+  profilePic: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'cover',
   },
   detail: {
     paddingHorizontal: 24,
@@ -595,7 +601,7 @@ class TripDetail extends Component {
             {this.returnRideButton()}
             {this.recurringRideButton()}
           </View>
-          {this.renderExperienceButton()}
+          {/* {this.renderExperienceButton()} */}
         </LinearGradient>
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />
@@ -1042,9 +1048,7 @@ class TripDetail extends Component {
 
     if (!trip.User) {
       return (
-        <View style={styles.wrapper}>
-          <Loading />
-        </View>
+        <Loading style={styles.loading} />
       );
     }
 

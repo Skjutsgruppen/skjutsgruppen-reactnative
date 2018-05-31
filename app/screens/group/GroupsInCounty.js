@@ -139,7 +139,7 @@ class GroupsListByCounty extends Component {
     const { groupsByCounty } = this.state;
 
     if (loading) {
-      return (<Loading style={{ marginTop: 85, marginBottom: 24 }} />);
+      return (<Loading style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} />);
     }
 
     return (

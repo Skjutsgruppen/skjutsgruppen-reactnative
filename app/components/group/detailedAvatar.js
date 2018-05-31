@@ -33,16 +33,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
   },
-  profilePic: {
+  profilePicWrapper: {
     width: imageSize,
     height: imageSize,
-    resizeMode: 'cover',
     borderRadius: imageSize / 2,
     borderWidth: 4,
     borderColor: Colors.border.white,
+    backgroundColor: Colors.background.lightGray,
     position: 'absolute',
     top: 0,
     left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  profilePic: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   remainingCount: {
     width: imageSize,
@@ -91,15 +99,17 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                   zIndex -= 1;
 
                   return (
-                    <Image
-                      source={{ uri: member.User.avatar }}
-                      style={[
-                        styles.profilePic,
-                        index > 0 && { left: (index * imageSize) - (margin * index) },
-                        { zIndex },
-                      ]}
-                      key={member.User.id}
-                    />
+                    <View style={styles.profilePicWrapper}>
+                      <Image
+                        source={{ uri: member.User.avatar }}
+                        style={[
+                          styles.profilePic,
+                          index > 0 && { left: (index * imageSize) - (margin * index) },
+                          { zIndex },
+                        ]}
+                        key={member.User.id}
+                      />
+                    </View>
                   );
                 })
               }
@@ -126,15 +136,18 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                   zIndex -= 1;
                   if (index < membersToRender.length - 1) {
                     return (
-                      <Image
-                        source={{ uri: member.User.avatar }}
-                        style={[
-                          styles.profilePic,
-                          index > 0 && { left: (index * imageSize) - (margin * index) },
-                          { zIndex },
-                        ]}
-                        key={member.id}
-                      />
+                      <View style={[
+                        styles.profilePicWrapper,
+                        index > 0 && { left: (index * imageSize) - (margin * index) },
+                        { zIndex },
+                      ]}
+                      >
+                        <Image
+                          source={{ uri: member.User.avatar }}
+                          style={styles.profilePic}
+                          key={member.id}
+                        />
+                      </View>
                     );
                   }
 
@@ -147,7 +160,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                       ]}
                       key={member.User.id}
                     >
-                      <AppText size={14} color={Colors.text.blue}>
+                      <AppText size={12} color={Colors.text.white} allowFontScaling={false}>
                         +{
                           (rows.length > maxImage)
                             ? (count - (maxImage - 1))
