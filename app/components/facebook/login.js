@@ -49,6 +49,17 @@ class FBLogin extends PureComponent {
     } = this.props;
     this.setState({ showModal: true });
 
+    if (!fb.hasEmail && !fb.hasID) {
+      this.setState({ showModal: false });
+      if (this.props.signup) {
+        this.register(fb.fbUser);
+      } else {
+        this.signupWithFacebook(() => navigation.replace('Agreement', { skipUpdateProfile: true, user: fb.fbUser }));
+      }
+
+      return;
+    }
+
     if (fb.hasID) {
       const userById = fb.userById;
       if (!userById.user.agreementRead) {

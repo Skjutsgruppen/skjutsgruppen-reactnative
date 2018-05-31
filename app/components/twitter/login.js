@@ -11,7 +11,7 @@ import { Loading } from '@components/common';
 import TwitterConnect from '@components/twitter/twitterConnect';
 import { withContactSync } from '@services/apollo/contact';
 import { withSocialConnect } from '@services/apollo/social';
-import { userRegister, withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
+import { userRegister, withUpdateProfile } from '@services/apollo/auth';
 import { Colors } from '@theme';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
@@ -44,10 +44,20 @@ class TwitterLogin extends PureComponent {
       navigation,
       syncContacts,
       storeAppToken,
-      regeneratePhoneVerification,
     } = this.props;
 
     this.setState({ showModal: true });
+
+    if (!twitter.hasEmail && !twitter.hasID) {
+      this.setState({ showModal: false });
+      if (this.props.signup) {
+        this.register(twitter.twitterUser);
+      } else {
+        this.signUpWithTwitter(() => navigation.replace('Agreement', { skipUpdateProfile: true, user: twitter.twitterUser }));
+      }
+
+      return;
+    }
 
     if (twitter.hasID) {
       const userById = twitter.userById;
@@ -61,9 +71,6 @@ class TwitterLogin extends PureComponent {
       }
 
       if (!userById.user.phoneVerified) {
-        const code = await regeneratePhoneVerification(null, userById.user.email);
-        userById.user.verificationCode = code.data.regeneratePhoneVerification;
-
         await setLogin(twitter.userById);
         navigation.replace('Onboarding', { activeStep: 8 });
 
@@ -118,7 +125,6 @@ class TwitterLogin extends PureComponent {
       navigation,
       syncContacts,
       storeAppToken,
-      regeneratePhoneVerification,
     } = this.props;
 
     const response = await socialConnect({
@@ -140,8 +146,6 @@ class TwitterLogin extends PureComponent {
     }
 
     if (!User.phoneNumber) {
-      const code = await regeneratePhoneVerification(null, User.email);
-      User.verificationCode = code.data.regeneratePhoneVerification;
       await setLogin({ user: User });
 
       navigation.replace('Onboarding', { activeStep: 8 });
@@ -273,7 +277,6 @@ TwitterLogin.propTypes = {
   }).isRequired,
   signup: PropTypes.bool,
   storeAppToken: PropTypes.func.isRequired,
-  regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 TwitterLogin.defaultProps = {
@@ -295,5 +298,4 @@ export default compose(withNavigation,
   withSocialConnect,
   withUpdateProfile,
   withStoreAppToken,
-  withRegeneratePhoneVerification,
   connect(null, mapDispatchToProps))(TwitterLogin);

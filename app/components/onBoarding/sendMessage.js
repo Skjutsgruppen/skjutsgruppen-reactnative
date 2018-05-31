@@ -52,21 +52,15 @@ class SendMessage extends Component {
   }
 
   async componentWillMount() {
-    const { phoneVerificationCode } = this.props;
-
+    const { phoneVerificationCode, regeneratePhoneVerification } = this.props;
     const user = await AuthService.getUser();
-
     this.setState({ user }, this.setPolling);
-    this.setState({ code: phoneVerificationCode });
-  }
 
-  async componentWillReceiveProps() {
-    const { regeneratePhoneVerification } = this.props;
-    const { code, user } = this.state;
-
-    if (!code) {
+    if (!phoneVerificationCode) {
       const verificationCode = await regeneratePhoneVerification(null, user.email);
-      this.setState({ code: verificationCode });
+      this.setState({ code: verificationCode.data.regeneratePhoneVerification });
+    } else {
+      this.setState({ code: phoneVerificationCode });
     }
   }
 
@@ -80,11 +74,11 @@ class SendMessage extends Component {
   }
 
   onSubmitSendText = () => {
-    const { phoneVerificationCode } = this.props;
-    Clipboard.setString(phoneVerificationCode);
+    const { code } = this.state;
+    Clipboard.setString(code);
 
     SendSMS.send({
-      body: phoneVerificationCode,
+      body: code,
       recipients: [SMS_NUMBER],
       successTypes: ['sent', 'queued'],
     }, () => { });
