@@ -99,7 +99,23 @@ class SharedTrip extends Component {
           >
             <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
               <View style={styles.groupCalendarContent}>
-                <Calendar id={id} handleDayPress={this.onDayPress} />
+                <Calendar
+                  id={id}
+                  handleDayPress={this.onDayPress}
+                  theme={{
+                    'stylesheet.day.period': {
+                      base: {
+                        width: 34,
+                        height: 34,
+                        alignItems: 'center',
+                      },
+                      todayText: {
+                        fontWeight: '500',
+                        color: Colors.text.blue,
+                      },
+                    },
+                  }}
+                />
                 <View style={styles.closeWrapper}>
                   <TouchableOpacity
                     style={styles.closeModal}

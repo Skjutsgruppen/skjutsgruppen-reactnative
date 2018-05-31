@@ -39,6 +39,19 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
         current={tripDate}
         markedDates={markedDates}
         onDayPress={day => checkAndRedirect(day.dateString)}
+        theme={{
+          'stylesheet.day.period': {
+            base: {
+              width: 34,
+              height: 34,
+              alignItems: 'center',
+            },
+            todayText: {
+              fontWeight: '500',
+              color: Colors.text.blue,
+            },
+          },
+        }}
       />
     </View>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
+import Colors from '@theme/colors';
 import LeafIcon from '@assets/icons/ic_leaf.png';
 
 const styles = StyleSheet.create({
@@ -38,6 +39,7 @@ const Avatar = ({
     height: size,
     width: size,
     borderRadius: size / 2,
+    backgroundColor: Colors.background.lightGray,
   };
   const avatarStyle = {
     height: size,

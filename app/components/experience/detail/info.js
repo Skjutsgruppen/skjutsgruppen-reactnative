@@ -27,16 +27,22 @@ const styles = StyleSheet.create({
     height: imageSize,
     marginVertical: 12,
   },
-  profilePic: {
+  profilePicWrapper: {
     width: imageSize,
     height: imageSize,
-    resizeMode: 'cover',
     borderRadius: imageSize / 2,
     borderWidth: 4,
     borderColor: Colors.border.white,
+    backgroundColor: Colors.background.lightGray,
     position: 'absolute',
     top: 0,
     left: 0,
+    overflow: 'hidden',
+  },
+  profilePic: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   remainingCount: {
     width: imageSize,
@@ -147,15 +153,19 @@ const Info = ({ loading, experience, navigation }) => {
 
               if (index < (maxImage - 1)) {
                 return (
-                  <Image
-                    key={User.id}
-                    source={{ uri: User.avatar }}
+                  <View
                     style={[
-                      styles.profilePic,
+                      styles.profilePicWrapper,
                       index > 0 && { left: (index * imageSize) - (margin * index) },
                       { zIndex },
                     ]}
-                  />
+                  >
+                    <Image
+                      key={User.id}
+                      source={{ uri: User.avatar }}
+                      style={styles.profilePic}
+                    />
+                  </View>
                 );
               }
 

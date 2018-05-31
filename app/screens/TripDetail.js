@@ -54,8 +54,10 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: '600',
   },
-  wrapper: {
+  loading: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: Colors.background.fullWhite,
   },
   section: {
@@ -79,14 +81,18 @@ const styles = StyleSheet.create({
     top: 224 - (60 / 2),
     right: 20,
     zIndex: 20,
-  },
-  profilePic: {
     height: 60,
     width: 60,
-    resizeMode: 'cover',
     borderRadius: 30,
     borderWidth: 2,
     borderColor: Colors.border.white,
+    backgroundColor: Colors.background.lightGray,
+    overflow: 'hidden',
+  },
+  profilePic: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'cover',
   },
   detail: {
     paddingHorizontal: 24,
@@ -598,7 +604,7 @@ class TripDetail extends Component {
             {this.returnRideButton()}
             {this.recurringRideButton()}
           </View>
-          {this.renderExperienceButton()}
+          {/* {this.renderExperienceButton()} */}
         </LinearGradient>
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />
@@ -641,6 +647,19 @@ class TripDetail extends Component {
               markingType={'period'}
               hideExtraDays
               onDayPress={day => this.redirectToSelectedTripDate(day)}
+              theme={{
+                'stylesheet.day.period': {
+                  base: {
+                    width: 34,
+                    height: 34,
+                    alignItems: 'center',
+                  },
+                  todayText: {
+                    fontWeight: '500',
+                    color: Colors.text.blue,
+                  },
+                },
+              }}
             />
             <View style={styles.closeWrapper}>
               <TouchableOpacity
@@ -748,22 +767,28 @@ class TripDetail extends Component {
           <AppText style={styles.text}>
             {trip.description}
             {trip.Group && trip.Group.id &&
-              <AppText
-                onPress={() => navigation.navigate('GroupDetail', { id: trip.Group.id, fetch: true })}
-                fontVariation="italic"
-              >
+              <AppText color={Colors.text.gray} fontVariation="italic">
                 {' '}
                 {trans('detail.i_added_ride_in_this_group', { group: trip.Group.name })}
+                {' '}
+                <AppText
+                  color={Colors.text.blue}
+                  fontVariation="italic"
+                  onPress={() => navigation.navigate('GroupDetail', { id: trip.Group.id, fetch: true })}
+                >{trans('detail.here')}</AppText>
               </AppText>
             }
             {
               trip.linkedTrip && trip.linkedTrip.id &&
-              <AppText
-                onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
-                fontVariation="italic"
-              >
+              <AppText color={Colors.text.gray} fontVariation="italic">
                 {' '}
                 {trans('detail.i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
+                {' '}
+                <AppText
+                  color={Colors.text.blue}
+                  fontVariation="italic"
+                  onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
+                >{trans('detail.here')}</AppText>
               </AppText>
             }
           </AppText>
@@ -1045,9 +1070,7 @@ class TripDetail extends Component {
 
     if (!trip.User) {
       return (
-        <View style={styles.wrapper}>
-          <Loading />
-        </View>
+        <Loading style={styles.loading} />
       );
     }
 

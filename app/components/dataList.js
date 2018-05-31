@@ -33,6 +33,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 32,
+  },
 });
 
 const AnimatedFlatlist = Animated.createAnimatedComponent(
@@ -106,7 +112,7 @@ class DataList extends PureComponent {
     let headerView = null;
 
     if ((networkStatus === 1 && rows.length < 1) || (!infinityScroll && loadMorePosition === 'top' && networkStatus === 3)) {
-      headerView = (<Loading style={{ height: 60 }} />);
+      headerView = (<Loading style={styles.loading} />);
     }
 
     const parentHeader = typeof header === 'function' ? header() : header;
@@ -141,7 +147,7 @@ class DataList extends PureComponent {
     } else if (rows.length >= count || (!infinityScroll && loadMorePosition === 'top')) {
       footerView = null;
     } else if (loading || (networkStatus === 1 && rows.length < 1)) {
-      footerView = (<Loading style={{ height: 80 }} />);
+      footerView = (<Loading style={styles.loading} />);
     }
     const footerComponent = typeof footer === 'function' ? this.footer() : footer;
 

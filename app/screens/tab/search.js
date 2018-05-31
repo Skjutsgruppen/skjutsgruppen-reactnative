@@ -385,6 +385,19 @@ class Search extends Component {
                 style={{
                   justifyContent: 'center',
                 }}
+                theme={{
+                  'stylesheet.day.period': {
+                    base: {
+                      width: 34,
+                      height: 34,
+                      alignItems: 'center',
+                    },
+                    todayText: {
+                      fontWeight: '500',
+                      color: Colors.text.blue,
+                    },
+                  },
+                }}
               />
             </CalendarModal>
             <AppText size={14} color={Colors.text.gray} style={{ margin: 20 }}>{trans('search.show_results_from')}</AppText>
