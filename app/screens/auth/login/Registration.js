@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, Linking, Alert } from 'react-native';
 import PropTypes from 'prop-types';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
+import firebase from 'react-native-firebase';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
 import { RoundedButton, Loading } from '@components/common';
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Radio from '@components/add/radio';
-import { withUpdateProfile, userRegister } from '@services/apollo/auth';
+import { withUpdateProfile, userRegister, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
+import { getDeviceId } from '@helpers/device';
+import { withSocialConnect } from '@services/apollo/social';
+import { withContactSync } from '@services/apollo/contact';
+import { withStoreAppToken } from '@services/apollo/profile';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -73,16 +78,23 @@ class Registration extends Component {
     } = this.props;
 
     const { agreementAccepted } = this.state;
-    const { skipUpdateProfile, user } = navigation.state.params;
 
-    if (skipUpdateProfile) {
-      this.setState({ loading: false });
+    if (navigation.state.params) {
+      if (navigation.state.params.skipUpdateProfile) {
+        this.setState({ loading: false });
 
-      await this.register(user);
+        if (navigation.state.params.connectToFacebook || navigation.state.params.connectToTwitter) {
+          await this.connectSocial(navigation.state.params.user);
 
-      navigation.replace('Onboarding');
+          return;
+        }
 
-      return;
+        await this.register(navigation.state.params.user);
+
+        navigation.replace('Onboarding');
+
+        return;
+      }
     }
 
     try {
@@ -112,6 +124,75 @@ class Registration extends Component {
     this.setState({ agreementAccepted: !agreementAccepted });
   }
 
+  connectSocial = async ({ profile, auth: { accessToken, authToken, authTokenSecret } }) => {
+    const {
+      socialConnect,
+      setLogin,
+      navigation,
+      syncContacts,
+      storeAppToken,
+      regeneratePhoneVerification,
+    } = this.props;
+
+    let response = {};
+
+    if (navigation.state.params.connectToFacebook) {
+      response = await socialConnect({
+        id: profile.id,
+        email: profile.email,
+        token: accessToken,
+        type: 'facebook',
+      });
+    } else if (navigation.state.params.connectToTwitter) {
+      response = await socialConnect({
+        id: profile.id_str,
+        email: profile.email,
+        token: authToken,
+        secret: authTokenSecret,
+        type: 'twitter',
+      });
+    }
+
+    const { User, token } = response.data.connect;
+
+    if (!User.phoneNumber) {
+      const code = await regeneratePhoneVerification(null, User.email);
+      User.verificationCode = code.data.regeneratePhoneVerification;
+      await setLogin({ user: User });
+
+      navigation.replace('Onboarding', { activeStep: 8 });
+
+      return;
+    }
+
+    if (!User.phoneVerified) {
+      navigation.replace('Onboarding', { activeStep: 8 });
+
+      return;
+    }
+
+    await setLogin({
+      token,
+      user: User,
+    });
+
+    firebase.messaging().getToken()
+      .then(appToken => storeAppToken(appToken, getDeviceId()));
+
+    navigation.dispatch(
+      NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'Tab',
+          }),
+        ],
+      }),
+    );
+
+    syncContacts();
+  }
+
   register = async ({
     profile,
     auth: { accessToken: fbToken, authToken: twitterToken, authTokenSecret: twitterSecret },
@@ -121,6 +202,7 @@ class Registration extends Component {
       return;
     }
     const { register, setRegister, navigation, updateProfile } = this.props;
+
 
     try {
       const data = await register({
@@ -336,6 +418,9 @@ const mapDispatchToProps = dispatch => ({
     .catch(error => console.warn(error)),
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
+  setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.login({ user, token })))
+    .catch(error => console.warn(error)),
 });
 
 Registration.propTypes = {
@@ -345,16 +430,24 @@ Registration.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   register: PropTypes.func,
+  socialConnect: PropTypes.func,
+  setLogin: PropTypes.func.isRequired,
 };
 
 Registration.defaultProps = {
   signup: false,
   user: {},
   register: null,
+  socialConnect: null,
+
 };
 
 export default compose(
   userRegister,
   withNavigation,
   withUpdateProfile,
+  withSocialConnect,
+  withContactSync,
+  withStoreAppToken,
+  withRegeneratePhoneVerification,
   connect(mapStateToProps, mapDispatchToProps))(Registration);
