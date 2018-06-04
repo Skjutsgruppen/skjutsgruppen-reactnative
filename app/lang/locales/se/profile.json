@@ -27,6 +27,7 @@
   "your_support_of_the_garden": "se_Your support of the garden",
   "settings": "se_ Settings",
   "participant_agreement": "se_Participant agreement",
+  "privacy_policy": "se_ Privacy policy",
   "log_out": "se_Log Out",
   "CHANGE": "se_CHANGE",
   "Experience": "se_Experience",
@@ -119,7 +120,7 @@
   "of_this_support_and_have_not_been_auto_renewed_yet": "se_ of this support and have not been auto renewed yet.",
   "stop_auto_renewal": "se_ Stop auto renewal",
   "auto_renewal_canceled": "se_ Auto renewal cancelled",
-  "this_app_is_soon_a_self_sustaining_garden": "se_ This app soon a self-sustaining garden.",
+  "this_app_is_soon_a_self_sustaining_garden": "se_ This app is soon a self-sustaining garden.",
   "as_you_can_see_all_of_are_right_now_co_creating": "se_ As you can see all of are right now co-creating this app. If you find something wrong you can add this to our Trello and you can also help improve the code on our Github",
   "we_are_currently_also_building": "se_ We are currently also building a feature where you can help the movement with the money we need to keep this app running. More in the next update of the app!",
   "please_send_the_following_code": "se_ Please send the following code to change your phone number."

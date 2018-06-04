@@ -29,6 +29,8 @@ import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
+import AddPhotoIconPink from '@assets/icons/ic_add_pink.png';
+import CameraIcon from '@assets/icons/ic_camera_add.png';
 
 const Enablers = withGroupMembers(ParticipantAvatar);
 
@@ -72,14 +74,29 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   imageWrapper: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 30,
     marginLeft: 30,
+    backgroundColor: Colors.background.gray,
   },
-  profileImage: {
-    height: 62,
-    width: 62,
+  groupImage: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
     resizeMode: 'cover',
-    borderRadius: 31,
+  },
+  cameraIcon: {
+    maxWidth: '90%',
+    maxHeight: '90%',
+  },
+  addIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: -18,
   },
   label: {
     paddingHorizontal: 24,
@@ -156,8 +173,8 @@ class EditGroup extends Component {
       localityId,
       type,
       id,
+      direction,
     } = this.state.updatedGroup;
-
     if (name === '') {
       this.onChangePress(false, '');
       this.updateGroup('name', group.name);
@@ -199,6 +216,7 @@ class EditGroup extends Component {
         localityId,
         type,
         id,
+        direction,
       })
         .then(() => {
           this.onChangePress(false, '');
@@ -224,6 +242,26 @@ class EditGroup extends Component {
     } else {
       this.setState({ modalVisibility: show, openedComponent: redirect });
     }
+  }
+
+  getGroupLocation = () => {
+    const { updatedGroup } = this.state;
+    const { TripStart, TripEnd, locality, county, direction } = updatedGroup;
+    let areaLocation = '';
+
+    if (updatedGroup.outreach === STRETCH_TYPE_ROUTE) {
+      return `${TripStart.name || direction} - ${TripEnd.name || direction}`;
+    }
+
+    if (locality) {
+      areaLocation += locality;
+    }
+
+    if (county) {
+      areaLocation += (areaLocation) ? `, ${county}` : `${county}`;
+    }
+
+    return areaLocation;
   }
 
   canUserDelete = () => {
@@ -282,7 +320,6 @@ class EditGroup extends Component {
       }
       group[key] = value;
     }
-
     this.setState({ updatedGroup: group });
   }
 
@@ -301,10 +338,20 @@ class EditGroup extends Component {
     const { updatedGroup: { outreach } } = this.state;
 
     if (outreach === STRETCH_TYPE_ROUTE) {
-      const { start, end, stops } = value;
+      const { start, end, stops, directionFrom, directionTo } = value;
+      let direction = null;
+
+      if (directionFrom) {
+        direction = directionFrom.toLowerCase();
+      }
+
+      if (directionTo) {
+        direction = directionTo.toLowerCase();
+      }
 
       await this.updateGroup('TripStart', start);
       await this.updateGroup('TripEnd', end);
+      await this.updateGroup('direction', direction);
       await this.updateGroup('Stops', stops);
     } else {
       const { country, county, municipality, locality } = value;
@@ -378,11 +425,18 @@ class EditGroup extends Component {
   }
 
   renderOutreachForm = () => {
-    const {
-      updatedGroup: {
-        outreach, TripStart, TripEnd, Stops, localityId, countryCode, countyId, municipalityId,
-      },
-      loading,
+    const { updatedGroup:
+      {
+        outreach,
+        TripStart,
+        TripEnd,
+        Stops,
+        localityId,
+        countryCode,
+        countyId,
+        municipalityId,
+        direction,
+      }, loading,
     } = this.state;
 
     if (loading) {
@@ -406,6 +460,8 @@ class EditGroup extends Component {
           countryCode: stop.countryCode,
           coordinates: stop.coordinates,
         })) : [],
+        directionFrom: TripStart.name ? null : direction,
+        directionTo: TripEnd.name ? null : direction,
       };
 
       return (
@@ -522,7 +578,14 @@ class EditGroup extends Component {
 
   renderEdit = () => {
     const { uploadedImage, updatedGroup, errorMsg } = this.state;
-    const image = uploadedImage || { uri: updatedGroup.photo };
+    let image = null;
+    if (uploadedImage) {
+      image = <Image style={styles.groupImage} source={uploadedImage} />;
+    } else if (updatedGroup.photo) {
+      image = <Image style={styles.groupImage} source={{ uri: updatedGroup.photo }} />;
+    } else {
+      image = <Image style={styles.cameraIcon} source={CameraIcon} />;
+    }
 
     return (
       <View style={{ flex: 1 }}>
@@ -530,11 +593,16 @@ class EditGroup extends Component {
         <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={styles.nameSection}>
-            <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
-              <Image
-                style={styles.profileImage}
-                source={image}
-              />
+            <TouchableOpacity onPress={this.selectPhotoTapped}>
+              <View style={styles.imageWrapper}>
+                {image}
+                {
+                  !uploadedImage && !updatedGroup.photo && <Image
+                    style={styles.addIcon}
+                    source={AddPhotoIconPink}
+                  />
+                }
+              </View>
             </TouchableOpacity>
             {this.renderInfoEdit()}
           </View>
@@ -548,9 +616,7 @@ class EditGroup extends Component {
           {
             this.renderList({
               title: 'Area',
-              info: updatedGroup.outreach === STRETCH_TYPE_ROUTE ?
-                `${updatedGroup.TripStart.name} - ${updatedGroup.TripEnd.name}` :
-                `${updatedGroup.locality}, ${updatedGroup.county}`,
+              info: this.getGroupLocation(),
               subtext: updatedGroup.outreach === STRETCH_TYPE_ROUTE ? null : updatedGroup.country,
               redirect: 'Outreach',
             })

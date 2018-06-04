@@ -27,6 +27,7 @@ import ConfirmModal from '@components/common/confirmModal';
 import { connect } from 'react-redux';
 import { withDeleteFeed } from '@services/apollo/feed';
 import { AppText } from '@components/utils/texts';
+import { getGroupDetails } from '@services/apollo/dataSync';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -166,7 +167,8 @@ class FeedList extends PureComponent {
     }
 
     if (type === FEEDABLE_LOCATION) {
-      const { group } = navigation.state.params;
+      const groupId = navigation.state.params ? navigation.state.params.id : null;
+      const group = getGroupDetails(groupId);
 
       if (group.outreach === STRETCH_TYPE_AREA) navigation.navigate('Area', { info: group });
       if (group.outreach === STRETCH_TYPE_ROUTE) navigation.navigate('Route', { info: group });

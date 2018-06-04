@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, Modal } from 'react-native';
 import { compose } from 'react-apollo';
-import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
+import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, GROUP_FEED_TYPE_SHARE } from '@config/constant';
 import PropTypes from 'prop-types';
 import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import ToolBar from '@components/utils/toolbar';
@@ -217,7 +217,7 @@ class JoinGroup extends Component {
       >
         <Share
           modal
-          type={FEEDABLE_GROUP}
+          type={GROUP_FEED_TYPE_SHARE}
           detail={group}
           onClose={() => this.setState({ showShareModal: false })}
         />

@@ -13,7 +13,7 @@ import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
 import { connect } from 'react-redux';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE } from '@config/constant';
 import SendSMS from 'react-native-sms';
 import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
@@ -251,7 +251,7 @@ class Share extends Component {
       selectedTripParticipants: tripParticipants,
     } = this.state;
     const shareInput = { social, friends, groups };
-    const { name, TripStart, TripEnd, id, isAdmin } = detail;
+    const { name, TripStart, TripEnd, id, isAdmin, Trip } = detail;
     let smsBody = '';
 
     if (type === FEEDABLE_GROUP) {
@@ -263,7 +263,10 @@ class Share extends Component {
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
-      smsBody = trans('share.share_experience', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/e/${id}` });
+      smsBody = trans(
+        'share.share_experience',
+        { tripStart: Trip ? Trip.TripStart.name : '', tripEnd: Trip ? Trip.TripEnd.name : '', url: `${APP_URL}/e/${id}` },
+      );
     }
 
     try {
@@ -591,7 +594,9 @@ Share.propTypes = {
   }),
   location: PropTypes.shape(),
   shareLocation: PropTypes.func,
-  type: PropTypes.oneOf([FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION]),
+  type: PropTypes.oneOf(
+    [FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE],
+  ),
   onClose: PropTypes.func,
   onNext: PropTypes.func,
   groups: PropTypes.shape({

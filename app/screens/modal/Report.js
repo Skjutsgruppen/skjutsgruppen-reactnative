@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, ScrollView } from 'react-native';
+import { View, TextInput, ScrollView, BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -96,6 +96,21 @@ class Report extends Component {
     this.state = { description: '', sending: false, isReported: false, error: '' };
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+
+  onBackButtonPress = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+
+    return true;
+  }
+
   onReport = () => {
     const { description } = this.state;
     const { navigation } = this.props;
@@ -142,13 +157,19 @@ class Report extends Component {
     const { data, type } = navigation.state.params;
 
     if (type === FEEDABLE_TRIP) {
+      const { Trip } = data;
+      const tripStart = Trip.TripStart && Trip.TripStart.name ?
+        Trip.TripStart.name : Trip.direction;
+      const tripEnd = Trip.TripEnd && Trip.TripEnd.name ?
+        Trip.TripEnd.name : Trip.direction;
+
       return (
         <View>
           <AppText>
-            {this.renderUsername(data.Trip.User.firstName)} {data.Trip.type === FEED_TYPE_OFFER ? 'offers' : 'asks'} {data.Trip.seats !== 0 ? `${data.Trip.seats} seats` : 'for a ride'}
+            {this.renderUsername(Trip.User.firstName)} {Trip.type === FEED_TYPE_OFFER ? 'offers' : 'asks'} {Trip.seats !== 0 ? `${Trip.seats} seats` : 'for a ride'}
           </AppText>
-          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
-          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
+          <AppText>{tripStart} - {tripEnd}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{Trip.date}</Date></AppText>
         </View>
       );
     }
@@ -167,12 +188,18 @@ class Report extends Component {
       );
     }
 
-    if (type === FEEDABLE_EXPERIENCE) {
+    if (type === FEEDABLE_EXPERIENCE || data.feedable === FEEDABLE_EXPERIENCE) {
+      const { Trip } = data.Experience;
+      const tripStart = Trip.TripStart && Trip.TripStart.name ?
+        Trip.TripStart.name : Trip.direction;
+      const tripEnd = Trip.TripEnd && Trip.TripEnd.name ?
+        Trip.TripEnd.name : Trip.direction;
+
       return (
         <View>
           <AppText>
-            Experience for {data.Experience.Trip.TripStart.name} {' - '}
-            {data.Experience.Trip.TripEnd.name} {' on '}
+            Experience for {tripStart} {' - '}
+            {tripEnd} {' on '}
             <Date format="MMM DD, YYYY">{data.date}</Date>
           </AppText>
         </View>
@@ -188,28 +215,40 @@ class Report extends Component {
       );
     }
 
-    if (type === GROUP_FEED_TYPE_SHARE) {
+    if (type === GROUP_FEED_TYPE_SHARE && data.feedable === FEEDABLE_TRIP) {
+      const { Trip } = data;
+      const tripStart = Trip.TripStart && Trip.TripStart.name ?
+        Trip.TripStart.name : Trip.direction;
+      const tripEnd = Trip.TripEnd && Trip.TripEnd.name ?
+        Trip.TripEnd.name : Trip.direction;
+
       return (
         <View>
           <AppText>
             {this.renderUsername(data.User.firstName)} {' shared '}
-            {this.renderUsername(data.Trip.User.firstName)} ride
+            {this.renderUsername(Trip.User.firstName)} ride
           </AppText>
-          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
-          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
+          <AppText>{tripStart} - {tripEnd}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{Trip.date}</Date></AppText>
         </View>
       );
     }
 
     if (type === FEEDABLE_SUGGESTION) {
+      const { Trip } = data;
+      const tripStart = Trip.TripStart && Trip.TripStart.name ?
+        Trip.TripStart.name : Trip.direction;
+      const tripEnd = Trip.TripEnd && Trip.TripEnd.name ?
+        Trip.TripEnd.name : Trip.direction;
+
       return (
         <View>
           <AppText>
             {this.renderUsername(data.User.firstName)} {' suggested '}
             {this.renderUsername(data.Trip.User.firstName)} ride
           </AppText>
-          <AppText>{data.Trip.TripStart.name} - {data.Trip.TripEnd.name}</AppText>
-          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{data.Trip.date}</Date></AppText>
+          <AppText>{tripStart} - {tripEnd}</AppText>
+          <AppText size={12} color={Colors.text.gray} style={{ marginTop: 2 }}><Date format="MMM DD, YYYY">{Trip.date}</Date></AppText>
         </View >
       );
     }
@@ -227,13 +266,13 @@ class Report extends Component {
 
   renderTypeText = () => {
     const { navigation } = this.props;
-    const { type } = navigation.state.params;
+    const { type, data } = navigation.state.params;
 
     if (type === FEEDABLE_TRIP) return 'ride';
     if (type === FEEDABLE_SUGGESTION) return 'suggestion';
-    if (type === GROUP_FEED_TYPE_SHARE) return 'shared ride';
+    if (type === GROUP_FEED_TYPE_SHARE && data.feedable === FEEDABLE_TRIP) return 'shared ride';
     if (type === REPORT_COMMENT_TYPE) return 'comment';
-    if (type === FEEDABLE_EXPERIENCE) return 'experience';
+    if (type === FEEDABLE_EXPERIENCE || data.feedable === FEEDABLE_EXPERIENCE) return 'experience';
     if (type === FEEDABLE_GROUP) return 'group';
     if (type === REPORT_TYPE_USER) return 'user';
 
@@ -265,7 +304,13 @@ class Report extends Component {
     }
 
     if (type === FEEDABLE_GROUP) {
-      return (<Avatar source={{ uri: data.Group.photo }} size={60} style={styles.avatar} />);
+      return (
+        <Avatar
+          source={{ uri: data.Group.photo || data.Group.mapPhoto }}
+          size={60}
+          style={styles.avatar}
+        />
+      );
     }
 
     if (type === FEEDABLE_EXPERIENCE) {

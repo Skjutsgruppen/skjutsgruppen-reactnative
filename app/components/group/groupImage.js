@@ -56,14 +56,16 @@ const GroupImage = ({ group, wrapperStyle, roundedCorner }) => {
         source={source}
         style={[styles.img, roundedCorner && styles.roundedCorner]}
       />
-      <Heading
-        size={24}
-        color={Colors.text.white}
-        fontVariation="bold"
-        style={styles.name}
-      >
-        {group.name}
-      </Heading>
+      {group.name &&
+        <Heading
+          size={24}
+          color={Colors.text.white}
+          fontVariation="bold"
+          style={styles.name}
+        >
+          {group.name}
+        </Heading>
+      }
     </View>
   );
 };

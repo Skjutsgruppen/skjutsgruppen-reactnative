@@ -249,6 +249,7 @@ class Route extends PureComponent {
       );
     });
   }
+
   render() {
     const { isOffer, buttonLabel } = this.props;
     const {

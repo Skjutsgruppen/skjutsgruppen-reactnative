@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -35,7 +35,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20</string>
+	<string>21</string>
 	<key>FacebookAppID</key>
 	<string>__RN_CONFIG_FB_ID</string>
 	<key>FacebookDisplayName</key>
@@ -71,7 +71,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>We use your camera app to click and  upload photos related to trips, experience and groups.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Find friends by identifying people who are using this app through your contact list. Your contacts are stored in our server so that you can communicate with your friends. For more information read our privacy policy.</string>
+	<string>We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections).</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
