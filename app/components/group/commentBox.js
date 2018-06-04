@@ -9,8 +9,11 @@ import { AppText } from '@components/utils/texts';
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: Colors.background.fullWhite,
-    borderTopWidth: 2,
-    borderColor: Colors.border.lightGray,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   footerCommentSection: {
     height: 58,

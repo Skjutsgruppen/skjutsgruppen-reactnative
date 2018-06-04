@@ -32,6 +32,11 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     lineHeight: 20,
   },
+  name: {
+    alignSelf: 'center',
+    marginHorizontal: 24,
+    textAlign: 'center',
+  },
   aboutTitle: {
     marginTop: 6,
     marginBottom: 8,

@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: (profilePicSize / 2),
     borderWidth: 2,
     borderColor: Colors.border.white,
+    backgroundColor: Colors.background.lightGray,
     position: 'absolute',
     top: imageHeight - (profilePicSize / 2),
     right: 20,

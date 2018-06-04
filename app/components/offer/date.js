@@ -137,7 +137,7 @@ class Date extends Component {
     if (markedDates[selectedDate]) {
       delete newDates[selectedDate];
     } else {
-      newDates[selectedDate] = { startingDay: true, textColor: 'white', color: isOffer ? Colors.text.pink : Colors.text.blue, endingDay: true };
+      newDates[selectedDate] = { customStyles: { container: { width: 90 } }, startingDay: true, textColor: 'white', color: isOffer ? Colors.text.pink : Colors.text.blue, endingDay: true };
     }
 
     this.setState({ markedDates: newDates, dateSelected: true });
@@ -235,6 +235,19 @@ class Date extends Component {
           minDate={Moment(new Date()).format('YYYY-MM-DD')}
           hideExtraDays
           current={activeMonth}
+          theme={{
+            'stylesheet.day.period': {
+              base: {
+                width: 34,
+                height: 34,
+                alignItems: 'center',
+              },
+              todayText: {
+                fontWeight: '500',
+                color: isOffer ? Colors.text.pink : Colors.text.blue,
+              },
+            },
+          }}
         />
         <View style={styles.section}>
           <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.is_this_a_recurring_ride')} />

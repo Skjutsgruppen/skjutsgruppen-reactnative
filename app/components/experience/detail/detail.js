@@ -30,6 +30,7 @@ const MoreExperiences = withMoreExperiences(List);
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+    backgroundColor: Colors.background.fullWhite,
   },
   headerImage: {
     width: '100%',

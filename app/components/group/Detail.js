@@ -280,7 +280,23 @@ class Detail extends PureComponent {
       >
         <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
           <View style={styles.groupCalendarContent}>
-            <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
+            <Calendar
+              id={group.id}
+              handleDayPress={this.redirectToSelectedTripDate}
+              theme={{
+                'stylesheet.day.period': {
+                  base: {
+                    width: 34,
+                    height: 34,
+                    alignItems: 'center',
+                  },
+                  todayText: {
+                    fontWeight: '500',
+                    color: Colors.text.blue,
+                  },
+                },
+              }}
+            />
             <View style={styles.closeWrapper}>
               <TouchableOpacity
                 style={styles.closeModal}
@@ -413,7 +429,23 @@ class Detail extends PureComponent {
           >
             <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
               <View style={styles.groupCalendarContent}>
-                <Calendar id={group.id} handleDayPress={this.redirectToSelectedTripDate} />
+                <Calendar
+                  id={group.id}
+                  handleDayPress={this.redirectToSelectedTripDate}
+                  theme={{
+                    'stylesheet.day.period': {
+                      base: {
+                        width: 34,
+                        height: 34,
+                        alignItems: 'center',
+                      },
+                      todayText: {
+                        fontWeight: '500',
+                        color: Colors.text.blue,
+                      },
+                    },
+                  }}
+                />
                 <View style={styles.closeWrapper}>
                   <TouchableOpacity
                     style={styles.closeModal}
