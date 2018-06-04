@@ -92,6 +92,8 @@ class Login extends Component {
           setRegister({ token, user: User }).then(() => {
             navigation.replace('Onboarding', { activeStep: 5 });
           });
+        } else if (!User.firstName || !User.lastName) {
+          navigation.replace('Onboarding', { activeStep: 6 });
         } else if (!User.phoneVerified) {
           setRegister({ token, user: User }).then(async () => {
             if (!User.verificationCode) {

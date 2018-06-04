@@ -2,21 +2,19 @@ import React, { Component } from 'react';
 import { ScrollView, Text, View, StyleSheet, Clipboard } from 'react-native';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
-import CustomButton from '@components/common/customButton';
-import { Wrapper, Loading } from '@components/common';
+import { Wrapper } from '@components/common';
 import { withChangePhoneNumber, withRegeneratePhoneVerification } from '@services/apollo/auth';
-import Phone from '@components/phone';
 import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
-import { getToast } from '@config/toast';
 import Toast from '@components/toast';
 import Colors from '@theme/colors';
 import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import { trans } from '@lang/i18n';
+import CustomButton from '../../components/common/customButton';
 
 const styles = StyleSheet.create({
   input: {
@@ -65,56 +63,41 @@ class ChangePhoneNumber extends Component {
       phone: '',
       error: '',
       phoneVerificationCode: null,
-      verifyPreviousNumber: false,
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     this.setState({ countryCode: getCountryDialCode(), phone: getPhoneNumber() });
-    const { navigation, phoneVerificationCode } = this.props;
-    const { params } = navigation.state;
-
-    if (params) {
-      this.setState({ verifyPreviousNumber: params.verifyPreviousNumber, phoneVerificationCode });
-    }
-  }
-
-  onSubmit = () => {
-    this.setState({ loading: true, error: '' });
     const {
-      changePhoneNumber,
-      setUser,
+      user,
       regeneratePhoneVerification,
       setPhoneVerificationCode,
+      phoneVerificationCode,
     } = this.props;
-    const { countryCode, phone } = this.state;
 
-    try {
-      changePhoneNumber(countryCode, phone).then(({ data }) => {
-        const { changePhoneNumber: { User: { phoneNumber } } } = data;
-        regeneratePhoneVerification(phoneNumber).then((verification) => {
-          this.setState({ phoneVerificationCode: verification.data.regeneratePhoneVerification });
-          setPhoneVerificationCode(verification.data.regeneratePhoneVerification).then(() => {
-            this.setState({ loading: false, error: '' });
-          }).catch((err) => {
-            this.setState({ loading: false, error: getToast(err) });
-          });
-        });
-        setUser(data.changePhoneNumber.User);
-      }).catch((err) => {
-        this.setState({ loading: false, error: getToast(err) });
+    if (!phoneVerificationCode) {
+      this.setState({ loading: true });
+      const verificationCode = await regeneratePhoneVerification(null, user.email);
+
+      await setPhoneVerificationCode(verificationCode.data.regeneratePhoneVerification);
+
+      this.setState({
+        code: verificationCode.data.regeneratePhoneVerification,
+        loading: false,
       });
-    } catch (err) {
-      this.setState({ loading: false, error: getToast(err) });
+    } else {
+      this.setState({
+        code: phoneVerificationCode,
+      });
     }
   }
 
   onVerifyPhone = () => {
-    const { phoneVerificationCode } = this.state;
-    Clipboard.setString(phoneVerificationCode);
+    const { code } = this.state;
+    Clipboard.setString(code);
 
     SendSMS.send({
-      body: phoneVerificationCode,
+      body: code,
       recipients: [SMS_NUMBER],
       successTypes: ['sent', 'queued'],
     }, () => { });
@@ -125,49 +108,23 @@ class ChangePhoneNumber extends Component {
     navigation.goBack();
   }
 
-  renderUpdateButton = () => {
-    const { loading, phone } = this.state;
-    let disableUpdateButton = true;
-
-    if (phone) {
-      disableUpdateButton = !(phone.length > 0);
-    }
-
-    if (loading) {
-      return (
-        <View style={styles.lodingWrapper}>
-          <Loading />
-        </View>
-      );
-    }
-
-    return (
-      <CustomButton
-        bgColor={Colors.background.green}
-        style={styles.button}
-        onPress={this.onSubmit}
-        disabled={disableUpdateButton}
-      >
-        {trans('profile.change_phone_number')}
-      </CustomButton>
-    );
-  }
-
   renderVerifyButton = () => (
     <CustomButton
       bgColor={Colors.background.green}
       style={styles.button}
       onPress={this.onVerifyPhone}
-    >{trans('profile.send_sms')}</CustomButton>
-  )
+    >
+      {trans('profile.send_sms')}
+    </CustomButton>
+  );
 
   renderVerificationCode = () => {
-    const { phoneVerificationCode } = this.state;
+    const { code } = this.state;
 
     return (
       <View>
-        <Text style={styles.verifyText}>Your verification code is:</Text>
-        <Text style={styles.code}>{phoneVerificationCode}</Text>
+        <Text s={styles.verifyText}>{trans('profile.please_send_the_following_code')}</Text>
+        <Text style={styles.code}>{code}</Text>
         <Text style={styles.verifyText}>
           {trans('profile.text_message_cost_same_as_ordinary_text')}
         </Text>
@@ -177,29 +134,14 @@ class ChangePhoneNumber extends Component {
   }
 
   render() {
-    const { countryCode, error, phoneVerificationCode, verifyPreviousNumber } = this.state;
+    const { error } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Toast message={error} type="error" />
-          {(!phoneVerificationCode && !verifyPreviousNumber) &&
-            <View style={{ marginTop: 50 }}>
-              <Text style={styles.label}>{trans('profile.new_phone_number')}</Text>
-              <View style={styles.inputWrapper}>
-                <Phone
-                  defaultCode={countryCode}
-                  placeholder={trans('profile.your_mobile_number')}
-                  onChange={
-                    ({ code, number }) => this.setState({ countryCode: code, phone: number })
-                  }
-                />
-              </View>
-              {this.renderUpdateButton()}
-            </View>
-          }
-          {(phoneVerificationCode || verifyPreviousNumber) && this.renderVerificationCode()}
+          {this.renderVerificationCode()}
         </ScrollView>
       </Wrapper>
     );
@@ -216,11 +158,7 @@ ChangePhoneNumber.propTypes = {
       }),
     }).isRequired,
   }).isRequired,
-  setUser: PropTypes.func.isRequired,
-  changePhoneNumber: PropTypes.func.isRequired,
   regeneratePhoneVerification: PropTypes.func.isRequired,
-  setPhoneVerificationCode: PropTypes.func.isRequired,
-  phoneVerificationCode: PropTypes.string,
 };
 
 ChangePhoneNumber.defaultProps = {

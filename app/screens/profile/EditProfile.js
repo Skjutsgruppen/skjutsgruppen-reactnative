@@ -621,8 +621,8 @@ class EditProfile extends Component {
             this.renderList({
               title: trans('profile.phone'),
               info: phoneNumber,
-              awaitingVerification: newPhoneNumber,
-              sendVerification: newPhoneNumber ? 'phone' : null,
+              awaitingVerification: null,
+              sendVerification: null,
               subtext: trans('profile.not_visible_for_other_participants'),
               redirect: 'phone',
             })

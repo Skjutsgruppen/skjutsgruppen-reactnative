@@ -29,6 +29,8 @@ class Splash extends PureComponent {
     }
 
     const {
+      firstName,
+      lastName,
       emailVerified,
       phoneVerified,
       phoneNumber,
@@ -52,17 +54,18 @@ class Splash extends PureComponent {
       return;
     }
 
-    if (phoneNumber === null) {
+    if (!firstName || !lastName) {
+      await setRegister({ user, token });
+      navigation.replace('Onboarding', { activeStep: 6 });
+      return;
+    }
+
+    if (phoneNumber === null || !phoneVerified) {
       await setRegister({ user, token });
       navigation.replace('Onboarding', { activeStep: 8 });
       return;
     }
 
-    if (!phoneVerified) {
-      await setRegister({ user, token });
-      navigation.replace('Onboarding', { activeStep: 8 });
-      return;
-    }
     await setLogin({ user, token });
 
     firebase.notifications().onNotificationOpened((notif) => {
