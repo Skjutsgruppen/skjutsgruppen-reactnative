@@ -43,6 +43,7 @@ subscription{
           locality 
           direction
           url
+          isDeleted
         }
       }
       ... on TripFeed {
@@ -80,6 +81,7 @@ subscription{
             type
           }
           url
+          isDeleted
         }
       }
       ... on NewsFeed {
@@ -148,6 +150,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         locality
         direction
         url
+        isDeleted
       }
     }
     ... on TripFeed {
@@ -185,6 +188,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           type
         }
         url
+        isDeleted
       }
     }
     ... on NewsFeed {
@@ -612,6 +616,7 @@ subscription onTripUpdated($id: Int!) {
     }
     date
     photo
+    url
     mapPhoto
     totalFeeds
     isParticipant
@@ -1018,6 +1023,8 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
                 name
                 coordinates
               }
+              direction
+              date
             }
             published
             publishedStatus
@@ -1158,6 +1165,8 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
               name
               coordinates
             }
+            direction
+            date
           }
           published
           publishedStatus

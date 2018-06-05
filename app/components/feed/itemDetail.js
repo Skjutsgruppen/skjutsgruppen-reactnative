@@ -405,8 +405,6 @@ class Feed extends Component {
   }
 
   renderExperience = (feed, onPress) => {
-    if (!feed.Experience) return null;
-
     let i = 1;
     const participants = feed.Experience.Participants.map((participant, index) => {
       let separator = '';

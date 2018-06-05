@@ -269,13 +269,13 @@ class Garden extends Component {
             label={trans('profile.help_make_the_app_better')}
             icon={GithubIcon}
           />
-          <ProfileAction
+          {/* <ProfileAction
             title={trans('profile.open_api')}
             label={trans('profile.build_get_statistics_and_more')}
             icon={OpenAPIIcon}
           />
           <ProfileAction label={trans('profile.about_the_movement')} />
-          <ProfileAction label={trans('profile.international_ridesharingday')} />
+          <ProfileAction label={trans('profile.international_ridesharingday')} /> */}
           <ProfileAction
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
@@ -290,6 +290,10 @@ class Garden extends Component {
           <ProfileAction
             onPress={() => this.openLink('https://web.skjutsgruppen.nu/participant-agreement')}
             label={trans('profile.participant_agreement')}
+          />
+          <ProfileAction
+            onPress={() => this.openLink('https://web.skjutsgruppen.nu/privacy-policy')}
+            label={trans('profile.privacy_policy')}
           />
           <TouchableOpacity onPress={this.logout} style={styles.logout}>
             <AppText

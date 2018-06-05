@@ -232,14 +232,14 @@ class Offer extends Component {
         this.setState({
           route: {
             start: {
-              name: group.TripStart.name,
-              coordinates: group.TripStart.coordinates,
-              countryCode: group.TripStart.countryCode,
+              name: group.TripStart.name ? group.TripStart.name : '',
+              coordinates: group.TripStart.name ? group.TripStart.coordinates : [],
+              countryCode: group.TripStart.name ? group.TripStart.countryCode : '',
             },
             end: {
-              name: group.TripEnd.name,
-              coordinates: group.TripEnd.coordinates,
-              countryCode: group.TripEnd.countryCode,
+              name: group.TripEnd.name ? group.TripEnd.name : '',
+              coordinates: group.TripEnd.name ? group.TripEnd.coordinates : [],
+              countryCode: group.TripEnd.name ? group.TripEnd.countryCode : '',
             },
             stops: group.Stops.length < 0 ? [] :
               group.Stops.map(stop => ({
@@ -248,6 +248,8 @@ class Offer extends Component {
                 countryCode: group.TripEnd.countryCode,
               })),
             isReturning: true,
+            directionFrom: group.TripStart.name ? null : group.direction,
+            directionTo: group.TripEnd.name ? null : group.direction,
           },
         });
       }
@@ -405,7 +407,7 @@ class Offer extends Component {
       type: FEED_TYPE_OFFER,
       groupId,
       linkedTripId: tripId,
-      direction: route.direction || null,
+      direction: route.direction ? route.direction.toLowerCase() : null,
     };
 
     try {

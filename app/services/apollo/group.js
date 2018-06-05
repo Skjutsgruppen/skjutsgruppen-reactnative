@@ -680,7 +680,20 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
               deleted
             }
             status
-          }  
+          }
+          Trip {
+            id
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+            direction
+            date
+          } 
         }
       }
     }
@@ -834,6 +847,44 @@ subscription groupFeed($groupId: Int!){
               areFriends
             }
           }
+        }
+      }
+      ... on ExperienceFeed{
+        Experience{
+          id
+          createdAt
+          description
+          photoUrl
+          publishedStatus
+          userStatus
+          User {
+            id 
+            firstName 
+            avatar
+            deleted
+          }     
+          Participants {
+            User {
+              id 
+              firstName 
+              avatar
+              deleted
+            }
+            status
+          }
+          Trip {
+            id
+            TripStart {
+              name
+              coordinates
+            }
+            TripEnd {
+              name
+              coordinates
+            }
+            direction
+            date
+          } 
         }
       }
     }
@@ -1503,6 +1554,7 @@ const UPDATE_GROUP_MUTATION_QUERY = gql`
     $municipalityId: Int
     $localityId: Int
     $type: GroupTypeEnum!
+    $direction: directionEnum
    ){
     updateGroup(
       input : {
@@ -1518,7 +1570,8 @@ const UPDATE_GROUP_MUTATION_QUERY = gql`
         countyId : $countyId
         municipalityId : $municipalityId
         localityId : $localityId
-        type : $type
+        type : $type,
+        direction: $direction
       }
     )
   }
@@ -1541,6 +1594,7 @@ export const withUpdateGroup = graphql(UPDATE_GROUP_MUTATION_QUERY, {
         localityId,
         type,
         id,
+        direction,
       }) =>
         mutate({
           variables: {
@@ -1557,6 +1611,7 @@ export const withUpdateGroup = graphql(UPDATE_GROUP_MUTATION_QUERY, {
             localityId,
             type,
             id,
+            direction,
           },
         }),
     }),

@@ -71,10 +71,10 @@ SharedTripList.propTypes = {
         avatar: PropTypes.string.isRequired,
       }).isRequired,
       TripStart: PropTypes.shape({
-        name: PropTypes.string.isRequired,
+        name: PropTypes.string,
       }),
       TripEnd: PropTypes.shape({
-        name: PropTypes.string.isRequired,
+        name: PropTypes.string,
       }),
       direction: PropTypes.string,
       date: PropTypes.string.isRequired,

@@ -23,7 +23,6 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
 
   groupTrips.forEach((trip, index) => {
     selectedDate = getDate(trip.date);
-
     if (index === 0) {
       tripDate = selectedDate.format('YYYY-MM-DD');
     }

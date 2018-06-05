@@ -12,14 +12,13 @@ import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
-import { withLeaveGroup } from '@services/apollo/notification';
 import { withMute, withUnmute } from '@services/apollo/mute';
-import { AppNotification, Wrapper, ConfirmModal, ActionModal, ModalAction } from '@components/common';
+import { AppNotification, Wrapper, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';
 import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
+import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA, GROUP_FEED_TYPE_SHARE } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -151,11 +150,6 @@ class Detail extends PureComponent {
     navigation.navigate('Ask', { group, description: comment });
   }
 
-  onReport = () => {
-    const { navigation, group } = this.props;
-    this.setState({ showAction: false });
-    navigation.navigate('Report', { data: { Group: group }, type: FEEDABLE_GROUP });
-  }
 
   onMute = (unit, type = null) => {
     const { group, mute, refresh } = this.props;
@@ -197,22 +191,12 @@ class Detail extends PureComponent {
     this.setState({ showCalendar: show });
   }
 
-  setConfirmModalVisibility = (show) => {
-    this.setState({ showConfirmModal: show });
-  }
 
   redirectToSelectedTripDate = (date) => {
     const { navigation, group } = this.props;
     this.setCalendarVisibilty(false);
 
     navigation.navigate('SharedTrip', { date, id: group.id });
-  }
-
-  leaveGroup = () => {
-    const { group } = this.props;
-
-    this.setState({ leaveLoading: true });
-    this.setState({ showConfirmModal: false }, () => this.props.leaveGroup(group.id));
   }
 
   checkValidation = (comment) => {
@@ -259,7 +243,7 @@ class Detail extends PureComponent {
       >
         <Share
           modal
-          type={FEEDABLE_GROUP}
+          type={GROUP_FEED_TYPE_SHARE}
           detail={group}
           onClose={() => this.setState({ showShareModal: false })}
         />
@@ -312,7 +296,7 @@ class Detail extends PureComponent {
   }
 
   renderOptions = () => {
-    const { group, user } = this.props;
+    const { group } = this.props;
     let actions = [];
 
     actions = actions.concat([
@@ -330,18 +314,6 @@ class Detail extends PureComponent {
       ]);
     }
 
-    if (this.isGroupJoined()) {
-      actions = actions.concat([
-        <ModalAction label={trans('detail.leave_group')} onPress={() => this.setConfirmModalVisibility(true)} key="leave" />,
-      ]);
-    }
-
-    if (user.id !== group.User.id) {
-      actions = actions.concat([
-        <ModalAction label={trans('detail.report_this_group')} onPress={this.onReport} key="report" />,
-      ]);
-    }
-
     return actions;
   };
 
@@ -354,27 +326,6 @@ class Detail extends PureComponent {
       {this.renderOptions()}
     </ActionModal>
   );
-
-  renderConfirmModal = () => {
-    const { leaveLoading, showConfirmModal } = this.state;
-    const message = (
-      <AppText>{trans('detail.are_you_sure_you_want_to_leave_group')}</AppText>
-    );
-
-    return (
-      <ConfirmModal
-        loading={leaveLoading}
-        visible={showConfirmModal}
-        onRequestClose={() => this.setConfirmModalVisibility(false)}
-        message={message}
-        confirmLabel={trans('global.yes')}
-        denyLabel={trans('global.no')}
-        onConfirm={() => this.leaveGroup()}
-        onDeny={() => this.setConfirmModalVisibility(false)}
-        confrimTextColor={Colors.text.blue}
-      />
-    );
-  }
 
   render() {
     const { navigation, group } = this.props;
@@ -418,7 +369,6 @@ class Detail extends PureComponent {
         {this.renderShareModal()}
         {this.renderCalendarModal()}
         {this.renderOptionsModal()}
-        {this.renderConfirmModal()}
         {
           this.state.showCalendar &&
           <Modal
@@ -464,7 +414,6 @@ class Detail extends PureComponent {
 }
 
 Detail.propTypes = {
-  leaveGroup: PropTypes.func.isRequired,
   submit: PropTypes.func.isRequired,
   mute: PropTypes.func.isRequired,
   unmute: PropTypes.func.isRequired,
@@ -473,9 +422,6 @@ Detail.propTypes = {
     photo: PropTypes.string,
     membershipStatus: PropTypes.string,
     User: PropTypes.object.isRequired,
-  }).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -486,7 +432,6 @@ Detail.propTypes = {
 const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(
-  withLeaveGroup,
   submitComment,
   withNavigation,
   withMute,
