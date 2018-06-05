@@ -182,8 +182,8 @@ export const withAccount = graphql(ACCOUNT_QUERY, {
 });
 
 const CONVERSATION_QUERY = gql`
-  query conversations ($queryString: String, $applyQueryString: Boolean,$offset: Int, $limit: Int) {
-    conversations (queryString: $queryString, applyQueryString: $applyQueryString, offset: $offset, limit: $limit) {
+  query conversations ($id: Int, $queryString: String, $applyQueryString: Boolean,$offset: Int, $limit: Int) {
+    conversations (id: $id, queryString: $queryString, applyQueryString: $applyQueryString, offset: $offset, limit: $limit) {
       rows {
         id
         type
@@ -249,6 +249,7 @@ const CONVERSATION_QUERY = gql`
 
 export const withConversation = graphql(CONVERSATION_QUERY, {
   options: ({
+    id = null,
     queryString = null,
     applyQueryString = false,
     offset = 0,
@@ -258,6 +259,7 @@ export const withConversation = graphql(CONVERSATION_QUERY, {
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'network-only',
       variables: {
+        id,
         queryString,
         applyQueryString,
         offset,

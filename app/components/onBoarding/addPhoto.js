@@ -111,7 +111,7 @@ class AddPhoto extends Component {
             </View>
           </View>
           {this.renderButton()}
-          <BackButton onPress={this.goBack} leftAligned />
+          <BackButton onPress={() => this.goBack()} leftAligned />
         </View>
       </ScrollView>
     );

@@ -53,10 +53,7 @@ class UserInfo extends Component {
   }
 
   componentWillMount() {
-    const { auth, navigation } = this.props;
-    if (auth.login) {
-      navigation.replace('Tab');
-    }
+    const { auth } = this.props;
 
     this.setState({ firstName: auth.user.firstName || '', lastName: auth.user.lastName || '', countryCode: getCountryDialCode(), phone: getPhoneNumber() });
   }

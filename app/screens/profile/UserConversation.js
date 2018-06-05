@@ -169,4 +169,23 @@ UserConversation.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withConversation, connect(mapStateToProps))(UserConversation);
+const RenderUserConversation = compose(
+  withConversation,
+  connect(mapStateToProps),
+)(UserConversation);
+
+const UserConversationScreen = ({ navigation }) => {
+  const { userId } = navigation.state.params;
+
+  return (<RenderUserConversation navigation={navigation} id={userId} />);
+};
+
+UserConversationScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    state: PropTypes.object,
+    goBack: PropTypes.func,
+  }).isRequired,
+};
+
+export default UserConversationScreen;
