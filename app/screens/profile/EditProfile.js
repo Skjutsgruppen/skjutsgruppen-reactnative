@@ -7,6 +7,7 @@ import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
 import { getToast } from '@config/toast';
+import Toast from '@components/toast';
 import { LoginManager } from 'react-native-fbsdk';
 import AuthService from '@services/auth';
 import { resetLocalStorage } from '@services/apollo/dataSync';
@@ -137,6 +138,7 @@ class EditProfile extends Component {
       newPhoneNumber: null,
       phoneVerificationCode: null,
       modalVisibility: false,
+      errorMsg: '',
     };
   }
 
@@ -350,6 +352,11 @@ class EditProfile extends Component {
       } else if (response.customButton) {
         //
       } else {
+        if (response.fileSize > 3000000) {
+          this.setState({ errorMsg: trans('global.max_file_size_8_mb') });
+
+          return;
+        }
         let source;
         if (Platform.OS === 'android') {
           source = { uri: response.uri, isStatic: true };
@@ -590,6 +597,7 @@ class EditProfile extends Component {
       totalFriends,
       newEmail,
       newPhoneNumber,
+      errorMsg,
     } = this.state;
 
     const profilePicture = uploadedImage || { uri: profileImage };
@@ -597,6 +605,7 @@ class EditProfile extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
+        <Toast message={errorMsg} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={[styles.nameSection]}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
