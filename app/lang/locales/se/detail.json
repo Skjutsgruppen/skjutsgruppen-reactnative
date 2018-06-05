@@ -29,7 +29,7 @@
   "user_is_now_enabler": "se_ is now enabler",
   "user_has_updated_field_of_group": "se_ has updated the {{field}} of the group",
   "user_has_stopped_sharing_location": "se_ has stopped sharing location.",
-  "user_shares_position": "se_ shares position",
+  "user_shares_location": "se_ shares location",
   "more_minutes": "se_ more minutes",
   "user_offers_a_ride": "se_ {{user}} offers a ride:",
   "suggests": "se_ suggests",

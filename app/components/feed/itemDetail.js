@@ -264,7 +264,7 @@ class Feed extends Component {
       return (
         <View>
           <AppText>
-            <AppText color={Colors.text.blue} fontVariation="semibold">{this.renderUsername()}</AppText> {trans('detail.user_shares_position')}
+            <AppText color={Colors.text.blue} fontVariation="semibold">{this.renderUsername()}</AppText> {trans('detail.user_shares_location')}
           </AppText>
           <View style={styles.sharedLocationCard}>
             <View style={styles.map}>

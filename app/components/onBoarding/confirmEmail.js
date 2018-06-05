@@ -82,7 +82,6 @@ class ConfirmEmail extends Component {
           const { token, User } = data.register;
           setRegister({ token, user: User }).then(() => {
             this.setState({ loading: false, error: '' }, () => {
-              // navigation.replace('CheckMail');
               this.onNext();
             });
           });

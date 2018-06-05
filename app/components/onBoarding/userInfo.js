@@ -7,7 +7,6 @@ import StepsHeading from '@components/onBoarding/stepsHeading';
 import StepsTitle from '@components/onBoarding/stepsTitle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
-import Phone from '@components/phone';
 import { getPhoneNumber, getCountryDialCode } from '@helpers/device';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -17,6 +16,7 @@ import AuthService from '@services/auth/auth';
 import { withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withNavigation } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
+import PasswordInput from '@components/common/passwordInput';
 
 const styles = StyleSheet.create({
   paddedSection: {
@@ -85,8 +85,6 @@ class UserInfo extends Component {
             const code = await regeneratePhoneVerification(null, User.email);
             User.verificationCode = code.data.regeneratePhoneVerification;
             updateUser({ token, user: User }).then(() => {
-              // navigation.replace('SendText');
-              // syncContacts();
               this.onNext();
             });
           }).catch((err) => {
@@ -107,7 +105,7 @@ class UserInfo extends Component {
 
   checkValidation() {
     const errors = [];
-    const { firstName, lastName, countryCode, phone, password } = this.state;
+    const { firstName, lastName, countryCode, password } = this.state;
 
     if (firstName === '') {
       errors.push('FIRST_NAME_REQUIRED');
@@ -120,10 +118,6 @@ class UserInfo extends Component {
     if (countryCode === '') {
       errors.push('COUNTRY_CODE_REQUIRED');
     }
-
-    // if (!phone || phone.length < 1) {
-    //   errors.push('PHONE_REQUIRED');
-    // }
 
     if (password === '') {
       errors.push('PASSWORD_REQUIRED');
@@ -194,21 +188,11 @@ class UserInfo extends Component {
           ref={(input) => { inputs.two = input; }}
           underlineColorAndroid="transparent"
         />
-        {/* <View style={styles.phoneInput}>
-          <Phone
-            defaultCode={this.state.countryCode}
-            placeholder={trans('onboarding.your_mobile_number')}
-            onChange={({ code, number }) => this.setState({ countryCode: code, phone: number })}
-          />
-        </View> */}
-        <TextInput
-          style={styles.input}
-          placeholder={trans('onboarding.password')}
-          secureTextEntry
-          underlineColorAndroid="transparent"
+        <PasswordInput
           onChangeText={password => this.setState({ password })}
           onSubmitEditing={this.onSubmit}
           returnKeyType="send"
+          value={this.state.password}
         />
         {this.renderButton()}
       </ScrollView>
@@ -225,10 +209,8 @@ UserInfo.propTypes = {
   navigation: PropTypes.shape({
     reset: PropTypes.func,
   }).isRequired,
-  syncContacts: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   regeneratePhoneVerification: PropTypes.func.isRequired,
-  setPhoneVerificationCode: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
 };
 
@@ -242,9 +224,6 @@ const mapStateToProps = state => (
 const mapDispatchToProps = dispatch => ({
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
-  logout: () => AuthService.logout()
-    .then(() => dispatch(AuthAction.logout()))
-    .catch(error => console.warn(error)),
   setPhoneVerificationCode: code => AuthService.setPhoneVerification(code)
     .then(() => dispatch(AuthAction.phoneVerification(code)))
     .catch(error => console.warn(error)),

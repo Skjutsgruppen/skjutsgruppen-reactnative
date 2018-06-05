@@ -71,7 +71,7 @@ class Registration extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation.navigate('Onboarding', { activeStep: 1 });
+    navigation.replace('Onboarding', { activeStep: 1 });
   }
 
   render() {

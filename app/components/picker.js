@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     minWidth: 60,
-    alignItems: 'center',
     justifyContent: 'center',
     marginRight: 4,
   },
@@ -132,7 +131,7 @@ class Picker extends PureComponent {
       <View style={styles.wrapper}>
         {this.modal()}
         <TouchableOpacity style={[styles.textWrapper, { height }]} onPress={this.showModal}>
-          <AppText>{this.state.selected}</AppText>
+          <AppText size={14} color={Colors.text.gray}>{this.state.selected}</AppText>
         </TouchableOpacity>
       </View>
     );

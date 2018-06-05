@@ -112,3 +112,6 @@ export const FETCH_ACTIVE_RIDE_INTERVAL = 7;
 
 export const ACTIVITY_TYPE_SHARE_LOCATION_FEED = 'feed_share_location';
 export const ACTIVITY_TYPE_CREATE_EXPERIENCE = 'feed_create_experience';
+
+export const PHONE_EXISTS_ERROR = 'PHONE_NUMBER_EXISTS';
+export const PHONE_INCORRECT_ERROR = 'PHONE_NUMBER_INCORRECT';

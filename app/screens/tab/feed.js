@@ -24,6 +24,7 @@ import {
   FEEDABLE_NEWS,
   FEEDABLE_EXPERIENCE,
   FEED_FILTER_NEARBY,
+  GROUP_FEED_TYPE_SHARE,
 } from '@config/constant';
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
@@ -296,6 +297,7 @@ class Feed extends Component {
 
   renderShareModal() {
     const { showShareModal, shareableType, shareable } = this.state;
+  
     return (
       <Modal
         visible={showShareModal}
@@ -304,7 +306,7 @@ class Feed extends Component {
       >
         <Share
           modal
-          type={shareableType}
+          type={GROUP_FEED_TYPE_SHARE}
           detail={shareable}
           onClose={() => this.setState({ showShareModal: false })}
         />

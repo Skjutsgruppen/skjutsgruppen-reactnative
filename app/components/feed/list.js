@@ -282,6 +282,7 @@ class FeedList extends PureComponent {
 
   renderShareModal() {
     const { showShareModal, shareable, shareableType } = this.state;
+
     return (
       <Modal
         visible={showShareModal}

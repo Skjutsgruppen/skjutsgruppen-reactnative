@@ -256,6 +256,16 @@ mutation {
       twitterId
       agreementRead
       agreementAccepted
+      verificationErrorInfo {
+        code
+        accountInfo {
+          firstName
+          lastName
+          email
+          phoneNumber
+        }
+        newNumber
+      }
     }
   }
 } 
@@ -290,6 +300,20 @@ export const withChangePassword = graphql(CHANGE_PASSWORD_QUERY, {
   props: ({ mutate }) => ({
     changePassword: (oldPassword, newPassword) => mutate({
       variables: { oldPassword, newPassword },
+    }),
+  }),
+});
+
+const FORGOT_PASSWORD_MUTATION = gql`
+mutation forgotPassword($email: String){
+  forgotPassword(email: $email)
+}
+`;
+
+export const withForgotPassword = graphql(FORGOT_PASSWORD_MUTATION, {
+  props: ({ mutate }) => ({
+    forgotPassword: email => mutate({
+      variables: { email },
     }),
   }),
 });
@@ -374,3 +398,33 @@ export const withChangePhoneNumber = graphql(CHANGE_PHONE_NUMBER, {
     }),
   }),
 });
+
+export const PHONE_VERIFICATION_SUBSCRIPTION = gql`
+subscription verification ($id: Int!){
+  verification(userId: $id){
+    accountInfo {
+      firstName
+      lastName
+      email
+      phoneNumber
+    }
+    newNumber
+    code
+  }
+}
+`;
+
+const RENEW_PHONE_NUMBER = gql`
+mutation renewPhoneNumber($number: String!) {
+  renewPhoneNumber(number: $number)
+}
+`;
+
+export const withRenewPhoneNumber = graphql(RENEW_PHONE_NUMBER, {
+  props: ({ mutate }) => ({
+    renewPhoneNumber: number => mutate({
+      variables: { number },
+    }),
+  }),
+});
+

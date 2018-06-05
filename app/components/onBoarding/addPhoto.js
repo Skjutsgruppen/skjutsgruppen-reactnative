@@ -53,7 +53,6 @@ class AddPhoto extends Component {
         .then(({ data }) => {
           const { token, User } = data.updateUser;
           updateUser({ token, user: User }).then(() => {
-            // navigation.replace('SendText');
             this.onNext();
           });
         }).catch((err) => {

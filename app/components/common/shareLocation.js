@@ -357,7 +357,7 @@ class ShareLocation extends PureComponent {
               }
               {!myLocation.id && fetchingPosition &&
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={TextStyles.light}>{trans('global.fetching_your_position')}</Text><Loading />
+                  <Text style={TextStyles.light}>{trans('global.fetching_your_location')}</Text><Loading />
                 </View>
               }
               {myLocation.id && myLocation.duration > 0 &&

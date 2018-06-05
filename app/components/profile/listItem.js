@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
-import { FEEDABLE_TRIP } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_PROFILE } from '@config/constant';
 import Date from '@components/date';
 import Avatar from '@components/common/avatar';
 import { Colors } from '@theme';
@@ -52,7 +52,7 @@ const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indi
       <Avatar
         imageURI={trip.User.avatar}
         size={46}
-        onPress={() => onPress(trip.User.id)}
+        onPress={() => onPress(FEEDABLE_PROFILE, { id: trip.User.id })}
         showIndicator={showIndicator}
         indicatorColor={indicatorColor}
       />

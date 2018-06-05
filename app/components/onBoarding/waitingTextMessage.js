@@ -68,7 +68,6 @@ class WaitingTextMessage extends Component {
               token: data.isPhoneVerified.token,
               user: data.isPhoneVerified.User,
             }).then(() => {
-              // navigation.replace('MobileVerified');
               this.onNext();
             }).catch(console.warn);
           }
@@ -91,9 +90,9 @@ class WaitingTextMessage extends Component {
     });
   }
 
-  reset = () => {
+  reset = async () => {
     const { navigation } = this.props;
-    resetLocalStorage();
+    await resetLocalStorage();
     const resetAction = NavigationActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'Splash' })],
