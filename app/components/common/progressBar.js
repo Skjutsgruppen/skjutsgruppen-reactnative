@@ -54,7 +54,7 @@ class ProgressBar extends PureComponent {
   }
 
   render() {
-    const { amount, style, color, changesColor } = this.props;
+    const { defaultAmount, amount, style, color, changesColor } = this.props;
     let progressColor = color;
     if (changesColor) {
       if (amount >= 100) {
@@ -62,7 +62,7 @@ class ProgressBar extends PureComponent {
       }
     }
 
-    let width = '0%';
+    let width = defaultAmount ? `${defaultAmount}%` : '0%';
 
     width = this.state.widthAnim.interpolate({
       inputRange: [0, 1],
@@ -78,6 +78,7 @@ class ProgressBar extends PureComponent {
 }
 
 ProgressBar.propTypes = {
+  defaultAmount: PropTypes.number,
   amount: PropTypes.number.isRequired,
   style: ViewPropTypes.style,
   color: PropTypes.string,
@@ -85,6 +86,7 @@ ProgressBar.propTypes = {
 };
 
 ProgressBar.defaultProps = {
+  defaultAmount: null,
   style: {},
   color: Colors.background.pink,
   changesColor: true,

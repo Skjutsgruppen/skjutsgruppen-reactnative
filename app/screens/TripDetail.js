@@ -1032,7 +1032,7 @@ class TripDetail extends Component {
         visible={deletedModal}
         onRequestClose={() => this.setState({ deletedModal: false })}
         message={message}
-        onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false }, () => navigation.navigate('Feed'))}
+        onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false }, () => navigation.goBack())}
         confrimTextColor={Colors.text.blue}
       />
     );

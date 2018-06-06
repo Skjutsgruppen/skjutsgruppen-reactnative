@@ -170,7 +170,7 @@ class Group extends Component {
   }
 
   onTypeNext = (type) => {
-    this.setState({ type, activeStep: 4 }, this.scrollToTop);
+    this.setState({ type, activeStep: 4 });
   }
 
   onShareAndPublish = (share) => {
@@ -178,10 +178,13 @@ class Group extends Component {
   }
 
   scrollToTop = () => {
+    const { activeStep } = this.state;
     Keyboard.dismiss();
-    setTimeout(() => {
-      this.container.scrollTo({ x: 0, y: 0, animated: true });
-    }, 0);
+    if (activeStep !== 4) {
+      setTimeout(() => {
+        this.container.scrollTo({ x: 0, y: 0, animated: true });
+      }, 0);
+    }
   }
 
   createGroup() {
@@ -247,7 +250,7 @@ class Group extends Component {
     );
   }
 
-  renderProgress = () => {
+  renderProgress = (initialAmount) => {
     const { activeStep } = this.state;
     const progressAmount = (activeStep / 4) * 100;
 
@@ -255,9 +258,15 @@ class Group extends Component {
       return null;
     }
 
+    let defaultAmount = initialAmount || null;
+
+    if (activeStep === 3) {
+      defaultAmount = 100;
+    }
+
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} changesColor={false} />
+        <ProgressBar defaultAmount={defaultAmount} amount={progressAmount} changesColor={false} />
         <Heading
           size={16}
           style={styles.stepsCount}
@@ -283,7 +292,7 @@ class Group extends Component {
           />
         }
         <Toast message={error} type="error" />
-        {(activeStep !== 5) &&
+        {(activeStep !== 5 && activeStep !== 4) &&
           <Container
             innerRef={(ref) => { this.container = ref; }}
             style={{ backgroundColor: 'transparent' }}
@@ -292,8 +301,13 @@ class Group extends Component {
             {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
             {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
             {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
-            {(activeStep === 4) && <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />}
           </Container>
+        }
+        {(activeStep === 4) &&
+          <View style={{ flex: 1 }}>
+            {this.renderProgress(80)}
+            <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />
+          </View>
         }
         {(activeStep === 5) && this.renderFinish()}
       </Wrapper>
