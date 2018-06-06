@@ -15,6 +15,7 @@ wsClient.use([{
   },
 }]);
 
+
 const networkInterface = createNetworkInterface({ uri: API_URL });
 
 networkInterface.use([{

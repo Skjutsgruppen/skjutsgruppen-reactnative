@@ -164,7 +164,8 @@ class Feed extends Component {
                 <Date calendarTime>{feed.date}</Date>
               </AppText>
             </AppText>
-            <AppText style={styles.commentText}>{feed.Comment.text}</AppText>
+            {feed.Comment && feed.Comment.text &&
+              <AppText style={styles.commentText}>{feed.Comment.text}</AppText>}
           </View>
         </TouchableHighlight>
       );

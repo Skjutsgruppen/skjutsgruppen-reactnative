@@ -1,6 +1,6 @@
 /* global navigator */
 import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Alert, Image, Platform } from 'react-native';
+import { Dimensions, StyleSheet, View, Alert, Image, Platform, BackHandler } from 'react-native';
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
@@ -149,6 +149,7 @@ class RouteMap extends PureComponent {
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
     this.fetchPolygon();
   }
 
@@ -202,6 +203,16 @@ class RouteMap extends PureComponent {
         },
       });
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
+  }
+  onBackButtonPress = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+
+    return true;
   }
 
   onMarkerPress = ({ id }) => {
