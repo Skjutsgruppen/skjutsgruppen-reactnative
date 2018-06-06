@@ -415,7 +415,6 @@ class TripDetail extends Component {
     deleteTrip({ id })
       .then(() => {
         this.setConfirmModalVisibility(false);
-        this.showActionModal(false);
         this.setState({ loading: false, retry: false, deletedModal: true });
       })
       .catch((error) => {
@@ -438,7 +437,7 @@ class TripDetail extends Component {
   }
 
   setConfirmModalVisibility = (show) => {
-    this.setState({ confirmModalVisibility: show });
+    this.setState({ confirmModalVisibility: show, showActionOption: false });
   }
 
   showActionModal(visible) {

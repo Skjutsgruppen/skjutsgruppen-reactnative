@@ -150,9 +150,9 @@ class SendMessage extends Component {
       try {
         isPhoneVerified(user.id).then(({ data }) => {
           const updatedUser = data.isPhoneVerified.User;
-          if (this.state.messageSent) {
+          if (this.state.messageSent && updatedUser.verificationErrorInfo) {
             const { code, accountInfo, newNumber } = updatedUser.verificationErrorInfo;
-            this.setState({ error: code || '', confirmedUser: accountInfo, newNumber });
+            this.setState({ error: code || '', confirmedUser: accountInfo, newNumber }, () => clearInterval(this.interval));
           }
           if (data.isPhoneVerified.User.phoneVerified) {
             setLogin({
