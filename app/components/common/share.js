@@ -159,7 +159,7 @@ class Share extends Component {
   }
 
   componentWillReceiveProps({ contacts, friends }) {
-    if (contacts && !contacts.loading) {
+    if (contacts && contacts.rows && !contacts.loading) {
       const contactsList = contacts.rows.map(contact => ({
         id: contact.phoneNumber,
         firstName: contact.name,
