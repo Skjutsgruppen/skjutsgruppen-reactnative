@@ -320,13 +320,13 @@ class Offer extends Component {
 
   onDateNext = (date) => {
     if (date.days.length < 1) {
-      this.setState({ error: getToast(['DATE_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['DATE_REQUIRED']) });
     } else if (date.time === '00:00') {
-      this.setState({ error: getToast(['TIME_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['TIME_REQUIRED']) });
     } else if (!this.isValidDateTime(date)) {
-      this.setState({ error: getToast(['INVALID_TIME']) }, this.scrollToTop);
+      this.setState({ error: getToast(['INVALID_TIME']) });
     } else {
-      this.setState({ date, activeStep: 4, error: '' }, this.scrollToTop);
+      this.setState({ date, activeStep: 4, error: '' });
     }
   }
 
@@ -374,10 +374,13 @@ class Offer extends Component {
   }
 
   scrollToTop = () => {
+    const { activeStep } = this.state;
     Keyboard.dismiss();
-    setTimeout(() => {
-      this.container.scrollTo({ x: 0, y: 0, animated: true });
-    }, 0);
+    if (activeStep !== 5) {
+      setTimeout(() => {
+        this.container.scrollTo({ x: 0, y: 0, animated: true });
+      }, 0);
+    }
   }
 
   createTrip() {
@@ -477,16 +480,22 @@ class Offer extends Component {
     );
   }
 
-  renderProgress = () => {
+  renderProgress = (initialAmount) => {
     const { activeStep } = this.state;
     const progressAmount = (activeStep / 5) * 100;
     if (activeStep > 5) {
       return null;
     }
 
+    let defaultAmount = initialAmount || null;
+
+    if (activeStep === 4) {
+      defaultAmount = 100;
+    }
+
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} changesColor={false} />
+        <ProgressBar defaultAmount={defaultAmount} amount={progressAmount} changesColor={false} />
         <Heading
           size={16}
           style={styles.stepsCount}
@@ -522,7 +531,7 @@ class Offer extends Component {
         }
         <Toast message={error} type="error" />
         {
-          (activeStep !== 6) &&
+          (activeStep !== 6 && activeStep !== 5) &&
           <Container
             innerRef={(ref) => { this.container = ref; }}
             style={{ backgroundColor: 'transparent' }}
@@ -543,14 +552,17 @@ class Offer extends Component {
             }
             {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}
             {(activeStep === 4) && <Seats isOffer defaultValue={seat} onNext={this.onSeatNext} />}
-            {(activeStep === 5) &&
-              <Share
-                defaultValue={share}
-                type={FEEDABLE_TRIP}
-                onNext={this.onShareNext}
-              />
-            }
           </Container>
+        }
+        {(activeStep === 5) &&
+          <View style={{ flex: 1 }}>
+            {this.renderProgress(80)}
+            <Share
+              defaultValue={share}
+              type={FEEDABLE_TRIP}
+              onNext={this.onShareNext}
+            />
+          </View>
         }
         {(activeStep === 6) && this.renderFinish()}
       </Wrapper>

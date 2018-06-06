@@ -198,7 +198,7 @@ class Garden extends Component {
     //   : trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
 
     const headingLabel = supporter ? trans('profile.you_are_awesome')
-      : trans('profile.this_app_is_soon_a_self_sustaining_garden');
+      : trans('profile.this_app_will_soon_be_a_self_sustaining_garden');
     const infoLabel = supporter ? trans('profile.right_now_you_support')
       : trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
 

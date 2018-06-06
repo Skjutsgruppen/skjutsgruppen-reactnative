@@ -218,13 +218,13 @@ class Ask extends Component {
 
   onDateNext = (date) => {
     if (date.days.length < 1) {
-      this.setState({ error: getToast(['DATE_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['DATE_REQUIRED']) });
     } else if (date.time === '00:00') {
-      this.setState({ error: getToast(['TIME_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['TIME_REQUIRED']) });
     } else if (!this.isValidDateTime(date)) {
-      this.setState({ error: getToast(['INVALID_TIME']) }, this.scrollToTop);
+      this.setState({ error: getToast(['INVALID_TIME']) });
     } else {
-      this.setState({ date, activeStep: 4, error: '' }, this.scrollToTop);
+      this.setState({ date, activeStep: 4, error: '' });
     }
   }
 
@@ -263,10 +263,13 @@ class Ask extends Component {
   }
 
   scrollToTop = () => {
+    const { activeStep } = this.state;
     Keyboard.dismiss();
-    setTimeout(() => {
-      this.container.scrollTo({ x: 0, y: 0, animated: true });
-    }, 0);
+    if (activeStep !== 4) {
+      setTimeout(() => {
+        this.container.scrollTo({ x: 0, y: 0, animated: true });
+      }, 0);
+    }
   }
 
   createTrip() {
@@ -347,16 +350,27 @@ class Ask extends Component {
   }
 
 
-  renderProgress = () => {
+  renderProgress = (initialAmount) => {
     const { activeStep } = this.state;
     const progressAmount = (activeStep / 4) * 100;
     if (activeStep > 4) {
       return null;
     }
 
+    let defaultAmount = initialAmount || null;
+
+    if (activeStep === 3) {
+      defaultAmount = 100;
+    }
+
     return (
       <View style={styles.progress}>
-        <ProgressBar amount={progressAmount} color={Colors.background.blue} changesColor={false} />
+        <ProgressBar
+          defaultAmount={defaultAmount}
+          amount={progressAmount}
+          color={Colors.background.blue}
+          changesColor={false}
+        />
         <Heading
           size={16}
           style={styles.stepsCount}
@@ -390,7 +404,7 @@ class Ask extends Component {
           />
         }
         <Toast message={error} type="error" />
-        {activeStep !== 5 &&
+        {(activeStep !== 5 && activeStep !== 4) &&
           <Container
             innerRef={(ref) => { this.container = ref; }}
             style={{ backgroundColor: 'transparent' }}
@@ -409,16 +423,18 @@ class Ask extends Component {
               />
             }
             {(activeStep === 3) && <Date defaultValue={date} onNext={this.onDateNext} />}
-            {(activeStep === 4) &&
-              <Share
-                defaultValue={share}
-                type={FEEDABLE_TRIP}
-                onNext={this.onShareNext}
-                labelColor={Colors.text.blue}
-              />
-            }
-
           </Container>
+        }
+        {(activeStep === 4) &&
+          <View style={{ flex: 1 }}>
+            {this.renderProgress(80)}
+            <Share
+              defaultValue={share}
+              type={FEEDABLE_TRIP}
+              onNext={this.onShareNext}
+              labelColor={Colors.text.blue}
+            />
+          </View>
         }
         {(activeStep === 5) && this.renderFinish()}
       </Wrapper>

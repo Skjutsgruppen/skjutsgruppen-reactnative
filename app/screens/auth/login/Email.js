@@ -174,7 +174,7 @@ class Login extends Component {
   }
 
   onPhoneNumberChange = (code, number) => {
-    this.setState({ email: '', number, username: `${code}${number}` });
+    this.setState({ email: '', number, username: `${code}${parseInt(number, 0)}` });
   }
 
   onEmailChange = (email) => {
