@@ -297,7 +297,7 @@ class Feed extends Component {
 
   renderShareModal() {
     const { showShareModal, shareableType, shareable } = this.state;
-  
+
     return (
       <Modal
         visible={showShareModal}
@@ -487,7 +487,7 @@ class Feed extends Component {
           onCloseModal={() => this.setFilterVisibility(false)}
         />
         {this.renderCoCreateModal()}
-        {this.renderContactPermission()}
+        {/* {this.renderContactPermission()} */}
       </Wrapper>
     );
   }
