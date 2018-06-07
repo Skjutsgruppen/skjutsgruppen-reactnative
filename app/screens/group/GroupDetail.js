@@ -76,9 +76,14 @@ class GroupDetail extends Component {
     return false;
   }
 
+  navigateOnDelete = () => {
+    const { navigation } = this.props;
+    navigation.popToTop();
+    navigation.replace('Tab');
+  }
+
   renderDeletedModal = () => {
     const { deletedModal } = this.state;
-    const { navigation } = this.props;
 
     const message = (
       <AppText>This group has been deleted.</AppText>
@@ -89,7 +94,7 @@ class GroupDetail extends Component {
         visible={deletedModal}
         onRequestClose={() => this.setState({ deletedModal: false })}
         message={message}
-        onConfirm={() => this.setState({ deletedModal: false }, () => navigation.popToTop())}
+        onConfirm={() => this.setState({ deletedModal: false }, () => this.navigateOnDelete())}
       />
     );
   }

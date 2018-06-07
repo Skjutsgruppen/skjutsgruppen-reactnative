@@ -53,7 +53,7 @@ const GroupMap = ({ group, onMapPress, showOverlay }) => (
         colors={Gradients.transparentPink}
         style={styles.gradient}
       >
-        <Heading color={Colors.text.white}>{group.name}</Heading>
+        <Heading color={Colors.text.white} style={{ lineHeight: 32 }}>{group.name}</Heading>
       </LinearGradient>
     }
   </TouchableOpacity>

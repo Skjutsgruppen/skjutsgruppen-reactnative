@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, Alert, Clipboard } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Alert, Clipboard, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
@@ -290,17 +290,25 @@ class Share extends Component {
             storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
           }
 
-          SendSMS.send({
-            body: smsBody,
-            recipients: contacts,
-            successTypes: ['sent', 'queued'],
-          }, () => { });
+          if (Platform.OS === 'android') {
+            this.sendSMS(smsBody, contacts);
+          } else {
+            setTimeout(() => this.sendSMS(smsBody, contacts), 1000);
+          }
         }
       }
       this.onClose();
     } catch (error) {
       this.onClose();
     }
+  }
+
+  sendSMS = (body, recipients) => {
+    SendSMS.send({
+      body,
+      recipients,
+      successTypes: ['sent', 'queued'],
+    }, () => { });
   }
 
   hasOption = (type, key) => {
@@ -514,6 +522,7 @@ class Share extends Component {
   renderButton = () => {
     const { loading } = this.state;
     const { type, location } = this.props;
+    let { buttonText } = this.props;
     let duration = '';
 
     if ((location.duration / 60) < 1) duration = `${location.duration} minutes`;
@@ -523,9 +532,9 @@ class Share extends Component {
       return (<Loading />);
     }
 
-    let buttonText = trans('global.share');
-    if (type === FEEDABLE_GROUP) buttonText = trans('global.add_and_publish_button');
-    if (type === FEEDABLE_LOCATION) buttonText = `${trans('global.share_location_for')} ${duration}`;
+    // let buttonText = trans('global.share');
+    // if (type === FEEDABLE_GROUP) buttonText = trans('global.add_and_publish_button');
+    if (type === FEEDABLE_LOCATION) buttonText += ` ${duration}`;
 
     return (
       <RoundedButton
@@ -632,6 +641,7 @@ Share.propTypes = {
   }),
   storeUnregisteredParticipants: PropTypes.func.isRequired,
   startTrackingLocation: PropTypes.func,
+  buttonText: PropTypes.string,
 };
 
 Share.defaultProps = {
@@ -645,6 +655,7 @@ Share.defaultProps = {
   location: {},
   shareLocation: null,
   startTrackingLocation: null,
+  buttonText: trans('global.share'),
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

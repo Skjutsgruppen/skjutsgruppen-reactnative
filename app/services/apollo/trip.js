@@ -874,6 +874,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
         duration
       }
       duration
+      isDeleted
     }
     count
   }

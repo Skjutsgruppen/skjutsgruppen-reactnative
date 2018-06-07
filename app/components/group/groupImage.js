@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginHorizontal: 24,
     textAlign: 'center',
+    lineHeight: 32,
   },
 });
 

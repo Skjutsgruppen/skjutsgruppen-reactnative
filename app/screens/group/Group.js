@@ -306,7 +306,7 @@ class Group extends Component {
         {(activeStep === 4) &&
           <View style={{ flex: 1 }}>
             {this.renderProgress(80)}
-            <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} />
+            <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} buttonText={trans('global.add_and_publish_button')} />
           </View>
         }
         {(activeStep === 5) && this.renderFinish()}

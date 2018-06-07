@@ -589,8 +589,8 @@ class Item extends PureComponent {
   }
 
   makeAnExperience = ({ Notifiable, createdAt, id, ids }) => {
-    const route = 'Experience';
-    const params = { trip: Notifiable };
+    const route = 'TripDetail';
+    const params = { trip: Notifiable.id || '' };
 
     return this.item({
       user: trans('message.make_an_experience'),
@@ -603,11 +603,17 @@ class Item extends PureComponent {
   }
 
   shareYourLocation = ({ Notifiable, notifiable, Notifiers, createdAt, id, ids }) => {
+    const { __typename: typename, id: tripId } = Notifiable;
+
     let route = 'Route';
+    let params = { info: Notifiable };
+
+    if (Notifiable && typename === FEEDABLE_TRIP) {
+      route = 'TripDetail';
+      params = { id: tripId };
+    }
 
     if (notifiable === FEEDABLE_GROUP && Notifiable.outreach === 'area') route = 'Area';
-
-    const params = { info: Notifiable };
 
     return this.item({
       userId: Notifiers[0].id,

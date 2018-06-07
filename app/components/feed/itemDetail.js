@@ -172,17 +172,7 @@ class Feed extends Component {
     }
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_SHARE) {
-      return (
-        <TouchableHighlight
-          onLongPress={() => onLongPress({
-            isOwner: (feed.User.id === user.id),
-            data: feed,
-            type: GROUP_FEED_TYPE_SHARE,
-          })}
-        >
-          {this.renderSharedCard()}
-        </TouchableHighlight>
-      );
+      return this.renderSharedCard();
     }
 
     if (feed.feedable === FEEDABLE_SUGGESTION) {
@@ -365,41 +355,67 @@ class Feed extends Component {
   }
 
   renderSharedCard() {
-    const { feed, onPress } = this.props;
+    const { feed, onPress, onLongPress, user } = this.props;
 
-    if (feed.feedable === FEEDABLE_TRIP) {
+    if (feed.feedable === FEEDABLE_TRIP && feed.Trip && !feed.Trip.isDeleted) {
       if (feed.Trip.User.id === feed.User.id) {
         return (
+          <TouchableHighlight
+            onLongPress={() => onLongPress({
+              isOwner: (feed.User.id === user.id),
+              data: feed,
+              type: GROUP_FEED_TYPE_SHARE,
+            })}
+          >
+            <View>
+              <AppText style={styles.commentText}>
+                {this.renderUsername()} <AppText>{feed.Trip.type === FEED_FILTER_WANTED ? trans('feed.asks_for_a_ride') : trans('detail.offers_a_ride')}</AppText>
+              </AppText>
+              <AppText>{feed.Trip.description}</AppText>
+              <SharedCard
+                trip={feed.Trip}
+                onPress={onPress}
+                date={feed.date}
+              />
+            </View>
+          </TouchableHighlight>
+        );
+      }
+
+      return (
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: GROUP_FEED_TYPE_SHARE,
+          })}
+        >
           <View>
             <AppText style={styles.commentText}>
-              {this.renderUsername()} <AppText>{feed.Trip.type === FEED_FILTER_WANTED ? trans('feed.asks_for_a_ride') : trans('detail.offers_a_ride')}</AppText>
+              {this.renderUsername()} <AppText>{trans('detail.shared')} <AppText color={Colors.text.blue} fontVariation="semibold">{trans('detail.user_s', { user: feed.Trip.User.firstName })}</AppText> {feed.feedable === FEEDABLE_TRIP ? trans('detail.ride') : feed.feedable}: </AppText>
             </AppText>
-            <AppText>{feed.Trip.description}</AppText>
             <SharedCard
               trip={feed.Trip}
               onPress={onPress}
               date={feed.date}
             />
           </View>
-        );
-      }
-
-      return (
-        <View>
-          <AppText style={styles.commentText}>
-            {this.renderUsername()} <AppText>{trans('detail.shared')} <AppText color={Colors.text.blue} fontVariation="semibold">{trans('detail.user_s', { user: feed.Trip.User.firstName })}</AppText> {feed.feedable === FEEDABLE_TRIP ? trans('detail.ride') : feed.feedable}: </AppText>
-          </AppText>
-          <SharedCard
-            trip={feed.Trip}
-            onPress={onPress}
-            date={feed.date}
-          />
-        </View>
+        </TouchableHighlight>
       );
     }
 
     if (feed.feedable === FEEDABLE_EXPERIENCE) {
-      return this.renderExperience(feed, onPress);
+      return (
+        <TouchableHighlight
+          onLongPress={() => onLongPress({
+            isOwner: (feed.User.id === user.id),
+            data: feed,
+            type: GROUP_FEED_TYPE_SHARE,
+          })}
+        >
+          {this.renderExperience(feed, onPress)}
+        </TouchableHighlight>
+      );
     }
 
     return null;

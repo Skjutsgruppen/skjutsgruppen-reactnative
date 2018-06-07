@@ -15,6 +15,12 @@ wsClient.use([{
   },
 }]);
 
+wsClient.connectionCallback = (err) => {
+  if (err && err.message === 'Auth failed') {
+    wsClient.close(false, false);
+  }
+};
+
 
 const networkInterface = createNetworkInterface({ uri: API_URL });
 

@@ -416,6 +416,8 @@ class TripDetail extends Component {
       .then(() => {
         this.setConfirmModalVisibility(false);
         this.setState({ loading: false, retry: false, deletedModal: true });
+        this.navigateOnDelete();
+        Scheduler.removeSpecificScheduledNotification(id);
       })
       .catch((error) => {
         this.setState({ loading: false, retry: error });
@@ -1019,9 +1021,14 @@ class TripDetail extends Component {
     );
   }
 
+  navigateOnDelete = () => {
+    const { navigation } = this.props;
+    navigation.popToTop();
+    navigation.replace('Tab');
+  }
+
   renderDeletedModal = () => {
     const { deletedModal } = this.state;
-    const { navigation } = this.props;
 
     const message = (
       <AppText>{trans('detail.this_trip_has_been_deleted')}</AppText>
@@ -1032,7 +1039,8 @@ class TripDetail extends Component {
         visible={deletedModal}
         onRequestClose={() => this.setState({ deletedModal: false })}
         message={message}
-        onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false }, () => navigation.goBack())}
+        onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false },
+          () => this.navigateOnDelete())}
         confrimTextColor={Colors.text.blue}
       />
     );

@@ -90,7 +90,7 @@ class Area extends Component {
 
   renderMunicipality = () => {
     const { county } = this.state;
-    if (county === null) {
+    if (county === null || county === '') {
       return null;
     }
 
@@ -109,7 +109,7 @@ class Area extends Component {
   renderLocality = () => {
     const { municipality } = this.state;
 
-    if (municipality === null) {
+    if (municipality === null || municipality === '') {
       return null;
     }
 

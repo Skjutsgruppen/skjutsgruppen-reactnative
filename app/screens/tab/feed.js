@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -13,6 +13,7 @@ import FeedIconActive from '@assets/icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
+// import { Crashlytics } from 'react-native-fabric';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -24,15 +25,12 @@ import {
   FEEDABLE_NEWS,
   FEEDABLE_EXPERIENCE,
   FEED_FILTER_NEARBY,
-  GROUP_FEED_TYPE_SHARE,
 } from '@config/constant';
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
 import TouchableHighlight from '@components/touchableHighlight';
 import CoCreateModal from '@components/coCreateModal';
-import AppText from '@components/utils/texts/appText';
-import Button from '@components/experience/button';
 import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
 
@@ -123,8 +121,6 @@ class Feed extends Component {
       totalExperiences: 0,
       loading: false,
       showCoCreateModal: true,
-      contactPermission: true,
-      contactPermissionResponse: null,
     });
 
     this.feedList = null;
@@ -143,8 +139,6 @@ class Feed extends Component {
         const permissions =
           await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
 
-        this.setState({ contactPermission: permissions });
-
         if (!permissions) {
           const response =
             await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
@@ -154,11 +148,17 @@ class Feed extends Component {
       } else {
         Contacts.checkPermission((err, permission) => {
           if (err || permission !== 'authorized') {
-            Contacts.requestPermission((error, contactPermission) => {
-              this.setState({ contactPermission: contactPermission === 'authorized' });
+            Contacts.requestPermission((contactErr, res) => {
+              if (contactErr) {
+                if (Platform === 'ios' || Platform.OS === 'ios') {
+                  //Crashlytics.recordError(contactErr);
+                }
+              }
+              console.warn(err, res);
+              this.setState({ contactPermission: false, contactPermissionResponse: permission });
             });
           } else {
-            this.setState({ contactPermission: permission === 'authorized' });
+            this.setState({ contactPermission: true, contactPermissionResponse: permission });
           }
         });
       }
@@ -306,7 +306,7 @@ class Feed extends Component {
       >
         <Share
           modal
-          type={GROUP_FEED_TYPE_SHARE}
+          type={shareableType}
           detail={shareable}
           onClose={() => this.setState({ showShareModal: false })}
         />
@@ -430,48 +430,11 @@ class Feed extends Component {
   );
 
   renderCoCreateModal = () => {
-    const { showCoCreateModal, contactPermission } = this.state;
-    if (!contactPermission) return null;
+    const { showCoCreateModal } = this.state;
     return (<CoCreateModal
       visible={showCoCreateModal}
       toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
     />);
-  }
-
-  renderContactPermission = () => {
-    if (this.state.contactPermission) {
-      return null;
-    }
-    return (<Modal
-      transparent
-      visible={!this.state.contactPermission}
-      onRequestClose={() => { }}
-    >
-      <View style={styles.backdrop}>
-        <View style={styles.permissionModal}>
-          <AppText
-            fontVariation="semibold"
-            size={16}
-            centered
-            style={{ marginBottom: 24, paddingVertical: 10, paddingHorizontal: 20 }}
-          >
-            {trans('global.well_thats_sad')}
-          </AppText>
-          {(Platform === 'android' || Platform.OS === 'android') &&
-            <Button
-              style={{ padding: 20, width: 250, alignSelf: 'center', marginBottom: 20 }}
-              onPress={() => BackHandler.exitApp()}
-              label={trans('global.no_thanks_close_this_app')}
-            />
-          }
-          <Button
-            style={{ padding: 20, width: 250, alignSelf: 'center' }}
-            onPress={() => this.askForPermission()}
-            label={trans('global.open_permission_settings')}
-          />
-        </View>
-      </View>
-    </Modal>);
   }
 
   render() {
@@ -487,7 +450,6 @@ class Feed extends Component {
           onCloseModal={() => this.setFilterVisibility(false)}
         />
         {this.renderCoCreateModal()}
-        {/* {this.renderContactPermission()} */}
       </Wrapper>
     );
   }

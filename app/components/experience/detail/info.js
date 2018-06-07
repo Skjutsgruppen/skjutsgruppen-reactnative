@@ -154,6 +154,7 @@ const Info = ({ loading, experience, navigation }) => {
               if (index < (maxImage - 1)) {
                 return (
                   <View
+                    key={User.id}
                     style={[
                       styles.profilePicWrapper,
                       index > 0 && { left: (index * imageSize) - (margin * index) },

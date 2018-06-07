@@ -191,12 +191,15 @@ class List extends Component {
           )}
           fetchMoreOptions={{
             variables: { offset: groupMembers.rows.length },
-            updateQuery: (previousResult, { moreResult }) => {
-              if (!moreResult || moreResult.groupMembers.rows.length === 0) {
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              if (!fetchMoreResult || fetchMoreResult.groupMembers.rows.length === 0
+                || fetchMoreResult.groupMembers.count === groupMembers.rows.length
+              ) {
                 return previousResult;
               }
 
-              const rows = previousResult.groupMembers.rows.concat(moreResult.groupMembers.rows);
+              const rows = previousResult.groupMembers.rows
+                .concat(fetchMoreResult.groupMembers.rows);
 
               return { groupMembers: { ...previousResult.groupMembers, ...{ rows } } };
             },

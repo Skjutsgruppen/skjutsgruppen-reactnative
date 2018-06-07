@@ -66,11 +66,12 @@ class NewNotification extends PureComponent {
       <DataList
         data={notifications}
         renderItem={({ item }) => (
-          <MesssageItem
-            key={item.id}
-            filters={filters}
-            notification={item}
-          />
+          item.Notifiable ?
+            <MesssageItem
+              key={item.id}
+              filters={filters}
+              notification={item}
+            /> : null
         )}
         infinityScroll={false}
         loadMoreButton={this.loadMore}
