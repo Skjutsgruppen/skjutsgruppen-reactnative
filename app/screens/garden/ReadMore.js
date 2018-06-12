@@ -55,7 +55,7 @@ class ReadMore extends Component {
               {trans('profile.the_key_here_is')}
             </AppText>
           </View>
-          <Costs />
+          <Costs showReadMore={false} showDescription />
         </ScrollView>
       </Wrapper>
     );

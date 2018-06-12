@@ -34,6 +34,7 @@ subscription updatedProfile($id: Int){
     agreementAccepted
     contactSynced
     isBlocked
+    isAdmin
   }
 }`;
 
@@ -128,6 +129,7 @@ subscription updatedAccount($id: Int) {
     contactSynced
     notification
     emailNotification
+    isAdmin
   }
 }`;
 
@@ -160,6 +162,7 @@ query account {
     contactSynced
     notification
     emailNotification
+    isAdmin
   }
 }`;
 

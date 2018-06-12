@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HelpMore = ({ supportSubscribe }) => (
+const HelpMore = ({ currentlySupporting }) => (
   <View style={[styles.wrapper, { elevation: 22 }]}>
     <View style={{ paddingBottom: 30, paddingTop: 50, paddingHorizontal: 30 }}>
       <View style={styles.flexRow}>
@@ -42,32 +42,34 @@ const HelpMore = ({ supportSubscribe }) => (
       noBackgroud
       elevation={0}
       durationLabel={trans('profile.support_one_year')}
-      monthlyAmount={49}
-      planId={3}
-      supportSubscribe={supportSubscribe}
-      info={trans('profile.auto_renewed_every_six_month', { krona: 54 })}
+      amount="589kr"
+      planId={'589_kr_per_year_garden'}
+      info={trans('profile.auto_renewed_every_year', { krona: 589 })}
+      title="Support a year"
+      currentlySupporting={currentlySupporting}
+      amountPerMonth={parseFloat(589 / 12).toFixed(2)}
     />
     <Package
       elevation={20}
       durationLabel={trans('profile.support_one_year')}
-      monthlyAmount={149}
-      planId={4}
-      supportSubscribe={supportSubscribe}
-      info={trans('profile.auto_renewed_every_six_month', { krona: 588 })}
+      amount="1749kr"
+      planId={'1749_kr_per_year_garden'}
+      info={trans('profile.auto_renewed_every_year', { krona: 1749 })}
+      title="Support a year"
+      currentlySupporting={currentlySupporting}
+      amountPerMonth={parseFloat(1749 / 12).toFixed(2)}
     />
     <Package
       elevation={21}
       durationLabel={trans('profile.support_one_year')}
-      monthlyAmount={599}
-      planId={5}
-      supportSubscribe={supportSubscribe}
-      info={trans('profile.auto_renewed_every_six_month', { krona: 7188 })}
+      amount="2995kr"
+      planId={'2995__kr_per_six_months'}
+      info={trans('profile.auto_renewed_every_six_month', { krona: 2995 })}
+      title="Support six month"
+      currentlySupporting={currentlySupporting}
+      amountPerMonth={parseFloat(2995 / 6).toFixed(2)}
     />
   </View>
 );
-
-HelpMore.propTypes = {
-  supportSubscribe: PropTypes.func.isRequired,
-};
 
 export default HelpMore;

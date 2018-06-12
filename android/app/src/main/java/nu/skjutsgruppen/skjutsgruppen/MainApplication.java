@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
+import com.dooboolab.RNIap.RNIapPackage;
 import com.opensettings.OpenSettingsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
@@ -55,6 +56,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new RNIapPackage(),
             new OpenSettingsPackage(),
                     new RNFirebasePackage(),
                     new AndroidOpenSettingsPackage(),

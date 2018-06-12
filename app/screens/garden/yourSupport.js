@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 
@@ -12,12 +12,14 @@ import Package from '@components/garden/subscriptionPackage';
 import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
-import { withSupport, withGenerateClientToken, withMySupport, withCancelSupportSubscription } from '@services/apollo/support';
+import ErrorIcon from '@assets/icons/ic_warning.png';
+import SuccessIcon from '@assets/icons/ic_checked_green.png';
+import { withSupport, withMySupport, withCancelSupportSubscription } from '@services/apollo/support';
 import { withAccount } from '@services/apollo/profile';
 import { trans } from '@lang/i18n';
 import CrossIcon from '@assets/icons/ic_cross.png';
-import ConfirmModal from '@components/common/confirmModal';
-import { showPayment } from '@services/braintree/braintreePayment';
+import { ConfirmModal, AppNotification } from '@components/common';
+import { showPayment, unsubscribePayment } from '@services/support/purchase';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -54,6 +56,7 @@ class YourSupport extends Component {
       subscribing: false,
       showConfirmModal: false,
       alertMessage: '',
+      error: false,
       showConfirmCancel: false,
       subscriptionId: null,
     };
@@ -66,27 +69,32 @@ class YourSupport extends Component {
   }
 
   onSupportSubscribe = (planId) => {
-    const { support, generateClientToken, mySupport } = this.props;
+    const { support, mySupport } = this.props;
+    this.setState({ subscribing: true, showConfirmModal: true });
 
-    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+    showPayment(planId, (error, purchaseDetail) => {
       if (error) {
         console.warn(error);
-        this.setState({ showConfirmModal: true, alertMessage: trans('profile.subscribe_failed') });
+        this.setState({ error: true, subscribing: false, showConfirmModal: true, alertMessage: trans('profile.subscribe_failed') });
         return;
       }
 
-      this.setState({ subscribing: true, showConfirmModal: true });
-
-      support({ planId, paymentMethodNonce })
+      support({ planId,
+        transactionId: purchaseDetail.transactionId,
+        receipt: purchaseDetail.transactionReceipt,
+        originalTransactionId: purchaseDetail.originalTransactionIdentifier ?
+          purchaseDetail.originalTransactionIdentifier : purchaseDetail.transactionId,
+        device: Platform.OS,
+      })
         .then(() => {
           mySupport.refetch()
             .then(() => {
-              this.setState({ subscribing: false, alertMessage: trans('profile.subscribed_success') });
+              this.setState({ error: false, subscribing: false, alertMessage: trans('profile.subscribed_success') });
             });
         })
         .catch((e) => {
           console.warn(e);
-          this.setState({ subscribing: false, alertMessage: trans('profile.subscribe_failed') });
+          this.setState({ error: true, subscribing: false, alertMessage: trans('profile.subscribe_failed') });
         });
     });
   }
@@ -96,17 +104,7 @@ class YourSupport extends Component {
   }
 
   onCancelSupportSubscription = () => {
-    const { cancelSupportSubscription, mySupport } = this.props;
-    const { subscriptionId } = this.state;
-
-    this.setState({ subscribing: true, showConfirmModal: true, showConfirmCancel: false });
-    cancelSupportSubscription({ id: subscriptionId })
-      .then(() => {
-        mySupport.refetch()
-          .then(() => {
-            this.setState({ subscribing: false, alertMessage: trans('profile.auto_renewal_canceled') });
-          });
-      });
+    unsubscribePayment();
   }
 
   renderSubscriptions = () => {
@@ -125,9 +123,8 @@ class YourSupport extends Component {
               }
               <Title color={Colors.text.gray}>
                 <Title color={Colors.text.pink} fontVariation="bold">{subscription.Plan.amountPerMonth} kr </Title>
-                {trans('profile.every_month')}
+                {trans('profile.every')} {subscription.Plan.billingCycle === 12 ? trans('profile.year') : `${subscription.Plan.billingCycle} ${trans('profile.month_s')}`}
               </Title>
-              <Title color={Colors.text.gray}>for {subscription.Plan.billingCycle === 12 ? trans('profile.year') : `${subscription.Plan.billingCycle} ${trans('profile.month_s')}`}</Title>
             </View>
             <Heading color={Colors.text.yellowGreen}>{subscription.totalRevenue} kr</Heading>
           </View>
@@ -170,7 +167,7 @@ class YourSupport extends Component {
 
   render() {
     const { mySupport, data } = this.props;
-    const { subscribing, showConfirmModal, alertMessage, showConfirmCancel } = this.state;
+    const { subscribing, showConfirmModal, alertMessage, showConfirmCancel, error } = this.state;
 
     if (!mySupport.data || !data.profile) return null;
 
@@ -178,6 +175,16 @@ class YourSupport extends Component {
 
     return (
       <Wrapper>
+        {
+          showConfirmModal && !subscribing && (
+            <AppNotification
+              name={alertMessage}
+              type="icon"
+              image={error ? ErrorIcon : SuccessIcon}
+              handleClose={() => this.setState({ showConfirmModal: false })}
+            />
+          )
+        }
         <ToolBar title={trans('profile.your_support')} fontVariation="bold" />
         <ScrollView>
           <Header
@@ -211,35 +218,36 @@ class YourSupport extends Component {
             noBackgroud
             elevation={0}
             durationLabel={trans('profile.support_six_month')}
-            monthlyAmount={9}
-            planId={1}
-            supportSubscribe={this.onSupportSubscribe}
-            info={trans('profile.total_of_54_auto_renewed_every_six_month')}
+            amount="55kr"
+            planId={'55_kr_per_six_month_garden'}
+            info={trans('profile.total_of_55_auto_renewed_every_six_month')}
+            title="Support six months"
+            currentlySupporting={mySupport.data.currentSubscriptionPlan}
+            amountPerMonth={parseFloat(55 / 6).toFixed(2)}
           />
           <Package
             elevation={20}
             durationLabel={trans('profile.support_one_month')}
-            monthlyAmount={29}
-            planId={2}
-            supportSubscribe={this.onSupportSubscribe}
-            info={trans('profile.total_of_29_auto_renewed_every_six_month')}
+            amount="29kr"
+            planId={'29_kr_per_month_garden'}
+            title="Support a month"
+            info={trans('profile.total_of_29_auto_renewed_every_month')}
+            currentlySupporting={mySupport.data.currentSubscriptionPlan}
+            amountPerMonth="29"
           />
           <HelpMore
             supportSubscribe={this.onSupportSubscribe}
+            currentlySupporting={mySupport.data.currentSubscriptionPlan}
           />
           <HowItWorks />
           <Costs supporter={supporter} />
         </ScrollView>
         <ConfirmModal
           loading={subscribing}
-          message={alertMessage}
-          visible={showConfirmModal}
-          onRequestClose={() => this.setState({ showConfirmModal: false })}
-          confirmLabel={trans('global.ok')}
-          denyLabel={trans('global.cancel')}
-          onConfirm={() => this.setState({ showConfirmModal: false })}
-          onDeny={() => this.setState({ showConfirmModal: false })}
+          visible={subscribing}
           cancelable={false}
+          onConfirm={() => {}}
+          onDeny={() => {}}
         />
         <ConfirmModal
           loading={false}
@@ -258,21 +266,21 @@ class YourSupport extends Component {
 
 YourSupport.propTypes = {
   support: PropTypes.func.isRequired,
-  generateClientToken: PropTypes.string,
   data: PropTypes.shape({
     profile: PropTypes.shape(),
   }).isRequired,
   mySupport: PropTypes.shape({
+    currentSubscriptionPlan: PropTypes.string,
     subscriptions: PropTypes.shape(),
     total: PropTypes.number,
   }).isRequired,
-  cancelSupportSubscription: PropTypes.func.isRequired,
   subscribeToUpdatedProfile: PropTypes.func.isRequired,
 };
 
 YourSupport.defaultProps = {
   generateClientToken: null,
   mySupport: {
+    currentSubscriptionPlan: null,
     subscriptions: [],
     total: 0,
   },
@@ -281,7 +289,6 @@ YourSupport.defaultProps = {
 export default compose(
   withSupport,
   withMySupport,
-  withGenerateClientToken,
   withCancelSupportSubscription,
   withAccount,
 )(YourSupport);

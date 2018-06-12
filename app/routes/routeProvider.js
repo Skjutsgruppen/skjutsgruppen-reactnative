@@ -55,6 +55,7 @@ import Search from '@screens/tab/search';
 import Garden from '@screens/tab/garden';
 import YourSupport from '@screens/garden/yourSupport';
 import SupportReadMore from '@screens/garden/ReadMore';
+import PackageDetail from '@screens/garden/packageDetail';
 
 import Report from '@screens/modal/Report';
 
@@ -124,6 +125,7 @@ export const Routes = {
   Settings: { screen: Settings },
   YourSupport: { screen: YourSupport },
   SupportReadMore: { screen: SupportReadMore },
+  PackageDetail: { screen: PackageDetail },
 
   TripDetail: { screen: TripDetail, path: 'trip/:id' },
   NewsDetail: { screen: NewsDetail, path: 'news/:id' },

@@ -43,7 +43,6 @@ import { LoginManager } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import { resetLocalStorage } from '@services/apollo/dataSync';
 import { NavigationActions } from 'react-navigation';
-import NewsCard from '@components/feed/card/news';
 
 const FeedExperience = withGetExperiences(List);
 
