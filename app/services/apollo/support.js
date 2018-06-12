@@ -8,11 +8,14 @@ const SUPPORT_QUERY = gql`
 `;
 
 const SUPPORT_MUTATION_QUERY = gql`
-  mutation support(
-    $planId: Int!
-    $paymentMethodNonce: String!
+  mutation createSupport(
+    $planId: String
+    $transactionId: String
+    $originalTransactionId: String
+    $receipt: String
+    $device: String
   ){
-    support(planId: $planId, paymentMethodNonce: $paymentMethodNonce)
+    createSupport(input: { planId: $planId, transactionId: $transactionId, originalTransactionId: $originalTransactionId, receipt: $receipt, device: $device })
   }
 `;
 
@@ -30,11 +33,17 @@ export const withSupport = graphql(SUPPORT_MUTATION_QUERY, {
     {
       support: ({
         planId = null,
-        paymentMethodNonce = null,
+        transactionId = null,
+        originalTransactionId = null,
+        receipt = null,
+        device = null,
       }) => mutate({
         variables: {
           planId,
-          paymentMethodNonce,
+          transactionId,
+          originalTransactionId,
+          receipt,
+          device,
         },
       }),
     }),
@@ -43,6 +52,7 @@ export const withSupport = graphql(SUPPORT_MUTATION_QUERY, {
 const MY_SUPPORT_QUERY = gql`
   query mySupport {
     mySupport {
+      currentSubscriptionPlan
       subscriptions {
         id
         Plan {
