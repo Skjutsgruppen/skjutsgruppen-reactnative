@@ -16,10 +16,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     ...Platform.select({
       ios: {
-        shadowOffset: { width: 0, height: 1 },
-        shadowColor: 'rgba(0,0,0,0.1)',
-        shadowOpacity: 0,
-        shadowRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
       },
       android: {
         elevation: 4,
@@ -66,8 +66,8 @@ const Supporter = ({ garden, navigation }) => (
       </Heading>
     </View>
     <View style={styles.suppoterCostCard}>
-      <CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="18000" />
       <CostCard title={trans('profile.server_cost')} coveredPercentage={garden.server} totalCost="2400" />
+      <CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="18000" />
       <CostCard title={trans('profile.project_manager')} coveredPercentage={garden.projectManager} totalCost="10000" />
     </View>
     <View style={styles.buttonComponent}>

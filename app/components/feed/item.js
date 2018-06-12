@@ -10,6 +10,7 @@ import {
   EXPERIENCE_STATUS_CAN_CREATE,
   FEEDABLE_GROUP,
   GROUP_FEED_TYPE_COMMENT,
+  SHARE_EXPERIENCE_DEFAULT_MINUTE,
 } from '@config/constant';
 
 import Colors from '@theme/colors';
@@ -62,7 +63,7 @@ class FeedItem extends PureComponent {
   isTripStarted = () => {
     const { feed: { Trip: trip } } = this.props;
 
-    return getDate(trip.date).add((trip.duration / 2), 'second').isBefore();
+    return getDate(trip.date).add(SHARE_EXPERIENCE_DEFAULT_MINUTE, 'minute').isBefore();
   }
 
   isTripEnded = () => {

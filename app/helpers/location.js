@@ -5,3 +5,5 @@ export const getPlaceByLatlngURL = (latitude, longitude) => `https://maps.google
 export const getPlaceSuggestURL = (text, language = 'en', type = '') => `https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=${encodeURIComponent(text)}&key=${GOOGLE_MAP_API_KEY}&language=${language}&types=${type}`;
 
 export const getPlaceDetailURL = (placeId, language = 'en') => `https://maps.googleapis.com/maps/api/place/details/json?key=${GOOGLE_MAP_API_KEY}&placeid=${placeId}&language=${language}`;
+
+export const getDirectionURL = (start, end) => `https://maps.googleapis.com/maps/api/directions/json?key=${GOOGLE_MAP_API_KEY}&origin=${start.coordinates[1]},${start.coordinates[0]}&destination=${end.coordinates[1]},${end.coordinates[0]}&mode=driving&language=en`;

@@ -26,6 +26,7 @@ allprojects {
     repositories {
         google()
         // Add fabric repository (added by tipsi-twitter)
+        google()
         maven { url "https://maven.fabric.io/public" }
         mavenLocal()
         jcenter()

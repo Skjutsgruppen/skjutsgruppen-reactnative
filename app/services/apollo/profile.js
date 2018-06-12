@@ -36,6 +36,7 @@ subscription updatedProfile($id: Int){
     isBlocked
     emailNotification
     twitterUsername
+    isAdmin
   }
 }`;
 
@@ -133,6 +134,7 @@ subscription updatedAccount($id: Int) {
     notification
     emailNotification
     twitterUsername
+    isAdmin
   }
 }`;
 
@@ -166,6 +168,7 @@ query account {
     notification
     emailNotification
     twitterUsername
+    isAdmin
   }
 }`;
 

@@ -116,8 +116,8 @@ android {
         applicationId "nu.skjutsgruppen.skjutsgruppen"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 27
-        versionName "1.1.2"
+        versionCode 34
+        versionName "1.2.0"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
         ndk {
@@ -152,6 +152,9 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
+        debug {
+            signingConfig signingConfigs.release
+        }
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
@@ -181,6 +184,8 @@ repositories {
 //     }
 // }
 dependencies {
+    compile project(':react-native-fbsdk')
+    compile project(':react-native-iap')
     compile project(':react-native-open-settings')
     implementation project(':react-native-android-open-settings')
     implementation project(':tipsi-twitter')

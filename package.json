@@ -10,7 +10,8 @@
     "android-fix": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android",
     "ios": "react-native run-ios",
     "devmenu": "adb shell input keyevent 82",
-    "release": "cd android && ./gradlew assembleRelease"
+    "release": "cd android && ./gradlew assembleRelease",
+    "debug": "cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "apollo-client": "^1.9.2",
@@ -36,9 +37,10 @@
     "react-native-firebase": "^4.2.0",
     "react-native-fs": "^2.9.7",
     "react-native-i18n": "^2.0.9",
+    "react-native-iap": "^1.0.5",
     "react-native-image-picker": "^0.26.7",
     "react-native-keyboard-aware-scroll-view": "^0.4.4",
-    "react-native-linear-gradient": "^2.4.0",
+    "react-native-linear-gradient": "2.4.2",
     "react-native-maps": "0.21.0",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-open-settings": "^1.0.1",
@@ -55,7 +57,7 @@
     "redux-persist": "^5.5.0",
     "redux-thunk": "^2.2.0",
     "subscriptions-transport-ws": "0.8.2",
-    "tipsi-twitter": "^2.0.0"
+    "tipsi-twitter": "2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
