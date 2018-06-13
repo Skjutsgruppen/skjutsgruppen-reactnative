@@ -200,7 +200,6 @@ class FOF extends PureComponent {
         separator = '';
       }
 
-
       return ([
         <AppText
           key={user.id}
@@ -250,7 +249,7 @@ class FOF extends PureComponent {
 
   renderBunddled = (item, arrow) => {
     const { navigation } = this.props;
-    if (item.length === 1) {
+    if (item && item.length === 1) {
       return ([
         <TouchableHighlight
           key={item[0].id}
@@ -263,7 +262,7 @@ class FOF extends PureComponent {
       ]);
     }
 
-    if (item.length === 2) {
+    if (item && item.length === 2) {
       return ([
         <TouchableHighlight
           key={item[0].id}
@@ -301,7 +300,8 @@ class FOF extends PureComponent {
 
   renderPath = () => {
     const { relation, viewee, user, navigation } = this.props;
-    if (relation.path.length === 0 && !relation.areFriends) {
+
+    if (relation.path && relation.path.length === 0 && !relation.areFriends) {
       return null;
     }
 
@@ -342,14 +342,14 @@ class FOF extends PureComponent {
   );
 
   renderBunddledMini = (item, arrow) => {
-    if (item.length === 1) {
+    if (item && item.length === 1) {
       return ([
         <Image key={item[0].id} source={{ uri: item[0].avatar }} style={styles.avatarMini} />,
         arrow,
       ]);
     }
 
-    if (item.length === 2) {
+    if (item && item.length === 2) {
       return ([
         <Image
           key={item[0].id}

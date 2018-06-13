@@ -166,7 +166,7 @@ class ExploreGroup extends PureComponent {
     }
 
     if (type === 'GroupsInCounty') {
-      navigation.navigate('GroupsInCounty', { id });
+      navigation.navigate('GroupsInCounty', { id, county: details });
     }
 
     if (type === 'AlphabeticalGroups') {
