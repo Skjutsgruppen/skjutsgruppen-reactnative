@@ -22,6 +22,8 @@ import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
+import SendSMS from 'react-native-sms';
+import { APP_URL } from '@config';
 
 const styles = StyleSheet.create({
   progress: {
@@ -305,6 +307,20 @@ class Ask extends Component {
       this.props.createTrip(tripData).then((res) => {
         if (share.clipboard.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
+        }
+
+        if (share.contacts && share.contacts.length > 0) {
+          const { contacts } = share;
+          const { TripStart, TripEnd, direction, id } = res.data.createTrip;
+          const smsBody = trans('share.share_trip',
+            { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` },
+          );
+
+          SendSMS.send({
+            body: smsBody,
+            recipients: contacts,
+            successTypes: ['sent', 'queued'],
+          }, () => { });
         }
 
         this.setState({ loading: false, trip: res.data.createTrip });

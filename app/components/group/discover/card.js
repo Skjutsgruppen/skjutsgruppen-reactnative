@@ -65,7 +65,9 @@ const GroupItem = ({ style, onPress, imageURI, title, colorOverlay }) => {
           colors={gradientColors}
           style={styles.overlay}
         >
-          <Heading size={16} centered fontFariation="bold" color={Colors.text.white}>{title}</Heading>
+          <Heading size={16} centered fontFariation="bold" color={Colors.text.white} style={{ lineHeight: 32 }}>
+            {title}
+          </Heading>
         </LinearGradient>
       </View>
     </TouchableOpacity>

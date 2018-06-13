@@ -177,9 +177,16 @@ class Share extends Component {
   onNext = () => {
     const { onNext, detail } = this.props;
     this.setState({ loading: true });
-    const { social, clipboard, selectedFriends: friends, selectedGroups: groups } = this.state;
+    const {
+      social,
+      clipboard,
+      selectedFriends: friends,
+      selectedGroups: groups,
+      selectedContacts: contacts,
+    } = this.state;
+
     if (typeof onNext === 'function') {
-      onNext({ social, friends, groups, clipboard });
+      onNext({ social, friends, groups, clipboard, contacts });
     } else {
       const { url } = detail;
       Clipboard.setString(url || '');
@@ -233,6 +240,36 @@ class Share extends Component {
     return true;
   }
 
+  getSmsText = () => {
+    const { detail, type } = this.props;
+
+    const { name, TripStart, TripEnd, id, Trip, direction } = detail;
+    let smsBody = '';
+
+    try {
+      if (type === FEEDABLE_GROUP) {
+        smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
+      }
+
+      if (type === FEEDABLE_TRIP) {
+        smsBody = trans('share.share_trip',
+          { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` }
+        );
+      }
+
+      if (type === FEEDABLE_EXPERIENCE) {
+        smsBody = trans(
+          'share.share_experience',
+          { tripStart: Trip ? Trip.TripStart.name : '', tripEnd: Trip ? Trip.TripEnd.name : '', url: `${APP_URL}/e/${id}` },
+        );
+      }
+
+      return smsBody;
+    } catch (err) {
+      return '';
+    }
+  }
+
   submitShare = async () => {
     const {
       share,
@@ -251,23 +288,7 @@ class Share extends Component {
       selectedTripParticipants: tripParticipants,
     } = this.state;
     const shareInput = { social, friends, groups };
-    const { name, TripStart, TripEnd, id, isAdmin, Trip } = detail;
-    let smsBody = '';
-
-    if (type === FEEDABLE_GROUP) {
-      smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
-    }
-
-    if (type === FEEDABLE_TRIP) {
-      smsBody = trans('share.share_trip', { tripStart: TripStart.name, tripEnd: TripEnd.name, url: `${APP_URL}/t/${id}` });
-    }
-
-    if (type === FEEDABLE_EXPERIENCE) {
-      smsBody = trans(
-        'share.share_experience',
-        { tripStart: Trip ? Trip.TripStart.name : '', tripEnd: Trip ? Trip.TripEnd.name : '', url: `${APP_URL}/e/${id}` },
-      );
-    }
+    const { id, isAdmin } = detail;
 
     try {
       if (location.tripId) {
@@ -286,6 +307,8 @@ class Share extends Component {
         }
 
         if (contacts.length > 0) {
+          const smsBody = this.getSmsText();
+
           if (type === FEEDABLE_GROUP && isAdmin) {
             storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
           }

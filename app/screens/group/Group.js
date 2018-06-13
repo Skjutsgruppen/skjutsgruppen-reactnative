@@ -18,6 +18,8 @@ import { FEEDABLE_GROUP, OPEN_GROUP, STRETCH_TYPE_ROUTE, DEFAULT_COUNTRY_CODE } 
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
+import { APP_URL } from '@config';
+import SendSMS from 'react-native-sms';
 
 const styles = StyleSheet.create({
   progress: {
@@ -211,6 +213,18 @@ class Group extends Component {
         .then((res) => {
           if (share.clipboard.indexOf('copy_to_clip') > -1) {
             Clipboard.setString(res.data.group.url);
+          }
+
+          if (share.contacts && share.contacts.length > 0) {
+            const { contacts } = share;
+            const { name, id } = res.data.group;
+            const smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
+
+            SendSMS.send({
+              body: smsBody,
+              recipients: contacts,
+              successTypes: ['sent', 'queued'],
+            }, () => { });
           }
 
           this.setState({ loading: false, group: res.data.group, error: '' });

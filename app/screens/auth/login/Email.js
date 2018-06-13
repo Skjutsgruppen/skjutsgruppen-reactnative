@@ -252,7 +252,7 @@ class Login extends Component {
           </StepsTitle>
           <View style={{ marginTop: 32 }} />
           <Phone
-            defaultCode="+977"
+            defaultCode="+46"
             placeholder={trans('profile.your_mobile_number')}
             onChange={({ code, number }) => this.onPhoneNumberChange(code, number)}
             value={this.state.number}

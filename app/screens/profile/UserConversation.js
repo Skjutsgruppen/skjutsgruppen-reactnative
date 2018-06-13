@@ -29,10 +29,6 @@ const styles = StyleSheet.create({
 });
 
 class UserConversation extends PureComponent {
-  static navigationOptions = {
-    header: null,
-  };
-
   constructor(props) {
     super(props);
     this.state = { isOpen: false };
@@ -183,6 +179,10 @@ const UserConversationScreen = ({ navigation }) => {
   const { userId } = navigation.state.params;
 
   return (<RenderUserConversation navigation={navigation} id={userId} />);
+};
+
+UserConversationScreen.navigationOptions = {
+  header: null,
 };
 
 UserConversationScreen.propTypes = {
