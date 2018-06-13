@@ -8,11 +8,10 @@ import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import { userLogin, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withContactSync } from '@services/apollo/contact';
-import { Loading, RoundedButton } from '@components/common';
+import { AppNotification, Loading, RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import Container from '@components/auth/container';
 import { getToast } from '@config/toast';
-import Toast from '@components/toast';
 import { NavigationActions, withNavigation } from 'react-navigation';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
@@ -23,6 +22,7 @@ import { trans } from '@lang/i18n';
 import BackButton from '@components/onBoarding/backButton';
 import { AppText } from '@components/utils/texts';
 import PasswordInput from '@components/common/passwordInput';
+import ErrorIcon from '@assets/icons/ic_warning.png';
 
 const styles = StyleSheet.create({
   inputWrapper: {
@@ -97,7 +97,6 @@ class Login extends Component {
         const { data } = await submit(username, password);
         const { User, token } = data.login;
         await setLogin({ token, user: User });
-
         if (!User.agreementRead) {
           navigation.replace('Agreement');
         } else if (!User.agreementAccepted) {
@@ -174,7 +173,11 @@ class Login extends Component {
   }
 
   onPhoneNumberChange = (code, number) => {
-    this.setState({ email: '', number, username: `${code}${parseInt(number, 0)}` });
+    let trimedNumber;
+    if (number) {
+      trimedNumber = number.replace(/^0+/, '');
+    }
+    this.setState({ email: '', number, username: `${code}${trimedNumber}` });
   }
 
   onEmailChange = (email) => {
@@ -204,6 +207,12 @@ class Login extends Component {
     };
   }
 
+  dismissNotification = () => {
+    this.setState({
+      error: '',
+    });
+  }
+
   renderButton = () => {
     const { loading } = this.state;
 
@@ -229,58 +238,65 @@ class Login extends Component {
     const { navigation } = this.props;
 
     return (
-      <Container>
-        <StepsHeading style={styles.paddedSection}>{trans('onboarding.login')}</StepsHeading>
-        <StepsTitle style={styles.paddedSection}>
-          {trans('onboarding.you_can_use_your_cellphone_number_or_email_to_sign_in')}
-        </StepsTitle>
-        <Toast message={error} type="error" />
-        <View style={{ marginTop: 32 }} />
-        <Phone
-          defaultCode="+977"
-          placeholder={trans('profile.your_mobile_number')}
-          onChange={({ code, number }) => this.onPhoneNumberChange(code, number)}
-          value={this.state.number}
-          autoFocus
-        />
-        <AppText color={Colors.text.blue} style={styles.or}>{trans('onboarding.or')}</AppText>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            autoCapitalize="none"
-            onChangeText={username => this.onEmailChange(username)}
-            style={styles.input}
-            placeholder={trans('onboarding.your_email')}
-            underlineColorAndroid="transparent"
-            keyboardType="email-address"
-            value={this.state.email}
-            // onSubmitEditing={() => {
-            //   this.focusNextField('two');
-            // }}
-            ref={(input) => { inputs.one = input; }}
-            // returnKeyType="next"
+      <View style={{ flex: 1 }}>
+        {error !== '' && error && <AppNotification
+          type="icon"
+          image={ErrorIcon}
+          message={error}
+          handleClose={this.dismissNotification}
+        />}
+        <Container>
+          <StepsHeading style={styles.paddedSection}>{trans('onboarding.login')}</StepsHeading>
+          <StepsTitle style={styles.paddedSection}>
+            {trans('onboarding.you_can_use_your_cellphone_number_or_email_to_sign_in')}
+          </StepsTitle>
+          <View style={{ marginTop: 32 }} />
+          <Phone
+            defaultCode="+977"
+            placeholder={trans('profile.your_mobile_number')}
+            onChange={({ code, number }) => this.onPhoneNumberChange(code, number)}
+            value={this.state.number}
+            autoFocus
           />
-        </View>
-        <PasswordInput
-          placeholder={trans('onboarding.your_password')}
-          onChangeText={password => this.setState({ password })}
-          value={this.state.password}
-          onSubmitEditing={this.onSubmit}
-          ref={(input) => { inputs.two = input; }}
-          returnKeyType="send"
-        />
-        <AppText
-          color={Colors.text.blue}
-          onPress={() => navigation.navigate('ForgotPassword')}
-          style={styles.forgotPassword}
-          fontVariation="semibold"
-        >
-          {trans('onboarding.forgot_password')}
-        </AppText>
-        {this.renderButton()}
-        <View style={styles.paddedSection}>
-          <BackButton leftAligned onPress={this.onPressBack} />
-        </View>
-      </Container>
+          <AppText color={Colors.text.blue} style={styles.or}>{trans('onboarding.or')}</AppText>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              autoCapitalize="none"
+              onChangeText={username => this.onEmailChange(username)}
+              style={styles.input}
+              placeholder={trans('onboarding.your_email')}
+              underlineColorAndroid="transparent"
+              keyboardType="email-address"
+              value={this.state.email}
+              // onSubmitEditing={() => {
+              //   this.focusNextField('two');
+              // }}
+              ref={(input) => { inputs.one = input; }}
+              // returnKeyType="next"
+            />
+          </View>
+          <PasswordInput
+            placeholder={trans('onboarding.your_password')}
+            onChangeText={password => this.setState({ password })}
+            value={this.state.password}
+            onSubmitEditing={this.onSubmit}
+            ref={(input) => { inputs.two = input; }}
+            returnKeyType="send"
+          />
+          <AppText
+            color={Colors.text.blue}
+            onPress={() => navigation.navigate('ForgotPassword')}
+            style={styles.forgotPassword}
+            fontVariation="semibold"
+          >
+            {trans('onboarding.forgot_password')}
+          </AppText>
+          {this.renderButton()}
+          <View style={styles.paddedSection}>
+            <BackButton leftAligned onPress={this.onPressBack} />
+          </View>
+        </Container>
+      </View>
     );
   }
 }

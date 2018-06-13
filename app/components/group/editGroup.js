@@ -261,7 +261,7 @@ class EditGroup extends Component {
       areaLocation += (areaLocation) ? `, ${county}` : `${county}`;
     }
 
-    return areaLocation;
+    return areaLocation || ' ';
   }
 
   canUserDelete = () => {
@@ -330,11 +330,14 @@ class EditGroup extends Component {
 
   deleteGroup = () => {
     const { updatedGroup: { id } } = this.state;
+    const { navigation } = this.props;
     this.setState({ loading: true });
 
     this.props.deleteGroup({ id })
       .then(() => {
         this.setState({ confirmModal: false, loading: false, error: false });
+        navigation.popToTop();
+        navigation.replace('Tab');
       })
       .catch(() => this.setState({ confirmModal: true, loading: false, error: true }));
   }

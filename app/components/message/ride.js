@@ -52,7 +52,9 @@ class Ride extends Component {
     return (
       <DataList
         data={trips}
-        renderItem={({ item }) => <ActiveRideItem key={item.id} trip={item} />}
+        renderItem={({ item }) => (
+          item.isDeleted ? null : <ActiveRideItem key={item.id} trip={item} />
+        )}
         infinityScroll={false}
         loadMoreButton={this.loadMore}
         loadMorePosition="bottom"

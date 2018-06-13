@@ -50,7 +50,7 @@ class Signup extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation.navigate('Onboarding', { activeStep: 2 });
+    navigation.replace('Onboarding', { activeStep: 2 });
   }
 
   render() {

@@ -11,7 +11,7 @@ class ScheduleNotification extends Component {
       if (rows.length > 0) {
         await LocalNotification.removeScheduledNotifications();
         rows.forEach((row) => {
-          if (!row.muted) {
+          if (!row.muted && row.Participants && row.Participants.count > 1) {
             LocalNotification.schedule(row);
           }
         });

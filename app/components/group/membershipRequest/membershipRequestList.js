@@ -167,13 +167,15 @@ class MembershipRequestList extends Component {
             noResultText={trans('group.no_any_group_membership_request')}
             fetchMoreOptions={{
               variables: { offset: membershipRequest.rows.length },
-              updateQuery: (previousResult, { moreResult }) => {
-                if (!moreResult || moreResult.membershipRequest.rows.length === 0) {
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult || fetchMoreResult.membershipRequest.rows.length === 0
+                  || fetchMoreResult.membershipRequest.count === membershipRequest.rows.length
+                ) {
                   return previousResult;
                 }
 
                 const rows = previousResult.membershipRequest.rows
-                  .concat(moreResult.membershipRequest.rows);
+                  .concat(fetchMoreResult.membershipRequest.rows);
 
                 return { membershipRequest: { ...previousResult.membershipRequest, ...{ rows } } };
               },

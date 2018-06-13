@@ -206,9 +206,6 @@ UserInfo.propTypes = {
     user: PropTypes.object,
     login: PropTypes.bool,
   }).isRequired,
-  navigation: PropTypes.shape({
-    reset: PropTypes.func,
-  }).isRequired,
   updateUser: PropTypes.func.isRequired,
   regeneratePhoneVerification: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

@@ -633,6 +633,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           mapPhoto
           totalFeeds
           url
+          isDeleted
         }
       }
       ... on CommentFeed {
@@ -824,6 +825,7 @@ subscription groupFeed($groupId: Int!){
           mapPhoto
           totalFeeds
           url
+          isDeleted
         }
       }
       ... on CommentFeed {

@@ -282,6 +282,7 @@ class ShareLocation extends PureComponent {
           location={location}
           startTrackingLocation={startTrackingLocation}
           onClose={() => this.setState({ showShareModal: false })}
+          buttonText={trans('global.share_location_for')}
         />
       </Modal>
     );

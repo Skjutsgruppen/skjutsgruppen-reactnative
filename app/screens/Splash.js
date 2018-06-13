@@ -111,7 +111,7 @@ class Splash extends PureComponent {
     }
 
     if (screen === 'Profile') {
-      navigation[type](screen, { profileId: id });
+      navigation[type](screen, { profileId: parseInt(id, 0) });
     }
 
     if (screen === 'ExperienceDetail') {

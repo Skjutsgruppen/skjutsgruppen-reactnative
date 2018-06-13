@@ -163,7 +163,7 @@ class FOF extends PureComponent {
     const { viewee, relation } = this.props;
     const { expanded } = this.state;
 
-    if (relation.path.length === 0 && !relation.areFriends) {
+    if (relation.path && relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={styles.labelWrapper}>
           <AppText size={13} style={{ textAlign: 'center' }}>{trans('global.you_have_no_friend_connections')}</AppText>
@@ -228,7 +228,7 @@ class FOF extends PureComponent {
       );
     }
 
-    if (relation.path.length === 0) {
+    if (relation.path && relation.path.length === 0) {
       return null;
     }
 
@@ -376,7 +376,7 @@ class FOF extends PureComponent {
 
   renderMini = () => {
     const { relation, viewee, user, navigation } = this.props;
-    if (relation.path.length === 0 && !relation.areFriends) {
+    if (relation.path && relation.path.length === 0 && !relation.areFriends) {
       return (
         <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
           <AppText size={11} color={Colors.text.gray}>
@@ -414,6 +414,7 @@ class FOF extends PureComponent {
 
   render() {
     const { mini } = this.props;
+
     if (mini) {
       return this.renderMini();
     }
