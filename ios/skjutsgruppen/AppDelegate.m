@@ -20,16 +20,20 @@
 #import <ReactNativeConfig/ReactNativeConfig.h>
 #import "RNFirebaseMessaging.h"
 #import "RNFirebaseNotifications.h"
+
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 @import GoogleMaps;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [Fabric with:@[[Crashlytics class]]];
   [FIRApp configure];
   [RNFirebaseNotifications configure];
   [GMSServices provideAPIKey:[ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY"]];
-NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY"]);
   NSURL *jsCodeLocation;
   // firebase push notification
 
