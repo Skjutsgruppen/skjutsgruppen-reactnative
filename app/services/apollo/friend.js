@@ -105,6 +105,64 @@ query friends($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQu
   }
 `;
 
+export const withUnlimitedFriends = graphql(FRIEND_QUERY, {
+  options: ({
+    id = null,
+    offset = 0,
+    limit = null,
+    queryString = null,
+    applyQueryString = false,
+    groupId = null,
+  }) =>
+    ({
+      variables: { id, offset, limit, queryString, applyQueryString, groupId },
+      fetchPolicy: 'cache-and-network',
+    }),
+  props: ({
+    data: { loading, friends, error, refetch, networkStatus, fetchMore, subscribeToMore },
+  }) => {
+    let rows = [];
+    let count = 0;
+
+    if (friends) {
+      rows = friends.rows;
+      count = friends.count;
+    }
+
+    return {
+      friends: { loading, rows, count, error, refetch, networkStatus, fetchMore, subscribeToMore },
+      subscribeToNewFriend: param => subscribeToMore({
+        document: FRIEND_SUBSCRIPTION_QUERY,
+        variables: { userId: param.userId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+
+          rows = [];
+          count = 0;
+          const newFriend = subscriptionData.data.myFriend;
+
+          rows = prev.friends.rows.filter((row) => {
+            if (row.id === newFriend.id) {
+              return false;
+            }
+            count += 1;
+
+            return true;
+          });
+
+          rows = [newFriend].concat(rows);
+
+          return {
+            friends: { ...prev.friends, ...{ rows, count: count + 1 } },
+          };
+        },
+      }),
+    };
+  },
+});
+
 export const withFriends = graphql(FRIEND_QUERY, {
   options: ({
     id = null,

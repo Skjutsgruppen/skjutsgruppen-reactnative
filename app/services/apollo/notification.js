@@ -747,6 +747,7 @@ query locationSharedToAllResources($offset: Int, $limit: Int) {
 export const withLocationSharedToAllResources = graphql(LOCATION_SHARED_TO_ALL_RESOURCES_QUERY, {
   options: ({ offset = 0, limit = NOTIFICATION_FETCH_LIMIT }) => ({
     variables: { offset, limit },
+    fetchPolicy: 'cache-and-network',
   }),
   props: ({
     data: {

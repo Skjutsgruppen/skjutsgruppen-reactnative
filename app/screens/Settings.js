@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Picker } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Wrapper } from '@components/common';
 import { Colors } from '@theme';
 import { trans } from '@lang/i18n';
@@ -9,6 +9,7 @@ import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+import ActionSheet from 'react-native-actionsheet';
 
 const styles = StyleSheet.create({
   row: {
@@ -36,6 +37,7 @@ const AvailableLanguages = {
   'en-IN': 'English',
   'en-IE': 'English',
   'en-ZA': 'English',
+  'en-NP': 'English',
   se: 'Swedish',
   'sv-SE': 'Swedish',
 };
@@ -59,12 +61,23 @@ class Settings extends Component {
     });
   }
 
-  setNotificationStatus = (notification) => {
-    this.setState({ notification });
+  setNotificationStatus = (index) => {
+    if (index === 0) {
+      this.setState({ notification: 'On' });
+    } else if (index === 1) {
+      this.setState({ notification: 'Off' });
+    }
   }
 
-  setLanguage = (language) => {
-    if (language === this.state.language) return;
+  setLanguage = (index) => {
+    let language = '';
+    if (index === 0) {
+      language = 'en';
+    } else if (index === 1) {
+      language = 'se';
+    }
+
+    if (language === '' || language === this.state.language) return;
 
     const { navigation } = this.props;
 
@@ -74,6 +87,14 @@ class Settings extends Component {
         I18n.locale = language;
         navigation.navigate('Tab');
       });
+  }
+
+  showLanguageActionSheet = () => {
+    this.LanguageActionSheet.show();
+  }
+
+  showNotificationActionSheet = () => {
+    this.NotificationActionSheet.show();
   }
 
   renderNotification = () => {
@@ -87,17 +108,9 @@ class Settings extends Component {
           </AppText>
           <AppText color={Colors.text.gray} style={styles.text}>Toggle notification</AppText>
         </View>
-        <TouchableOpacity style={styles.action}>
+        <TouchableOpacity style={styles.action} onPress={this.showNotificationActionSheet}>
           <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
         </TouchableOpacity>
-        <Picker
-          selectedValue={notification}
-          onValueChange={this.setNotificationStatus}
-          style={{ width: '20%', height: '100%', opacity: 0, position: 'absolute', top: 36, right: 20, backgroundColor: 'red' }}
-        >
-          <Picker.Item label="On" value="On" />
-          <Picker.Item label="Off" value="Off" />
-        </Picker>
       </View >
     );
   }
@@ -110,17 +123,9 @@ class Settings extends Component {
         <AppText style={styles.text}>
           {trans('profile.language')} <AppText fontVariation="bold"> - {AvailableLanguages[language]}</AppText>
         </AppText>
-        <TouchableOpacity style={styles.action}>
+        <TouchableOpacity style={styles.action} onPress={this.showLanguageActionSheet}>
           <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
         </TouchableOpacity>
-        <Picker
-          selectedValue={language}
-          onValueChange={this.setLanguage}
-          style={{ width: '20%', height: '100%', opacity: 0, position: 'absolute', top: 36, right: 20, backgroundColor: 'red' }}
-        >
-          <Picker.Item label="English" value="en" />
-          <Picker.Item label="Swedish" value="se" />
-        </Picker>
       </View>
     );
   }
@@ -129,6 +134,20 @@ class Settings extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
+        <ActionSheet
+          ref={sheet => this.LanguageActionSheet = sheet}
+          title={trans('profile.choose_your_preferred_language')}
+          options={['English', 'Swedish', 'Cancel']}
+          cancelButtonIndex={2}
+          onPress={(index) => { this.setLanguage(index); }}
+        />
+        <ActionSheet
+          ref={sheet => this.NotificationActionSheet = sheet}
+          title={trans('profile.notification')}
+          options={['On', 'Off', 'Cancel']}
+          cancelButtonIndex={2}
+          onPress={(index) => { this.setNotificationStatus(index); }}
+        />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           {this.renderNotification()}
           {this.renderLanguage()}

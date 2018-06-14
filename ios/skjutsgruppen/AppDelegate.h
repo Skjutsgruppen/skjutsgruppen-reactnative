@@ -9,6 +9,8 @@
 
 #import <UIKit/UIKit.h>
 @import UserNotifications;
+#import <React/RCTEventEmitter.h>
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,UNUserNotificationCenterDelegate>
 

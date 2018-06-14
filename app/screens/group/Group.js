@@ -151,6 +151,13 @@ class Group extends Component {
         error += 1;
       }
 
+      if (trip.start.coordinates.length === 0 || trip.end.coordinates.length === 0) {
+        trip.direction = 'anywhere';
+      }
+
+      if (trip.directionFrom) trip.direction = trip.directionFrom;
+      if (trip.directionTo) trip.direction = trip.directionTo;
+
       route = trip;
     }
 

@@ -96,6 +96,7 @@ class TwitterConnect extends PureComponent {
       this.setState({ twitterUser, showModal: false }, this.setTwitterUser);
     } catch (error) {
       this.setState({ showModal: false });
+      console.warn(error);
     }
   }
 

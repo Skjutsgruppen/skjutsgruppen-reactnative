@@ -8,12 +8,14 @@ import {
   FEED_FILTER_WANTED,
   ACTIVITY_TYPE_SHARE_LOCATION_FEED,
   ACTIVITY_TYPE_CREATE_EXPERIENCE,
+  EXPERIENCE_STATUS_CAN_CREATE,
 } from '@config/constant';
 
 import Colors from '@theme/colors';
 import FOF from '@components/relation/friendsOfFriend';
 import ShareLocation from '@components/feed/shareLocation';
 import MakeExperience from '@components/feed/makeExperience';
+import { getDate } from '@config';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -50,6 +52,60 @@ const styles = StyleSheet.create({
 });
 
 class FeedItem extends PureComponent {
+  isTripStartedForShareLocation = () => {
+    const { feed: { Trip: trip } } = this.props;
+    return getDate(trip.date).subtract(40, 'minute').isBefore();
+  }
+
+  isTripStarted = () => {
+    const { feed: { Trip: trip } } = this.props;
+    return getDate(trip.date).add(trip.duration / 2, 'second').isBefore();
+  }
+
+  isTripEnded = () => {
+    const { feed: { Trip: trip } } = this.props;
+
+    return getDate(trip.date)
+      .add(trip.duration, 'second')
+      .add(1, 'day')
+      .isBefore();
+  }
+
+  canShareLocation = () => {
+    const { feed: { Trip: trip } } = this.props;
+    const { Participants, isParticipant } = trip;
+
+
+    if ((Participants && Participants.count <= 1) || !isParticipant) {
+      return false;
+    }
+
+    if (!this.isTripStartedForShareLocation()) {
+      return false;
+    }
+
+    if (this.isTripEnded()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  canCreateExperience = () => {
+    const { feed: { Trip: trip } } = this.props;
+    const { experienceStatus, Participants, isParticipant } = trip;
+
+    if (experienceStatus) {
+      return (
+        Participants.count > 1
+        && isParticipant
+        && experienceStatus === EXPERIENCE_STATUS_CAN_CREATE
+      );
+    }
+
+    return false;
+  }
+
   renderProfilePic() {
     const { feed, onPress } = this.props;
     let imgSrc = '';
@@ -102,7 +158,9 @@ class FeedItem extends PureComponent {
     const { feed, onPress, onLongPress } = this.props;
 
     if (feed.ActivityType.type === ACTIVITY_TYPE_SHARE_LOCATION_FEED && feed.Trip) {
-      if (!feed.Trip.id || !feed.Trip.isParticipant) return null;
+      if (!this.canShareLocation()) {
+        return null;
+      }
 
       return (
         <ShareLocation
@@ -113,13 +171,15 @@ class FeedItem extends PureComponent {
     }
 
     if (feed.ActivityType.type === ACTIVITY_TYPE_CREATE_EXPERIENCE && feed.Trip) {
-      if (!feed.Trip.id || !feed.Trip.isParticipant) return null;
+      if (this.canCreateExperience() && this.isTripStarted() && !this.isTripEnded()) {
+        return (
+          <MakeExperience
+            onPress={onPress}
+            detail={feed.Trip}
+          />);
+      }
 
-      return (
-        <MakeExperience
-          onPress={onPress}
-          detail={feed.Trip}
-        />);
+      return null;
     }
 
     return (

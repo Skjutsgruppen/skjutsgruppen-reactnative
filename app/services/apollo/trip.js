@@ -914,7 +914,7 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
         document: TRIPS_SUBSCRIPTION_QUERY,
         variables: { userId: param.userId },
         updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
+          if (!subscriptionData.data && !subscriptionData.data.myTrip) {
             return prev;
           }
 
@@ -922,6 +922,10 @@ export const withMyTrips = graphql(TRIPS_QUERY, {
           count = 0;
           const newTrip = subscriptionData.data.myTrip;
           const { Trip, remove } = newTrip;
+
+          if (!Trip) {
+            return prev;
+          }
 
           rows = prev.trips.rows.filter((row) => {
             if (row.id === Trip.id) {
@@ -1068,6 +1072,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
         ...on ShareYourLocationFeed {
           Trip {
             id
+            date
             TripStart {
               coordinates
             }
@@ -1075,15 +1080,25 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               coordinates
             }
             isParticipant
+            duration
+            Participants {
+              count
+            }
           }
         }
         ...on CreateYourExperienceFeed {
           Trip {
             id
+            date
             User {
               id
             }
             isParticipant
+            duration
+            experienceStatus
+            Participants {
+              count
+            }
           }
         }
       }
@@ -1211,6 +1226,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
       ...on ShareYourLocationFeed {
         Trip {
           id
+          date
           TripStart {
             coordinates
           }
@@ -1218,15 +1234,25 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             coordinates
           }
           isParticipant
+          duration
+          Participants {
+            count
+          }
         }
       }
       ...on CreateYourExperienceFeed {
         Trip {
           id
+          date
           User {
             id
           }
           isParticipant
+          duration
+          experienceStatus
+          Participants {
+            count
+          }
         }
       }
     }

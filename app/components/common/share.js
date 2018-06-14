@@ -3,9 +3,10 @@ import { View, StyleSheet, Image, ScrollView, Alert, Clipboard, Platform } from 
 import PropTypes from 'prop-types';
 
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
-import { withFriends, withBestFriends } from '@services/apollo/friend';
+import { withBestFriends, withUnlimitedFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading, RoundedButton, SearchBar } from '@components/common';
 import Colors from '@theme/colors';
 import FriendList from '@components/friend/selectable';
@@ -88,6 +89,12 @@ const styles = StyleSheet.create({
     paddingTop: '5%',
     paddingBottom: '5%',
   },
+  errorWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
   button: {
     flex: 0,
     width: 200,
@@ -121,6 +128,7 @@ class Share extends Component {
       contactsListSearch: [],
       searchQuery: '',
       loading: false,
+      error: false,
     };
   }
 
@@ -320,9 +328,15 @@ class Share extends Component {
           }
         }
       }
+
       this.onClose();
     } catch (error) {
-      this.onClose();
+      let shareType = '';
+      if (type === FEEDABLE_GROUP) shareType = 'group';
+      if (type === FEEDABLE_TRIP) shareType = 'trip';
+      if (type === FEEDABLE_EXPERIENCE) shareType = 'experience';
+
+      this.setState({ error: trans('share.failed_to_share', { type: shareType }), loading: false });
     }
   }
 
@@ -543,7 +557,7 @@ class Share extends Component {
   }
 
   renderButton = () => {
-    const { loading } = this.state;
+    const { loading, error } = this.state;
     const { type, location } = this.props;
     let { buttonText } = this.props;
     let duration = '';
@@ -555,9 +569,14 @@ class Share extends Component {
       return (<Loading />);
     }
 
+    if (type === FEEDABLE_LOCATION) buttonText += ` ${duration}`;
+
+    if (error) {
+      buttonText = trans('global.retry');
+    }
+
     // let buttonText = trans('global.share');
     // if (type === FEEDABLE_GROUP) buttonText = trans('global.add_and_publish_button');
-    if (type === FEEDABLE_LOCATION) buttonText += ` ${duration}`;
 
     return (
       <RoundedButton
@@ -612,6 +631,22 @@ class Share extends Component {
           {this.renderList()}
         </ScrollView>
         <View style={styles.footer}>
+          {
+            this.state.error && this.state.error !== '' && <View style={styles.errorWrapper}>
+              <Icon
+                name="md-sad"
+                size={20}
+                style={{ color: Colors.text.gray }}
+              />
+              <AppText
+                size={14}
+                color={Colors.text.gray}
+                style={{ marginLeft: 4 }}
+              >
+                {this.state.error}
+              </AppText>
+            </View>
+          }
           {this.renderButton()}
         </View>
       </View>
@@ -685,7 +720,7 @@ const mapStateToProps = state => ({ user: state.auth.user });
 
 export default compose(withMyGroups,
   withBestFriends,
-  withFriends,
+  withUnlimitedFriends,
   withContactFriends,
   withShare,
   withShareLocation,

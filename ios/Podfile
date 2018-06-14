@@ -6,6 +6,7 @@ target 'Skjutsgruppen' do
 #    pod 'Digits'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  pod 'Firebase/DynamicLinks'
   pod 'TwitterKit', '1.12.1'
 
 
