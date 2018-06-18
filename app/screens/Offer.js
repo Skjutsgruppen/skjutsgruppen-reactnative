@@ -130,6 +130,7 @@ class Offer extends Component {
       },
       seat: '3',
       share: {},
+      shareSearchInputFocused: false,
       activeStep: 1,
       loading: false,
       trip: {},
@@ -356,6 +357,8 @@ class Offer extends Component {
     );
   };
 
+  onShareSearchInputStateChange = focused => this.setState({ shareSearchInputFocused: focused })
+
   onMakeReturnRide = () => {
     const { navigation } = this.props;
     const { description, route, date, seat, trip, share, group, tripId, suggestion } = this.state;
@@ -542,6 +545,7 @@ class Offer extends Component {
       seat,
       error,
       share,
+      shareSearchInputFocused,
     } = this.state;
 
     return (
@@ -579,11 +583,15 @@ class Offer extends Component {
         }
         {(activeStep === 5) &&
           <View style={{ flex: 1 }}>
-            {this.renderProgress(80)}
+            <View style={{ overflow: 'hidden', height: shareSearchInputFocused ? 0 : 'auto' }}>
+              {this.renderProgress(80)}
+            </View>
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
               onNext={this.onShareNext}
+              searchInputFocused={shareSearchInputFocused}
+              onInputStateChange={this.onShareSearchInputStateChange}
             />
           </View>
         }

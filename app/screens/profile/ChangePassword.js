@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Wrapper, Loading } from '@components/common';
 import Colors from '@theme/colors';
 import PropTypes from 'prop-types';
-import CustomButton from '@components/common/customButton';
 import { withChangePassword } from '@services/apollo/auth';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -169,26 +168,25 @@ class ChangePassword extends Component {
               style={styles.input}
               value={oldPassword}
               onChangeText={text => this.setState({ oldPassword: text })}
-              // onSubmitEditing={() => this.focusNextField('two')}
-              ref={(input) => { inputs.one = input; }}
-              // returnKeyType="next"
+              onSubmitEditing={() => this.focusNextField('two')}
+              returnKeyType="next"
             />
             <Text style={styles.label}>{trans('profile.new_password')}</Text>
             <PasswordInput
               style={styles.input}
               value={newPassword}
               onChangeText={text => this.setState({ newPassword: text })}
-              // onSubmitEditing={() => this.focusNextField('three')}
-              ref={(input) => { inputs.two = input; }}
-              // returnKeyType="next"
+              onSubmitEditing={() => this.focusNextField('three')}
+              handleRef={(elem) => { inputs.two = elem; }}
+              returnKeyType="next"
             />
             <Text style={styles.label}>{trans('profile.confirm_password')}</Text>
             <PasswordInput
               style={styles.input}
               value={confirmPassword}
               onChangeText={text => this.setState({ confirmPassword: text })}
-              // onSubmitEditing={() => this.focusNextField('three')}
-              ref={(input) => { inputs.three = input; }}
+              onSubmitEditing={this.onSubmit}
+              handleRef={(elem) => { inputs.three = elem; }}
               returnKeyType="send"
             />
             {this.renderUpdateButton()}

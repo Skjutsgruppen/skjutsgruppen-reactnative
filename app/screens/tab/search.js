@@ -16,6 +16,7 @@ import { trans } from '@lang/i18n';
 import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
 import { getDate } from '@config';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
@@ -82,9 +83,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 24,
+    paddingVertical: 24,
+    paddingLeft: 24,
+    paddingRight: 12,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
+  },
+  changeBtnWrapper: {
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  changeBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
   },
   resultsFrom: {
     flexDirection: 'row',
@@ -367,9 +378,13 @@ class Search extends Component {
             </View>
             <View style={styles.dateRow}>
               <AppText size={14} color={Colors.text.gray}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</AppText>
-              <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-                <AppText size={14} color={Colors.text.blue} fontVariation="semibold">{trans('search.change')}</AppText>
-              </TouchableOpacity>
+              <View style={styles.changeBtnWrapper}>
+                <TouchableHighlight onPress={() => this.setModalVisible(true)} style={styles.changeBtn}>
+                  <AppText size={14} color={Colors.text.blue} fontVariation="semibold">
+                    {trans('search.change')}
+                  </AppText>
+                </TouchableHighlight>
+              </View>
             </View>
             <CalendarModal
               visible={this.state.modalVisible}

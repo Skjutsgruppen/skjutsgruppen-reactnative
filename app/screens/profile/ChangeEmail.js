@@ -3,8 +3,7 @@ import { ScrollView, Text, View, StyleSheet, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
-import CustomButton from '@components/common/customButton';
-import { Wrapper, Loading } from '@components/common';
+import { Wrapper, Loading, RoundedButton } from '@components/common';
 import { withChangeEmail } from '@services/apollo/auth';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -16,25 +15,30 @@ import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   input: {
+    // flex: 1,
+    // height: 54,
+    // backgroundColor: Colors.background.fullWhite,
+    // paddingHorizontal: 24,
+    // fontSize: 14,
+    fontFamily: 'SFUIText-Regular',
+    fontSize: 15,
+    height: 80,
+    marginTop: 12,
     flex: 1,
-    height: 54,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.lightGray,
+    paddingHorizontal: 30,
     backgroundColor: Colors.background.fullWhite,
-    paddingHorizontal: 24,
-    fontSize: 14,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background.fullWhite,
-    marginBottom: 16,
   },
   label: {
     paddingHorizontal: 24,
-    marginVertical: 8,
     color: Colors.text.gray,
   },
   button: {
-    margin: 24,
+    width: '50%',
+    alignSelf: 'center',
+    marginHorizontal: 24,
+    marginVertical: 32,
   },
   lodingWrapper: {
     padding: 24,
@@ -92,14 +96,22 @@ class ChangeEmail extends Component {
     }
 
     return (
-      <CustomButton
-        bgColor={Colors.background.green}
+      // <CustomButton
+      //   bgColor={Colors.background.green}
+      //   style={styles.button}
+      //   onPress={this.onSubmit}
+      //   disabled={!(newEmail.length > 0)}
+      // >
+      //   {trans('profile.change_email')}
+      // </CustomButton>
+      <RoundedButton
+        bgColor={Colors.background.pink}
         style={styles.button}
         onPress={this.onSubmit}
         disabled={!(newEmail.length > 0)}
       >
         {trans('profile.change_email')}
-      </CustomButton>
+      </RoundedButton>
     );
   }
 
@@ -114,17 +126,21 @@ class ChangeEmail extends Component {
             <Toast message={error} type="error" />
             <Toast message={success} type="success" />
             <Text style={styles.label}>{trans('profile.new_email')}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                value={newEmail}
-                style={styles.input}
-                onChangeText={text => this.setState({ newEmail: text })}
-                placeholderTextColor="#ccc"
-                underlineColorAndroid="transparent"
-              />
-            </View>
-            {this.renderUpdateButton()}
+            <TextInput
+              autoFocus
+              autoCapitalize="none"
+              allowFontScaling={false}
+              value={newEmail}
+              placeholder={trans('profile.email')}
+              style={styles.input}
+              onChangeText={text => this.setState({ newEmail: text })}
+              onSubmitEditing={this.onSubmit}
+              placeholderTextColor="#ccc"
+              underlineColorAndroid="transparent"
+              returnKeyLabel="Change"
+            />
           </View>
+          {this.renderUpdateButton()}
         </ScrollView>
       </Wrapper>
     );

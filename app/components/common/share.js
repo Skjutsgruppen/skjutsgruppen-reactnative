@@ -414,6 +414,7 @@ class Share extends Component {
       <View style={styles.list}>
         <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</AppText>
         <DataList
+          keyboardShouldPersistTaps="always"
           data={groups}
           renderItem={({ item }) => (
             <ShareItem
@@ -600,7 +601,7 @@ class Share extends Component {
   }
 
   render() {
-    const { labelColor, type } = this.props;
+    const { labelColor, type, searchInputFocused, onInputStateChange } = this.props;
     const headerShadow = this.isModal() ? styles.shadow : {};
 
     let sectionLabel = trans('global.invite_and_publish');
@@ -627,17 +628,19 @@ class Share extends Component {
               <View style={styles.map} />
             </View>
           }
-          {!this.isModal() &&
+          {!this.isModal() && !searchInputFocused &&
             <SectionLabel label={sectionLabel} color={labelColor} />
           }
           <SearchBar
             placeholder={trans('global.search_contacts')}
             onChange={this.onChangeSearchQuery}
             defaultValue={this.state.searchQuery}
+            onFocus={onInputStateChange}
+            onBlur={onInputStateChange}
             onPressClose={() => this.setState({ searchQuery: '' })}
           />
         </View>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
           {this.renderList()}
         </ScrollView>
         <View style={styles.footer}>
@@ -666,6 +669,8 @@ class Share extends Component {
 
 Share.propTypes = {
   share: PropTypes.func.isRequired,
+  searchInputFocused: PropTypes.bool,
+  onInputStateChange: PropTypes.func,
   detail: PropTypes.shape({
     id: PropTypes.number,
   }),
@@ -713,6 +718,8 @@ Share.propTypes = {
 };
 
 Share.defaultProps = {
+  searchInputFocused: false,
+  onInputStateChange: () => {},
   onClose: () => { },
   modal: false,
   type: '',

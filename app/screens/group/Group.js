@@ -83,6 +83,7 @@ class Group extends Component {
       },
       type: OPEN_GROUP,
       share: {},
+      shareSearchInputFocused: false,
       activeStep: 1,
       loading: false,
       group: {},
@@ -185,6 +186,8 @@ class Group extends Component {
   onShareAndPublish = (share) => {
     this.setState({ share, activeStep: 5, loading: true }, this.createGroup);
   }
+
+  onShareSearchInputStateChange = focused => this.setState({ shareSearchInputFocused: focused });
 
   scrollToTop = () => {
     const { activeStep } = this.state;
@@ -302,7 +305,7 @@ class Group extends Component {
   }
 
   render() {
-    const { activeStep, error, strech, about, type } = this.state;
+    const { activeStep, error, strech, about, type, shareSearchInputFocused } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
@@ -326,8 +329,16 @@ class Group extends Component {
         }
         {(activeStep === 4) &&
           <View style={{ flex: 1 }}>
-            {this.renderProgress(80)}
-            <Share type={FEEDABLE_GROUP} onNext={this.onShareAndPublish} buttonText={trans('global.add_and_publish_button')} />
+            <View style={{ overflow: 'hidden', height: shareSearchInputFocused ? 0 : 'auto' }}>
+              {this.renderProgress(80)}
+            </View>
+            <Share
+              type={FEEDABLE_GROUP}
+              onNext={this.onShareAndPublish}
+              buttonText={trans('global.add_and_publish_button')}
+              searchInputFocused={shareSearchInputFocused}
+              onInputStateChange={this.onShareSearchInputStateChange}
+            />
           </View>
         }
         {(activeStep === 5) && this.renderFinish()}

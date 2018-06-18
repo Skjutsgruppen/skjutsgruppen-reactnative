@@ -41,7 +41,7 @@ class PasswordInput extends Component {
 
   render() {
     const { visibility } = this.state;
-    const { onChangeText, onSubmitEditing, style, ...props } = this.props;
+    const { onChangeText, onSubmitEditing, style, handleRef, ...props } = this.props;
     return (
       <View style={[styles.wrapper, style]}>
         <TextInput
@@ -51,6 +51,7 @@ class PasswordInput extends Component {
           underlineColorAndroid="transparent"
           onChangeText={onChangeText}
           onSubmitEditing={onSubmitEditing}
+          ref={(input) => { handleRef(input); }}
           {...props}
         />
         <TouchableOpacity onPress={this.toggleVisibility}>
@@ -69,10 +70,12 @@ PasswordInput.propTypes = {
   onChangeText: PropTypes.func.isRequired,
   onSubmitEditing: PropTypes.func.isRequired,
   style: ViewPropTypes.style,
+  handleRef: PropTypes.func,
 };
 
 PasswordInput.defaultProps = {
   style: {},
+  handleRef: () => {},
 };
 
 export default PasswordInput;

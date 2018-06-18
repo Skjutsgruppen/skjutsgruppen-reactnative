@@ -11,15 +11,19 @@ import MapImage from '@assets/onboarding_map.png';
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    backgroundColor: Colors.background.fullWhite,
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
     minHeight: Dimensions.get('window').height,
     backgroundColor: Colors.background.fullWhite,
   },
   logo: {
-    maxWidth: '70%',
+    maxHeight: Dimensions.get('window').height * 0.4,
     resizeMode: 'contain',
-    marginTop: '5%',
-    marginBottom: 12,
+    marginTop: 48,
+    marginBottom: 44,
   },
   info: {
     lineHeight: 36,
@@ -34,17 +38,19 @@ const styles = StyleSheet.create({
 });
 
 const WelcomeInfo = ({ navigation }) => (
-  <ScrollView>
-    <TouchableWithoutFeedback onPress={() => navigation.navigate('Welcome')} style={{ flex: 1 }}>
-      <View style={styles.wrapper}>
-        <Image source={Logo} style={styles.logo} />
-        <Title centered size={24} color={Colors.text.gray} style={styles.info}>
-          Welcome to the non-profit ridesharing movement Skjutsgruppen
-        </Title>
-        <Image source={MapImage} style={styles.map} />
-      </View>
-    </TouchableWithoutFeedback>
-  </ScrollView>
+  <View style={styles.wrapper}>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <TouchableWithoutFeedback onPress={() => navigation.navigate('Welcome')} style={{ flex: 1 }}>
+        <View style={styles.content}>
+          <Image source={Logo} style={styles.logo} />
+          <Title centered size={24} color={Colors.text.gray} style={styles.info}>
+            Welcome to the non-profit ridesharing movement Skjutsgruppen
+          </Title>
+          <Image source={MapImage} style={styles.map} />
+        </View>
+      </TouchableWithoutFeedback>
+    </ScrollView>
+  </View>
 );
 
 WelcomeInfo.propTypes = {

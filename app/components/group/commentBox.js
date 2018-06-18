@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Image, ViewPropTypes, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   footerCommentSection: {
     height: 58,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingLeft: 10,
   },
   actions: {
@@ -27,8 +27,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: Colors.border.lightGray,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    ...Platform.select({
+      android: {
+        position: 'absolute',
+        bottom: 4,
+        left: 0,
+        right: 0,
+      },
+    }),
   },
   action: {
     flexBasis: '32.33%',
@@ -43,16 +51,21 @@ const styles = StyleSheet.create({
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: 58,
     paddingHorizontal: 18,
   },
   commentInput: {
-    height: '100%',
     flex: 1,
     fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     paddingRight: 12,
+    ...Platform.select({
+      ios: {
+        paddingTop: 21,
+      },
+    }),
     textAlignVertical: 'center',
+    height: '100%',
   },
   send: {
     height: '100%',
@@ -125,7 +138,13 @@ class CommentBox extends PureComponent {
 
   renderInput = () => {
     const { loading } = this.props;
-    const { text } = this.state;
+    const { text, writing } = this.state;
+
+    let writtingStyle = {};
+
+    if (Platform.OS === 'android') {
+      writtingStyle = { paddingBottom: writing ? 54 : 8 };
+    }
 
     return (
       <TextInput
@@ -140,7 +159,7 @@ class CommentBox extends PureComponent {
         autoCorrect={false}
         autoCapitalize={'none'}
         returnKeyType={'done'}
-        style={styles.commentInput}
+        style={[styles.commentInput, writtingStyle]}
         editable={!loading}
       />
     );
@@ -183,15 +202,21 @@ class CommentBox extends PureComponent {
     const { style, loading } = this.props;
     const { offset, writing } = this.state;
 
+    let commentStyle = {};
+
+    if (Platform.OS === 'android') {
+      commentStyle = { height: writing ? 92 : 58 };
+    }
+
     return (
       <View style={[styles.footer, { bottom: offset }, style]}>
-        {writing && this.renderFooter()}
-        <View style={styles.footerCommentSection}>
+        <View style={[styles.footerCommentSection, commentStyle]}>
           {this.renderOption()}
           {this.renderCalendar()}
           {this.renderInput()}
           {loading && <Loading />}
         </View>
+        {writing && this.renderFooter()}
       </View>
     );
   }

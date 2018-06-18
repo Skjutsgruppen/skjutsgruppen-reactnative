@@ -43,7 +43,14 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   commentInput: {
-    height: Platform.OS === 'ios' ? 'auto' : '100%',
+    ...Platform.select({
+      ios: {
+        height: 'auto',
+      },
+      android: {
+        height: '100%',
+      },
+    }),
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

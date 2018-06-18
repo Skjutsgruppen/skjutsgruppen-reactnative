@@ -54,8 +54,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   forgotPassword: {
-    paddingTop: 30,
-    paddingHorizontal: 30,
+    marginTop: 20,
+    paddingVertical: 10,
+    marginHorizontal: 30,
+    alignSelf: 'flex-start',
   },
 });
 
@@ -268,11 +270,11 @@ class Login extends Component {
               underlineColorAndroid="transparent"
               keyboardType="email-address"
               value={this.state.email}
-              // onSubmitEditing={() => {
-              //   this.focusNextField('two');
-              // }}
+              onSubmitEditing={() => {
+                this.focusNextField('two');
+              }}
               ref={(input) => { inputs.one = input; }}
-              // returnKeyType="next"
+              returnKeyType="next"
             />
           </View>
           <PasswordInput
@@ -280,7 +282,7 @@ class Login extends Component {
             onChangeText={password => this.setState({ password })}
             value={this.state.password}
             onSubmitEditing={this.onSubmit}
-            ref={(input) => { inputs.two = input; }}
+            handleRef={(elem) => { inputs.two = elem; }}
             returnKeyType="send"
           />
           <AppText

@@ -6,7 +6,6 @@ import {
   View,
   Image,
   FlatList,
-  Animated,
   Modal,
   TouchableOpacity,
   PermissionsAndroid,
@@ -29,10 +28,6 @@ import { trans } from '@lang/i18n';
 import IconSearch from '@assets/icons/ic_search.png';
 
 const NearByGroupsMapWindow = withNearByGroups(CloseByGroupsMapWindow);
-
-const AnimatedFlatlist = Animated.createAnimatedComponent(
-  FlatList,
-);
 
 const PopularGroupsList = withExploreGroup(PopularGroupsCards);
 
@@ -263,7 +258,7 @@ class ExploreGroup extends PureComponent {
     const { counties } = this.props;
 
     return (
-      <AnimatedFlatlist
+      <FlatList
         data={counties}
         renderItem={({ item }) => (<Card
           title={item.name}

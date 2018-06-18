@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import MapView from 'react-native-maps';
 import Marker from '@components/map/marker';
 import moment from 'moment';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+});
 
 class CloseByGroupsMapWindow extends Component {
   static navigationOptions = {
@@ -85,16 +93,18 @@ class CloseByGroupsMapWindow extends Component {
     if (loading) { return null; }
 
     return (
-      <MapView
-        initialRegion={origin}
-        style={StyleSheet.absoluteFill}
-        ref={(c) => { this.mapView = c; }}
-        cacheEnabled
-        scrollEnabled={false}
-      >
-        {this.renderCurrentLocation()}
-        {this.renderGroups()}
-      </MapView>
+      <View style={styles.wrapper}>
+        <MapView
+          initialRegion={origin}
+          style={StyleSheet.absoluteFill}
+          ref={(c) => { this.mapView = c; }}
+          cacheEnabled
+          scrollEnabled={false}
+        >
+          {this.renderCurrentLocation()}
+          {this.renderGroups()}
+        </MapView>
+      </View>
     );
   }
 }

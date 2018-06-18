@@ -78,6 +78,7 @@ class Ask extends Component {
         },
       },
       share: {},
+      shareSearchInputFocused: false,
       activeStep: 1,
       loading: false,
       trip: {},
@@ -245,6 +246,8 @@ class Ask extends Component {
     }, this.createTrip,
     );
   };
+
+  onShareSearchInputStateChange = focused => this.setState({ shareSearchInputFocused: focused });
 
   onMakeReturnRide = () => {
     const { navigation } = this.props;
@@ -416,6 +419,7 @@ class Ask extends Component {
       date,
       error,
       share,
+      shareSearchInputFocused,
     } = this.state;
 
     return (
@@ -450,12 +454,16 @@ class Ask extends Component {
         }
         {(activeStep === 4) &&
           <View style={{ flex: 1 }}>
-            {this.renderProgress(80)}
+            <View style={{ overflow: 'hidden', height: shareSearchInputFocused ? 0 : 'auto' }}>
+              {this.renderProgress(80)}
+            </View>
             <Share
               defaultValue={share}
               type={FEEDABLE_TRIP}
               onNext={this.onShareNext}
               labelColor={Colors.text.blue}
+              searchInputFocused={shareSearchInputFocused}
+              onInputStateChange={this.onShareSearchInputStateChange}
             />
           </View>
         }

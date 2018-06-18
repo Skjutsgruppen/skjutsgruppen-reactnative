@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View, Image, TextInput, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -49,40 +49,56 @@ const styles = StyleSheet.create({
   },
 });
 
-const SearchBar = ({
-  style,
-  onChange,
-  placeholder,
-  defaultValue,
-  onSubmitSearch,
-  onPressClose,
-}) =>
-  (
-    <View style={[styles.searchInputWrapper, style]}>
-      <Image
-        source={require('@assets/icons/ic_search.png')}
-        style={styles.searchIcon}
-      />
-      <TextInput
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        onChangeText={text => onChange(text)}
-        underlineColorAndroid="transparent"
-        style={styles.searchInput}
-        returnKeyType="search"
-        onSubmitEditing={onSubmitSearch}
-      />
-      <TouchableHighlight onPress={onPressClose}>
-        <View style={styles.clear}>
-          <Icon
-            name="ios-close"
-            size={32}
-            style={{ color: Colors.text.gray }}
-          />
-        </View>
-      </TouchableHighlight>
-    </View>
-  );
+class SearchBar extends PureComponent {
+  input = null;
+
+  handleClose = () => {
+    const { onPressClose } = this.props;
+    onPressClose();
+    this.input.blur();
+  }
+  render() {
+    const {
+      style,
+      onChange,
+      placeholder,
+      defaultValue,
+      onSubmitSearch,
+      onFocus,
+      onBlur,
+    } = this.props;
+    return (
+      <View style={[styles.searchInputWrapper, style]}>
+        <Image
+          source={require('@assets/icons/ic_search.png')}
+          style={styles.searchIcon}
+        />
+        <TextInput
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          onChangeText={text => onChange(text)}
+          underlineColorAndroid="transparent"
+          style={styles.searchInput}
+          returnKeyType="done"
+          onSubmitEditing={onSubmitSearch}
+          onFocus={() => onFocus(true)}
+          onBlur={() => onBlur(false)}
+          allowFontScaling={false}
+          ref={(input) => { this.input = input; }}
+        />
+        <TouchableHighlight onPress={this.handleClose}>
+          <View style={styles.clear}>
+            <Icon
+              name="ios-close"
+              size={32}
+              style={{ color: Colors.text.gray }}
+            />
+          </View>
+        </TouchableHighlight>
+      </View>
+    );
+  }
+}
 
 SearchBar.propTypes = {
   style: ViewPropTypes.style,
@@ -91,6 +107,8 @@ SearchBar.propTypes = {
   onSubmitSearch: PropTypes.func,
   defaultValue: PropTypes.string,
   onPressClose: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 SearchBar.defaultProps = {
@@ -99,6 +117,8 @@ SearchBar.defaultProps = {
   defaultValue: '',
   onSubmitSearch: null,
   onPressClose: null,
+  onFocus: () => {},
+  onBlur: () => {},
 };
 
 export default SearchBar;

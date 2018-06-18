@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, View, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   button: {
@@ -19,7 +20,6 @@ const GhostButton = ({ style, label, color, onPress }) => (
   <TouchableHighlight
     onPress={onPress}
     style={[styles.button, style]}
-    underlayColor={Colors.background.mutedPink}
   >
     <View>
       <AppText color={color || Colors.text.blue}>{label}</AppText>
