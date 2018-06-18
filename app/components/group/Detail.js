@@ -18,7 +18,7 @@ import Colors from '@theme/colors';
 import GroupFeed from '@components/feed/list';
 import GroupImage from '@components/group/groupImage';
 import Share from '@components/common/share';
-import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA, GROUP_FEED_TYPE_SHARE } from '@config/constant';
+import { FEEDABLE_GROUP, STRETCH_TYPE_ROUTE, STRETCH_TYPE_AREA } from '@config/constant';
 import MapToggle from '@components/group/mapToggle';
 import { getToast } from '@config/toast';
 import Toast from '@components/toast';
@@ -243,7 +243,7 @@ class Detail extends PureComponent {
       >
         <Share
           modal
-          type={GROUP_FEED_TYPE_SHARE}
+          type={FEEDABLE_GROUP}
           detail={group}
           onClose={() => this.setState({ showShareModal: false })}
         />

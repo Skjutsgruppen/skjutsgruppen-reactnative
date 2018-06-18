@@ -221,7 +221,7 @@ class FOF extends PureComponent {
 
     if (relation.areFriends) {
       return (
-        <AppText style={[{ textAlign: 'center', marginTop: 12 }, expanded ? { height: 100 } : { height: 0 }]}>
+        <AppText style={[{ textAlign: 'center', marginTop: 12 }, expanded ? { minHeight: 32 } : { height: 0 }]}>
           You are friends
         </AppText>
       );
@@ -233,7 +233,7 @@ class FOF extends PureComponent {
 
     return (
       <View style={{ paddingHorizontal: 24 }}>
-        <AppText style={[{ marginTop: 12 }, expanded ? { height: 100 } : { height: 0 }]}>
+        <AppText style={[{ marginTop: 12 }, expanded ? { minHeight: 32 } : { height: 0 }]}>
           You know {relation.path.map(this.bundledName)}
           <AppText
             fontVariation="semibold"

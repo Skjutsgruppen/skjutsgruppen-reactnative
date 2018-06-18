@@ -269,6 +269,11 @@ class Garden extends Component {
             label={trans('profile.help_make_the_app_better')}
             icon={GithubIcon}
           />
+          <ProfileAction
+            onPress={() => this.openLink('https://www.transifex.com/skjutsgruppen/the-ridesharing-movement-skjutsgruppen-app/')}
+            title={trans('profile.translate')}
+            label={trans('profile.help_translate')}
+          />
           {/* <ProfileAction
             title={trans('profile.open_api')}
             label={trans('profile.build_get_statistics_and_more')}

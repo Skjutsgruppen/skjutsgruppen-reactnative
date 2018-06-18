@@ -1,5 +1,7 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { LOCATION_SHARED_TO_ALL_RESOURCES_QUERY } from '@services/apollo/notification';
+import { NOTIFICATION_FETCH_LIMIT } from '@config/constant';
 
 const SHARE_QUERY = gql`
 mutation share($id: Int!, $type: InputShareTypeEnum!, $share: ShareInput!) {
@@ -22,7 +24,15 @@ mutation shareLocation($point: [Float]!, $duration: Int!, $users: [Int], $groupI
 export const withShareLocation = graphql(SHARE_LOCATION_QUERY, {
   props: ({ mutate }) => ({
     shareLocation: ({ point, duration, users = [], groupId = null, tripId = null }) =>
-      mutate({ variables: { point, duration, users, groupId, tripId } }),
+      mutate({
+        variables: { point, duration, users, groupId, tripId },
+        refetchQueries: [
+          {
+            query: LOCATION_SHARED_TO_ALL_RESOURCES_QUERY,
+            variables: { offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+          },
+        ],
+      }),
   }),
 });
 
@@ -132,6 +142,12 @@ export const withStopSpecific = graphql(STOP_SPECIFIC_QUERY, {
     stopSpecific: ({ id, type }) =>
       mutate({
         variables: { id, type },
+        refetchQueries: [
+          {
+            query: LOCATION_SHARED_TO_ALL_RESOURCES_QUERY,
+            variables: { offset: 0, limit: NOTIFICATION_FETCH_LIMIT },
+          },
+        ],
       }),
   }),
 });

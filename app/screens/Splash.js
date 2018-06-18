@@ -91,12 +91,13 @@ class Splash extends PureComponent {
         }
       });
     } else {
-      Linking.addEventListener('url', this.handleOpenURL);
+      // Linking.addEventListener('url', this.handleOpenURL);
+
     }
   }
 
   componentWillUnmount() {
-    Linking.removeEventListener('url', this.handleOpenURL);
+    // Linking.removeEventListener('url', this.handleOpenURL);
   }
 
   redirect = (screen, id, type) => {
@@ -151,8 +152,9 @@ class Splash extends PureComponent {
     }
   }
 
-  handleOpenURL = event => this.navigate(event.url);
-
+  handleOpenURL = event => {
+    this.navigate(event.url);
+  }  
   render() {
     if (this.state.loading) {
       return (<AppLoading />);

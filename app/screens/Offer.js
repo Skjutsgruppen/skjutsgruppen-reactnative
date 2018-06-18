@@ -311,8 +311,16 @@ class Offer extends Component {
     if (route.start.coordinates.length === 0 && route.end.coordinates.length === 0) {
       this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
     } else {
+      let direction = '';
+      if (route.start.coordinates.length === 0 || route.end.coordinates.length === 0) {
+        direction = 'anywhere';
+      }
+
+      if (route.directionFrom) direction = route.directionFrom;
+      if (route.directionTo) direction = route.directionTo;
+
       this.setState({
-        route: { ...route, direction: route.directionFrom || route.directionTo },
+        route: { ...route, direction },
         activeStep: 3,
         error: '',
       }, this.scrollToTop);

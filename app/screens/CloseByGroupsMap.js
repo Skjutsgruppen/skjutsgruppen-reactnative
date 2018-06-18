@@ -45,7 +45,7 @@ class CloseByGroupsMapView extends Component {
             latitude: group.areaCoordinates[1],
             longitude: group.areaCoordinates[0],
           };
-        } else {
+        } else if (group.TripStart && group.TripStart.coordinates) {
           coordinate = {
             latitude: group.TripStart.coordinates[1],
             longitude: group.TripStart.coordinates[0],

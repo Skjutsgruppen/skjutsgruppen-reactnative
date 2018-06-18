@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, View, TextInput, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from '@components/experience/button';
 import Colors from '@theme/colors';
@@ -47,6 +47,16 @@ class Message extends Component {
     onPublish(this.state.text);
   }
 
+  openLink = (link) => {
+    Linking.canOpenURL(link).then((supported) => {
+      if (supported) {
+        Linking.openURL(link);
+      } else {
+        console.warn('Cannot open given URL.');
+      }
+    });
+  };
+
   render() {
     return (
       <ScrollView>
@@ -63,7 +73,7 @@ class Message extends Component {
           />
         </View>
         <AppText style={styles.msg}>
-          {trans('experience.friendly_reminder')} <AppText color={Colors.text.blue} fontVariation="bold">{trans('experience.participant_agreement')}</AppText>,
+          {trans('experience.friendly_reminder')} <AppText color={Colors.text.blue} fontVariation="bold" onPress={() => this.openLink('https://web.skjutsgruppen.nu/participant-agreement')}>{trans('experience.participant_agreement')}</AppText>,
           {trans('experience.never_something_stupid')}
         </AppText>
         <View style={styles.actions}>

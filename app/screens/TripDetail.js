@@ -41,6 +41,7 @@ import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
 import { withMute, withUnmute } from '@services/apollo/mute';
 import Scheduler from '@services/firebase/scheduler';
+import GeoLocation from '@services/location/geoLocation';
 
 import ReturnIconPink from '@assets/icons/ic_return.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
@@ -418,6 +419,9 @@ class TripDetail extends Component {
         this.setState({ loading: false, retry: false, deletedModal: true });
         this.navigateOnDelete();
         Scheduler.removeSpecificScheduledNotification(id);
+        if (this.state.trip.Location && this.state.trip.Location.id) {
+          GeoLocation.stopListeningToLocationUpdate('Trip', id);
+        }
       })
       .catch((error) => {
         this.setState({ loading: false, retry: error });
@@ -458,9 +462,13 @@ class TripDetail extends Component {
     };
   }
 
+  isTripStartedForShareLocation = () => {
+    const { trip } = this.state;
+    return getDate(trip.date).subtract(40, 'minute').isBefore();
+  }
+
   isTripStarted = () => {
     const { trip } = this.state;
-
     return getDate(trip.date).add(trip.duration / 2, 'second').isBefore();
   }
 
@@ -511,10 +519,31 @@ class TripDetail extends Component {
         Participants.count > 1
         && isParticipant
         && experienceStatus === EXPERIENCE_STATUS_CAN_CREATE
+        && this.isTripStarted() && !this.isTripEnded()
       );
     }
 
     return false;
+  }
+
+  canShareLocation = () => {
+    const { trip } = this.state;
+    const { Participants, isParticipant } = trip;
+
+
+    if ((Participants && Participants.count <= 1) || !isParticipant) {
+      return false;
+    }
+
+    if (!this.isTripStartedForShareLocation()) {
+      return false;
+    }
+
+    if (this.isTripEnded()) {
+      return false;
+    }
+
+    return true;
   }
 
   returnRideButton = () => {
@@ -827,7 +856,11 @@ class TripDetail extends Component {
 
     return (
       <View>
-        <ModalAction label={trans('detail.share_your_live_location')} onPress={() => this.onMapPress(true)} />
+        <ModalAction
+          label={trans('detail.share_your_live_location')}
+          onPress={() => this.onMapPress(true)}
+          disabled={!this.canShareLocation()}
+        />
         {
           trip.muted ?
             (

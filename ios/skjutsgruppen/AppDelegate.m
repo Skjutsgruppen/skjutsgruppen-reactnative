@@ -29,6 +29,7 @@
   [FIRApp configure];
   [RNFirebaseNotifications configure];
   [GMSServices provideAPIKey:[ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY"]];
+  [FIRDynamicLinks performDiagnosticsWithCompletion:nil];
 NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY"]);
   NSURL *jsCodeLocation;
   // firebase push notification
@@ -64,8 +65,11 @@ NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
   NSString *myUrl = url.absoluteString;
-  if ([myUrl containsString:@"skjutsgruppen"]) {
+  NSLog(@"=========================LINKING URL: %@ ",myUrl);
+  if ([myUrl containsString:@"web.skjutsgruppen.nu"]) {
    return [RCTLinkingManager application:application openURL:url options:options];
+  } else if([myUrl containsString:@"pwm3h.app.goo.gl"]) {
+    return [RCTLinkingManager application:application openURL:url options:options];
   } else {
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
@@ -73,24 +77,36 @@ NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY
                                                        annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
             ];
   }
+  
+//  if ([myUrl containsString:@"web.skjutsgruppen.nu"]) {
+//    FIRDynamicLink *dynamicLink = [[FIRDynamicLinks dynamicLinks] dynamicLinkFromCustomSchemeURL:url];
+//    NSLog(@"firebase dynamic url: 123123123 %@", dynamicLink.url);
+//
+//    return [RCTLinkingManager application:application openURL:dynamicLink.url options:options];
+//  } else if([myUrl containsString:@"pwm3h.app.goo.gl"]) {
+//    FIRDynamicLink *dynamicLink = [[FIRDynamicLinks dynamicLinks] dynamicLinkFromCustomSchemeURL:url];
+//    NSLog(@"firebase dynamic url:09890809 %@", dynamicLink.url);
+//
+//    return [RCTLinkingManager application:application openURL:dynamicLink.url options:options];  }
 }
 
-//firebase push notification
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
+ restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+{
+  NSLog(@"=========================UNIVERSAL LINKING URL: referealurl %@ ",userActivity.webpageURL);
 
-//#if defined(__IPHONE_11_0)
-//- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
-//{
-//  NSLog(@"didReceiveLocalNotification: 11.0");
-//
-//    [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHan	dler];
-//  }
-//#else
-//- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)())completionHandler
-//{
-//  NSLog(@"didReceiveNotificationResponse: ");
-//    [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
-//  }
-//#endif
+  BOOL handled = [[FIRDynamicLinks dynamicLinks] handleUniversalLink:userActivity.webpageURL
+                                                          completion:^(FIRDynamicLink * _Nullable dynamicLink,
+                                                                       NSError * _Nullable error) {
+                                                            NSLog(@"firebase dynamic url: %@", dynamicLink.url);
+                                                            userActivity.webpageURL = dynamicLink.url;
+                                                             [RCTLinkingManager application:application
+                                                                             continueUserActivity:userActivity
+                                                                               restorationHandler:restorationHandler];
+                                                          }];
+  return handled;
+ 
+}
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
   NSLog(@"Firebase didreceiveLocalNotification called");

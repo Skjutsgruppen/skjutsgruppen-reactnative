@@ -925,7 +925,7 @@ export const withGroupFeed = graphql(GROUP_FEED_QUERY, {
         document: GROUP_FEED_SUBSCRIPTION,
         variables: { groupId: id },
         updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) {
+          if (!subscriptionData.data && !subscriptionData.data.groupFeed) {
             return prev;
           }
 

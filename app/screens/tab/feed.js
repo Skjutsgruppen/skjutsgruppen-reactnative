@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -33,6 +33,8 @@ import TouchableHighlight from '@components/touchableHighlight';
 import CoCreateModal from '@components/coCreateModal';
 import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
+import { withContactSync } from '@services/apollo/contact';
+import { compose } from 'react-apollo';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -127,7 +129,7 @@ class Feed extends Component {
   }
 
   async componentWillMount() {
-    const { feeds, subscribeToFeed, navigation } = this.props;
+    const { feeds, subscribeToFeed, navigation, syncContacts } = this.props;
     const { params } = navigation.state;
 
     navigation.setParams({ scrollToTop: this.scrollToTop });
@@ -142,7 +144,9 @@ class Feed extends Component {
         if (!permissions) {
           const response =
             await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
-
+          if (response && response === 'granted') {
+            syncContacts();
+          }
           this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
         }
       } else {
@@ -154,7 +158,11 @@ class Feed extends Component {
                   //Crashlytics.recordError(contactErr);
                 }
               }
-              console.warn(err, res);
+
+              if (res === 'authorized') {
+                syncContacts();
+              }
+              // console.warn(err, res);
               this.setState({ contactPermission: false, contactPermissionResponse: permission });
             });
           } else {
@@ -171,6 +179,36 @@ class Feed extends Component {
     }
     this.currentLocation();
     subscribeToFeed();
+  }
+
+  componentDidMount() {
+    if (Platform.OS === 'android') {
+      Linking.getInitialURL().then((url) => {
+        if (url) {
+          this.navigate(url);
+        }
+      });
+    } else {
+      Linking.getInitialURL().then((dynamicLink) => {
+        const backupLink = dynamicLink;
+        if (dynamicLink) {
+          const queryString = {};
+          dynamicLink.replace(
+            new RegExp('([^?=&]+)(=([^&]*))?', 'g'),
+            ($0, $1, $2, $3) => { queryString[$1] = $3; },
+          );
+          const link = queryString.link;
+          if (link) {
+            this.navigate(link);
+          } else {
+            NativeModules.Utilities.getUrlFromDynamicLink(backupLink, (error, url) => {
+              this.navigate(url);
+            });
+          }
+        }
+      }).catch(err => console.warn('An error occurred', err));
+      Linking.addEventListener('url', this.handleOpenURL);
+    }
   }
 
   onPress = (type, details) => {
@@ -215,6 +253,30 @@ class Feed extends Component {
 
   setFilterVisibility = (visibility) => {
     this.setState({ filterOpen: visibility });
+  }
+
+
+  handleOpenURL = (event) => {
+    this.navigate(event.url);
+  }
+  navigate = (url) => {
+    const { navigation } = this.props;
+    const route = url.replace(/.*?:\/\//g, '');
+    const routes = route.split('/');
+    const id = routes[2];
+    const routeName = routes[1];
+
+    if (routeName === 't') {
+      navigation.navigate('TripDetail', { id });
+    }
+
+    if (routeName === 'g') {
+      navigation.navigate('GroupDetail', { id });
+    }
+
+    if (routeName === 'e') {
+      navigation.navigate('ExperienceDetail', { id });
+    }
   }
 
   askForPermission = async () => {
@@ -475,6 +537,7 @@ Feed.propTypes = {
     }).isRequired,
   }).isRequired,
   subscribeToFeed: PropTypes.func.isRequired,
+  syncContacts: PropTypes.func.isRequired,
 };
 
-export default withFeed(Feed);
+export default compose(withFeed, withContactSync)(Feed);

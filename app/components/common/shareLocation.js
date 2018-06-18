@@ -169,6 +169,10 @@ class ShareLocation extends PureComponent {
     if (__typename === 'Trip') {
       obj.tripId = detail.id;
       this.setState({ location: obj, showShareModal: true });
+      // startTrackingLocation();
+      // shareLocation(obj)
+      //   .then(() => this.setState({ shareLocationLoading: false }))
+      //   .catch(() => this.setState({ shareLocationLoading: false }));
     }
   }
 
@@ -272,7 +276,7 @@ class ShareLocation extends PureComponent {
     return (
       <Modal
         visible={showShareModal}
-        onRequestClose={() => this.setState({ showShareModal: false })}
+        onRequestClose={() => this.setState({ showShareModal: false, shareLocationLoading: false })}
         animationType="slide"
       >
         <Share
@@ -281,7 +285,7 @@ class ShareLocation extends PureComponent {
           detail={detail}
           location={location}
           startTrackingLocation={startTrackingLocation}
-          onClose={() => this.setState({ showShareModal: false })}
+          onClose={() => this.setState({ showShareModal: false, shareLocationLoading: false })}
           buttonText={trans('global.share_location_for')}
         />
       </Modal>
@@ -352,7 +356,7 @@ class ShareLocation extends PureComponent {
           </View>
           {shareLocationLoading && <Loading />}
           {!shareLocationLoading &&
-            <View>
+            <View style={{ flex: 1 }}>
               {!myLocation.id && !fetchingPosition &&
                 <View>
                   <Text style={TextStyles.blue}>{trans('global.share_my_live_location_for')}</Text>

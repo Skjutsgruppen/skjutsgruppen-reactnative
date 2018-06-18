@@ -68,7 +68,7 @@ class AddParticipant extends Component {
     this.setState({ friendsList });
   }
 
-  componentWillReceiveProps({ contacts }) {
+  componentWillReceiveProps({ contacts, friends }) {
     const contactsList = [];
     if (contacts && !contacts.loading) {
       contacts.rows.forEach((contact) => {
@@ -79,6 +79,12 @@ class AddParticipant extends Component {
         });
       });
       this.setState({ contactsList });
+    }
+
+    const friendsList = [];
+    if (friends && !friends.loading) {
+      friends.rows.forEach(friend => friendsList.push(friend));
+      this.setState({ friendsList });
     }
   }
 

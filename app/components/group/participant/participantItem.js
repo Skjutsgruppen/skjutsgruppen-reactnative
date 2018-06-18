@@ -76,7 +76,7 @@ class ParticipantItem extends Component {
 
     return (
       <TouchableHighlight
-        onPress={() => { }}
+        onPress={() => onPress(User.id)}
         style={styles.wrapper}
         underlayColor={Colors.background.mutedPink}
       >

@@ -834,7 +834,9 @@ class SearchResult extends Component {
 
     if (
       !searchAllTrips.loading && (searchAllTrips.rows.length < 1 ||
-        (!filters.includes(FEED_TYPE_OFFER) && !filters.includes(FEED_TYPE_WANTED)))
+        (!filters.includes(FEED_TYPE_OFFER) && !filters.includes(FEED_TYPE_WANTED)
+          && !filters.includes(FEED_TYPE_PUBLIC_TRANSPORT))
+      )
       && !searchAllGroups.loading &&
       (searchAllGroups.rows.length < 0 || !filters.includes(FEED_TYPE_GROUP))
     ) {

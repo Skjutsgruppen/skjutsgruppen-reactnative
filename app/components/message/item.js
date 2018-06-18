@@ -415,7 +415,7 @@ class Item extends PureComponent {
     if (Notifiable) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
 
-      if (type.length > NOTIFICATION_CHARACTER_COUNT) {
+      if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
       }
 
@@ -524,48 +524,81 @@ class Item extends PureComponent {
     });
   }
 
-  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User }) => {
     const route = 'TripDetail';
     const params = { id: Notifiable.id };
-    const plus = Notifiers.length - 1;
+    const plus = Notifiers ? Notifiers.length - 1 : 0;
+
+    if (Notifiers) {
+      return this.item({
+        userId: Notifiers[0],
+        user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+        photo: (plus > 0) ?
+          [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
+          [Notifiers[plus].avatar],
+        text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
+        date: createdAt,
+        onPress: () => this.redirect(id, ids, route, params),
+      });
+    }
 
     return this.item({
-      userId: Notifiers[0],
-      user: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
-      photo: (plus > 0) ?
-        [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
-        [Notifiers[plus].avatar],
+      userId: User.id,
+      user: `${User.firstName}`,
+      photo: [Notifiable.photo || Notifiable.mapPhoto],
       text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
-  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids }) => {
+  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User }) => {
     const route = 'GroupDetail';
     const params = { id: Notifiable.id };
-    const plus = Notifiers.length - 1;
+    const plus = Notifiers ? Notifiers.length - 1 : 0;
+
+    if (Notifiers) {
+      return this.item({
+        userId: Notifiers ? Notifiers[0] : User.id,
+        user: `${Notifiable.name}`,
+        photo: (plus > 0) ?
+          [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
+          [Notifiers[plus].avatar],
+        text: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+        date: createdAt,
+        onPress: () => this.redirect(id, ids, route, params),
+      });
+    }
 
     return this.item({
-      userId: Notifiers[0],
-      user: `${Notifiable.name}`,
-      photo: (plus > 0) ?
-        [Notifiers[plus].avatar, Notifiers[plus - 1].avatar] :
-        [Notifiers[plus].avatar],
-      text: (plus > 0) ? `${Notifiers[plus].firstName} +  ${plus}` : `${Notifiers[plus].firstName}`,
+      userId: User.id,
+      user: `${User.firstName}`,
+      photo: [Notifiable.photo || Notifiable.mapPhoto],
+      text: `${Notifiable.name}`,
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
     });
   }
 
-  friendJoinedMovement = ({ Notifiers, createdAt, id, ids }) => {
+  friendJoinedMovement = ({ Notifiers, createdAt, id, ids, User }) => {
     const route = 'Profile';
-    const params = { profileId: Notifiers[0].id };
+    const params = { profileId: Notifiers ? Notifiers[0].id : User.id };
+
+    if (Notifiers) {
+      return this.item({
+        userId: Notifiers[0].id,
+        user: `${Notifiers[0].firstName}`,
+        photo: [Notifiers[0].avatar],
+        text: trans('message.just_joined_the_movement'),
+        date: createdAt,
+        onPress: () => this.redirect(id, ids, route, params),
+      });
+    }
 
     return this.item({
-      userId: Notifiers[0].id,
-      user: `${Notifiers[0].firstName}`,
-      photo: [Notifiers[0].avatar],
+      userId: User.id,
+      user: `${User.firstName}`,
+      photo: [User.avatar],
       text: trans('message.just_joined_the_movement'),
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
@@ -754,6 +787,14 @@ class Item extends PureComponent {
 
     if (notification.notifiable === 'Group') {
       message = this.groupNotificationBundle(notification);
+    }
+
+    if (!notification.Notifications) {
+      return (
+        <View key={notification.Notifiable.id}>
+          {message}
+        </View>
+      );
     }
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_WELCOME_MESSAGE) {
