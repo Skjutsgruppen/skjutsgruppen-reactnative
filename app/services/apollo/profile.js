@@ -84,7 +84,6 @@ export const withProfile = graphql(PROFILE_QUERY, {
         if (!subscriptionData.data) {
           return prev;
         }
-
         const { updatedProfile } = subscriptionData.data;
 
         return {
@@ -95,7 +94,7 @@ export const withProfile = graphql(PROFILE_QUERY, {
   }),
 });
 
-const ACCOUNT_SUBSCRIPTION_QUERY = gql`
+export const ACCOUNT_SUBSCRIPTION_QUERY = gql`
 subscription updatedAccount($id: Int) {
   updatedAccount(userId: $id) {
     id

@@ -53,12 +53,19 @@ class ChangeEmail extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { changeEmail, setUser } = this.props;
+    const { changeEmail, setUser, setLogin } = this.props;
     const { newEmail } = this.state;
 
     try {
-      changeEmail(newEmail).then(({ data }) => {
-        setUser(data.changeEmail.User);
+      changeEmail(newEmail).then(() => {
+        // const { User, token } = data.changeEmail;
+        // if (User && token) {
+        //   setLogin({
+        //     token: data.isPhoneVerified.token,
+        //     user: User,
+        //   });
+        // }
+        // setUser(data.changeEmail.User);
         this.setState({ loading: false, error: '', newEmail: '', success: getToast(['EMAIL_SUCCESSFULLY_CHANGED']) });
       }).catch((err) => {
         this.setState({ loading: false, error: getToast(err), success: '' });
@@ -131,6 +138,7 @@ ChangeEmail.propTypes = {
   }).isRequired,
   changeEmail: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
+  setLogin: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
@@ -139,6 +147,8 @@ const mapDispatchToProps = dispatch => ({
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user)))
     .catch(error => console.warn(error)),
+  setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
 export default compose(withChangeEmail, connect(mapStateToProps, mapDispatchToProps))(ChangeEmail);

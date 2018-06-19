@@ -39,7 +39,7 @@ class Onboarding extends Component {
     super(props);
     this.state = {
       activeStep: 1,
-      totalSteps: 10,
+      totalSteps: 9,
     };
   }
 

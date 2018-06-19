@@ -28,6 +28,7 @@ import GroupCalendar from '@components/group/groupCalendar';
 import { getDate } from '@config';
 import CommentBox from '@components/group/commentBox';
 import { AppText } from '@components/utils/texts';
+import LocationIcon from '@assets/icons/ic_location.png';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
 const Calendar = withGroupTrips(GroupCalendar);
@@ -301,7 +302,8 @@ class Detail extends PureComponent {
 
     actions = actions.concat([
       <ModalAction label={trans('detail.group_information')} onPress={() => this.onGroupInformation()} key="group_information" />,
-      <ModalAction label={trans('detail.share_your_location')} onPress={() => this.onMapPress(true)} key="share_your_location" />,
+      <ModalAction label={trans('detail.share_this_group')} onPress={() => this.setState({ showShareModal: true, showAction: false })} key="share_group" />,
+      <ModalAction label={trans('detail.share_your_location')} onPress={() => this.onMapPress(true)} key="share_your_location" icon={LocationIcon} />,
     ]);
 
     if (group.muted) {

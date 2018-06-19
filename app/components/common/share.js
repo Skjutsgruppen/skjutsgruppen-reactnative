@@ -261,7 +261,7 @@ class Share extends Component {
 
       if (type === FEEDABLE_TRIP) {
         smsBody = trans('share.share_trip',
-          { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` }
+          { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` },
         );
       }
 
@@ -269,6 +269,13 @@ class Share extends Component {
         smsBody = trans(
           'share.share_experience',
           { tripStart: Trip ? Trip.TripStart.name : '', tripEnd: Trip ? Trip.TripEnd.name : '', url: `${APP_URL}/e/${id}` },
+        );
+      }
+
+      if (type === FEEDABLE_LOCATION) {
+        smsBody = trans(
+          'share.share_location',
+          { tripStart: Trip ? Trip.TripStart.name : direction, tripEnd: Trip ? Trip.TripEnd.name : direction, url: Clipboard.getString() },
         );
       }
 
@@ -303,29 +310,31 @@ class Share extends Component {
         if (tripParticipants.length > 0 || friends.length > 0) {
           const obj = { ...location, users: tripParticipants.concat(friends) };
           startTrackingLocation();
-          await shareLocation(obj);
+          shareLocation(obj).then(({ data }) => {
+            if (data.shareLocation && data.shareLocation.Location) {
+              Clipboard.setString(data.shareLocation.Location.url);
+            }
+          });
         } else {
           Alert.alert('You must select at least one participants.');
           this.setState({ loading: false });
           return;
         }
-      } else {
-        if (social.length > 0 || friends.length > 0 || groups.length > 0) {
-          await share({ id, type, share: shareInput });
+      } else if (social.length > 0 || friends.length > 0 || groups.length > 0) {
+        await share({ id, type, share: shareInput });
+      }
+
+      if (contacts.length > 0) {
+        const smsBody = this.getSmsText();
+
+        if (type === FEEDABLE_GROUP && isAdmin) {
+          storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
         }
 
-        if (contacts.length > 0) {
-          const smsBody = this.getSmsText();
-
-          if (type === FEEDABLE_GROUP && isAdmin) {
-            storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
-          }
-
-          if (Platform.OS === 'android') {
-            this.sendSMS(smsBody, contacts);
-          } else {
-            setTimeout(() => this.sendSMS(smsBody, contacts), 1000);
-          }
+        if (Platform.OS === 'android') {
+          this.sendSMS(smsBody, contacts);
+        } else {
+          setTimeout(() => this.sendSMS(smsBody, contacts), 1000);
         }
       }
 
@@ -335,6 +344,7 @@ class Share extends Component {
       if (type === FEEDABLE_GROUP) shareType = 'group';
       if (type === FEEDABLE_TRIP) shareType = 'trip';
       if (type === FEEDABLE_EXPERIENCE) shareType = 'experience';
+      if (type === FEEDABLE_LOCATION) shareType = 'location';
 
       this.setState({ error: trans('share.failed_to_share', { type: shareType }), loading: false });
     }
@@ -544,15 +554,15 @@ class Share extends Component {
           selected={selectedFriends}
           readOnlyUserId={offeredUser ? offeredUser.id : null}
         />
-        {!this.showRideParticipants() &&
-          <FriendList
-            loading={friends.loading}
-            rows={contactsList}
-            defaultAvatar
-            setOption={id => this.setOption('selectedContacts', id)}
-            selected={selectedContacts}
-          />
-        }
+        {/* {!this.showRideParticipants() && */}
+        <FriendList
+          loading={friends.loading}
+          rows={contactsList}
+          defaultAvatar
+          setOption={id => this.setOption('selectedContacts', id)}
+          selected={selectedContacts}
+        />
+        {/* } */}
       </View>);
   }
 

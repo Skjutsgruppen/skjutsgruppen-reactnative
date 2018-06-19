@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   calcleLabel: {
-    fontFamily: 'SFUIText-Bold',
+    fontFamily: 'SFUIText-Regular',
+    fontSize: 16,
     textAlign: 'center',
     color: Colors.text.blue,
   },

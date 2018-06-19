@@ -17,7 +17,12 @@ export const withShare = graphql(SHARE_QUERY, {
 
 const SHARE_LOCATION_QUERY = gql`
 mutation shareLocation($point: [Float]!, $duration: Int!, $users: [Int], $groupId: Int, $tripId: Int) {
-  shareLocation(point :$point, duration :$duration, users :$users, groupId:$groupId, tripId:$tripId)
+  shareLocation(point :$point, duration :$duration, users :$users, groupId:$groupId, tripId:$tripId) {
+    Location {
+      id
+      url
+    }
+  }
 }
 `;
 

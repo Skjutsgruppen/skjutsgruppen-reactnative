@@ -26,15 +26,19 @@ import {
   FEED_FILTER_OFFERED,
   FEED_FILTER_WANTED,
   REPORT_TYPE_USER,
+  NOT_AUTHORIZED_ERROR,
+  JWT_MALFORMED_ERROR,
 } from '@config/constant';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import Date from '@components/date';
 import { withMyExperiences } from '@services/apollo/experience';
 import List from '@components/experience/myExperienceList';
 import AcceptIcon from '@assets/icons/ic_accept.png';
 import RejectIcon from '@assets/icons/ic_reject.png';
 import BackIcon from '@assets/icons/ic_back_toolbar.png';
-import { getProfile } from '@services/apollo/dataSync';
+import { getProfile, resetLocalStorage } from '@services/apollo/dataSync';
+import { LoginManager } from 'react-native-fbsdk';
+import firebase from 'react-native-firebase';
 
 const MyExperience = withMyExperiences(List);
 
@@ -225,10 +229,25 @@ class Profile extends Component {
     subscribeToUpdatedProfile({ id });
   }
 
-  componentWillReceiveProps({ data }) {
-    const { profile, loading, refetch } = data;
-    const { setUser } = this.props;
+  async componentWillReceiveProps({ data }) {
+    const { profile, loading, refetch, error } = data;
+    const { setUser, logout } = this.props;
     const { user } = this.state;
+
+    if (!loading && error) {
+      const { graphQLErrors } = error;
+      if (graphQLErrors && graphQLErrors.length > 0) {
+        const notAuthroized = graphQLErrors.filter(gError =>
+          (gError.code === NOT_AUTHORIZED_ERROR || gError.code === JWT_MALFORMED_ERROR));
+        if (notAuthroized.length > 0) {
+          await firebase.notifications().cancelAllNotifications();
+          logout()
+            .then(() => LoginManager.logOut())
+            .then(() => this.reset())
+            .catch(() => this.reset());
+        }
+      }
+    }
 
     if (!loading && profile.id) {
       const { __typename } = profile;
@@ -250,6 +269,16 @@ class Profile extends Component {
     const { user } = this.state;
 
     return this.isCurrentUser() ? 'My' : `${user.firstName}'s`;
+  }
+
+  reset = async () => {
+    const { navigation } = this.props;
+    await resetLocalStorage();
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
   }
 
   redirect = (type) => {
@@ -639,6 +668,7 @@ Profile.propTypes = {
   acceptFriendRequest: PropTypes.func.isRequired,
   subscribeToUpdatedProfile: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 Profile.defaultProps = {
@@ -650,6 +680,9 @@ const mapStateToProps = state => ({ user: state.auth.user });
 const mapDispatchToProps = dispatch => ({
   setUser: user => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.user(user)))
+    .catch(error => console.warn(error)),
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.warn(error)),
 });
 
