@@ -9,8 +9,14 @@ import MesssageItem from '@components/message/item';
 import DataList from '@components/dataList';
 import { connect } from 'react-redux';
 import { trans } from '@lang/i18n';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import LoadMore from '@components/message/loadMore';
+import AuthService from '@services/auth';
+import AuthAction from '@redux/actions/auth';
+import { LoginManager } from 'react-native-fbsdk';
+import firebase from 'react-native-firebase';
+import { resetLocalStorage } from '@services/apollo/dataSync';
+import { NOT_AUTHORIZED_ERROR, JWT_MALFORMED_ERROR } from '@config/constant';
 
 const styles = StyleSheet.create({
   section: {
@@ -47,6 +53,33 @@ class NewNotification extends PureComponent {
       subscribeToNotification({ userId: user.id });
       notifications.startPolling(15000);
     }
+  }
+
+  async componentWillReceiveProps({ notifications: { error, loading }, logout }) {
+    if (!loading && error) {
+      const { graphQLErrors } = error;
+      if (graphQLErrors && graphQLErrors.length > 0) {
+        const notAuthroized = graphQLErrors.filter(gError =>
+          (gError.code === NOT_AUTHORIZED_ERROR || gError.code === JWT_MALFORMED_ERROR));
+        if (notAuthroized.length > 0) {
+          await firebase.notifications().cancelAllNotifications();
+          logout()
+            .then(() => LoginManager.logOut())
+            .then(() => this.reset())
+            .catch(() => this.reset());
+        }
+      }
+    }
+  }
+
+  reset = async () => {
+    const { navigation } = this.props;
+    await resetLocalStorage();
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
   }
 
   loadMore = (onPress) => {
@@ -121,8 +154,19 @@ NewNotification.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.numeric,
   }).isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withNotification, withNavigation, connect(mapStateToProps))(NewNotification);
+const mapDispatchToProps = dispatch => ({
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
+    .catch(error => console.warn(error)),
+});
+
+export default compose(
+  withNotification,
+  withNavigation,
+  connect(mapStateToProps, mapDispatchToProps),
+)(NewNotification);

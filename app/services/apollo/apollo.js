@@ -1,4 +1,4 @@
-import ApolloClient, { createNetworkInterface, IntrospectionFragmentMatcher } from 'apollo-client';
+import ApolloClient, { createNetworkInterface, IntrospectionFragmentMatcher, ApolloError } from 'apollo-client';
 import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 import { API_URL, WS_API_URL } from '@config';
 import Auth from '@services/auth';

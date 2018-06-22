@@ -115,3 +115,6 @@ export const ACTIVITY_TYPE_CREATE_EXPERIENCE = 'feed_create_experience';
 
 export const PHONE_EXISTS_ERROR = 'PHONE_NUMBER_EXISTS';
 export const PHONE_INCORRECT_ERROR = 'PHONE_NUMBER_INCORRECT';
+
+export const NOT_AUTHORIZED_ERROR = 'NOT_AUTHORIZED';
+export const JWT_MALFORMED_ERROR = 'jwt malformed';

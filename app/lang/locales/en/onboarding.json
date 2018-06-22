@@ -40,7 +40,8 @@
   "password": "Password",
   "almost_done": "Almost done!",
   "need_to_do_is_confirm_cellphone_and_done": "All you need to do now is to confirm your cellphone number and you’re done!",
-  "you_will_confirm_by_sending_a_text_message": "You will confirm by sending a text message with your unique code, from the phone you’re seeing this on right now  - to our number. The text message costs the same as an ordinary text message with your service provider",
+  "you_will_confirm_by_sending_a_text_message": "You will confirm by sending a text message with your unique code, from the phone you’re seeing this on right now  - to our number",
+  "the_text_message_costs": "The text message costs the same as an ordinary text message with your service provider.",
   "YOUR_UNIQUE_CODE": "YOUR UNIQUE CODE",
   "send_text_message": "Send text message",
   "your_number_is_confirmed": "Your number is confirmed!",
@@ -83,5 +84,6 @@
   "start_over": "Start over",
   "will_reset_your_session": "Are you sure you want to go back? This will reset your current session.",
   "new_number": "It seems you are using new phone number. Do you want to update your phone number?",
-  "generating_code": "generating code"
+  "generating_code": "generating code",
+  "number_changed":"Your number is changed successfully"
 }

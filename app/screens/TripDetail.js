@@ -47,6 +47,7 @@ import ReturnIconPink from '@assets/icons/ic_return.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
 import CalendarIcon from '@assets/icons/ic_calender.png';
 import { getTripDetails } from '@services/apollo/dataSync';
+import LocationIcon from '@assets/icons/ic_location.png';
 
 const SuggestedRides = withSearch(SuggestedRidesList);
 const TripFeed = withTripFeed(Feed);
@@ -860,6 +861,7 @@ class TripDetail extends Component {
           label={trans('detail.share_your_live_location')}
           onPress={() => this.onMapPress(true)}
           disabled={!this.canShareLocation()}
+          icon={LocationIcon}
         />
         {
           trip.muted ?

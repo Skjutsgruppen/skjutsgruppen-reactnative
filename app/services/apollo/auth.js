@@ -322,6 +322,7 @@ const CHANGE_EMAIL_QUERY = gql`
 mutation changeEmail($email: String!){
   changeEmail(email: $email){
     code
+    token
     User{
       id
       email
@@ -363,6 +364,7 @@ const CHANGE_PHONE_NUMBER = gql`
 mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
   changePhoneNumber(phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber){
     code
+    token
     User {
       id
       email
@@ -416,7 +418,34 @@ subscription verification ($id: Int!){
 
 const RENEW_PHONE_NUMBER = gql`
 mutation renewPhoneNumber($number: String!) {
-  renewPhoneNumber(number: $number)
+  renewPhoneNumber(number: $number) {
+    token
+    User {
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalRideConversations
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      createdAt
+      isSupporter
+      twitterId
+      agreementRead
+      agreementAccepted
+    } 
+  }
 }
 `;
 

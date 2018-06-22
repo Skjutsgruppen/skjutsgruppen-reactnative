@@ -25,6 +25,8 @@ import {
   FEEDABLE_NEWS,
   FEEDABLE_EXPERIENCE,
   FEED_FILTER_NEARBY,
+  NOT_AUTHORIZED_ERROR,
+  JWT_MALFORMED_ERROR,
 } from '@config/constant';
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
@@ -35,6 +37,13 @@ import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
 import { withContactSync } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
+import AuthService from '@services/auth';
+import AuthAction from '@redux/actions/auth';
+import { LoginManager } from 'react-native-fbsdk';
+import firebase from 'react-native-firebase';
+import { resetLocalStorage } from '@services/apollo/dataSync';
+import { NavigationActions } from 'react-navigation';
 
 const FeedExperience = withGetExperiences(List);
 
@@ -126,6 +135,7 @@ class Feed extends Component {
     });
 
     this.feedList = null;
+    this.messageListener = null;
   }
 
   async componentWillMount() {
@@ -179,6 +189,14 @@ class Feed extends Component {
     }
     this.currentLocation();
     subscribeToFeed();
+    this.messageListener = firebase.messaging().onMessage((message) => {
+      const { _data: { custom_notification: customNotification } } = message;
+      const payload = JSON.parse(customNotification);
+      console.log(payload);
+      if (payload && payload.logout) {
+        this.logoutActions();
+      }
+    });
   }
 
   componentDidMount() {
@@ -208,6 +226,19 @@ class Feed extends Component {
         }
       }).catch(err => console.warn('An error occurred', err));
       Linking.addEventListener('url', this.handleOpenURL);
+    }
+  }
+
+  async componentWillReceiveProps({ feeds: { error, loading } }) {
+    if (!loading && error) {
+      const { graphQLErrors } = error;
+      if (graphQLErrors && graphQLErrors.length > 0) {
+        const notAuthroized = graphQLErrors.filter(gError =>
+          (gError.code === NOT_AUTHORIZED_ERROR || gError.code === JWT_MALFORMED_ERROR));
+        if (notAuthroized.length > 0) {
+          await this.logoutActions();
+        }
+      }
     }
   }
 
@@ -255,10 +286,29 @@ class Feed extends Component {
     this.setState({ filterOpen: visibility });
   }
 
+  logoutActions = async () => {
+    const { logout } = this.props;
+    await firebase.notifications().cancelAllNotifications();
+    logout()
+      .then(() => LoginManager.logOut())
+      .then(() => this.reset())
+      .catch(() => this.reset());
+  }
+
+  reset = async () => {
+    const { navigation } = this.props;
+    await resetLocalStorage();
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Splash' })],
+    });
+    navigation.dispatch(resetAction);
+  }
 
   handleOpenURL = (event) => {
     this.navigate(event.url);
   }
+
   navigate = (url) => {
     const { navigation } = this.props;
     const route = url.replace(/.*?:\/\//g, '');
@@ -538,6 +588,16 @@ Feed.propTypes = {
   }).isRequired,
   subscribeToFeed: PropTypes.func.isRequired,
   syncContacts: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
-export default compose(withFeed, withContactSync)(Feed);
+const mapDispatchToProps = dispatch => ({
+  logout: () => AuthService.logout()
+    .then(() => dispatch(AuthAction.logout()))
+    .catch(error => console.warn(error)),
+});
+
+export default compose(
+  withFeed,
+  withContactSync,
+  connect(null, mapDispatchToProps))(Feed);

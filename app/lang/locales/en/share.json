@@ -2,5 +2,6 @@
   "share_group": "I want to share group {{name}} ({{url}}) with you.",
   "share_trip": "I want to share trip {{tripStart}} - {{tripEnd}} ({{url}}) with you",
   "share_experience": "I want to share an experience with you between {{tripStart}} - {{tripEnd}} ({{url}}).",
-  "failed_to_share": "Sorry! The {{type}} could not be shared."
+  "failed_to_share": "Sorry! The {{type}} could not be shared.",
+  "share_location": "I'm ridesharing from {{tripStart}} to {{tripEnd}} ({{url}})."
 }

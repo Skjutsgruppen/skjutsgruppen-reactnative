@@ -474,10 +474,18 @@ class RouteMap extends PureComponent {
 
     try {
       return trips.map((trip) => {
-        coordinate = {
-          latitude: trip.TripStart.coordinates[1],
-          longitude: trip.TripStart.coordinates[0],
-        };
+        if (trip.TripStart && trip.TripStart.coordinates && trip.TripStart.coordinates.length > 0) {
+          coordinate = {
+            latitude: trip.TripStart.coordinates[1],
+            longitude: trip.TripStart.coordinates[0],
+          };
+        } else {
+          coordinate = {
+            latitude: trip.TripEnd.coordinates[1],
+            longitude: trip.TripEnd.coordinates[0],
+          };
+        }
+
         return (
           <Marker
             key={`${trip.id}-${moment().unix()}`}

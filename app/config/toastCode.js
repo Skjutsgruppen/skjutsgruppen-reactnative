@@ -90,7 +90,7 @@ export const AppToastCode = {
   GROUP_PHOTO_REQUIRED: 'Group photo is required',
   EMAIL_VERIFICATION_CODE_RESENT: 'Verification code resent.',
   ERROR_RESENDING_EMAIL_VERIFICATION: 'Error sending verification code! Please Retry.',
-  EMAIL_SUCCESSFULLY_CHANGED: 'Your e-mail has been updated. Please check your e-mail and click the link to verify.',
+  EMAIL_SUCCESSFULLY_CHANGED: 'Your e-mail has been updated. Please check your e-mail and click the link to verify. You will be logged out of your current session.',
   PHONE_NUMBER_SUCCESSFULLY_CHANGED: 'Your phone number has been updated. Please verify your new phone number to set it as a default phone number.',
   SELECT_ONE_RIDE: 'Please select on ride to suggest.',
   SELECT_ONE_USER: 'Please select at least one user to add.',
