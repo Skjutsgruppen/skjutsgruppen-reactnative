@@ -109,10 +109,12 @@ class FeedItem extends PureComponent {
   renderProfilePic() {
     const { feed, onPress } = this.props;
     let imgSrc = '';
+    let userId = feed.User.id;
 
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
-      && feed.Group.type === CLOSE_GROUP) {
+      && Object.keys(feed.Enabler).length > 0 && feed.Enabler.avatar) {
       imgSrc = feed.Enabler.avatar;
+      userId = feed.Enabler.id;
     } else {
       imgSrc = feed.User.avatar;
     }
@@ -121,7 +123,7 @@ class FeedItem extends PureComponent {
       <View style={styles.profilePicWrapper}>
         <TouchableOpacity onPress={() => {
           if (feed.User.deleted) return null;
-          return onPress('Profile', { id: feed.User.id });
+          return onPress('Profile', { id: userId });
         }}
         >
           <Image source={{ uri: imgSrc }} style={styles.profilePic} />

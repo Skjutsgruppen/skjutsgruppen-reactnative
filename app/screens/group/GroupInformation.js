@@ -8,7 +8,7 @@ import GroupMap from '@components/group/groupMap';
 import MembershipRequest from '@components/group/membershipRequest/membershipRequestAvatar';
 import ParticipantAvatar from '@components/group/participantAvatar';
 import { withGroupMembers, withGroupMembershipRequest, withGroup } from '@services/apollo/group';
-import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP, GROUP_FEED_TYPE_SHARE } from '@config/constant';
+import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import Share from '@components/common/share';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
@@ -191,7 +191,7 @@ class Information extends Component {
       >
         <Share
           modal
-          type={GROUP_FEED_TYPE_SHARE}
+          type={FEEDABLE_GROUP}
           detail={group}
           onClose={() => this.setState({ showShareModal: false })}
         />

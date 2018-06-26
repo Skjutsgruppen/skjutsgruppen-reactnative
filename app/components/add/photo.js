@@ -92,6 +92,7 @@ class Camera extends Component {
     this.state = {
       imageSource: null,
     };
+    this.imagePickerDisplayed = false;
   }
 
   componentWillMount() {
@@ -104,6 +105,7 @@ class Camera extends Component {
   removePhoto = () => {
     this.setState({ imageSource: null });
     this.props.onSelect({ data: '' });
+    this.imagePickerDisplayed = false;
   }
 
   selectOrRemove = () => {
@@ -114,7 +116,9 @@ class Camera extends Component {
       return;
     }
 
-    this.selectPhone();
+    if (!this.imagePickerDisplayed) {
+      this.selectPhone();
+    }
   }
 
   selectPhone = () => {
@@ -125,11 +129,12 @@ class Camera extends Component {
       },
     };
 
+    this.imagePickerDisplayed = true;
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        //
+        this.imagePickerDisplayed = false;
       } else if (response.error) {
-        //
+        this.imagePickerDisplayed = false;
       } else if (response.customButton) {
         //
       } else {

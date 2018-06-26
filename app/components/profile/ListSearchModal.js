@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   searchInput: {
     fontFamily: 'SFUIText-Regular',
     fontSize: 15,
-    height: 36,
+    height: 48,
+    paddingVertical: 4,
     flex: 1,
     borderRadius: 18,
     paddingLeft: 16,

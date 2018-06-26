@@ -2,10 +2,10 @@ import React from 'react';
 import { View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import PropTypes from 'prop-types';
-
 import { FEED_TYPE_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
 import { getDate } from '@config';
+import Moment from 'moment';
 
 const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   const checkAndRedirect = (date) => {
@@ -17,18 +17,23 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   };
 
   const markedDates = {};
-  let tripDate = '';
+  let tripDate = Moment().format('YYYY-MM-DD');
   let selectedDate = '';
   let tripColor = '';
+  let currentDateAdded = false;
 
-  groupTrips.forEach((trip, index) => {
+  groupTrips.forEach((trip) => {
     selectedDate = getDate(trip.date);
-    if (index === 0) {
+
+    if (selectedDate.isAfter() && !currentDateAdded) {
+      currentDateAdded = true;
       tripDate = selectedDate.format('YYYY-MM-DD');
     }
+
     tripColor = (trip.type === FEED_TYPE_WANTED) ? Colors.background.blue : Colors.background.pink;
     markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
   });
+
 
   return (
     <View>
@@ -36,7 +41,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
         displayLoadingIndicator={loading}
         markingType={'period'}
         current={tripDate}
-        markedDates={markedDates}
+        markedDates={Object.keys(markedDates).length > 0 ? markedDates : null}
         onDayPress={day => checkAndRedirect(day.dateString)}
         theme={{
           'stylesheet.day.period': {

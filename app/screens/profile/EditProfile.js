@@ -174,6 +174,7 @@ class EditProfile extends Component {
       twitterLinked,
       totalFriends,
     });
+    this.photoButtonClicked = false;
   }
 
   componentWillReceiveProps({ data }) {
@@ -337,36 +338,41 @@ class EditProfile extends Component {
   }
 
   selectPhotoTapped = () => {
-    const options = {
-      quality: 0.6,
-      storageOptions: {
-        skipBackup: true,
-      },
-    };
+    if (!this.photoButtonClicked) {
+      this.photoButtonClicked = true;
+      const options = {
+        quality: 0.6,
+        storageOptions: {
+          skipBackup: true,
+        },
+      };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        //
-      } else if (response.error) {
-        //
-      } else if (response.customButton) {
-        //
-      } else {
-        if (response.fileSize > 3000000) {
-          this.setState({ errorMsg: trans('global.max_file_size_8_mb') });
+      ImagePicker.showImagePicker(options, (response) => {
+        this.photoButtonClicked = false;
 
-          return;
-        }
-        let source;
-        if (Platform.OS === 'android') {
-          source = { uri: response.uri, isStatic: true };
+        if (response.didCancel) {
+          //
+        } else if (response.error) {
+          //
+        } else if (response.customButton) {
+          //
         } else {
-          source = { uri: response.uri.replace('file://', ''), isStatic: true };
+          if (response.fileSize > 3000000) {
+            this.setState({ errorMsg: trans('global.max_file_size_8_mb') });
+
+            return;
+          }
+          let source;
+          if (Platform.OS === 'android') {
+            source = { uri: response.uri, isStatic: true };
+          } else {
+            source = { uri: response.uri.replace('file://', ''), isStatic: true };
+          }
+          this.setState({ uploadedImage: source });
+          this.onSubmit({ avatar: response.data });
         }
-        this.setState({ uploadedImage: source });
-        this.onSubmit({ avatar: response.data });
-      }
-    });
+      });
+    }
   }
 
   redirect = (type) => {

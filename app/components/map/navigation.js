@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import BackIcon from '@assets/icons/ic_back_toolbar.png';
 
 import Colors from '@theme/colors';
-import FileterIcon from '@assets/icons/ic_menu_blue.png';
+import FilterIcon from '@assets/icons/ic_menu_blue.png';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -57,7 +57,7 @@ const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon, showMenu }) 
       : <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />}
     {showMenu &&
     <TouchableOpacity style={[styles.iconWrapper, styles.filteIconWrapper]} onPress={onPressFilter}>
-      <Image source={FileterIcon} />
+      <Image source={FilterIcon} />
     </TouchableOpacity>
     }
   </View>

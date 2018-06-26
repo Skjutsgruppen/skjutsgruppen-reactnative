@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -136,6 +136,7 @@ class Feed extends Component {
 
     this.feedList = null;
     this.messageListener = null;
+    this.backButtonPressed = false;
   }
 
   async componentWillMount() {
@@ -192,7 +193,7 @@ class Feed extends Component {
     this.messageListener = firebase.messaging().onMessage((message) => {
       const { _data: { custom_notification: customNotification } } = message;
       const payload = JSON.parse(customNotification);
-      console.log(payload);
+
       if (payload && payload.logout) {
         this.logoutActions();
       }
@@ -201,6 +202,8 @@ class Feed extends Component {
 
   componentDidMount() {
     if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+
       Linking.getInitialURL().then((url) => {
         if (url) {
           this.navigate(url);
@@ -240,6 +243,17 @@ class Feed extends Component {
         }
       }
     }
+  }
+
+  onBackButtonPress = () => {
+    if (!this.backButtonPressed) {
+      this.scrollToTop();
+      this.backButtonPressed = true;
+
+      return true;
+    }
+
+    return false;
   }
 
   onPress = (type, details) => {
@@ -359,11 +373,11 @@ class Feed extends Component {
   tabEvent = (e, type) => {
     if (this.feedList && type === 'didBlur') {
       if (this.state.filterType === FEED_FILTER_EVERYTHING) {
-        this.feedList.getNode().scrollToOffset({ offset: 0, animated: true });
+        // this.feedList.getNode().scrollToOffset({ offset: 0, animated: true });
       } else {
         this.setState({ filterType: FEED_FILTER_EVERYTHING }, () => {
           this.props.feeds.refetch({ offset: 0, filter: { type: FEED_FILTER_EVERYTHING } });
-          this.feedList.getNode().scrollToOffset({ offset: 0, animated: true });
+          // this.feedList.getNode().scrollToOffset({ offset: 0, animated: true });
         });
       }
     }
