@@ -79,7 +79,7 @@ SharedTripList.propTypes = {
       direction: PropTypes.string,
       date: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
-      seats: PropTypes.number.isRequired,
+      seats: PropTypes.number,
     }).isRequired,
   ).isRequired,
 };

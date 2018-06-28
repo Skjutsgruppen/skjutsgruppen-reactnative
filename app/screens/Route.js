@@ -4,7 +4,7 @@ import { Dimensions, StyleSheet, View, Alert, Image, Platform, BackHandler } fro
 import MapView from 'react-native-maps';
 import { getCoordinates } from '@services/map-directions';
 import PropTypes from 'prop-types';
-import { FEED_FILTER_EVERYTHING } from '@config/constant';
+import { FEED_FILTER_EVERYTHING, FEEDABLE_TRIP } from '@config/constant';
 import Marker from '@components/map/marker';
 import Navigation from '@components/map/navigation';
 import { withNavigation } from 'react-navigation';
@@ -527,6 +527,7 @@ class RouteMap extends PureComponent {
           arrowBackIcon
           onPressBack={this.handleBack}
           onPressFilter={() => this.setState({ filterOpen: true })}
+          showMenu={__typename !== FEEDABLE_TRIP}
         />
         <View style={[styles.myLocationIconWrapper, { bottom: this.state.myLocationIconBottom }]}>
           <TouchableHighlight
@@ -565,13 +566,16 @@ class RouteMap extends PureComponent {
             />
           }
         </MapView>
-        <Filter
-          map
-          selected={this.state.filterType}
-          onPress={this.onFilterChange}
-          showModal={this.state.filterOpen}
-          onCloseModal={() => this.setState({ filterOpen: false })}
-        />
+        {__typename !== FEEDABLE_TRIP
+          &&
+          <Filter
+            map
+            selected={this.state.filterType}
+            onPress={this.onFilterChange}
+            showModal={this.state.filterOpen}
+            onCloseModal={() => this.setState({ filterOpen: false })}
+          />
+        }
         {this.isMember() &&
           <ShareLocationWithData
             locationSharedToSpecificResource={locationSharedToSpecificResource}

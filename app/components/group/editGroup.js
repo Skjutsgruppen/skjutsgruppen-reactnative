@@ -144,6 +144,7 @@ class EditGroup extends Component {
       errorMsg: '',
       openedComponent: '',
     };
+    this.photoButtonClicked = false;
   }
 
   componentWillMount() {
@@ -280,37 +281,43 @@ class EditGroup extends Component {
   }
 
   selectPhotoTapped = () => {
-    const options = {
-      quality: 0.6,
-      storageOptions: {
-        skipBackup: true,
-      },
-    };
+    if (!this.photoButtonClicked) {
+      this.photoButtonClicked = true;
 
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        //
-      } else if (response.error) {
-        //
-      } else if (response.customButton) {
-        //
-      } else {
-        if (response.fileSize > 3000000) {
-          this.setState({ errorMsg: trans('global.max_file_size_8_mb') });
+      const options = {
+        quality: 0.6,
+        storageOptions: {
+          skipBackup: true,
+        },
+      };
 
-          return;
-        }
-        let source;
-        if (Platform.OS === 'android') {
-          source = { uri: response.uri, isStatic: true };
+      ImagePicker.showImagePicker(options, (response) => {
+        this.photoButtonClicked = false;
+
+        if (response.didCancel) {
+          //
+        } else if (response.error) {
+          //
+        } else if (response.customButton) {
+          //
         } else {
-          source = { uri: response.uri.replace('file://', ''), isStatic: true };
+          if (response.fileSize > 3000000) {
+            this.setState({ errorMsg: trans('global.max_file_size_8_mb') });
+
+            return;
+          }
+          let source;
+          if (Platform.OS === 'android') {
+            source = { uri: response.uri, isStatic: true };
+          } else {
+            source = { uri: response.uri.replace('file://', ''), isStatic: true };
+          }
+          this.setState({ uploadedImage: source });
+          this.updateGroup('photo', response.data);
+          this.onComplete();
         }
-        this.setState({ uploadedImage: source });
-        this.updateGroup('photo', response.data);
-        this.onComplete();
-      }
-    });
+      });
+    }
   }
 
   updateGroup = (key, value) => {
@@ -343,7 +350,7 @@ class EditGroup extends Component {
   }
 
   updateOutreach = async (value) => {
-    const { updatedGroup: { outreach } } = this.state;
+    const { updatedGroup: { outreach }, updatedGroup } = this.state;
 
     if (outreach === STRETCH_TYPE_ROUTE) {
       const { start, end, stops, directionFrom, directionTo } = value;
@@ -363,11 +370,18 @@ class EditGroup extends Component {
       await this.updateGroup('Stops', stops);
     } else {
       const { country, county, municipality, locality } = value;
-
-      await this.updateGroup('countryCode', country);
-      await this.updateGroup('countyId', county);
-      await this.updateGroup('municipalityId', municipality);
-      await this.updateGroup('localityId', locality);
+      if ('countryCode' in updatedGroup && updatedGroup.countryCode !== country) {
+        await this.updateGroup('countryCode', country);
+      }
+      if ('countyId' in updatedGroup && updatedGroup.countyId !== county) {
+        await this.updateGroup('countyId', county);
+      }
+      if ('municipalityId' in updatedGroup && updatedGroup.municipalityId !== municipality) {
+        await this.updateGroup('municipalityId', municipality);
+      }
+      if ('localityId' in updatedGroup && updatedGroup.localityId !== locality) {
+        await this.updateGroup('localityId', locality);
+      }
     }
 
     this.onComplete();
@@ -490,7 +504,9 @@ class EditGroup extends Component {
       locality: localityId,
     };
 
-    return (<Area defaultValue={area} onNext={this.updateOutreach} buttonLabel={trans('global.done')} />);
+    return (
+      <Area defaultValue={area} onNext={this.updateOutreach} buttonLabel={trans('global.done')} />
+    );
   }
 
   renderButton = () => {
@@ -523,7 +539,7 @@ class EditGroup extends Component {
         onRequestClose={() => this.onChangePress(false, '')}
         visible={modalVisibility}
       >
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: Colors.background.mutedBlue }}>
           <ToolBar
             title={openedComponent}
             onBack={() => this.onChangePress(false, '')}

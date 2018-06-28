@@ -131,7 +131,24 @@ class Feed extends Component {
       return (
         <View>
           <AppText style={styles.commentText}>
-            {this.renderUsername()} {trans('detail.user_joined_the_group')}
+            {Object.keys(feed.Enabler).length > 0 && feed.Enabler.firstName ?
+              (
+                <AppText>
+                  <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', { id: feed.Enabler.id })}>
+                    {`${feed.Enabler.firstName} `}
+                  </AppText>
+                  <AppText style={styles.commentText}>
+                    {trans('detail.added')} <AppText color={Colors.text.blue} fontVariation="semibold" onPress={() => onPress('Profile', { id: feed.User.id })}>{feed.User.firstName}</AppText> {trans('detail.to_this_group')}
+                  </AppText>
+                </AppText>
+              )
+              :
+              (
+                <AppText>
+                  {this.renderUsername()} {trans('detail.user_joined_the_group')}
+                </AppText>
+              )
+            }
           </AppText>
           <AppText style={styles.time}><Date calendarTime>{feed.date}</Date></AppText>
         </View>

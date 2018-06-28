@@ -7,7 +7,7 @@ import { Wrapper, ConfirmModal, RoundedButton, SearchBar } from '@components/com
 import Toolbar from '@components/utils/toolbar';
 import { withAddGroupParticipant, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
-import { withFriends } from '@services/apollo/friend';
+import { withUnlimitedFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import FriendList from '@components/friend/selectable';
 import SendSMS from 'react-native-sms';
@@ -55,6 +55,7 @@ class AddParticipant extends Component {
       friendsList: [],
       friendsListSearch: [],
     };
+    this.friendsQueryCalled = false;
   }
 
   componentWillMount() {
@@ -82,6 +83,22 @@ class AddParticipant extends Component {
     }
 
     const friendsList = [];
+
+    if (!this.friendsQueryCalled) {
+      this.friendsQueryCalled = true;
+      friends.fetchMore({
+        variables: {
+          groupId: this.props.group.id,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          return {
+            friends: { ...fetchMoreResult.friends },
+          };
+        },
+      });
+    }
+
+
     if (friends && !friends.loading) {
       friends.rows.forEach(friend => friendsList.push(friend));
       this.setState({ friendsList });
@@ -90,13 +107,20 @@ class AddParticipant extends Component {
 
   onChangeSearchQuery = (searchQuery) => {
     this.setState({ searchQuery });
-    const { contactsList } = this.state;
+    const { contactsList, friendsList } = this.state;
 
     const contactsListSearch = contactsList.filter(
       contact => (((contact.firstName).toLowerCase())).includes(searchQuery.toLowerCase()),
     );
 
-    this.setState({ contactsListSearch });
+    const friendsListSearch = friendsList.filter(
+      friend => (
+        friend.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        friend.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    );
+
+    this.setState({ contactsListSearch, friendsListSearch });
   }
 
   onAdd = () => {
@@ -298,5 +322,5 @@ export default compose(
   withAddGroupParticipant,
   withContactFriends,
   withAddUnregisteredParticipants,
-  withFriends,
+  withUnlimitedFriends,
 )(AddParticipant);

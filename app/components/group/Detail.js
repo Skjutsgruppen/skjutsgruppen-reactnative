@@ -235,7 +235,9 @@ class Detail extends PureComponent {
   }
 
   renderShareModal() {
-    const { showShareModal, group } = this.state;
+    const { showShareModal } = this.state;
+    const { group } = this.props;
+
     return (
       <Modal
         visible={showShareModal}
