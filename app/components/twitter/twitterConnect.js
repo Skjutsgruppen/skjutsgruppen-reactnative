@@ -79,10 +79,10 @@ class TwitterConnect extends PureComponent {
 
   handleTwitterLogin = async () => {
     try {
-      this.setState({ showModal: true });
 
       const { twitterUser } = this.state;
       const twitterAuth = await TwitterAuth.login();
+      this.setState({ showModal: true });
       const { rest } = twitter({
         consumerKey: Config.TWITTER_CONSUMER_KEY,
         consumerSecret: Config.TWITTER_CONSUMER_SECRET,

@@ -20,6 +20,9 @@
 #import <ReactNativeConfig/ReactNativeConfig.h>
 #import "RNFirebaseMessaging.h"
 #import "RNFirebaseNotifications.h"
+#import <TwitterKit/TWTRKit.h>
+
+
 @import GoogleMaps;
 
 @implementation AppDelegate
@@ -71,11 +74,13 @@ NSLog(@"GOOGLE MAPS API KEY: %@", [ReactNativeConfig envFor:@"GOOGLE_MAP_API_KEY
   } else if([myUrl containsString:@"pwm3h.app.goo.gl"]) {
     return [RCTLinkingManager application:application openURL:url options:options];
   } else {
-    return [[FBSDKApplicationDelegate sharedInstance] application:application
+    BOOL fbStatus =  [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
                                                        annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
             ];
+    BOOL twitterStatus =  [[Twitter sharedInstance] application:application openURL:url options:options];
+    return fbStatus || twitterStatus;
   }
   
 //  if ([myUrl containsString:@"web.skjutsgruppen.nu"]) {

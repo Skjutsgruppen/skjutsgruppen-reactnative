@@ -53,6 +53,14 @@
 				<string>pwm3h.app.goo.gl</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+					<string>__RN_CONFIG_TWITTER_KEY_URL</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>30</string>
