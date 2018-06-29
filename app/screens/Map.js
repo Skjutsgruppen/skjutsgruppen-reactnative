@@ -329,8 +329,8 @@ class Map extends PureComponent {
     return (
       <View style={styles.container}>
         <Navigation
-          onPressBack={this.handleBack}
-          onPressFilter={() => this.setState({ filterOpen: true })}
+          onPressBack={this.handleBack} 
+          onPressFilter={this.onFilterChange}
         />
         <MapView
           provider={'google'}
@@ -347,13 +347,13 @@ class Map extends PureComponent {
           {this.renderCurrentLocation()}
         </MapView>
         {this.renderLoader()}
-        <Filter
+        {/* <Filter
           map
           selected={this.state.filterType}
           onPress={this.onFilterChange}
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setState({ filterOpen: false })}
-        />
+        /> */}
       </View>
     );
   }

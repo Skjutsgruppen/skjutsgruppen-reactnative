@@ -286,18 +286,12 @@ class Feed extends Component {
     if (type === FEED_FILTER_NEARBY && (longitude === '' || latitude === '')) {
       this.currentLocation();
       Alert.alert('Location Error', 'Could not find your location. Please enable location service or try again.');
-      this.setFilterVisibility(false);
     } else if (type !== filterType) {
       this.setState({ filterType: type }, () => {
         const from = (longitude && longitude) ? [longitude, latitude] : [];
         this.props.feeds.refetch({ offset: 0, filter: { type, from } });
       });
-      this.setFilterVisibility(false);
     }
-  }
-
-  setFilterVisibility = (visibility) => {
-    this.setState({ filterOpen: visibility });
   }
 
   logoutActions = async () => {
@@ -452,14 +446,10 @@ class Feed extends Component {
         >
           {trans('feed.hi')}!
         </Heading>
-        <View style={styles.menuIconWrapper}>
-          <TouchableHighlight
-            style={styles.menuIcon}
-            onPress={() => this.setFilterVisibility(true)}
-          >
-            <Image source={require('@assets/icons/ic_menu.png')} />
-          </TouchableHighlight>
-        </View>
+        <Filter
+          selected={this.state.filterType}
+          onPress={this.onFilterChange}
+        />
       </View>
       {this.renderMap()}
     </View>);
@@ -569,12 +559,12 @@ class Feed extends Component {
         <Circle animatable />
         {this.renderFeed()}
         {this.renderShareModal()}
-        <Filter
+        {/* <Filter
           selected={this.state.filterType}
           onPress={this.onFilterChange}
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setFilterVisibility(false)}
-        />
+        /> */}
         {this.renderCoCreateModal()}
       </Wrapper>
     );

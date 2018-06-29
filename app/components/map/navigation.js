@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import BackIcon from '@assets/icons/ic_back_toolbar.png';
+import Filter from '@components/feed/filter';
 
 import Colors from '@theme/colors';
 import FilterIcon from '@assets/icons/ic_menu_blue.png';
@@ -56,9 +57,12 @@ const MapNavigation = ({ onPressBack, onPressFilter, arrowBackIcon, showMenu }) 
       </TouchableOpacity>
       : <TouchableOpacity style={[styles.iconWrapper, styles.backIcon]} onPress={onPressBack} />}
     {showMenu &&
-    <TouchableOpacity style={[styles.iconWrapper, styles.filteIconWrapper]} onPress={onPressFilter}>
-      <Image source={FilterIcon} />
-    </TouchableOpacity>
+      <View style={[styles.iconWrapper, styles.filteIconWrapper]}>
+        <Filter
+          map
+          onPress={onPressFilter}
+        />
+      </View>
     }
   </View>
 );
