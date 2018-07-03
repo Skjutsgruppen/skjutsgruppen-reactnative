@@ -208,6 +208,7 @@ class RouteMap extends PureComponent {
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPress);
   }
+
   onBackButtonPress = () => {
     const { navigation } = this.props;
     navigation.goBack();
@@ -302,7 +303,7 @@ class RouteMap extends PureComponent {
 
     this.setState({ loading: true });
     try {
-      refetch({ filter: filterType }).then(({ data }) => {
+      refetch({ filter: filterType, active: true }).then(({ data }) => {
         this.setState({ trips: data.groupTrips });
       })
         .catch(err => this.setState({ error: err, loading: false }));
@@ -646,6 +647,7 @@ const Route = ({ navigation }) => {
         resourceType={__typename}
         id={id}
         navigation={navigation}
+        active
       />
     );
   } else if (__typename === 'Trip') {

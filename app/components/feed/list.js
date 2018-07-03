@@ -318,6 +318,7 @@ class FeedList extends PureComponent {
                 this.setState({ showShareModal: true, shareableType, shareable })}
               feed={item}
               onLongPress={this.onLongPress}
+              type={type}
             />
           )}
           fetchMoreOptions={{

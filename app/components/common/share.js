@@ -120,6 +120,7 @@ class Share extends Component {
       selectedFriends: [],
       selectedContacts: [],
       selectedGroups: [],
+      groupListSearch: [],
       selectedTripParticipants: [],
       friendsList: [],
       friendsListSearch: [],
@@ -162,7 +163,6 @@ class Share extends Component {
 
     this.setState({
       friendsList,
-      selectedGroups: groups || [],
     });
   }
 
@@ -209,6 +209,7 @@ class Share extends Component {
   onChangeSearchQuery = (searchQuery) => {
     this.setState({ searchQuery });
     const { friendsList, contactsList } = this.state;
+    const { groups } = this.props;
     const friendsListSearch = friendsList.filter(
       ({ firstName, lastName }) => (((firstName + lastName)
         .toLowerCase()))
@@ -219,7 +220,11 @@ class Share extends Component {
       contact => (((contact.firstName).toLowerCase())).includes(searchQuery.toLowerCase()),
     );
 
-    this.setState({ friendsListSearch, contactsListSearch });
+    const groupListSearch = groups.rows.filter(
+      group => (((group.name).toLowerCase())).includes(searchQuery.toLowerCase()),
+    );
+
+    this.setState({ friendsListSearch, contactsListSearch, groupListSearch });
   }
 
   setOption = (type, value) => {
@@ -450,8 +455,9 @@ class Share extends Component {
   }
 
   renderList = () => {
-    const { bestFriends, friends, defaultValue: { offeredUser } } = this.props;
+    const { bestFriends, friends, defaultValue: { offeredUser, groupId } } = this.props;
     const {
+      groupListSearch,
       friendsListSearch,
       contactsListSearch,
       participantsList,
@@ -466,21 +472,50 @@ class Share extends Component {
     if (searchQuery.length > 0) {
       return (
         <View style={styles.listWrapper}>
-          <FriendList
-            title="Your Friends"
-            loading={friends.loading}
-            rows={friendsListSearch}
-            setOption={id => this.setOption('selectedFriends', id)}
-            selected={selectedFriends}
-            readOnlyUserId={offeredUser ? offeredUser.id : null}
-          />
-          <FriendList
-            loading={friends.loading}
-            rows={contactsListSearch}
-            defaultAvatar
-            setOption={id => this.setOption('selectedContacts', id)}
-            selected={selectedContacts}
-          />
+          {
+            groupListSearch.length > 0 && <View>
+              <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</AppText>
+              {
+                groupListSearch.map(item => (
+                  <ShareItem
+                    key={item.id}
+                    imageSource={{ uri: item.photo || item.mapPhoto }}
+                    hasPhoto
+                    selected={this.hasOption('selectedGroups', item.id)}
+                    label={item.name}
+                    onPress={() => this.setOption('selectedGroups', item.id)}
+                    color="blue"
+                    readOnly={groupId === item.id}
+                  />
+                ))
+              }
+            </View>
+          }
+          {
+            (friendsListSearch.length > 0 || contactsListSearch.length > 0) && <View>
+              <AppText
+                size={12}
+                color={Colors.text.blue}
+                style={[styles.shareCategoryTitle, { marginTop: 16 }]}
+              >
+                {'Your friends'.toUpperCase()}
+              </AppText>
+              <FriendList
+                loading={friends.loading}
+                rows={friendsListSearch}
+                setOption={id => this.setOption('selectedFriends', id)}
+                selected={selectedFriends}
+                readOnlyUserId={offeredUser ? offeredUser.id : null}
+              />
+              <FriendList
+                loading={friends.loading}
+                rows={contactsListSearch}
+                defaultAvatar
+                setOption={id => this.setOption('selectedContacts', id)}
+                selected={selectedContacts}
+              />
+            </View>
+          }
         </View>
       );
     }
