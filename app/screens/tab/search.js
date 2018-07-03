@@ -170,6 +170,7 @@ class Search extends Component {
 
   componentWillMount() {
     const { navigation } = this.props;
+    let markedDates = {};
 
     if (navigation.state.params) {
       const {
@@ -180,6 +181,13 @@ class Search extends Component {
         dates,
       } = navigation.state.params;
 
+      if (dates && dates.length > 0) {
+        markedDates = dates.reduce((obj, item) => {
+          obj[item] = { startingDay: true, color: '#1ca9e5', textColor: '#fff', endingDay: true }
+          return obj;
+        }, {});
+      }
+
       this.setState({
         from: fromObj,
         to: toObj,
@@ -188,6 +196,7 @@ class Search extends Component {
         filters,
         direction,
         dates,
+        markedDates,
       });
     }
 

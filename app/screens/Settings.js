@@ -10,6 +10,10 @@ import LangService from '@services/lang';
 import I18n from 'react-native-i18n';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
+import { withUpdateProfile } from '@services/apollo/auth';
+import AuthAction from '@redux/actions/auth';
 
 const styles = StyleSheet.create({
   row: {
@@ -51,21 +55,33 @@ class Settings extends Component {
     super(props);
     this.state = {
       language: 'en',
-      notification: 'On',
+      notification: true,
     };
   }
 
   componentWillMount() {
+    const { user } = this.props;
     LangService.getLanguage().then((language) => {
       this.setState({ language: language || I18n.locale });
     });
+
+    this.setState({ notification: user.notification });
   }
 
   setNotificationStatus = (index) => {
-    if (index === 0) {
-      this.setState({ notification: 'On' });
-    } else if (index === 1) {
-      this.setState({ notification: 'Off' });
+    const { updateProfile, setUser, user } = this.props;
+    if (index === 0 && !this.state.notification) {
+      this.setState({ notification: true }, () => {
+        updateProfile({ notification: true }).then(() => {
+          setUser({ user: { ...user, ...{ notification: true } } });
+        });
+      });
+    } else if (index === 1 && this.state.notification) {
+      this.setState({ notification: false }, () => {
+        updateProfile({ notification: false }).then(() => {
+          setUser({ user: { ...user, ...{ notification: false } } });
+        });
+      });
     }
   }
 
@@ -104,7 +120,7 @@ class Settings extends Component {
       <View style={styles.row}>
         <View>
           <AppText style={styles.text}>
-            Notification <AppText fontVariation="bold"> - {notification}</AppText>
+            Notification <AppText fontVariation="bold"> - {notification ? trans('profile.on') : trans('profile.off')}</AppText>
           </AppText>
           <AppText color={Colors.text.gray} style={styles.text}>Toggle notification</AppText>
         </View>
@@ -162,6 +178,20 @@ Settings.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  user: PropTypes.shape({
+    notification: PropTypes.bool,
+  }).isRequired,
+  updateProfile: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
 };
 
-export default withNavigation(Settings);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+const mapDispatchToProps = dispatch => ({
+  setUser: ({ user }) => { dispatch(AuthAction.user(user)); },
+});
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withNavigation,
+  withUpdateProfile)(Settings);

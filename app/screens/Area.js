@@ -18,7 +18,7 @@ import { withGroup, withGroupTrips, withGroupParticipantIds } from '@services/ap
 import { withLocationSharedToSpecificResource, withStopSpecific } from '@services/apollo/share';
 import ShareLocation from '@components/common/shareLocation';
 import { withUpdateLocation } from '@services/apollo/location';
-import ConfirmModal from '@components/common/confirmModal';
+import { ConfirmModal } from '@components/common';
 import TouchableHighlight from '@components/touchableHighlight';
 import MyLocationIcon from '@assets/icons/ic_my_location.png';
 import Colors from '@theme/colors';
@@ -231,7 +231,7 @@ class AreaMap extends PureComponent {
 
     this.setState({ loading: true });
     try {
-      refetch({ filter: filterType }).then(({ data }) => {
+      refetch({ filter: filterType, active: true }).then(({ data }) => {
         this.setState({ trips: data.groupTrips });
       })
         .catch(err => this.setState({ error: err, loading: false }));
@@ -278,6 +278,48 @@ class AreaMap extends PureComponent {
       onRequestClose={() => this.setState({ showTurnOnGpsModal: false })}
     />
   )
+
+  renderTrips = () => {
+    let coordinate = {};
+    const { trips } = this.state;
+
+    if (trips.length < 1) {
+      return null;
+    }
+
+    try {
+      return trips.map((trip) => {
+        if (trip.TripStart && trip.TripStart.coordinates && trip.TripStart.coordinates.length > 0) {
+          coordinate = {
+            latitude: trip.TripStart.coordinates[1],
+            longitude: trip.TripStart.coordinates[0],
+          };
+        } else {
+          coordinate = {
+            latitude: trip.TripEnd.coordinates[1],
+            longitude: trip.TripEnd.coordinates[0],
+          };
+        }
+
+        return (
+          <Marker
+            key={`${trip.id}-${moment().unix()}`}
+            onPress={(e) => {
+              e.stopPropagation();
+              this.onMarkerPress(trip);
+            }}
+            coordinate={coordinate}
+            image={trip.User.avatar}
+            count={trip.seats}
+            tripType={trip.type}
+          />
+        );
+      });
+    } catch (err) {
+      console.warn(err);
+      return null;
+    }
+  }
 
   renderLiveLocations = () => {
     const { user } = this.props;
@@ -361,6 +403,7 @@ class AreaMap extends PureComponent {
             <TripMarker />
           </MapView.Marker.Animated>
           {this.renderLiveLocations()}
+          {this.renderTrips()}
         </MapView>
         <Filter
           map
@@ -425,6 +468,7 @@ const Area = ({ navigation }) => {
       resourceType={__typename}
       id={id}
       navigation={navigation}
+      active
     />
   );
 };

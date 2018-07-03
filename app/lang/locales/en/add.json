@@ -44,5 +44,6 @@
   "is_open_or_closed": "Is your group open or closed?",
   "open_recommended": "Open (recommended)",
   "closed": "Closed",
-  "rides_published_in_closed_group_still": "Please note that rides published in a closed group still will be searchable and joinable for everyone in the movement."
+  "rides_published_in_closed_group_still": "Please note that rides published in a closed group still will be searchable and joinable for everyone in the movement.",
+  "be_supporter_to_add_photo_in_trip": "You have to be a supporter to add a photo in a trip."
 }

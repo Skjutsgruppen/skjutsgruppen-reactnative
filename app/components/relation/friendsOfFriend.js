@@ -375,8 +375,13 @@ class FOF extends PureComponent {
   }
 
   renderMini = () => {
-    const { relation, viewee, user, navigation } = this.props;
+    const { relation, viewee, user, navigation, displayNoConnection } = this.props;
+
     if (relation.path && relation.path.length === 0 && !relation.areFriends) {
+      if (displayNoConnection) {
+        return null;
+      }
+
       return (
         <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
           <AppText size={11} color={Colors.text.gray}>
@@ -440,10 +445,12 @@ FOF.propTypes = {
     firstName: PropTypes.string,
   }).isRequired,
   mini: PropTypes.bool,
+  displayNoConnection: PropTypes.bool,
 };
 
 FOF.defaultProps = {
   mini: false,
+  displayNoConnection: false,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

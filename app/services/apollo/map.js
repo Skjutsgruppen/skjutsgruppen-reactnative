@@ -2,8 +2,8 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const NEAR_BY_TRIPS_QUERY = gql`
-mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: TripTypeEnum ) {
-  nearByTrips (input:{from:$from,distFrom:$distFrom, distTo:$distTo, filter:$filter}){
+mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: TripTypeEnum, $active: Boolean ) {
+  nearByTrips (input:{from:$from,distFrom:$distFrom, distTo:$distTo, filter:$filter, active: $active}){
     id
     date
     root
@@ -48,8 +48,8 @@ mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: Trip
 
 export const withMapTrips = graphql(NEAR_BY_TRIPS_QUERY, {
   props: ({ mutate }) => ({
-    getMapTrips: (from, distFrom, distTo, filter) => mutate({
-      variables: { from, distFrom, distTo, filter },
+    getMapTrips: (from, distFrom, distTo, filter, active: false) => mutate({
+      variables: { from, distFrom, distTo, filter, active },
       fetchPolicy: 'cache-and-network',
     }),
   }),
