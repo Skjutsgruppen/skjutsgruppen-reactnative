@@ -1187,8 +1187,8 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 });
 
 const GROUP_TRIPS_QUERY = gql`
-  query groupTrips($id: Int, $filter: TripTypeEnum){
-    groupTrips(groupId: $id, filter: $filter){
+  query groupTrips($id: Int, $filter: TripTypeEnum, $active: Boolean){
+    groupTrips(groupId: $id, filter: $filter, active: $active){
       id 
       type 
       description 
@@ -1237,9 +1237,9 @@ const GROUP_TRIPS_QUERY = gql`
 
 export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
   {
-    options: ({ id, filter = FEED_FILTER_EVERYTHING }) => ({
+    options: ({ id, filter = FEED_FILTER_EVERYTHING, active = false }) => ({
       fetchPolicy: 'cache-and-network',
-      variables: { id, filter },
+      variables: { id, filter, active },
     }),
     props: ({ data: { loading, groupTrips = [], refetch, networkStatus, error } }) => ({
       loading, groupTrips, refetch, networkStatus, error,

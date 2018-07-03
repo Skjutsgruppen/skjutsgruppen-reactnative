@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableOpacity,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { withExploreGroup, withNearByGroups } from '@services/apollo/group';
@@ -132,8 +133,10 @@ class ExploreGroup extends PureComponent {
 
   async componentWillMount() {
     try {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+      }
     } catch (err) {
       console.warn(err);
     }

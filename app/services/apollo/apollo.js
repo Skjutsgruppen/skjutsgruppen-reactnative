@@ -17,6 +17,7 @@ wsClient.use([{
 
 wsClient.connectionCallback = (err) => {
   if (err && err.message === 'Auth failed') {
+    console.log(wsClient);
     wsClient.close(false, false);
   }
 };

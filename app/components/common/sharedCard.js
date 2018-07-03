@@ -93,7 +93,7 @@ const SharedCard = ({ trip, onPress, date }) => {
               (trip.direction.charAt(0).toUpperCase() + trip.direction.slice(1))
             }
           </AppText>
-          <AppText style={styles.text}><Date calendarTime>{trip.date}</Date></AppText>
+          <AppText style={styles.text}><Date format="MMM DD, YYYY, HH:mm">{trip.date}</Date></AppText>
         </View>
       </TouchableOpacity>
       {
