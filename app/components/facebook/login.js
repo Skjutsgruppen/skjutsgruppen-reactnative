@@ -87,6 +87,12 @@ class FBLogin extends PureComponent {
         return;
       }
 
+      if (userById.user.contactSynced === null) {
+        navigation.replace('Onboarding', { activeStep: 9 });
+
+        return;
+      }
+
       await firebase.messaging().getToken()
         .then(appToken => storeAppToken(appToken, getDeviceId()));
 

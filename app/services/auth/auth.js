@@ -6,6 +6,7 @@ class Auth {
     this.userKey = 'auth_skjuts_user';
     this.tokenKey = 'auth_skjuts_token';
     this.phoneVerificationCodeKey = 'auth_skjuts_phoneVerificationCode';
+    this.contactPermissionKey = 'contact_permission';
   }
 
   async logout() {
@@ -40,6 +41,14 @@ class Auth {
 
   getPhoneVerification() {
     return this.session.get(this.phoneVerificationCodeKey);
+  }
+
+  setContactPermission(permission) {
+    return this.session.set(this.contactPermissionKey, permission);
+  }
+
+  getContactPermission() {
+    return this.session.get(this.contactPermissionKey);
   }
 }
 

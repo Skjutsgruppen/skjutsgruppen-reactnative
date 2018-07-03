@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -140,56 +140,24 @@ class Feed extends Component {
   }
 
   async componentWillMount() {
-    const { feeds, subscribeToFeed, navigation, syncContacts } = this.props;
+    const { feeds, subscribeToFeed, navigation } = this.props;
     const { params } = navigation.state;
 
     navigation.setParams({ scrollToTop: this.scrollToTop });
 
     navigation.addListener('didBlur', e => this.tabEvent(e, 'didBlur'));
 
-    try {
-      if (Platform === 'android' || Platform.OS === 'android') {
-        const permissions =
-          await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
-
-        if (!permissions) {
-          const response =
-            await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
-          if (response && response === 'granted') {
-            syncContacts();
-          }
-          this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
-        }
-      } else {
-        Contacts.checkPermission((err, permission) => {
-          if (err || permission !== 'authorized') {
-            Contacts.requestPermission((contactErr, res) => {
-              if (contactErr) {
-                if (Platform === 'ios' || Platform.OS === 'ios') {
-                  //Crashlytics.recordError(contactErr);
-                }
-              }
-
-              if (res === 'authorized') {
-                syncContacts();
-              }
-              // console.warn(err, res);
-              this.setState({ contactPermission: false, contactPermissionResponse: permission });
-            });
-          } else {
-            this.setState({ contactPermission: true, contactPermissionResponse: permission });
-          }
-        });
-      }
-    } catch (err) {
-      console.warn(err);
+    if (!params || (params && !params.askContactPermission)) {
+      this.contactPermission();
     }
 
     if (params && typeof params.refetch !== 'undefined') {
       feeds.refetch();
     }
+
     this.currentLocation();
     subscribeToFeed();
+
     this.messageListener = firebase.messaging().onMessage((message) => {
       const { _data: { custom_notification: customNotification } } = message;
       const payload = JSON.parse(customNotification);
@@ -291,6 +259,74 @@ class Feed extends Component {
         const from = (longitude && longitude) ? [longitude, latitude] : [];
         this.props.feeds.refetch({ offset: 0, filter: { type, from } });
       });
+    }
+  }
+
+  setFilterVisibility = (visibility) => {
+    this.setState({ filterOpen: visibility });
+  }
+
+  contactPermission = async () => {
+    const { syncContacts } = this.props;
+    try {
+      if (Platform === 'android' || Platform.OS === 'android') {
+        const permissions =
+          await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+
+        if (!permissions) {
+          const response =
+            await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+          if (response && response === 'granted') {
+            syncContacts();
+          }
+          this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
+        }
+      } else {
+        Contacts.checkPermission(async (err, permission) => {
+          const iosPermission = await AuthService.getContactPermission();
+
+          if (permission === 'authorized' && (iosPermission === null)) {
+            await syncContacts();
+            await AuthService.setContactPermission('synced');
+          }
+
+          if (err || permission !== 'authorized') {
+            Contacts.requestPermission((contactErr, res) => {
+              if (contactErr) {
+                if (Platform === 'ios' || Platform.OS === 'ios') {
+                  //Crashlytics.recordError(contactErr);
+                }
+              }
+              if (res === 'authorized') {
+                syncContacts();
+              }
+              // console.warn(err, res);
+              this.setState({ contactPermission: false, contactPermissionResponse: permission });
+            });
+
+            if (permission === 'denied' && (!iosPermission)) {
+              AlertIOS.alert(
+                'Contacts Permission',
+                trans('onboarding.contact_permission'),
+                [
+                  {
+                    text: 'Open Settings',
+                    onPress: () => OpenSettings.openSettings(),
+                  },
+                  {
+                    text: 'Never ask again',
+                    onPress: async () => { await AuthService.setContactPermission('denied'); },
+                  },
+                ],
+              );
+            }
+          } else {
+            this.setState({ contactPermission: true, contactPermissionResponse: permission });
+          }
+        });
+      }
+    } catch (err) {
+      console.warn(err);
     }
   }
 
@@ -593,12 +629,16 @@ Feed.propTypes = {
   subscribeToFeed: PropTypes.func.isRequired,
   syncContacts: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
+  // setContactPermission: PropTypes.func.isRequired,
+  // getContactPermission: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   logout: () => AuthService.logout()
     .then(() => dispatch(AuthAction.logout()))
     .catch(error => console.warn(error)),
+  // setContactPermission: (permission) => { AuthService.setContactPermission(permission); },
+  // getContactPermission: () => AuthService.getContactPermission(),
 });
 
 export default compose(

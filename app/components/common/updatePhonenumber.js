@@ -194,7 +194,7 @@ class UpdatePhonenumber extends Component {
         setLogin({
           token,
           user: updatedUser,
-        })
+        });
       }
       clearInterval(this.interval);
       this.setState({ error: '' }, this.onNext());

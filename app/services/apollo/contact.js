@@ -1,6 +1,6 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { InteractionManager } from 'react-native';
+import { InteractionManager, Platform, PermissionsAndroid } from 'react-native';
 import Contacts from 'react-native-contacts';
 
 const SYNC_CONTACTS = gql`
@@ -9,68 +9,91 @@ mutation syncContacts($contactList:[ContactsInput]) {
 }
 `;
 
+const getMappedContacts = () => {
+  const contactList = [];
+
+  return new Promise((resolve) => {
+    Contacts.getAll(async (error, contacts) => {
+      if (error === 'denied') {
+        resolve(contactList);
+      }
+
+      contacts.forEach(
+        (contact) => {
+          if (contact.phoneNumbers.length > 0) {
+            const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
+
+            contact.phoneNumbers.forEach(phoneBook =>
+              contactList.push({
+                name: contactName,
+                phoneNumber: phoneBook.number,
+              }),
+            );
+          }
+        },
+      );
+
+      resolve(contactList);
+    });
+  });
+};
+
 export const withContactSync = graphql(SYNC_CONTACTS, {
   props: ({ mutate }) => ({
-    syncContacts: () => {
-      InteractionManager.runAfterInteractions(() => {
-        Contacts.checkPermission((err, permission) => {
-          if (permission === 'authorized') {
-            Contacts.getAll((error, contacts) => {
-              if (error === 'denied') {
-                console.warn(err);
-              } else {
-                const contactList = [];
-                contacts.forEach(
-                  (contact) => {
-                    if (contact.phoneNumbers.length > 0) {
-                      const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
+    syncContacts: async () => {
+      try {
+        let contactList = [];
 
-                      contact.phoneNumbers.forEach(phoneBook =>
-                        contactList.push({
-                          name: contactName,
-                          phoneNumber: phoneBook.number,
-                        }),
-                      );
-                    }
-                  },
-                );
-                mutate({ variables: { contactList } });
-              }
-            });
-          } else {
-            Contacts.requestPermission((errorPermission, result) => {
-              if (errorPermission) {
-                console.warn(errorPermission);
-                return;
-              }
-              if (result === 'authorized') {
-                Contacts.getAll((error, contacts) => {
-                  if (error === 'denied') {
-                    console.warn(err);
-                  } else {
-                    const contactList = [];
-                    contacts.forEach(
-                      (contact) => {
-                        if (contact.phoneNumbers.length > 0) {
-                          const contactName = `${contact.givenName ? contact.givenName : ''}${contact.familyName ? ` ${contact.familyName}` : ''}`;
+        if (Platform === 'android' || Platform.OS === 'android') {
+          const permissions =
+            await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
 
-                          contact.phoneNumbers.forEach(phoneBook =>
-                            contactList.push({
-                              name: contactName,
-                              phoneNumber: phoneBook.number,
-                            }),
-                          );
-                        }
-                      },
-                    );
-                    mutate({ variables: { contactList } });
-                  }
-                });
-              }
-            });
+          if (!permissions) {
+            const response =
+              await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+            if (response && response === 'granted') {
+              contactList = await getMappedContacts();
+            }
+
+            mutate({ variables: { contactList } });
+
+            return;
           }
+
+          contactList = await getMappedContacts();
+          mutate({ variables: { contactList } });
+
+          return;
+        }
+
+        InteractionManager.runAfterInteractions(() => {
+          Contacts.checkPermission(async (err, permission) => {
+            if (err || permission !== 'authorized') {
+              Contacts.requestPermission(async (contactErr, res) => {
+                if (contactErr) {
+                  if (Platform === 'ios' || Platform.OS === 'ios') {
+                    //Crashlytics.recordError(contactErr);
+                  }
+                }
+
+                if (res === 'authorized') {
+                  contactList = await getMappedContacts();
+                }
+
+                mutate({ variables: { contactList } });
+              });
+
+              return;
+            }
+
+            contactList = await getMappedContacts();
+
+            mutate({ variables: { contactList } });
+          });
         });
-      });
+      } catch (err) {
+        console.warn(err);
+      }
     },
   }),
 });
