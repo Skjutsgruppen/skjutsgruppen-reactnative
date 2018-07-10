@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Modal, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Modal, ViewPropTypes, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import * as Animatable from 'react-native-animatable';
 import { trans } from '@lang/i18n';
@@ -7,28 +7,40 @@ import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
-  modalContent: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.65)',
+    backgroundColor: '#f0f0f0',
     justifyContent: 'flex-end',
-    padding: 12,
   },
-  calendarWrapper: {
-    height: 380,
+  contentWrapper: {
+    alignItems: 'center',
     backgroundColor: Colors.background.fullWhite,
-    borderRadius: 12,
-    overflow: 'hidden',
+    paddingVertical: 12,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: -1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 25,
+      },
+    }),
+  },
+  content: {
+    width: 320,
+    maxWidth: '100%',
   },
   closeWrapper: {
-    height: 42,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 21,
-    backgroundColor: Colors.background.fullWhite,
-    marginTop: 12,
+    justifyContent: 'space-between',
   },
   close: {
-    padding: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
   },
 });
 
@@ -46,32 +58,34 @@ const CalendarModal = ({
     onRequestClose={onRequestClose}
     animationType={animationType}
   >
-    <View style={[styles.modalContent, style]}>
-      <Animatable.View
-        animation="slideInUp"
-        iterationCount={1}
-        direction="alternate"
-        duration={600}
-        easing="ease-in-out-cubic"
-        style={styles.calendarWrapper}
+    <View style={[styles.container, style]}>
+      <View
+        // animation="slideInUp"
+        // iterationCount={1}
+        // direction="alternate"
+        // duration={600}
+        // easing="ease-in-out-cubic"
+        style={styles.contentWrapper}
       >
-        {children}
-      </Animatable.View>
-      <Animatable.View
-        animation="slideInUp"
-        iterationCount={1}
-        direction="alternate"
-        duration={620}
-        easing="ease-in-out-cubic"
-        style={styles.closeWrapper}
-      >
-        <TouchableOpacity
-          style={styles.close}
-          onPress={onRequestClose}
-        >
-          <AppText color={Colors.text.blue} centered fontVariation="bold">{trans('global.cancel')}</AppText>
-        </TouchableOpacity>
-      </Animatable.View>
+        <View style={styles.content}>
+          {children}
+          <View style={styles.closeWrapper}>
+            <TouchableOpacity
+              style={styles.close}
+              onPress={onRequestClose}
+            >
+              {/* <AppText color={Colors.text.blue} centered fontVariation="bold">{trans('global.cancel')}</AppText> */}
+              <AppText color={Colors.text.blue} centered>All times</AppText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.close}
+              onPress={onRequestClose}
+            >
+              <AppText color={Colors.text.blue} centered>Done</AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </View>
   </Modal>
 );
