@@ -222,6 +222,12 @@ class SearchResult extends Component {
     const { filters } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
 
+    if (filters.length === 1 && filters.includes(FEED_TYPE_GROUP)) {
+      this.setState({
+        resultsStyle: 'list',
+      });
+    }
+
     if (searchAllGroups && !searchAllGroups.loading && searchAllGroups.rows.length > 0) {
       let groupRepeated = false;
       searchAllGroups.rows.forEach((newGroup) => {
@@ -739,6 +745,10 @@ class SearchResult extends Component {
   renderListType = () => {
     const { searchAllTrips, searchAllGroups } = this.props;
     const { filters } = this.state;
+
+    if (filters.length === 1 && filters.includes(FEED_TYPE_GROUP)) {
+      return null;
+    }
 
     if ((searchAllTrips.count > 0 || searchAllGroups.count > 0)
       && !filters.includes(FEED_TYPE_PUBLIC_TRANSPORT)

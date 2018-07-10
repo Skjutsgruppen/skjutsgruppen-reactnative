@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Image, TextInput } from 'react-native';
+import { StyleSheet, View, Image, TextInput, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
@@ -7,20 +7,38 @@ import { Heading } from '@components/utils/texts';
 import { Wrapper } from '@components/common';
 import PropTypes from 'prop-types';
 import SearchList from '@components/message/searchList';
+import TouchableHighlight from '@components/touchableHighlight';
+import CrossIcon from '@assets/icons/ic_cross_pink.png';
 
 const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
+    paddingTop: 30,
+    paddingBottom: 24,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
-  title: {
-    marginTop: 42,
+  buttonFrame: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+  },
+  backButtonWrapper: {
+    marginLeft: 'auto',
+    overflow: 'hidden',
+  },
+  backButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 24,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 18,
     overflow: 'hidden',
@@ -66,7 +84,17 @@ class MessageSearch extends PureComponent {
     return (
       <Wrapper bgColor={Colors.background.cream}>
         <LinearGradient colors={['#fff', '#ededf9']} style={styles.header}>
-          <Heading style={styles.title}>{trans('message.messages_and_group')}</Heading>
+          <View style={styles.titleWrapper}>
+            <Heading>{trans('message.messages_and_group')}</Heading>
+            <View style={[styles.buttonFrame, styles.backButtonWrapper]}>
+              <TouchableHighlight
+                onPress={() => this.props.navigation.goBack()}
+                style={[styles.buttonFrame, styles.backButton]}
+              >
+                <Image source={CrossIcon} />
+              </TouchableHighlight>
+            </View>
+          </View>
           <View style={styles.searchInputWrapper}>
             <Image
               source={require('@assets/icons/ic_search.png')}

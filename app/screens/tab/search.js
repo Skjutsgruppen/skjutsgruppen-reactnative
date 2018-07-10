@@ -17,6 +17,8 @@ import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
 import { getDate } from '@config';
 import TouchableHighlight from '@components/touchableHighlight';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import CrossIcon from '@assets/icons/ic_cross_pink.png';
 
 const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 24,
     paddingLeft: 24,
     paddingRight: 12,
@@ -96,6 +97,27 @@ const styles = StyleSheet.create({
   changeBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
+  },
+  clearBtnWrapper: {
+    height: 24,
+    width: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginLeft: 'auto',
+    marginRight: 6,
+  },
+  clearBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 24,
+    width: 24,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  clearIcon: {
+    width: 10,
+    height: 10,
+    resizeMode: 'contain',
   },
   resultsFrom: {
     flexDirection: 'row',
@@ -378,6 +400,11 @@ class Search extends Component {
             </View>
             <View style={styles.dateRow}>
               <AppText size={14} color={Colors.text.gray}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</AppText>
+              <View style={styles.clearBtnWrapper}>
+                <TouchableHighlight onPress={() => this.setModalVisible(true)} style={styles.clearBtn}>
+                  <Image source={CrossIcon} style={styles.clearIcon} />
+                </TouchableHighlight>
+              </View>
               <View style={styles.changeBtnWrapper}>
                 <TouchableHighlight onPress={() => this.setModalVisible(true)} style={styles.changeBtn}>
                   <AppText size={14} color={Colors.text.blue} fontVariation="semibold">
@@ -386,8 +413,15 @@ class Search extends Component {
                 </TouchableHighlight>
               </View>
             </View>
-            <CalendarModal
-              visible={this.state.modalVisible}
+            <DateTimePicker
+              mode="datetime"
+              is24Hour
+              isVisible={this.state.modalVisible}
+              onConfirm={() => this.setModalVisible(!this.state.modalVisible)}
+              onCancel={() => this.setModalVisible(!this.state.modalVisible)}
+            />
+            {/* <CalendarModal
+              visible={false}
               onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}
             >
               <Calendar
@@ -414,7 +448,7 @@ class Search extends Component {
                   },
                 }}
               />
-            </CalendarModal>
+            </CalendarModal> */}
             <AppText size={14} color={Colors.text.gray} style={{ margin: 20 }}>{trans('search.show_results_from')}</AppText>
             <View style={styles.resultsFrom}>
               <TouchableOpacity

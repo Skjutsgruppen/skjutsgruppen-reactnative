@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Image, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TouchableHighlight, Animated } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import { Heading } from '@components/utils/texts';
@@ -10,6 +10,7 @@ import Notification from '@components/message/notification';
 import SharedLocation from '@components/message/sharedLocation';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
+import AppText from '@components/utils/texts/appText';
 
 import MessageIcon from '@assets/icons/ic_message.png';
 import MessageIconActive from '@assets/icons/ic_message_active.png';
@@ -18,20 +19,18 @@ import IconSearch from '@assets/icons/ic_search.png';
 const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
+    paddingTop: 42,
+    paddingBottom: 24,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border.lightGray,
   },
   title: {
-    marginTop: 42,
+    marginBottom: 24,
   },
-  searchInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  searchBarWrapper: {
     height: 36,
-    marginVertical: 24,
     backgroundColor: Colors.background.fullWhite,
     borderRadius: 18,
-    overflow: 'hidden',
   },
   searchIcon: {
     width: 22,
@@ -40,42 +39,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     opacity: 0.5,
   },
-  searchInput: {
-    fontFamily: 'SFUIText-Regular',
-    fontSize: 15,
-    height: 36,
-    flex: 1,
-    borderRadius: 18,
-    paddingLeft: 0,
-    marginRight: 16,
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: '100%',
   },
   content: {
     backgroundColor: Colors.background.fullWhite,
     marginBottom: 100,
-  },
-  indicator: {
-    height: 22,
-    width: 22,
-    borderRadius: 12,
-    backgroundColor: Colors.background.blue,
-    borderWidth: 2,
-    borderColor: '#fff',
-    position: 'absolute',
-    top: -8,
-    right: -6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 1,
-  },
-  noMessage: {
-    paddingHorizontal: 20,
-    paddingVertical: 32,
-    alignItems: 'center',
-  },
-  noMessageText: {
-    marginTop: 24,
-    marginHorizontal: 20,
-    lineHeight: 24,
   },
 });
 
@@ -83,7 +54,12 @@ class Message extends Component {
   static navigationOptions = {
     header: null,
     tabBarLabel: trans('message.message'),
-    tabBarIcon: ({ focused }) => <Image source={focused ? MessageIconActive : MessageIcon} />,
+    tabBarIcon: ({ focused }) => (
+      <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 }}>
+        <Image source={focused ? MessageIconActive : MessageIcon} />
+        <View style={{ position: 'absolute', top: 8, right: 0, height: 16, width: 16, borderRadius: 8, backgroundColor: Colors.background.blue, borderWidth: 2, borderColor: '#fff' }} />
+      </View>
+    ),
     tabBarOnPress: ({ scene, jumpToIndex }) => {
       if (scene.focused) {
         const navigationInRoute = scene.route;
@@ -142,18 +118,19 @@ class Message extends Component {
         <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
           <LinearGradient colors={Gradients.headerWhite} style={styles.header}>
             <Heading style={styles.title}>{trans('message.messages_and_group')}</Heading>
-            <View style={styles.searchInputWrapper}>
-              <Image
-                source={IconSearch}
-                style={styles.searchIcon}
-              />
-              <TextInput
-                placeholder={trans('message.search_messages')}
-                onFocus={() => navigation.navigate('SearchNotification')}
-                underlineColorAndroid="transparent"
-                style={styles.searchInput}
-              />
-            </View>
+            <TouchableHighlight
+              style={styles.searchBarWrapper}
+              onPress={() => navigation.navigate('SearchNotification')}
+              underlayColor="#f5f5f5"
+            >
+              <View style={styles.searchBar}>
+                <Image
+                  source={IconSearch}
+                  style={styles.searchIcon}
+                />
+                <AppText size={15} color="#aeaeae">{trans('message.search_messages')}</AppText>
+              </View>
+            </TouchableHighlight>
           </LinearGradient>
           {this.renderMessages()}
         </ScrollView>
