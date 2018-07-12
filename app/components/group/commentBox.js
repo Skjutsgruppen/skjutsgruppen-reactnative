@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     flex: 1,
+    height: '100%',
     fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     paddingRight: 12,
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
       },
     }),
     textAlignVertical: 'center',
-    height: '100%',
   },
   send: {
     height: '100%',
@@ -178,21 +178,21 @@ class CommentBox extends PureComponent {
           onPress={() => onOffer(this.state.text)}
           style={styles.action}
         >
-          <AppText centered color={Colors.text.blue}>Offer a Ride</AppText>
+          <AppText size={13} centered color={Colors.text.blue}>{trans('global.offer_a_ride')}</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => onAsk(this.state.text)}
           style={styles.action}
         >
-          <AppText centered color={Colors.text.blue}>Ask a Ride</AppText>
+          <AppText size={13} centered color={Colors.text.blue}>{trans('global.ask_a_ride')}</AppText>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           onPress={() => this.sendComment()}
           style={styles.action}
         >
-          <AppText centered color={Colors.text.blue}>Comment</AppText>
+          <AppText size={13} centered color={Colors.text.blue}>{trans('global.comment')}</AppText>
         </TouchableOpacity>
       </View>
     );

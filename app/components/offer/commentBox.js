@@ -20,22 +20,30 @@ const styles = StyleSheet.create({
   footerCommentSection: {
     height: 58,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
     paddingLeft: 10,
   },
   footerSocialSection: {
+    height: 42,
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 12,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.border.lightGray,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    ...Platform.select({
+      android: {
+        position: 'absolute',
+        bottom: 4,
+        left: 0,
+        right: 0,
+      },
+    }),
   },
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: 58,
     paddingHorizontal: 18,
   },
   socialLabel: {
@@ -43,24 +51,20 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   commentInput: {
-    ...Platform.select({
-      ios: {
-        height: 'auto',
-      },
-      android: {
-        height: '100%',
-      },
-    }),
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: '100%',
+    fontFamily: 'SFUIText-Regular',
     fontSize: 14,
     paddingRight: 12,
+    ...Platform.select({
+      ios: {
+        paddingTop: 21,
+      },
+    }),
     textAlignVertical: 'center',
-    fontFamily: 'SFUIText-Regular',
   },
   send: {
-    height: '100%',
+    height: 58,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
@@ -187,7 +191,13 @@ class CommentBox extends PureComponent {
 
   renderInput = () => {
     const { loading } = this.props;
-    const { text } = this.state;
+    const { text, writing } = this.state;
+
+    let writtingStyle = {};
+
+    if (Platform.OS === 'android') {
+      writtingStyle = { paddingBottom: writing ? 54 : 8 };
+    }
 
     return (
       <TextInput
@@ -202,7 +212,7 @@ class CommentBox extends PureComponent {
         autoCorrect={false}
         autoCapitalize={'none'}
         returnKeyType={'done'}
-        style={styles.commentInput}
+        style={[styles.commentInput, writtingStyle]}
         editable={!loading}
       />
     );
@@ -225,7 +235,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareFacebookRadio}
             size={24}
           />
-          <AppText size={12}>{trans('detail.a_post_on_your_fb_timeline')}</AppText> */}
+          <AppText size={12} style={{ marginLeft: 12 }}>{trans('detail.a_post_on_your_fb_timeline')}</AppText> */}
           <Radio
             color="blue"
             active={this.state.shareTwitter}
@@ -247,7 +257,7 @@ class CommentBox extends PureComponent {
     //         onPress={this.shareFacebookRadio}
     //         size={24}
     //       />
-    //       <AppText size={12}>{trans('detail.a_post_about_this_ride_on_your_fb')}</AppText>
+    //       <AppText size={12} style={{ marginLeft: 12 }}>{trans('detail.a_post_about_this_ride_on_your_fb')}</AppText>
     //     </View>
     //   );
     // }
@@ -261,7 +271,7 @@ class CommentBox extends PureComponent {
             onPress={this.shareTwitterRadio}
             size={24}
           />
-          <AppText size={12}>{trans('detail.a_tweet_about_this_ride')}</AppText>
+          <AppText size={12} style={{ marginLeft: 12 }}>{trans('detail.a_tweet_about_this_ride')}</AppText>
         </View>
       );
     }
@@ -271,17 +281,23 @@ class CommentBox extends PureComponent {
 
   render() {
     const { style } = this.props;
-    const { offset } = this.state;
+    const { offset, writing } = this.state;
+
+    let commentStyle = {};
+
+    if (Platform.OS === 'android') {
+      commentStyle = { height: writing ? 92 : 58 };
+    }
 
     return (
       <View style={[styles.footer, { bottom: offset }, style]}>
-        {this.renderFooter()}
-        <View style={styles.footerCommentSection}>
+        <View style={[styles.footerCommentSection, commentStyle]}>
           {this.renderOption()}
           {this.renderCalendar()}
           {this.renderInput()}
           {this.renderSendButton()}
         </View>
+        {this.renderFooter()}
       </View>
     );
   }
