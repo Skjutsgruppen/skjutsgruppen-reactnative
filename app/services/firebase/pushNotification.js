@@ -11,14 +11,15 @@ import { Platform } from 'react-native';
 
 class PushNotification extends Component {
   async componentDidMount() {
-    const { storeAppToken, user } = this.props;
+    const { storeAppToken, user, loggedIn } = this.props;
+
     try {
       await firebase.messaging().requestPermission();
     } catch (error) {
       console.warn(error);
     }
 
-    if (user && user.id) {
+    if (user && user.id && loggedIn) {
       this.onTokenRefreshListener = firebase.messaging().onTokenRefresh((fcmToken) => {
         storeAppToken(fcmToken, getDeviceId());
       });
@@ -76,9 +77,9 @@ class PushNotification extends Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { user, loggedIn } = this.props;
 
-    if (user.id) {
+    if (user && user.id && loggedIn) {
       return (
         <ScheduledNotification />
       );
@@ -93,12 +94,14 @@ PushNotification.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
   }),
+  loggedIn: PropTypes.bool,
 };
 
 PushNotification.defaultProps = {
   user: {},
+  loggedIn: false,
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
+const mapStateToProps = state => ({ user: state.auth.user, loggedIn: state.auth.login });
 
 export default compose(withStoreAppToken, connect(mapStateToProps))(PushNotification);

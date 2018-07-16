@@ -29,6 +29,7 @@ mutation login($username: String!, $password:String!) {
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }
@@ -68,6 +69,7 @@ mutation register($email: String!, $verified:Boolean) {
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }
@@ -107,6 +109,7 @@ mutation verifyEmail($email:String!, $code:String!) {
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }
@@ -185,6 +188,7 @@ mutation updateUser($firstName:String,
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }
@@ -266,6 +270,7 @@ mutation {
         }
         newNumber
       }
+      contactSynced
     }
   }
 } 
@@ -347,6 +352,7 @@ mutation changeEmail($email: String!){
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }
@@ -389,6 +395,7 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     }
   }
 }`;
@@ -444,6 +451,7 @@ mutation renewPhoneNumber($number: String!) {
       twitterId
       agreementRead
       agreementAccepted
+      contactSynced
     } 
   }
 }
@@ -457,3 +465,44 @@ export const withRenewPhoneNumber = graphql(RENEW_PHONE_NUMBER, {
   }),
 });
 
+const VERIFY_TOKEN_MUTATION = gql`
+  mutation verifyToken($token: String) {
+    verifyToken (token: $token){
+      token
+      User {
+        id
+        email
+        newEmail
+        avatar
+        phoneNumber
+        newPhoneNumber
+        firstName
+        lastName
+        emailVerified
+        verificationCode
+        phoneVerified
+        totalOffered
+        totalAsked
+        totalRideConversations
+        totalExperiences
+        totalGroups
+        totalFriends
+        fbId      
+        createdAt
+        isSupporter
+        twitterId
+        agreementRead
+        agreementAccepted
+        contactSynced
+      } 
+    }
+  }
+`;
+
+export const withVerifyToken = graphql(VERIFY_TOKEN_MUTATION, {
+  props: ({ mutate }) => ({
+    verifyToken: (token = null) => mutate({
+      variables: { token },
+    }),
+  }),
+});

@@ -2,12 +2,14 @@
 import React, { PureComponent } from 'react';
 import { Linking, Platform } from 'react-native';
 import { connect } from 'react-redux';
+import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import WelcomeInfo from '@components/auth/welcomeInfo';
 import AppLoading from '@components/appLoading';
 import firebase from 'react-native-firebase';
+import { withVerifyToken } from '@services/apollo/auth';
 
 class Splash extends PureComponent {
   static navigationOptions = {
@@ -20,10 +22,27 @@ class Splash extends PureComponent {
   }
 
   async componentWillMount() {
-    const { setLogin, setRegister, navigation } = this.props;
-    const user = await AuthService.getUser();
+    const { setLogin, setRegister, navigation, verifyToken } = this.props;
+    let user = await AuthService.getUser();
+    let token = await AuthService.getToken();
 
-    if (!user) {
+    if (user && user.id) {
+      await verifyToken()
+        .then(async (res) => {
+          if (res.data.verifyToken) {
+            user = res.data.verifyToken.User;
+            token = res.data.verifyToken.token;
+
+            await setLogin({ user, token });
+          }
+        })
+        .catch(async () => {
+          await setLogin({ user: {}, token: null });
+          navigation.replace('Welcome');
+        });
+    }
+
+    if (!user || (user && !user.id)) {
       this.setState({ loading: false });
       return;
     }
@@ -36,9 +55,9 @@ class Splash extends PureComponent {
       phoneNumber,
       agreementRead,
       agreementAccepted,
+      contactSynced,
     } = user;
 
-    const token = await AuthService.getToken();
 
     if (!agreementRead) {
       navigation.replace('Agreement');
@@ -66,7 +85,11 @@ class Splash extends PureComponent {
       return;
     }
 
-    await setLogin({ user, token });
+    if (contactSynced === null) {
+      await setRegister({ user, token });
+      navigation.replace('Onboarding', { activeStep: 9 });
+      return;
+    }
 
     firebase.notifications().onNotificationOpened((notif) => {
       const { notification: { _data: { id, screen } } } = notif;
@@ -152,9 +175,10 @@ class Splash extends PureComponent {
     }
   }
 
-  handleOpenURL = event => {
+  handleOpenURL = (event) => {
     this.navigate(event.url);
-  }  
+  }
+
   render() {
     if (this.state.loading) {
       return (<AppLoading />);
@@ -169,16 +193,22 @@ Splash.propTypes = {
   navigation: PropTypes
     .shape({ navigate: PropTypes.func })
     .isRequired,
+  verifyToken: PropTypes.func.isRequired,
+  // setLoginUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
+
 const mapDispatchToProps = dispatch => ({
-  setLogin: ({ user, token }) => {
-    dispatch(AuthAction.login({ user, token }));
-  },
+  // setLogin: ({ user, token }) => {
+  //   dispatch(AuthAction.login({ user, token }));
+  // },
   setRegister: ({ user, token }) => {
     dispatch(AuthAction.register({ user, token }));
   },
+  setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
+    .then(() => dispatch(AuthAction.login({ user, token })))
+    .catch(error => console.warn(error)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);
+export default compose(withVerifyToken, connect(mapStateToProps, mapDispatchToProps))(Splash);

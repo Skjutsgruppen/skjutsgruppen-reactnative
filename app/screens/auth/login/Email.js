@@ -145,6 +145,18 @@ class Login extends Component {
                     ],
                   }),
                 );
+              } else if (User.contactSynced === null) {
+                navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({
+                        routeName: 'Onboarding',
+                        params: { activeStep: 9 },
+                      }),
+                    ],
+                  }),
+                );
               } else {
                 navigation.dispatch(
                   NavigationActions.reset({
@@ -320,6 +332,7 @@ Login.propTypes = {
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
+
 const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))

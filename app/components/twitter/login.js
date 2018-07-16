@@ -184,6 +184,12 @@ class TwitterLogin extends PureComponent {
       return;
     }
 
+    if (User.contactSynced === null) {
+      navigation.replace('Onboarding', { activeStep: 9 });
+
+      return;
+    }
+
     await setLogin({
       token,
       user: User,

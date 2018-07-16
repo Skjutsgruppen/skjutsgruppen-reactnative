@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+import { withNavigation } from 'react-navigation';
 import { Colors } from '@theme';
 import { Heading } from '@components/utils/texts';
 import Agreement from '@components/onBoarding/agreement';
@@ -14,8 +16,7 @@ import SendMessage from '@components/onBoarding/sendMessage';
 import NumberConfirmed from '@components/onBoarding/numberConfirmed';
 import { Wrapper, ProgressBar } from '@components/common';
 import { trans } from '@lang/i18n';
-import PropTypes from 'prop-types';
-import { withNavigation } from 'react-navigation';
+import SyncContacts from '@components/onBoarding/syncContacts';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -39,7 +40,7 @@ class Onboarding extends Component {
     super(props);
     this.state = {
       activeStep: 1,
-      totalSteps: 9,
+      totalSteps: 10,
     };
   }
 
@@ -86,6 +87,11 @@ class Onboarding extends Component {
   // onWaitingTextMessageNext = () => {
   //   this.setState({ activeStep: 10 });
   // }
+
+  onSyncContacts = () => {
+    const { navigation } = this.props;
+    navigation.replace('Tab', { askContactPermission: false });
+  }
 
   onNumberConfirmedNext = () => {
     const { navigation } = this.props;
@@ -157,9 +163,13 @@ class Onboarding extends Component {
           (activeStep === 9) &&
           <WaitingTextMessage onNext={this.onWaitingTextMessageNext} />
         } */}
-        {
+        {/* {
           (activeStep === 9) &&
           <NumberConfirmed onNext={this.onNumberConfirmedNext} />
+        } */}
+        {
+          (activeStep === 9) &&
+          <SyncContacts onNext={this.onSyncContacts} />
         }
       </Wrapper>
     );

@@ -7,7 +7,7 @@ import Heading from '@components/utils/texts/heading';
 
 const styles = StyleSheet.create({
   header: {
-    lineHeight: 46,
+    lineHeight: 40,
     marginTop: 24,
   },
 });

@@ -32,6 +32,7 @@ subscription updatedProfile($id: Int){
     twitterId
     agreementRead
     agreementAccepted
+    contactSynced
   }
 }`;
 
@@ -65,6 +66,7 @@ query profile($id: Int){
     twitterId
     agreementRead
     agreementAccepted
+    contactSynced
   }
 }`;
 
@@ -120,6 +122,7 @@ subscription updatedAccount($id: Int) {
     twitterId
     agreementRead
     agreementAccepted
+    contactSynced
   }
 }`;
 
@@ -149,6 +152,7 @@ query account {
     twitterId
     agreementRead
     agreementAccepted
+    contactSynced
   }
 }`;
 
