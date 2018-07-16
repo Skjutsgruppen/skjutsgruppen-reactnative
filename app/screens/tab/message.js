@@ -16,6 +16,8 @@ import MessageIcon from '@assets/icons/ic_message.png';
 import MessageIconActive from '@assets/icons/ic_message_active.png';
 import IconSearch from '@assets/icons/ic_search.png';
 
+import MessageTabIcon from '@components/message/messageTabIcon';
+
 const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
@@ -48,6 +50,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.fullWhite,
     marginBottom: 100,
   },
+  indicatorIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 0,
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    backgroundColor: Colors.background.blue,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
 });
 
 class Message extends Component {
@@ -55,10 +68,7 @@ class Message extends Component {
     header: null,
     tabBarLabel: trans('message.message'),
     tabBarIcon: ({ focused }) => (
-      <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 }}>
-        <Image source={focused ? MessageIconActive : MessageIcon} />
-        <View style={{ position: 'absolute', top: 8, right: 0, height: 16, width: 16, borderRadius: 8, backgroundColor: Colors.background.blue, borderWidth: 2, borderColor: '#fff' }} />
-      </View>
+      <MessageTabIcon focused={focused} />
     ),
     tabBarOnPress: ({ scene, jumpToIndex }) => {
       if (scene.focused) {

@@ -680,7 +680,7 @@ class SearchResult extends Component {
     const newDate = [];
 
     dates.forEach((date) => {
-      newDate.push(Moment(date).format('MMM D'));
+      newDate.push(getDate(date).format('MMM D, HH:mm'));
     });
 
     return newDate.join(', ');
@@ -697,6 +697,8 @@ class SearchResult extends Component {
 
     if (!dateSelected) {
       dates = [];
+    } else {
+      dates = dates.map(date => getDate(date).valueOf());
     }
 
     navigation.navigate('Search', { filters, fromObj, toObj, dates, direction });

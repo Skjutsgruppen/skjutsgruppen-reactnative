@@ -3,13 +3,14 @@ import { withSearchAllTrips, withSearchAllGroups } from '@services/apollo/search
 import PropTypes from 'prop-types';
 import SearchResult from '@components/search/SearchResult';
 import { compose } from 'react-apollo';
-import { getDate } from '@config';
+import { getDate, utcDate } from '@config';
 import { FEED_TYPE_PUBLIC_TRANSPORT } from '@config/constant';
 
 const AllSearchResult = compose(withSearchAllTrips, withSearchAllGroups)(SearchResult);
 
 const Search = ({ navigation }) => {
-  const { from, to, direction, filters, dates } = navigation.state.params;
+  const { from, to, direction, filters } = navigation.state.params;
+  let { dates } = navigation.state.params;
   let dateSelected = true;
   let limit = 0;
   let offset = 0;
@@ -18,8 +19,10 @@ const Search = ({ navigation }) => {
   if (dates.length < 1) {
     dateSelected = false;
     if (publicTransportSelected && to.name !== '' && from.name !== '') {
-      dates.push(getDate().format('YYYY-MM-DD'));
+      dates.push(getDate().format('YYYY-MM-DD HH:mm:ss'));
     }
+  } else {
+    dates = dates.map(date => utcDate(date.getTime()).format('YYYY-MM-DD HH:mm:ss'));
   }
 
   if (!dateSelected && (!publicTransportSelected || (to.name !== '' || from.name !== ''))) {
