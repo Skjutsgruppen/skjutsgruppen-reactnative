@@ -22,6 +22,7 @@ class CloseByGroupsMapView extends Component {
     this.state = {
       groups: [],
     };
+    this.currentDiameter = 5;
   }
 
   componentWillReceiveProps({ nearByGroups }) {
@@ -32,6 +33,39 @@ class CloseByGroupsMapView extends Component {
     const { navigation } = this.props;
 
     navigation.navigate('GroupDetail', { id });
+  }
+
+  getDeltaValue = (diameter = 5) => {
+    return (1 * diameter) / 111;
+  }
+
+  deltaToKm = delta => 111 * delta
+
+  fetchMoreGroups = ({ latitudeDelta, latitude, longitude }) => {
+    console.log(latitudeDelta);
+    console.log(this.props);
+    console.log(latitude, longitude);
+    const diameter = Math.round(this.deltaToKm(latitudeDelta));
+    console.log(diameter);
+
+    if (diameter > this.currentDiameter) {
+      this.currentDiameter = diameter;
+      this.props.fetchMore({
+        variables: {
+          from: this.props.from,
+          distFrom: 0,
+          distTo: 100000000,
+          outreach: null,
+          type: null,
+          diameter,
+          limit: null,
+          offset: null,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          return fetchMoreResult;
+        },
+      });
+    }
   }
 
   renderGroups = () => {
@@ -62,7 +96,7 @@ class CloseByGroupsMapView extends Component {
               this.onMarkerPress(group);
             }}
             coordinate={coordinate}
-            image={group.User.avatar}
+            image={group.photo}
           />
         );
       });
@@ -99,10 +133,11 @@ class CloseByGroupsMapView extends Component {
         style={StyleSheet.absoluteFill}
         ref={(c) => { this.mapView = c; }}
         cacheEnabled
+        onRegionChangeComplete={region => this.fetchMoreGroups(region)}
       >
         {this.renderCurrentLocation()}
         {this.renderGroups()}
-      </MapView>
+      </MapView >
     );
   }
 }

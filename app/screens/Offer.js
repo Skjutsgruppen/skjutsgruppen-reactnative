@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
-import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Description from '@components/offer/description';
@@ -611,6 +610,4 @@ Offer.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = state => ({ auth: state.auth });
-
-export default compose(withCreateTrip, submitSuggestion, connect(mapStateToProps))(Offer);
+export default compose(withCreateTrip, submitSuggestion)(Offer);

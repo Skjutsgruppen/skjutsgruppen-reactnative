@@ -4,6 +4,7 @@ import {
   View,
   Image,
   Platform,
+  Alert,
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
@@ -16,6 +17,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import AddPhotoIconPink from '@assets/icons/ic_add_pink.png';
 import AddPhotoIconBlue from '@assets/icons/ic_add_blue.png';
 import CameraIcon from '@assets/icons/ic_camera_add.png';
+import { trans } from '@lang/i18n';
 
 const imageSize = 180;
 
@@ -109,7 +111,13 @@ class Camera extends Component {
   }
 
   selectOrRemove = () => {
+    const { canAddPhoto } = this.props;
     const { imageSource } = this.state;
+
+    if (!canAddPhoto) {
+      Alert.alert(trans('add.be_supporter_to_add_photo_in_trip'));
+      return;
+    }
 
     if (imageSource !== null) {
       this.removePhoto();
@@ -201,11 +209,13 @@ Camera.propTypes = {
   onSelect: PropTypes.func.isRequired,
   defaultPhoto: PropTypes.string,
   iconColor: PropTypes.string,
+  canAddPhoto: PropTypes.bool,
 };
 
 Camera.defaultProps = {
   defaultPhoto: null,
   iconColor: null,
+  canAddPhoto: true,
 };
 
 export default Camera;
