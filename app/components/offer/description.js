@@ -47,11 +47,16 @@ class Description extends PureComponent {
 
   render() {
     const { photo } = this.state;
-    const { isOffer } = this.props;
+    const { isOffer, user } = this.props;
 
     return (
       <Container>
-        <AddPhoto onSelect={res => this.setState({ photo: res.data })} iconColor={isOffer ? 'pink' : 'blue'} defaultPhoto={photo} />
+        <AddPhoto
+          onSelect={res => this.setState({ photo: res.data })}
+          iconColor={isOffer ? 'pink' : 'blue'}
+          defaultPhoto={photo}
+          canAddPhoto={user.isSupporter}
+        />
         <CommentBox
           label={trans('add.comment')}
           onChangeText={text => this.setState({ text })}
@@ -78,6 +83,10 @@ Description.propTypes = {
   }).isRequired,
   onNext: PropTypes.func.isRequired,
   isOffer: PropTypes.bool,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+    isSupporter: PropTypes.bool,
+  }).isRequired,
 };
 
 Description.defaultProps = {

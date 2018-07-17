@@ -30,6 +30,7 @@ mutation login($username: String!, $password:String!) {
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }
@@ -70,6 +71,7 @@ mutation register($email: String!, $verified:Boolean) {
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }
@@ -110,6 +112,7 @@ mutation verifyEmail($email:String!, $code:String!) {
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }
@@ -146,7 +149,8 @@ mutation updateUser($firstName:String,
   $twitterToken: String,
   $twitterSecret: String,
   $agreementRead: Boolean,
-  $agreementAccepted: Boolean
+  $agreementAccepted: Boolean,
+  $notification: Boolean
 ) {
   updateUser(input:{
     firstName:$firstName,
@@ -162,6 +166,7 @@ mutation updateUser($firstName:String,
     twitterSecret: $twitterSecret,
     agreementRead: $agreementRead,
     agreementAccepted: $agreementAccepted
+    notification: $notification
   }) {
     token,
     User {
@@ -189,6 +194,7 @@ mutation updateUser($firstName:String,
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }
@@ -210,6 +216,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
       twitterSecret,
       agreementRead,
       agreementAccepted,
+      notification,
     }) =>
       mutate({
         variables: {
@@ -226,6 +233,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
           twitterSecret,
           agreementRead,
           agreementAccepted,
+          notification,
         },
       }),
   }),
@@ -271,6 +279,7 @@ mutation {
         newNumber
       }
       contactSynced
+      notification
     }
   }
 } 
@@ -353,6 +362,7 @@ mutation changeEmail($email: String!){
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }
@@ -396,6 +406,7 @@ mutation changePhoneNumber($phoneCountryCode: String!, $phoneNumber: String!) {
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     }
   }
 }`;
@@ -452,6 +463,7 @@ mutation renewPhoneNumber($number: String!) {
       agreementRead
       agreementAccepted
       contactSynced
+      notification
     } 
   }
 }
@@ -494,6 +506,7 @@ const VERIFY_TOKEN_MUTATION = gql`
         agreementRead
         agreementAccepted
         contactSynced
+        notification
       } 
     }
   }

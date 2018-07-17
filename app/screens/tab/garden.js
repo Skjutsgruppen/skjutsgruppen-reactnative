@@ -136,9 +136,9 @@ class Garden extends Component {
   }
 
   tabEvent = (e, type) => {
-    if (this.scrollView && type === 'didBlur') {
-      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
-    }
+    // if (this.scrollView && type === 'didBlur') {
+    //   this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    // }
   }
 
   scrollToTop = () => {

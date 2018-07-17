@@ -1761,6 +1761,7 @@ query nearByGroups($from: [Float]!,
   $outreach: GroupOutreachEnum,
   $limit: Int,
   $offset: Int,
+  $diameter: Int,
 ){
   nearByGroups(input: {
     from: $from,
@@ -1770,6 +1771,7 @@ query nearByGroups($from: [Float]!,
     outreach: $outreach,
     limit: $limit,
     offset: $offset,
+    diameter: $diameter,
   }) {
     rows {
       id
@@ -1821,9 +1823,9 @@ query nearByGroups($from: [Float]!,
 `;
 
 export const withNearByGroups = graphql(NEAR_BY_GROUPS_QUERY, {
-  options: ({ from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset }) => ({
+  options: ({ from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset, diameter = null }) => ({
     notifyOnNetworkStatusChange: true,
-    variables: { from, distFrom, distTo, type, outreach, limit, offset },
+    variables: { from, distFrom, distTo, type, outreach, limit, offset, diameter },
     fetchPolicy: 'cache-and-network',
   }),
   props: (
