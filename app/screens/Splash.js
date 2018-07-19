@@ -22,7 +22,7 @@ class Splash extends PureComponent {
   }
 
   async componentWillMount() {
-    const { setLogin, setRegister, navigation, verifyToken } = this.props;
+    const { setLogin, setRegister, navigation, verifyToken, logout } = this.props;
     let user = await AuthService.getUser();
     let token = await AuthService.getToken();
 
@@ -37,7 +37,7 @@ class Splash extends PureComponent {
           }
         })
         .catch(async () => {
-          await setLogin({ user: {}, token: null, login: false });
+          await logout();
           navigation.replace('Welcome');
         });
     }
@@ -188,6 +188,7 @@ Splash.propTypes = {
     .shape({ navigate: PropTypes.func })
     .isRequired,
   verifyToken: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ auth: state.auth });
@@ -199,6 +200,7 @@ const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
     .catch(error => console.warn(error)),
+  logout: () => dispatch(AuthAction.logout()),
 });
 
 export default compose(withVerifyToken, connect(mapStateToProps, mapDispatchToProps))(Splash);

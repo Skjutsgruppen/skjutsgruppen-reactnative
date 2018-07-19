@@ -5,7 +5,7 @@ import { OPEN_GROUP, CLOSE_GROUP, STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABL
 import PropTypes from 'prop-types';
 import { withJoinGroup, withGroupMembers } from '@services/apollo/group';
 import ToolBar from '@components/utils/toolbar';
-import { Wrapper, Container, Loading, ShareButton } from '@components/common';
+import { Wrapper, Container, Loading, ShareButton, AppNotification } from '@components/common';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
 import { withShare } from '@services/apollo/share';
@@ -93,16 +93,24 @@ class JoinGroup extends Component {
       requestSent: false,
       showShareModal: false,
       error: '',
+      notification: false,
+      notifier: null,
+      notificationMessage: '',
     });
   }
 
   componentWillMount() {
     const { navigation } = this.props;
     this.updateState(this.props);
+    const { notifier, notificationMessage } = navigation.state.params;
 
     navigation.setParams({
       right: () => <ShareButton onPress={() => this.setState({ showShareModal: true })} animated />,
     });
+
+    if (notifier) {
+      this.setState({ notifier, notificationMessage, notification: true });
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -227,61 +235,70 @@ class JoinGroup extends Component {
 
   render() {
     const { group } = this.props;
+    const { notification, notificationMessage, notifier } = this.state;
 
     if (group.isDeleted) {
       return null;
     }
 
     return (
-      <Wrapper bgColor={Colors.background.fullWhite}>
-        <ToolBar transparent />
-        <Container>
-          {
-            group.photo &&
-            <GroupImage group={group} />
-          }
-          {
-            group.mapPhoto &&
-            <GroupMap
-              group={group}
-              onMapPress={this.onMapPress}
-              showOverlay={group.photo === null}
+      <View style={{ flex: 1 }}>
+        {notification && <AppNotification
+          image={notifier.avatar}
+          name={notifier.firstName}
+          message={notificationMessage}
+          handleClose={this.onCloseNotification}
+        />}
+        <Wrapper bgColor={Colors.background.fullWhite}>
+          <ToolBar transparent />
+          <Container>
+            {
+              group.photo &&
+              <GroupImage group={group} />
+            }
+            {
+              group.mapPhoto &&
+              <GroupMap
+                group={group}
+                onMapPress={this.onMapPress}
+                showOverlay={group.photo === null}
+              />
+            }
+            <AppText style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</AppText>
+            <ParticipantListBubble
+              id={group.id}
+              offset={0}
+              onPress={this.onPress}
+              enabler={false}
+              displayNumber={false}
             />
-          }
-          <AppText style={styles.sectionTitle}>{trans('detail.PARTICIPANTS')}</AppText>
-          <ParticipantListBubble
-            id={group.id}
-            offset={0}
-            onPress={this.onPress}
-            enabler={false}
-            displayNumber={false}
-          />
-          <AppText style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</AppText>
-          <AppText style={styles.text}>
-            {group.type === OPEN_GROUP && trans('detail.open_group')}
-            {group.type === CLOSE_GROUP && trans('detail.closed_group')}
-          </AppText>
-          <AppText style={styles.text}>
-            {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
-            {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name || group.direction} - ${group.TripEnd.name || group.direction}`}
-          </AppText>
-          {
-            group.Stops && group.Stops.length > 0 &&
-            <View style={styles.stopText}>
-              <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
-              <AppText>
-                {trans('detail.stops_in')}
-                <AppText fontVariation="bold"> {group.Stops.map(place => place.name).join(', ')}</AppText>
-              </AppText>
-            </View>
-          }
-          <AppText style={[styles.text, styles.description]}>
-            {group.description}
-          </AppText>
-        </Container>
-        {this.renderButton()}
-        {this.renderShareModal()}
-      </Wrapper>
+            <AppText style={[styles.sectionTitle, styles.aboutTitle]}>{trans('detail.ABOUT')}</AppText>
+            <AppText style={styles.text}>
+              {group.type === OPEN_GROUP && trans('detail.open_group')}
+              {group.type === CLOSE_GROUP && trans('detail.closed_group')}
+            </AppText>
+            <AppText style={styles.text}>
+              {group.outreach === STRETCH_TYPE_AREA && [group.country, group.county, group.municipality, group.locality].filter(s => s).join(', ')}
+              {group.outreach === STRETCH_TYPE_ROUTE && `${group.TripStart.name || group.direction} - ${group.TripEnd.name || group.direction}`}
+            </AppText>
+            {
+              group.Stops && group.Stops.length > 0 &&
+              <View style={styles.stopText}>
+                <Image source={require('@assets/icons/icon_stops.png')} style={styles.stopsIcon} />
+                <AppText>
+                  {trans('detail.stops_in')}
+                  <AppText fontVariation="bold"> {group.Stops.map(place => place.name).join(', ')}</AppText>
+                </AppText>
+              </View>
+            }
+            <AppText style={[styles.text, styles.description]}>
+              {group.description}
+            </AppText>
+          </Container>
+          {this.renderButton()}
+          {this.renderShareModal()}
+        </Wrapper>
+      </View>
     );
   }
 }

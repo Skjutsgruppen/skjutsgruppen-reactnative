@@ -829,16 +829,16 @@ class TripDetail extends Component {
                 {' '}
                 {trans('detail.i_made_this_ride')}
                 {' '}
-                <AppText
-                  color={Colors.text.blue}
-                  fontVariation="bold"
-                  onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
-                >
-                  {
-                    trip.linkedTrip.User && trip.linkedTrip.User.firstName &&
-                    `${trip.linkedTrip.User.firstName}'s `
-                  }
-                </AppText>
+                {trip.linkedTrip.User && trip.linkedTrip.User.firstName &&
+                  <AppText
+                    color={Colors.text.blue}
+                    fontVariation="bold"
+                    onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
+                  >
+                    {
+                      `${trip.linkedTrip.User.firstName}'s `
+                    }
+                  </AppText>}
                 <AppText
                   color={Colors.text.blue}
                   onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
@@ -1027,6 +1027,7 @@ class TripDetail extends Component {
           loading={loading}
           handleShowOptions={() => this.showActionModal(true)}
           handleSend={this.onSubmit}
+          trip={trip}
         />
       );
     }
