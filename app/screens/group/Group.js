@@ -20,6 +20,7 @@ import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import SendSMS from 'react-native-sms';
+import FBShare from '@components/facebook/share';
 
 const styles = StyleSheet.create({
   progress: {
@@ -235,6 +236,10 @@ class Group extends Component {
               recipients: contacts,
               successTypes: ['sent', 'queued'],
             }, () => { });
+          }
+
+          if (share.social && share.social.length > 0 && share.social.includes('Facebook')) {
+            FBShare.link(FEEDABLE_GROUP, res.data.group);
           }
 
           this.setState({ loading: false, group: res.data.group, error: '' });

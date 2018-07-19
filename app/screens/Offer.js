@@ -25,6 +25,7 @@ import { getDate, APP_URL } from '@config';
 import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import SendSMS from 'react-native-sms';
+import FBShare from '@components/facebook/share';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -442,6 +443,10 @@ class Offer extends Component {
             recipients: contacts,
             successTypes: ['sent', 'queued'],
           }, () => { });
+        }
+
+        if (share.social && share.social.includes('Facebook')) {
+          FBShare.link(FEED_TYPE_OFFER, res.data.createTrip);
         }
 
         this.setState({ loading: false, trip: res.data.createTrip });

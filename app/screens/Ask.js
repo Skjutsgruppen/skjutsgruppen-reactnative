@@ -24,6 +24,7 @@ import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import SendSMS from 'react-native-sms';
 import { APP_URL } from '@config';
+import FBShare from '@components/facebook/share';
 
 const styles = StyleSheet.create({
   progress: {
@@ -331,6 +332,10 @@ class Ask extends Component {
             recipients: contacts,
             successTypes: ['sent', 'queued'],
           }, () => { });
+        }
+
+        if (share.social && share.social.includes('Facebook')) {
+          FBShare.link(FEED_TYPE_WANTED, res.data.createTrip);
         }
 
         this.setState({ loading: false, trip: res.data.createTrip });

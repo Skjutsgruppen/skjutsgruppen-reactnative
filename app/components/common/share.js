@@ -14,7 +14,7 @@ import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
 import { connect } from 'react-redux';
-import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE } from '@config/constant';
+import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE, GROUP_SHARED } from '@config/constant';
 import SendSMS from 'react-native-sms';
 import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
@@ -22,6 +22,7 @@ import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
 import { Heading, AppText } from '@components/utils/texts';
 import { APP_URL } from '@config';
+import FBShare from '@components/facebook/share';
 
 const styles = StyleSheet.create({
   list: {
@@ -299,6 +300,7 @@ class Share extends Component {
       location,
       shareLocation,
       startTrackingLocation,
+      user,
     } = this.props;
     const {
       social,
@@ -318,6 +320,9 @@ class Share extends Component {
           shareLocation(obj).then(({ data }) => {
             if (data.shareLocation && data.shareLocation.Location) {
               Clipboard.setString(data.shareLocation.Location.url);
+              if (social.length > 0 && social.includes('Facebook')) {
+                FBShare.link(type, data.shareLocation.Location);
+              }
             }
           });
         } else {
@@ -326,6 +331,14 @@ class Share extends Component {
           return;
         }
       } else if (social.length > 0 || friends.length > 0 || groups.length > 0) {
+        if (social.includes('Facebook')) {
+          let shareType = type;
+          if (type === FEEDABLE_GROUP && user.id !== detail.User.id) {
+            shareType = GROUP_SHARED;
+          }
+
+          FBShare.link(shareType, detail);
+        }
         await share({ id, type, share: shareInput });
       }
 
@@ -558,14 +571,14 @@ class Share extends Component {
           onPress={() => this.setOption('clipboard', 'copy_to_clip')}
           color="blue"
         />
-        {/* {this.hasFacebook() &&
+        {this.hasFacebook() &&
           <ShareItem
             imageSource={require('@assets/icons/ic_facebook.png')}
             selected={this.hasOption('social', 'Facebook')}
             label={trans('global.your_fb_timeline')}
             onPress={() => this.setOption('social', 'Facebook')}
             color="blue"
-          />} */}
+          />}
         {this.hasTwitter() &&
           <ShareItem
             imageSource={require('@assets/icons/ic_twitter.png')}
@@ -737,6 +750,7 @@ Share.propTypes = {
   user: PropTypes.shape({
     fbId: PropTypes.string,
     twitterId: PropTypes.string,
+    id: PropTypes.number,
   }).isRequired,
   defaultValue: PropTypes.shape({
     groups: PropTypes.array,
@@ -754,7 +768,7 @@ Share.propTypes = {
 
 Share.defaultProps = {
   searchInputFocused: false,
-  onInputStateChange: () => {},
+  onInputStateChange: () => { },
   onClose: () => { },
   modal: false,
   type: '',

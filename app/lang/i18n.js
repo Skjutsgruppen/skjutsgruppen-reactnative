@@ -17,6 +17,7 @@ import {
   share as shareEn,
   suggestion as suggestionEn,
   onboarding as onboardingEn,
+  facebook as facebookEn,
 } from '@lang/locales/en';
 import {
   feed as feedSe,
@@ -33,6 +34,7 @@ import {
   share as shareSe,
   suggestion as suggestionSe,
   onboarding as onboardingSe,
+  facebook as facebookSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -53,6 +55,7 @@ I18n.translations = {
     share: shareEn,
     suggestion: suggestionEn,
     onboarding: onboardingEn,
+    facebook: facebookEn,
   },
   se: {
     feed: feedSe,
@@ -69,6 +72,7 @@ I18n.translations = {
     share: shareSe,
     suggestion: suggestionSe,
     onboarding: onboardingSe,
+    feacebook: facebookSe,
   },
 };
 
