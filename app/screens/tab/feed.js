@@ -45,6 +45,8 @@ import firebase from 'react-native-firebase';
 import { resetLocalStorage } from '@services/apollo/dataSync';
 import { NavigationActions } from 'react-navigation';
 
+import NewsCard from '@components/feed/card/news';
+
 const FeedExperience = withGetExperiences(List);
 
 const styles = StyleSheet.create({
@@ -593,6 +595,7 @@ class Feed extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <Circle animatable />
+        {/* <NewsCard isStatic title="Wednesday we celebrated our 10th anniversarry" /> */}
         {this.renderFeed()}
         {this.renderShareModal()}
         {/* <Filter

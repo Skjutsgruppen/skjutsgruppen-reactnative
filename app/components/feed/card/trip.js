@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { TripTypePill, TripImage, Footer } from '@components/feed/card';
@@ -22,11 +22,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 19,
     marginVertical: 10,
     borderRadius: 12,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
     zIndex: 10,
   },
   groupName: {
@@ -113,7 +119,7 @@ class Trip extends Component {
   };
 
   render() {
-    const { trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring } = this.props;
+    const { trip, onPress, onSharePress, shouldHandleRecurring } = this.props;
     if (trip.isDeleted) {
       return null;
     }
@@ -135,7 +141,7 @@ class Trip extends Component {
 
     return (
       <View>
-        <View style={[styles.wrapper, wrapperStyle]}>
+        <View style={styles.wrapper}>
           <TouchableHighlight onPress={() => onPress(FEEDABLE_TRIP, trip)} >
             <View>
               <TripImage
@@ -233,12 +239,10 @@ Trip.propTypes = {
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,
-  wrapperStyle: ViewPropTypes.style,
   shouldHandleRecurring: PropTypes.bool,
 };
 
 Trip.defaultProps = {
-  wrapperStyle: {},
   onSharePress: null,
   shouldHandleRecurring: false,
 };
