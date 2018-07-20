@@ -3,8 +3,8 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
-import ShareIcon from '@assets/icons/ic_share.png';
-import CommentIcon from '@assets/icons/ic_comment.png';
+import ShareIcon from '@assets/icons/ic_card_share_white.png';
+import CommentIcon from '@assets/icons/ic_comment_white.png';
 import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
@@ -47,7 +47,7 @@ const Footer = ({ onSharePress, onCommentPress, totalFeeds, hasReadMore }) => (
         <View style={styles.commentIcon}>
           <AppText
             size={14}
-            color={Colors.text.gray}
+            color={Colors.text.white}
             style={styles.commentCout}
           >{totalFeeds}</AppText>
           <TouchableOpacity onPress={onCommentPress}>
