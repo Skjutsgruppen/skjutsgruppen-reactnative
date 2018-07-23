@@ -72,7 +72,7 @@ I18n.translations = {
     share: shareSe,
     suggestion: suggestionSe,
     onboarding: onboardingSe,
-    feacebook: facebookSe,
+    facebook: facebookSe,
   },
 };
 

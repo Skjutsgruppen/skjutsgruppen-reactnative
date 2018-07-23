@@ -24,7 +24,7 @@ import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import SendSMS from 'react-native-sms';
 import { APP_URL } from '@config';
-import FBShare from '@components/facebook/share';
+import FBShare from '@services/facebook/share';
 
 const styles = StyleSheet.create({
   progress: {

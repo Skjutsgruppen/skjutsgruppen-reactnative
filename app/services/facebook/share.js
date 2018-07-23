@@ -12,81 +12,63 @@ import {
   GROUP_SHARED,
   FEEDABLE_LOCATION,
 } from '@config/constant';
-import { getDate } from '@config';
+import { getDate, APP_URL } from '@config';
 import { trans } from '@lang/i18n';
 
 class Share {
-  commentedOnTrip = ({ user, tripStart, tripEnd, date, id }) => {
-    return {
-      quote: trans('facebook.commented_on_trip', { user, tripStart, tripEnd, date }),
-      contentUrl: `https://web.skjutsgruppen.nu/t/${id}`,
-      commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
-    };
-  }
+  commentedOnTrip = ({ user, tripStart, tripEnd, date, id }) => ({
+    quote: trans('facebook.commented_on_trip', { user, tripStart, tripEnd, date }),
+    contentUrl: `${APP_URL}/t/${id}`,
+    commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
+  });
 
-  askedTrip = ({ tripStart, tripEnd, date, id }) => {
-    return {
-      quote: trans('facebook.asked_trip', { tripStart, tripEnd, date }),
-      contentUrl: `https://web.skjutsgruppen.nu/t/${id}`,
-      commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
-    };
-  }
+  askedTrip = ({ tripStart, tripEnd, date, id }) => ({
+    quote: trans('facebook.asked_trip', { tripStart, tripEnd, date }),
+    contentUrl: `${APP_URL}/t/${id}`,
+    commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
+  });
 
-  offeredTrip = ({ tripStart, tripEnd, date, id }) => {
-    return {
-      quote: trans('facebook.offered_trip', { tripStart, tripEnd, date }),
-      contentUrl: `https://web.skjutsgruppen.nu/t/${id}`,
-      commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
-    };
-  }
+  offeredTrip = ({ tripStart, tripEnd, date, id }) => ({
+    quote: trans('facebook.offered_trip', { tripStart, tripEnd, date }),
+    contentUrl: `${APP_URL}/t/${id}`,
+    commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
+  });
 
-  createdGroup = ({ name, id }) => {
-    return {
-      quote: trans('facebook.created_group', { name }),
-      contentUrl: `https://web.skjutsgruppen.nu/g/${id}`,
-      // commonParameters: { hashtag: '#RidesharingMovement' },
-    };
-  }
+  createdGroup = ({ name, id }) => ({
+    quote: trans('facebook.created_group', { name }),
+    contentUrl: `${APP_URL}/g/${id}`,
+    // commonParameters: { hashtag: '#RidesharingMovement' },
+  });
 
-  publishedExperience = ({ id }) => {
-    return {
-      quote: trans('facebook.published_experience'),
-      contentUrl: `https://web.skjutsgruppen.nu/e/${id}`,
-      commonParameters: { hashtag: `${trans('facebook.ridesharing_movement')},${trans('facebook.share_a_like')}` },
-    };
-  }
+  publishedExperience = ({ id }) => ({
+    quote: trans('facebook.published_experience'),
+    contentUrl: `${APP_URL}/e/${id}`,
+    commonParameters: { hashtag: `${trans('facebook.ridesharing_movement')},${trans('facebook.share_a_like')}` },
+  });
 
-  shareOfferedTrip = ({ user, tripStart, tripEnd, date, id }) => {
-    return {
-      quote: trans('facebook.share_offered_trip', { user, tripStart, tripEnd, date }),
-      contentUrl: `https://web.skjutsgruppen.nu/t/${id}`,
-      commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
-    };
-  }
+  shareOfferedTrip = ({ user, tripStart, tripEnd, date, id }) => ({
+    quote: trans('facebook.share_offered_trip', { user, tripStart, tripEnd, date }),
+    contentUrl: `${APP_URL}/t/${id}`,
+    commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
+  });
 
-  shareAskedTrip = ({ user, tripStart, tripEnd, date, id }) => {
-    return {
-      quote: trans('facebook.share_asked_Trip', { user, tripStart, tripEnd, date }),
-      contentUrl: `https://web.skjutsgruppen.nu/t/${id}`,
-      commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
-    };
-  }
+  shareAskedTrip = ({ user, tripStart, tripEnd, date, id }) => ({
+    quote: trans('facebook.share_asked_Trip', { user, tripStart, tripEnd, date }),
+    contentUrl: `${APP_URL}/t/${id}`,
+    commonParameters: { hashtag: trans('facebook.ridesharing_movement') },
+  });
 
-  shareGroup = ({ name, id }) => {
-    return {
-      quote: trans('facebook.share_group', { name }),
-      contentUrl: `https://web.skjutsgruppen.nu/g/${id}`,
-      // commonParameters: { hashtag: '#RidesharingMovement' },
-    };
-  }
+  shareGroup = ({ name, id }) => ({
+    quote: trans('facebook.share_group', { name }),
+    contentUrl: `${APP_URL}/g/${id}`,
+    // commonParameters: { hashtag: '#RidesharingMovement' },
+  })
 
-  shareLocation = ({ id }) => {
-    return {
-      quote: trans('facebook.share_location'),
-      contentUrl: `https://web.skjutsgruppen.nu/l/${id}`,
-      commonParameters: { hashtag: `${trans('facebook.ridesharing_movement')},${trans('facebook.share_a_like')}` },
-    };
-  }
+  shareLocation = ({ id }) => ({
+    quote: trans('facebook.share_location'),
+    contentUrl: `${APP_URL}/l/${id}`,
+    commonParameters: { hashtag: `${trans('facebook.ridesharing_movement')},${trans('facebook.share_a_like')}` },
+  })
 
   async link(type, details) {
     let shareLinkContent = {};
@@ -176,7 +158,7 @@ class Share {
     }
 
     shareLinkContent = { ...shareLinkContent, ...{ contentType: 'link' } };
-    console.log(shareLinkContent);
+
     try {
       const canShow = await ShareDialog.canShow(shareLinkContent);
       if (canShow) {
