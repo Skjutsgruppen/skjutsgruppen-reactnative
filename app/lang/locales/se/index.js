@@ -12,6 +12,7 @@ import experience from '@lang/locales/se/experience.json';
 import share from '@lang/locales/se/share.json';
 import suggestion from '@lang/locales/se/suggestion.json';
 import onboarding from '@lang/locales/se/onboarding.json';
+import facebook from '@lang/locales/se/facebook.json';
 
 export {
   feed,
@@ -28,4 +29,5 @@ export {
   share,
   suggestion,
   onboarding,
+  facebook,
 };

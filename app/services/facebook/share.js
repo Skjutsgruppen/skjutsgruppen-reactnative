@@ -176,7 +176,7 @@ class Share {
     }
 
     shareLinkContent = { ...shareLinkContent, ...{ contentType: 'link' } };
-    console.log(shareLinkContent);
+
     try {
       const canShow = await ShareDialog.canShow(shareLinkContent);
       if (canShow) {

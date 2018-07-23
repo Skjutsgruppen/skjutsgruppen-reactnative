@@ -22,7 +22,7 @@ import LoadMore from '@components/message/loadMore';
 import TouchableHighlight from '@components/touchableHighlight';
 import { Heading, AppText } from '@components/utils/texts';
 import { APP_URL } from '@config';
-import FBShare from '@components/facebook/share';
+import FBShare from '@services/facebook/share';
 
 const styles = StyleSheet.create({
   list: {

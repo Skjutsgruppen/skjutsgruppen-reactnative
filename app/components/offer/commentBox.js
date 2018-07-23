@@ -7,7 +7,7 @@ import { Colors } from '@theme';
 import { Loading } from '@components/common';
 import Radio from '@components/add/radio';
 import { AppText } from '@components/utils/texts';
-import Share from '@components/facebook/share';
+import Share from '@services/facebook/share';
 import { GROUP_FEED_TYPE_COMMENT } from '@config/constant';
 
 const styles = StyleSheet.create({
