@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, Alert, Clipboard, Platform } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Alert, Clipboard, Platform, PermissionsAndroid } from 'react-native';
 import PropTypes from 'prop-types';
-
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withBestFriends, withUnlimitedFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
@@ -326,7 +325,7 @@ class Share extends Component {
             }
           });
         } else {
-          Alert.alert('You must select at least one participants.');
+          Alert.alert(trans('share.select_at_least_one_participant'));
           this.setState({ loading: false });
           return;
         }
@@ -350,7 +349,21 @@ class Share extends Component {
         }
 
         if (Platform.OS === 'android') {
-          this.sendSMS(smsBody, contacts);
+          const permission = await PermissionsAndroid
+            .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+          if (!permission) {
+            const status = await PermissionsAndroid
+              .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+            if (status === 'granted') {
+              this.sendSMS(smsBody, contacts);
+            } else {
+              Alert.alert(trans('share.allow_sms_permission'));
+            }
+          } else {
+            this.sendSMS(smsBody, contacts);
+          }
         } else {
           setTimeout(() => this.sendSMS(smsBody, contacts), 1000);
         }

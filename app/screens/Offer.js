@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Clipboard, Keyboard, BackHandler, Alert } from 'react-native';
+import { StyleSheet, View, Clipboard, Keyboard, BackHandler, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Description from '@components/offer/description';
@@ -426,7 +426,7 @@ class Offer extends Component {
     };
 
     try {
-      this.props.createTrip(tripData).then((res) => {
+      this.props.createTrip(tripData).then(async (res) => {
         if (share.clipboard.indexOf('copy_to_clip') > -1) {
           Clipboard.setString(res.data.createTrip.url);
         }
@@ -438,11 +438,25 @@ class Offer extends Component {
             { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` },
           );
 
-          SendSMS.send({
-            body: smsBody,
-            recipients: contacts,
-            successTypes: ['sent', 'queued'],
-          }, () => { });
+          if (Platform.OS === 'android') {
+            const permission = await PermissionsAndroid
+              .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+            if (!permission) {
+              const status = await PermissionsAndroid
+                .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+              if (status === 'granted') {
+                this.sendSMS(smsBody, contacts);
+              } else {
+                Alert.alert(trans('share.allow_sms_permission'));
+              }
+            } else {
+              this.sendSMS(smsBody, contacts);
+            }
+          } else {
+            this.sendSMS(smsBody, contacts);
+          }
         }
 
         if (share.social && share.social.includes('Facebook')) {
@@ -455,6 +469,14 @@ class Offer extends Component {
     } catch (error) {
       console.warn(error);
     }
+  }
+
+  sendSMS = (smsBody, contacts) => {
+    SendSMS.send({
+      body: smsBody,
+      recipients: contacts,
+      successTypes: ['sent', 'queued'],
+    }, () => { });
   }
 
   createSuggestion() {

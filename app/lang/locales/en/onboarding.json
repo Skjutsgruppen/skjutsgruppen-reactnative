@@ -93,5 +93,6 @@
   "if_you_and_another_participant_has_each_others_phone_numbers": "If you and another participant has each others phone numbers in your phone books, you are connected as friends (you can adjust this at any time).",
   "press_sync_and_then_allow": "Press “Sync” and then “Allow”.",
   "sync": "Sync",
-  "contact_permission": "We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections)." 
+  "contact_permission": "We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections).",
+  "sms_permission": "Please allow SMS permission to send sms and verify your phone number."
 }

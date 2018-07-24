@@ -22,7 +22,8 @@ class CloseByGroupsMapView extends Component {
     this.state = {
       groups: [],
     };
-    this.currentDiameter = 5;
+    this.currentDiameter = 0;
+    this.maxDiameter = 100;
   }
 
   componentWillReceiveProps({ nearByGroups }) {
@@ -42,17 +43,14 @@ class CloseByGroupsMapView extends Component {
   deltaToKm = delta => 111 * delta
 
   fetchMoreGroups = ({ latitudeDelta, latitude, longitude }) => {
-    console.log(latitudeDelta);
-    console.log(this.props);
-    console.log(latitude, longitude);
+    const { from } = this.props;
     const diameter = Math.round(this.deltaToKm(latitudeDelta));
     console.log(diameter);
-
-    if (diameter > this.currentDiameter) {
+    if (diameter > this.currentDiameter && diameter < this.maxDiameter) {
       this.currentDiameter = diameter;
       this.props.fetchMore({
         variables: {
-          from: this.props.from,
+          from,
           distFrom: 0,
           distTo: 100000000,
           outreach: null,
@@ -62,7 +60,31 @@ class CloseByGroupsMapView extends Component {
           offset: null,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          return fetchMoreResult;
+          const { nearByGroups: { count } } = fetchMoreResult;
+          if (count > 0) {
+            return fetchMoreResult;
+          }
+          return previousResult;
+        },
+      });
+    } else if (from[0] !== longitude && from[1] !== latitude && diameter < this.maxDiameter) {
+      this.props.fetchMore({
+        variables: {
+          from: [longitude, latitude],
+          distFrom: 0,
+          distTo: 100000000,
+          outreach: null,
+          type: null,
+          diameter,
+          limit: null,
+          offset: null,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const { nearByGroups: { count } } = fetchMoreResult;
+          if (count > 0) {
+            return fetchMoreResult;
+          }
+          return previousResult;
         },
       });
     }
@@ -153,6 +175,8 @@ CloseByGroupsMapView.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  fetchMore: PropTypes.func.isRequired,
+  from: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 CloseByGroupsMapView.defaultProps = {

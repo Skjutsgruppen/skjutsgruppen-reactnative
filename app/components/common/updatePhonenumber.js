@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Clipboard } from 'react-native';
+import { StyleSheet, ScrollView, View, Clipboard, PermissionsAndroid, Platform } from 'react-native';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import { RoundedButton, Loading, ConfirmModal } from '@components/common';
@@ -78,6 +78,7 @@ class UpdatePhonenumber extends Component {
         confirmBack: false,
         messageSent: false,
         newNumber: null,
+        permission: true,
       }
     );
     this.subscriber = null;
@@ -132,21 +133,29 @@ class UpdatePhonenumber extends Component {
     onNext();
   }
 
-  onSubmitSendText = () => {
-    const { code } = this.state;
-    Clipboard.setString(code);
-
+  onSubmitSendText = async () => {
     this.setState({ loading: true, messageSent: true });
 
     setTimeout(() => {
       this.setState({ loading: false, timeout: true });
     }, 60000 * 30);
 
-    SendSMS.send({
-      body: code,
-      recipients: [SMS_NUMBER],
-      successTypes: ['sent', 'queued'],
-    }, () => { });
+    if (Platform.OS === 'android') {
+      const permission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+      if (!permission) {
+        const status = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+        if (status === 'granted') {
+          this.setState({ permission: true });
+          this.sendSMS();
+        } else {
+          this.setState({ permission: false });
+        }
+      } else {
+        this.sendSMS();
+      }
+    } else {
+      this.sendSMS();
+    }
   }
 
   setPolling() {
@@ -183,6 +192,17 @@ class UpdatePhonenumber extends Component {
 
     return (timeout) ? trans('onboarding.resend_text_message') : trans('onboarding.send_text_message');
   }
+
+  sendSMS = () => {
+    const { code } = this.state;
+    Clipboard.setString(code);
+
+    SendSMS.send({
+      body: code,
+      recipients: [SMS_NUMBER],
+      successTypes: ['sent', 'queued'],
+    }, () => { });
+  };
 
   updateUser = () => {
     const { renewPhoneNumber, setLogin } = this.props;
@@ -261,7 +281,7 @@ class UpdatePhonenumber extends Component {
   }
 
   renderSendMessageScreen = () => {
-    const { code, loading } = this.state;
+    const { code, loading, permission } = this.state;
     const { isOnboarding } = this.props;
 
     return (
@@ -294,6 +314,12 @@ class UpdatePhonenumber extends Component {
                 {trans('onboarding.generating_code')}
               </AppText>
             </View>
+        }
+        {
+          !permission &&
+          <AppText style={styles.text} >
+            {trans('onboarding.sms_permission')}
+          </AppText>
         }
         {loading ? <Loading style={{ marginVertical: 12 }} /> : <RoundedButton
           onPress={() => this.onSubmitSendText()}

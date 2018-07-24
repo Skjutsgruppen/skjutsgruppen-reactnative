@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, View, StyleSheet, Clipboard } from 'react-native';
+import { ScrollView, Text, View, StyleSheet, Clipboard, PermissionsAndroid, Platform, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
 import { Wrapper } from '@components/common';
@@ -92,7 +92,29 @@ class ChangePhoneNumber extends Component {
     }
   }
 
-  onVerifyPhone = () => {
+  onVerifyPhone = async () => {
+    if (Platform.OS === 'android') {
+      const permission = await PermissionsAndroid
+        .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+      if (!permission) {
+        const status = await PermissionsAndroid
+          .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+        if (status === 'granted') {
+          this.sendSMS();
+        } else {
+          Alert.alert(trans('share.allow_sms_permission'));
+        }
+      } else {
+        this.sendSMS();
+      }
+    } else {
+      this.sendSMS();
+    }
+  }
+
+  sendSMS = () => {
     const { code } = this.state;
     Clipboard.setString(code);
 
