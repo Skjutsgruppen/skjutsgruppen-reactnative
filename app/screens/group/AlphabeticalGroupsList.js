@@ -6,7 +6,7 @@ import { Colors } from '@theme';
 import { withAlphabetisedGroups } from '@services/apollo/group';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
-import GroupsItem from '@components/profile/groupsItem';
+import GroupsItem from '@components/group/discover/groupsItem';
 import AlphabeticalGroupsLoadMore from '@components/group/AlphabeticalGroupsLoadMore';
 import PropTypes from 'prop-types';
 import { Heading } from '@components/utils/texts';
@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.mutedBlue,
     paddingTop: 24,
     paddingBottom: 10,
-    marginBottom: 4,
     paddingHorizontal: 24,
   },
   loadingWrapper: {
@@ -43,19 +42,30 @@ class AlphabeticalGroupsList extends Component {
     };
   }
 
-  componentWillReceiveProps({ alphabetisedGroups, loading }) {
+  componentWillReceiveProps({ alphabetisedGroups, loading, navigation }) {
     let alphabeticalGroups = [];
+    const alphabets = [];
+    const currentAlphabet = navigation.state.params.alphabet.toUpperCase();
 
     if (!loading) {
       this.setState({ loadingState: true });
 
-      alphabeticalGroups = alphabetisedGroups.map(row => ({
-        count: row.Groups.count,
-        data: row.Groups.rows,
-        title: row.alphabet,
-      }));
+      alphabeticalGroups = alphabetisedGroups.map((row) => {
+        alphabets.push(row.alphabet);
+        return {
+          count: row.Groups.count,
+          data: row.Groups.rows,
+          title: row.alphabet,
+        };
+      });
 
-      this.setState({ alphabeticalGroups, loadingState: false });
+      this.setState({ alphabeticalGroups, loadingState: false }, () => {
+        const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        const sectionIndex = alphabets.findIndex(alphabet => alphabet === currentAlphabet);
+        wait.then(() => {
+          this.sectionListRef.scrollToLocation({ animated: false, sectionIndex, itemIndex: -1 });
+        });
+      });
     }
   }
 
@@ -101,6 +111,10 @@ class AlphabeticalGroupsList extends Component {
         renderSectionHeader={item => <Heading fontVariation="bold" style={styles.listHeader}>{item.section.title}</Heading>}
         renderSectionFooter={item => this.sectionFooter(item)}
         stickySectionHeadersEnabled
+        ref={(ref) => { this.sectionListRef = ref; }}
+        getItemLayout={(data, index) => (
+          { length: 80, offset: 80 * index, index }
+        )}
       />
     );
   }

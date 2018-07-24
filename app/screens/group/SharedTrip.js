@@ -82,7 +82,7 @@ class SharedTrip extends Component {
     return (
       <Wrapper>
         <ToolBar title={date} transparent={false} />
-        <GroupTrip id={id} navigation={navigation} />
+        <GroupTrip id={id} />
         <TouchableOpacity
           style={styles.iconWrapper}
           onPress={() => this.handleShowCalender(true)}

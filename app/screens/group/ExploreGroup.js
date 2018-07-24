@@ -150,7 +150,7 @@ class ExploreGroup extends PureComponent {
 
   onPress = (type, details = {}) => {
     const { navigation } = this.props;
-    const { id } = details;
+    const { id, alphabet } = details;
 
     if (type === 'profile') {
       navigation.navigate('Profile', { profileId: id });
@@ -165,7 +165,7 @@ class ExploreGroup extends PureComponent {
     }
 
     if (type === 'AlphabeticalGroups') {
-      navigation.navigate('AlphabeticalGroupsList');
+      navigation.navigate('AlphabeticalGroupsList', { alphabet });
     }
     this.onClose();
   }
@@ -315,7 +315,7 @@ class ExploreGroup extends PureComponent {
                 return (
                   <Alphabet
                     key={index}
-                    onPress={() => this.onPress('AlphabeticalGroups')}
+                    onPress={() => this.onPress('AlphabeticalGroups', { alphabet })}
                     letter={alphabet}
                   />
                 );

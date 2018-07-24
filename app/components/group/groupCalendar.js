@@ -9,11 +9,10 @@ import Moment from 'moment';
 
 const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   const checkAndRedirect = (date) => {
-    groupTrips.forEach((trip) => {
-      if (getDate(trip.date).format('YYYY-MM-DD') === date) {
-        handleDayPress(date);
-      }
-    });
+    const filteredTrips = groupTrips.filter(trip => getDate(trip.date).format('YYYY-MM-DD') === date);
+    if (filteredTrips.length > 0) {
+      handleDayPress(date);
+    }
   };
 
   const markedDates = {};

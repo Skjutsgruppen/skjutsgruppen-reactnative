@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, SectionList } from 'react-native';
 import PropTypes from 'prop-types';
-import ListItem from '@components/profile/listItem';
+import { withNavigation } from 'react-navigation';
+import ListItem from '@components/group/sharedTrip/trip';
 import { getDate } from '@config';
 import { Colors } from '@theme';
 import { FEED_TYPE_OFFER } from '@config/constant';
@@ -16,48 +17,79 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderTopWidth: 1,
     borderTopColor: Colors.border.lightGray,
+    backgroundColor: Colors.background.mutedBlue,
   },
 });
 
-const SharedTripList = ({ groupTrips, navigation }) => {
-  const trips = [];
-  let date = '';
-  const tripDates = [];
+class SharedTripList extends Component {
+  componentWillReceiveProps(props) {
+    const { navigation: { state: { params: { date } } } } = props;
+    const sectionIndex = this.getCurrentSectionIndex(date);
+    this.sectionListRef.scrollToLocation({ animated: true, sectionIndex, itemIndex: -1 });
+  }
 
-  groupTrips.forEach((trip) => {
-    date = getDate(trip.date).format('YYYY-MM-DD');
+  getSortedTrips = () => {
+    const { groupTrips } = this.props;
+    const trips = [];
+    let date = '';
+    const tripDates = [];
 
-    if (!tripDates.includes(date)) {
-      tripDates.push(date);
-      trips.push({ title: date, data: [trip] });
-    } else {
-      trips[tripDates.indexOf(date)].data.push(trip);
-    }
-  });
+    groupTrips.forEach((trip) => {
+      date = getDate(trip.date).format('YYYY-MM-DD');
 
-  return (
-    <SectionList
-      sections={trips}
-      renderItem={
-        ({ item }) => (
-          <ListItem
-            trip={item}
-            onPress={() => navigation.navigate('TripDetail', { id: item.id })}
-            onExperiencePress={() => { }}
-            showIndicator
-            indicatorColor={item.type === FEED_TYPE_OFFER ?
-              Colors.background.pink : Colors.background.blue}
-            seats={item.seats}
-          />)
+      if (!tripDates.includes(date)) {
+        tripDates.push(date);
+        trips.push({ title: date, data: [trip] });
+      } else {
+        trips[tripDates.indexOf(date)].data.push(trip);
       }
-      keyExtractor={(item, index) => index}
-      renderSectionHeader={
-        ({ section }) => <AppText style={styles.sectionHeader}>{section.title}</AppText>
+    });
+
+    return trips;
+  }
+
+  getCurrentSectionIndex = (currentDate) => {
+    const trips = this.getSortedTrips();
+    let currentSectionIndex = 0;
+    trips.forEach((trip, index) => {
+      if (trip.title === currentDate) {
+        currentSectionIndex = index;
       }
-      ref={(section) => { this.sectionListRef = section; }}
-    />
-  );
-};
+    });
+    return currentSectionIndex;
+  }
+
+  render() {
+    const { navigation } = this.props;
+    const trips = this.getSortedTrips();
+
+    return (
+      <SectionList
+        sections={trips}
+        renderItem={
+          ({ item }) => (
+            <ListItem
+              trip={item}
+              onPress={() => navigation.navigate('TripDetail', { id: item.id })}
+              onExperiencePress={() => { }}
+              showIndicator
+              indicatorColor={item.type === FEED_TYPE_OFFER ?
+                Colors.background.pink : Colors.background.blue}
+              seats={item.seats}
+            />)
+        }
+        keyExtractor={(item, index) => index}
+        renderSectionHeader={
+          ({ section }) => <AppText style={styles.sectionHeader}>{section.title}</AppText>
+        }
+        ref={(section) => { this.sectionListRef = section; }}
+        getItemLayout={(data, index) => (
+          { length: 66, offset: 66 * index, index }
+        )}
+      />
+    );
+  }
+}
 
 SharedTripList.propTypes = {
   navigation: PropTypes.shape({
@@ -96,4 +128,4 @@ SharedTripList.defaultProps = {
   },
 };
 
-export default SharedTripList;
+export default withNavigation(SharedTripList);
