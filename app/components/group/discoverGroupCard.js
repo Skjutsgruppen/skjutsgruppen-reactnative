@@ -33,12 +33,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 24,
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: Colors.text.white,
-    textAlign: 'center',
-  },
   overlay: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -91,8 +85,7 @@ class DiscoverGroupCard extends PureComponent {
               <Heading
                 size={24}
                 color={Colors.text.white}
-                fontVariation="bold"
-                style={styles.title}
+                centered
               >
                 {trans('group.discover_groups')}
               </Heading>
