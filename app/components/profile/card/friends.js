@@ -91,7 +91,7 @@ class Friends extends Component {
             </View>
           </View>
           {
-            !friend.inPhoneContact && removeFriendOption &&
+            removeFriendOption &&
             <TouchableHighlight
               style={styles.action}
               onPress={() => handleRemovePress(friend)}

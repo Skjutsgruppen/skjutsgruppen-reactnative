@@ -140,6 +140,7 @@ class Offer extends Component {
       suggestion: {},
       group: {},
       tripId: null,
+      offset: null,
     };
   }
 
@@ -601,6 +602,7 @@ class Offer extends Component {
                 hideReturnTripOption={isReturnedTrip}
                 onNext={this.onRouteNext}
                 isOffer
+                scrollContainer={this.container}
               />
             }
             {(activeStep === 3) && <Date isOffer defaultValue={date} onNext={this.onDateNext} />}

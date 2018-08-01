@@ -1,8 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Modal, ViewPropTypes, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import * as Animatable from 'react-native-animatable';
-import { trans } from '@lang/i18n';
 import { Colors } from '@theme';
 import { AppText } from '@components/utils/texts';
 

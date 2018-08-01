@@ -12,8 +12,6 @@ import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import AppText from '@components/utils/texts/appText';
 
-import MessageIcon from '@assets/icons/ic_message.png';
-import MessageIconActive from '@assets/icons/ic_message_active.png';
 import IconSearch from '@assets/icons/ic_search.png';
 
 import MessageTabIcon from '@components/message/messageTabIcon';

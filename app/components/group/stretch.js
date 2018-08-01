@@ -60,7 +60,9 @@ class Stretch extends PureComponent {
   renderOutReach = () => {
     const { route, area, outreach } = this.state;
     if (outreach === STRETCH_TYPE_ROUTE) {
-      return (<Route isOffer hideReturnTripOption defaultValue={route} onNext={this.onNext} />);
+      return (
+        <Route isOffer hideReturnTripOption defaultValue={route} onNext={this.onNext} scrollContainer={this.props.scrollContainer} />
+      );
     }
 
     return (<Area defaultValue={area} onNext={this.onNext} />);
@@ -97,6 +99,11 @@ Stretch.propTypes = {
     area: PropTypes.object,
     outreach: PropTypes.string,
   }).isRequired,
+  scrollContainer: PropTypes.shape(),
+};
+
+Stretch.defaultProps = {
+  scrollContainer: {},
 };
 
 export default Stretch;

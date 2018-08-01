@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Image, TextInput, Platform } from 'react-native';
+import { StyleSheet, View, Image, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
@@ -125,6 +125,7 @@ class MessageSearch extends PureComponent {
 MessageSearch.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    goBack: PropTypes.func,
   }).isRequired,
 };
 

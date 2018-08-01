@@ -39,7 +39,6 @@ class CommentLoader extends Component {
   }
 
   render() {
-    const { count } = this.props;
     return (
       <View style={styles.wrapper}>
         <View style={styles.loader}>

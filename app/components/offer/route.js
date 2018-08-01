@@ -1,18 +1,15 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { RoundedButton } from '@components/common';
 import PlaceInput from '@components/search/place/placeInput';
 import Colors from '@theme/colors';
 import Radio from '@components/add/radio';
 import SectionLabel from '@components/add/sectionLabel';
-import _pullAt from 'lodash/pullAt';
-import { Heading, AppText } from '@components/utils/texts';
-
+import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
-import DragIcon from '@assets/icons/ic_drag.png';
-import AddIcon from '@assets/icons/ic_add_pink.png';
-import CrossIcon from '@assets/icons/ic_cross_pink.png';
+
+import Stops from '@components/offer/stops';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -26,15 +23,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
   },
-  stops: {
-    paddingHorizontal: 4,
-    marginBottom: 24,
-  },
-  stop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-  },
+
   index: {
     width: 60,
     height: 60,
@@ -157,7 +146,8 @@ class Route extends PureComponent {
     let stops = [];
 
     if (state.stops.length > 0) {
-      stops = state.stops.filter(k => k.coordinates && k.coordinates.length);
+      stops = state.stops.filter(k => k.coordinates && k.coordinates.length)
+        .map(({ name, countryCode, coordinates }) => ({ name, countryCode, coordinates }));
     }
 
     const value = { ...state, ...{ stops } };
@@ -166,6 +156,11 @@ class Route extends PureComponent {
 
   onChangeText = (i, { place }) => {
     this.setStops(i, place, this.state.stopsCount);
+  };
+
+  onStopChange = (stops) => {
+    this.props.defaultValue.stops = stops;
+    this.setState({ stops, stopsCount: stops.length });
   };
 
   setEndPlace = ({ place, source, direction }) => {
@@ -194,20 +189,9 @@ class Route extends PureComponent {
     this.setState({ stops, stopsCount });
   };
 
+
   handleReturnChange = (isReturning) => {
     this.setState({ isReturning });
-  };
-
-  removeStop = (key) => {
-    const { stops, stopsCount } = this.state;
-    _pullAt(stops, key);
-    this.setState({ stops, stopsCount: stopsCount - 1 });
-  }
-
-  addStops = () => {
-    let { stopsCount } = this.state;
-    stopsCount = isNaN(stopsCount) ? 0 : stopsCount;
-    this.setStops(stopsCount, {}, stopsCount + 1);
   };
 
   currentLocation = (type) => {
@@ -217,37 +201,14 @@ class Route extends PureComponent {
 
   renderStops() {
     const { stops } = this.state;
-    let j = 0;
 
-    return stops.map((place, i) => {
-      j += 1;
-      return (
-        <View key={j} style={styles.stop}>
-          <View style={styles.iconWrapper}>
-            <Image source={DragIcon} style={[styles.icon, styles.drag]} />
-          </View>
-          <View style={styles.index}>
-            <Heading size={16} color={Colors.text.pink} fontVariation="bold" centered>{j}</Heading>
-          </View>
-          <PlaceInput
-            placeholder="Place"
-            currentLocation={false}
-            wrapperStyle={{ flex: 1 }}
-            height={60}
-            defaultValue={place}
-            inputStyle={{ paddingLeft: 68 }}
-            label="Stop"
-            onChangeText={(stop) => { this.onChangeText(i, stop); }}
-          />
-          <TouchableOpacity
-            onPress={() => this.removeStop(i)}
-            style={[styles.iconWrapper, styles.remove]}
-          >
-            <Image source={CrossIcon} />
-          </TouchableOpacity>
-        </View>
-      );
-    });
+    return (
+      <Stops
+        stops={stops}
+        onStopChange={this.onStopChange}
+        scrollContainer={this.props.scrollContainer}
+      />
+    );
   }
 
   render() {
@@ -281,16 +242,6 @@ class Route extends PureComponent {
             <SectionLabel label={trans('add.stops_in')} color={isOffer ? Colors.text.pink : Colors.text.blue} />
             <View style={styles.stops}>
               {this.renderStops()}
-              <View style={styles.addStopWrapper}>
-                <View style={styles.iconWrapper} />
-                <TouchableHighlight onPress={this.addStops} style={{ flex: 1 }}>
-                  <View style={styles.addStop}>
-                    <Image source={AddIcon} style={styles.addStopIcon} />
-                    <AppText>{trans('add.add_stop')}</AppText>
-                  </View>
-                </TouchableHighlight>
-                <View style={styles.iconWrapper} />
-              </View>
             </View>
           </View>
         }

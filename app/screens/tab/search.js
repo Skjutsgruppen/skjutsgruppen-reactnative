@@ -6,16 +6,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import { AppText, Heading } from '@components/utils/texts';
 import { Circle, RoundedButton } from '@components/common';
 import { Colors, Gradients } from '@theme';
-import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_GROUP } from '@config/constant';
-import CalendarModal from '@components/common/calendarModal';
 import SearchIcon from '@assets/icons/ic_search.png';
 import SearchIconActive from '@assets/icons/ic_search_active.png';
 import { trans } from '@lang/i18n';
 import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
-import { getDate } from '@config';
 import TouchableHighlight from '@components/touchableHighlight';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import CrossIcon from '@assets/icons/ic_cross_pink.png';
@@ -204,7 +201,7 @@ class Search extends Component {
 
       if (dates && dates.length > 0) {
         markedDates = dates.reduce((obj, item) => {
-          obj[item] = { startingDay: true, color: '#1ca9e5', textColor: '#fff', endingDay: true }
+          obj[item] = { startingDay: true, color: '#1ca9e5', textColor: '#fff', endingDay: true };
           return obj;
         }, {});
       }

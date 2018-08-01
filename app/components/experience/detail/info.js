@@ -64,7 +64,6 @@ const Info = ({ loading, experience, navigation }) => {
     if (!experience.Participants) {
       return null;
     }
-
     let deletedParticipantCount = 0;
 
     return experience.Participants.map((row, index) => {

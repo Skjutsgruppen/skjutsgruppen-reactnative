@@ -72,7 +72,7 @@ export const withContactSync = graphql(SYNC_CONTACTS, {
               Contacts.requestPermission(async (contactErr, res) => {
                 if (contactErr) {
                   if (Platform === 'ios' || Platform.OS === 'ios') {
-                    //Crashlytics.recordError(contactErr);
+                    // Crashlytics.recordError(contactErr);
                   }
                 }
 

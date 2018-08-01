@@ -32,7 +32,6 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
-import TouchableHighlight from '@components/touchableHighlight';
 import CoCreateModal from '@components/coCreateModal';
 import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
@@ -297,7 +296,7 @@ class Feed extends Component {
             Contacts.requestPermission((contactErr, res) => {
               if (contactErr) {
                 if (Platform === 'ios' || Platform.OS === 'ios') {
-                  //Crashlytics.recordError(contactErr);
+                  // Crashlytics.recordError(contactErr);
                 }
               }
               if (res === 'authorized') {

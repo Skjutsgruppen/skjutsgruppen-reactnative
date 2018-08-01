@@ -36,16 +36,14 @@ class CloseByGroupsMapView extends Component {
     navigation.navigate('GroupDetail', { id });
   }
 
-  getDeltaValue = (diameter = 5) => {
-    return (1 * diameter) / 111;
-  }
+  getDeltaValue = (diameter = 5) => (1 * diameter) / 111
 
   deltaToKm = delta => 111 * delta
 
   fetchMoreGroups = ({ latitudeDelta, latitude, longitude }) => {
     const { from } = this.props;
     const diameter = Math.round(this.deltaToKm(latitudeDelta));
-    console.log(diameter);
+
     if (diameter > this.currentDiameter && diameter < this.maxDiameter) {
       this.currentDiameter = diameter;
       this.props.fetchMore({

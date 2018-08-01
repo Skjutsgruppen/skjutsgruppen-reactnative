@@ -11,7 +11,6 @@ import { compose } from 'react-apollo';
 import Navigation from '@components/map/navigation';
 import { getDistanceFromLatLonInKm } from '@services/map-directions';
 import { FEED_FILTER_EVERYTHING } from '@config/constant';
-import Filter from '@components/feed/filter';
 import moment from 'moment';
 import { AppText } from '@components/utils/texts';
 
@@ -334,7 +333,7 @@ class Map extends PureComponent {
     return (
       <View style={styles.container}>
         <Navigation
-          onPressBack={this.handleBack} 
+          onPressBack={this.handleBack}
           onPressFilter={this.onFilterChange}
         />
         <MapView

@@ -82,6 +82,7 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
       createdAt
       description
       photoUrl
+      url
       publishedStatus
       userStatus
       User {
@@ -126,6 +127,7 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
       createdAt
       description
       photoUrl
+      url
       publishedStatus
       userStatus
       User {
@@ -170,6 +172,7 @@ query getExperiences($limit: Int, $offset: Int) {
       createdAt
       description
       photoUrl
+      url
       publishedStatus
       userStatus
       User {
@@ -214,6 +217,7 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
       createdAt
       description
       photoUrl
+      url
       publishedStatus
       userStatus
       User {
@@ -234,6 +238,7 @@ subscription myExperience($userId:Int!){
       createdAt
       description
       photoUrl
+      url
       publishedStatus
       userStatus
       Participants {
@@ -353,6 +358,7 @@ query experience($id: Int!){
     createdAt
     description
     photoUrl
+    url
     publishedStatus
     userStatus
     Participants {

@@ -280,7 +280,11 @@ class Share extends Component {
       if (type === FEEDABLE_LOCATION) {
         smsBody = trans(
           'share.share_location',
-          { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: Clipboard.getString() },
+          {
+            tripStart: TripStart.name || direction,
+            tripEnd: TripEnd.name || direction,
+            url: Clipboard.getString(),
+          },
         );
       }
 

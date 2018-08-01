@@ -135,7 +135,13 @@ class Cam extends Component {
 
   takePicture = () => {
     if (this.camera) {
-      this.camera.capture({ target: Camera.constants.CaptureTarget.disk })
+      this.camera.capture(
+        {
+          target: Camera.constants.CaptureTarget.disk,
+          forceUpOrientation: true,
+          fixOrientation: true,
+        },
+      )
         .then(this.props.takePicture);
     }
   }

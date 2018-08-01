@@ -57,7 +57,7 @@ class ChangeEmail extends Component {
 
   onSubmit = () => {
     this.setState({ loading: true });
-    const { changeEmail, setUser, setLogin } = this.props;
+    const { changeEmail } = this.props;
     const { newEmail } = this.state;
 
     try {
