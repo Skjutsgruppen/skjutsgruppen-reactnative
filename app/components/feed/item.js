@@ -3,12 +3,12 @@ import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Detail from '@components/feed/itemDetail';
 import {
-  CLOSE_GROUP,
   GROUP_FEED_TYPE_JOINED_GROUP,
   FEED_FILTER_WANTED,
   ACTIVITY_TYPE_SHARE_LOCATION_FEED,
   ACTIVITY_TYPE_CREATE_EXPERIENCE,
   EXPERIENCE_STATUS_CAN_CREATE,
+  FEEDABLE_GROUP,
 } from '@config/constant';
 
 import Colors from '@theme/colors';
@@ -59,7 +59,8 @@ class FeedItem extends PureComponent {
 
   isTripStarted = () => {
     const { feed: { Trip: trip } } = this.props;
-    return getDate(trip.date).add(trip.duration / 2, 'second').isBefore();
+
+    return getDate(trip.date).add((trip.duration / 2), 'second').isBefore();
   }
 
   isTripEnded = () => {
@@ -143,12 +144,17 @@ class FeedItem extends PureComponent {
   }
 
   renderRelation = () => {
-    const { feed } = this.props;
+    const { feed, type } = this.props;
 
     if (feed.User.relation && feed.User.relation.path) {
       return (
         <View style={{ marginLeft: 74 }}>
-          <FOF mini relation={feed.User.relation} viewee={feed.User} />
+          <FOF
+            mini
+            relation={feed.User.relation}
+            viewee={feed.User}
+            displayNoConnection={type === FEEDABLE_GROUP}
+          />
         </View>
       );
     }
@@ -215,6 +221,7 @@ FeedItem.propTypes = ({
   }).isRequired,
   onPress: PropTypes.func.isRequired,
   onLongPress: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 });
 
 export default FeedItem;

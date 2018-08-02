@@ -1,0 +1,13 @@
+{
+  "commented_on_trip": "Jag har bett att få samåka med {{user}} mellan {{tripStart}} och {{tripEnd}} den {{date}}. Se resan här.",
+  "asked_trip": "Jag vill samåka mellan {{tripStart}} och {{tripEnd}} den {{date}}. Är det någon som har ett förslag?",
+  "offered_trip": "Jag erbjuder samåkning mellan {{tripStart}} och {{tripEnd}} den {{date}}. Vill du följa med?",
+  "created_group": "Jag har precis lagt till gruppen {{name}} at hos #Skjutsgruppen. Vill ni vara med och samåka med oss?",
+  "published_experience": "Kolla! Ännu en #samåkning med #Skjutsgruppen",
+  "share_offered_trip": "{{user}} erbjuder samåkning mellan {{tripStart}} och {{tripEnd}} den {{date}}.",
+  "share_asked_trip": "{{user}} ber om skjuts mellan {{tripStart}} och {{tripEnd}} den {{date}}.",
+  "share_group": "Kolla in gruppen {{name}} hos #Skjutsgruppen.",
+  "share_location": "Jag samåker just nu! Se var jag är live på den här kartan",
+  "ridesharing_movement": "#skjutsgruppen",
+  "share_a_like": "#DelaLika"
+}

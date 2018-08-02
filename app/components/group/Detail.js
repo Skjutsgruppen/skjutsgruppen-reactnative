@@ -334,6 +334,7 @@ class Detail extends PureComponent {
   render() {
     const { navigation, group } = this.props;
     const { notification, notifierOffset, loading, error, success } = this.state;
+
     const header = this.header();
     const { notifier, notificationMessage } = navigation.state.params;
 

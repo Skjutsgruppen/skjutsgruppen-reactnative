@@ -24,6 +24,7 @@ import {
   NOTIFICATION_TYPE_CREATE_EXPERIENCE,
   NOTIFICATION_TYPE_SHARE_YOUR_LOCATION,
   NOTIFICATION_TYPE_WELCOME_MESSAGE,
+  NOTIFICATION_TYPE_INVIVATION,
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { trans } from '@lang/i18n';
@@ -524,10 +525,17 @@ class Item extends PureComponent {
     });
   }
 
-  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User }) => {
+  tripNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User, Notifications }) => {
     const route = 'TripDetail';
-    const params = { id: Notifiable.id };
+    let params = { id: Notifiable.id };
     const plus = Notifiers ? Notifiers.length - 1 : 0;
+
+    if (Notifications && Notifications.length > 0) {
+      const invitation = Notifications.map(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
+      if (invitation.length > 0) {
+        params = { ...params, ...{ notifier: Notifiers[0], notificationMessage: trans('message.shared_this_trip_with_you') } };
+      }
+    }
 
     if (Notifiers) {
       return this.item({
@@ -552,10 +560,18 @@ class Item extends PureComponent {
     });
   }
 
-  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User }) => {
+  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User, Notifications }) => {
     const route = 'GroupDetail';
-    const params = { id: Notifiable.id };
+    let params = { id: Notifiable.id };
     const plus = Notifiers ? Notifiers.length - 1 : 0;
+
+
+    if (Notifications && Notifications.length > 0) {
+      const invitation = Notifications.map(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
+      if (invitation.length > 0) {
+        params = { ...params, ...{ notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') } };
+      }
+    }
 
     if (Notifiers) {
       return this.item({

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert } from 'react-native';
+import { View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert, Platform, PermissionsAndroid } from 'react-native';
 import Stretch from '@components/group/stretch';
 import About from '@components/group/about';
 import OpenClosed from '@components/group/openClosed';
@@ -20,6 +20,7 @@ import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import SendSMS from 'react-native-sms';
+import FBShare from '@services/facebook/share';
 
 const styles = StyleSheet.create({
   progress: {
@@ -220,7 +221,7 @@ class Group extends Component {
         { social: share.social, friends: share.friends, groups: share.groups },
         route.direction,
       )
-        .then((res) => {
+        .then(async (res) => {
           if (share.clipboard.indexOf('copy_to_clip') > -1) {
             Clipboard.setString(res.data.group.url);
           }
@@ -229,12 +230,29 @@ class Group extends Component {
             const { contacts } = share;
             const { name, id } = res.data.group;
             const smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
+            if (Platform.OS === 'android') {
+              const permission = await PermissionsAndroid
+                .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
 
-            SendSMS.send({
-              body: smsBody,
-              recipients: contacts,
-              successTypes: ['sent', 'queued'],
-            }, () => { });
+              if (!permission) {
+                const status = await PermissionsAndroid
+                  .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+                if (status === 'granted') {
+                  this.sendSMS(smsBody, contacts);
+                } else {
+                  Alert.alert(trans('share.allow_sms_permission'));
+                }
+              } else {
+                this.sendSMS(smsBody, contacts);
+              }
+            } else {
+              this.sendSMS(smsBody, contacts);
+            }
+          }
+
+          if (share.social && share.social.length > 0 && share.social.includes('Facebook')) {
+            FBShare.link(FEEDABLE_GROUP, res.data.group);
           }
 
           this.setState({ loading: false, group: res.data.group, error: '' });
@@ -243,6 +261,14 @@ class Group extends Component {
     } catch (err) {
       this.setState({ loading: false, error: getToast(err) });
     }
+  }
+
+  sendSMS = (smsBody, contacts) => {
+    SendSMS.send({
+      body: smsBody,
+      recipients: contacts,
+      successTypes: ['sent', 'queued'],
+    }, () => { });
   }
 
   renderFinish() {

@@ -44,6 +44,10 @@ subscription{
           direction
           url
           isDeleted
+          membershipStatus
+          Enablers {
+            id
+          }
         }
       }
       ... on TripFeed {
@@ -151,6 +155,10 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         direction
         url
         isDeleted
+        membershipStatus
+        Enablers {
+          id
+        }
       }
     }
     ... on TripFeed {
@@ -558,6 +566,10 @@ query trip($id: Int!) {
     linkedTrip {
       id
       description
+      User {
+        id
+        firstName
+      }
     }
     isDeleted
   }
@@ -687,6 +699,10 @@ subscription onTripUpdated($id: Int!) {
     linkedTrip {
       id
       description
+      User {
+        id
+        firstName
+      }
     }
     isDeleted
   }
@@ -785,6 +801,10 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         linkedTrip {
           id
           description
+          User {
+            id
+            firstName
+          }
         }
         muted
         unreadNotificationCount
@@ -870,6 +890,10 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       linkedTrip {
         id
         description
+        User {
+          id
+          firstName
+        }
       }
       flexibilityInfo {
         duration

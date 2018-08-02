@@ -7,6 +7,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
 import com.opensettings.OpenSettingsPackage;
 import io.invertase.firebase.RNFirebasePackage;

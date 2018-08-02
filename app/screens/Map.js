@@ -213,7 +213,12 @@ class Map extends PureComponent {
     const { from, to, filterType, region } = this.state;
     const { longitude, latitude } = region;
     try {
-      const { data } = await this.props.getMapTrips([longitude, latitude], from, to, filterType);
+      const { data } = await this.props.getMapTrips(
+        [longitude, latitude],
+        from,
+        to,
+        filterType, true,
+      );
 
       if (data.nearByTrips && data.nearByTrips.length > 0) {
         if (!this.ismounted) {

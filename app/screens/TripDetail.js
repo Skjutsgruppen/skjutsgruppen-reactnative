@@ -643,6 +643,12 @@ class TripDetail extends Component {
     );
   }
 
+  navigateOnDelete = () => {
+    const { navigation } = this.props;
+    navigation.popToTop();
+    navigation.replace('Tab');
+  }
+
   recurringRidesModal = () => {
     const { trip } = this.state;
     const markedDates = {};
@@ -798,28 +804,47 @@ class TripDetail extends Component {
           <AppText style={styles.text}>
             {trip.description}
             {trip.Group && trip.Group.id &&
-              <AppText color={Colors.text.gray} fontVariation="italic">
+              <AppText>
                 {' '}
-                {trans('detail.i_added_ride_in_this_group', { group: trip.Group.name })}
-                {' '}
+                {trans('detail.i_added_ride_in_this_group')}
                 <AppText
                   color={Colors.text.blue}
-                  fontVariation="italic"
+                  fontVariation="bold"
                   onPress={() => navigation.navigate('GroupDetail', { id: trip.Group.id, fetch: true })}
-                >{trans('detail.here')}</AppText>
+                >
+                  {`${trip.Group.name.trim()}.`}
+                </AppText>
+                <AppText
+                  color={Colors.text.blue}
+                  onPress={() => navigation.navigate('GroupDetail', { id: trip.Group.id, fetch: true })}
+                >
+                  {' '}
+                  {trans('detail.read_more_about_our_group')}
+                </AppText>
               </AppText>
             }
             {
               trip.linkedTrip && trip.linkedTrip.id &&
-              <AppText color={Colors.text.gray} fontVariation="italic">
+              <AppText>
                 {' '}
-                {trans('detail.i_added_ride_in_this_trip', { trip: trip.linkedTrip.description })}
+                {trans('detail.i_made_this_ride')}
                 {' '}
+                {trip.linkedTrip.User && trip.linkedTrip.User.firstName &&
+                  <AppText
+                    color={Colors.text.blue}
+                    fontVariation="bold"
+                    onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
+                  >
+                    {
+                      `${trip.linkedTrip.User.firstName}'s `
+                    }
+                  </AppText>}
                 <AppText
                   color={Colors.text.blue}
-                  fontVariation="italic"
                   onPress={() => navigation.navigate('TripDetail', { id: trip.linkedTrip.id })}
-                >{trans('detail.here')}</AppText>
+                >
+                  {trans('detail.question_for_a_ride')}
+                </AppText>
               </AppText>
             }
           </AppText>
@@ -1002,6 +1027,7 @@ class TripDetail extends Component {
           loading={loading}
           handleShowOptions={() => this.showActionModal(true)}
           handleSend={this.onSubmit}
+          trip={trip}
         />
       );
     }
@@ -1054,12 +1080,6 @@ class TripDetail extends Component {
         confrimTextColor={Colors.text.blue}
       />
     );
-  }
-
-  navigateOnDelete = () => {
-    const { navigation } = this.props;
-    navigation.popToTop();
-    navigation.replace('Tab');
   }
 
   renderDeletedModal = () => {
