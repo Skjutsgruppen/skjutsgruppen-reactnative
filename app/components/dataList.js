@@ -167,6 +167,7 @@ class DataList extends PureComponent {
       innerRef,
       onEndReachedThreshold,
       shouldUpdateAnimatedValue,
+      onScroll,
     } = this.props;
     return (
       <AnimatedFlatlist
@@ -174,30 +175,50 @@ class DataList extends PureComponent {
         ref={innerRef}
         data={data.rows}
         keyExtractor={item => item.id}
-        refreshing={data.networkStatus === 4 || data.networkStatus === 2}
-        onRefresh={() => this.shouldRefetch()}
+        // refreshing={data.networkStatus === 4 || data.networkStatus === 2}
+        // onRefresh={() => this.shouldRefetch()}
         onEndReachedThreshold={onEndReachedThreshold}
         ListHeaderComponent={this.renderHeader}
         ListFooterComponent={this.renderFooter}
         onEndReached={this.loadMore}
         showsVerticalScrollIndicator={false}
-        onScroll={(event) => {
-          if (shouldUpdateAnimatedValue) {
-            if (this.animatedValue._value > event.nativeEvent.contentOffset.y) {
-              this.opacityValue.setValue(1);
-            } else {
-              this.opacityValue.setValue(0);
-            }
-            if (event.nativeEvent.contentOffset.y < 120) {
-              this.opacityValue.setValue(0);
-            }
-            if (event.nativeEvent.contentOffset.y === 0) {
-              this.opacityValue.setValue(1);
-            }
-            this.animatedValue.setValue(event.nativeEvent.contentOffset.y);
-          }
-        }
-        }
+        // onScroll={(event) => {
+          // if (shouldUpdateAnimatedValue) {
+          //   if (this.animatedValue._value > event.nativeEvent.contentOffset.y) {
+          //     this.opacityValue.setValue(1);
+          //   } else {
+          //     this.opacityValue.setValue(0);
+          //   }
+          //   if (event.nativeEvent.contentOffset.y < 120) {
+          //     this.opacityValue.setValue(0);
+          //   }
+          //   if (event.nativeEvent.contentOffset.y === 0) {
+          //     this.opacityValue.setValue(1);
+          //   }
+          //   this.animatedValue.setValue(event.nativeEvent.contentOffset.y);
+          // }
+        //   if (shouldUpdateAnimatedValue) {
+        //     Animated.event(
+        //       [{ nativeEvent: { contentOffset: { y: this.animatedValue } } }],
+        //       { listener: (evt) => { onScroll(evt.nativeEvent.contentOffset.y); } },
+        //     );
+        //   } else {
+        //     Animated.event(
+        //       [],
+        //       {
+        //         useNativeDriver: true,
+        //         listener: (evt) => { onScroll(evt.nativeEvent.contentOffset.y); },
+        //       },
+        //     );
+        //   }
+        // }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: this.animatedValue } } }],
+          { listener: (evt) => { onScroll(evt.nativeEvent.contentOffset.y); } }, // Optional async listener
+        )}
+        overScrollMode="never"
+        scrollEventThrottle={16}
+        bounces={false}
       />
     );
   }
@@ -230,6 +251,7 @@ DataList.propTypes = {
   shouldUpdateAnimatedValue: PropTypes.bool,
   loadMorePosition: PropTypes.string,
   loadMoreButton: PropTypes.func,
+  onScroll: PropTypes.func,
 };
 
 DataList.defaultProps = {
@@ -244,6 +266,7 @@ DataList.defaultProps = {
   shouldUpdateAnimatedValue: false,
   loadMoreButton: null,
   loadMorePosition: 'top',
+  onScroll: () => {},
 };
 
 export default withNavigation(DataList);

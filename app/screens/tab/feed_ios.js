@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, FlatList, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS, Dimensions, PanResponder, LayoutAnimation, UIManager, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, FlatList, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS, Dimensions, PanResponder, LayoutAnimation, UIManager } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle, Loading } from '@components/common';
@@ -32,7 +32,7 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
-// import CoCreateModal from '@components/coCreateModal';
+import CoCreateModal from '@components/coCreateModal';
 import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
 import { withContactSync } from '@services/apollo/contact';
@@ -172,16 +172,16 @@ class Feed extends Component {
 
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
-        const { dx, dy } = gestureState;
-        if (yPos <= 0 && dy > dx) {
+        const { dy } = gestureState;
+        if (yPos <= 0 && dy > 4) {
           this.feedList.setNativeProps({ scrollEnabled: false });
-          this.feedWraper.setNativeProps({ pointerEvents: 'box-only' });
+          // this.feedWraper.setNativeProps({ pointerEvents: 'box-only' });
         } else {
           this.feedList.setNativeProps({ scrollEnabled: true });
-          this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+          // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
         }
 
-        return yPos <= 0 && dy > dx;
+        return yPos <= 0 && dy > 4;
       },
 
       onPanResponderRelease: (evt, { dy, vy }) => {
@@ -190,12 +190,16 @@ class Feed extends Component {
           duration = Math.abs(dy * 2);
         }
         this.feedList.setNativeProps({ scrollEnabled: true });
-        this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+        // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
 
         if (dy > 150) {
-          this.setMapView(duration);
+          if (vy <= 0) {
+            this.setFeedView(duration);
+          } else {
+            this.setMapView(duration);
+          }
           this.feedList.setNativeProps({ scrollEnabled: true });
-          this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+          // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
           return null;
         }
 
@@ -206,28 +210,40 @@ class Feed extends Component {
         }
 
         this.feedList.setNativeProps({ scrollEnabled: true });
-        this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+        // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
         return null;
       },
 
+      onPanResponderTerminationRequest: () => {
+        this.feedList.setNativeProps({ scrollEnabled: true });
+        // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+      },
+
       onPanResponderTerminate: (evt, { dy, vy }) => {
-        const duration = 300;
+        let duration = 300;
+        if (dy < 150) {
+          duration = Math.abs(dy * 2);
+        }
 
         if (dy > 150) {
-          this.setMapView(duration);
+          if (vy <= 0) {
+            this.setFeedView(duration);
+          } else {
+            this.setMapView(duration);
+          }
           this.feedList.setNativeProps({ scrollEnabled: true });
-          this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+          // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
           return null;
         }
 
-        if (vy > 0.000001) {
+        if (vy > 0.75) {
           this.setMapView(duration);
         } else {
           this.setFeedView(duration);
         }
 
         this.feedList.setNativeProps({ scrollEnabled: true });
-        this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
+        // this.feedWraper.setNativeProps({ pointerEvents: 'auto' });
         return null;
       },
 
@@ -320,7 +336,7 @@ class Feed extends Component {
 
   onBackButtonPress = () => {
     if (!this.backButtonPressed) {
-      this.setFeedView();
+      this.scrollToTop();
       this.backButtonPressed = true;
 
       return true;
@@ -374,13 +390,18 @@ class Feed extends Component {
   onScrollInline = (pos) => { yPos = pos; };
 
   onScrollEndDrag = (event) => {
+    if (event.nativeEvent.contentOffset.y < -100) {
+      this.setMapView();
+    } else {
+      this.setFeedView();
+    }
   }
 
   setMapView = (duration = 300) => {
     const LayoutAnimationconfigInner = {
       duration: parseInt(duration, 0),
       update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
+        type: 'easeInEaseOut',
       },
       useNativeDriver: true,
     };
@@ -394,7 +415,7 @@ class Feed extends Component {
     this.feedWraper.setNativeProps({ top: winHeight + 100 });
 
     if (Platform.OS === 'android') {
-      this.setState({ mapView: true });
+      setTimeout(() => this.setState({ mapView: true }), 600);
     }
   }
 
@@ -415,10 +436,13 @@ class Feed extends Component {
 
     this.feedWraper.setNativeProps({ top: 0 });
 
+    // if (Platform.OS === 'android') {
+    //   this.setState({ mapView: false });
+    // }
+
     if (Platform.OS === 'android') {
-      this.setState({ mapView: false });
+      setTimeout(() => this.setState({ mapView: false }), 600);
     }
-    this.scrollToTop();
   }
 
   setFeedWrapperOffset = (offset) => {
@@ -585,7 +609,7 @@ class Feed extends Component {
   scrollToTop = () => {
     if (this.feedList) {
       this.props.feeds.refetch();
-      this.feedList.scrollToOffset({ offset: 0, animated: true });
+      this.feedList.getNode().scrollToOffset({ offset: 0, animated: true });
     }
   }
 
@@ -781,31 +805,13 @@ class Feed extends Component {
     );
   }
 
-  renderMap = () => (
-    <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')} style={styles.mapWrapper}>
-      <Image source={Map} style={styles.mapImg} />
-    </TouchableOpacity>
-  );
-
-  renderTopLoading = () => {
-    const { feeds } = this.props;
-    if (feeds.loading) {
-      return (
-        <View style={{ position: 'absolute', left: 0, right: 0, top: 20, backgroundColor: 'transparent' }}>
-          <Loading style={{ paddingVertical: 24 }} size="small" color={Colors.text.white} />
-        </View>
-      );
-    }
-    return null;
+  renderCoCreateModal = () => {
+    const { showCoCreateModal } = this.state;
+    return (<CoCreateModal
+      visible={showCoCreateModal}
+      toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
+    />);
   }
-
-  // renderCoCreateModal = () => {
-  //   const { showCoCreateModal } = this.state;
-  //   return (<CoCreateModal
-  //     visible={showCoCreateModal}
-  //     toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
-  //   />);
-  // }
 
   render() {
     const { showShareModal } = this.state;
@@ -838,7 +844,6 @@ class Feed extends Component {
           <View ref={(ref) => { this.circle = ref; }} style={styles.circleWrapper}>
             <LinearGradient colors={Gradients.blue} style={[styles.circle]} />
           </View>
-          {this.renderTopLoading()}
           {this.renderFeed()}
         </View>
         { showShareModal && this.renderShareModal()}

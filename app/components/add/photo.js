@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingBottom: 60,
     paddingTop: 120,
-    elevation: 2,
     overflow: 'hidden',
   },
   curves: {

@@ -204,8 +204,13 @@ class Map extends PureComponent {
   }
 
   handleBack = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
+    const { navigation, setFeedView } = this.props;
+
+    if (setFeedView) {
+      setFeedView();
+    } else {
+      navigation.goBack();
+    }
   }
 
   async fetchTripMap() {
@@ -296,6 +301,9 @@ class Map extends PureComponent {
   }
 
   renderTrip = () => {
+    const { fullView } = this.props;
+
+    if (!fullView) return null;
     let coordinate = {};
     const { trips } = this.state;
     if (trips.length < 1) {
@@ -334,12 +342,17 @@ class Map extends PureComponent {
 
   render() {
     const { region } = this.state;
+    const { fullView } = this.props;
     return (
       <View style={styles.container}>
-        <Navigation
-          onPressBack={this.handleBack}
-          onPressFilter={this.onFilterChange}
-        />
+        {
+          fullView && (
+            <Navigation
+              onPressBack={this.handleBack}
+              onPressFilter={this.onFilterChange}
+            />
+          )
+        }
         <MapView
           provider={'google'}
           ref={(c) => { this.mapView = c; }}
@@ -351,8 +364,8 @@ class Map extends PureComponent {
           region={region}
           onRegionChange={this.onRegionChange}
         >
-          {this.renderTrip()}
-          {this.renderCurrentLocation()}
+          {fullView && this.renderTrip()}
+          {fullView && this.renderCurrentLocation()}
         </MapView>
         {this.renderLoader()}
         {/* <Filter
@@ -368,6 +381,8 @@ class Map extends PureComponent {
 }
 
 Map.propTypes = {
+  fullView: PropTypes.bool,
+  setFeedView: PropTypes.func,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
@@ -375,6 +390,11 @@ Map.propTypes = {
   user: PropTypes.shape({
     avatar: PropTypes.string.isRequired,
   }).isRequired,
+};
+
+Map.defaultProps = {
+  fullView: true,
+  setFeedView: () => {},
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });

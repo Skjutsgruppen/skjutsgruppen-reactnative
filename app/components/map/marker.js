@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import MapView from 'react-native-maps';
 import { StyleSheet, Image, View, Animated, Platform } from 'react-native';
+import MapView from 'react-native-maps';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
@@ -58,6 +58,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: Colors.background.fullWhite,
     fontSize: 10,
+  },
+  currentMarkerWrapper: {
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   currentMarker: {
     height: 62,
