@@ -85,7 +85,7 @@
   "will_reset_your_session": "se_Are you sure you want to go back? This will reset your current session.",
   "new_number": "se_It seems you are using new phone number. Do you want to update your phone number?",
   "generating_code": "se_generating code",
-  "number_changed":"Your number is changed successfully",
+  "number_changed": "Your number is changed successfully",
   "increase_trust_and_security": "Increase trust and security",
   "now_you_will_sync_your_phone_book": "se_ Now you will sync your phone book to increase trust and security.",
   "you_will_be_able_to_send_your_live_location_with_SMS": "se_ You will be able to send your live location with SMS (text message) to your friends and family so they can follow your ride.",
@@ -94,5 +94,10 @@
   "press_sync_and_then_allow": "se_ Press “Sync” and then Allow.",
   "sync": "se_ Sync",
   "contact_permission": "se_We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections).",
-  "sms_permission": "se_Please allow SMS permission to send sms and verify your phone number."
+  "sms_permission": "se_Please allow SMS permission to send sms and verify your phone number.",
+  "forgot_email": "se_I forgot my email",
+  "phone_number_email": "se_The phone number is associated with email {{email}}",
+  "phone_number_email_not_found": "se_Sorry! could not find user associated with the phone number.",
+  "enter_phone_number_to_view_email": "se_Please enter your phone number to get hint of the email associated with the number.",
+  "no_email_access_contact_support": "se_No longer have access to the email. Send us an email at support@skjutsgruppen.nu to change your password."
 }

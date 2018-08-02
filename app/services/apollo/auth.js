@@ -519,3 +519,19 @@ export const withVerifyToken = graphql(VERIFY_TOKEN_MUTATION, {
     }),
   }),
 });
+
+const GET_USER_FROM_PHONE_NUMBER = gql`
+  mutation getUserByPhoneNumber ($number: String!) {
+    getUserByPhoneNumber (number: $number) {
+      email
+    }
+  }
+`;
+
+export const withGetUserFromPhoneNumber = graphql(GET_USER_FROM_PHONE_NUMBER, {
+  props: ({ mutate }) => ({
+    getUserByPhoneNumber: number => mutate({
+      variables: { number },
+    }),
+  }),
+});
