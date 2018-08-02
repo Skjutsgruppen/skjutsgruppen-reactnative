@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard } from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard, PermissionsAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Wrapper, Loading, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
@@ -411,7 +411,29 @@ class EditProfile extends Component {
     }
   }
 
-  verifiyPhoneNumber = () => {
+  verifiyPhoneNumber = async () => {
+    if (Platform.OS === 'android') {
+      const permission = await PermissionsAndroid
+        .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+      if (!permission) {
+        const status = await PermissionsAndroid
+          .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+        if (status === 'granted') {
+          this.sendSMS();
+        } else {
+          Alert.alert(trans('share.allow_sms_permission'));
+        }
+      } else {
+        this.sendSMS();
+      }
+    } else {
+      this.sendSMS();
+    }
+  }
+
+  sendSMS = () => {
     const { phoneVerificationCode } = this.state;
     Clipboard.setString(phoneVerificationCode);
 
@@ -602,7 +624,6 @@ class EditProfile extends Component {
       uploadedImage,
       totalFriends,
       newEmail,
-      newPhoneNumber,
       errorMsg,
     } = this.state;
 
