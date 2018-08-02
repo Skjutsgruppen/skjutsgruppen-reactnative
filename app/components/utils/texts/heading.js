@@ -7,32 +7,22 @@ import {
 
 const baseStyles = StyleSheet.create({
   text: {
-    fontFamily: 'AvenirLTStd-Heavy',
+    fontFamily: 'AvenirLTStd-Black',
     fontSize: 24,
     backgroundColor: 'transparent',
   },
-  semibold: {
-    fontFamily: 'AvenirLTStd-Medium',
-  },
-  bold: {
-    fontFamily: 'AvenirLTStd-Heavy',
-  },
-  italic: {
-    fontFamily: 'AvenirLTStd-Book',
-  },
 });
 
-const Heading = ({ style, fontVariation, size, color, centered, children, ...props }) => {
+const Heading = ({ style, size, color, centered, children, ...props }) => {
   let newStyle;
   const fontSize = size ? { fontSize: size } : {};
   const textColor = color ? { color } : {};
-  const fontStyle = fontVariation ? baseStyles[fontVariation] : {};
   const textAlign = centered ? { textAlign: 'center' } : {};
 
   if (Array.isArray(style)) {
-    newStyle = [baseStyles.text, fontStyle, ...style, fontSize, textColor, textAlign];
+    newStyle = [baseStyles.text, ...style, fontSize, textColor, textAlign];
   } else {
-    newStyle = [baseStyles.text, fontStyle, style, fontSize, textColor, textAlign];
+    newStyle = [baseStyles.text, style, fontSize, textColor, textAlign];
   }
 
   return (
@@ -45,7 +35,6 @@ const Heading = ({ style, fontVariation, size, color, centered, children, ...pro
 Heading.propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.oneOfType([PropTypes.shape(), PropTypes.array, PropTypes.number]),
-  fontVariation: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
   centered: PropTypes.bool,
@@ -53,7 +42,6 @@ Heading.propTypes = {
 
 Heading.defaultProps = {
   style: {},
-  fontVariation: 'bold',
   size: null,
   color: null,
   centered: false,

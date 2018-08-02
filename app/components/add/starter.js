@@ -27,9 +27,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: '5%',
   },
-  label: {
-    textAlign: 'center',
-  },
 });
 
 const Starter = ({ label, info, style, onPress }) => (
@@ -43,8 +40,7 @@ const Starter = ({ label, info, style, onPress }) => (
           accessibilityLabel="Go to next form"
           size={24}
           color={Colors.text.blue}
-          fontVariation="bold"
-          style={styles.label}
+          centered
         >
           {label}
         </Heading>
