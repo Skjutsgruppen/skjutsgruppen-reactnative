@@ -453,6 +453,19 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 });
 
 
+const UNREAD_NOTIFICATION_QUERY = gql`
+query unreadNotifications {
+  unreadNotifications
+}
+`;
+
+export const withUnreadNotification = graphql(UNREAD_NOTIFICATION_QUERY, {
+  options: () => ({
+    fetchPolicy: 'network-only',
+  }),
+  props: ({ data: { unreadNotifications, loading } }) => ({ unreadNotifications, loading }),
+});
+
 const READ_NOTIFICATION_QUERY = gql`
 mutation readNotification($ids:[Int]!) {
   readNotification(ids:$ids)
@@ -464,6 +477,11 @@ export const withReadNotification = graphql(READ_NOTIFICATION_QUERY, {
     markRead: (id, ids) => mutate(
       {
         variables: { ids },
+        refetchQueries: [
+          {
+            query: UNREAD_NOTIFICATION_QUERY,
+          },
+        ],
         update: (store) => {
           updateNewNotificationToOld(id, store);
         },
@@ -772,4 +790,4 @@ export const withLocationSharedToAllResources = graphql(LOCATION_SHARED_TO_ALL_R
     },
   }),
 })
-;
+  ;
