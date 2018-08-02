@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TouchableOpacity, Dimensions } from 'react-nat
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
-import { AppText } from '@components/utils/texts';
+import Heading from '@components/utils/texts/heading';
 
 const cardHeight = Dimensions.get('window').height * 0.3;
 
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: cardHeight,
     width: '100%',
-    padding: 12,
+    padding: 20,
   },
 });
 
@@ -56,7 +56,7 @@ const GroupItem = ({ onPress, imageURI, title, colorOverlay }) => {
           colors={gradientColors}
           style={styles.overlay}
         >
-          <AppText centered fontVaritaion="semibold" color={Colors.text.white}>{title}</AppText>
+          <Heading centered color={Colors.text.white}>{title}</Heading>
         </LinearGradient>
       </View>
     </TouchableOpacity>

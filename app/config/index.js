@@ -10,6 +10,8 @@ const APP_URL = `https://${Config.APP_URL}`;
 
 const getDate = date => Moment.utc(date).tz(getTimezone());
 
+const utcDate = date => Moment(date).utc();
+
 const UcFirst = str => (str ? (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()) : '');
 
 export {
@@ -20,4 +22,5 @@ export {
   SMS_NUMBER,
   UcFirst,
   APP_URL,
+  utcDate,
 };

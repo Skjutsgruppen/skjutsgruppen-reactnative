@@ -17,6 +17,8 @@ import DiscoverGroupCard from '@components/group/discoverGroupCard';
 import { withExploreGroup } from '@services/apollo/group';
 import { getDate } from '@config';
 import TouchableHighlight from '@components/touchableHighlight';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import CrossIcon from '@assets/icons/ic_cross_pink.png';
 
 const DiscoverGroup = withExploreGroup(DiscoverGroupCard);
 
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 24,
     paddingLeft: 24,
     paddingRight: 12,
@@ -96,6 +97,26 @@ const styles = StyleSheet.create({
   changeBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
+  },
+  clearBtnWrapper: {
+    height: 24,
+    width: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginRight: 6,
+  },
+  clearBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 24,
+    width: 24,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  clearIcon: {
+    width: 10,
+    height: 10,
+    resizeMode: 'contain',
   },
   resultsFrom: {
     flexDirection: 'row',
@@ -187,7 +208,7 @@ class Search extends Component {
         directionTo: !toObj.name ? direction : null,
         filters,
         direction,
-        dates,
+        dates: dates.map(date => new Date(date)),
       });
     }
 
@@ -219,24 +240,8 @@ class Search extends Component {
   }
 
   onSelectDay = (date) => {
-    const { markedDates } = this.state;
-    const dates = [];
-    const selectedDate = getDate(date.dateString).format('YYYY-MM-DD').toString();
-    const newDates = { ...markedDates };
-
-    if (markedDates[selectedDate]) {
-      delete newDates[selectedDate];
-    } else {
-      newDates[selectedDate] = { startingDay: true, color: '#1ca9e5', textColor: '#fff', endingDay: true };
-    }
-
-    this.setState({ markedDates: newDates });
-
-    Object.keys(newDates).forEach((day) => {
-      dates.push(day);
-    });
-
-    this.setState({ dates });
+    this.setModalVisible(false);
+    this.setState({ dates: [date] });
   };
 
   setModalVisible = (visible) => {
@@ -273,17 +278,6 @@ class Search extends Component {
     this.setState({ from: to, to: from });
   };
 
-  formatDates() {
-    const { dates } = this.state;
-    const newDate = [];
-
-    dates.forEach((date) => {
-      newDate.push(Moment(date).format('MMM D'));
-    });
-
-    return newDate;
-  }
-
   renderSearch = () => {
     let error = 0;
 
@@ -309,8 +303,8 @@ class Search extends Component {
   }
 
   render() {
-    const prettyDate = this.formatDates();
-    const { filters, dates, markedDates, directionFrom, directionTo } = this.state;
+    const { filters, dates, directionFrom, directionTo } = this.state;
+    const selectedDate = dates && dates.length > 0 ? Moment(dates[0].getTime()).format('YYYY-MM-DD HH:mm') : null;
 
     return (
       <View style={styles.wrapper}>
@@ -377,44 +371,42 @@ class Search extends Component {
               </View>
             </View>
             <View style={styles.dateRow}>
-              <AppText size={14} color={Colors.text.gray}>{dates.length === 0 ? trans('search.all_dates_and_times') : (prettyDate).join(', ')}</AppText>
+              <AppText size={14} color={Colors.text.gray} style={{ flex: 1 }}>
+                {
+                  selectedDate ||
+                  trans('search.all_dates_and_times')
+                }
+              </AppText>
+              {
+                dates.length > 0 &&
+                <View style={styles.clearBtnWrapper}>
+                  <TouchableHighlight
+                    onPress={() => this.setState({ dates: [] })}
+                    style={styles.clearBtn}
+                  >
+                    <Image source={CrossIcon} style={styles.clearIcon} />
+                  </TouchableHighlight>
+                </View>
+              }
               <View style={styles.changeBtnWrapper}>
-                <TouchableHighlight onPress={() => this.setModalVisible(true)} style={styles.changeBtn}>
+                <TouchableHighlight
+                  onPress={() => this.setModalVisible(true)}
+                  style={styles.changeBtn}
+                >
                   <AppText size={14} color={Colors.text.blue} fontVariation="semibold">
                     {trans('search.change')}
                   </AppText>
                 </TouchableHighlight>
               </View>
             </View>
-            <CalendarModal
-              visible={this.state.modalVisible}
-              onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}
-            >
-              <Calendar
-                firstDay={1}
-                onDayPress={this.onSelectDay}
-                markedDates={markedDates}
-                markingType={'period'}
-                minDate={Moment(new Date()).format('YYYY-MM-DD')}
-                hideExtraDays
-                style={{
-                  justifyContent: 'center',
-                }}
-                theme={{
-                  'stylesheet.day.period': {
-                    base: {
-                      width: 34,
-                      height: 34,
-                      alignItems: 'center',
-                    },
-                    todayText: {
-                      fontWeight: '500',
-                      color: Colors.text.blue,
-                    },
-                  },
-                }}
-              />
-            </CalendarModal>
+            <DateTimePicker
+              mode="datetime"
+              is24Hour
+              isVisible={this.state.modalVisible}
+              onConfirm={pickedDate => this.onSelectDay(pickedDate)}
+              onCancel={() => this.setModalVisible(!this.state.modalVisible)}
+              date={dates[0] || new Date()}
+            />
             <AppText size={14} color={Colors.text.gray} style={{ margin: 20 }}>{trans('search.show_results_from')}</AppText>
             <View style={styles.resultsFrom}>
               <TouchableOpacity
