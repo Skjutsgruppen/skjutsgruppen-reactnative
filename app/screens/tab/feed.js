@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS, Dimensions, PanResponder, LayoutAnimation, UIManager } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
-import Supporter from '@components/feed/card/supporter';
 import { Wrapper, Circle } from '@components/common';
 import { Heading } from '@components/utils/texts';
 import { withFeed } from '@services/apollo/trip';
@@ -14,6 +13,7 @@ import FeedIconActive from '@assets/icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
+import MapView from '@screens/Map';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -43,9 +43,18 @@ import { LoginManager } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import { resetLocalStorage } from '@services/apollo/dataSync';
 import { NavigationActions } from 'react-navigation';
-import NewsCard from '@components/feed/card/news';
 
 const FeedExperience = withGetExperiences(List);
+
+const winHeight = Dimensions.get('window').height;
+
+const LayoutAnimationconfig = {
+  duration: 300,
+  update: {
+    type: 'easeInEaseOut',
+  },
+  useNativeDriver: true,
+};
 
 const styles = StyleSheet.create({
   header: {
@@ -64,6 +73,7 @@ const styles = StyleSheet.create({
   },
   mapWrapper: {
     alignSelf: 'flex-end',
+    opacity: 0,
   },
   mapImg: {
     resizeMode: 'contain',
@@ -132,11 +142,83 @@ class Feed extends Component {
       totalExperiences: 0,
       loading: false,
       showCoCreateModal: true,
+      yPos: 0,
+      mapView: false,
     });
 
     this.feedList = null;
     this.messageListener = null;
     this.backButtonPressed = false;
+
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+        const { dy } = gestureState;
+        if (this.state.yPos <= 0 && dy > 4) this.feedList.setNativeProps({ scrollEnabled: false });
+        return this.state.yPos <= 0 && dy > 4;
+      },
+
+      onPanResponderRelease: (evt, { dy, vy }) => {
+        let duration = 300;
+        if (dy < 30) {
+          duration = Math.abs(dy * 10);
+        }
+        if (dy > 150) {
+          if (vy <= 0) {
+            this.setFeedView(duration);
+          } else {
+            this.setMapView(duration);
+          }
+          this.feedList.setNativeProps({ scrollEnabled: true });
+          return null;
+        }
+
+        if (vy > 0.75) {
+          this.setMapView(duration);
+        } else {
+          this.setFeedView(duration);
+        }
+
+        this.feedList.setNativeProps({ scrollEnabled: true });
+        return null;
+      },
+
+      onPanResponderTerminationRequest: () => {
+        this.feedList.setNativeProps({ scrollEnabled: true });
+      },
+
+      onPanResponderTerminate: (evt, { dy, vy }) => {
+        let duration = 300;
+        if (dy < 150) {
+          duration = Math.abs(dy * 2);
+        }
+        if (dy > 150) {
+          if (vy <= 0) {
+            this.setFeedView(duration);
+          } else {
+            this.setMapView(duration);
+          }
+          this.feedList.setNativeProps({ scrollEnabled: true });
+          return null;
+        }
+
+        if (vy > 0.75) {
+          this.setMapView(duration);
+        } else {
+          this.setFeedView(duration);
+        }
+
+        this.feedList.setNativeProps({ scrollEnabled: true });
+        return null;
+      },
+
+      onPanResponderMove: (event, { dy }) => {
+        this.setFeedWrapperOffset(dy);
+      },
+    });
   }
 
   async componentWillMount() {
@@ -169,6 +251,11 @@ class Feed extends Component {
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+    navigation.addListener('willFocus', () => {
+      this.feedList.setNativeProps({ scrollEnabled: true });
+    });
+
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
 
@@ -259,6 +346,69 @@ class Feed extends Component {
         const from = (longitude && longitude) ? [longitude, latitude] : [];
         this.props.feeds.refetch({ offset: 0, filter: { type, from } });
       });
+    }
+  }
+
+  onScroll = (event) => {
+    this.setState(() => ({ yPos: event }));
+  }
+
+  onScrollEndDrag = (event) => {
+    if (event.nativeEvent.contentOffset.y < -100) {
+      this.setMapView();
+    } else {
+      this.setFeedView();
+    }
+  }
+
+  setMapView = (duration = 300) => {
+    const LayoutAnimationconfigInner = {
+      duration: parseInt(duration, 0),
+      update: {
+        type: 'easeInEaseOut',
+      },
+      useNativeDriver: true,
+    };
+
+    if (Platform.OS === 'ios') {
+      LayoutAnimation.configureNext(LayoutAnimationconfigInner, () => this.setState({ mapView: true }));
+    } else {
+      LayoutAnimation.configureNext(LayoutAnimationconfig);
+    }
+
+    this.feedWraper.setNativeProps({ top: winHeight + 100 });
+
+    if (Platform.OS === 'android') {
+      setTimeout(() => this.setState({ mapView: true }), 600);
+    }
+  }
+
+  setFeedView = (duration = 300) => {
+    const LayoutAnimationconfigInner = {
+      duration: parseInt(duration, 0),
+      update: {
+        type: 'easeInEaseOut',
+      },
+      useNativeDriver: true,
+    };
+
+    if (Platform.OS === 'ios') {
+      LayoutAnimation.configureNext(LayoutAnimationconfigInner, () => this.setState({ mapView: false }));
+    } else {
+      LayoutAnimation.configureNext(LayoutAnimationconfig);
+    }
+
+    this.feedWraper.setNativeProps({ top: 0 });
+
+    if (Platform.OS === 'android') {
+      this.setState({ mapView: false });
+    }
+  }
+
+  setFeedWrapperOffset = (offset) => {
+    if (offset > 0) {
+      LayoutAnimation.configureNext(LayoutAnimationconfig);
+      this.feedWraper.setNativeProps({ top: offset });
     }
   }
 
@@ -558,7 +708,7 @@ class Feed extends Component {
     return (
       <DataList
         innerRef={(list) => { this.feedList = list; }}
-        data={feeds}
+        data={{rows: [], count: 0}}
         header={this.renderHeader}
         renderItem={this.renderItem}
         fetchMoreOptions={{
@@ -575,13 +725,17 @@ class Feed extends Component {
         }}
         shouldUpdateAnimatedValue
         noResultText={noResultText}
+        onScroll={this.onScroll}
+        onScrollEndDrag={this.onScrollEndDrag}
       />
     );
   }
 
   renderMap = () => (
     <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')} style={styles.mapWrapper}>
-      <Image source={Map} style={styles.mapImg} />
+      <View>
+        <Image source={Map} style={styles.mapImg} />
+      </View>
     </TouchableOpacity>
   );
 
@@ -594,22 +748,40 @@ class Feed extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         { /*
         <Supporter />
         */ }
-        <Circle animatable />
+        {/* <Circle animatable /> */}
         {/* <NewsCard isStatic title="Wednesday we celebrated our 10th anniversarry" /> */}
-        {this.renderFeed()}
-        {this.renderShareModal()}
-        {/* <Filter
-          selected={this.state.filterType}
-          onPress={this.onFilterChange}
-          showModal={this.state.filterOpen}
-          onCloseModal={() => this.setFilterVisibility(false)}
+        {/* <MapView
+          fullView={this.state.mapView}
+          setFeedView={() => this.setFeedView(300)}
+          navigation={navigation}
         /> */}
-        {this.renderCoCreateModal()}
+        <View
+          style={{ flex: 1 }}
+          ref={(ref) => { this.feedWraper = ref; }}
+          {...this.panResponder.panHandlers}
+        >
+          <Image
+            source={require('@assets/feed_bg.png')}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height,
+              resizeMode: 'cover',
+            }}
+          />
+          <Circle animatable />
+          {this.renderFeed()}
+        </View>
+        {this.renderShareModal()}
+        {/* {this.renderCoCreateModal()} */}
       </Wrapper>
     );
   }

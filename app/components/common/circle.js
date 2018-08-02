@@ -37,6 +37,7 @@ class Circle extends PureComponent {
         outputRange: [yOffset, -1000],
       });
     }
+
     return (
       <AnimatedLinearGradient colors={Gradients.blue} style={[styles.circle, style, { top }]} />
     );

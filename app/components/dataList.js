@@ -166,6 +166,7 @@ class DataList extends PureComponent {
       innerRef,
       onEndReachedThreshold,
       shouldUpdateAnimatedValue,
+      onScroll,
     } = this.props;
     return (
       <AnimatedFlatlist
@@ -173,8 +174,8 @@ class DataList extends PureComponent {
         ref={innerRef}
         data={data.rows}
         keyExtractor={item => item.id}
-        refreshing={data.networkStatus === 4 || data.networkStatus === 2}
-        onRefresh={() => this.shouldRefetch()}
+        // refreshing={data.networkStatus === 4 || data.networkStatus === 2}
+        // onRefresh={() => this.shouldRefetch()}
         onEndReachedThreshold={onEndReachedThreshold}
         ListHeaderComponent={this.renderHeader}
         ListFooterComponent={this.renderFooter}
@@ -182,9 +183,21 @@ class DataList extends PureComponent {
         showsVerticalScrollIndicator={false}
         onScroll={
           shouldUpdateAnimatedValue ?
-            Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])
-            : null
+            Animated.event(
+              [{ nativeEvent: { contentOffset: { y: this.animatedValue } } }],
+              { listener: (event) => { onScroll(event.nativeEvent.contentOffset.y); } },
+            )
+            : Animated.event(
+              [],
+              {
+                useNativeDriver: true,
+                listener: (event) => { onScroll(event.nativeEvent.contentOffset.y); },
+              },
+            )
         }
+        overScrollMode="never"
+        scrollEventThrottle={16}
+        bounces={false}
       />
     );
   }
@@ -217,6 +230,7 @@ DataList.propTypes = {
   shouldUpdateAnimatedValue: PropTypes.bool,
   loadMorePosition: PropTypes.string,
   loadMoreButton: PropTypes.func,
+  onScroll: PropTypes.func,
 };
 
 DataList.defaultProps = {
@@ -231,6 +245,7 @@ DataList.defaultProps = {
   shouldUpdateAnimatedValue: false,
   loadMoreButton: null,
   loadMorePosition: 'top',
+  onScroll: () => {},
 };
 
 export default withNavigation(DataList);

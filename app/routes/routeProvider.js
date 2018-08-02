@@ -66,6 +66,8 @@ import Participants from '@screens/group/Participants';
 import AddParticipant from '@screens/group/AddParticipant';
 import EditGroup from '@screens/group/EditGroup';
 
+import Test from '@screens/Test';
+
 const TabRoutes = {
   Feed: {
     screen: Feed,
@@ -182,6 +184,8 @@ export const Routes = {
   AddParticipant: { screen: AddParticipant },
   EditGroup: { screen: EditGroup },
   CloseByGroupsMap: { screen: CloseByGroupsMap },
+
+  Test: { screen: Test },
 };
 
 export const AppNavigator = StackNavigator(Routes,

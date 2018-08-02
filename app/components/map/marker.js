@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, Image, View, Animated, Easing } from 'react-native';
 import MapView from 'react-native-maps';
-import { StyleSheet, Image, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
@@ -60,13 +60,20 @@ const styles = StyleSheet.create({
     color: Colors.background.fullWhite,
     fontSize: 10,
   },
+  currentMarkerWrapper: {
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   currentMarker: {
     height: 40,
     width: 40,
     borderRadius: 20,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     backgroundColor: 'rgba(162, 123, 168, 0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   currentMarkerInner: {
     height: 20,
@@ -79,10 +86,37 @@ const styles = StyleSheet.create({
 });
 
 class Marker extends PureComponent {
-  state = { bgRender: 1, profileRender: 2 }
+  state = { bgRender: 1, profileRender: 2, pulseAnim: new Animated.Value(1) }
+
+  componentDidMount() {
+    const pulseAnimation = Animated.sequence([
+      Animated.timing(this.state.pulseAnim, {
+        toValue: 0,
+        duration: 800,
+        easing: Easing.bezier(0.45, 0.01, 0.49, 0.98),
+      }),
+      Animated.timing(this.state.pulseAnim, {
+        toValue: 1,
+        duration: 800,
+        easing: Easing.bezier(0.45, 0.01, 0.49, 0.98),
+      }),
+    ]);
+    Animated.loop(
+      pulseAnimation,
+    ).start();
+  }
 
   render() {
     const { onPress, coordinate, image, children, count, current, tripType } = this.props;
+
+    const tranformStyle = {
+      transform: [{
+        scale: this.state.pulseAnim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.6, 1],
+        }),
+      }],
+    };
 
     if (current) {
       return (
@@ -91,7 +125,8 @@ class Marker extends PureComponent {
           coordinate={coordinate}
           centerOffset={{ x: 0, y: -34 }}
         >
-          <View style={styles.currentMarker}>
+          <View style={styles.currentMarkerWrapper}>
+            <Animated.View style={[styles.currentMarker, tranformStyle]} />
             <View style={styles.currentMarkerInner} />
           </View>
         </MapView.Marker>
