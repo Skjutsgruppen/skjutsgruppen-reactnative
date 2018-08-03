@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
+import Supporter from '@components/feed/card/supporter';
 import { Wrapper, Circle } from '@components/common';
 import { Heading } from '@components/utils/texts';
 import { withFeed } from '@services/apollo/trip';
@@ -591,6 +592,9 @@ class Feed extends Component {
   render() {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
+        { /*
+        <Supporter />
+        */ }
         <Circle animatable />
         {/* <NewsCard isStatic title="Wednesday we celebrated our 10th anniversarry" /> */}
         {this.renderFeed()}

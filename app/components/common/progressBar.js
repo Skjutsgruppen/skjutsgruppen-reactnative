@@ -9,10 +9,13 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.background.lightGray,
     marginTop: 20,
+    borderRadius: 2,
   },
   bar: {
     height: 4,
     width: '0%',
+    borderTopLeftRadius: 2,
+    borderBottomLeftRadius: 2,
   },
 });
 
