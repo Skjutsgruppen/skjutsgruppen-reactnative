@@ -103,6 +103,19 @@ subscription{
           photoUrl
         }
       }
+      ... on GardenStatus {
+        User {
+          id
+          firstName
+          avatar
+        }
+        feedable
+        GardenInfo {
+          server
+          programmer
+          projectManager
+        }
+      }
     }
     remove
   }
@@ -208,6 +221,19 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
       Experience{
         id
         photoUrl
+      }
+    }
+    ... on GardenStatus {
+      User {
+        id
+        firstName
+        avatar
+      }
+      feedable
+      GardenInfo {
+        server
+        programmer
+        projectManager
       }
     }
    }

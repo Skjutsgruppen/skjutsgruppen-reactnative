@@ -37,6 +37,7 @@ export const FEEDABLE_NEWS = 'News';
 export const FEEDABLE_EXPERIENCE = 'Experience';
 export const FEEDABLE_PROFILE = 'Profile';
 export const FEEDABLE_LOCATION = 'Location';
+export const FEEDABLE_GARDEN = 'GardenInfo';
 
 export const OPEN_GROUP = 'OpenGroup';
 export const CLOSE_GROUP = 'ClosedGroup';

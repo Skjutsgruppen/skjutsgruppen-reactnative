@@ -5,11 +5,14 @@ import {
   FEEDABLE_GROUP,
   FEEDABLE_NEWS,
   FEEDABLE_EXPERIENCE,
+  FEEDABLE_GARDEN,
 } from '@config/constant';
 import Group from '@components/feed/card/group';
 import Trip from '@components/feed/card/trip';
 import News from '@components/feed/card/news';
 import Experience from '@components/feed/card/experience';
+import Supporter from '@components/feed/card/supporter';
+import GardenInfo from '@components/feed/card/gardenInfo';
 
 const feedItem = ({ feed, onPress, onSharePress }) => {
   if (feed.feedable === FEEDABLE_TRIP) {
@@ -48,6 +51,26 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
         onPress={onPress}
         onSharePress={onSharePress}
         experience={feed.Experience}
+      />
+    );
+  }
+
+  if (feed.feedable === FEEDABLE_GARDEN && feed.User && feed.User.id) {
+    return (
+      <Supporter
+        onPress={() => { }}
+        garden={feed.GardenInfo}
+        user={feed.User}
+      />
+    );
+  }
+
+  if (feed.feedable === FEEDABLE_GARDEN && !feed.User.id) {
+    return (
+      <GardenInfo
+        onPress={() => { }}
+        garden={feed.GardenInfo}
+        user={feed.User}
       />
     );
   }

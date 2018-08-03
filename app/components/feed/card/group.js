@@ -89,11 +89,10 @@ class Group extends Component {
   render() {
     const { group, onPress, min, onSharePress, wrapperStyle } = this.props;
 
-    let profileImage = null;
+    if (!group || (group && !group.id)) return null;
+    if (group.isDeleted) return null;
 
-    if (group.isDeleted) {
-      return null;
-    }
+    let profileImage = null;
 
     if (!min) {
       if (group.User.avatar) {

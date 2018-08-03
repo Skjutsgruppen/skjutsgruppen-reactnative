@@ -114,9 +114,9 @@ class Trip extends Component {
 
   render() {
     const { trip, onPress, onSharePress, wrapperStyle, shouldHandleRecurring } = this.props;
-    if (trip.isDeleted) {
-      return null;
-    }
+
+    if (!trip || (trip && !trip.id)) return null;
+    if (trip.isDeleted) return null;
 
     let profileImage = null;
     if (trip.User.avatar) {
