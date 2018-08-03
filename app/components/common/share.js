@@ -336,7 +336,13 @@ class Share extends Component {
             shareType = GROUP_SHARED;
           }
 
-          FBShare.link(shareType, detail);
+          if (Platform.OS === 'ios') {
+            setTimeout(() => {
+              FBShare.link(shareType, detail);
+            }, 1000);
+          } else {
+            FBShare.link(shareType, detail);
+          }
         }
         await share({ id, type, share: shareInput });
       }
