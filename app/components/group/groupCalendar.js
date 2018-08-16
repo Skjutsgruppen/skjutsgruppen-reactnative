@@ -38,6 +38,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   return (
     <View>
       <Calendar
+        firstDay={1}
         displayLoadingIndicator={loading}
         markingType={'period'}
         current={tripDate}
