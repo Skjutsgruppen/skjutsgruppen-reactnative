@@ -673,6 +673,7 @@ class TripDetail extends Component {
         <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
           <View style={styles.returnModalContent}>
             <Calendar
+              firstDay={1}
               current={tripDate}
               markedDates={markedDates}
               markingType={'period'}

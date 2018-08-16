@@ -329,7 +329,7 @@ class Map extends PureComponent {
     return (
       <View style={styles.container}>
         <Navigation
-          onPressBack={this.handleBack} 
+          onPressBack={this.handleBack}
           onPressFilter={this.onFilterChange}
         />
         <MapView

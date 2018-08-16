@@ -24,6 +24,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import Colors from '@theme/colors';
 import MyLocationIcon from '@assets/icons/ic_my_location.png';
 import { trans } from '../lang/i18n';
+import Loading from '@components/common/loading';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -519,7 +520,7 @@ class RouteMap extends PureComponent {
     const { __typename } = info;
     const { pressShareLocation } = navigation.state.params;
 
-    if (loading || locationSharedToSpecificResource.loading) return null;
+    if (loading || locationSharedToSpecificResource.loading) return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
 
     return (
       <View style={styles.container}>
