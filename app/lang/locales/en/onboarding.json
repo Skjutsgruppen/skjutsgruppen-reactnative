@@ -85,13 +85,19 @@
   "will_reset_your_session": "Are you sure you want to go back? This will reset your current session.",
   "new_number": "It seems you are using new phone number. Do you want to update your phone number?",
   "generating_code": "generating code",
-  "number_changed":"Your number is changed successfully",
+  "number_changed": "Your number is changed successfully",
   "increase_trust_and_security": "Increase trust and security",
   "now_you_will_sync_your_phone_book": "Now you will sync your phone book to increase trust and security.",
   "you_will_be_able_to_send_your_live_location_with_SMS": "You will be able to send your live location with SMS (text message) to your friends and family so they can follow your ride.",
   "you_will_also_see_how_you_know_all_the_other_participants": "You will also see how you know all the other participants.",
   "if_you_and_another_participant_has_each_others_phone_numbers": "If you and another participant has each others phone numbers in your phone books, you are connected as friends (you can adjust this at any time).",
-  "press_sync_and_then_ok": "Press “Sync” and then “Allow”.",
+  "press_sync_and_then_allow": "Press “Sync” and then “Allow”.",
   "sync": "Sync",
-  "contact_permission": "We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections)." 
+  "contact_permission": "We want to trust you. In this movement we trust each other by showing how we know each other. If you and another participant has each others phone numbers you are connected as friends (as always, you have full control and can delete friend connections).",
+  "sms_permission": "Please allow SMS permission to send sms and verify your phone number.",
+  "forgot_email": "I forgot my email",
+  "phone_number_email": "The phone number is associated with email {{email}}",
+  "phone_number_email_not_found": "Sorry! could not find user associated with the phone number.",
+  "enter_phone_number_to_view_email": "Please enter your phone number to get hint of the email associated with the number.",
+  "no_email_access_contact_support": "No longer have access to the email address. Send us an email at support@skjutsgruppen.nu to change your password."
 }

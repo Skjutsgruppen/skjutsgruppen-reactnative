@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, Modal, Alert } from 'react-native';
 import Container from '@components/auth/container';
 import AppNotification from '@components/common/appNotification';
 import Colors from '@theme/colors';
@@ -8,11 +8,13 @@ import StepsTitle from '@components/onBoarding/stepsTitle';
 import { trans } from '@lang/i18n';
 import { Wrapper, Loading, RoundedButton } from '@components/common';
 import { getToast } from '@config/toast';
-import { withForgotPassword } from '@services/apollo/auth';
+import { withForgotPassword, withGetUserFromPhoneNumber } from '@services/apollo/auth';
 import { compose } from 'react-apollo';
 import BackButton from '@components/onBoarding/backButton';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { AppText } from '@components/utils/texts';
+import Phone from '@components/phone';
 
 import WarningIcon from '@assets/icons/ic_warning.png';
 import SuccessIcon from '@assets/icons/ic_checked_green.png';
@@ -39,6 +41,12 @@ const styles = StyleSheet.create({
   paddedSection: {
     paddingHorizontal: 30,
   },
+  forgotEmail: {
+    marginTop: 20,
+    paddingVertical: 10,
+    marginHorizontal: 30,
+    alignSelf: 'flex-start',
+  },
 });
 
 class ForgotPassword extends Component {
@@ -55,6 +63,9 @@ class ForgotPassword extends Component {
       showNotificationBar: false,
       notificationMessage: null,
       notificationType: null,
+      emailModal: false,
+      phoneNumber: '',
+      number: '',
     });
   }
 
@@ -97,8 +108,30 @@ class ForgotPassword extends Component {
     }
   }
 
+  onForgotEmail = () => {
+    this.props.getUserByPhoneNumber(this.state.phoneNumber)
+      .then((res) => {
+        let email = '';
+        if (res.data && res.data.getUserByPhoneNumber) {
+          email = res.data.getUserByPhoneNumber.email;
+        }
+        Alert.alert('', trans('onboarding.phone_number_email', { email }));
+      })
+      .catch(() => {
+        Alert.alert('', trans('onboarding.phone_number_email_not_found'));
+      });
+  }
+
   onPressBack = () => {
     this.props.navigation.goBack();
+  }
+
+  onPhoneNumberChange = (code, number) => {
+    let trimedNumber = '';
+    if (number) {
+      trimedNumber = number.replace(/^0+/, '');
+    }
+    this.setState({ number: trimedNumber, phoneNumber: `${code}${trimedNumber}` });
   }
 
   dismissNotification = () => {
@@ -121,6 +154,43 @@ class ForgotPassword extends Component {
       pass: () => (errors.length === 0),
       errors,
     };
+  }
+
+  revealEmailModal = () => {
+    const { emailModal, number } = this.state;
+    return (
+      <Modal
+        visible={emailModal}
+        animationType="slide"
+        onRequestClose={() => this.setState({ emailModal: false })}
+      >
+        <Container>
+          <StepsHeading style={[styles.paddedSection, { maxWidth: 280 }]}>{trans('onboarding.forgot_email')}</StepsHeading>
+          <StepsTitle style={styles.paddedSection}>
+            {trans('onboarding.enter_phone_number_to_view_email')}
+          </StepsTitle>
+          <Phone
+            defaultCode="+46"
+            placeholder={trans('profile.your_mobile_number')}
+            onChange={({ code, number: num }) => this.onPhoneNumberChange(code, num)}
+            value={number}
+            autoFocus
+          />
+          <View style={styles.paddedSection}>
+            <RoundedButton
+              onPress={this.onForgotEmail}
+              style={styles.button}
+              bgColor={Colors.background.pink}
+            >
+              {trans('global.search')}
+            </RoundedButton>
+          </View>
+          <View style={styles.paddedSection}>
+            <BackButton leftAligned onPress={() => this.setState({ emailModal: false })} />
+          </View>
+        </Container>
+      </Modal>
+    );
   }
 
   renderButton = () => {
@@ -180,10 +250,22 @@ class ForgotPassword extends Component {
               returnKeyType="send"
             />
           </View>
+          <AppText
+            color={Colors.text.blue}
+            onPress={() => this.setState({ emailModal: true })}
+            style={styles.forgotEmail}
+            fontVariation="semibold"
+          >
+            {trans('onboarding.forgot_email')}
+          </AppText>
           {this.renderButton()}
+          <AppText style={styles.forgotEmail}>
+            {trans('onboarding.no_email_access_contact_support')}
+          </AppText>
           <View style={styles.paddedSection}>
             <BackButton leftAligned onPress={this.onPressBack} />
           </View>
+          {this.revealEmailModal()}
         </Container>
       </Wrapper>
     );
@@ -195,6 +277,11 @@ ForgotPassword.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   forgotPassword: PropTypes.func.isRequired,
+  getUserByPhoneNumber: PropTypes.func.isRequired,
 };
 
-export default compose(withForgotPassword, withNavigation)(ForgotPassword);
+export default compose(
+  withForgotPassword,
+  withGetUserFromPhoneNumber,
+  withNavigation,
+)(ForgotPassword);

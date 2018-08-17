@@ -413,21 +413,6 @@ class Profile extends Component {
       .catch(() => this.setState({ loading: false }));
   }
 
-  fbLink() {
-    const { user } = this.state;
-
-    if (user.fbId) {
-      return (
-        <ProfileAction
-          onPress={() => Linking.openURL(`https://www.facebook.com/${user.fbId}`)}
-          label={trans('profile.facebook_profile')}
-        />
-      );
-    }
-
-    return null;
-  }
-
   twLink() {
     const { user } = this.state;
 
@@ -600,7 +585,6 @@ class Profile extends Component {
             {this.renderRelation()}
             {user.totalExperiences > 0 && <MyExperience id={user.id} />}
             <View style={styles.actionsWrapper}>
-              {this.fbLink()}
               {this.twLink()}
               <ProfileAction
                 label={`${user.totalOffered || 0} ${trans('profile.offered')} ${(user.totalOffered || 0) <= 1 ? trans('global.ride') : trans('global.rides')}`}

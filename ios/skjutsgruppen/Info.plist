@@ -58,7 +58,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-					<string>__RN_CONFIG_TWITTER_KEY_URL</string>
+				<string>__RN_CONFIG_TWITTER_KEY_URL</string>
 			</array>
 		</dict>
 	</array>
@@ -122,9 +122,6 @@
 	<array>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
-		<string>AvenirLTStd-Book.ttf</string>
-		<string>AvenirLTStd-Heavy.ttf</string>
-		<string>AvenirLTStd-Medium.ttf</string>
 		<string>SFUIDisplay-Bold.ttf</string>
 		<string>SFUIDisplay-Regular.ttf</string>
 		<string>SFUIText-Bold.ttf</string>
@@ -132,6 +129,7 @@
 		<string>SFUIDisplay-Semi-Bold.ttf</string>
 		<string>SFUIText-RegularItalic.ttf</string>
 		<string>SFUIText-SemiBold.ttf</string>
+		<string>AvenirLTStd-Black.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import ParticipantsList from '@components/group/participant/participantList';
 import { withGroupMembers } from '@services/apollo/group';
+import { OPEN_GROUP } from '@config/constant';
 
 const ParticipantLists = withGroupMembers(ParticipantsList);
 
@@ -18,7 +19,12 @@ class Participants extends Component {
 
     const { group } = navigation.state.params;
 
-    return (<ParticipantLists id={group.id} isAdmin={group.isAdmin} />);
+    return (
+      <ParticipantLists
+        id={group.id}
+        isAdmin={group.isAdmin || group.type === OPEN_GROUP}
+      />
+    );
   }
 }
 

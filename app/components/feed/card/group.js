@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, Image, TouchableWithoutFeedback, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { STRETCH_TYPE_AREA, STRETCH_TYPE_ROUTE, FEEDABLE_GROUP } from '@config/constant';
 import { Footer } from '@components/feed/card';
@@ -20,11 +20,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 19,
     marginVertical: 10,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   profilePicWrapper: {
     height: profilePicSize,
@@ -87,7 +93,7 @@ class Group extends Component {
   }
 
   render() {
-    const { group, onPress, min, onSharePress, wrapperStyle } = this.props;
+    const { group, onPress, min, onSharePress } = this.props;
 
     let profileImage = null;
 
@@ -104,7 +110,7 @@ class Group extends Component {
     }
 
     return (
-      <View style={[styles.wrapper, wrapperStyle]}>
+      <View style={styles.wrapper}>
         <TouchableWithoutFeedback
           onPress={() => onPress(FEEDABLE_GROUP, group)}
         >
@@ -206,13 +212,11 @@ Group.propTypes = {
   onPress: PropTypes.func.isRequired,
   onSharePress: PropTypes.func,
   min: PropTypes.bool,
-  wrapperStyle: ViewPropTypes.style,
 };
 
 Group.defaultProps = {
   onSharePress: null,
   min: false,
-  wrapperStyle: {},
 };
 
 export default Group;

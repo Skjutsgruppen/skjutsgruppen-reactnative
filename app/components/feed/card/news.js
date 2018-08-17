@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, TouchableWithoutFeedback, Image, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ImageBackground, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
-import Date from '@components/date';
 import { trans } from '@lang/i18n';
 import { FEEDABLE_NEWS } from '@config/constant';
-import { AppText } from '@components/utils/texts';
+import { AppText, Heading } from '@components/utils/texts';
+import TouchableHighlight from '@components/touchableHighlight';
+import Footer from '@components/feed/card/newsFooter';
 
 const cardHeight = 484;
 
@@ -19,21 +20,40 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 10,
     borderRadius: 12,
-    shadowOffset: { width: 0, height: 1 },
-    shadowColor: 'rgba(0,0,0,0.1)',
-    shadowOpacity: 0,
-    shadowRadius: 5,
-    elevation: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   imgWrapper: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: cardHeight / 2,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: Colors.background.gray,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+  },
+  label: {
+    margin: 20,
+  },
+  titleContainer: {
+    paddingVertical: 16,
+    marginHorizontal: 32,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   img: {
     width: '100%',
@@ -86,66 +106,97 @@ const styles = StyleSheet.create({
   },
 });
 
-const News = ({ news, onPress, wrapperStyle }) => {
-  const renderLinks = () => {
-    if (!news.links) return null;
-    let i = 0;
-    return news.links.map((link) => {
-      i += 1;
-      return (<AppText key={i}>{link}</AppText>);
-    });
-  };
+// const News = ({ news, onPress, wrapperStyle, isStatic }) => {
+//   const renderLinks = () => {
+//     if (!news.links) return null;
+//     let i = 0;
+//     return news.links.map((link) => {
+//       i += 1;
+//       return (<AppText key={i}>{link}</AppText>);
+//     });
+//   };
 
-  let image = null;
-  if (news.photo) {
-    image = (<Image source={{ uri: news.photo }} style={styles.img} />);
-  }
+//   let image = null;
+//   if (news.photo) {
+//     image = (<Image source={{ uri: news.photo }} style={styles.img} />);
+//   }
 
-  return (
-    <View style={[styles.wrapper, wrapperStyle]}>
-      <TouchableWithoutFeedback
-        onPress={() => onPress(FEEDABLE_NEWS, news)}
-        style={styles.flex1}
+//   return (
+//     <View style={[styles.wrapper, wrapperStyle]}>
+//       <TouchableWithoutFeedback
+//         onPress={() => onPress(FEEDABLE_NEWS, news)}
+//         style={styles.flex1}
+//       >
+//         <View style={styles.flex1}>
+//           <View style={styles.imgWrapper}>
+//             {image}
+//           </View>
+//           <View style={[styles.offerType, styles.blueBg]}>
+//             <AppText size={10} color={Colors.text.white}>{trans('feed.your_movement').toUpperCase()}</AppText>
+//           </View>
+//           <View style={styles.detail}>
+//             <View>
+//               <AppText color={Colors.text.darkGray} style={styles.text}>
+//                 <AppText color={Colors.text.blue} fontVariation="bold">
+//                   {trans('feed.your_movement')}
+//                 </AppText>
+//               </AppText>
+//               <AppText color={Colors.text.darkGray} style={styles.text}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></AppText>
+//             </View>
+//           </View>
+//           <View style={styles.comment}>
+//             <AppText style={styles.text}>{news.body}</AppText>
+//             {renderLinks()}
+//             <View style={styles.commentGradientOverlay} />
+//           </View>
+//         </View>
+//       </TouchableWithoutFeedback>
+//     </View>
+//   );
+// };
+
+const News = ({ news: { title, photo } }) => (
+  <View style={styles.wrapper}>
+    <View style={styles.imgWrapper}>
+      <ImageBackground
+        source={{ uri: `https://skjuts.staging.yipl.com.np/assets/img/admin_message/${photo}` }}
+        style={{ width: '100%', height: cardHeight, borderRadius: 12 }}
       >
-        <View style={styles.flex1}>
-          <View style={styles.imgWrapper}>
-            {image}
-          </View>
-          <View style={[styles.offerType, styles.blueBg]}>
-            <AppText size={10} color={Colors.text.white}>{trans('feed.your_movement').toUpperCase()}</AppText>
-          </View>
-          <View style={styles.detail}>
-            <View>
-              <AppText color={Colors.text.darkGray} style={styles.text}>
-                <AppText color={Colors.text.blue} fontVariation="bold">
-                  {trans('feed.your_movement')}
-                </AppText>
-              </AppText>
-              <AppText color={Colors.text.darkGray} style={styles.text}><Date format="MMM DD HH:mm">{news.updatedAt}</Date></AppText>
+        <View style={styles.content}>
+          <TouchableHighlight
+            onPress={() => {}}
+            style={styles.flex1}
+          >
+            <View style={styles.flex1}>
+              <AppText color={Colors.text.white} style={styles.label}>{trans('feed.news')}</AppText>
+              <View style={styles.titleContainer}>
+                <Heading size={48} color={Colors.text.white} centered>{title}</Heading>
+              </View>
             </View>
-          </View>
-          <View style={styles.comment}>
-            <AppText style={styles.text}>{news.body}</AppText>
-            {renderLinks()}
-            <View style={styles.commentGradientOverlay} />
-          </View>
+          </TouchableHighlight>
+          <Footer
+            onSharePress={() => {}}
+            onCommentPress={() => {}}
+            totalFeeds={10}
+          />
         </View>
-      </TouchableWithoutFeedback>
+      </ImageBackground>
     </View>
-  );
-};
+  </View>
+);
 
 News.propTypes = {
   news: PropTypes.shape({
     id: PropTypes.number,
+    title: PropTypes.string,
     body: PropTypes.string,
+    photo: PropTypes.string,
   }).isRequired,
-  wrapperStyle: ViewPropTypes.style,
   onPress: PropTypes.func.isRequired,
 };
 
 News.defaultProps = {
-  wrapperStyle: {},
+  title: '',
 };
 
 export default News;

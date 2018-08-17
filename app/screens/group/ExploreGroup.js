@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableOpacity,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { withExploreGroup, withNearByGroups } from '@services/apollo/group';
@@ -132,8 +133,10 @@ class ExploreGroup extends PureComponent {
 
   async componentWillMount() {
     try {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+      }
     } catch (err) {
       console.warn(err);
     }
@@ -274,7 +277,7 @@ class ExploreGroup extends PureComponent {
   }
 
   render() {
-    const alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    const alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'];
     const { totalGroupsCount } = this.state;
     let index = 0;
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View, ScrollView, Platform } from 'react-native';
+import { StyleSheet, Modal, View, ScrollView, Platform, PermissionsAndroid, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
@@ -132,12 +132,26 @@ class AddParticipant extends Component {
       .then(() => {
         if (selectedContacts.length > 0) {
           storeUnregisteredParticipants({ groupId: group.id, phoneNumbers: selectedContacts })
-            .then(() => {
-              SendSMS.send({
-                body: `I would like to invite you to ${group.name} group`,
-                recipients: selectedContacts,
-                successTypes: ['sent', 'queued'],
-              }, () => { });
+            .then(async () => {
+              if (Platform.OS === 'android') {
+                const permission = await PermissionsAndroid
+                  .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+                if (!permission) {
+                  const status = await PermissionsAndroid
+                    .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
+
+                  if (status === 'granted') {
+                    this.sendSMS(group.name, selectedContacts);
+                  } else {
+                    Alert.alert(trans('share.allow_sms_permission'));
+                  }
+                } else {
+                  this.sendSMS(group.name, selectedContacts);
+                }
+              } else {
+                this.sendSMS(group.name, selectedContacts);
+              }
             }).catch(() => this.setState({ loading: false, confirmModalVisibility: false }));
         } else {
           navigation.goBack();
@@ -174,6 +188,14 @@ class AddParticipant extends Component {
     const obj = {};
     obj[type] = data;
     this.setState(obj);
+  }
+
+  sendSMS = (name, selectedContacts) => {
+    SendSMS.send({
+      body: `I would like to invite you to ${name} group`,
+      recipients: selectedContacts,
+      successTypes: ['sent', 'queued'],
+    }, () => { });
   }
 
   renderButton = () => (
