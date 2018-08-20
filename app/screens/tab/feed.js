@@ -13,8 +13,6 @@ import FeedIconActive from '@assets/icons/ic_feed_active.png';
 import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
-import { Crashlytics } from 'react-native-fabric';
-// import { Crashlytics } from 'react-native-fabric';
 import {
   FEEDABLE_TRIP,
   FEEDABLE_GROUP,
@@ -141,7 +139,6 @@ class Feed extends Component {
   }
 
   async componentWillMount() {
-    Crashlytics.crash();
     const { feeds, subscribeToFeed, navigation } = this.props;
     const { params } = navigation.state;
 
