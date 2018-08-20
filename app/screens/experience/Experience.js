@@ -86,6 +86,7 @@ class Experience extends Component {
     try {
       this.setState({ loading: true, error: '' });
       const photo = await RNFS.readFile(image, 'base64');
+      console.log(photo);
       const experience = {
         description,
         photo,
@@ -101,6 +102,7 @@ class Experience extends Component {
   }
 
   takePicture = (data) => {
+    console.log(data);
     this.setState({ image: data.path, screen: SCREEN_PREVIEW });
   }
 
