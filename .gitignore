@@ -38,6 +38,9 @@ yarn-error.log
 
 # pods 
 ios/Pods/
+# fabric key and secret
+ios/fabric.apikey
+ios/fabric.secret
 
 # BUCK
 buck-out/
