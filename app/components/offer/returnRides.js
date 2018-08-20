@@ -67,7 +67,6 @@ const ReturnRides = ({ avatar, trips, type, onPress }) => (
       trips.map(trip => (
         <View key={trip.id} style={styles.card}>
           <View style={styles.profilePicWrapper}>
-            {console.log(avatar)}
             <Avatar size={48} imageURI={avatar} isSupported />
             {/* <Image source={{ uri: avatar }} style={styles.profilePic} /> */}
             <View
