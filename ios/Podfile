@@ -2,7 +2,8 @@
  platform :ios, '9.0'
 
 target 'Skjutsgruppen' do
-    pod 'Fabric'
+  pod 'Fabric'
+  pod 'Crashlytics'
 #    pod 'Digits'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
@@ -50,6 +51,8 @@ target 'Skjutsgruppen' do
 
 #braintree
   pod 'BraintreeDropIn'
+
+  pod 'ReactNativeFabric', :path => '../node_modules/react-native-fabric'
 
 end
 
