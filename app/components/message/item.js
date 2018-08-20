@@ -560,7 +560,9 @@ class Item extends PureComponent {
     });
   }
 
-  groupNotificationBundle = ({ Notifiable, Notifiers, createdAt, id, ids, User, Notifications }) => {
+  groupNotificationBundle = (
+    { Notifiable, Notifiers, createdAt, id, ids, User, Notifications }
+  ) => {
     const route = 'GroupDetail';
     let params = { id: Notifiable.id };
     const plus = Notifiers ? Notifiers.length - 1 : 0;

@@ -90,11 +90,9 @@ class AddParticipant extends Component {
         variables: {
           groupId: this.props.group.id,
         },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          return {
-            friends: { ...fetchMoreResult.friends },
-          };
-        },
+        updateQuery: (previousResult, { fetchMoreResult }) => ({
+          friends: { ...fetchMoreResult.friends },
+        }),
       });
     }
 

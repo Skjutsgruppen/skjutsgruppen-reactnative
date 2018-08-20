@@ -1823,7 +1823,9 @@ query nearByGroups($from: [Float]!,
 `;
 
 export const withNearByGroups = graphql(NEAR_BY_GROUPS_QUERY, {
-  options: ({ from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset, diameter = null }) => ({
+  options: ({
+    from, distFrom, distTo, type, outreach, limit = PER_FETCH_LIMIT, offset, diameter = null,
+  }) => ({
     notifyOnNetworkStatusChange: true,
     variables: { from, distFrom, distTo, type, outreach, limit, offset, diameter },
     fetchPolicy: 'cache-and-network',

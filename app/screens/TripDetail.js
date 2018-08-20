@@ -463,10 +463,10 @@ class TripDetail extends Component {
     };
   }
 
-  isTripStartedForShareLocation = () => {
-    const { trip } = this.state;
-    return getDate(trip.date).subtract(40, 'minute').isBefore();
-  }
+  // isTripStartedForShareLocation = () => {
+  //   const { trip } = this.state;
+  //   return getDate(trip.date).subtract(40, 'minute').isBefore();
+  // }
 
   isTripStarted = () => {
     const { trip } = this.state;
@@ -536,13 +536,13 @@ class TripDetail extends Component {
       return false;
     }
 
-    if (!this.isTripStartedForShareLocation()) {
-      return false;
-    }
+    // if (!this.isTripStartedForShareLocation()) {
+    //   return false;
+    // }
 
-    if (this.isTripEnded()) {
-      return false;
-    }
+    // if (this.isTripEnded()) {
+    //   return false;
+    // }
 
     return true;
   }

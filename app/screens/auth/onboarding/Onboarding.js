@@ -13,7 +13,6 @@ import UserInfo from '@components/onBoarding/userInfo';
 import AddPhoto from '@components/onBoarding/addPhoto';
 import SendMessage from '@components/onBoarding/sendMessage';
 // import WaitingTextMessage from '@components/onBoarding/waitingTextMessage';
-import NumberConfirmed from '@components/onBoarding/numberConfirmed';
 import { Wrapper, ProgressBar } from '@components/common';
 import { trans } from '@lang/i18n';
 import SyncContacts from '@components/onBoarding/syncContacts';

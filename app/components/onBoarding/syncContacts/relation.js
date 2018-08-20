@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
 import AppText from '@components/utils/texts/appText';

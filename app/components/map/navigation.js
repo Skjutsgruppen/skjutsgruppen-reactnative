@@ -5,7 +5,6 @@ import BackIcon from '@assets/icons/ic_back_toolbar.png';
 import Filter from '@components/feed/filter';
 
 import Colors from '@theme/colors';
-import FilterIcon from '@assets/icons/ic_menu_blue.png';
 
 const styles = StyleSheet.create({
   wrapper: {

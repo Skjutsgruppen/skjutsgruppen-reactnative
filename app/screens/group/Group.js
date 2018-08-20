@@ -90,6 +90,7 @@ class Group extends Component {
       group: {},
       error: '',
     };
+    this.container = null;
   }
 
   componentDidMount() {
@@ -348,7 +349,7 @@ class Group extends Component {
             style={{ backgroundColor: 'transparent' }}
           >
             {this.renderProgress()}
-            {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} />}
+            {(activeStep === 1) && <Stretch defaultValue={strech} onNext={this.onStrechNext} scrollContainer={this.container} />}
             {(activeStep === 2) && <About defaultValue={about} onNext={this.onAboutNext} />}
             {(activeStep === 3) && <OpenClosed defaultValue={type} onNext={this.onTypeNext} />}
           </Container>

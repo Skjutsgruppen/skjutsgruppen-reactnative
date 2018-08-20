@@ -145,6 +145,7 @@ class EditGroup extends Component {
       openedComponent: '',
     };
     this.photoButtonClicked = false;
+    this.scrollContainer = null;
   }
 
   componentWillMount() {
@@ -493,6 +494,7 @@ class EditGroup extends Component {
           defaultValue={route}
           buttonLabel={trans('global.done')}
           onNext={this.updateOutreach}
+          scrollContainer={this.scrollContainer}
         />
       );
     }
@@ -544,7 +546,7 @@ class EditGroup extends Component {
             title={openedComponent}
             onBack={() => this.onChangePress(false, '')}
           />
-          <ScrollView showsVerticalIndicator={false}>
+          <ScrollView showsVerticalIndicator={false} ref={(ref) => { this.scrollContainer = ref; }}>
             {openedComponent === 'About' && this.renderAboutForm()}
             {openedComponent === 'Type' && this.renderTypeForm()}
             {openedComponent === 'Outreach' && this.renderOutreachForm()}

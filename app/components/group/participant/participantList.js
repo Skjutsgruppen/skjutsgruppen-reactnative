@@ -199,7 +199,8 @@ class ParticipantList extends Component {
                 return previousResult;
               }
 
-              const rows = previousResult.groupMembers.rows.concat(fetchMoreResult.groupMembers.rows);
+              const rows = previousResult.groupMembers.rows
+                .concat(fetchMoreResult.groupMembers.rows);
 
               return { groupMembers: { ...previousResult.groupMembers, ...{ rows } } };
             },
