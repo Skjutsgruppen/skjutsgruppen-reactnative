@@ -9,7 +9,7 @@ import { compose } from 'react-apollo';
 import { submitGroup } from '@services/apollo/group';
 import Share from '@components/common/share';
 import Completed from '@components/common/completed';
-import { Loading, Wrapper, Container, ProgressBar } from '@components/common';
+import { Loading, Wrapper, Container, ProgressBar, AppNotification } from '@components/common';
 import CustomButton from '@components/common/customButton';
 import Colors from '@theme/colors';
 import { getToast } from '@config/toast';
@@ -19,6 +19,7 @@ import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import { APP_URL } from '@config';
+import ErrorIcon from '@assets/icons/ic_warning.png';
 import SendSMS from 'react-native-sms';
 import FBShare from '@services/facebook/share';
 
@@ -89,6 +90,7 @@ class Group extends Component {
       loading: false,
       group: {},
       error: '',
+      notification: false,
     };
     this.container = null;
   }
@@ -138,10 +140,10 @@ class Group extends Component {
     let error = 0;
     if (outreach === 'area') {
       if (trip.country === '') {
-        this.setState({ error: getToast(['COUNTRY_REQUIRED']) }, this.scrollToTop);
+        this.setState({ error: getToast(['COUNTRY_REQUIRED']), notification: true }, this.scrollToTop);
         error += 1;
       } else if (trip.country === 'SE' && trip.municipality === '') {
-        this.setState({ error: getToast(['MUNICIPALITY_REQUIRED']) }, this.scrollToTop);
+        this.setState({ error: getToast(['MUNICIPALITY_REQUIRED']), notification: true }, this.scrollToTop);
         error += 1;
       }
 
@@ -150,7 +152,7 @@ class Group extends Component {
 
     if (outreach === 'route') {
       if (trip.start.coordinates.length === 0 && trip.end.coordinates.length === 0) {
-        this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']) }, this.scrollToTop);
+        this.setState({ error: getToast(['EITHER_FROM_TO_REQUIRED']), notification: true }, this.scrollToTop);
         error += 1;
       }
 
@@ -171,11 +173,11 @@ class Group extends Component {
 
   onAboutNext = (about) => {
     if (about.photo === '') {
-      this.setState({ error: getToast(['GROUP_PHOTO_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['GROUP_PHOTO_REQUIRED']), notification: true }, this.scrollToTop);
     } else if (about.name === '') {
-      this.setState({ error: getToast(['GROUP_NAME_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['GROUP_NAME_REQUIRED']), notification: true }, this.scrollToTop);
     } else if (about.description === '') {
-      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']) }, this.scrollToTop);
+      this.setState({ error: getToast(['DESCRIPTION_REQUIRED']), notification: true }, this.scrollToTop);
     } else {
       this.setState({ about, activeStep: 3, error: '' }, this.scrollToTop);
     }
@@ -183,6 +185,10 @@ class Group extends Component {
 
   onTypeNext = (type) => {
     this.setState({ type, activeStep: 4 });
+  }
+
+  onCloseNotification = () => {
+    this.setState({ notification: false });
   }
 
   onShareAndPublish = (share) => {
@@ -332,17 +338,19 @@ class Group extends Component {
   }
 
   render() {
-    const { activeStep, error, strech, about, type, shareSearchInputFocused } = this.state;
+    const { activeStep, error, strech, about, type, shareSearchInputFocused, notification } = this.state;
 
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         {(activeStep !== 5) &&
-          <ToolBar
-            title={trans('add.add_a_new_group')}
-            onBack={this.onBackButtonPress}
-          />
+        <ToolBar
+          title={trans('add.add_a_new_group')}
+          onBack={this.onBackButtonPress}
+        />
         }
-        <Toast message={error} type="error" />
+        {notification &&
+          <AppNotification message={error} image={ErrorIcon} type="icon" handleClose={this.onCloseNotification} />
+        }
         {(activeStep !== 5 && activeStep !== 4) &&
           <Container
             innerRef={(ref) => { this.container = ref; }}

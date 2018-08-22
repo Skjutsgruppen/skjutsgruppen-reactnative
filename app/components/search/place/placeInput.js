@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
-    paddingVertical: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
     paddingHorizontal: 20,
     borderRadius: 0,
     flex: 1,
@@ -149,7 +150,7 @@ class PlacesInput extends PureComponent {
       <View style={wrapperStyle}>
         <View style={[styles.inputWrapper]}>
           <TouchableHighlight
-            style={[styles.placeInput, { height }, { ...inputStyle }]}
+            style={[styles.placeInput, { height }, inputStyle ]}
             onPress={() => this.setState({ showModal: true })}
           >
             {this.getPlaceName()}

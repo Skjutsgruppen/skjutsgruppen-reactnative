@@ -592,6 +592,7 @@ class TripDetail extends Component {
 
   recurringRideButton = () => {
     const { trip } = this.state;
+    const maxWidth = (trip.RetunTrip && trip.ReturnTrip.length > 0) ? '45%' : 198;
 
     if (!trip.Recurring || trip.Recurring.length < 1) {
       return null;
@@ -599,12 +600,12 @@ class TripDetail extends Component {
 
     return (
       <TouchableOpacity
-        style={styles.pillBtn}
+        style={[styles.pillBtn, { maxWidth }]}
         onPress={() => this.setRecurringRidesModalVisibility(true)}
         activeOpacity={0.75}
       >
         <Image source={CalendarIcon} style={styles.btnIcon} />
-        <AppText color={Colors.text.gray}>{trans('detail.recurring')}</AppText>
+        <AppText color={Colors.text.gray}>{trip.ReturnTrip.length > 0 ? trans('detail.recurring') : trans('detail.recurring_ride')}</AppText>
       </TouchableOpacity>
     );
   }

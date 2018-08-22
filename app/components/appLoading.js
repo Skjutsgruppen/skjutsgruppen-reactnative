@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 
 import Colors from '@theme/colors';
-import Logo from '@assets/icons/logo.png';
+import Logo from '@assets/logo.png';
 
 const styles = StyleSheet.create({
   wrapper: {

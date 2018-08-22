@@ -32,7 +32,7 @@ const Alphabet = ({ style, onPress, letter }) => (
     activeOpacity={0.8}
     style={[styles.wrapper, style]}
   >
-    <Heading fontVariation="bold" color={Colors.text.gray}>{letter.toUpperCase()}</Heading>
+    <Heading fontVariation="bold" color={Colors.text.gray} style={{ lineHeight: 50 }}>{letter.toUpperCase()}</Heading>
   </TouchableHighlight>
 );
 

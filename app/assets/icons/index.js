@@ -2,7 +2,7 @@ import AddActive from '@assets/icons/icon_add_active.png';
 import AddInactive from '@assets/icons/icon_add_inactive.png';
 import AddPhoto from '@assets/icons/icon_add_photo.png';
 import AddStop from '@assets/icons/icon_add_stop.png';
-import ArrowFat from '@assets/icons/icon_arrow_fat.png';
+import ArrowFat from '@assets/icons/ic_arrow_fat.png';
 import Back from '@assets/icons/icon_back.png';
 import Calender from '@assets/icons/icon_calender.png';
 import Camera from '@assets/icons/icon_camera.png';

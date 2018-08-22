@@ -29,7 +29,7 @@ const Relation = ({ users, size, arrowSize, style }) => (
           </TouchableOpacity>
           {
             ((index + 1) !== users.length) && <Image
-              source={require('@assets/icons/icon_arrow_fat.png')}
+              source={require('@assets/icons/ic_arrow_fat.png')}
               style={[styles.arrow, { height: arrowSize, width: arrowSize }]}
             />
           }

@@ -104,13 +104,6 @@ class Stops extends Component {
     );
     const target = this.state.items[targetIndex];
 
-    // console.log(targetIndex, "target Index");
-    // console.log(index, "current index");
-    // console.log(targetIndex >= 0
-    //   && targetIndex !== index
-    //   && this.targetIndex !== targetIndex
-    //   && target && target.name, "condition for swap");
-
     if (targetIndex >= 0
       && targetIndex !== index
       && this.targetIndex !== targetIndex
