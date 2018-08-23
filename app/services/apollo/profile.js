@@ -33,6 +33,7 @@ subscription updatedProfile($id: Int){
     agreementRead
     agreementAccepted
     contactSynced
+    isBlocked
   }
 }`;
 
@@ -67,6 +68,7 @@ query profile($id: Int){
     agreementRead
     agreementAccepted
     contactSynced
+    isBlocked
   }
 }`;
 
@@ -227,6 +229,7 @@ const CONVERSATION_QUERY = gql`
         totalFeeds
         isParticipant
         experienceStatus
+        isBlocked
         ownerExperience {
           id
           createdAt

@@ -36,5 +36,6 @@
   "what_is_your_group_about": "se_ What is your group about?",
   "is_your_group_open_or_closed": "se_ Is your group open or closed?",
   "open": "se_ Open",
-  "closed": "se_ Closed"
+  "closed": "se_ Closed",
+  "group_not_available": "se_This group is not available"
 }

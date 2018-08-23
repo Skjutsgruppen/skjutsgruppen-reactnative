@@ -100,11 +100,13 @@ class UserTripsList extends PureComponent {
       <PortionList
         data={trips}
         renderItem={({ item }) => (
-          <ListItem
-            trip={item}
-            onPress={this.onPress}
-            onExperiencePress={this.onExperienceIconPress}
-          />
+          item.isBlocked ?
+            null :
+            <ListItem
+              trip={item}
+              onPress={this.onPress}
+              onExperiencePress={this.onExperienceIconPress}
+            />
         )}
         listHeader={this.renderListSearch}
         sectionHeader={

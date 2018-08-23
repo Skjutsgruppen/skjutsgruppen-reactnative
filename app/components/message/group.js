@@ -48,7 +48,9 @@ class Group extends PureComponent {
     return (
       <DataList
         data={groups}
-        renderItem={({ item }) => <ActiveGroupItem key={item.id} group={item} />}
+        renderItem={({ item }) => (item.isBlocked ?
+          null :
+          <ActiveGroupItem key={item.id} group={item} />)}
         infinityScroll={false}
         loadMoreButton={this.loadMore}
         loadMorePosition="bottom"

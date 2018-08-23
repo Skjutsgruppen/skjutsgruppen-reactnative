@@ -31,5 +31,6 @@
   "all_done": "se_ All done!",
   "when_everybody_confirms_experience_will_be_published": "se_ When all tagged participants confirm the experience it will be published.",
   "make_an_experience": "se_ Make an experience!",
-  "click_here_to_take_a_photo": "Click here to take a photo of you and the other participants!"
+  "click_here_to_take_a_photo": "se_Click here to take a photo of you and the other participants!",
+  "experience_not_available": "se_This experience is not available."
 }

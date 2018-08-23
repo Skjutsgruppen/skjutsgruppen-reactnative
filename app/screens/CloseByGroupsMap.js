@@ -94,6 +94,8 @@ class CloseByGroupsMapView extends Component {
 
     if (groups && groups.length > 0) {
       return groups.map((group) => {
+        if (group.isBlocked) return null;
+
         if (group.outreach === 'area') {
           coordinate = {
             latitude: group.areaCoordinates[1],

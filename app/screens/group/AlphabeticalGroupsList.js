@@ -90,11 +90,13 @@ class AlphabeticalGroupsList extends Component {
     return (
       <SectionList
         renderItem={({ item }) => (
-          <GroupsItem
-            key={item.id}
-            group={item}
-            onPress={this.redirect}
-          />)
+          item.isBlocked ?
+            null :
+            <GroupsItem
+              key={item.id}
+              group={item}
+              onPress={this.redirect}
+            />)
         }
         keyExtractor={(item, index) => index}
         sections={alphabeticalGroups}

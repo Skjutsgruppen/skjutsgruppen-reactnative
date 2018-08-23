@@ -90,6 +90,7 @@ query moreExperiences($exceptId: Int!, $limit: Int, $offset: Int) {
         firstName
         avatar
       }
+      isBlocked
     }
     count
   }
@@ -135,6 +136,7 @@ query tripExperiences($tripId: Int!, $limit: Int, $offset: Int) {
         firstName
         avatar
       }
+      isBlocked
     }
     count
   }
@@ -180,6 +182,7 @@ query getExperiences($limit: Int, $offset: Int) {
         firstName
         avatar
       }
+      isBlocked
     }
     count
   }
@@ -225,6 +228,7 @@ query myExperiences($id:Int, $limit: Int, $offset: Int,){
         firstName
         avatar
       }
+      isBlocked
     }
     count
   }
@@ -281,6 +285,7 @@ subscription myExperience($userId:Int!){
         firstName
         avatar
       }
+      isBlocked
   }
 }
 `;
@@ -398,6 +403,7 @@ query experience($id: Int!){
       mapPhoto
       totalFeeds
       isDeleted
+      isBlocked
     }
     User {
       id

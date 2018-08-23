@@ -3,7 +3,7 @@ import { Image, View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Gradients } from '@theme';
 import PropTypes from 'prop-types';
-import { Container, Loading, Avatar, RoundedButton } from '@components/common';
+import { Container, Loading, Avatar, RoundedButton, InfoModal } from '@components/common';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import ProfileAction from '@components/profile/profileAction';
@@ -212,7 +212,9 @@ class Profile extends Component {
       user: {},
       loading: false,
       refetch: null,
+      notAvailableModal: false,
     });
+    this.isNotAvailableModalDisplayed = false;
   }
 
   componentWillMount() {
@@ -233,6 +235,10 @@ class Profile extends Component {
     const { profile, loading, refetch, error } = data;
     const { setUser, logout } = this.props;
     const { user } = this.state;
+
+    if (user && user.isBlocked) {
+      this.setState({ notAvailableModal: true });
+    }
 
     if (!loading && error) {
       const { graphQLErrors } = error;
@@ -506,6 +512,24 @@ class Profile extends Component {
     );
   }
 
+  renderUserNotAvailable = () => {
+    const { notAvailableModal } = this.state;
+    const { navigation } = this.props;
+    const message = (<AppText>{trans('profile.user_not_available')}</AppText>);
+
+    return (
+      <InfoModal
+        visible={notAvailableModal && !this.isNotAvailableModalDisplayed}
+        onRequestClose={() => this.setState({ notAvailableModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ notAvailableModal: false },
+          () => { this.isNotAvailableModalDisplayed = true; navigation.goBack(); })}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
+
   render() {
     const { networkStatus, error, refetch } = this.props.data;
     const { user } = this.state;
@@ -528,6 +552,10 @@ class Profile extends Component {
           <Loading />
         </View>
       );
+    }
+
+    if (user.isBlocked) {
+      return this.renderUserNotAvailable();
     }
 
     const hasPendingFriendRequest = (user.relationshipType === RELATIONSHIP_TYPE_INCOMING)

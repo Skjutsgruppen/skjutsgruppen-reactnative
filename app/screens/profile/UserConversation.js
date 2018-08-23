@@ -105,13 +105,15 @@ class UserConversation extends PureComponent {
       <PortionList
         data={conversations}
         renderItem={({ item }) => (
-          <ListItem
-            showIndicator
-            indicatorColor={item.type === 'offered' ? Colors.background.pink : Colors.background.blue}
-            trip={item}
-            onPress={this.onPress}
-            onExperiencePress={this.onExperienceIconPress}
-          />
+          item.isBlocked ?
+            null :
+            <ListItem
+              showIndicator
+              indicatorColor={item.type === 'offered' ? Colors.background.pink : Colors.background.blue}
+              trip={item}
+              onPress={this.onPress}
+              onExperiencePress={this.onExperienceIconPress}
+            />
         )}
         listHeader={this.renderListSearch}
         sectionHeader={

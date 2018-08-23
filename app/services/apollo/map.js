@@ -8,7 +8,7 @@ mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: Trip
     date
     root
     startPoint
-    StartPlace{
+    StartPlace {
       id
     }
     Routable {
@@ -40,6 +40,7 @@ mutation nearByTrips($from:[Float]!, $distFrom:Int!, $distTo:Int!, $filter: Trip
         totalFeeds
         isParticipant
         direction
+        isBlocked
       }
     }
   }

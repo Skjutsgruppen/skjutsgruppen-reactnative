@@ -187,6 +187,7 @@ query exploreGroups($from: [Float], $filter: ExploreGroupFilterEnum!, $order:Str
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
     count
   }
@@ -261,6 +262,7 @@ query searchGroup($queryString: String!, $offset: Int, $limit: Int){
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
     count
   }
@@ -338,6 +340,7 @@ subscription myGroup($userId: Int!){
         isLive
       }
       url
+      isBlocked
     }
     remove
   }
@@ -410,6 +413,7 @@ export const GROUPS_SUBSCRIPTION = gql`
         locationCoordinates
         isLive
       }
+      isBlocked
       url
   }
 }
@@ -482,6 +486,7 @@ query group($id: Int!){
       isLive
     }
     url
+    isBlocked
   }
 }
 `;
@@ -634,6 +639,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           totalFeeds
           url
           isDeleted
+          isBlocked
         }
       }
       ... on CommentFeed {
@@ -657,6 +663,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
               areFriends
             }
           }
+          isBlocked
         }
       }
       ... on ExperienceFeed{
@@ -667,6 +674,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
           photoUrl
           publishedStatus
           userStatus
+          isBlocked
           User {
             id 
             firstName 
@@ -826,6 +834,7 @@ subscription groupFeed($groupId: Int!){
           totalFeeds
           url
           isDeleted
+          isBlocked
         }
       }
       ... on CommentFeed {
@@ -834,6 +843,7 @@ subscription groupFeed($groupId: Int!){
           groupId
           text
           date
+          isBlocked
           User {
             id
             avatar
@@ -859,6 +869,7 @@ subscription groupFeed($groupId: Int!){
           photoUrl
           publishedStatus
           userStatus
+          isBlocked
           User {
             id 
             firstName 
@@ -1106,6 +1117,7 @@ query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQue
         avatar
       }
       url
+      isBlocked
     }
     count
   }
@@ -1231,6 +1243,7 @@ const GROUP_TRIPS_QUERY = gql`
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
   }
 `;
@@ -1309,6 +1322,7 @@ const GROUPS_IN_COUNTY_QUERY = gql`
           muted
           unreadNotificationCount
           url
+          isBlocked
         }
         count
       }
@@ -1367,6 +1381,7 @@ mutation groupsInMunicipality($municipalityId: Int!, $limit: Int, $offset: Int){
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
     count
   }
@@ -1685,6 +1700,7 @@ query alphabetisedGroups{
         muted
         unreadNotificationCount
         url
+        isBlocked
       }
       count
     }
@@ -1740,6 +1756,7 @@ mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int)
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
     count
   }
@@ -1816,6 +1833,7 @@ query nearByGroups($from: [Float]!,
       muted
       unreadNotificationCount
       url
+      isBlocked
     }
     count
   }

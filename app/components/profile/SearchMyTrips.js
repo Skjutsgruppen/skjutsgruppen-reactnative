@@ -65,11 +65,13 @@ const SearchMyTrips = ({ trips, onPress, onExperiencePress, queryString }) => {
     <DataList
       data={trips}
       renderItem={({ item }) => (
-        <ListItem
-          trip={item}
-          onExperiencePress={onExperiencePress}
-          onPress={onPress}
-        />
+        item.isBlocked ?
+          null :
+          <ListItem
+            trip={item}
+            onExperiencePress={onExperiencePress}
+            onPress={onPress}
+          />
       )}
       fetchMoreOptions={{
         variables: { offset: trips.rows.length },

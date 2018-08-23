@@ -12,7 +12,7 @@ import News from '@components/feed/card/news';
 import Experience from '@components/feed/card/experience';
 
 const feedItem = ({ feed, onPress, onSharePress }) => {
-  if (feed.feedable === FEEDABLE_TRIP) {
+  if (feed.feedable === FEEDABLE_TRIP && !feed.Trip.isBlocked) {
     return (
       <Trip
         onPress={onPress}
@@ -22,7 +22,7 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
     );
   }
 
-  if (feed.feedable === FEEDABLE_GROUP) {
+  if (feed.feedable === FEEDABLE_GROUP && !feed.Group.isBlocked) {
     return (
       <Group
         onPress={onPress}
@@ -42,7 +42,7 @@ const feedItem = ({ feed, onPress, onSharePress }) => {
     );
   }
 
-  if (feed.feedable === FEEDABLE_EXPERIENCE) {
+  if (feed.feedable === FEEDABLE_EXPERIENCE && !feed.Experience.isBlocked) {
     return (
       <Experience
         onPress={onPress}

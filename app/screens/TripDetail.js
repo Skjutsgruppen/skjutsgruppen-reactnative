@@ -13,7 +13,7 @@ import {
   ActionModal,
   ModalAction,
   ConfirmModal,
-  DeletedModal,
+  InfoModal,
 } from '@components/common';
 import { getToast } from '@config/toast';
 import { Calendar } from 'react-native-calendars';
@@ -238,7 +238,9 @@ class TripDetail extends Component {
       confirmModalVisibility: false,
       retry: false,
       deletedModal: false,
+      notAvailableModal: false,
     });
+    this.isNotAvailableModalDisplayed = false;
   }
 
   componentWillMount() {
@@ -272,6 +274,10 @@ class TripDetail extends Component {
   componentWillReceiveProps({ trip, loading }) {
     if (!loading && trip && trip.isDeleted) {
       this.setState({ deletedModal: true });
+    }
+
+    if (trip && trip.isBlocked) {
+      this.setState({ notAvailableModal: true });
     }
 
     if (!loading && trip.id) {
@@ -1090,12 +1096,30 @@ class TripDetail extends Component {
     );
 
     return (
-      <DeletedModal
+      <InfoModal
         visible={deletedModal}
         onRequestClose={() => this.setState({ deletedModal: false })}
         message={message}
         onConfirm={() => this.setState({ deletedModal: false, confirmModalVisibility: false },
           () => this.navigateOnDelete())}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
+  renderTripNotAvailable = () => {
+    const { notAvailableModal } = this.state;
+    const { navigation } = this.props;
+
+    const message = (<AppText>{trans('detail.trip_not_available')}</AppText>);
+
+    return (
+      <InfoModal
+        visible={notAvailableModal && !this.isNotAvailableModalDisplayed}
+        onRequestClose={() => this.setState({ notAvailableModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ notAvailableModal: false },
+          () => { this.isNotAvailableModalDisplayed = true; navigation.goBack(); })}
         confrimTextColor={Colors.text.blue}
       />
     );
@@ -1138,8 +1162,9 @@ class TripDetail extends Component {
 
     return (
       <Wrapper>
-        {!trip.isDeleted && this.renderTrip()}
+        {!trip.isDeleted && !trip.isBlocked && this.renderTrip()}
         {this.renderDeletedModal()}
+        {this.renderTripNotAvailable()}
       </Wrapper>
     );
   }
