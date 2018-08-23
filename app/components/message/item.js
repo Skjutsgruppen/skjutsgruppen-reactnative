@@ -531,7 +531,7 @@ class Item extends PureComponent {
     const plus = Notifiers ? Notifiers.length - 1 : 0;
 
     if (Notifications && Notifications.length > 0) {
-      const invitation = Notifications.map(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
+      const invitation = Notifications.filter(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
       if (invitation.length > 0) {
         params = { ...params, ...{ notifier: Notifiers[0], notificationMessage: trans('message.shared_this_trip_with_you') } };
       }
@@ -569,7 +569,7 @@ class Item extends PureComponent {
 
 
     if (Notifications && Notifications.length > 0) {
-      const invitation = Notifications.map(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
+      const invitation = Notifications.filter(notif => notif.type === NOTIFICATION_TYPE_INVIVATION);
       if (invitation.length > 0) {
         params = { ...params, ...{ notifier: Notifiers[0], notificationMessage: trans('message.shared_this_group_with_you') } };
       }

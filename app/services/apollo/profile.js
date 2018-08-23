@@ -123,6 +123,8 @@ subscription updatedAccount($id: Int) {
     agreementRead
     agreementAccepted
     contactSynced
+    notification
+    emailNotification
   }
 }`;
 
@@ -153,6 +155,8 @@ query account {
     agreementRead
     agreementAccepted
     contactSynced
+    notification
+    emailNotification
   }
 }`;
 

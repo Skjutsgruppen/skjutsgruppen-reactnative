@@ -134,5 +134,6 @@
   "choose_your_preferred_language": "Choose your preferred language:",
   "notification": "Notification",
   "on": "On",
-  "off": "Off"
+  "off": "Off",
+  "email_notification": "Email Notification"
 }

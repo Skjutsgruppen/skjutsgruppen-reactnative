@@ -56,20 +56,22 @@ class Settings extends Component {
     this.state = {
       language: 'en',
       notification: true,
+      emailNotification: false,
     };
   }
 
   componentWillMount() {
-    const { user } = this.props;
+    const { user: { notification, emailNotification } } = this.props;
     LangService.getLanguage().then((language) => {
       this.setState({ language: language || I18n.locale });
     });
 
-    this.setState({ notification: user.notification });
+    this.setState({ notification, emailNotification });
   }
 
   setNotificationStatus = (index) => {
     const { updateProfile, setUser, user } = this.props;
+
     if (index === 0 && !this.state.notification) {
       this.setState({ notification: true }, () => {
         updateProfile({ notification: true }).then(() => {
@@ -80,6 +82,24 @@ class Settings extends Component {
       this.setState({ notification: false }, () => {
         updateProfile({ notification: false }).then(() => {
           setUser({ user: { ...user, ...{ notification: false } } });
+        });
+      });
+    }
+  }
+
+  setEmailNotificationStatus = (index) => {
+    const { updateProfile, setUser, user } = this.props;
+
+    if (index === 0 && !this.state.emailNotification) {
+      this.setState({ emailNotification: true }, () => {
+        updateProfile({ emailNotification: true }).then(() => {
+          setUser({ user: { ...user, ...{ emailNotification: true } } });
+        });
+      });
+    } else if (index === 1 && this.state.emailNotification) {
+      this.setState({ emailNotification: false }, () => {
+        updateProfile({ emailNotification: false }).then(() => {
+          setUser({ user: { ...user, ...{ emailNotification: false } } });
         });
       });
     }
@@ -113,6 +133,10 @@ class Settings extends Component {
     this.NotificationActionSheet.show();
   }
 
+  showEmailNotificationActionSheet = () => {
+    this.EmailNotificationActionSheet.show();
+  }
+
   renderNotification = () => {
     const { notification } = this.state;
 
@@ -120,11 +144,29 @@ class Settings extends Component {
       <View style={styles.row}>
         <View>
           <AppText style={styles.text}>
-            Notification <AppText fontVariation="bold"> - {notification ? trans('profile.on') : trans('profile.off')}</AppText>
+            {trans('profile.notification')} <AppText fontVariation="bold"> - {notification ? trans('profile.on') : trans('profile.off')}</AppText>
           </AppText>
           <AppText color={Colors.text.gray} style={styles.text}>Toggle notification</AppText>
         </View>
         <TouchableOpacity style={styles.action} onPress={this.showNotificationActionSheet}>
+          <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
+        </TouchableOpacity>
+      </View >
+    );
+  }
+
+  renderEmailNotification = () => {
+    const { emailNotification } = this.state;
+
+    return (
+      <View style={styles.row}>
+        <View>
+          <AppText style={styles.text}>
+            {trans('profile.email_notification')} <AppText fontVariation="bold"> - {emailNotification ? trans('profile.on') : trans('profile.off')}</AppText>
+          </AppText>
+          <AppText color={Colors.text.gray} style={styles.text}>Toggle notification</AppText>
+        </View>
+        <TouchableOpacity style={styles.action} onPress={this.showEmailNotificationActionSheet}>
           <AppText color={Colors.text.blue}>{trans('global.change')}</AppText>
         </TouchableOpacity>
       </View >
@@ -164,8 +206,16 @@ class Settings extends Component {
           cancelButtonIndex={2}
           onPress={(index) => { this.setNotificationStatus(index); }}
         />
+        <ActionSheet
+          ref={(sheet) => { this.EmailNotificationActionSheet = sheet; }}
+          title={trans('profile.email_notification')}
+          options={['On', 'Off', 'Cancel']}
+          cancelButtonIndex={2}
+          onPress={(index) => { this.setEmailNotificationStatus(index); }}
+        />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           {this.renderNotification()}
+          {this.renderEmailNotification()}
           {this.renderLanguage()}
         </ScrollView>
       </Wrapper>

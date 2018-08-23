@@ -48,6 +48,11 @@
                 <data android:scheme="https" android:host="@string/APP_URL" android:pathPrefix="/t" />
                 <data android:scheme="https" android:host="@string/APP_URL" android:pathPrefix="/g" />
                 <data android:scheme="https" android:host="@string/APP_URL" android:pathPrefix="/e" />
+                <data android:scheme="https" android:host="@string/APP_URL" android:pathPrefix="/f" />
+                <data android:scheme="http" android:host="@string/APP_URL" android:pathPrefix="/t" />
+                <data android:scheme="http" android:host="@string/APP_URL" android:pathPrefix="/g" />
+                <data android:scheme="http" android:host="@string/APP_URL" android:pathPrefix="/e" />
+                <data android:scheme="http" android:host="@string/APP_URL" android:pathPrefix="/p" />
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

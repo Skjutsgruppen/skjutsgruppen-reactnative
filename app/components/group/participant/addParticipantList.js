@@ -37,6 +37,12 @@ const styles = StyleSheet.create({
     width: 200,
     marginBottom: 0,
   },
+  errorText: {
+    fontSize: 16,
+    lineHeight: 32,
+    color: Colors.text.gray,
+    textAlign: 'center',
+  },
 });
 
 class AddParticipant extends Component {
@@ -56,17 +62,6 @@ class AddParticipant extends Component {
       friendsListSearch: [],
     };
     this.friendsQueryCalled = false;
-  }
-
-  componentWillMount() {
-    const { friends } = this.props;
-    const { friendsList } = this.state;
-
-    if (friends && !friends.loading) {
-      friends.rows.forEach(friend => friendsList.push(friend));
-    }
-
-    this.setState({ friendsList });
   }
 
   componentWillReceiveProps({ contacts, friends }) {
@@ -90,16 +85,14 @@ class AddParticipant extends Component {
         variables: {
           groupId: this.props.group.id,
         },
-        updateQuery: (previousResult, { fetchMoreResult }) => ({
-          friends: { ...fetchMoreResult.friends },
-        }),
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const filteredFriends = { ...fetchMoreResult.friends };
+          filteredFriends.rows.forEach(friend => friendsList.push(friend));
+          this.setState({ friendsList });
+
+          return { friends: filteredFriends };
+        },
       });
-    }
-
-
-    if (friends && !friends.loading) {
-      friends.rows.forEach(friend => friendsList.push(friend));
-      this.setState({ friendsList });
     }
   }
 
@@ -140,15 +133,15 @@ class AddParticipant extends Component {
                     .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
 
                   if (status === 'granted') {
-                    this.sendSMS(group.name, selectedContacts);
+                    this.send(group.name, selectedContacts);
                   } else {
                     Alert.alert(trans('share.allow_sms_permission'));
                   }
                 } else {
-                  this.sendSMS(group.name, selectedContacts);
+                  this.send(group.name, selectedContacts);
                 }
               } else {
-                this.sendSMS(group.name, selectedContacts);
+                this.send(group.name, selectedContacts);
               }
             }).catch(() => this.setState({ loading: false, confirmModalVisibility: false }));
         } else {
@@ -188,7 +181,17 @@ class AddParticipant extends Component {
     this.setState(obj);
   }
 
-  sendSMS = (name, selectedContacts) => {
+  send = (name, selectedContacts) => {
+    if (Platform.OS === 'android') {
+      this.sendSms(name, selectedContacts);
+    } else {
+      setTimeout(() => {
+        this.sendSms(name, selectedContacts);
+      }, 1000);
+    }
+  }
+
+  sendSms = (name, selectedContacts) => {
     SendSMS.send({
       body: `I would like to invite you to ${name} group`,
       recipients: selectedContacts,
@@ -282,6 +285,8 @@ class AddParticipant extends Component {
   }
 
   render() {
+    const { contactsList, friendsList } = this.state;
+
     return (
       <Modal
         animationType="slide"
@@ -292,19 +297,27 @@ class AddParticipant extends Component {
         <Wrapper>
           <Toolbar title={trans('group.add_participants')} />
           <Toast message={this.state.error} type="error" />
-          <ScrollView>
-            <SearchBar
-              placeholder={trans('global.search')}
-              onChange={this.onChangeSearchQuery}
-              defaultValue={this.state.searchQuery}
-              onPressClose={() => this.setState({ searchQuery: '' })}
-              style={{ marginVertical: 32 }}
-            />
-            {this.renderList()}
-          </ScrollView>
-          <View style={styles.footer}>
-            {this.renderButton()}
-          </View>
+          {(contactsList.length > 0 || friendsList.length > 0) ?
+            <View style={{ flex: 1 }}>
+              <ScrollView>
+                <SearchBar
+                  placeholder={trans('global.search')}
+                  onChange={this.onChangeSearchQuery}
+                  defaultValue={this.state.searchQuery}
+                  onPressClose={() => this.setState({ searchQuery: '' })}
+                  style={{ marginVertical: 32 }}
+                />
+                {this.renderList()}
+              </ScrollView>
+              <View style={styles.footer}>
+                {this.renderButton()}
+              </View>
+            </View>
+            :
+            <AppText style={styles.errorText}>
+              {trans('group.no_any_friends_contacts')}
+            </AppText>
+          }
           {this.renderModal()}
         </Wrapper>
       </Modal>
