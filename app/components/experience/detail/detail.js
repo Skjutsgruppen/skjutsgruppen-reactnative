@@ -10,7 +10,7 @@ import { withNavigation } from 'react-navigation';
 import ToolBar from '@components/utils/toolbar';
 import Colors from '@theme/colors';
 import Share from '@components/common/share';
-import { Container, MoreButton, ActionModal, AppNotification, ModalAction } from '@components/common';
+import { Container, MoreButton, ActionModal, AppNotification, ModalAction, ConfirmModal, InfoModal } from '@components/common';
 import ShareIcon from '@assets/icons/ic_share_white.png';
 import { withShare } from '@services/apollo/share';
 import { compose } from 'react-apollo';
@@ -20,7 +20,6 @@ import List from '@components/experience/list';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ExperienceIcon from '@assets/icons/ic_make_experience.png';
-import ConfirmModal from '@components/common/confirmModal';
 import Info from '@components/experience/detail/info';
 import { AppText, Title } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
@@ -75,7 +74,9 @@ class ExperienceDetail extends Component {
       sending: false,
       showConfirm: false,
       showNotification: false,
+      notAvailableModal: false,
     };
+    this.isNotAvailableModalDisplayed = false;
   }
 
   componentWillMount() {
@@ -93,6 +94,10 @@ class ExperienceDetail extends Component {
   }
 
   componentWillReceiveProps({ experience, pending }) {
+    if (experience && experience.isBlocked) {
+      this.setState({ notAvailableModal: true });
+    }
+
     this.setState({ experience, showNotification: pending, pending });
   }
 
@@ -260,10 +265,27 @@ class ExperienceDetail extends Component {
     );
   }
 
-  render() {
-    const { experience, pending, showNotification } = this.state;
-    const { loading } = this.props;
+  renderExperienceNotAvailable = () => {
+    const { notAvailableModal } = this.state;
+    const { navigation } = this.props;
 
+    const message = (<AppText>{trans('experience.experience_not_available')}</AppText>);
+
+    return (
+      <InfoModal
+        visible={notAvailableModal && !this.isNotAvailableModalDisplayed}
+        onRequestClose={() => this.setState({ notAvailableModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ notAvailableModal: false },
+          () => { this.isNotAvailableModalDisplayed = true; navigation.goBack(); })}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
+  renderExperience = () => {
+    const { experience, pending } = this.state;
+    const { loading } = this.props;
     let image = null;
 
     if (experience.photoUrl) {
@@ -271,34 +293,43 @@ class ExperienceDetail extends Component {
     }
 
     return (
+      <Container>
+        {image}
+        <View style={styles.infoSection}>
+          <Info experience={experience} loading={loading} />
+          {
+            (!pending && !loading) &&
+            <View style={styles.actions}>
+              <TouchableOpacity
+                onPress={() => this.setState({ showShareModal: true })}
+                style={styles.button}
+              >
+                <Title color={Colors.text.white}>{trans('global.share')}</Title>
+                <Image source={ShareIcon} style={styles.buttonIcon} />
+              </TouchableOpacity>
+            </View>
+          }
+        </View>
+        {
+          !pending &&
+          <MoreExperiences title={trans('experience.experiences_!')} exceptId={experience.id} />
+        }
+      </Container>
+    );
+  }
+
+  render() {
+    const { experience, showNotification } = this.state;
+
+    return (
       <View style={styles.flex}>
         {this.renderPendingNotification()}
         <ToolBar transparent offset={showNotification ? 70 : 0} />
-        <Container>
-          {image}
-          <View style={styles.infoSection}>
-            <Info experience={experience} loading={loading} />
-            {
-              (!pending && !loading) &&
-              <View style={styles.actions}>
-                <TouchableOpacity
-                  onPress={() => this.setState({ showShareModal: true })}
-                  style={styles.button}
-                >
-                  <Title color={Colors.text.white}>{trans('global.share')}</Title>
-                  <Image source={ShareIcon} style={styles.buttonIcon} />
-                </TouchableOpacity>
-              </View>
-            }
-          </View>
-          {
-            !pending &&
-            <MoreExperiences title={trans('experience.experiences_!')} exceptId={experience.id} />
-          }
-        </Container>
+        {!experience.isBlocked && this.renderExperience()}
         {this.renderShareModal()}
         {this.renderOptionsModal()}
         {this.renderConfirmModal()}
+        {this.renderExperienceNotAvailable()}
       </View>
     );
   }

@@ -37,5 +37,6 @@
   "is_your_group_open_or_closed": "Is your group open or closed?",
   "open": "Open",
   "closed": "Closed",
-  "no_any_friends_contacts": "No any friends or contacts to add as participant."
+  "no_any_friends_contacts": "No any friends or contacts to add as participant.",
+  "group_not_available": "This group is not available"
 }

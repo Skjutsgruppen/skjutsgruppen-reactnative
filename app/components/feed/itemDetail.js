@@ -166,7 +166,9 @@ class Feed extends Component {
       );
     }
 
-    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT) {
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT
+      && feed.Comment && !feed.Comment.isBlocked
+    ) {
       return (
         <TouchableHighlight
           onLongPress={() => onLongPress({
@@ -192,7 +194,7 @@ class Feed extends Component {
       return this.renderSharedCard();
     }
 
-    if (feed.feedable === FEEDABLE_SUGGESTION) {
+    if (feed.feedable === FEEDABLE_SUGGESTION && feed.Trip && !feed.Trip.isBlocked) {
       return (
         <TouchableHighlight
           onLongPress={() => onLongPress({

@@ -65,11 +65,13 @@ const SearchMyGroups = ({ groups, onPress, queryString }) => {
     <DataList
       data={groups}
       renderItem={({ item }) => (
-        <GroupsItem
-          key={item.id}
-          group={item}
-          onPress={onPress}
-        />
+        item.isBlocked ?
+          null :
+          <GroupsItem
+            key={item.id}
+            group={item}
+            onPress={onPress}
+          />
       )}
       fetchMoreOptions={{
         variables: { offset: groups.rows.length },

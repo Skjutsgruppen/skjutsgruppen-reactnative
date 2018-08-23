@@ -5,16 +5,19 @@ import JoinGroup from '@components/group/JoinGroup';
 import Detail from '@components/group/Detail';
 import { withGroup } from '@services/apollo/group';
 import NoEnabler from '@components/group/enablers/noEnabler';
-import { Loading, DeletedModal } from '@components/common';
+import { Loading, InfoModal } from '@components/common';
 import { AppText } from '@components/utils/texts';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import { getGroupDetails } from '@services/apollo/dataSync';
+import { trans } from '@lang/i18n';
+import { Colors } from '@theme';
 
 class GroupDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = ({ group: {}, refetch: null, deletedModal: false });
+    this.state = ({ group: {}, refetch: null, deletedModal: false, notAvailableModal: false });
+    this.isNotAvailableModalDisplayed = false;
   }
 
   componentWillMount() {
@@ -32,6 +35,10 @@ class GroupDetail extends Component {
   }
 
   componentWillReceiveProps({ group, loading, refetch }) {
+    if (!loading && group && group.isBlocked) {
+      this.setState({ notAvailableModal: true });
+    }
+
     if (!loading && group && group.isDeleted) {
       this.setState({ deletedModal: true });
     }
@@ -90,11 +97,29 @@ class GroupDetail extends Component {
     );
 
     return (
-      <DeletedModal
+      <InfoModal
         visible={deletedModal}
         onRequestClose={() => this.setState({ deletedModal: false })}
         message={message}
         onConfirm={() => this.setState({ deletedModal: false }, () => this.navigateOnDelete())}
+      />
+    );
+  }
+
+  renderGroupNotAvailable = () => {
+    const { notAvailableModal } = this.state;
+    const { navigation } = this.props;
+
+    const message = (<AppText>{trans('group.group_not_available')}</AppText>);
+
+    return (
+      <InfoModal
+        visible={notAvailableModal && !this.isNotAvailableModalDisplayed}
+        onRequestClose={() => this.setState({ notAvailableModal: false })}
+        message={message}
+        onConfirm={() => this.setState({ notAvailableModal: false },
+          () => { this.isNotAvailableModalDisplayed = true; navigation.goBack(); })}
+        confrimTextColor={Colors.text.blue}
       />
     );
   }
@@ -138,8 +163,9 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {!group.isDeleted && this.renderGroup()}
+        {!group.isDeleted && !group.isBlocked && this.renderGroup()}
         {this.renderDeletedModal()}
+        {this.renderGroupNotAvailable()}
       </View>
     );
   }

@@ -151,11 +151,13 @@ class GroupsListByCounty extends Component {
         ListHeaderComponent={this.header}
         ListFooterComponent={() => <View style={{ height: 50 }} />}
         renderItem={({ item }) => (
-          <GroupsItem
-            key={item.id}
-            group={item}
-            onPress={this.onPress}
-          />)
+          item.isBlocked ?
+            null :
+            <GroupsItem
+              key={item.id}
+              group={item}
+              onPress={this.onPress}
+            />)
         }
         keyExtractor={(item, index) => index}
         sections={groupsByCounty}

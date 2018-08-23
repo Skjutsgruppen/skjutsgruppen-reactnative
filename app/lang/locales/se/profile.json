@@ -131,5 +131,6 @@
   "on": "se_On",
   "off": "se_Off",
   "right_now_in_garden": "se_Right now in our self-sustaining garden:",
-  "email_notification": "se_Email Notification"
+  "email_notification": "se_Email Notification",
+  "user_not_available": "se_The user is not available."
 }

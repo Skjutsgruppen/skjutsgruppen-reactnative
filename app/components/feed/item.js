@@ -9,6 +9,7 @@ import {
   ACTIVITY_TYPE_CREATE_EXPERIENCE,
   EXPERIENCE_STATUS_CAN_CREATE,
   FEEDABLE_GROUP,
+  GROUP_FEED_TYPE_COMMENT,
 } from '@config/constant';
 
 import Colors from '@theme/colors';
@@ -114,6 +115,11 @@ class FeedItem extends PureComponent {
     let userId = feed.User.id;
     let isSupporter = false;
 
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT
+      && feed.Comment && feed.Comment.isBlocked) {
+      return null;
+    }
+
     if (feed.ActivityType.type === GROUP_FEED_TYPE_JOINED_GROUP
       && Object.keys(feed.Enabler).length > 0 && feed.Enabler.avatar) {
       imgSrc = feed.Enabler.avatar;
@@ -155,6 +161,11 @@ class FeedItem extends PureComponent {
 
   renderRelation = () => {
     const { feed, type } = this.props;
+
+    if (feed.ActivityType.type === GROUP_FEED_TYPE_COMMENT
+      && feed.Comment && feed.Comment.isBlocked) {
+      return null;
+    }
 
     if (feed.User.relation && feed.User.relation.path) {
       return (

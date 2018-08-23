@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const DeletedModal = ({
+const InfoModal = ({
   loading,
   style,
   visible,
@@ -71,7 +71,7 @@ const DeletedModal = ({
     </Modal>
   );
 
-DeletedModal.propTypes = {
+InfoModal.propTypes = {
   loading: PropTypes.bool,
   style: ViewPropTypes.style,
   visible: PropTypes.bool,
@@ -82,7 +82,7 @@ DeletedModal.propTypes = {
   confrimTextColor: PropTypes.string,
 };
 
-DeletedModal.defaultProps = {
+InfoModal.defaultProps = {
   style: {},
   visible: false,
   confrimTextColor: null,
@@ -90,4 +90,4 @@ DeletedModal.defaultProps = {
   loading: false,
 };
 
-export default DeletedModal;
+export default InfoModal;

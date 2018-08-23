@@ -33,5 +33,6 @@
   "make_an_experience": "se_ Make an experience!",
   "click_here_to_take_a_photo": "se_ Click here to take a photo of you and the other participants!",
   "no_experience_has_been_created_yet": "se_ No experiences has been created yet.",
-  "retry": "se_ Retry"
+  "retry": "se_ Retry",
+  "experience_not_available": "se_This experience is not available."
 }

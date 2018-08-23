@@ -83,11 +83,13 @@ class GroupsInMunicipality extends Component {
           <FlatList
             data={fetchedData}
             renderItem={({ item }) => (
-              <GroupsItem
-                key={item.id}
-                group={item}
-                onPress={this.redirect}
-              />
+              item.isBlocked ?
+                null :
+                <GroupsItem
+                  key={item.id}
+                  group={item}
+                  onPress={this.redirect}
+                />
             )}
             keyExtractor={item => item.id}
           />

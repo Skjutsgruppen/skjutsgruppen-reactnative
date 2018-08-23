@@ -304,6 +304,10 @@ class Map extends PureComponent {
 
     try {
       return trips.map((row) => {
+        if (row.trip.isBlocked) {
+          return null;
+        }
+
         coordinate = {
           latitude: row.coordinate.lat,
           longitude: row.coordinate.lng,
