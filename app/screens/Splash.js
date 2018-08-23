@@ -167,6 +167,10 @@ class Splash extends PureComponent {
     if (routeName === 'e') {
       navigation.navigate('ExperienceDetail', { id });
     }
+
+    if (routeName === 'p') {
+      navigation.navigate('Profile', { profileId: parseInt(id, 10) });
+    }
   }
 
   handleOpenURL = (event) => {
