@@ -58,12 +58,13 @@ class ParticipantList extends Component {
       isSearchModalOpen: false,
       loading: false,
       error: false,
+      canAdd: false,
     };
   }
 
   componentWillMount() {
-    const { isAdmin, id, subscribeToUpdatedGroupMember } = this.props;
-    this.setState({ canDelete: isAdmin });
+    const { isAdmin, id, subscribeToUpdatedGroupMember, canAdd } = this.props;
+    this.setState({ canDelete: isAdmin, canAdd });
     subscribeToUpdatedGroupMember({ id, enabler: false });
   }
 
@@ -206,7 +207,7 @@ class ParticipantList extends Component {
             },
           }}
         />
-        {this.state.canDelete && !isSearching &&
+        {this.state.canAdd && !isSearching &&
           <View style={styles.footer}>
             {this.renderButton()}
           </View>
@@ -239,11 +240,13 @@ ParticipantList.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
+  canAdd: PropTypes.bool,
 };
 
 ParticipantList.defaultProps = {
   isSearching: false,
   queryString: '',
+  canAdd: false,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
