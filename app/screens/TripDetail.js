@@ -4,7 +4,7 @@ import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare } from '@services/apollo/share';
-import { withTrip, withTripFeed, withDeleteTrip } from '@services/apollo/trip';
+import { withTrip, withTripFeed, withDeleteTrip, withEmbed } from '@services/apollo/trip';
 import {
   AppNotification,
   DetailHeader,
@@ -444,6 +444,16 @@ class TripDetail extends Component {
         this.setState({ loading: false, retry: error });
         this.setConfirmModalVisibility(true);
         this.showActionModal(false);
+      });
+  }
+
+  onEmbed = () => {
+    const { embed } = this.props;
+    const { trip: { id } } = this.state;
+
+    embed({ tripId: id })
+      .then(() => {
+        this.setState({ showActionOption: false });
       });
   }
 
@@ -946,7 +956,7 @@ class TripDetail extends Component {
               />,
             ])
         }
-        <ModalAction disabled label={trans('detail.embeded_with_html')} onPress={() => null} />
+        <ModalAction label={trans('detail.embeded_with_html')} onPress={() => this.onEmbed()} />
       </View>
     );
   }
@@ -1197,6 +1207,7 @@ TripDetail.propTypes = {
   nav: PropTypes.shape({
     routes: PropTypes.array,
   }).isRequired,
+  embed: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({ user: state.auth.user, nav: state.nav });
@@ -1208,6 +1219,7 @@ const TripWithDetail = compose(
   withMute,
   withUnmute,
   withDeleteTrip,
+  withEmbed,
   connect(mapStateToProps),
 )(TripDetail);
 
