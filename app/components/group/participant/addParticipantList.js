@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View, ScrollView, Platform, PermissionsAndroid, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, Platform, PermissionsAndroid, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
@@ -144,11 +144,8 @@ class AddParticipant extends Component {
                 this.send(group.name, selectedContacts);
               }
             }).catch(() => this.setState({ loading: false, confirmModalVisibility: false }));
-        } else {
-          navigation.goBack();
         }
-        this.setConfirmModalVisibility(false);
-        this.setState({ loading: false });
+        navigation.goBack();
       }).catch(() => this.setState({ loading: false, confirmModalVisibility: false }));
   }
 
@@ -288,39 +285,32 @@ class AddParticipant extends Component {
     const { contactsList, friendsList } = this.state;
 
     return (
-      <Modal
-        animationType="slide"
-        transparent={false}
-        onRequestClose={() => { }}
-        visible
-      >
-        <Wrapper>
-          <Toolbar title={trans('group.add_participants')} />
-          <Toast message={this.state.error} type="error" />
-          {(contactsList.length > 0 || friendsList.length > 0) ?
-            <View style={{ flex: 1 }}>
-              <ScrollView>
-                <SearchBar
-                  placeholder={trans('global.search')}
-                  onChange={this.onChangeSearchQuery}
-                  defaultValue={this.state.searchQuery}
-                  onPressClose={() => this.setState({ searchQuery: '' })}
-                  style={{ marginVertical: 32 }}
-                />
-                {this.renderList()}
-              </ScrollView>
-              <View style={styles.footer}>
-                {this.renderButton()}
-              </View>
+      <Wrapper>
+        <Toolbar title={trans('group.add_participants')} />
+        <Toast message={this.state.error} type="error" />
+        {(contactsList.length > 0 || friendsList.length > 0) ?
+          <View style={{ flex: 1 }}>
+            <ScrollView>
+              <SearchBar
+                placeholder={trans('global.search')}
+                onChange={this.onChangeSearchQuery}
+                defaultValue={this.state.searchQuery}
+                onPressClose={() => this.setState({ searchQuery: '' })}
+                style={{ marginVertical: 32 }}
+              />
+              {this.renderList()}
+            </ScrollView>
+            <View style={styles.footer}>
+              {this.renderButton()}
             </View>
-            :
-            <AppText style={styles.errorText}>
-              {trans('group.no_any_friends_contacts')}
-            </AppText>
-          }
-          {this.renderModal()}
-        </Wrapper>
-      </Modal>
+          </View>
+          :
+          <AppText style={styles.errorText}>
+            {trans('group.no_any_friends_contacts')}
+          </AppText>
+        }
+        {this.renderModal()}
+      </Wrapper>
     );
   }
 }

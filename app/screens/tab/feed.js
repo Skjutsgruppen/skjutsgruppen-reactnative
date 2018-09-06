@@ -371,6 +371,10 @@ class Feed extends Component {
     if (routeName === 'e') {
       navigation.navigate('ExperienceDetail', { id });
     }
+
+    if (routeName === 'p') {
+      navigation.navigate('Profile', { profileId: parseInt(id, 10) });
+    }
   }
 
   askForPermission = async () => {

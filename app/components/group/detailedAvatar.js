@@ -105,6 +105,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                         imageURI={member.User.avatar}
                         isSupporter={member.User.isSupporter}
                         size={40}
+                        onPress={() => onPress()}
                       />
                     </View>
                   );
@@ -145,6 +146,7 @@ const DetailedAvatar = ({ loading, rows, count, onPress, numberText }) => {
                           imageURI={member.User.avatar}
                           isSupporter={member.User.isSupporter}
                           size={40}
+                          onPress={() => onPress()}
                         />
                       </View>
                     );
