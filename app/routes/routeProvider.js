@@ -191,6 +191,28 @@ export const AppNavigator = StackNavigator(Routes,
 );
 
 export const navReducer = (state, action) => {
-  const newState = AppNavigator.router.getStateForAction(action, state);
-  return newState || state;
+  const { routeName } = action;
+  let repeatedRoute = [];
+
+  if (state && state.routes) {
+    repeatedRoute = state.routes.filter((route) => {
+      if (
+        route.routeName && route.params
+        && route.routeName === routeName
+        && route.params.id === action.params.id
+      ) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  if (repeatedRoute && repeatedRoute.length < 1) {
+    const newState = AppNavigator.router.getStateForAction(action, state);
+
+    return newState;
+  }
+
+  return state;
 };
