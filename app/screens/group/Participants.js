@@ -22,7 +22,8 @@ class Participants extends Component {
     return (
       <ParticipantLists
         id={group.id}
-        isAdmin={group.isAdmin || group.type === OPEN_GROUP}
+        isAdmin={group.isAdmin}
+        canAdd={group.isAdmin || (group.type === OPEN_GROUP && group.membershipStatus === 'accepted')}
       />
     );
   }
