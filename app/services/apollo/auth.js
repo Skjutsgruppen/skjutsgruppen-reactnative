@@ -31,6 +31,7 @@ mutation login($username: String!, $password:String!) {
       agreementAccepted
       contactSynced
       notification
+      emailNotification
     }
   }
 }
@@ -150,7 +151,8 @@ mutation updateUser($firstName:String,
   $twitterSecret: String,
   $agreementRead: Boolean,
   $agreementAccepted: Boolean,
-  $notification: Boolean
+  $notification: Boolean,
+  $emailNotification: Boolean,
 ) {
   updateUser(input:{
     firstName:$firstName,
@@ -166,7 +168,8 @@ mutation updateUser($firstName:String,
     twitterSecret: $twitterSecret,
     agreementRead: $agreementRead,
     agreementAccepted: $agreementAccepted
-    notification: $notification
+    notification: $notification,
+    emailNotification: $emailNotification,
   }) {
     token,
     User {
@@ -195,6 +198,7 @@ mutation updateUser($firstName:String,
       agreementAccepted
       contactSynced
       notification
+      emailNotification
     }
   }
 }
@@ -217,6 +221,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
       agreementRead,
       agreementAccepted,
       notification,
+      emailNotification,
     }) =>
       mutate({
         variables: {
@@ -234,6 +239,7 @@ export const withUpdateProfile = graphql(UPDATE_USER_QUERY, {
           agreementRead,
           agreementAccepted,
           notification,
+          emailNotification,
         },
       }),
   }),
@@ -507,6 +513,7 @@ const VERIFY_TOKEN_MUTATION = gql`
         agreementAccepted
         contactSynced
         notification
+        emailNotification
       } 
     }
   }

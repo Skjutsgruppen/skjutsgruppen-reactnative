@@ -36,5 +36,6 @@
   "what_is_your_group_about": "se_ What is your group about?",
   "is_your_group_open_or_closed": "se_ Is your group open or closed?",
   "open": "se_ Open",
-  "closed": "se_ Closed"
+  "closed": "se_ Closed",
+  "no_any_friends_contacts": "se_No any friends or contacts to add as participant."
 }

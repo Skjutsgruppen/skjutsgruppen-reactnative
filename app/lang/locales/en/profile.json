@@ -135,5 +135,6 @@
   "notification": "Notification",
   "on": "On",
   "off": "Off",
-  "right_now_in_garden": "Right now in our self-sustaining garden:"
+  "right_now_in_garden": "Right now in our self-sustaining garden:",
+  "email_notification": "Email Notification"
 }

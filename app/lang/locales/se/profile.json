@@ -130,5 +130,6 @@
   "notification": "se_ Notification",
   "on": "se_On",
   "off": "se_Off",
-  "right_now_in_garden": "se_Right now in our self-sustaining garden:"
+  "right_now_in_garden": "se_Right now in our self-sustaining garden:",
+  "email_notification": "se_Email Notification"
 }
