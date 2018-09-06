@@ -70,7 +70,7 @@ const OnBoarding = ({ loading, handleRegister, handleLogin }) => (
       alwaysBounceHorizontal={false}
     >
       <View style={styles.screen}>
-        <Image source={require('@assets/icons/logo.png')} style={styles.logo} />
+        <Image source={require('@assets/logo.png')} style={styles.logo} />
       </View>
     </ScrollView>
     {

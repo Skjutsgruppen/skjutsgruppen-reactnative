@@ -44,20 +44,34 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     width: 60,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 16,
+  },
+  input: {
+    paddingBottom: 28,
+  },
+  toInputWrapper: {
+    marginRight: 0,
+    paddingRight: 12,
+  },
+  border: {
+    borderBottomWidth: 0,
+  },
+  toBorderBottom: {
+    borderBottomWidth: 1, 
+    borderColor: Colors.border.lightGray,
+    flex: 1,
   },
   switchSpacer: {
     flex: 1,
   },
   switcherIcon: {
     alignSelf: 'center',
-    height: 18,
-    width: 18,
     resizeMode: 'contain',
     borderRadius: 10,
   },
   locationSwitcher: {
     width: 60,
+    marginTop: -16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -82,7 +96,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 24,
-    paddingLeft: 24,
+    paddingLeft: 20,
     paddingRight: 12,
     borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
@@ -336,7 +350,7 @@ class Search extends Component {
                   currentLocation
                   placeholder={trans('search.from_where_i_am_now')}
                   onChangeText={this.setStartPlace}
-                  style={styles.input}
+                  inputStyle={styles.input}
                   wrapperStyle={{ flex: 1 }}
                   direction={!directionTo}
                 />
@@ -352,16 +366,16 @@ class Search extends Component {
               <View style={styles.inputWrapper}>
                 <View style={styles.switchSpacer} />
                 <TouchableOpacity onPress={this.switchLocation} style={styles.locationSwitcher}>
-                  <Image source={require('@assets/icons/icon_switcher.png')} style={styles.switcherIcon} />
+                  <Image source={require('@assets/icons/ic_switcher.png')} style={styles.switcherIcon} />
                 </TouchableOpacity>
               </View>
-              <View style={styles.inputWrapper}>
+              <View style={[styles.inputWrapper, styles.toInputWrapper]}>
                 <PlaceInput
                   placeholder={trans('global.destination')}
                   defaultDirection={directionTo}
                   defaultValue={this.state.to}
                   onChangeText={this.setEndPlace}
-                  style={styles.input}
+                  inputStyle={[styles.input, styles.border]}
                   wrapperStyle={{ flex: 1 }}
                   direction={!directionFrom}
                 />
@@ -373,8 +387,9 @@ class Search extends Component {
                 >
                   {trans('global.to')}
                 </AppText>
+                </View>
               </View>
-            </View>
+            <View style={styles.toBorderBottom}></View>
             <View style={styles.dateRow}>
               <AppText size={14} color={Colors.text.gray} style={{ flex: 1 }}>
                 {

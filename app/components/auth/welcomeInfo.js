@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { Title } from '@components/utils/texts';
 import { withNavigation } from 'react-navigation';
-import Logo from '@assets/icons/logo.png';
+import Logo from '@assets/logo.png';
 import MapImage from '@assets/onboarding_map.png';
 
 const styles = StyleSheet.create({

@@ -159,12 +159,12 @@ const News = ({ news: { title, photo } }) => (
   <View style={styles.wrapper}>
     <View style={styles.imgWrapper}>
       <ImageBackground
-        source={{ uri: `https://skjuts.staging.yipl.com.np/assets/img/admin_message/${photo}` }}
+        source={{ uri: photo }}
         style={{ width: '100%', height: cardHeight, borderRadius: 12 }}
       >
         <View style={styles.content}>
           <TouchableHighlight
-            onPress={() => {}}
+            onPress={() => { }}
             style={styles.flex1}
           >
             <View style={styles.flex1}>
@@ -174,11 +174,11 @@ const News = ({ news: { title, photo } }) => (
               </View>
             </View>
           </TouchableHighlight>
-          <Footer
+          {/* <Footer
             onSharePress={() => {}}
             onCommentPress={() => {}}
             totalFeeds={10}
-          />
+          /> */}
         </View>
       </ImageBackground>
     </View>

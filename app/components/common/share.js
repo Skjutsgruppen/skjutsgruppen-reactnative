@@ -703,7 +703,7 @@ class Share extends Component {
             <SectionLabel label={sectionLabel} color={labelColor} />
           }
           <SearchBar
-            placeholder={trans('global.search_contacts')}
+            placeholder={trans('global.search')}
             onChange={this.onChangeSearchQuery}
             defaultValue={this.state.searchQuery}
             onFocus={onInputStateChange}

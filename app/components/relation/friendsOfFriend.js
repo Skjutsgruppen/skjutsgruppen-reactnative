@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
 import Colors from '@theme/colors';
-import FatArrow from '@assets/icons/icon_arrow_fat.png';
+import FatArrow from '@assets/icons/ic_arrow_fat.png';
 import ThinArrow from '@assets/icons/ic_arrow_gray.png';
 import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
@@ -62,9 +62,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   fatArrow: {
-    width: 12,
     resizeMode: 'contain',
-    marginTop: 3,
+    marginTop: 5,
     marginHorizontal: 3,
   },
   thinArrow: {

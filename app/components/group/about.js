@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Modal, Platform, TextInput } from 'react-native';
 import Colors from '@theme/colors';
 import { RoundedButton } from '@components/common';
 import AddPhoto from '@components/add/photo';
+import SectionLabel from '@components/add/sectionLabel';
 import CommentBox from '@components/add/commentBox';
 import { GROUP_NAME_LIMIT } from '@config/constant';
 import { trans } from '@lang/i18n';
+import GroupInput from '@components/group/groupInput';
 
 const styles = StyleSheet.create({
   addPhotoWrapper: {
@@ -74,6 +76,18 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     marginHorizontal: 20,
   },
+  groupInput: {
+    flex: 1,
+    height: '100%',
+    fontSize: 14,
+    paddingRight: 12,
+    ...Platform.select({
+      ios: {
+        paddingTop: 21,
+      },
+    }),
+    textAlignVertical: 'center',
+  },
 });
 
 
@@ -94,6 +108,14 @@ class About extends Component {
     onNext(this.state);
   }
 
+  handleName = (name) => {
+    this.setState({ name });
+  }
+
+  handleDescription = (description) => {
+    this.setState({ description });
+  }
+
   render() {
     return (
       <View>
@@ -101,18 +123,27 @@ class About extends Component {
           defaultPhoto={this.state.photo}
           onSelect={res => this.setState({ photo: res.data })}
         />
-        <CommentBox
-          label={trans('add.name_of_the_group')}
-          onChangeText={name => this.setState({ name })}
+        <SectionLabel label={trans('add.name_of_the_group')} color={Colors.text.pink} />
+        <GroupInput
           value={this.state.name}
+          placeholder={trans('global.write')}
+          height={80}
+          onChangeText={this.handleName}
           maxLength={GROUP_NAME_LIMIT}
-          multiline={false}
+          multiline
+          autoFocus
           showTextCount
+          inputStyle={{ paddingLeft: 20 }}
         />
-        <CommentBox
-          label={trans('add.what_is_your_group_about')}
-          onChangeText={description => this.setState({ description })}
+        <SectionLabel label={trans('add.what_is_your_group_about')} color={Colors.text.pink} />
+        <GroupInput
           value={this.state.description}
+          placeholder={trans('global.write')}
+          height={150}
+          onChangeText={this.handleDescription}
+          multiline
+          autoFocus
+          inputStyle={{ paddingLeft: 20 }}
         />
         <RoundedButton
           onPress={this.onNext}

@@ -470,7 +470,6 @@ export const getExperienceDetails = (id) => {
 
     if (storeId in data) {
       const experienceDetails = data[storeId];
-      console.log(experienceDetails);
 
       return objectGenerator(experienceDetails);
     }
