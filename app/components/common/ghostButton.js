@@ -7,7 +7,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -17,14 +17,14 @@ const styles = StyleSheet.create({
 });
 
 const GhostButton = ({ style, label, color, onPress }) => (
-  <TouchableHighlight
-    onPress={onPress}
-    style={[styles.button, style]}
-  >
-    <View>
+  <View style={{ overflow: 'hidden', flex: 1 }}>
+    <TouchableHighlight
+      onPress={onPress}
+      style={[styles.button, style]}
+    >
       <AppText color={color || Colors.text.blue}>{label}</AppText>
-    </View>
-  </TouchableHighlight>
+    </TouchableHighlight>
+  </View>
 );
 
 GhostButton.propTypes = {

@@ -11,6 +11,7 @@ import { Colors } from '@theme';
 
 import { AppText } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
+import { Avatar } from '@components/common';
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -30,10 +31,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   profilePic: {
-    width: 46,
-    height: 46,
-    resizeMode: 'cover',
-    borderRadius: 23,
     marginRight: 4,
   },
   chevron: {
@@ -60,11 +57,16 @@ const styles = StyleSheet.create({
 
 const prettify = str => (str.charAt(0).toUpperCase() + str.substr(1).toLowerCase());
 
-const renderPic = (photo) => {
+const renderPic = (photo, isSupporter) => {
   let profileImage = null;
 
   if (photo) {
-    profileImage = (<Image source={{ uri: photo }} style={styles.profilePic} />);
+    profileImage = (<Avatar
+      size={46}
+      isSupporter={isSupporter}
+      imageURI={photo}
+      style={styles.profilePic}
+    />);
   }
 
   return profileImage;
@@ -98,7 +100,7 @@ const ActiveRideItem = ({ trip, resetMute, navigation }) => {
       <View style={styles.list}>
         <View style={styles.flexRow}>
           <View style={styles.profilePicWrapper}>
-            {renderPic(trip.User.avatar)}
+            {renderPic(trip.User.avatar, trip.User.isSupporter)}
           </View>
           <View>
             <AppText>{tripName}</AppText>

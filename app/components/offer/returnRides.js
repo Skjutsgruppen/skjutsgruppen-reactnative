@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { AppText } from '@components/utils/texts';
 import { FEED_FILTER_WANTED } from '@config/constant';
+import Avatar from '@components/common/avatar';
 import Date from '@components/date';
 
 const styles = StyleSheet.create({
@@ -20,12 +21,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     backgroundColor: Colors.background.fullWhite,
-    shadowOffset: { width: 2, height: 2 },
-    shadowColor: 'black',
-    shadowOpacity: 1,
-    shadowRadius: 5,
-    elevation: 2,
     marginBottom: 16,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: 0 },
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   profilePicWrapper: {
     width: 48,
@@ -55,12 +62,14 @@ const styles = StyleSheet.create({
 
 const ReturnRides = ({ avatar, trips, type, onPress }) => (
   <View style={styles.returnRidesWrapper}>
-    <AppText fontVariation="bold" color={Colors.text.blue} style={{ marginBottom: 16 }}>Return rides:</AppText>
+    <AppText color={Colors.text.blue} style={{ marginBottom: 16 }}>Return rides:</AppText>
     {
       trips.map(trip => (
         <View key={trip.id} style={styles.card}>
           <View style={styles.profilePicWrapper}>
-            <Image source={{ uri: avatar }} style={styles.profilePic} />
+            {console.log(avatar)}
+            <Avatar size={48} imageURI={avatar} isSupported />
+            {/* <Image source={{ uri: avatar }} style={styles.profilePic} /> */}
             <View
               style={[
                 styles.indicator,

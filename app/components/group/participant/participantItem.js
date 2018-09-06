@@ -68,7 +68,7 @@ class ParticipantItem extends Component {
 
     if (User.avatar) {
       profileImage = (
-        <Avatar imageURI={User.avatar} size={46} onPress={() => onPress(User.id)} />
+        <Avatar imageURI={User.avatar} size={46} onPress={() => onPress(User.id)} isSupporter={User.isSupporter} />
       );
     } else {
       profileImage = (<View style={styles.imgIcon} />);

@@ -55,6 +55,7 @@ const ListItem = ({ trip, onPress, onExperiencePress, seats, showIndicator, indi
         onPress={() => onPress(FEEDABLE_PROFILE, { id: trip.User.id })}
         showIndicator={showIndicator}
         indicatorColor={indicatorColor}
+        isSupporter={trip.User.isSupporter}
       />
       <View style={styles.infoWrapper}>
         <AppText>
