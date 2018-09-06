@@ -4,7 +4,7 @@ import { PER_FETCH_LIMIT, FEED_FILTER_EVERYTHING, TRIPS_FETCH_LIMIT } from '@con
 import { updateFeedCount } from '@services/apollo/dataSync';
 
 const FEED_SUBSCRIPTION = gql`
-subscription{
+subscription {
   feed {
     Feed {
       id
@@ -59,6 +59,7 @@ subscription{
           Enablers {
             id
           }
+          isBlocked
         }
       }
       ... on TripFeed {
@@ -108,6 +109,7 @@ subscription{
           }
           url
           isDeleted
+          isBlocked
         }
       }
       ... on NewsFeed {
@@ -127,25 +129,7 @@ subscription{
         Experience{
           id
           photoUrl
-          publishedStatus
-          userStatus
-          User {
-            id
-            firstName
-            avatar
-            deleted
-            isSupporter
-          }
-          Participants{
-            User {
-              id
-              avatar
-              firstName
-              deleted
-              isSupporter
-            }
-            status
-          }
+          isBlocked          
         }
       }
       ... on GardenStatus {
@@ -223,6 +207,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         Enablers {
           id
         }
+        isBlocked
       }
     }
     ... on TripFeed {
@@ -272,6 +257,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         }
         url
         isDeleted
+        isBlocked
       }
     }
     ... on NewsFeed {
@@ -291,25 +277,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
       Experience{
         id
         photoUrl
-        publishedStatus
-        userStatus
-        User {
-          id
-          firstName
-          avatar
-          deleted
-          isSupporter
-        }
-        Participants{
-          User {
-            id
-            avatar
-            firstName
-            deleted
-            isSupporter
-          }
-          status
-        }
+        isBlocked
       }
     }
     ... on GardenStatus {
@@ -687,6 +655,7 @@ query trip($id: Int!) {
       }
     }
     isDeleted
+    isBlocked
   }
 }
 `;
@@ -826,6 +795,7 @@ subscription onTripUpdated($id: Int!) {
       }
     }
     isDeleted
+    isBlocked
   }
 }
 `;
@@ -932,6 +902,7 @@ const TRIPS_SUBSCRIPTION_QUERY = gql`
         }
         muted
         unreadNotificationCount
+        isBlocked
       }
       remove
     }
@@ -1028,6 +999,7 @@ query trips($id:Int, $type:TripTypeEnum, $active:Boolean, $queryString: String, 
       }
       duration
       isDeleted
+      isBlocked
     }
     count
   }
@@ -1150,6 +1122,7 @@ const TRIPS_FEED_SUBSCRIPTION_QUERY = gql`
               deleted
               isSupporter
             }
+            isBlocked
           }
         }
         ...on TripExperienceActivity {
@@ -1309,6 +1282,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             deleted
             isSupporter
           }
+          isBlocked
         }
       }
       ...on TripExperienceActivity {
@@ -1351,6 +1325,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
           published
           publishedStatus
           userStatus
+          isBlocked
         }
       }
       ...on TripSuggestionActivity {
@@ -1382,6 +1357,7 @@ query tripActivities($id: Int!, $limit: Int, $offset: Int) {
             name
             coordinates
           }
+          isBlocked
         }
         Suggestion {
           text

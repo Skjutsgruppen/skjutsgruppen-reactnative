@@ -53,7 +53,7 @@ class Ride extends Component {
       <DataList
         data={trips}
         renderItem={({ item }) => (
-          item.isDeleted ? null : <ActiveRideItem key={item.id} trip={item} />
+          item.isDeleted || item.isBlocked ? null : <ActiveRideItem key={item.id} trip={item} />
         )}
         infinityScroll={false}
         loadMoreButton={this.loadMore}

@@ -77,11 +77,13 @@ class UsersGroupsList extends PureComponent {
         data={groups}
         header={this.renderListSearch}
         renderItem={({ item }) => (
-          <GroupsItem
-            key={item.id}
-            group={item}
-            onPress={this.onPress}
-          />
+          item.isBlocked ?
+            null :
+            <GroupsItem
+              key={item.id}
+              group={item}
+              onPress={this.onPress}
+            />
         )}
         fetchMoreOptions={{
           variables: { offset: groups.rows.length },

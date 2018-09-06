@@ -101,6 +101,8 @@ class PopularGroupsCard extends Component {
       <DataList
         data={exploreGroups}
         renderItem={({ item }) => {
+          if (item.isBlocked) return null;
+
           let image = null;
           if (item.photo) {
             image = { uri: item.photo };
