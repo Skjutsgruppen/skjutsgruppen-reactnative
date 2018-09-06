@@ -148,6 +148,19 @@ subscription{
           }
         }
       }
+      ... on GardenStatus {
+        User {
+          id
+          firstName
+          avatar
+        }
+        feedable
+        GardenInfo {
+          server
+          programmer
+          projectManager
+        }
+      }
     }
     remove
   }
@@ -297,6 +310,19 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
           }
           status
         }
+      }
+    }
+    ... on GardenStatus {
+      User {
+        id
+        firstName
+        avatar
+      }
+      feedable
+      GardenInfo {
+        server
+        programmer
+        projectManager
       }
     }
    }
