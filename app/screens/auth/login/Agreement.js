@@ -116,6 +116,7 @@ class Agreement extends Component {
       </RoundedButton>
     );
   }
+
   render() {
     const { agreementRead } = this.state;
     return (

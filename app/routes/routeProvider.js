@@ -196,12 +196,24 @@ export const navReducer = (state, action) => {
 
   if (state && state.routes) {
     repeatedRoute = state.routes.filter((route) => {
-      if (
-        route.routeName && route.params
-        && route.routeName === routeName
-        && route.params.id === action.params.id
-      ) {
-        return true;
+      if (route.routeName && route.routeName === routeName) {
+        if (!route.params && !action.params) return true;
+        if ((route.params && !action.params) || (!route.params && action.params)) return false;
+        if (route.params.id && action.params.id && route.params.id === action.params.id) {
+          return true;
+        }
+
+        if (route.params.profileId && action.params.profileId
+          && route.params.profileId === action.params.profileId) {
+          return true;
+        }
+
+        if (route.params.activeStep && action.params.activeStep
+          && route.params.activeStep === action.params.activeStep) {
+          return true;
+        }
+
+        return false;
       }
 
       return false;
