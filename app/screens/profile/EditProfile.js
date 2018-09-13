@@ -271,17 +271,18 @@ class EditProfile extends Component {
     const { deleteAccount, logout, removeAppToken } = this.props;
 
     this.setState({ loading: true }, () => {
-      deleteAccount()
-        .then(() => this.setConfirmModalVisibility(false))
-        .then(async () => {
-          await removeAppToken(getDeviceId());
-          await firebase.notifications().cancelAllNotifications();
-          logout()
-            .then(() => LoginManager.logOut())
-            .then(() => this.reset())
-            .catch(() => this.reset());
-        })
-        .catch(error => this.setState({ loading: false, error }));
+      removeAppToken(getDeviceId()).then(() => {
+        deleteAccount()
+          .then(() => this.setConfirmModalVisibility(false))
+          .then(async () => {
+            await firebase.notifications().cancelAllNotifications();
+            logout()
+              .then(() => LoginManager.logOut())
+              .then(() => this.reset())
+              .catch(() => this.reset());
+          })
+          .catch(error => this.setState({ loading: false, error }));
+      });
     });
   }
 

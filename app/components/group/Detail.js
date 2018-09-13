@@ -81,7 +81,7 @@ class Detail extends PureComponent {
     const { notifier } = navigation.state.params;
 
     if (notifier) {
-      this.setState({ notification: true, notifierOffset: 70 });
+      this.setState({ notification: true, notifierOffset: 75 });
     }
   }
 

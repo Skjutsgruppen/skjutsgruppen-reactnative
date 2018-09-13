@@ -812,7 +812,9 @@ class TripDetail extends Component {
         { // style={[styles.text, styles.lightText]}  style={styles.username}
         }
         <AppText color={Colors.text.darkGray}>
-          <AppText fontVariation="semibold" color={Colors.text.blue}>{trip.User.firstName}</AppText>
+          <AppText fontVariation="semibold" color={Colors.text.blue} onPress={() => this.onProfilePress(trip.User.id)}>
+            {trip.User.firstName}
+          </AppText>
           {
             trip.type === FEED_TYPE_OFFER &&
             <AppText> {trans('feed.offers')} {trip.seats} {trip.seats > 1 ? trans('feed.seats') : trans('feed.seat')} </AppText>
