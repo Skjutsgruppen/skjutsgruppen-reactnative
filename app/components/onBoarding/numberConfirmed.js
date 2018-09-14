@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { trans } from '@lang/i18n';
 import Colors from '@theme/colors';
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class NumberConfirmed extends Component {
+class NumberConfirmed extends PureComponent {
   onNext = () => {
     const { onNext, syncContacts } = this.props;
     syncContacts();
@@ -41,9 +41,10 @@ class NumberConfirmed extends Component {
     return (
       <ScrollView>
         <View style={styles.paddedSection}>
-          <StepsHeading>{trans('onboarding.your_number_is_confirmed')}</StepsHeading>
+          <StepsHeading>{trans('onboarding.welcome')}</StepsHeading>
+          <StepsHeading>{firstName}!</StepsHeading>
           <StepsTitle>
-            {trans('onboarding.welcome_you_are_now_participating', { firstName })}
+            {trans('onboarding.you_are_now_participating')}
           </StepsTitle>
           <AppText style={styles.text}>
             {trans('onboarding.press_enter_to_start_looking_around_and_say_hi')}

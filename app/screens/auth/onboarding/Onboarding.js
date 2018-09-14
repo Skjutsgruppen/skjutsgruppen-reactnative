@@ -16,6 +16,7 @@ import SendMessage from '@components/onBoarding/sendMessage';
 import { Wrapper, ProgressBar } from '@components/common';
 import { trans } from '@lang/i18n';
 import SyncContacts from '@components/onBoarding/syncContacts';
+import NumberConfirmed from '@components/onBoarding/numberConfirmed';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -88,8 +89,9 @@ class Onboarding extends Component {
   // }
 
   onSyncContacts = () => {
-    const { navigation } = this.props;
-    navigation.replace('Tab', { askContactPermission: false });
+    this.setState({ activeStep: 10 });
+    // const { navigation } = this.props;
+    // navigation.replace('Tab', { askContactPermission: false });
   }
 
   onNumberConfirmedNext = () => {
@@ -113,7 +115,8 @@ class Onboarding extends Component {
           fontVariation="bold"
           color={activeStep === totalSteps ? Colors.text.pink : Colors.text.lightGray}
         >
-          <Heading size={16} fontVariation="bold" color={Colors.text.pink}>{trans('add.step', { activeStep })}</Heading> {trans('add.out_of', { value: totalSteps })}
+          {activeStep !== totalSteps && <Heading size={16} fontVariation="bold" color={Colors.text.pink}>{trans('add.step', { activeStep })}</Heading>}}
+          {activeStep !== totalSteps && trans('add.out_of', { value: totalSteps })}
           {activeStep === totalSteps && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>}
         </Heading>
       </View>
@@ -162,13 +165,13 @@ class Onboarding extends Component {
           (activeStep === 9) &&
           <WaitingTextMessage onNext={this.onWaitingTextMessageNext} />
         } */}
-        {/* {
-          (activeStep === 9) &&
-          <NumberConfirmed onNext={this.onNumberConfirmedNext} />
-        } */}
         {
           (activeStep === 9) &&
           <SyncContacts onNext={this.onSyncContacts} />
+        }
+        {
+          (activeStep === 10) &&
+          <NumberConfirmed onNext={this.onNumberConfirmedNext} />
         }
       </Wrapper>
     );

@@ -13,6 +13,7 @@ query search
     $filters: [SearchFilterEnum]
     $limit: Int
     $offset: Int
+    $dateSelected: Boolean
 )
 {
   search(input: {
@@ -24,6 +25,7 @@ query search
       filters: $filters
       limit: $limit
       offset: $offset
+      dateSelected: $dateSelected
   })
   { 
     rows{
@@ -123,7 +125,7 @@ query search
 `;
 
 export const withSearch = graphql(SEARCH, {
-  options: ({ from, to, direction, filters, dates }) => ({
+  options: ({ from, to, direction, filters, dates, dateSelected }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
       from,
@@ -134,6 +136,7 @@ export const withSearch = graphql(SEARCH, {
       dateRange: [],
       offset: 0,
       limit: PER_FETCH_LIMIT,
+      dateSelected: false,
     },
     fetchPolicy: 'cache-and-network',
   }),
