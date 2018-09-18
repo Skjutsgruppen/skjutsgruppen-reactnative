@@ -145,6 +145,8 @@ class Report extends Component {
       return data.id;
     } else if (type === REPORT_COMMENT_TYPE) {
       return data.Comment.id;
+    } else if (type === FEEDABLE_EXPERIENCE) {
+      return data.Experience.id;
     }
 
     return null;
@@ -200,7 +202,7 @@ class Report extends Component {
           <AppText>
             Experience for {tripStart} {' - '}
             {tripEnd} {' on '}
-            <Date format="MMM DD, YYYY">{data.date}</Date>
+            <Date format="MMM DD, YYYY">{Trip.date}</Date>
           </AppText>
         </View>
       );

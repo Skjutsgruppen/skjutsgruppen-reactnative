@@ -411,6 +411,7 @@ query experience($id: Int!){
       avatar
       deleted
     }
+    isBlocked
   }
 }
 `;

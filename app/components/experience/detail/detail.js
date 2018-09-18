@@ -119,6 +119,14 @@ class ExperienceDetail extends Component {
     });
   }
 
+  onReportExperience = () => {
+    const { navigation } = this.props;
+    const { experience } = this.state;
+    this.setState({ optionsOpen: false }, () => {
+      navigation.navigate('Report', { data: { Experience: experience }, type: FEEDABLE_EXPERIENCE });
+    });
+  }
+
   getParticipantsName = () => {
     const { experience } = this.state;
 
@@ -176,7 +184,7 @@ class ExperienceDetail extends Component {
     return isParticipant;
   }
 
-  renderReport = () => (<ModalAction label={trans('experience.report_this_experience')} onPress={() => { }} />)
+  renderReport = () => (<ModalAction label={trans('experience.report_this_experience')} onPress={() => this.onReportExperience()} />)
 
   renderShareModal() {
     if (this.props.pending) {
