@@ -330,7 +330,7 @@ class Garden extends Component {
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
           />
-          {mySupport.data.subscriptions.length > 0 &&
+          {mySupport.data && mySupport.data.subscriptions.length > 0 &&
             <ProfileAction
               label={trans('profile.your_support_of_the_garden')}
               onPress={() => this.redirect('YourSupport')}
