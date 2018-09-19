@@ -193,7 +193,6 @@ export const AppNavigator = StackNavigator(Routes,
 export const navReducer = (state, action) => {
   const { routeName } = action;
   let repeatedRoute = [];
-
   if (state && state.routes) {
     repeatedRoute = state.routes.filter((route) => {
       if (route.routeName && route.routeName === routeName) {

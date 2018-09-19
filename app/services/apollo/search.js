@@ -136,7 +136,7 @@ export const withSearch = graphql(SEARCH, {
       dateRange: [],
       offset: 0,
       limit: PER_FETCH_LIMIT,
-      dateSelected: false,
+      dateSelected,
     },
     fetchPolicy: 'cache-and-network',
   }),
@@ -165,6 +165,7 @@ query search
     $limit: Int
     $offset: Int
     $afterDate: String
+    $dateSelected: Boolean
 )
 {
   tripSearch: search(input: {
@@ -177,6 +178,7 @@ query search
       limit: $limit
       offset: $offset
       afterDate: $afterDate
+      dateSelected: $dateSelected
   })
   { 
     rows{
@@ -236,7 +238,7 @@ query search
 `;
 
 export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
-  options: ({ from, to, direction, filters, dates, afterDate, limit }) => {
+  options: ({ from, to, direction, filters, dates, afterDate, limit, dateSelected }) => {
     const updatedFilters = filters.filter(row => !(row === FEED_TYPE_GROUP));
 
     return ({
@@ -251,6 +253,7 @@ export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
         offset: 0,
         limit: limit || null,
         afterDate: afterDate || null,
+        dateSelected,
       },
       fetchPolicy: 'network-only',
     });
@@ -279,6 +282,7 @@ query search
     $filters: [SearchFilterEnum]
     $limit: Int
     $offset: Int
+    $dateSelected: Boolean
 )
 {
   groupSearch: search(input: {
@@ -290,6 +294,7 @@ query search
       filters: $filters
       limit: $limit
       offset: $offset
+      dateSelected: $dateSelected
   })
   { 
     rows{
@@ -342,7 +347,7 @@ query search
 `;
 
 export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
-  options: ({ from, to, direction, dates }) => ({
+  options: ({ from, to, direction, dates, dateSelected }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
       from,
@@ -353,6 +358,7 @@ export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
       dateRange: [],
       offset: 0,
       limit: 1,
+      dateSelected,
     },
     fetchPolicy: 'network-only',
   }),
