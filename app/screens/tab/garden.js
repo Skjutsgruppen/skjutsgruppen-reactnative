@@ -285,7 +285,7 @@ class Garden extends Component {
                 elevation={0}
                 durationLabel={trans('profile.support_six_month')}
                 amount="55kr"
-                planId={'55_kr_per_six_month_garden'}
+                planId={'monthly_subscription_1_test'}
                 info={trans('profile.total_of_55_auto_renewed_every_six_month')}
                 title="Support six months"
                 currentlySupporting={mySupport.data.currentSubscriptionPlan}
@@ -295,7 +295,7 @@ class Garden extends Component {
                 elevation={20}
                 durationLabel={trans('profile.support_one_month')}
                 amount="29kr"
-                planId={'29_kr_per_month_garden'}
+                planId={'test1'}
                 title="Support a month"
                 info={trans('profile.total_of_29_auto_renewed_every_month')}
                 currentlySupporting={mySupport.data.currentSubscriptionPlan}

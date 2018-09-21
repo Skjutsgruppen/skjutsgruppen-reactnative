@@ -48,7 +48,7 @@ class Package extends Component {
         [
           {
             text: trans('profile.unsubscribe_now'),
-            onPress: () => unsubscribePayment(),
+            onPress: () => unsubscribePayment(currentlySupporting),
           },
           { text: trans('global.cancel'), style: 'cancel' },
         ],

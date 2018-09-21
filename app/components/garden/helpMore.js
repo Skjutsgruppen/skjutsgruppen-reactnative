@@ -43,7 +43,7 @@ const HelpMore = ({ currentlySupporting }) => (
       elevation={0}
       durationLabel={trans('profile.support_one_year')}
       amount="589kr"
-      planId={'589_kr_per_year_garden'}
+      planId={'monthly_subscription_1_test'}
       info={trans('profile.auto_renewed_every_year', { krona: 589 })}
       title="Support a year"
       currentlySupporting={currentlySupporting}
@@ -53,7 +53,7 @@ const HelpMore = ({ currentlySupporting }) => (
       elevation={20}
       durationLabel={trans('profile.support_one_year')}
       amount="1749kr"
-      planId={'1749_kr_per_year_garden'}
+      planId={'test1'}
       info={trans('profile.auto_renewed_every_year', { krona: 1749 })}
       title="Support a year"
       currentlySupporting={currentlySupporting}
@@ -63,7 +63,7 @@ const HelpMore = ({ currentlySupporting }) => (
       elevation={21}
       durationLabel={trans('profile.support_one_year')}
       amount="2995kr"
-      planId={'2995__kr_per_six_months'}
+      planId={'test1'}
       info={trans('profile.auto_renewed_every_six_month', { krona: 2995 })}
       title="Support six month"
       currentlySupporting={currentlySupporting}
