@@ -526,7 +526,7 @@ class TripDetail extends Component {
     trip.Recurring.forEach((ride) => {
       if (getDate(ride.date).format('YYYY-MM-DD') === day.dateString) {
         this.setRecurringRidesModalVisibility(false);
-        navigation.navigate('TripDetail', { id: ride.id });
+        navigation.replace('TripDetail', { id: ride.id });
       }
     });
   }
@@ -538,7 +538,7 @@ class TripDetail extends Component {
     trip.ReturnTrip.forEach((ride) => {
       if (ride.id === id) {
         this.setReturnRidesModalVisibility(false);
-        navigation.navigate('TripDetail', { id: ride.id });
+        navigation.replace('TripDetail', { id: ride.id });
       }
     });
   }
@@ -546,7 +546,7 @@ class TripDetail extends Component {
   canCreateExperience = () => {
     const { trip } = this.state;
     const { experienceStatus, Participants, isParticipant } = trip;
-    return true;
+    // return true;
     if (experienceStatus) {
       return (
         Participants.count > 1

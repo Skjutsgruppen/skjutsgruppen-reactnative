@@ -99,5 +99,7 @@
   "phone_number_email": "se_The phone number is associated with email {{email}}",
   "phone_number_email_not_found": "se_Sorry! could not find user associated with the phone number.",
   "enter_phone_number_to_view_email": "se_Please enter your phone number to get hint of the email associated with the number.",
-  "no_email_access_contact_support": "se_No longer have access to the email. Send us an email at support@skjutsgruppen.nu to change your password."
+  "no_email_access_contact_support": "se_No longer have access to the email. Send us an email at support@skjutsgruppen.nu to change your password.",
+  "welcome": "se_Welcome",
+  "all_done": "se_All done!"
 }
