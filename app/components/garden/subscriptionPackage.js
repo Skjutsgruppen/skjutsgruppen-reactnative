@@ -48,7 +48,7 @@ class Package extends Component {
         [
           {
             text: trans('profile.unsubscribe_now'),
-            onPress: () => unsubscribePayment(),
+            onPress: () => unsubscribePayment(currentlySupporting),
           },
           { text: trans('global.cancel'), style: 'cancel' },
         ],
@@ -91,7 +91,7 @@ class Package extends Component {
             </RoundedButton>
             <View style={{ marginLeft: 12 }}>
               <Heading centered color={Colors.text.yellowGreen}>{amountPerMonth}kr</Heading>
-              <Heading size={13} centered color={Colors.text.yellowGreen}>per month</Heading>
+              {/* <Heading size={13} centered color={Colors.text.yellowGreen}>per month</Heading> */}
             </View>
           </View>
           {

@@ -47,7 +47,7 @@ const HelpMore = ({ currentlySupporting }) => (
       info={trans('profile.auto_renewed_every_year', { krona: 589 })}
       title="Support a year"
       currentlySupporting={currentlySupporting}
-      amountPerMonth={parseFloat(589 / 12).toFixed(2)}
+      amountPerMonth="589"
     />
     <Package
       elevation={20}
@@ -57,7 +57,7 @@ const HelpMore = ({ currentlySupporting }) => (
       info={trans('profile.auto_renewed_every_year', { krona: 1749 })}
       title="Support a year"
       currentlySupporting={currentlySupporting}
-      amountPerMonth={parseFloat(1749 / 12).toFixed(2)}
+      amountPerMonth="1749"
     />
     <Package
       elevation={21}
@@ -67,7 +67,7 @@ const HelpMore = ({ currentlySupporting }) => (
       info={trans('profile.auto_renewed_every_six_month', { krona: 2995 })}
       title="Support six month"
       currentlySupporting={currentlySupporting}
-      amountPerMonth={parseFloat(2995 / 6).toFixed(2)}
+      amountPerMonth="2995"
     />
   </View>
 );

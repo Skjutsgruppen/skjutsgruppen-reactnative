@@ -104,7 +104,8 @@ class YourSupport extends Component {
   }
 
   onCancelSupportSubscription = () => {
-    unsubscribePayment();
+    const { mySupport } = this.props;
+    unsubscribePayment(mySupport.data.currentlySubscriptionPlan);
   }
 
   renderSubscriptions = () => {
@@ -223,7 +224,7 @@ class YourSupport extends Component {
             info={trans('profile.total_of_55_auto_renewed_every_six_month')}
             title="Support six months"
             currentlySupporting={mySupport.data.currentSubscriptionPlan}
-            amountPerMonth={parseFloat(55 / 6).toFixed(2)}
+            amountPerMonth="55"
           />
           <Package
             elevation={20}

@@ -62,7 +62,7 @@ const Supporter = ({ garden, user, navigation }) => (
       <Avatar
         imageURI={user.avatar}
         size={60}
-        isSupporter
+        isSupporter={user.isSupporter}
       />
       <Heading style={[styles.text, styles.heading]} color={Colors.text.yellowGreen} centered >
         {user.firstName} {trans('feed.just_supported_our_self_sustaining_garden')}
