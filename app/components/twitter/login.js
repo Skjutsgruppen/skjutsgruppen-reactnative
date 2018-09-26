@@ -152,6 +152,7 @@ class TwitterLogin extends PureComponent {
       token: authToken,
       secret: authTokenSecret,
       type: 'twitter',
+      username: profile.screen_name,
     });
 
     const { User, token } = response.data.connect;
@@ -220,7 +221,6 @@ class TwitterLogin extends PureComponent {
       Alert.alert('Error!', 'Email is required');
       return;
     }
-
     const { register, setRegister, updateProfile, navigation } = this.props;
 
     try {
@@ -251,6 +251,7 @@ class TwitterLogin extends PureComponent {
         twitterSecret,
         agreementRead: true,
         agreementAccepted: true,
+        twitterUsername: profile.screen_name,
       });
 
       await setRegister({

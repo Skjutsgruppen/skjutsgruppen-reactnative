@@ -91,6 +91,12 @@ const getTitle = (isReturnedTrip, suggestion, group, isRecurring) => {
   return trans('add.published');
 };
 
+const shouldShowTabBar = (isReturnedTrip, suggestion) => {
+  if (isReturnedTrip && Object.keys(suggestion).length > 0) return false;
+
+  return true;
+};
+
 const Completed = ({
   detail,
   type,
@@ -171,7 +177,7 @@ const Completed = ({
             {trans('add.back_to_group')}
           </RoundedButton>
         }
-        <TabBar />
+        {shouldShowTabBar(isReturnedTrip, suggestion) && <TabBar />}
       </View>
     </Wrapper>
   );

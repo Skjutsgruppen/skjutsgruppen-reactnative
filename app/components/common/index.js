@@ -30,6 +30,7 @@ import ListSearchBar from '@components/common/ListSearchBar';
 import ConfirmModal from '@components/common/confirmModal';
 import GhostButton from '@components/common/ghostButton';
 import InfoModal from '@components/common/infoModal';
+import SocialMediaLinkModal from '@components/common/socialMediaLinkModal';
 
 export {
   Loading,
@@ -64,4 +65,5 @@ export {
   ConfirmModal,
   GhostButton,
   InfoModal,
+  SocialMediaLinkModal,
 };

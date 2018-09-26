@@ -21,7 +21,7 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
-import { getDate } from '@config';
+import { getDate, utcDate } from '@config';
 import AppText from '@components/utils/texts/appText';
 import LoadMore from '@components/message/loadMore';
 
@@ -380,8 +380,7 @@ class SearchResult extends Component {
 
       let remainingTripsObj = [];
 
-      if (Object.keys(remainingTrips).length > 0 &&
-        (Object.keys(this.state.groups).length > 0 || !filters.includes(FEED_TYPE_GROUP))) {
+      if (Object.keys(remainingTrips).length > 0) {
         remainingTripsObj = Object.keys(remainingTrips)
           .map(key => ({ title: key, data: remainingTrips[key] }));
       }
@@ -427,8 +426,7 @@ class SearchResult extends Component {
   onFilterSelect = (param) => {
     const { filters } = this.state;
     const { searchAllGroups, searchAllTrips } = this.props;
-
-    if (!searchAllGroups.loading || !searchAllTrips.loading) {
+    if (!searchAllGroups.loading && !searchAllTrips.loading) {
       if (filters.includes(param)) {
         filters.splice(filters.indexOf(param), 1);
       } else {
@@ -475,9 +473,9 @@ class SearchResult extends Component {
 
     if (!dateSelected && publicTransportSelected) {
       if (!currentFetchDate) {
-        currentFetchDate = getDate();
+        currentFetchDate = utcDate(getDate());
       } else {
-        currentFetchDate = getDate(currentFetchDate);
+        currentFetchDate = utcDate(getDate(currentFetchDate));
       }
 
       currentFetchDate = currentFetchDate.add(1, 'd').format('YYYY-MM-DD');
@@ -576,10 +574,10 @@ class SearchResult extends Component {
       filters,
     } = this.state;
     const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
-
     const fetchDate = this.getFetchDate();
 
     if (dateSelected && publicTransportSelected) {
+
       return false;
     }
 
@@ -598,10 +596,10 @@ class SearchResult extends Component {
       return false;
     }
 
-    if (!publicTransportData && publicTransportSelected &&
-      searchAllTrips.rows.length > 1 && totalTrips >= searchAllTrips.count) {
-      return false;
-    }
+    // if (!publicTransportData && publicTransportSelected
+    //   && searchAllTrips.rows.length > 1 && totalTrips >= searchAllTrips.count) {
+    //   return false;
+    // }
 
     if (publicTransportRemoved && totalTrips >= searchAllTrips.count) {
       return false;
@@ -618,7 +616,7 @@ class SearchResult extends Component {
 
   refetchTrips = async () => {
     const { filters } = this.state;
-    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj } = this.props;
+    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj, timezone } = this.props;
     const newfilter = filters.filter(row => !(row === FEED_TYPE_GROUP));
     const publicTransportSelected = this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
     let customDate = dates;
@@ -648,6 +646,8 @@ class SearchResult extends Component {
           dates: customDate,
           limit: this.getLimitValue(),
           offset: this.getOffsetValue(),
+          dateSelected,
+          timezone,
         });
       });
   }

@@ -506,7 +506,7 @@ class Item extends PureComponent {
     if (notifiable === FEEDABLE_TRIP) {
       type = `${Notifiable.TripStart.name} - ${Notifiable.TripEnd.name}`;
       route = 'TripDetail';
-      params = { trip: Notifiable, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_trip_with_you') };
+      params = { id: Notifiable.id, notifier: Notifiers[0], notificationMessage: trans('message.shared_this_trip_with_you') };
 
       if (type && type.length > NOTIFICATION_CHARACTER_COUNT) {
         type = `${type.slice(0, NOTIFICATION_CHARACTER_COUNT)} ...`;
@@ -645,7 +645,7 @@ class Item extends PureComponent {
 
   makeAnExperience = ({ Notifiable, createdAt, id, ids }) => {
     const route = 'TripDetail';
-    const params = { trip: Notifiable.id || '' };
+    const params = { id: Notifiable.id || '' };
 
     return this.item({
       user: trans('message.make_an_experience'),

@@ -31,7 +31,7 @@
     "react-native-device-info": "^0.13.0",
     "react-native-fabric": "^0.5.1",
     "react-native-facebook-login": "^1.6.0",
-    "react-native-fbsdk": "^0.7.0",
+    "react-native-fbsdk": "0.8.0",
     "react-native-firebase": "^4.2.0",
     "react-native-fs": "^2.9.7",
     "react-native-i18n": "^2.0.9",

@@ -438,6 +438,7 @@ mutation createTrip(
       unit
       type
     }
+    isBlocked
   }
 }
 `;
@@ -534,6 +535,7 @@ query trip($id: Int!) {
       avatar
       deleted
       isSupporter
+      twitterUsername
       relation {
           path{
           id
@@ -674,6 +676,7 @@ subscription onTripUpdated($id: Int!) {
       avatar
       deleted
       isSupporter
+      twitterUsername
       relation {
           path{
           id

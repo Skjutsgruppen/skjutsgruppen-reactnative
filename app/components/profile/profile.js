@@ -423,9 +423,14 @@ class Profile extends Component {
     const { user } = this.state;
 
     if (user.twitterId) {
+      const { twitterId, twitterUsername } = user;
+
       return (
         <ProfileAction
-          onPress={() => Linking.openURL(`https://twitter.com?profile_id=${user.twitterId}`)}
+          onPress={() => {
+            if (twitterUsername) return Linking.openURL(`https://twitter.com/${twitterUsername}`);
+            return Linking.openURL(`https://twitter.com/intent/user?user_id=${twitterId}`);
+          }}
           label={trans('profile.twitter_profile')}
         />
       );
