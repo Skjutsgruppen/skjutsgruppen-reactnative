@@ -6,7 +6,7 @@ import { withBestFriends, withUnlimitedFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import { compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Loading, RoundedButton, SearchBar } from '@components/common';
+import { Loading, RoundedButton, SearchBar, SocialMediaLinkModal } from '@components/common';
 import Colors from '@theme/colors';
 import FriendList from '@components/friend/selectable';
 import { trans } from '@lang/i18n';
@@ -22,6 +22,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import { Heading, AppText } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import FBShare from '@services/facebook/share';
+
 
 const styles = StyleSheet.create({
   list: {
@@ -130,6 +131,7 @@ class Share extends Component {
       searchQuery: '',
       loading: false,
       error: false,
+      connectFbModal: false,
     };
   }
 
@@ -161,6 +163,9 @@ class Share extends Component {
       });
     }
 
+    if (this.hasFacebook()) this.setOption('social', 'Facebook');
+    if (this.hasTwitter()) this.setOption('social', 'Twitter');
+
     this.setState({
       friendsList,
     });
@@ -180,6 +185,15 @@ class Share extends Component {
       friends.rows.forEach(friend => friendsList.push(friend));
       this.setState({ friendsList });
     }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.contacts && nextProps.contacts.loading) return false;
+    if (nextProps.bestFriends && nextProps.bestFriends.loading) return false;
+    if (nextProps.groups && nextProps.groups.loading) return false;
+    if (nextProps.friends && nextProps.friends.loading) return false;
+
+    return true;
   }
 
   onNext = () => {
@@ -251,6 +265,36 @@ class Share extends Component {
     this.setState(obj);
 
     return true;
+  }
+
+  setFacebook = () => {
+    if (!this.hasFacebook()) {
+      this.setState({ connectFbModal: true });
+    }
+    this.setOption('social', 'Facebook');
+  }
+
+  setTwitter = () => {
+    if (!this.hasTwitter()) {
+      this.setState({ connectTwitterModal: true });
+    }
+    this.setOption('social', 'Twitter');
+  }
+
+  setFacebookConnection = (connection) => {
+    if (!connection && !this.hasFacebook()) {
+      this.setOption('social', 'Facebook');
+    }
+
+    this.setState({ connectFbModal: false });
+  }
+
+  setTwitterConnection = (connection) => {
+    if (!connection && !this.hasTwitter()) {
+      this.setOption('social', 'Twitter');
+    }
+
+    this.setState({ connectTwitterModal: false });
   }
 
   getSmsText = () => {
@@ -444,6 +488,54 @@ class Share extends Component {
     return (<LoadMore onPress={onPress} remainingCount={remaining} />);
   }
 
+  renderConnectFBModal = () => {
+    const { connectFbModal } = this.state;
+    if (!connectFbModal) return null;
+
+    const message = (
+      <AppText>
+        {trans('share.link_facebook')}
+      </AppText>
+    );
+
+    return (
+      <SocialMediaLinkModal
+        visible={connectFbModal}
+        onRequestClose={() => this.setFacebookConnection(false)}
+        message={message}
+        denyLabel={trans('global.no')}
+        onConfirm={() => this.setFacebookConnection(true)}
+        onDeny={() => this.setFacebookConnection(false)}
+        confrimTextColor={Colors.text.blue}
+        media="Facebook"
+      />
+    );
+  }
+
+  renderConnectTwitterModal = () => {
+    const { connectTwitterModal } = this.state;
+    if (!connectTwitterModal) return null;
+
+    const message = (
+      <AppText>
+        {trans('share.link_twitter')}
+      </AppText>
+    );
+
+    return (
+      <SocialMediaLinkModal
+        visible={connectTwitterModal}
+        onRequestClose={() => this.setTwitterConnection(false)}
+        message={message}
+        denyLabel={trans('global.no')}
+        onConfirm={() => this.setTwitterConnection(true)}
+        onDeny={() => this.setTwitterConnection(false)}
+        confrimTextColor={Colors.text.blue}
+        media="Twitter"
+      />
+    );
+  }
+
   renderGroups() {
     const { groups, defaultValue } = this.props;
 
@@ -596,24 +688,26 @@ class Share extends Component {
           onPress={() => this.setOption('clipboard', 'copy_to_clip')}
           color="blue"
         />
-        {this.hasFacebook() &&
-          <ShareItem
-            imageURI={require('@assets/icons/ic_facebook.png')}
-            isStatic
-            selected={this.hasOption('social', 'Facebook')}
-            label={trans('global.your_fb_timeline')}
-            onPress={() => this.setOption('social', 'Facebook')}
-            color="blue"
-          />}
-        {this.hasTwitter() &&
-          <ShareItem
-            imageURI={require('@assets/icons/ic_twitter.png')}
-            isStatic
-            selected={this.hasOption('social', 'Twitter')}
-            label={trans('global.tweet')}
-            onPress={() => this.setOption('social', 'Twitter')}
-            color="blue"
-          />}
+        {/* {this.hasFacebook() && */}
+        <ShareItem
+          imageURI={require('@assets/icons/ic_facebook.png')}
+          isStatic
+          selected={this.hasOption('social', 'Facebook')}
+          label={trans('global.your_fb_timeline')}
+          onPress={() => this.setFacebook()}
+          color="blue"
+        />
+        {/* } */}
+        {/* {this.hasTwitter() && */}
+        <ShareItem
+          imageURI={require('@assets/icons/ic_twitter.png')}
+          isStatic
+          selected={this.hasOption('social', 'Twitter')}
+          label={trans('global.tweet')}
+          onPress={() => this.setTwitter()}
+          color="blue"
+        />
+        {/* } */}
         <FriendList
           title={trans('global.recent')}
           loading={bestFriends.loading}
@@ -738,6 +832,8 @@ class Share extends Component {
           }
           {this.renderButton()}
         </View>
+        {this.renderConnectFBModal()}
+        {this.renderConnectTwitterModal()}
       </View>
     );
   }
@@ -760,15 +856,18 @@ Share.propTypes = {
   groups: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
+    loading: PropTypes.bool.isRequired,
   }).isRequired,
   modal: PropTypes.bool,
   friends: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
+    loading: PropTypes.bool.isRequired,
   }).isRequired,
   bestFriends: PropTypes.shape({
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     count: PropTypes.number.isRequired,
+    loading: PropTypes.bool.isRequired,
   }).isRequired,
   contacts: PropTypes.shape({
     name: PropTypes.string,

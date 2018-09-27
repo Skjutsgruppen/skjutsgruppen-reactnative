@@ -149,7 +149,7 @@ class TwitterConnect extends PureComponent {
     return (
       <View>
         {this.renderButton()}
-        {this.renderModal()}
+        {this.props.showModal && this.renderModal()}
       </View>
     );
   }
@@ -158,10 +158,12 @@ class TwitterConnect extends PureComponent {
 TwitterConnect.propTypes = {
   buttonType: PropTypes.string,
   onLogin: PropTypes.func.isRequired,
+  showModal: PropTypes.bool,
 };
 
 TwitterConnect.defaultProps = {
   buttonType: 'login',
+  showModal: true,
 };
 
 export default compose(withGetUserByEmail, withGetUserByTwitterId)(TwitterConnect);

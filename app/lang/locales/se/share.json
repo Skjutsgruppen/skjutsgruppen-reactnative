@@ -5,5 +5,7 @@
   "failed_to_share": "se_Sorry! The {{type}} could not be shared.",
   "share_location": "se_I'm ridesharing from {{tripStart}} to {{tripEnd}} ({{url}}).",
   "select_at_least_one_participant": "se_You must select at least one participants.",
-  "allow_sms_permission": "Please allow SMS permission to send SMS."
+  "allow_sms_permission": "Please allow SMS permission to send SMS.",
+  "link_facebook": "se_Do you want to link your account with facebook?",
+  "link_twitter": "se_Do you want to link your account with twitter?"
 }

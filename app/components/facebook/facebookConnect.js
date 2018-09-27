@@ -144,7 +144,7 @@ class FacebookConnect extends PureComponent {
     return (
       <View>
         {this.renderButton()}
-        {this.renderModal()}
+        {this.props.showModal && this.renderModal()}
       </View>
     );
   }
@@ -155,10 +155,12 @@ FacebookConnect.propTypes = {
   getUserByEmail: PropTypes.func.isRequired,
   getUserByFbId: PropTypes.func.isRequired,
   buttonType: PropTypes.string,
+  showModal: PropTypes.bool,
 };
 
 FacebookConnect.defaultProps = {
   buttonType: 'login',
+  showModal: true,
 };
 
 export default compose(withGetUserByEmail, withgetUserByFbId)(FacebookConnect);
