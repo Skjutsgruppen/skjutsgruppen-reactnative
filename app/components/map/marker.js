@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   profilePic: {
     width: 40,
     height: 40,
-    resizeMode: 'cover',
+
     borderRadius: 20,
     position: 'absolute',
     top: 11,
@@ -112,7 +112,7 @@ class Marker extends PureComponent {
             key={`${this.state.bgRender}`}
           />
           <Image
-            style={styles.profilePic}
+            style={[styles.profilePic]}
             source={{ uri: image }}
             onLayout={() => this.setState({ initialRender: 4 })}
             key={`${this.state.profileRender}`}

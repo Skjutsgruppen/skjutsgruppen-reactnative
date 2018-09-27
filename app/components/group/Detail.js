@@ -9,7 +9,8 @@ import {
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
-import ToolBar from '@components/utils/toolbar';
+// import ToolBar from '@components/utils/toolbar';
+import GroupToolbar from '@components/group/groupToolbar';
 import { submitComment } from '@services/apollo/comment';
 import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
 import { withMute, withUnmute } from '@services/apollo/mute';
@@ -188,6 +189,12 @@ class Detail extends PureComponent {
     navigation.navigate('GroupInformation', { group });
   }
 
+  onEmbedHtml = () => {
+    const { group, navigation } = this.props;
+    this.setState({ showAction: false });
+    navigation.navigate('EmbedGroup', { type: group.type });
+  }
+
   setCalendarVisibilty = (show) => {
     this.setState({ showCalendar: show });
   }
@@ -317,6 +324,7 @@ class Detail extends PureComponent {
         <ModalAction label={trans('detail.mute_forever')} onPress={() => this.onMute('forever')} key="mute_forever" />,
       ]);
     }
+    actions = actions.concat([<ModalAction label={trans('detail.embed_with_html')} onPress={() => this.onEmbedHtml()} key="embed_with_html" />]);
 
     return actions;
   };
@@ -344,7 +352,7 @@ class Detail extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <ToolBar transparent offset={notifierOffset} />
+        <GroupToolbar title={group.name} mapPress={this.onMapPress} transparent offset={notifierOffset} />
         {notification && <AppNotification
           image={notifier.avatar}
           name={notifier.firstName}
