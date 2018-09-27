@@ -3,8 +3,8 @@ import { StyleSheet, ScrollView, View, Image, TouchableOpacity, Modal, Keyboard,
 import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
-import { withShare } from '@services/apollo/share';
-import { withTrip, withTripFeed, withDeleteTrip, withEmbed } from '@services/apollo/trip';
+import { withShare, withEmbed } from '@services/apollo/share';
+import { withTrip, withTripFeed, withDeleteTrip } from '@services/apollo/trip';
 import {
   AppNotification,
   DetailHeader,
@@ -964,7 +964,7 @@ class TripDetail extends Component {
               />,
             ])
         }
-        <ModalAction label={trans('detail.embeded_with_html')} onPress={() => this.onEmbed()} />
+        <ModalAction label={trans('detail.embed_with_html')} onPress={() => this.onEmbed()} />
       </View>
     );
   }

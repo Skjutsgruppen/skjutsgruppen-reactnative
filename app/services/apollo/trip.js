@@ -1466,17 +1466,3 @@ export const withDeleteTrip = graphql(DELETE_TRIP_QUERY, {
       deleteTrip: ({ id }) => mutate({ variables: { id } }),
     }),
 });
-
-
-const EMBED_MUTATION = gql`
-  mutation embed($tripId: Int, $groupId: Int){
-    embed(tripId: $tripId, groupId: $groupId)
-  }
-`;
-
-export const withEmbed = graphql(EMBED_MUTATION, {
-  props: ({ mutate }) => (
-    {
-      embed: ({ tripId, groupId }) => mutate({ variables: { tripId, groupId } }),
-    }),
-});

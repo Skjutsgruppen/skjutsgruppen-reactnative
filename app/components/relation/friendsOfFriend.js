@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, ScrollView, Image, TouchableHighlight, Platform, UIManager, LayoutAnimation, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Image, TouchableHighlight, TouchableOpacity, Platform, UIManager, LayoutAnimation, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
@@ -51,15 +51,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   avatar: {
-    height: 48,
-    width: 48,
-    resizeMode: 'cover',
     borderRadius: 24,
   },
   avatarMini: {
-    height: 24,
-    width: 24,
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
     borderRadius: 12,
   },
   fatArrow: {
@@ -74,7 +69,7 @@ const styles = StyleSheet.create({
     height: 56,
     width: 56,
     position: 'relative',
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
     borderRadius: 28,
     borderWidth: 4,
     borderColor: '#fff',
@@ -84,15 +79,39 @@ const styles = StyleSheet.create({
     height: 28,
     width: 28,
     position: 'relative',
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
     borderRadius: 14,
     borderWidth: 2,
     borderColor: '#fff',
     zIndex: 5,
   },
+  mutualFriendListWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginTop: 50,
+  },
+  mutualFriend: {
+    marginLeft: -10,
+    marginTop: -10,
+  },
+  mutualAvatar: {
+    height: 56,
+    width: 56,
+    borderRadius: 28,
+    borderWidth: 4,
+    borderColor: '#fff',
+    zIndex: 1,
+  },
+  mutualSeperator: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: 'red',
+    width: 1,
+  },
   shifted: {
     marginLeft: -10,
-    zIndex: 1,
+    zIndex: -11,
     position: 'relative',
   },
   shiftedMini: {
@@ -140,6 +159,10 @@ class FOF extends PureComponent {
 
     this.state = {
       expanded: false,
+      mutualFriendList: [],
+      expandMutualFriendList: false,
+      offset: 0,
+      expandedBundleIndex: -1,
     };
   }
 
@@ -247,137 +270,175 @@ class FOF extends PureComponent {
     );
   }
 
-  renderBunddled = (item, arrow) => {
+  handleScroll = (event) => {
+    this.setState({ offset: event.nativeEvent.contentOffset.x });
+  }
+
+  handleBundleExpansion = (e, index, item) => {
+    const { expandedBundleIndex } = this.state;
+    if (index === expandedBundleIndex) {
+      this.setState({
+        expandMutualFriendList: false,
+        expandedBundleIndex: -1,
+      });
+    } else {
+      const winHalf = Dimensions.get('window').width / 2;
+      const xpos = e.nativeEvent.pageX;
+      this.scroller.scrollTo({ x: this.state.offset + (xpos - winHalf) });
+      this.setState({
+        mutualFriendList: item,
+        expandMutualFriendList: true,
+        expandedBundleIndex: index,
+      });
+    }
+  }
+
+  renderMutual = () => {
+    const { mutualFriendList, expandMutualFriendList } = this.state;
     const { navigation } = this.props;
-    if (item && item.length === 1) {
-      return ([
-        <Avatar
-          imageURI={item[0].avatar}
-          size={48}
-          key={item[0].id}
-          onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
-          style={styles.avatar}
-          isSupporter={item[0].isSupporter}
-        />,
-        arrow,
-      ]);
-    }
+    return (expandMutualFriendList && <View>
+      <View style={styles.mutualFriendListWrapper}>
+        {
+          mutualFriendList.slice(1).map((friend, index) => (
+            <Avatar
+              size={48}
+              imageURI={friend.avatar}
+              key={friend.id}
+              onPress={() => navigation.navigate('Profile', { profileId: friend.id })}
+              isSupporter={friend.isSupporter}
+              style={[styles.mutualFriend, styles.mutualAvatar, { zIndex: mutualFriendList.length - index }]}
+            />
+          ))
+        }
+      </View>
+    </View>);
+  }
 
-    if (item && item.length === 2) {
-      return ([
-        <Avatar
-          imageURI={item[0].avatar}
-          size={48}
-          key={item[0].id}
-          onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
-          style={styles.bunddledAvatar}
-          isSupporter={item[0].isSupporter}
-        />,
-        <Avatar
-          imageURI={item[1].avatar}
-          size={48}
-          key={item[1].id}
-          onPress={() => navigation.navigate('Profile', { profileId: item[1].id })}
-          style={[styles.bunddledAvatar, styles.shifted]}
-          isSupporter={item[1].isSupporter}
-        />,
-        arrow,
-      ]);
-    }
-
-    return [
+renderBunddled = (item, index, arrow) => {
+  const { navigation } = this.props;
+  if (item && item.length === 1) {
+    return ([
       <Avatar
         key={item[0].id}
         imageURI={item[0].avatar}
         size={48}
         onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
+        isSupporter={item[0].isSupporter}
+        style={styles.avatar}
+      />,
+      arrow,
+    ]);
+  }
+
+  if (item && item.length === 2) {
+    return ([
+      <Avatar
+        size={48}
+        imageURI={item[0].avatar}
+        key={item[0].id}
+        isSupporter={item[0].isSupporter}
+        onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
         style={styles.bunddledAvatar}
+      />,
+      <Avatar
+        size={48}
+        imageURI={item[1].avatar}
+        key={item[1].id}
+        isSupporter={item[1].isSupporter}
+        onPress={() => navigation.navigate('Profile', { profileId: item[1].id })}
+        style={[styles.shifted, styles.bunddledAvatar]}
+      />,
+      arrow,
+    ]);
+  }
+
+  return [
+    <Avatar
+      size={48}
+      imageURI={item[0].avatar}
+      key={item[0].id}
+      isSupporter={item[0].isSupporter}
+      onPress={() => navigation.navigate('Profile', { profileId: item[0].id })}
+      style={styles.bunddledAvatar}
+    />,
+    <TouchableOpacity
+      key={item[1].id}
+      style={[styles.remainingCount, styles.shifted]}
+      onPress={e => this.handleBundleExpansion(e, index, item)}
+    >
+      <AppText size={14} color={Colors.text.white}>{item.length - 1}</AppText>
+    </TouchableOpacity>,
+    arrow,
+  ];
+}
+
+renderPath = () => {
+  const { relation, viewee, user, navigation } = this.props;
+
+  if (relation.path && relation.path.length === 0 && !relation.areFriends) {
+    return null;
+  }
+
+  const arrow = relation.path.length > 1 ?
+    <Image source={FatArrow} style={styles.fatArrow} />
+    : <Image source={ThinArrow} style={styles.thinArrow} />;
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      ref={(ref) => { this.scroller = ref; }}
+      onScroll={this.handleScroll}
+    >
+      <View style={styles.list}>
+        <View style={styles.spacer} />
+        <Avatar
+          size={48}
+          imageURI={user.avatar}
+          key={user.id}
+          isSupporter={user.isSupporter}
+          onPress={() => navigation.navigate('Profile', { profileId: user.id })}
+          style={styles.avatar}
+        />
+        {arrow}
+        {relation.path.map((row, index) => this.renderBunddled(row, index, arrow))}
+        <Avatar
+          size={48}
+          imageURI={viewee.avatar}
+          isSupporter={viewee.isSupporter}
+          onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
+          style={styles.avatar}
+        />
+        <View style={styles.spacer} />
+      </View>
+    </ScrollView>
+  );
+}
+
+renderFull = () => (
+  <View>
+    {this.howYouKnow()}
+    {this.renderPath()}
+    {this.renderMutual()}
+    {this.detail()}
+  </View>
+);
+
+renderBunddledMini = (item, arrow) => {
+  if (item && item.length === 1) {
+    return ([
+      <Avatar
+        key={item[0].id}
+        imageURI={item[0].avatar}
+        size={24}
         isSupporter={item[0].isSupporter}
       />,
-      <View key={item[1].id} style={[styles.remainingCount, styles.shifted]}>
-        <AppText size={14} color={Colors.text.white}>{item.length - 1}</AppText>
-      </View>,
       arrow,
-    ];
+    ]);
   }
 
-  renderPath = () => {
-    const { relation, viewee, user, navigation } = this.props;
-
-    if (relation.path && relation.path.length === 0 && !relation.areFriends) {
-      return null;
-    }
-
-    const arrow = relation.path.length > 1 ?
-      <Image source={FatArrow} style={styles.fatArrow} />
-      : <Image source={ThinArrow} style={styles.thinArrow} />;
-
-    return (
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.list}>
-          <View style={styles.spacer} />
-          <Avatar
-            imageURI={user.avatar}
-            size={48}
-            onPress={() => navigation.navigate('Profile', { profileId: user.id })}
-            isSupporter={user.isSupporter}
-          />
-          {arrow}
-          {relation.path.map(row => this.renderBunddled(row, arrow))}
-          <Avatar
-            imageURI={viewee.avatar}
-            size={48}
-            onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
-            isSupporter={viewee.isSupporter}
-          />
-          <View style={styles.spacer} />
-        </View>
-      </ScrollView>
-    );
-  }
-
-  renderFull = () => (
-    <View>
-      {this.howYouKnow()}
-      {this.renderPath()}
-      {this.detail()}
-    </View>
-  );
-
-  renderBunddledMini = (item, arrow) => {
-    if (item && item.length === 1) {
-      return ([
-        <Avatar
-          key={item[0].id}
-          imageURI={item[0].avatar}
-          size={24}
-          isSupporter={item[0].isSupporter}
-        />,
-        arrow,
-      ]);
-    }
-
-    if (item && item.length === 2) {
-      return ([
-        <Avatar
-          key={item[0].id}
-          imageURI={item[0].avatar}
-          size={24}
-          style={styles.bunddledAvatarMini}
-          isSupporter={item[0].isSupporter}
-        />,
-        <Avatar
-          key={item[1].id}
-          imageURI={item[1].avatar}
-          size={24}
-          style={[styles.bunddledAvatarMini, styles.shiftedMini]}
-          isSupporter={item[1].isSupporter}
-        />,
-        arrow,
-      ]);
-    }
-
-    return [
+  if (item && item.length === 2) {
+    return ([
       <Avatar
         key={item[0].id}
         imageURI={item[0].avatar}
@@ -385,65 +446,84 @@ class FOF extends PureComponent {
         style={styles.bunddledAvatarMini}
         isSupporter={item[0].isSupporter}
       />,
-      <View key={item[1].id} style={[styles.remainingCountMini, styles.shiftedMini]}>
-        <AppText size={10} color={Colors.text.white}>{item.length - 1}</AppText>
-      </View>,
+      <Avatar
+        key={item[1].id}
+        imageURI={item[1].avatar}
+        size={24}
+        style={[styles.bunddledAvatarMini, styles.shiftedMini]}
+        isSupporter={item[1].isSupporter}
+      />,
       arrow,
-    ];
+    ]);
   }
 
-  renderMini = () => {
-    const { relation, viewee, user, navigation, displayNoConnection } = this.props;
+  return [
+    <Avatar
+      key={item[0].id}
+      imageURI={item[0].avatar}
+      size={24}
+      style={styles.bunddledAvatarMini}
+      isSupporter={item[0].isSupporter}
+    />,
+    <View key={item[1].id} style={[styles.remainingCountMini, styles.shiftedMini]}>
+      <AppText size={10} color={Colors.text.white}>{item.length - 1}</AppText>
+    </View>,
+    arrow,
+  ];
+}
 
-    if (relation.path && relation.path.length === 0 && !relation.areFriends) {
-      if (displayNoConnection) {
-        return null;
-      }
+renderMini = () => {
+  const { relation, viewee, user, navigation, displayNoConnection } = this.props;
 
-      return (
-        <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
-          <AppText size={11} color={Colors.text.gray}>
-            {trans('global.you_have_no_friend_connections')}
-          </AppText>
-        </View>
-      );
+  if (relation.path && relation.path.length === 0 && !relation.areFriends) {
+    if (displayNoConnection) {
+      return null;
     }
 
-    const arrow = <Image source={FatArrow} style={styles.fatArrow} />;
-
     return (
-      <TouchableHighlight
-        onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
-        underlayColor={Colors.background.mutedBlue}
-      >
-        <View>
-          <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
-            <AppText size={11} color={Colors.text.gray}>
-              {relation.areFriends ? trans('detail.you_are_friends') : trans('detail.you_are_friends_of_friends')}
-            </AppText>
-          </View>
-          <View style={[styles.list, styles.listLeft]}>
-            <View style={styles.spacer} />
-            <Avatar imageURI={user.avatar} size={24} isSupporter={user.isSupporter} />
-            {arrow}
-            {relation.path.map(row => this.renderBunddledMini(row, arrow))}
-            <Avatar imageURI={viewee.avatar} size={24} isSupporter={viewee.isSupporter} />
-            <View style={styles.spacer} />
-          </View>
-        </View>
-      </TouchableHighlight>
+      <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
+        <AppText size={11} color={Colors.text.gray}>
+          {trans('global.you_have_no_friend_connections')}
+        </AppText>
+      </View>
     );
   }
 
-  render() {
-    const { mini } = this.props;
+  const arrow = <Image source={FatArrow} style={styles.fatArrow} />;
 
-    if (mini) {
-      return this.renderMini();
-    }
+  return (
+    <TouchableHighlight
+      onPress={() => navigation.navigate('Profile', { profileId: viewee.id })}
+      underlayColor={Colors.background.mutedBlue}
+    >
+      <View>
+        <View style={[styles.labelWrapper, { marginTop: 0, marginBottom: 0, height: 24 }]}>
+          <AppText size={11} color={Colors.text.gray}>
+            {relation.areFriends ? trans('detail.you_are_friends') : trans('detail.you_are_friends_of_friends')}
+          </AppText>
+        </View>
+        <View style={[styles.list, styles.listLeft]}>
+          <View style={styles.spacer} />
+          <Avatar imageURI={user.avatar} size={24} isSupporter={user.isSupporter} style={styles.avatarMini} />
+          {arrow}
+          {relation.path.map(row => this.renderBunddledMini(row, arrow))}
+          <Avatar imageURI={viewee.avatar} size={24} isSupporter={viewee.isSupporter} style={styles.avatarMini} />
+          <View style={styles.spacer} />
+        </View>
+      </View>
+    </TouchableHighlight>
+  );
+}
 
-    return this.renderFull();
+render() {
+  const { mini } = this.props;
+
+  if (mini) {
+    return this.renderMini();
   }
+
+  return this.renderFull();
+}
 }
 
 FOF.propTypes = {

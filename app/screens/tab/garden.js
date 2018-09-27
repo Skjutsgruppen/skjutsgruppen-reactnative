@@ -113,9 +113,9 @@ class Garden extends Component {
   }
 
   onSupportSubscribe = (planId) => {
-    const { support, generateClientToken } = this.props;
+    const { support } = this.props;
 
-    showPayment(generateClientToken, (error, paymentMethodNonce) => {
+    showPayment((error, paymentMethodNonce) => {
       if (error) {
         console.warn(error);
         this.setState({ showConfirmModal: true, alertMessage: trans('profile.subscribe_failed') });
@@ -338,16 +338,13 @@ Garden.propTypes = {
   }).isRequired,
   removeAppToken: PropTypes.func.isRequired,
   support: PropTypes.func.isRequired,
-  generateClientToken: PropTypes.string,
   subscribeToUpdatedProfile: PropTypes.func.isRequired,
 };
 
 Garden.defaultProps = {
-  generateClientToken: null,
 };
 
 export default compose(
-  withGenerateClientToken,
   withRemoveAppToken,
   withSupport,
   withAccount,

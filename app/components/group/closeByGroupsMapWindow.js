@@ -62,7 +62,7 @@ class CloseByGroupsMapWindow extends Component {
               return null;
             }}
             coordinate={coordinate}
-            image={group.User.avatar}
+            image={group.photo}
           />
         );
       });
@@ -93,7 +93,6 @@ class CloseByGroupsMapWindow extends Component {
     const { origin, loading } = this.props;
 
     if (loading) { return null; }
-
     return (
       <View style={styles.wrapper}>
         <MapView

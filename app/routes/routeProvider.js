@@ -16,6 +16,7 @@ import AlphabeticalGroupsList from '@screens/group/AlphabeticalGroupsList';
 import ExploreGroup from '@screens/group/ExploreGroup';
 import GroupsInCounty from '@screens/group/GroupsInCounty';
 import SharedTrip from '@screens/group/SharedTrip';
+import EmbedGroup from '@screens/group/EmbedGroup';
 
 import Welcome from '@screens/auth/welcome/Welcome';
 import WelcomeTwo from '@screens/auth/welcome/WelcomeTwo';
@@ -134,6 +135,7 @@ export const Routes = {
   ExploreGroup: { screen: ExploreGroup },
   GroupsInCounty: { screen: GroupsInCounty },
   SearchResult: { screen: SearchResult },
+  EmbedGroup: { screen: EmbedGroup },
 
   Welcome: { screen: Welcome },
   WelcomeTwo: { screen: WelcomeTwo },
