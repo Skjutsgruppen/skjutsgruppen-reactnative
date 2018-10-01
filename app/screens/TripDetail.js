@@ -546,13 +546,13 @@ class TripDetail extends Component {
   canCreateExperience = () => {
     const { trip } = this.state;
     const { experienceStatus, Participants, isParticipant } = trip;
-    // return true;
+
     if (experienceStatus) {
       return (
         Participants.count > 1
         && isParticipant
         && experienceStatus === EXPERIENCE_STATUS_CAN_CREATE
-        && this.isTripStarted() && !this.isTripEnded()
+        // && this.isTripStarted() && !this.isTripEnded()
       );
     }
 

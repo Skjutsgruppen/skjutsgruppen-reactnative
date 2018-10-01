@@ -364,11 +364,15 @@ class Share extends Component {
         if (tripParticipants.length > 0 || friends.length > 0) {
           const obj = { ...location, users: tripParticipants.concat(friends) };
           startTrackingLocation();
-          shareLocation(obj).then(({ data }) => {
-            if (data.shareLocation && data.shareLocation.Location) {
+          shareLocation(obj).then(async ({ data }) => {
+            const { shareLocation: sharedLocation } = data;
+            if (sharedLocation && sharedLocation.Location) {
               Clipboard.setString(data.shareLocation.Location.url);
-              if (social.length > 0 && social.includes('Facebook')) {
-                FBShare.link(type, data.shareLocation.Location);
+              if (social.length > 0) {
+                if (social.includes('Facebook')) FBShare.link(type, data.shareLocation.Location);
+                if (social.includes('Twitter') || friends.length > 0) {
+                  await share({ id: sharedLocation.Location.id, type, share: shareInput });
+                }
               }
             }
           });
