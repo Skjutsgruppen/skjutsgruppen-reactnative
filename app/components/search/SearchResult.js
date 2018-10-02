@@ -380,8 +380,7 @@ class SearchResult extends Component {
 
       let remainingTripsObj = [];
 
-      if (Object.keys(remainingTrips).length > 0 &&
-        (Object.keys(this.state.groups).length > 0 || !filters.includes(FEED_TYPE_GROUP))) {
+      if (Object.keys(remainingTrips).length > 0) {
         remainingTripsObj = Object.keys(remainingTrips)
           .map(key => ({ title: key, data: remainingTrips[key] }));
       }
@@ -427,8 +426,7 @@ class SearchResult extends Component {
   onFilterSelect = (param) => {
     const { filters } = this.state;
     const { searchAllGroups, searchAllTrips } = this.props;
-
-    if (!searchAllGroups.loading || !searchAllTrips.loading) {
+    if (!searchAllGroups.loading && !searchAllTrips.loading) {
       if (filters.includes(param)) {
         filters.splice(filters.indexOf(param), 1);
       } else {
