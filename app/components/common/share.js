@@ -338,6 +338,15 @@ class Share extends Component {
     }
   }
 
+  getTwitterText = () => {
+    const { type, defaultValue: { offeredUser } } = this.props;
+    if (this.hasTwitter() && type === FEEDABLE_TRIP && offeredUser && offeredUser.twitterUsername) {
+      return trans('global.tweet_to', { twitterUsername: offeredUser.twitterUsername });
+    }
+
+    return trans('global.tweet');
+  }
+
   submitShare = async () => {
     const {
       share,
@@ -707,7 +716,7 @@ class Share extends Component {
           imageURI={require('@assets/icons/ic_twitter.png')}
           isStatic
           selected={this.hasOption('social', 'Twitter')}
-          label={trans('global.tweet')}
+          label={this.getTwitterText()}
           onPress={() => this.setTwitter()}
           color="blue"
         />

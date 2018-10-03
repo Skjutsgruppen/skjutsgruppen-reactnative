@@ -94,6 +94,7 @@ class SocialMediaLinkModal extends PureComponent {
           token: twitter.twitterUser.auth.authToken,
           secret: twitter.twitterUser.auth.authTokenSecret,
           type: 'twitter',
+          username: twitter.twitterUser.profile.screen_name,
         });
 
         setUser(response.data.connect.User);

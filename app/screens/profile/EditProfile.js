@@ -221,6 +221,7 @@ class EditProfile extends Component {
           token: twitter.twitterUser.auth.authToken,
           secret: twitter.twitterUser.auth.authTokenSecret,
           type: 'twitter',
+          username: twitter.twitterUser.profile.screen_name,
         });
 
         setUser(response.data.connect.User);
@@ -330,7 +331,7 @@ class EditProfile extends Component {
     const { socialConnect, user, setUser } = this.props;
     try {
       this.setState({ loading: true });
-      const response = await socialConnect({ id: '', email: user.email, token: '', secret: '', type: 'twitter' });
+      const response = await socialConnect({ id: '', email: user.email, token: '', secret: '', type: 'twitter', username: '' });
       setUser(response.data.connect.User);
       this.setState({ twitterLinked: false, loading: false });
     } catch (error) {

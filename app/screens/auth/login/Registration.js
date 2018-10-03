@@ -150,6 +150,7 @@ class Registration extends Component {
         token: authToken,
         secret: authTokenSecret,
         type: 'twitter',
+        username: profile.screen_name,
       });
     }
 
@@ -245,6 +246,7 @@ class Registration extends Component {
           twitterSecret,
           agreementRead: true,
           agreementAccepted: true,
+          twitterUsername: profile.screen_name,
         });
       }
 

@@ -34,6 +34,8 @@ subscription updatedProfile($id: Int){
     agreementAccepted
     contactSynced
     isBlocked
+    emailNotification
+    twitterUsername
   }
 }`;
 
@@ -70,6 +72,8 @@ query profile($id: Int){
     agreementAccepted
     contactSynced
     isBlocked
+    emailNotification
+    twitterUsername
   }
 }`;
 
@@ -128,6 +132,7 @@ subscription updatedAccount($id: Int) {
     contactSynced
     notification
     emailNotification
+    twitterUsername
   }
 }`;
 
@@ -160,6 +165,7 @@ query account {
     contactSynced
     notification
     emailNotification
+    twitterUsername
   }
 }`;
 

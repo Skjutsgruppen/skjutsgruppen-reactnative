@@ -2,8 +2,8 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const CONNECT_QUERY = gql`
-mutation connect($email: String!, $id: String!, $token: String!, $type: String!, $secret: String) {
-  connect(input:{email:$email, id:$id, token:$token, type:$type, secret: $secret}) {
+mutation connect($email: String!, $id: String!, $token: String!, $type: String!, $secret: String, $username: String) {
+  connect(input:{email:$email, id:$id, token:$token, type:$type, secret: $secret, username: $username}) {
     token,
     status,
     error,
@@ -32,6 +32,8 @@ mutation connect($email: String!, $id: String!, $token: String!, $type: String!,
       twitterId
       agreementRead
       agreementAccepted
+      emailNotification
+      twitterUsername
     }
   }
 }
@@ -45,7 +47,8 @@ export const withSocialConnect = graphql(CONNECT_QUERY, {
       token,
       type,
       secret,
-    }) => mutate({ variables: { email, id, token, type, secret } }),
+      username,
+    }) => mutate({ variables: { email, id, token, type, secret, username } }),
   }),
 });
 
