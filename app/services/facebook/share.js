@@ -57,10 +57,8 @@ class Share {
   }
 
   async link(type, details) {
-    console.log(type, details);
     const contentUrl = this.getContentUrl(type, details);
     const shareLinkContent = { contentType: 'link', contentUrl };
-    console.log(shareLinkContent);
     try {
       const canShow = await ShareDialog.canShow(shareLinkContent);
       if (canShow) {
