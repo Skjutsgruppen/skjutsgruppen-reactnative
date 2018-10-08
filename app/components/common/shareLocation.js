@@ -132,7 +132,7 @@ class ShareLocation extends PureComponent {
   }
 
   componentWillReceiveProps = ({ detail, locationSharedToSpecificResource, myPosition }) => {
-  this.setState({
+    this.setState({
       myLocation: detail.Location,
       sharedLocations: locationSharedToSpecificResource.data || [],
       myPosition,

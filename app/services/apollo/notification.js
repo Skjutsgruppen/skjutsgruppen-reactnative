@@ -360,7 +360,6 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 
           let newRows = prev.notifications.rows;
           let exists = false;
-
           const newNotification = subscriptionData.data.notification;
 
           if (newNotification.notifiable === 'Trip') {

@@ -51,7 +51,7 @@ class NewNotification extends PureComponent {
 
     if (filters === 'new') {
       subscribeToNotification({ userId: user.id });
-      notifications.startPolling(15000);
+      //   notifications.startPolling(15000);
     }
   }
 
