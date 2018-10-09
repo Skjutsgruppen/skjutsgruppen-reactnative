@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   toBorderBottom: {
-    borderBottomWidth: 1, 
+    borderBottomWidth: 1,
     borderColor: Colors.border.lightGray,
     flex: 1,
   },
@@ -323,7 +323,7 @@ class Search extends Component {
 
   render() {
     const { filters, dates, directionFrom, directionTo } = this.state;
-    const selectedDate = dates && dates.length > 0 ? Moment(dates[0].getTime()).format('YYYY-MM-DD HH:mm') : null;
+    const selectedDate = dates && dates.length > 0 ? Moment(dates[0]).format('YYYY-MM-DD HH:mm') : null;
 
     return (
       <View style={styles.wrapper}>
@@ -387,9 +387,9 @@ class Search extends Component {
                 >
                   {trans('global.to')}
                 </AppText>
-                </View>
               </View>
-            <View style={styles.toBorderBottom}></View>
+            </View>
+            <View style={styles.toBorderBottom} />
             <View style={styles.dateRow}>
               <AppText size={14} color={Colors.text.gray} style={{ flex: 1 }}>
                 {

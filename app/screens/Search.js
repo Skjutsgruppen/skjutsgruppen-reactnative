@@ -5,6 +5,7 @@ import SearchResult from '@components/search/SearchResult';
 import { compose } from 'react-apollo';
 import { getDate, utcDate } from '@config';
 import { FEED_TYPE_PUBLIC_TRANSPORT } from '@config/constant';
+import { getTimezone } from '@helpers/device';
 
 const AllSearchResult = compose(withSearchAllTrips, withSearchAllGroups)(SearchResult);
 
@@ -15,7 +16,8 @@ const Search = ({ navigation }) => {
   let limit = 0;
   let offset = 0;
   const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
-
+  const timezone = getTimezone();
+  
   if (dates.length < 1) {
     dateSelected = false;
     if (publicTransportSelected && to.name !== '' && from.name !== '') {
@@ -44,6 +46,7 @@ const Search = ({ navigation }) => {
       dateSelected={dateSelected}
       limit={limit}
       offset={offset}
+      timezone={timezone}
     />
   );
 };

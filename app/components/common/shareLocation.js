@@ -126,9 +126,9 @@ class ShareLocation extends PureComponent {
       showActionOption: pressShareLocation,
     });
 
-    this.loadInterval = setInterval(() => {
-      updateSharedLocation(detail.id, __typename);
-    }, 60000);
+    // this.loadInterval = setInterval(() => {
+    //   updateSharedLocation(detail.id, __typename);
+    // }, 60000);
   }
 
   componentWillReceiveProps = ({ detail, locationSharedToSpecificResource, myPosition }) => {

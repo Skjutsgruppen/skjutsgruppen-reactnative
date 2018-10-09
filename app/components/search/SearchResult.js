@@ -21,7 +21,7 @@ import {
 } from '@config/constant';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
-import { getDate } from '@config';
+import { getDate, utcDate } from '@config';
 import AppText from '@components/utils/texts/appText';
 import LoadMore from '@components/message/loadMore';
 
@@ -473,9 +473,9 @@ class SearchResult extends Component {
 
     if (!dateSelected && publicTransportSelected) {
       if (!currentFetchDate) {
-        currentFetchDate = getDate();
+        currentFetchDate = utcDate(getDate());
       } else {
-        currentFetchDate = getDate(currentFetchDate);
+        currentFetchDate = utcDate(getDate(currentFetchDate));
       }
 
       currentFetchDate = currentFetchDate.add(1, 'd').format('YYYY-MM-DD');
@@ -616,7 +616,7 @@ class SearchResult extends Component {
 
   refetchTrips = async () => {
     const { filters } = this.state;
-    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj } = this.props;
+    const { searchAllTrips, direction, dateSelected, dates, toObj, fromObj, timezone } = this.props;
     const newfilter = filters.filter(row => !(row === FEED_TYPE_GROUP));
     const publicTransportSelected = this.state.filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
     let customDate = dates;
@@ -646,6 +646,8 @@ class SearchResult extends Component {
           dates: customDate,
           limit: this.getLimitValue(),
           offset: this.getOffsetValue(),
+          dateSelected,
+          timezone,
         });
       });
   }
