@@ -14,6 +14,7 @@ query search
     $limit: Int
     $offset: Int
     $dateSelected: Boolean
+    $timezone: String
 )
 {
   search(input: {
@@ -26,6 +27,7 @@ query search
       limit: $limit
       offset: $offset
       dateSelected: $dateSelected
+      timezone: $timezone
   })
   { 
     rows{
@@ -125,7 +127,7 @@ query search
 `;
 
 export const withSearch = graphql(SEARCH, {
-  options: ({ from, to, direction, filters, dates, dateSelected }) => ({
+  options: ({ from, to, direction, filters, dates, dateSelected, timezone }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
       from,
@@ -137,6 +139,7 @@ export const withSearch = graphql(SEARCH, {
       offset: 0,
       limit: PER_FETCH_LIMIT,
       dateSelected,
+      timezone,
     },
     fetchPolicy: 'cache-and-network',
   }),
@@ -166,6 +169,7 @@ query search
     $offset: Int
     $afterDate: String
     $dateSelected: Boolean
+    $timezone: String
 )
 {
   tripSearch: search(input: {
@@ -179,6 +183,7 @@ query search
       offset: $offset
       afterDate: $afterDate
       dateSelected: $dateSelected
+      timezone: $timezone
   })
   { 
     rows{
@@ -238,7 +243,7 @@ query search
 `;
 
 export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
-  options: ({ from, to, direction, filters, dates, afterDate, limit, dateSelected }) => {
+  options: ({ from, to, direction, filters, dates, afterDate, limit, dateSelected, timezone }) => {
     const updatedFilters = filters.filter(row => !(row === FEED_TYPE_GROUP));
 
     return ({
@@ -254,6 +259,7 @@ export const withSearchAllTrips = graphql(SEARCH_ALL_TRIPS_QUERY, {
         limit: limit || null,
         afterDate: afterDate || null,
         dateSelected,
+        timezone,
       },
       fetchPolicy: 'network-only',
     });
@@ -283,6 +289,7 @@ query search
     $limit: Int
     $offset: Int
     $dateSelected: Boolean
+    $timezone: String
 )
 {
   groupSearch: search(input: {
@@ -295,6 +302,7 @@ query search
       limit: $limit
       offset: $offset
       dateSelected: $dateSelected
+      timezone: $timezone
   })
   { 
     rows{
@@ -347,7 +355,7 @@ query search
 `;
 
 export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
-  options: ({ from, to, direction, dates, dateSelected }) => ({
+  options: ({ from, to, direction, dates, dateSelected, timezone }) => ({
     notifyOnNetworkStatusChange: true,
     variables: {
       from,
@@ -359,6 +367,7 @@ export const withSearchAllGroups = graphql(SEARCH_ALL_GROUPS_QUERY, {
       offset: 0,
       limit: 1,
       dateSelected,
+      timezone
     },
     fetchPolicy: 'network-only',
   }),
