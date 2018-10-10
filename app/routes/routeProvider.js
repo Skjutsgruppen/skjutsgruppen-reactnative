@@ -96,7 +96,7 @@ const Tab = TabNavigator(TabRoutes,
       showIcon: true,
       showLabel: false,
       iconStyle: {
-        width: 35,
+        width: 60,
         height: 60,
       },
       tabStyle: {

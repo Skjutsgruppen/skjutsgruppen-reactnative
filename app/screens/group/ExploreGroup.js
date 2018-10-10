@@ -328,7 +328,7 @@ class ExploreGroup extends PureComponent {
         </ScrollView>
         <TabBar />
         {this.renderSearchModal()}
-      </Wrapper >
+      </Wrapper>
     );
   }
 }
