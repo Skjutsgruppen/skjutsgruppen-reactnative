@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS, Dimensions, PanResponder, LayoutAnimation, UIManager } from 'react-native';
+import { StyleSheet, View, Image, Modal, Alert, Platform, PermissionsAndroid, Linking, NativeModules, BackHandler, AlertIOS, Dimensions, PanResponder, LayoutAnimation, UIManager } from 'react-native';
 import FeedItem from '@components/feed/feedItem';
 import Filter from '@components/feed/filter';
 import { Wrapper, Circle } from '@components/common';
@@ -10,7 +10,6 @@ import Share from '@components/common/share';
 import Colors from '@theme/colors';
 import FeedIcon from '@assets/icons/ic_feed.png';
 import FeedIconActive from '@assets/icons/ic_feed_active.png';
-import Map from '@assets/map_toggle.png';
 import { getCountryLocation, getCurrentLocation } from '@helpers/device';
 import { trans } from '@lang/i18n';
 import MapView from '@screens/Map';
@@ -641,7 +640,6 @@ class Feed extends Component {
           onPress={this.onFilterChange}
         />
       </View>
-      {this.renderMap()}
     </View>);
   }
 
@@ -708,7 +706,7 @@ class Feed extends Component {
     return (
       <DataList
         innerRef={(list) => { this.feedList = list; }}
-        data={{rows: [], count: 0}}
+        data={feeds}
         header={this.renderHeader}
         renderItem={this.renderItem}
         fetchMoreOptions={{
@@ -731,14 +729,6 @@ class Feed extends Component {
     );
   }
 
-  renderMap = () => (
-    <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')} style={styles.mapWrapper}>
-      <View>
-        <Image source={Map} style={styles.mapImg} />
-      </View>
-    </TouchableOpacity>
-  );
-
   renderCoCreateModal = () => {
     const { showCoCreateModal } = this.state;
     return (<CoCreateModal
@@ -748,19 +738,15 @@ class Feed extends Component {
   }
 
   render() {
+    const { showShareModal } = this.state;
     const { navigation } = this.props;
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
-        { /*
-        <Supporter />
-        */ }
-        {/* <Circle animatable /> */}
-        {/* <NewsCard isStatic title="Wednesday we celebrated our 10th anniversarry" /> */}
-        {/* <MapView
+        <MapView
           fullView={this.state.mapView}
           setFeedView={() => this.setFeedView(300)}
           navigation={navigation}
-        /> */}
+        />
         <View
           style={{ flex: 1 }}
           ref={(ref) => { this.feedWraper = ref; }}
@@ -780,7 +766,7 @@ class Feed extends Component {
           <Circle animatable />
           {this.renderFeed()}
         </View>
-        {this.renderShareModal()}
+        { showShareModal && this.renderShareModal()}
         {/* {this.renderCoCreateModal()} */}
       </Wrapper>
     );
