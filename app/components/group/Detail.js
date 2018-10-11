@@ -192,7 +192,7 @@ class Detail extends PureComponent {
   onEmbedHtml = () => {
     const { group, navigation } = this.props;
     this.setState({ showAction: false });
-    navigation.navigate('EmbedGroup', { type: group.type });
+    navigation.navigate('EmbedGroup', { type: group.type, id: group.id });
   }
 
   setCalendarVisibilty = (show) => {

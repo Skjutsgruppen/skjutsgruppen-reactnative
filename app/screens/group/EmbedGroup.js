@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Platform, BackHandler } from 'react-native';
-import { RoundedButton } from '@components/common';
+import { RoundedButton, Loading } from '@components/common';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import { OPEN_GROUP } from '@config/constant';
@@ -9,6 +9,8 @@ import EmbedMobile from '@assets/icons/embed_mobile.png';
 import EmbedWeb from '@assets/icons/embed_web.png';
 import { trans } from '@lang/i18n';
 import PropTypes from 'prop-types';
+import { withEmbed } from '@services/apollo/share';
+import { compose } from 'react-apollo';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -68,32 +70,56 @@ class EmbedGroup extends Component {
   static navigationOptions = {
     header: null,
   }
+
+  constructor(props) {
+    super(props);
+    this.state = { loading: false };
+  }
+
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
   }
+
   onBackButtonPress = () => {
     const { navigation } = this.props;
     navigation.goBack();
     return true;
   }
+
+  onEmbed = () => {
+    const { embed, navigation } = this.props;
+    const { id } = navigation.state.params;
+
+    if (id) {
+      this.setState({ loading: true });
+      embed({ groupId: id })
+        .then(() => this.setState({ loading: false }))
+        .catch((err) => { console.log(err); this.setState({ loading: false }); });
+    }
+  }
+
   renderEmbedContent = () => {
     if (this.props.navigation.state.params.type === OPEN_GROUP) {
       return (
         <View style={[styles.embedContentWrapper, styles.openGroup]}>
           <AppText size={16} style={styles.embedDescription} centered>{trans('group.get_the_html_code')}</AppText>
           <View style={styles.buttonWrapper}>
-            <RoundedButton
-              bgColor={Colors.background.pink}
-              style={styles.button}
-              onPress={() => {}}
-            >
-              {trans('group.email_the_code')}
-            </RoundedButton>
+            {this.state.loading ?
+              <Loading /> :
+              <RoundedButton
+                bgColor={Colors.background.pink}
+                style={styles.button}
+                onPress={() => this.onEmbed()}
+              >
+                {trans('group.email_the_code')}
+              </RoundedButton>
+            }
           </View>
           <AppText centered size={16} color={Colors.text.darkGray} style={styles.embedNotification}>{trans('group.enablers_of_the_group')}</AppText>
         </View>
       );
     }
+
     return (
       <View style={[styles.embedContentWrapper, styles.closeGroup]}>
         <AppText size={16} style={styles.embedDescription} centered>{trans('group.participants_in_open_groups')}</AppText>
@@ -102,6 +128,7 @@ class EmbedGroup extends Component {
       </View>
     );
   }
+
   render() {
     return (
       <View>
@@ -131,9 +158,11 @@ EmbedGroup.propTypes = {
     state: PropTypes.shape({
       params: PropTypes.shape({
         type: PropTypes.string,
+        id: PropTypes.number,
       }),
     }).isRequired,
   }).isRequired,
+  embed: PropTypes.func.isRequired,
 };
 
-export default EmbedGroup;
+export default compose(withEmbed)(EmbedGroup);
