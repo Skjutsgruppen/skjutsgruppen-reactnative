@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     height: 70,
     paddingHorizontal: 16,
     zIndex: 2,
+    overflow: 'hidden',
   },
   button: {
     flexDirection: 'row',
