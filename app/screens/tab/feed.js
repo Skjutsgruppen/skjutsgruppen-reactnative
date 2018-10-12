@@ -161,17 +161,21 @@ class Feed extends Component {
       },
 
       onPanResponderRelease: (evt, { dy, vy }) => {
-        let duration = 300;
-        if (dy < 30) {
-          duration = Math.abs(dy * 10);
-        }
+        console.log('release +++++++++++++++++++');
+
+        const duration = Math.abs(dy * vy * 10);
+        // if (dy < 30) {
+        //   duration = Math.abs(dy * 10);
+        // }
+        this.feedList.setNativeProps({ scrollEnabled: true });
+
         if (dy > 150) {
           if (vy <= 0) {
             this.setFeedView(duration);
           } else {
             this.setMapView(duration);
           }
-          this.feedList.setNativeProps({ scrollEnabled: true });
+          // this.feedList.setNativeProps({ scrollEnabled: true });
           return null;
         }
 
@@ -181,7 +185,7 @@ class Feed extends Component {
           this.setFeedView(duration);
         }
 
-        this.feedList.setNativeProps({ scrollEnabled: true });
+        // this.feedList.setNativeProps({ scrollEnabled: true });
         return null;
       },
 
@@ -190,6 +194,7 @@ class Feed extends Component {
       },
 
       onPanResponderTerminate: (evt, { dy, vy }) => {
+        console.log('terminate -------------------');
         let duration = 300;
         if (dy < 150) {
           duration = Math.abs(dy * 2);
@@ -399,6 +404,7 @@ class Feed extends Component {
 
     this.feedWraper.setNativeProps({ top: 0 });
 
+
     if (Platform.OS === 'android') {
       this.setState({ mapView: false });
     }
@@ -406,7 +412,6 @@ class Feed extends Component {
 
   setFeedWrapperOffset = (offset) => {
     if (offset > 0) {
-      LayoutAnimation.configureNext(LayoutAnimationconfig);
       this.feedWraper.setNativeProps({ top: offset });
     }
   }
