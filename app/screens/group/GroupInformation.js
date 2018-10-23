@@ -231,7 +231,7 @@ class Information extends Component {
             {group.mapPhoto &&
               <GroupMap
                 group={group}
-                onMapPress={() => { }}
+                onMapPress={() => {}}
                 showOverlay={false}
               />
             }
@@ -311,7 +311,6 @@ class Information extends Component {
 
   render() {
     const { group } = this.state;
-
     return (
       <View style={styles.contentWrapper}>
         {!group.isDeleted && this.renderDetails()}

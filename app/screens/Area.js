@@ -22,6 +22,7 @@ import { ConfirmModal } from '@components/common';
 import TouchableHighlight from '@components/touchableHighlight';
 import MyLocationIcon from '@assets/icons/ic_my_location.png';
 import Colors from '@theme/colors';
+import Loading from '@components/common/loading';
 import { trans } from '../lang/i18n';
 
 const { width, height } = Dimensions.get('window');
@@ -374,7 +375,7 @@ class AreaMap extends PureComponent {
     const { __typename } = group;
     const { pressShareLocation } = navigation.state.params;
 
-    if (loading || locationSharedToSpecificResource.loading) return null;
+    if (loading || locationSharedToSpecificResource.loading) return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
 
     return (
       <View style={styles.container}>
@@ -405,13 +406,7 @@ class AreaMap extends PureComponent {
           {this.renderLiveLocations()}
           {this.renderTrips()}
         </MapView>
-        <Filter
-          map
-          selected={this.state.filterType}
-          onPress={this.onFilterChange}
-          showModal={this.state.filterOpen}
-          onCloseModal={() => this.setState({ filterOpen: false })}
-        />
+
         {this.isMember() &&
           <ShareLocationWithData
             locationSharedToSpecificResource={locationSharedToSpecificResource}
