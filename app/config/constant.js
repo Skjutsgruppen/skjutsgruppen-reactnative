@@ -123,3 +123,4 @@ export const JWT_MALFORMED_ERROR = 'jwt malformed';
 export const OFFERED_TRIP_SHARED = 'offered_shared';
 export const WANTED_TRIP_SHARED = 'wanted_shared';
 export const GROUP_SHARED = 'group_shared';
+export const NEW_EMAIL_UPDATED = 'NEW_EMAIL_UPDATED';

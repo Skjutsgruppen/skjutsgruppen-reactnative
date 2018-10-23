@@ -21,7 +21,7 @@ import {
 } from '@services/apollo/auth';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import client from '@services/apollo';
-import { PHONE_EXISTS_ERROR, PHONE_INCORRECT_ERROR } from '@config/constant';
+import { PHONE_EXISTS_ERROR, PHONE_INCORRECT_ERROR, NEW_EMAIL_UPDATED } from '@config/constant';
 import { getDeviceId } from '@helpers/device';
 import firebase from 'react-native-firebase';
 import { LoginManager } from 'react-native-fbsdk';
@@ -115,6 +115,11 @@ class UpdatePhonenumber extends Component {
           const { verification: { accountInfo, code, newNumber } } = data;
           self.setState({ error: code, confirmedUser: accountInfo, newNumber });
           clearInterval(self.interval);
+        }
+        if (data.verification && data.verification.code === NEW_EMAIL_UPDATED) {
+          self.props.setLogin({ user: data.verification.User, token: data.verification.token })
+          clearInterval(self.interval);
+          self.onNext();
         }
       },
       error(err) {
