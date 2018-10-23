@@ -109,7 +109,6 @@ class CloseByGroupsMapView extends Component {
         }
 
         if (!coordinate.latitude || !coordinate.longitude) return null;
-
         return (
           <Marker
             key={`${group.id}-${moment().unix()}`}

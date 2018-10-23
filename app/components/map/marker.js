@@ -83,7 +83,6 @@ class Marker extends PureComponent {
 
   render() {
     const { onPress, coordinate, image, children, count, current, tripType } = this.props;
-
     if (current) {
       return (
         <MapView.Marker

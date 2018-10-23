@@ -83,6 +83,7 @@ class CommentBox extends PureComponent {
       writing: false,
       text: '',
       offset: 0,
+      height: 92,
     };
   }
 
@@ -93,6 +94,10 @@ class CommentBox extends PureComponent {
   handleFocus = () => {
     this.setState({ writing: true });
   };
+
+  handleCommentBoxExpansion = (height) => {
+    this.setState({ height });
+  }
 
   sendComment = () => {
     const { text } = this.state;
@@ -161,6 +166,7 @@ class CommentBox extends PureComponent {
         returnKeyType={'done'}
         style={[styles.commentInput, writtingStyle]}
         editable={!loading}
+        onContentSizeChange={e => this.handleCommentBoxExpansion(e.nativeEvent.contentSize.height)}
       />
     );
   }
@@ -200,12 +206,13 @@ class CommentBox extends PureComponent {
 
   render() {
     const { style, loading } = this.props;
-    const { offset, writing } = this.state;
+    const { offset, writing, height } = this.state;
 
     let commentStyle = {};
+    const expandHeight = (height < 120 ? height : 120);
 
     if (Platform.OS === 'android') {
-      commentStyle = { height: writing ? 92 : 58 };
+      commentStyle = { height: writing ? expandHeight : 58 };
     }
 
     return (
