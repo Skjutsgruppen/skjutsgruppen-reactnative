@@ -38,5 +38,13 @@
   "open": "se_ Open",
   "closed": "se_ Closed",
   "no_any_friends_contacts": "se_No any friends or contacts to add as participant.",
-  "group_not_available": "se_This group is not available"
+  "group_not_available": "se_This group is not available",
+  "embed_this_group": "se_ Embed this group",
+  "wherever_you_want": "se_ Wherever you want!",
+  "get_the_html_code": "se_ Get the HTML code that lets you embed the rides of this group wherever you want.",
+  "enablers_of_the_group": "se_ Enablers of the group will receive a notification as well.",
+  "email_the_code": "se_ E-mail the code",
+  "participants_in_open_groups": "se_ Participants in open groups can get a HTML code that let them embed the rides of the group wherever they want.",
+  "this_is_a_closed_group": "se_ This is a closed group.",
+  "the_settings_need_to_be_changed": "se_ The settings need to be changed to \"Open group\" to be able to embed the rides."
 }

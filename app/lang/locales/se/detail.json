@@ -9,7 +9,7 @@
   "mute_two_hours": "se_ Mute two hours",
   "mute_one_day": "se_ Mute one day",
   "mute_forever": "se_ Mute forever",
-  "embeded_with_html": "se_ Embeded with HTML",
+  "embed_with_html": "se_ Embed with HTML",
   "create_your_experience": "se_ Create your experience",
   "report_this_ride": "se_ Report this ride",
   "delete_this_ride": "se_ Delete this ride",
@@ -65,7 +65,7 @@
   "a_tweet": "se_ A tweet",
   "a_post_about_this_ride_on_your_fb": "se_ A post about this ride on your Facebook timeline",
   "a_tweet_about_this_ride": "se_ A tweet about this ride",
-  "you_are_friends_of_friends": "se_ You are friends of friend!",
+  "you_are_friends_of_friends": "se_ You are friends of friends!",
   "you_are_friends": "se_ You are friends!",
   "share_this_group": "se_Share this group",
   "trip_not_aviailable": "se_The trip is not available."
