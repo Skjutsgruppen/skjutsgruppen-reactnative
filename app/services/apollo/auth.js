@@ -442,6 +442,34 @@ subscription verification ($id: Int!){
     }
     newNumber
     code
+    User {
+      id
+      email
+      newEmail
+      avatar
+      phoneNumber
+      newPhoneNumber
+      firstName
+      lastName
+      emailVerified
+      verificationCode
+      phoneVerified
+      totalOffered
+      totalAsked
+      totalRideConversations
+      totalExperiences
+      totalGroups
+      totalFriends
+      fbId      
+      createdAt
+      isSupporter
+      twitterId
+      agreementRead
+      agreementAccepted
+      contactSynced
+      notification
+    }
+    token
   }
 }
 `;
