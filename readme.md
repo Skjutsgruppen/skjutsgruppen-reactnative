@@ -12,7 +12,7 @@ $ npm install -g react-native-cli
 
 ## Install
 ```
-$ git clone git@gitlab.yipl.com.np:web-apps/skjutsgruppen.git
+$ git clone git@github.com:Skjutsgruppen/skjutsgruppen-reactnative.git
 $ cd skjutsgruppen
 $ yarn install
 $ cp .env.example .env .env.production
