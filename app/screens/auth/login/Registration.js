@@ -150,6 +150,7 @@ class Registration extends Component {
         token: authToken,
         secret: authTokenSecret,
         type: 'twitter',
+        username: profile.screen_name,
       });
     }
 
@@ -214,11 +215,14 @@ class Registration extends Component {
       await setRegister({ token, user: User });
 
       let response = {};
+      let firstName = '';
+      let lastName = '';
 
       if (fbToken) {
+        firstName = profile.first_name;
+        lastName = profile.last_name;
+
         response = await updateProfile({
-          firstName: profile.first_name,
-          lastName: profile.last_name,
           fbId: profile.id,
           fbToken,
           agreementRead: true,
@@ -226,8 +230,8 @@ class Registration extends Component {
         });
       } else {
         const twitterNameArray = profile.name.split(' ');
-        let firstName = '';
-        let lastName = '';
+        firstName = '';
+        lastName = '';
         if (twitterNameArray.length > 1) {
           firstName = twitterNameArray.slice(0, twitterNameArray.length - 1);
           firstName = firstName.join(' ');
@@ -237,22 +241,21 @@ class Registration extends Component {
         }
 
         response = await updateProfile({
-          firstName,
-          lastName,
           twitterId: profile.id_str,
           twitterToken,
           twitterSecret,
           agreementRead: true,
           agreementAccepted: true,
+          twitterUsername: profile.screen_name,
         });
       }
 
       await setRegister({
         token: response.data.updateUser.token,
-        user: response.data.updateUser.User,
-      });
+        user: { ...response.data.updateUser.User, ...{ firstName, lastName } },
+      }, true);
 
-      navigation.replace('Onboarding', { activeStep: 8 });
+      navigation.replace('Onboarding', { activeStep: 6 });
     } catch (error) {
       console.warn(error);
     }
@@ -413,9 +416,12 @@ class Registration extends Component {
 
 const mapStateToProps = state => ({ auth: state.auth });
 const mapDispatchToProps = dispatch => ({
-  setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
-    .then(() => dispatch(AuthAction.register({ user, token })))
-    .catch(error => console.warn(error)),
+  setRegister: async ({ user, token }, reduxOnly = false) => {
+    await dispatch(AuthAction.register({ user, token }));
+    if (!reduxOnly) {
+      await AuthService.setAuth({ user, token });
+    }
+  },
   updateUser: ({ user, token }) => AuthService.setUser(user)
     .then(() => dispatch(AuthAction.login({ user, token }))),
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })

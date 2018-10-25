@@ -381,7 +381,7 @@ class RouteMap extends PureComponent {
     const { info } = this.state;
     const { __typename } = info;
 
-    if (__typename === 'Trip') return info.isParticipant;
+    if (__typename === 'Trip') return info.isParticipant && info.Participants.count > 1;
 
     if (__typename === 'Group') return (info.membershipStatus === 'accepted');
 

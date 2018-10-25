@@ -26,7 +26,7 @@ class Splash extends PureComponent {
     let user = await AuthService.getUser();
     let token = await AuthService.getToken();
 
-    if (user && user.id) {
+    if (user && user.id && user.email && user.phoneNumber) {
       await verifyToken()
         .then(async (res) => {
           if (res.data.verifyToken) {

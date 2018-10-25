@@ -76,12 +76,10 @@ const ShareLocationItem = ({ sharedLocation, navigation }) => {
   if (sharedLocation.Trip.id) {
     name = `${sharedLocation.Trip.TripStart.name ?
       sharedLocation.Trip.TripStart.name :
-      prettify(sharedLocation.Trip.direction)
-    } - ${
+      prettify(sharedLocation.Trip.direction)} - ${
       sharedLocation.Trip.TripEnd.name ?
         sharedLocation.Trip.TripEnd.name :
-        prettify(sharedLocation.Trip.direction)
-    }`;
+        prettify(sharedLocation.Trip.direction)}`;
 
     if (name.length > 25) {
       name = `${name.slice(0, 25)} ...`;
@@ -112,8 +110,8 @@ const ShareLocationItem = ({ sharedLocation, navigation }) => {
           <View style={styles.profilePicWrapper}>
             {renderPic(avatar)}
           </View>
-          <View>
-            <AppText>{name}</AppText>
+          <View style={{ flex: 1 }}>
+            <AppText numberOfLines={2} ellipsizeMode="tail">{name}</AppText>
             {sharedLocation.Trip.id &&
               <AppText color={Colors.text.gray}>
                 Sharing with {sharedLocation.users.length} people

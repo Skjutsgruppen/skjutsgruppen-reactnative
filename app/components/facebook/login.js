@@ -221,10 +221,10 @@ class FBLogin extends PureComponent {
       return;
     }
     const { register, setRegister, updateProfile, navigation } = this.props;
-
+    const { email, first_name: firstName, last_name: lastName } = profile;
     try {
       const { data } = await register({
-        email: profile.email,
+        email,
         verified: true,
       });
 
@@ -232,8 +232,6 @@ class FBLogin extends PureComponent {
       await setRegister({ token, user: User });
 
       const response = await updateProfile({
-        firstName: profile.first_name,
-        lastName: profile.last_name,
         fbId: profile.id,
         fbToken,
         agreementRead: true,
@@ -242,8 +240,8 @@ class FBLogin extends PureComponent {
 
       await setRegister({
         token: response.data.updateUser.token,
-        user: response.data.updateUser.User,
-      });
+        user: { ...response.data.updateUser.User, ...{ firstName, lastName } },
+      }, true);
 
       navigation.replace('Onboarding', { activeStep: 6 });
     } catch (error) {
@@ -309,9 +307,12 @@ FBLogin.defaultProps = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setRegister: ({ user, token }) => AuthService.setAuth({ user, token })
-    .then(() => dispatch(AuthAction.register({ user, token })))
-    .catch(error => console.warn(error)),
+  setRegister: async ({ user, token }, reduxOnly = false) => {
+    await dispatch(AuthAction.register({ user, token }));
+    if (!reduxOnly) {
+      await AuthService.setAuth({ user, token });
+    }
+  },
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
     .catch(error => console.warn(error)),

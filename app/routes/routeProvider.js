@@ -193,39 +193,39 @@ export const AppNavigator = StackNavigator(Routes,
 );
 
 export const navReducer = (state, action) => {
-  const { routeName } = action;
-  let repeatedRoute = [];
-  if (state && state.routes) {
-    repeatedRoute = state.routes.filter((route) => {
-      if (route.routeName && route.routeName === routeName) {
-        if (!route.params && !action.params) return true;
-        if ((route.params && !action.params) || (!route.params && action.params)) return false;
-        if (route.params.id && action.params.id && route.params.id === action.params.id) {
-          return true;
-        }
+  // const { routeName } = action;
+  // let repeatedRoute = [];
+  // if (state && state.routes) {
+  //   repeatedRoute = state.routes.filter((route) => {
+  //     if (route.routeName && route.routeName === routeName) {
+  //       if (!route.params && !action.params) return true;
+  //       if ((route.params && !action.params) || (!route.params && action.params)) return false;
+  //       if (route.params.id && action.params.id && route.params.id === action.params.id) {
+  //         return true;
+  //       }
 
-        if (route.params.profileId && action.params.profileId
-          && route.params.profileId === action.params.profileId) {
-          return true;
-        }
+  //       if (route.params.profileId && action.params.profileId
+  //         && route.params.profileId === action.params.profileId) {
+  //         return true;
+  //       }
 
-        if (route.params.activeStep && action.params.activeStep
-          && route.params.activeStep === action.params.activeStep) {
-          return true;
-        }
+  //       if (route.params.activeStep && action.params.activeStep
+  //         && route.params.activeStep === action.params.activeStep) {
+  //         return true;
+  //       }
 
-        return false;
-      }
+  //       return false;
+  //     }
 
-      return false;
-    });
-  }
+  //     return false;
+  //   });
+  // }
 
-  if (repeatedRoute && repeatedRoute.length < 1) {
-    const newState = AppNavigator.router.getStateForAction(action, state);
+  // if (repeatedRoute && repeatedRoute.length < 1) {
+  const newState = AppNavigator.router.getStateForAction(action, state);
 
-    return newState;
-  }
+  return newState;
+  // }
 
-  return state;
+  // return state;
 };
