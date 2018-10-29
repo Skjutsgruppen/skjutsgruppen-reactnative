@@ -5,6 +5,7 @@ import {
   Modal,
   TouchableOpacity,
   Keyboard,
+  PanResponder,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
@@ -74,7 +75,35 @@ class Detail extends PureComponent {
       showCalendar: false,
       groupTrips: [],
       confirmModal: false,
+      isVisible: false,
     });
+    this.handlePanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dy < 0) {
+          // this.setState({
+          //   isVisible: false,
+          // });
+          console.log(this.toolBar);
+          this.toolBar.setNativeProps({ opacity: 0 });
+          console.log('No Header');
+          console.log(gestureState.dy, '=============================');
+        }
+        if (gestureState.dy > 0) {
+          console.log(this.toolBar);
+          this.toolBar.setNativeProps({ opacity: 0 });
+          // this.setState({
+          //   isVisible: true,
+          // });
+          console.log('Show Header');
+          console.log(gestureState.dy, '=============================');
+        }
+      },
+    });
+    this.toolBar = null;
   }
 
   componentWillMount() {
@@ -342,8 +371,8 @@ class Detail extends PureComponent {
 
   render() {
     const { navigation, group } = this.props;
-    const { notification, notifierOffset, loading, error, success } = this.state;
-
+    const { notification, notifierOffset, loading, error, success, isVisible } = this.state;
+    console.log('Toolbar visible', isVisible);
     const header = this.header();
     const { notifier, notificationMessage } = navigation.state.params;
 
@@ -353,7 +382,13 @@ class Detail extends PureComponent {
 
     return (
       <Wrapper bgColor={Colors.background.cream}>
-        <GroupToolbar title={group.name} mapPress={this.onMapPress} transparent offset={notifierOffset} />
+        <GroupToolbar
+          title={group.name}
+          mapPress={this.onMapPress}
+          // transparent={isVisible}
+          offset={notifierOffset}
+          ref={(ref) => { this.toolBar = ref; }}
+        />
         {notification && <AppNotification
           image={notifier.avatar}
           name={notifier.firstName}
@@ -362,14 +397,16 @@ class Detail extends PureComponent {
         />}
         <Toast message={error} type="error" />
         <Toast message={success} type="success" />
-        <GroupFeedList
-          header={header}
-          footer={<View style={{ marginTop: 100 }} />}
-          id={group.id}
-          isAdmin={group.isAdmin}
-          type={FEEDABLE_GROUP}
-          ownerId={group.User.id}
-        />
+        <View style={{ flex: 1 }} {...this.handlePanResponder.panHandlers}>
+          <GroupFeedList
+            header={header}
+            footer={<View style={{ marginTop: 100 }} />}
+            id={group.id}
+            isAdmin={group.isAdmin}
+            type={FEEDABLE_GROUP}
+            ownerId={group.User.id}
+          />
+        </View>
         <CommentBox
           handleSend={this.onSubmit}
           loading={loading}
