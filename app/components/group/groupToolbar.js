@@ -141,30 +141,30 @@ class GroupToolBar extends PureComponent {
     let backgroundColor = transparent ? 'transparent' : Colors.background.fullWhite;
     let elevation = transparent ? 0 : 10;
     let shadowOpacity = transparent ? 0 : 0.25;
-    let opacity = 1;
+    let opacity = transparent ? 1 : 0;
 
     if (transparent && animatable) {
       if (params.animatedValue) {
-        // groupNameVisibility = params.animatedValue.interpolate({
-        //   inputRange: [54, 60],
-        //   outputRange: [0, 1],
-        //   extrapolate: 'clamp',
-        // });
-        // backgroundColor = params.animatedValue.interpolate({
-        //   inputRange: [0, 50],
-        //   outputRange: ['rgba(255,255,255,0)', Colors.background.fullWhite],
-        //   extrapolate: 'clamp',
-        // });
-        // elevation = params.animatedValue.interpolate({
-        //   inputRange: [0, 50],
-        //   outputRange: [0, 10],
-        //   extrapolate: 'clamp',
-        // });
-        // shadowOpacity = params.animatedValue.interpolate({
-        //   inputRange: [0, 50],
-        //   outputRange: [0, 0.25],
-        //   extrapolate: 'clamp',
-        // });
+        groupNameVisibility = params.animatedValue.interpolate({
+          inputRange: [0, 5],
+          outputRange: [0, 1],
+          extrapolate: 'clamp',
+        });
+        backgroundColor = params.animatedValue.interpolate({
+          inputRange: [0, 10],
+          outputRange: ['rgba(255,255,255,0)', Colors.background.fullWhite],
+          extrapolate: 'clamp',
+        });
+        elevation = params.animatedValue.interpolate({
+          inputRange: [0, 10],
+          outputRange: [0, 10],
+          extrapolate: 'clamp',
+        });
+        shadowOpacity = params.animatedValue.interpolate({
+          inputRange: [0, 10],
+          outputRange: [0, 0.25],
+          extrapolate: 'clamp',
+        });
         opacity = params.opacityValue.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1],
@@ -178,9 +178,9 @@ class GroupToolBar extends PureComponent {
           styles.wrapper,
           transparent && styles.floated,
           offset && { top: offset },
-          // { elevation },
-          // { backgroundColor },
-          // { shadowOpacity },
+          { elevation },
+          { backgroundColor },
+          { shadowOpacity },
           { opacity },
         ]}
       >
