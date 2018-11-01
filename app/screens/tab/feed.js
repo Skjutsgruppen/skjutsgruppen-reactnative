@@ -144,85 +144,86 @@ class Feed extends Component {
       yPos: 0,
       mapView: false,
     });
-
+    this.yOffset = 0;
     this.feedList = null;
     this.messageListener = null;
     this.backButtonPressed = false;
+    this.y = 0;
 
-    if (UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
+    // if (UIManager.setLayoutAnimationEnabledExperimental) {
+    //   UIManager.setLayoutAnimationEnabledExperimental(true);
+    // }
 
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
-        const { dy } = gestureState;
-        if (this.state.yPos <= 0 && dy > 4) this.feedList.setNativeProps({ scrollEnabled: false });
-        return this.state.yPos <= 0 && dy > 4;
-      },
+    // this.panResponder = PanResponder.create({
+    //   onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+    //     const { dy } = gestureState;
+    //     if (this.state.yPos <= 0 && dy > 4) this.feedList.setNativeProps({ scrollEnabled: false });
+    //     return this.state.yPos <= 0 && dy > 4;
+    //   },
 
-      onPanResponderRelease: (evt, { dy, vy }) => {
-        console.log('release +++++++++++++++++++');
+    //   onPanResponderRelease: (evt, { dy, vy }) => {
+    //     console.log('release +++++++++++++++++++');
 
-        const duration = Math.abs(dy * vy * 10);
-        // if (dy < 30) {
-        //   duration = Math.abs(dy * 10);
-        // }
-        this.feedList.setNativeProps({ scrollEnabled: true });
+    //     const duration = Math.abs(dy * vy * 10);
+    //     // if (dy < 30) {
+    //     //   duration = Math.abs(dy * 10);
+    //     // }
+    //     this.feedList.setNativeProps({ scrollEnabled: true });
 
-        if (dy > 150) {
-          if (vy <= 0) {
-            this.setFeedView(duration);
-          } else {
-            this.setMapView(duration);
-          }
-          // this.feedList.setNativeProps({ scrollEnabled: true });
-          return null;
-        }
+    //     if (dy > 150) {
+    //       if (vy <= 0) {
+    //         this.setFeedView(duration);
+    //       } else {
+    //         this.setMapView(duration);
+    //       }
+    //       // this.feedList.setNativeProps({ scrollEnabled: true });
+    //       return null;
+    //     }
 
-        if (vy > 0.75) {
-          this.setMapView(duration);
-        } else {
-          this.setFeedView(duration);
-        }
+    //     if (vy > 0.75) {
+    //       this.setMapView(duration);
+    //     } else {
+    //       this.setFeedView(duration);
+    //     }
 
-        // this.feedList.setNativeProps({ scrollEnabled: true });
-        return null;
-      },
+    //     // this.feedList.setNativeProps({ scrollEnabled: true });
+    //     return null;
+    //   },
 
-      onPanResponderTerminationRequest: () => {
-        this.feedList.setNativeProps({ scrollEnabled: true });
-      },
+    //   onPanResponderTerminationRequest: () => {
+    //     this.feedList.setNativeProps({ scrollEnabled: true });
+    //   },
 
-      onPanResponderTerminate: (evt, { dy, vy }) => {
-        console.log('terminate -------------------');
-        let duration = 300;
-        if (dy < 150) {
-          duration = Math.abs(dy * 2);
-        }
-        if (dy > 150) {
-          if (vy <= 0) {
-            this.setFeedView(duration);
-          } else {
-            this.setMapView(duration);
-          }
-          this.feedList.setNativeProps({ scrollEnabled: true });
-          return null;
-        }
+    //   onPanResponderTerminate: (evt, { dy, vy }) => {
+    //     console.log('terminate -------------------');
+    //     let duration = 300;
+    //     if (dy < 150) {
+    //       duration = Math.abs(dy * 2);
+    //     }
+    //     if (dy > 150) {
+    //       if (vy <= 0) {
+    //         this.setFeedView(duration);
+    //       } else {
+    //         this.setMapView(duration);
+    //       }
+    //       this.feedList.setNativeProps({ scrollEnabled: true });
+    //       return null;
+    //     }
 
-        if (vy > 0.75) {
-          this.setMapView(duration);
-        } else {
-          this.setFeedView(duration);
-        }
+    //     if (vy > 0.75) {
+    //       this.setMapView(duration);
+    //     } else {
+    //       this.setFeedView(duration);
+    //     }
 
-        this.feedList.setNativeProps({ scrollEnabled: true });
-        return null;
-      },
+    //     this.feedList.setNativeProps({ scrollEnabled: true });
+    //     return null;
+    //   },
 
-      onPanResponderMove: (event, { dy }) => {
-        this.setFeedWrapperOffset(dy);
-      },
-    });
+    //   onPanResponderMove: (event, { dy }) => {
+    //     this.setFeedWrapperOffset(dy);
+    //   },
+    // });
   }
 
   async componentWillMount() {
@@ -256,9 +257,9 @@ class Feed extends Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    navigation.addListener('willFocus', () => {
-      this.feedList.setNativeProps({ scrollEnabled: true });
-    });
+    // navigation.addListener('willFocus', () => {
+    //   this.feedList.setNativeProps({ scrollEnabled: true });
+    // });
 
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
@@ -354,7 +355,11 @@ class Feed extends Component {
   }
 
   onScroll = (event) => {
-    this.setState(() => ({ yPos: event }));
+    // this.setState(() => ({ event: event }));
+    this.yOffset = event.contentOffset.y;
+    console.log(this.yOffset, "Y offset");
+    // console.log(event);
+    // this
   }
 
   onScrollEndDrag = (event) => {
@@ -728,8 +733,56 @@ class Feed extends Component {
         }}
         shouldUpdateAnimatedValue
         noResultText={noResultText}
-        onScroll={this.onScroll}
-        onScrollEndDrag={this.onScrollEndDrag}
+        onScroll={event => this.onScroll(event)}
+        // onScrollEndDrag={this.onScrollEndDrag}
+        // onStartShouldSetResponderCapture={() => {
+        //   console.log("should capture")
+        //   return this.yOffset > 5 ? false : true
+        // }}
+        // onMoveShouldSetResponderCapture={() => {
+        //   console.log(this.props.navigation.setParams({ swipeEnabled: true }));
+        //   console.log(this.props.navigation);
+        //   console.log("should move capture")
+        //   return this.yOffset > 5 ? false : true
+        // }}
+        // onStartShouldSetResponder={() => true}
+        onMoveShouldSetResponder={(event) => {
+          if (this.yOffset > 5) {
+            console.log("here");
+            return false;
+          }
+
+          console.log(this.props.navigation);
+          console.log("want to move"); this.feedList.setNativeProps({ scrollEnabled: false }); return true;
+        }}
+        onResponderMove={(event) => {
+          console.log(this.yOffset, "Y Offset");
+          console.log(event.nativeEvent);
+          const { nativeEvent: { pageY, locationY } } = event;
+          console.log("moving", pageY);
+          if (pageY < 500 && this.yOffset < 10) {
+            // console.log(this.feedList);
+            console.log("pull down with y", this.y);
+            // this.y += 10;
+            this.feedWraper.setNativeProps({ top: pageY });
+          }
+        }}
+        onResponderRelease={(event) => {
+          console.log(event.nativeEvent);
+          const { nativeEvent: { locationY } } = event;
+          console.log("Released");
+          this.feedWraper.setNativeProps({ top: 0 });
+          this.y = 0;
+          // this.feedList.setNativeProps({ scrollEnabled: true });
+        }}
+        onResponderEnd={(event) => {
+          console.log("end");
+          this.y = 0;
+          this.feedWraper.setNativeProps({ top: 0 });
+          this.feedList.setNativeProps({ scrollEnabled: true });
+        }}
+        onResponderTerminationRequest={(event) => { console.log("terminate request"); }}
+        onResponderTerminate={(event) => { console.log("terminating"); }}
       />
     );
   }
@@ -755,7 +808,7 @@ class Feed extends Component {
         <View
           style={{ flex: 1 }}
           ref={(ref) => { this.feedWraper = ref; }}
-          {...this.panResponder.panHandlers}
+        // {...this.panResponder.panHandlers}
         >
           <Image
             source={require('@assets/feed_bg.png')}
@@ -771,7 +824,7 @@ class Feed extends Component {
           <Circle animatable />
           {this.renderFeed()}
         </View>
-        { showShareModal && this.renderShareModal()}
+        {showShareModal && this.renderShareModal()}
         {/* {this.renderCoCreateModal()} */}
       </Wrapper>
     );

@@ -181,17 +181,18 @@ class DataList extends PureComponent {
         ListFooterComponent={this.renderFooter}
         onEndReached={this.loadMore}
         showsVerticalScrollIndicator={false}
+        on
         onScroll={
           shouldUpdateAnimatedValue ?
             Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.animatedValue } } }],
-              { listener: (event) => { onScroll(event.nativeEvent.contentOffset.y); } },
+              { listener: (event) => { onScroll(event.nativeEvent); } },
             )
             : Animated.event(
               [],
               {
                 useNativeDriver: true,
-                listener: (event) => { onScroll(event.nativeEvent.contentOffset.y); },
+                listener: (event) => { onScroll(event.nativeEvent); },
               },
             )
         }
@@ -245,7 +246,7 @@ DataList.defaultProps = {
   shouldUpdateAnimatedValue: false,
   loadMoreButton: null,
   loadMorePosition: 'top',
-  onScroll: () => {},
+  onScroll: () => { },
 };
 
 export default withNavigation(DataList);

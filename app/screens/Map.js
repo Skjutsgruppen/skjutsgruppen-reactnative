@@ -93,7 +93,6 @@ class Map extends PureComponent {
   componentWillMount() {
     const { latitude, longitude } = getCountryLocation();
     let { region } = this.state;
-
     if (latitude && longitude) {
       region = {
         latitude,
@@ -107,6 +106,7 @@ class Map extends PureComponent {
   }
 
   componentDidMount() {
+    console.log(this.mapView);
     this.ismounted = true;
     this.getLocation();
   }
@@ -363,6 +363,7 @@ class Map extends PureComponent {
           style={styles.map}
           region={region}
           onRegionChange={this.onRegionChange}
+          scrollEnabled={false}
         >
           {fullView && this.renderTrip()}
           {fullView && this.renderCurrentLocation()}
@@ -394,7 +395,7 @@ Map.propTypes = {
 
 Map.defaultProps = {
   fullView: true,
-  setFeedView: () => {},
+  setFeedView: () => { },
 };
 
 const mapStateToProps = state => ({ user: state.auth.user });
