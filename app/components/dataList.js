@@ -183,13 +183,9 @@ class DataList extends PureComponent {
         showsVerticalScrollIndicator={false}
         onScroll={(event) => {
           if (shouldUpdateAnimatedValue) {
-            console.log(this.animatedValue._value, 'animated current value');
-            console.log(event.nativeEvent.contentOffset.y, 'Event offset value');
             if (this.animatedValue._value > event.nativeEvent.contentOffset.y) {
-              console.log('visible');
               this.opacityValue.setValue(1);
             } else {
-              console.log('not visible');
               this.opacityValue.setValue(0);
             }
             if (event.nativeEvent.contentOffset.y < 120) {
@@ -198,13 +194,9 @@ class DataList extends PureComponent {
             if (event.nativeEvent.contentOffset.y === 0) {
               this.opacityValue.setValue(1);
             }
-            // console.log(event.nativeEvent.contentOffset.y);
-            // console.log(this.animatedValue._value);
             this.animatedValue.setValue(event.nativeEvent.contentOffset.y);
           }
         }
-          // Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])
-          // : null
         }
       />
     );

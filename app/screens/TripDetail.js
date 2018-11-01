@@ -37,7 +37,8 @@ import { AppText, Heading } from '@components/utils/texts';
 import SuggestedRidesList from '@components/ask/suggestedRidesList';
 import AskCommentBox from '@components/ask/commentBox';
 import OfferCommentBox from '@components/offer/commentBox';
-import ToolBar from '@components/utils/toolbar';
+// import ToolBar from '@components/utils/toolbar';
+import TripToolBar from '@components/utils/tripToolBar';
 import Feed from '@components/feed/list';
 import { Wrapper } from '@components/common/index';
 import { withMute, withUnmute } from '@services/apollo/mute';
@@ -1172,11 +1173,12 @@ class TripDetail extends Component {
 
   renderTrip() {
     const { notifierOffset, trip } = this.state;
+    const title = `${trip.TripStart.name}-${trip.TripEnd.name}`;
 
     return (
       <View style={{ flex: 1 }}>
         {this.renderAppNotification()}
-        <ToolBar transparent offset={notifierOffset} />
+        <TripToolBar title={title} transparent offset={notifierOffset} />
         {this.state.showReturnRides && this.returnRideModal()}
         {this.state.showRecurringRides && this.recurringRidesModal()}
         <TripFeed
