@@ -185,6 +185,22 @@ class GooglePlacesAutocomplete extends Component {
     }
   }
 
+  getPlaceName = (item) => {
+    let fullName = '';
+    const places = item.terms;
+
+    places.forEach((place, index) => {
+      if (index < places.length - 1 && index < 3) {
+        if (index !== 0) {
+          fullName += ', ';
+        }
+        fullName += place.value;
+      }
+    });
+
+    return fullName;
+  }
+
   requestPlaceDetail = (item) => {
     this.sendHttpRequest({
       url: getPlaceDetailURL(item.place_id),
@@ -193,7 +209,7 @@ class GooglePlacesAutocomplete extends Component {
           const details = response.result;
           this.props.onPress({
             place: {
-              name: details.formatted_address.split(',')[0],
+              name: this.getPlaceName(item),
               countryCode: details.address_components.filter(row => (row.types.indexOf('country') > -1))[0].short_name,
               coordinates: [details.geometry.location.lng, details.geometry.location.lat],
             },
