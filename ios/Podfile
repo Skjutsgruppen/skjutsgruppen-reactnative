@@ -33,6 +33,8 @@ target 'Skjutsgruppen' do
   'RCTSettings',
   'RCTVibration'
   ]
+  
+  # Add new pods below this line
   pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
   pod 'GLog', :podspec => "#{rn_path}/third-party-podspecs/GLog.podspec"
   pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"

@@ -5,6 +5,7 @@ import {
   Modal,
   TouchableOpacity,
   Keyboard,
+  Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
@@ -55,6 +56,13 @@ const styles = StyleSheet.create({
   closeModal: {
     padding: 16,
   },
+  absolute: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+  },
 });
 
 class Detail extends PureComponent {
@@ -74,6 +82,7 @@ class Detail extends PureComponent {
       showCalendar: false,
       groupTrips: [],
       confirmModal: false,
+      viewRef: null,
     });
   }
 

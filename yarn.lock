@@ -4944,6 +4944,12 @@ react-native-animatable@^1.2.3, react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-blur@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-blur/-/react-native-blur-3.2.2.tgz#5bfb50638d148982c9560436554ed01d77d6d07d"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-calendars@^1.17.1:
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.17.1.tgz#f971139911df7de4a08e82ca6cd7db2dd9c96d2a"

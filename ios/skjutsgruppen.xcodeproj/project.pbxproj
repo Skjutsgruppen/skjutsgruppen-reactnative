@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -76,6 +75,7 @@
 		EA76B759739440E787D89AB7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C135225297084723854B2D48 /* FontAwesome.ttf */; };
 		ED4A81B246C3430A8BD5FF3C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCF7C40CC9284742BB6D862E /* Octicons.ttf */; };
 		FEECD3057E2C47F9BE2C887D /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06527C20DEF14B0D95964E9E /* libRNImagePicker.a */; };
+		0AB303843919429D87B7F423 /* AvenirLTStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = D7A4BC80AEB9468F81353D2F /* AvenirLTStd-Black.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -580,6 +580,7 @@
 		E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKLoginKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E590D1208A34D000EF24AF /* Skjutsgruppen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Skjutsgruppen.entitlements; path = Skjutsgruppen/Skjutsgruppen.entitlements; sourceTree = "<group>"; };
 		FF7A7FB2859C4DB2A00EC1AB /* SFUIDisplay-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIDisplay-Regular.ttf"; path = "../assets/fonts/SFUIDisplay-Regular.ttf"; sourceTree = "<group>"; };
+		D7A4BC80AEB9468F81353D2F /* AvenirLTStd-Black.otf */ = {isa = PBXFileReference; name = "AvenirLTStd-Black.otf"; path = "../assets/fonts/AvenirLTStd-Black.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1061,6 +1062,7 @@
 				C3B4AD4037394B15B1F285A9 /* SFUIDisplay-Semi-Bold.ttf */,
 				AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */,
 				A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */,
+				D7A4BC80AEB9468F81353D2F /* AvenirLTStd-Black.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1765,6 +1767,7 @@
 				04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */,
 				8FEA62B1574446B8A9F1BBA2 /* SFUIDisplay-Semi-Bold.ttf in Resources */,
 				7B88C97DD55D4EC5986C88C4 /* SFUIText-RegularItalic.ttf in Resources */,
+				0AB303843919429D87B7F423 /* AvenirLTStd-Black.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
