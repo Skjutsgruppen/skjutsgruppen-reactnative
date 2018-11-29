@@ -49,11 +49,12 @@ class DataList extends PureComponent {
   constructor(props) {
     super(props);
     this.animatedValue = new Animated.Value(0);
+    this.opacityValue = new Animated.Value(1);
   }
 
   componentWillMount() {
     const { navigation } = this.props;
-    navigation.setParams({ animatedValue: this.animatedValue });
+    navigation.setParams({ animatedValue: this.animatedValue, opacityValue: this.opacityValue });
   }
 
   reload = () => {
@@ -180,10 +181,22 @@ class DataList extends PureComponent {
         ListFooterComponent={this.renderFooter}
         onEndReached={this.loadMore}
         showsVerticalScrollIndicator={false}
-        onScroll={
-          shouldUpdateAnimatedValue ?
-            Animated.event([{ nativeEvent: { contentOffset: { y: this.animatedValue } } }])
-            : null
+        onScroll={(event) => {
+          if (shouldUpdateAnimatedValue) {
+            if (this.animatedValue._value > event.nativeEvent.contentOffset.y) {
+              this.opacityValue.setValue(1);
+            } else {
+              this.opacityValue.setValue(0);
+            }
+            if (event.nativeEvent.contentOffset.y < 120) {
+              this.opacityValue.setValue(0);
+            }
+            if (event.nativeEvent.contentOffset.y === 0) {
+              this.opacityValue.setValue(1);
+            }
+            this.animatedValue.setValue(event.nativeEvent.contentOffset.y);
+          }
+        }
         }
       />
     );

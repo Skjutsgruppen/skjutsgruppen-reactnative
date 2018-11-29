@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Animated, StyleSheet, View, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { Animated, StyleSheet, View, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { withNavigation } from 'react-navigation';
@@ -11,7 +11,6 @@ import TouchableHighlight from '@components/touchableHighlight';
 import { Heading } from '@components/utils/texts';
 
 import Icon from '@assets/icons/ic_back_toolbar.png';
-import Map from '@assets/map_toggle.png';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
 });
 
 
-class GroupToolBar extends PureComponent {
+class TripToolBar extends PureComponent {
   backButton = () => {
     const { navigation, transparent, animatable } = this.props;
     const params = navigation.state.params || {};
@@ -111,11 +110,11 @@ class GroupToolBar extends PureComponent {
     return navigation.goBack();
   }
 
-  title = (groupNameVisibility) => {
+  title = (tripNameVisibility) => {
     const { title } = this.props;
     if (title) {
       return (
-        <Animated.View style={{ opacity: groupNameVisibility, width: '60%', alignItems: 'center' }}>
+        <Animated.View style={{ opacity: tripNameVisibility, width: '65%', alignItems: 'center' }}>
           <Heading size={22} fontVariation="bold" center numberOfLines={1} ellipsizeMode="tail" color={Colors.text.darkGray}>{title}</Heading>
         </Animated.View>
       );
@@ -124,20 +123,26 @@ class GroupToolBar extends PureComponent {
     return <View />;
   }
 
-  right = (groupNameVisibility, mapPress) =>
-    (
-      <Animated.View style={{ opacity: groupNameVisibility, position: 'absolute', right: 0, top: -4 }}>
-        <TouchableOpacity onPress={() => mapPress()} style={styles.mapWrapper}>
-          <Image source={Map} style={styles.mapImg} />
-        </TouchableOpacity>
-      </Animated.View>
-    )
+  right = () => {
+    const { right, navigation } = this.props;
+    const params = navigation.state.params || {};
+    let rightComponent = right;
 
+    if (params.right) {
+      rightComponent = params.right;
+    }
+
+    if (rightComponent) {
+      return <View style={{ marginRight: 16 }}>{rightComponent()}</View>;
+    }
+
+    return <View style={styles.spacer} />;
+  }
 
   render() {
-    const { navigation, transparent, offset, showsGradientBackground, animatable, mapPress } = this.props;
+    const { navigation, transparent, offset, showsGradientBackground, animatable } = this.props;
     const params = navigation.state.params || {};
-    let groupNameVisibility = transparent ? 0 : 1;
+    let tripNameVisibility = transparent ? 0 : 1;
     let backgroundColor = transparent ? 'transparent' : Colors.background.fullWhite;
     let elevation = transparent ? 0 : 10;
     let shadowOpacity = transparent ? 0 : 0.25;
@@ -145,7 +150,7 @@ class GroupToolBar extends PureComponent {
 
     if (transparent && animatable) {
       if (params.animatedValue) {
-        groupNameVisibility = params.animatedValue.interpolate({
+        tripNameVisibility = params.animatedValue.interpolate({
           inputRange: [0, 5],
           outputRange: [0, 1],
           extrapolate: 'clamp',
@@ -195,15 +200,15 @@ class GroupToolBar extends PureComponent {
         ]}
         >
           {this.backButton()}
-          {this.title(groupNameVisibility)}
+          {this.title(tripNameVisibility)}
           <View style={styles.iconWrapper} />
-          {this.right(groupNameVisibility, mapPress)}
+          {this.right()}
         </Animated.View>
       </Animated.View>
     );
   }
 }
-GroupToolBar.propTypes = {
+TripToolBar.propTypes = {
   title: PropTypes.string,
   transparent: PropTypes.bool,
   showsGradientBackground: PropTypes.bool,
@@ -214,13 +219,12 @@ GroupToolBar.propTypes = {
   }).isRequired,
   onBack: PropTypes.func,
   right: PropTypes.func,
-  mapPress: PropTypes.func,
   nav: PropTypes.shape({
     routes: PropTypes.array,
   }).isRequired,
 };
 
-GroupToolBar.defaultProps = {
+TripToolBar.defaultProps = {
   title: '',
   transparent: false,
   showsGradientBackground: true,
@@ -233,4 +237,4 @@ GroupToolBar.defaultProps = {
 
 const mapStateToProps = state => ({ nav: state.nav });
 
-export default compose(connect(mapStateToProps), withNavigation)(GroupToolBar);
+export default compose(connect(mapStateToProps), withNavigation)(TripToolBar);
