@@ -280,7 +280,7 @@ class ShareLocation extends PureComponent {
         animationType="slide"
       >
         <Share
-          modal={false}
+          modal
           type={FEEDABLE_LOCATION}
           detail={detail}
           location={location}

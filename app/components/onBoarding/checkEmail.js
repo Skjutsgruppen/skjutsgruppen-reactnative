@@ -130,7 +130,7 @@ class CheckEmail extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation.goBack();
+    navigation.replace('Onboarding', { activeStep: 4 });
   }
 
   renderButton = () => {

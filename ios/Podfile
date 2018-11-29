@@ -38,7 +38,7 @@ target 'Skjutsgruppen' do
   pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
   
   pod 'react-native-maps', path: rn_maps_path
-  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk/ios'
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   # react-native-maps dependencies
