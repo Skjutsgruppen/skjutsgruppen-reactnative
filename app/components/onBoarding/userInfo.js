@@ -107,19 +107,19 @@ class UserInfo extends Component {
     const errors = [];
     const { firstName, lastName, countryCode, password } = this.state;
 
-    if (firstName === '') {
+    if (firstName.trim() === '') {
       errors.push('FIRST_NAME_REQUIRED');
     }
 
-    if (lastName === '') {
+    if (lastName.trim() === '') {
       errors.push('LAST_NAME_REQUIRED');
     }
 
-    if (countryCode === '') {
+    if (countryCode.trim() === '') {
       errors.push('COUNTRY_CODE_REQUIRED');
     }
 
-    if (password === '') {
+    if (password.trim() === '') {
       errors.push('PASSWORD_REQUIRED');
     }
 

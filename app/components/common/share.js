@@ -359,6 +359,7 @@ class Share extends Component {
       user,
     } = this.props;
     const {
+      clipboard,
       social,
       selectedFriends: friends,
       selectedGroups: groups,
@@ -368,28 +369,34 @@ class Share extends Component {
     const shareInput = { social, friends, groups };
     const { id, isAdmin } = detail;
 
+    if (type === FEEDABLE_LOCATION && clipboard.length < 1 && social.length < 1 && friends < 1 && groups < 1 && contacts < 1 && tripParticipants < 1) {
+      Alert.alert('you must select atleast one option');
+      this.setState({ loading: false });
+      return;
+    }
+
     try {
       if (location.tripId) {
-        if (tripParticipants.length > 0 || friends.length > 0) {
-          const obj = { ...location, users: tripParticipants.concat(friends) };
-          startTrackingLocation();
-          shareLocation(obj).then(async ({ data }) => {
-            const { shareLocation: sharedLocation } = data;
-            if (sharedLocation && sharedLocation.Location) {
-              Clipboard.setString(data.shareLocation.Location.url);
-              if (social.length > 0) {
-                if (social.includes('Facebook')) FBShare.link(type, data.shareLocation.Location);
-                if (social.includes('Twitter') || friends.length > 0) {
-                  await share({ id: sharedLocation.Location.id, type, share: shareInput });
-                }
+        // if (tripParticipants.length > 0 || friends.length > 0) {
+        const obj = { ...location, users: tripParticipants.concat(friends) };
+        startTrackingLocation();
+        shareLocation(obj).then(async ({ data }) => {
+          const { shareLocation: sharedLocation } = data;
+          if (sharedLocation && sharedLocation.Location) {
+            Clipboard.setString(data.shareLocation.Location.url);
+            if (social.length > 0) {
+              if (social.includes('Facebook')) FBShare.link(type, data.shareLocation.Location);
+              if (social.includes('Twitter') || friends.length > 0) {
+                await share({ id: sharedLocation.Location.id, type, share: shareInput });
               }
             }
-          });
-        } else {
-          Alert.alert(trans('share.select_at_least_one_participant'));
-          this.setState({ loading: false });
-          return;
-        }
+          }
+        });
+        // } else {
+        //   Alert.alert(trans('share.select_at_least_one_participant'));
+        //   this.setState({ loading: false });
+        //   return;
+        // }
       } else if (social.length > 0 || friends.length > 0 || groups.length > 0) {
         if (social.includes('Facebook')) {
           let shareType = type;
