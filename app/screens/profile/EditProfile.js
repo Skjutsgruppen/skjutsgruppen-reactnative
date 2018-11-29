@@ -301,11 +301,11 @@ class EditProfile extends Component {
     const errors = [];
     const { firstName, lastName } = this.state;
 
-    if (firstName === '') {
+    if (firstName.trim() === '') {
       errors.push('FIRST_NAME_REQUIRED');
     }
 
-    if (lastName === '') {
+    if (lastName.trim() === '') {
       errors.push('LAST_NAME_REQUIRED');
     }
 
@@ -626,7 +626,7 @@ class EditProfile extends Component {
       uploadedImage,
       totalFriends,
       newEmail,
-      errorMsg,
+      error,
     } = this.state;
 
     const profilePicture = uploadedImage || { uri: profileImage };
@@ -634,7 +634,7 @@ class EditProfile extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
-        <Toast message={errorMsg} type="error" />
+        <Toast message={error} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={[styles.nameSection]}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>

@@ -67,7 +67,8 @@ class Agreement extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation.goBack();
+    navigation.navigate('Boarding');
+    // navigation.goBack();
   }
 
   render() {

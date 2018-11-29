@@ -10,12 +10,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     marginHorizontal: 20,
     marginVertical: 6,
+    borderRadius: 12,
   },
   toastSuccess: {
     backgroundColor: 'rgba(43, 156, 72, 0.7)',
   },
   toastError: {
-    backgroundColor: 'rgba(173, 43, 43, 0.7)',
+    backgroundColor: 'rgba(244, 67, 54, 0.72)',
   },
   toastWarning: {
     backgroundColor: 'rgba(173, 97, 43, 0.6)',
