@@ -370,7 +370,7 @@ class Share extends Component {
     const { id, isAdmin } = detail;
 
     if (type === FEEDABLE_LOCATION && clipboard.length < 1 && social.length < 1 && friends < 1 && groups < 1 && contacts < 1 && tripParticipants < 1) {
-      Alert.alert('you must select atleast one option');
+      Alert.alert(trans('share.select_at_least_one_option'));
       this.setState({ loading: false });
       return;
     }
