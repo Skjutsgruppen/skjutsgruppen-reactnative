@@ -181,6 +181,7 @@ repositories {
 //     }
 // }
 dependencies {
+    compile project(':react-native-date-picker')
     compile project(':react-native-open-settings')
     implementation project(':react-native-android-open-settings')
     implementation project(':tipsi-twitter')

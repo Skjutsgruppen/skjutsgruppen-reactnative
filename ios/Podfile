@@ -41,6 +41,9 @@ target 'Skjutsgruppen' do
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  # Add new pods below this line
+  pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
+
   # react-native-maps dependencies
 #  pod 'react-native-maps', path: rn_maps_path
   pod 'react-native-google-maps', path: rn_maps_path  # Remove this line if you don't want to support GoogleMaps on iOS
