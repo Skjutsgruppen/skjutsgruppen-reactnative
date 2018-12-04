@@ -16,6 +16,16 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
     });
   };
 
+  const dates = groupTrips.map((trip) => {
+    const tt = `${getDate(trip.date).format('YYYY-MM-DD')}${trip.type.charAt(0)}`;
+
+    return tt;
+  });
+
+  const uniqueDates = new Set(dates);
+
+  console.log(groupTrips, uniqueDates);
+
   const markedDates = {};
   let tripDate = Moment().format('YYYY-MM-DD');
   let selectedDate = '';

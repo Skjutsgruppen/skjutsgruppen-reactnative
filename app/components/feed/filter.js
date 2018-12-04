@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import ActionSheet from 'react-native-actionsheet';
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
 import {
@@ -12,14 +12,28 @@ import {
   FEED_FILTER_NEARBY,
   FEED_FILTER_NEWS,
 } from '@config/constant';
-import { AppText } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
 import FilterIcon from '@assets/icons/ic_menu.png';
 import FilterIconBlue from '@assets/icons/ic_menu_blue.png';
 
 const styles = StyleSheet.create({
+  transparentBg: {
+    backgroundColor: 'transparent',
+  },
   action: {
     padding: 16,
+  },
+  actionItem: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.98)',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionLabel: {
+    backgroundColor: 'transparent',
+    fontSize: 18,
+    color: '#007AFF',
   },
   horizontalDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -41,53 +55,114 @@ const styles = StyleSheet.create({
   },
 });
 
-const FILTERS = {
-  withMap: [FEED_FILTER_EVERYTHING, FEED_FILTER_OFFERED, FEED_FILTER_WANTED],
-  withoutMap: [
-    FEED_FILTER_EVERYTHING,
-    FEED_FILTER_OFFERED,
-    FEED_FILTER_WANTED,
-    FEED_FILTER_NEARBY,
-    FEED_FILTER_NEWS,
-    FEED_FILTER_EXPERIENCE,
-  ],
-};
-
-const FILTER_LABLES = {
-  withMap: ['Everything', 'Offered rides', 'Rides that are asked for'],
-  withoutMap: [
-    'Everything',
-    'Offered rides',
-    'Rides that are asked for',
-    'Close to you',
-    'News',
-    'Experience',
-  ],
-};
-
-const Action = ({ label, onPress }) => (
-  <View style={styles.horizontalDivider} >
-    <TouchableOpacity style={styles.action} onPress={onPress}>
-      <AppText centered fontVariation="bold" color={Colors.text.blue}>{label}</AppText>
-    </TouchableOpacity>
-  </View>
-);
-
-Action.propTypes = {
-  label: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+const actionsheetStyles = {
+  body: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  buttonBox: {
+    height: 50,
+    marginTop: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    marginHorizontal: 12,
+  },
+  buttonText: {
+    fontSize: 18,
+    backgroundColor: 'transparent',
+  },
+  cancelButtonBox: {
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    marginTop: 8,
+    marginHorizontal: 12,
+    marginBottom: 12,
+    borderRadius: 12,
+  },
 };
 
 const Filter = ({ onPress, map }) => {
-  const filtersToRender = map ? FILTERS.withMap : FILTERS.withoutMap;
-  const filtersLablesToRender = map ? FILTER_LABLES.withMap : FILTER_LABLES.withoutMap;
   let filterActionSheet;
+  const onPressFilter = (filterType) => {
+    filterActionSheet.hide();
 
-  const applyFilter = (index) => {
-    if (filtersToRender.length !== index) {
-      onPress(filtersToRender[index]);
-    }
+    setTimeout(() => {
+      onPress(filterType);
+    }, 300);
   };
+
+  const withoutMap = [
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_EVERYTHING); }}
+      style={[styles.actionItem, { borderTopLeftRadius: 12, borderTopRightRadius: 12 }]}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.everything')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_OFFERED); }}
+      style={styles.actionItem}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.offered_rides')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_WANTED); }}
+      style={styles.actionItem}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.rides_that_are_asked_for')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_NEARBY); }}
+      style={styles.actionItem}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.close_to_you')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_NEWS); }}
+      style={styles.actionItem}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.news')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_EXPERIENCE); }}
+      style={[styles.actionItem, { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.experiences')}</Text>
+    </TouchableOpacity>,
+  ];
+
+  const withMap = [
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_EVERYTHING); }}
+      style={[styles.actionItem, { borderTopLeftRadius: 12, borderTopRightRadius: 12 }]}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.everything')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_OFFERED); }}
+      style={styles.actionItem}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.offered_rides')}</Text>
+    </TouchableOpacity>,
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => { onPressFilter(FEED_FILTER_WANTED); }}
+      style={[styles.actionItem, { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+    >
+      <Text style={styles.actionLabel}>{trans('feed.rides_that_are_asked_for')}</Text>
+    </TouchableOpacity>,
+  ];
+
+  const options = map ? [...withMap, 'Cancel'] : [...withoutMap, 'Cancel'];
 
   return (
     <View style={styles.menuIconWrapper}>
@@ -99,10 +174,10 @@ const Filter = ({ onPress, map }) => {
       </TouchableHighlight>
       <ActionSheet
         ref={(sheet) => { filterActionSheet = sheet; }}
-        title={trans('feed.filters')}
-        options={[...filtersLablesToRender, 'Cancel']}
-        cancelButtonIndex={filtersToRender.length}
-        onPress={(index) => { applyFilter(index); }}
+        options={options}
+        cancelButtonIndex={options.length - 1}
+        onPress={() => { }}
+        styles={actionsheetStyles}
       />
     </View>
   );

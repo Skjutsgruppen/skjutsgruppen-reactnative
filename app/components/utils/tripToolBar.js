@@ -179,6 +179,8 @@ class TripToolBar extends PureComponent {
           outputRange: [0, 0.25],
           extrapolate: 'clamp',
         });
+      }
+      if (params.opacityValue) {
         opacity = params.opacityValue.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1],

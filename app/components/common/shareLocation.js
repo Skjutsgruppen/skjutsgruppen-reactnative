@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, Modal, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, Modal, Alert, TouchableOpacity } from 'react-native';
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { FEEDABLE_GROUP, FEEDABLE_TRIP, FEEDABLE_LOCATION } from '@config/constant';
@@ -9,6 +10,7 @@ import Colors from '@theme/colors';
 import { TextStyles } from '@theme/styles/global';
 import { ModalAction, ActionModal, Loading } from '@components/common';
 import Share from '@components/common/share';
+import actionSheetMenu from '@components/common/actionSheetMenu';
 import Timer from '@components/common/timer';
 import { trans } from '@lang/i18n';
 import { UcFirst } from '@config';
@@ -110,6 +112,7 @@ class ShareLocation extends PureComponent {
       location: {},
       shareLocationLoading: false,
     });
+    this.actionSheet = {};
   }
 
   componentWillMount() {
@@ -131,6 +134,18 @@ class ShareLocation extends PureComponent {
     }, 60000);
   }
 
+  componentDidMount() {
+    const { myLocation } = this.state;
+    const { fetchingPosition, pressShareLocation } = this.props;
+
+    if (fetchingPosition) {
+      if (this.actionSheet &&
+        pressShareLocation &&
+        (!myLocation.id)
+      ) { this.actionSheet.show(); }
+    }
+  }
+
   componentWillReceiveProps = ({ detail, locationSharedToSpecificResource, myPosition }) => {
     this.setState({
       myLocation: detail.Location,
@@ -147,11 +162,12 @@ class ShareLocation extends PureComponent {
   onLayout = e => this.props.onLayout(e.nativeEvent.layout.height);
 
   onShareLocation = (unit) => {
+    this.actionSheet.hide();
     const { shareLocation, detail, startTrackingLocation } = this.props;
     const { myPosition } = this.state;
     const { __typename } = detail;
 
-    this.setState({ showActionOption: false, shareLocationLoading: true });
+    this.setState({ shareLocationLoading: true });
 
     const obj = {
       point: [myPosition.longitude, myPosition.latitude],
@@ -159,21 +175,23 @@ class ShareLocation extends PureComponent {
       users: [],
     };
 
-    if (__typename === 'Group') {
-      obj.groupId = detail.id;
-      startTrackingLocation();
-      shareLocation(obj)
-        .then(() => this.setState({ shareLocationLoading: false }))
-        .catch(() => this.setState({ shareLocationLoading: false }));
-    }
-    if (__typename === 'Trip') {
-      obj.tripId = detail.id;
-      this.setState({ location: obj, showShareModal: true });
-      // startTrackingLocation();
-      // shareLocation(obj)
-      //   .then(() => this.setState({ shareLocationLoading: false }))
-      //   .catch(() => this.setState({ shareLocationLoading: false }));
-    }
+    setTimeout(() => {
+      if (__typename === 'Group') {
+        obj.groupId = detail.id;
+        startTrackingLocation();
+        shareLocation(obj)
+          .then(() => this.setState({ shareLocationLoading: false }))
+          .catch(() => this.setState({ shareLocationLoading: false }));
+      }
+      if (__typename === 'Trip') {
+        obj.tripId = detail.id;
+        this.setState({ location: obj, showShareModal: true });
+        // startTrackingLocation();
+        // shareLocation(obj)
+        //   .then(() => this.setState({ shareLocationLoading: false }))
+        //   .catch(() => this.setState({ shareLocationLoading: false }));
+      }
+    }, 200);
   }
 
   info = () => {
@@ -229,45 +247,84 @@ class ShareLocation extends PureComponent {
     );
   }
 
-  showActionModal = () => {
-    const { showActionOption, myLocation } = this.state;
-    const { fetchingPosition, myPosition } = this.props;
-
-    if (!showActionOption ||
-      fetchingPosition ||
-      !myPosition.longitude ||
-      !myPosition.latitude ||
-      (myLocation && myLocation.id)
-    ) return null;
-
-    return (
-      <ActionModal
-        title={`${trans('global.share_live_location_for')}:`}
-        animationType="fade"
-        transparent
-        onRequestClose={() => this.setState({ showActionOption: false })}
-        visible={showActionOption}
+  showActionSheet = () => {
+    const options = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onShareLocation(30)}
+        style={actionSheetMenu.actionItem}
       >
-        {[
-          <ModalAction
-            key="thirty_minutes"
-            label={trans('interval.thirty_minutes')}
-            onPress={() => this.onShareLocation(30)}
-          />,
-          <ModalAction
-            key="four_hours"
-            label={trans('interval.four_hours')}
-            onPress={() => this.onShareLocation(240)}
-          />,
-          <ModalAction
-            key="eight_hours"
-            label={trans('interval.eight_hours')}
-            onPress={() => this.onShareLocation(480)}
-          />,
-        ]}
-      </ActionModal>
+        <Text style={actionSheetMenu.actionLabel}>{trans('interval.thirty_minutes')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onShareLocation(240)}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('interval.four_hours')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onShareLocation(480)}
+        style={[actionSheetMenu.actionItem, {
+          borderBottomLeftRadius: 12,
+          borderBottomRightRadius: 12 }]}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('interval.eight_hours')}</Text>
+      </TouchableOpacity>,
+      'Cancel',
+    ];
+    return (
+      <ActionSheet
+        title={<Text style={actionSheetMenu.actionTitle}>{trans('global.share_live_location_for')}:</Text>}
+        ref={(sheet) => { this.actionSheet = sheet; }}
+        options={options}
+        cancelButtonIndex={options.length - 1}
+        onPress={() => { }}
+        styles={actionSheetMenu}
+      />
     );
   }
+
+  // showActionModal = () => {
+  //   const { showActionOption, myLocation } = this.state;
+  //   const { fetchingPosition, myPosition } = this.props;
+
+  //   if (!showActionOption ||
+  //     fetchingPosition ||
+  //     !myPosition.longitude ||
+  //     !myPosition.latitude ||
+  //     (myLocation && myLocation.id)
+  //   ) return null;
+
+  //   return (
+  //     <ActionModal
+  //       title={`${trans('global.share_live_location_for')}:`}
+  //       animationType="fade"
+  //       transparent
+  //       onRequestClose={() => this.setState({ showActionOption: false })}
+  //       visible={showActionOption}
+  //     >
+  //       {[
+  //         <ModalAction
+  //           key="thirty_minutes"
+  //           label={trans('interval.thirty_minutes')}
+  //           onPress={() => this.onShareLocation(30)}
+  //         />,
+  //         <ModalAction
+  //           key="four_hours"
+  //           label={trans('interval.four_hours')}
+  //           onPress={() => this.onShareLocation(240)}
+  //         />,
+  //         <ModalAction
+  //           key="eight_hours"
+  //           label={trans('interval.eight_hours')}
+  //           onPress={() => this.onShareLocation(480)}
+  //         />,
+  //       ]}
+  //     </ActionModal>
+  //   );
+  // }
 
   renderShareModal() {
     const { showShareModal, location } = this.state;
@@ -332,7 +389,6 @@ class ShareLocation extends PureComponent {
       fetchingPosition } = this.props;
     const { myLocation, shareLocationLoading } = this.state;
     const { __typename } = detail;
-
     return (
       <TouchableHighlight
         onPress={() => {
@@ -343,9 +399,9 @@ class ShareLocation extends PureComponent {
               .then(() => this.setState({ myLocation: {}, fetchingPosition: false }))
               .catch(error => Alert.alert(error.code));
           } else if (!myPosition.latitude || !myPosition.longitude) {
-            currentLocation().then(() => this.setState({ showActionOption: true }));
+            currentLocation().then(() => this.actionSheet.show());
           } else {
-            this.setState({ showActionOption: true });
+            this.actionSheet.show();
           }
         }}
         style={styles.spacerBottom}
@@ -392,7 +448,7 @@ class ShareLocation extends PureComponent {
           {this.renderLocationSharedList()}
           {this.renderShareLocation()}
         </ScrollView>
-        {this.showActionModal()}
+        {this.showActionSheet()}
         {this.renderShareModal()}
       </View>
     );

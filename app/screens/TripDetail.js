@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Image, TouchableOpacity, Modal, Keyboard, BackHandler, Dimensions, Platform } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, Image, TouchableOpacity, Modal, Keyboard, BackHandler, Dimensions, Platform } from 'react-native';
 import { compose } from 'react-apollo';
 import LinearGradient from 'react-native-linear-gradient';
 import { submitComment } from '@services/apollo/comment';
 import { withShare, withEmbed } from '@services/apollo/share';
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
 import { withTrip, withTripFeed, withDeleteTrip } from '@services/apollo/trip';
 import {
   AppNotification,
@@ -24,6 +25,7 @@ import MakeExperience from '@components/experience/make';
 import PropTypes from 'prop-types';
 import { Colors, Gradients } from '@theme';
 import Share from '@components/common/share';
+import actionSheetMenu from '@components/common/actionSheetMenu';
 import Date from '@components/date';
 import Toast from '@components/toast';
 import ReturnRides from '@components/offer/returnRides';
@@ -192,9 +194,11 @@ const styles = StyleSheet.create({
   action: {
     padding: 16,
   },
-  actionLabel: {
-    textAlign: 'center',
-  },
+  // actionLabel: {
+  //   textAlign: 'center',
+  //   fontSize: 18,
+  //   color: '#007AFF',
+  // },
   dividerWrapper: {
     marginHorizontal: 24,
   },
@@ -233,8 +237,59 @@ const styles = StyleSheet.create({
     width: 48,
     marginRight: 16,
   },
+  transparentBg: {
+    backgroundColor: 'transparent',
+  },
+  // actionItem: {
+  //   flex: 1,
+  //   backgroundColor: 'rgba(255,255,255,0.98)',
+  //   height: 50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  menuIconWrapper: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginLeft: 3,
+  },
+  menuIcon: {
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
 });
 
+// const actionsheetStyles = {
+//   body: {
+//     flex: 1,
+//     backgroundColor: 'transparent',
+//   },
+//   buttonBox: {
+//     height: 50,
+//     marginTop: StyleSheet.hairlineWidth,
+//     flexDirection: 'row',
+//     backgroundColor: 'transparent',
+//     marginHorizontal: 12,
+//   },
+//   buttonText: {
+//     fontSize: 18,
+//     backgroundColor: 'transparent',
+//   },
+//   cancelButtonBox: {
+//     height: 50,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     backgroundColor: '#fff',
+//     marginTop: 8,
+//     marginHorizontal: 12,
+//     marginBottom: 12,
+//     borderRadius: 12,
+//   },
+// };
 class TripDetail extends Component {
   constructor(props) {
     super(props);
@@ -257,6 +312,7 @@ class TripDetail extends Component {
       deletedModal: false,
       notAvailableModal: false,
     });
+    this.actionSheet = null;
     this.isNotAvailableModalDisplayed = false;
   }
 
@@ -373,10 +429,13 @@ class TripDetail extends Component {
   }
 
   onMapPress = (pressShareLocation = false) => {
+    this.actionSheet.hide();
     const { navigation } = this.props;
     const { trip } = this.state;
-    navigation.navigate('Route', { info: trip, pressShareLocation });
-    this.showActionModal(false);
+    setTimeout(() => {
+      navigation.navigate('Route', { info: trip, pressShareLocation });
+      // this.showActionModal(false);
+    }, 200);
   }
 
   onCloseNotification = () => {
@@ -384,52 +443,60 @@ class TripDetail extends Component {
   }
 
   onMute = (unit, type = null) => {
+    this.actionSheet.hide();
     const { trip } = this.state;
     const { mute, refetch } = this.props;
     const data = {
       mutable: 'Trip',
       mutableId: trip.id,
     };
+    setTimeout(() => {
+    // this.showActionModal(false);
 
-    this.showActionModal(false);
-
-    if (unit === 'forever') {
-      data.forever = true;
-    } else {
-      const date = getDate();
-      const from = date.format();
-      const to = date.add(unit, type).format();
-      data.from = from;
-      data.to = to;
-    }
-
-    mute(data).then(async () => {
       if (unit === 'forever') {
-        Scheduler.removeSpecificScheduledNotification(trip.id);
+        data.forever = true;
       } else {
-        Scheduler.checkAndRemoveScheduledNotification(trip.id, data.to);
+        const date = getDate();
+        const from = date.format();
+        const to = date.add(unit, type).format();
+        data.from = from;
+        data.to = to;
       }
-    }).then(refetch);
+
+      mute(data).then(async () => {
+        if (unit === 'forever') {
+          Scheduler.removeSpecificScheduledNotification(trip.id);
+        } else {
+          Scheduler.checkAndRemoveScheduledNotification(trip.id, data.to);
+        }
+      }).then(refetch);
+    }, 200);
   }
 
   onUnmute = () => {
+    this.actionSheet.hide();
     const { trip } = this.state;
     const { unmute, refetch } = this.props;
 
-    this.showActionModal(false);
-    unmute({
-      mutable: 'Trip',
-      mutableId: trip.id,
-    }).then(async () => {
-      Scheduler.schedule(trip);
-    }).then(refetch);
+    // this.showActionModal(false);
+    setTimeout(() => {
+      unmute({
+        mutable: 'Trip',
+        mutableId: trip.id,
+      }).then(async () => {
+        Scheduler.schedule(trip);
+      }).then(refetch);
+    }, 200);
   }
 
   onReport = () => {
+    this.actionSheet.hide();
     const { navigation } = this.props;
     const { trip } = this.state;
-    this.showActionModal(false);
-    navigation.navigate('Report', { data: { Trip: trip }, type: FEEDABLE_TRIP });
+    // this.showActionModal(false);
+    setTimeout(() => {
+      navigation.navigate('Report', { data: { Trip: trip }, type: FEEDABLE_TRIP });
+    }, 200);
   }
 
   onDelete = () => {
@@ -455,13 +522,15 @@ class TripDetail extends Component {
   }
 
   onEmbed = () => {
+    this.actionSheet.hide();
     const { embed } = this.props;
     const { trip: { id } } = this.state;
-
-    embed({ tripId: id })
-      .then(() => {
-        this.setState({ showActionOption: false });
-      });
+    setTimeout(() => {
+      embed({ tripId: id })
+        .then(() => {
+          this.setState({ showActionOption: false });
+        });
+    }, 200);
   }
 
   setReturnRidesModalVisibility = (show) => {
@@ -480,8 +549,9 @@ class TripDetail extends Component {
     this.setState({ confirmModalVisibility: show, showActionOption: false });
   }
 
-  showActionModal(visible) {
-    this.setState({ showActionOption: visible });
+  showActionModal = () => {
+    // this.setState({ showActionOption: visible });
+    this.actionSheet.show();
   }
 
   checkValidation = (comment) => {
@@ -971,40 +1041,127 @@ class TripDetail extends Component {
     );
   }
 
-  renderActionModal() {
-    const { user, navigation } = this.props;
-    const { trip, showActionOption } = this.state;
+  renderActionSheet = () => {
+    const { trip } = this.state;
+    const { navigation } = this.props;
+    const color = this.canCreateExperience() ? '#007AFF' : 'gray';
 
-    return (
-      <ActionModal
-        animationType="fade"
-        transparent
-        onRequestClose={() => this.setState({ showActionOption: false })}
-        visible={showActionOption}
+    const notParticipate = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => {
+          this.actionSheet.hide();
+          navigation.navigate('Experience', { trip });
+        }}
+        disabled={!this.canCreateExperience()}
+        style={[actionSheetMenu.actionItem, { borderTopLeftRadius: 12, borderTopRightRadius: 12 }]}
       >
-        <ModalAction
-          label={trans('detail.create_your_experience')}
-          onPress={() => {
-            this.setState({ showActionOption: false });
-            navigation.navigate('Experience', { trip });
-          }}
-          disabled={!this.canCreateExperience()}
-        />
-        {this.renderParticipantsAction()}
-        {
-          user.id !== trip.User.id ?
-            <ModalAction
-              label={trans('detail.report_this_ride')}
-              onPress={this.onReport}
-            /> :
-            <ModalAction
-              label={trans('detail.delete_this_ride')}
-              onPress={() => this.setConfirmModalVisibility(true)}
-            />
-        }
-      </ActionModal>
+        <Text style={[actionSheetMenu.actionLabel, { color }]}>{trans('detail.create_your_experience')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={this.onReport}
+        style={[actionSheetMenu.actionItem, { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={actionSheetMenu.actionLabel}>{trans('detail.report_this_ride')}</Text>
+      </TouchableOpacity>,
+    ];
+    const mute = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onMute(2, 'hours')}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.mute_two_hours')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onMute(1, 'day')}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.mute_one_day')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onMute('forever')}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.mute_forever')}</Text>
+      </TouchableOpacity>,
+    ];
+    const unmute = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={this.onUnmute}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.unmute')}</Text>
+      </TouchableOpacity>,
+    ];
+    const muteActions = trip.muted ? unmute : mute;
+    const participate = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onMapPress(true)}
+        style={[actionSheetMenu.actionItem, { flexDirection: 'row' }]}
+      >
+        <Image source={LocationIcon} style={actionSheetMenu.locationIcon} /><Text style={[actionSheetMenu.actionLabel, { color }]}>{trans('detail.share_your_live_location')}</Text>
+      </TouchableOpacity>,
+      ...muteActions,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.onEmbed()}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.embed_with_html')}</Text>
+      </TouchableOpacity>,
+    ];
+
+    const options = this.canCreateExperience() ? [notParticipate[0], ...participate, notParticipate[1], 'Cancel'] : [...notParticipate, 'Cancel'];
+    return (
+      <ActionSheet
+        ref={(sheet) => { this.actionSheet = sheet; }}
+        options={options}
+        cancelButtonIndex={options.length - 1}
+        onPress={() => { }}
+        styles={actionSheetMenu}
+      />
     );
   }
+  // renderActionModal() {
+  //   const { user, navigation } = this.props;
+  //   const { trip, showActionOption } = this.state;
+
+  //   return (
+  //     <ActionModal
+  //       animationType="fade"
+  //       transparent
+  //       onRequestClose={() => this.setState({ showActionOption: false })}
+  //       visible={showActionOption}
+  //     >
+  //       <ModalAction
+  //         label={trans('detail.create_your_experience')}
+  //         onPress={() => {
+  //           this.setState({ showActionOption: false });
+  //           navigation.navigate('Experience', { trip });
+  //         }}
+  //         disabled={!this.canCreateExperience()}
+  //       />
+  //       {this.renderParticipantsAction()}
+  //       {
+  //         user.id !== trip.User.id ?
+  //           <ModalAction
+  //             label={trans('detail.report_this_ride')}
+  //             onPress={this.onReport}
+  //           /> :
+  //           <ModalAction
+  //             label={trans('detail.delete_this_ride')}
+  //             onPress={() => this.setConfirmModalVisibility(true)}
+  //           />
+  //       }
+  //     </ActionModal>
+  //   );
+  // }
 
   renderExperienceButton = () => {
     const { navigation } = this.props;
@@ -1190,7 +1347,7 @@ class TripDetail extends Component {
           isAdmin={trip.isAdmin}
         />
         {this.renderCommentBox()}
-        {this.renderActionModal()}
+        {this.renderActionSheet()}
         {this.renderShareModal()}
         {this.renderRideSuggestions()}
         {this.renderConfirmModal()}
