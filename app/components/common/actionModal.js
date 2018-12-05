@@ -22,9 +22,13 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'flex-end',
     padding: 12,
+  },
+  backDrop: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    ...StyleSheet.absoluteFillObject,
   },
   actionsWrapper: {
     maxHeight: '70%',
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
   },
-  calcleLabel: {
+  cancelLabel: {
     fontFamily: 'SFUIText-Regular',
     fontSize: 16,
     textAlign: 'center',
@@ -56,9 +60,35 @@ const styles = StyleSheet.create({
 class ActionModal extends Component {
   state = {
     slideAnimationValue: new Animated.Value(0),
+    fadeAnimationValue: new Animated.Value(0),
   }
 
   componentDidMount() {
+    console.log('hello=============================');
+    Animated.timing(
+      this.state.fadeAnimationValue,
+      {
+        toValue: 1,
+        duration: 400,
+      },
+    ).start();
+    Animated.timing(
+      this.state.slideAnimationValue,
+      {
+        toValue: 1,
+        duration: 800,
+      },
+    ).start();
+  }
+  componentWillUpdate() {
+    console.log('udpated=============================');
+    Animated.timing(
+      this.state.fadeAnimationValue,
+      {
+        toValue: 1,
+        duration: 400,
+      },
+    ).start();
     Animated.timing(
       this.state.slideAnimationValue,
       {
@@ -68,12 +98,37 @@ class ActionModal extends Component {
     ).start();
   }
 
+
+  componentWillUnmount() {
+    console.log('unmoounted +===================');
+  }
+
   // slideDown = () => {
   //   Animated.timing(this.state.slideAnimationValue, {
   //     toValue: 0,
   //     duration: 800,
   //   }).start();
   // }
+  close = () => {
+    const { onRequestClose } = this.props;
+    Animated.timing(
+      this.state.fadeAnimationValue,
+      {
+        toValue: 0,
+        duration: 1200,
+      },
+    ).start();
+    Animated.timing(
+      this.state.slideAnimationValue,
+      {
+        toValue: 0,
+        duration: 800,
+      },
+    ).start();
+    setTimeout(() => {
+      onRequestClose();
+    }, 1200);
+  }
 
   renderActions = () => {
     const childrenCount = Children.count(this.props.children);
@@ -110,21 +165,22 @@ class ActionModal extends Component {
       extrapolate: 'clamp',
     });
 
+    const opacity = this.state.slideAnimationValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    });
     return (
       <Modal
         transparent={transparent}
         visible={visible}
         onRequestClose={this.close}
-        animationType="slide"
+        animationType="none"
       >
-        <View style={[styles.modalContent, style]} >
-          <View style={{ flex: 1, marginTop: slideStyle }}>
+        <Animated.View style={[styles.backDrop, { opacity }]} />
+        <Animated.View style={[styles.modalContent, style, { marginTop: slideStyle }]} >
+          <Animated.View style={{ flex: 1 }}>
             <View
-              animation="slideInUp"
-              iterationCount={1}
-              direction="alternate"
-              duration={800}
-              easing="ease-in-out-cubic"
               style={styles.actionsWrapper}
             >
               {
@@ -133,22 +189,17 @@ class ActionModal extends Component {
               {this.renderActions()}
             </View>
             <View
-              animation="slideInUp"
-              iterationCount={1}
-              direction="alternate"
-              duration={620}
-              easing="ease-in-out-cubic"
               style={styles.closeWrapper}
             >
               <TouchableHighlight
                 style={styles.close}
-                onPress={onRequestClose}
+                onPress={this.close}
               >
-                <Text style={styles.calcleLabel}>{trans('global.cancel')}</Text>
+                <Text style={styles.cancelLabel}>{trans('global.cancel')}</Text>
               </TouchableHighlight>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
     );
   }
