@@ -441,6 +441,7 @@ mutation createTrip(
       type
     }
     isBlocked
+    url
   }
 }
 `;

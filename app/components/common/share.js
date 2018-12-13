@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, ScrollView, Alert, Clipboard, Platform, PermissionsAndroid } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withMyGroups, withAddUnregisteredParticipants } from '@services/apollo/group';
 import { withBestFriends, withUnlimitedFriends } from '@services/apollo/friend';
@@ -12,7 +13,7 @@ import FriendList from '@components/friend/selectable';
 import { trans } from '@lang/i18n';
 import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
-import { connect } from 'react-redux';
+import WithFilteredGroups from '@components/group/withFilteredGroups';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE, GROUP_SHARED } from '@config/constant';
 import SendSMS from 'react-native-sms';
 import { withShare, withShareLocation } from '@services/apollo/share';
@@ -23,6 +24,7 @@ import { Heading, AppText } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import FBShare from '@services/facebook/share';
 
+const FilteredGroups = withMyGroups(WithFilteredGroups);
 
 const styles = StyleSheet.create({
   list: {
@@ -121,7 +123,6 @@ class Share extends Component {
       selectedFriends: [],
       selectedContacts: [],
       selectedGroups: [],
-      groupListSearch: [],
       selectedTripParticipants: [],
       friendsList: [],
       friendsListSearch: [],
@@ -223,7 +224,6 @@ class Share extends Component {
   onChangeSearchQuery = (searchQuery) => {
     this.setState({ searchQuery });
     const { friendsList, contactsList } = this.state;
-    const { groups } = this.props;
     const friendsListSearch = friendsList.filter(
       ({ firstName, lastName }) => (((firstName + lastName)
         .toLowerCase()))
@@ -234,11 +234,7 @@ class Share extends Component {
       contact => (((contact.firstName).toLowerCase())).includes(searchQuery.toLowerCase()),
     );
 
-    const groupListSearch = groups.rows.filter(
-      group => (((group.name).toLowerCase())).includes(searchQuery.toLowerCase()),
-    );
-
-    this.setState({ friendsListSearch, contactsListSearch, groupListSearch });
+    this.setState({ friendsListSearch, contactsListSearch });
   }
 
   setOption = (type, value) => {
@@ -370,7 +366,15 @@ class Share extends Component {
     const shareInput = { social, friends, groups };
     const { id, isAdmin } = detail;
 
-    if (type === FEEDABLE_LOCATION && clipboard.length < 1 && social.length < 1 && friends < 1 && groups < 1 && contacts < 1 && tripParticipants < 1) {
+    if (
+      type === FEEDABLE_LOCATION &&
+      clipboard.length < 1 &&
+      social.length < 1 &&
+      friends < 1 &&
+      groups < 1 &&
+      contacts < 1 &&
+      tripParticipants < 1
+    ) {
       Alert.alert(trans('share.select_at_least_one_option'));
       this.setState({ loading: false });
       return;
@@ -605,7 +609,6 @@ class Share extends Component {
   renderList = () => {
     const { bestFriends, friends, defaultValue: { offeredUser, groupId } } = this.props;
     const {
-      groupListSearch,
       friendsListSearch,
       contactsListSearch,
       participantsList,
@@ -621,35 +624,37 @@ class Share extends Component {
       return (
         <View style={styles.listWrapper}>
           {
-            groupListSearch.length > 0 && <View>
-              <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</AppText>
-              {
-                groupListSearch.map(item => (
-                  <ShareItem
-                    key={item.id}
-                    imageSource={{ uri: item.photo || item.mapPhoto }}
-                    hasPhoto
-                    selected={this.hasOption('selectedGroups', item.id)}
-                    label={item.name}
-                    onPress={() => this.setOption('selectedGroups', item.id)}
-                    color="blue"
-                    readOnly={groupId === item.id}
-                  />
-                ))
-              }
-            </View>
+            <FilteredGroups
+              queryString={searchQuery}
+              applyQueryString
+              filterByName
+              render={groups => (
+                <View>
+                  <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>
+                    {'Groups'.toUpperCase()}
+                  </AppText>
+                  {groups.map(group => (
+                    <ShareItem
+                      key={group.id}
+                      imageSource={{ uri: group.photo || group.mapPhoto }}
+                      hasPhoto
+                      selected={this.hasOption('selectedGroups', group.id)}
+                      label={group.name}
+                      onPress={() => this.setOption('selectedGroups', group.id)}
+                      color="blue"
+                      readOnly={groupId === group.id}
+                    />
+                  ))}
+                </View>
+              )}
+            />
           }
           {
             (friendsListSearch.length > 0 || contactsListSearch.length > 0) && <View>
-              <AppText
-                size={12}
-                color={Colors.text.blue}
-                style={[styles.shareCategoryTitle, { marginTop: 16 }]}
-              >
-                {'Your friends'.toUpperCase()}
+              <AppText size={12} color={Colors.text.blue} style={[styles.shareCategoryTitle, { marginTop: 24 }]}>
+                {'Your Friends'.toUpperCase()}
               </AppText>
               <FriendList
-                title="Your Friends"
                 loading={friends.loading}
                 rows={friendsListSearch}
                 setOption={id => this.setOption('selectedFriends', id)}
@@ -893,6 +898,7 @@ Share.propTypes = {
   contacts: PropTypes.shape({
     name: PropTypes.string,
     phoneNumber: PropTypes.string,
+    loading: PropTypes.bool,
   }).isRequired,
   labelColor: PropTypes.string,
   user: PropTypes.shape({

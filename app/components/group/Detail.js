@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import GroupToolbar from '@components/group/groupToolbar';
 import actionSheetMenu from '@components/common/actionSheetMenu';
 import { submitComment } from '@services/apollo/comment';
-import { withGroupFeed, withGroupTrips } from '@services/apollo/group';
+import { withGroupFeed, withGroupTrips, withGroupTripCalendar } from '@services/apollo/group';
 import { withMute, withUnmute } from '@services/apollo/mute';
 import { AppNotification, Wrapper, ActionModal, ModalAction } from '@components/common';
 import Colors from '@theme/colors';
@@ -36,7 +36,7 @@ import { AppText } from '@components/utils/texts';
 import LocationIcon from '@assets/icons/ic_location.png';
 
 const GroupFeedList = withGroupFeed(GroupFeed);
-const Calendar = withGroupTrips(GroupCalendar);
+const Calendar = withGroupTripCalendar(GroupCalendar);
 
 const styles = StyleSheet.create({
   groupCalendarContent: {
@@ -292,7 +292,7 @@ class Detail extends PureComponent {
         onRequestClose={() => this.setState({ showCalendar: false })}
         visible={showCalendar}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)' }}>
           <View style={styles.groupCalendarContent}>
             <Calendar
               firstDay={1}
@@ -486,43 +486,38 @@ class Detail extends PureComponent {
         {this.renderActionSheet()}
         {
           this.state.showCalendar &&
-            <Modal
-              animationType="slide"
-              transparent
-              onRequestClose={() => this.setState({ showCalendar: false })}
-              visible={this.state.showCalendar}
-            >
-              <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
-                <View style={styles.groupCalendarContent}>
-                  <Calendar
-                    firstDay={1}
-                    id={group.id}
-                    handleDayPress={this.redirectToSelectedTripDate}
-                    theme={{
-                      'stylesheet.day.period': {
-                        base: {
-                          width: 34,
-                          height: 34,
-                          alignItems: 'center',
-                        },
-                        todayText: {
-                          fontWeight: '500',
-                          color: Colors.text.blue,
-                        },
+          <Modal
+            animationType="slide"
+            transparent
+            onRequestClose={() => this.setState({ showCalendar: false })}
+            visible={this.state.showCalendar}
+          >
+            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+              <View style={styles.groupCalendarContent}>
+                <Calendar
+                  firstDay={1}
+                  id={group.id}
+                  handleDayPress={this.redirectToSelectedTripDate}
+                  theme={{
+                    'stylesheet.day.period': {
+                      base: {
+                        width: 34,
+                        height: 34,
+                        alignItems: 'center',
                       },
-                    }}
-                  />
-                  <View style={styles.closeWrapper}>
-                    <TouchableOpacity
-                      style={styles.closeModal}
-                      onPress={() => this.setCalendarVisibilty(false)}
-                    >
-                      <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.cancel')}</AppText>
-                    </TouchableOpacity>
-                  </View>
+                    } }}
+                />
+                <View style={styles.closeWrapper}>
+                  <TouchableOpacity
+                    style={styles.closeModal}
+                    onPress={() => this.setCalendarVisibilty(false)}
+                  >
+                    <AppText centered fontVariation="bold" color={Colors.text.blue}>{trans('global.cancel')}</AppText>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </Modal>
+            </View>
+          </Modal>
         }
       </Wrapper>
     );

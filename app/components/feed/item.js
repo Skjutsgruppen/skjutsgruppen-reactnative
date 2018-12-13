@@ -71,7 +71,7 @@ class FeedItem extends PureComponent {
 
     return getDate(trip.date)
       .add(trip.duration, 'second')
-      .add(1, 'day')
+      // .add(1, 'day')
       .isBefore();
   }
 

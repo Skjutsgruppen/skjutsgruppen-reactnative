@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, Image, View, Animated, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { FEED_TYPE_OFFER, FEED_TYPE_WANTED } from '@config/constant';
@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
   profilePic: {
     width: 40,
     height: 40,
-
     borderRadius: 20,
     position: 'absolute',
     top: 11,
@@ -61,12 +60,28 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   currentMarker: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(162, 123, 168, 0.25)',
+    height: 62,
+    width: 62,
+    borderRadius: 31,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  glow: {
+    position: 'absolute',
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'rgba(162, 123, 168, 1)',
+      },
+      android: {
+        backgroundColor: 'rgba(162, 123, 168, 0.25)',
+        borderColor: 'rgba(162, 123, 168, 0.75)',
+        borderWidth: StyleSheet.hairlineWidth,
+      },
+    }),
   },
   currentMarkerInner: {
     height: 20,
@@ -79,18 +94,58 @@ const styles = StyleSheet.create({
 });
 
 class Marker extends PureComponent {
-  state = { bgRender: 1, profileRender: 2 }
+  state = { bgRender: 1, profileRender: 2, animValue: new Animated.Value(0) }
+
+  componentDidMount() {
+    const { animValue } = this.state;
+    Animated.loop(
+      Animated.timing(animValue, {
+        toValue: 1,
+        duration: 2500,
+        useNativeDriver: true,
+      }),
+      {
+        useNativeDriver: true,
+      },
+    ).start();
+  }
 
   render() {
     const { onPress, coordinate, image, children, count, current, tripType } = this.props;
+    const { animValue } = this.state;
+
+    const opacity = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.1, 1],
+    });
+
+    const animatedStyle = Platform.OS === 'ios' ?
+      {
+        transform: [
+          { scale },
+        ],
+        opacity,
+      }
+      : {};
     if (current) {
       return (
         <MapView.Marker
           onPress={onPress}
           coordinate={coordinate}
-          centerOffset={{ x: 0, y: -34 }}
+          anchor={{ x: 0.5, y: 0.5 }}
         >
           <View style={styles.currentMarker}>
+            <Animated.View
+              style={[
+                styles.glow,
+                animatedStyle,
+              ]}
+            />
             <View style={styles.currentMarkerInner} />
           </View>
         </MapView.Marker>

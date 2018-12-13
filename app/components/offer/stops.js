@@ -166,7 +166,7 @@ class Stops extends Component {
 
   onAddStop = () => {
     const lastItem = this.state.items[this.state.items.length - 1];
-    const items = this.state.items.concat({ id: lastItem.id + 1 });
+    const items = this.state.items.concat({ id: lastItem ? lastItem.id + 1 : 1 });
     this.setState({ items }, () => { this.props.onStopChange(this.state.items); });
   }
 

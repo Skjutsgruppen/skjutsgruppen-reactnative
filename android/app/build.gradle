@@ -116,8 +116,8 @@ android {
         applicationId "nu.skjutsgruppen.skjutsgruppen"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 34
-        versionName "1.2.0"
+        versionCode 35
+        versionName "1.2.1"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
         ndk {

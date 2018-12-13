@@ -29,11 +29,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
+const GroupCalendar = ({ groupTripCalendar, handleDayPress, loading }) => {
+  const checkAndRedirect = (date) => {
+    // groupTripCalendar.forEach((trip) => {
+    if (getDate(date).format('YYYY-MM-DD') === date) {
+      handleDayPress(date);
+    }
+    // });
+  };
+
   let tripDate = Moment().format('YYYY-MM-DD');
   let selectedDate = '';
   let currentDateAdded = false;
-  const tripDates = groupTrips.map(groupTrip => `${getDate(groupTrip.date).format('YYYY-MM-DD')}${groupTrip.type.charAt(0)}`);
+  const tripDates = groupTripCalendar.map(groupTrip => `${getDate(groupTrip.date).format('YYYY-MM-DD')}${groupTrip.type.charAt(0)}`);
   const uniqueTripDates = new Set(tripDates);
   const offers = [...uniqueTripDates].filter(date => date.charAt(date.length - 1) === 'o').map(offerDate => offerDate.substring(0, offerDate.length - 1));
   const wanted = [...uniqueTripDates].filter(date => date.charAt(date.length - 1) === 'w').map(wantedDate => wantedDate.substring(0, wantedDate.length - 1));
@@ -53,7 +61,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
 
   const markedDates = [...uniqueWithoutTripType];
 
-  groupTrips.forEach((trip) => {
+  groupTripCalendar.forEach((trip) => {
     selectedDate = getDate(trip.date);
 
     if (selectedDate.isAfter() && !currentDateAdded) {
@@ -66,20 +74,20 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
   return (
     <View>
       <Calendar
+        style={{
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderColor: Colors.border.lightGray,
+          borderBottomColor: 'transparent',
+          borderLeftColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomWidth: 0,
+        }}
         firstDay={1}
         displayLoadingIndicator={loading}
         current={tripDate}
         dayComponent={({ date, state }) => {
           const renderDays = () => {
-            if (state === 'disabled') {
-              return (
-                <View style={styles.dayWrapper}>
-                  <AppText style={[styles.dayText, { color: Colors.text.gray, opacity: 0.5 }]}>
-                    {date.day}
-                  </AppText>
-                </View>
-              );
-            }
             if (markedDates.includes(date.dateString)) {
               if (dateObject[date.dateString] > 1) {
                 if (dateObject[date.dateString]) {
@@ -129,9 +137,22 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
             }
           };
           return (
-            <TouchableOpacity onPress={() => handleDayPress(date.dateString)} disabled={!markedDates.includes(date.dateString)}>
+            <TouchableOpacity onPress={() => checkAndRedirect(date.dateString)} disabled={getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD'))}>
               {renderDays()}
             </TouchableOpacity>);
+        }}
+        theme={{
+          'stylesheet.calendar.header': {
+            header: {
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 10,
+            },
+            dayHeader: {
+              color: Colors.text.black,
+              marginBottom: 20,
+            },
+          },
         }}
       />
     </View>
@@ -140,7 +161,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
 
 GroupCalendar.propTypes = {
   loading: PropTypes.bool,
-  groupTrips: PropTypes.arrayOf(
+  groupTripCalendar: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       date: PropTypes.string.isRequired,
