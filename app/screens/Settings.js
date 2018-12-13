@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import { Wrapper } from '@components/common';
+import actionSheetMenu from '@components/common/actionSheetMenu';
 import { Colors } from '@theme';
 import { trans } from '@lang/i18n';
 import ToolBar from '@components/utils/toolbar';
@@ -73,12 +74,14 @@ class Settings extends Component {
     const { updateProfile, setUser, user } = this.props;
 
     if (index === 0 && !this.state.notification) {
+      this.NotificationActionSheet.hide();
       this.setState({ notification: true }, () => {
         updateProfile({ notification: true }).then(() => {
           setUser({ user: { ...user, ...{ notification: true } } });
         });
       });
     } else if (index === 1 && this.state.notification) {
+      this.NotificationActionSheet.hide();
       this.setState({ notification: false }, () => {
         updateProfile({ notification: false }).then(() => {
           setUser({ user: { ...user, ...{ notification: false } } });
@@ -91,12 +94,14 @@ class Settings extends Component {
     const { updateProfile, setUser, user } = this.props;
 
     if (index === 0 && !this.state.emailNotification) {
+      this.EmailNotificationActionSheet.hide();
       this.setState({ emailNotification: true }, () => {
         updateProfile({ emailNotification: true }).then(() => {
           setUser({ user: { ...user, ...{ emailNotification: true } } });
         });
       });
     } else if (index === 1 && this.state.emailNotification) {
+      this.EmailNotificationActionSheet.hide();
       this.setState({ emailNotification: false }, () => {
         updateProfile({ emailNotification: false }).then(() => {
           setUser({ user: { ...user, ...{ emailNotification: false } } });
@@ -189,6 +194,42 @@ class Settings extends Component {
   }
 
   render() {
+    const optionNotification = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setNotificationStatus(0)}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={actionSheetMenu.actionLabel}>{trans('profile.on')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setNotificationStatus(1)}
+        style={[actionSheetMenu.actionItem,
+          { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={actionSheetMenu.actionLabel}>{trans('profile.off')}</Text>
+      </TouchableOpacity>,
+      trans('global.cancel'),
+    ];
+    const optionEmail = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setEmailNotificationStatus(0)}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={actionSheetMenu.actionLabel}>{trans('profile.on')}</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setEmailNotificationStatus(1)}
+        style={[actionSheetMenu.actionItem,
+          { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={actionSheetMenu.actionLabel}>{trans('profile.off')}</Text>
+      </TouchableOpacity>,
+      trans('global.cancel'),
+    ];
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
@@ -202,16 +243,18 @@ class Settings extends Component {
         <ActionSheet
           ref={(sheet) => { this.NotificationActionSheet = sheet; }}
           title={trans('profile.notification')}
-          options={['On', 'Off', 'Cancel']}
-          cancelButtonIndex={2}
-          onPress={(index) => { this.setNotificationStatus(index); }}
+          options={optionNotification}
+          cancelButtonIndex={optionNotification.length - 1}
+          onPress={() => { }}
+          styles={actionSheetMenu}
         />
         <ActionSheet
           ref={(sheet) => { this.EmailNotificationActionSheet = sheet; }}
           title={trans('profile.email_notification')}
-          options={['On', 'Off', 'Cancel']}
-          cancelButtonIndex={2}
-          onPress={(index) => { this.setEmailNotificationStatus(index); }}
+          options={optionEmail}
+          cancelButtonIndex={optionEmail.length - 1}
+          onPress={() => { }}
+          styles={actionSheetMenu}
         />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           {this.renderNotification()}

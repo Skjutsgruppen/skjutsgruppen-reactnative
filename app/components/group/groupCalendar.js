@@ -1,26 +1,57 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import PropTypes from 'prop-types';
-import { FEED_TYPE_WANTED } from '@config/constant';
 import Colors from '@theme/colors';
 import { getDate } from '@config';
+import CalendarSplit from '@assets/icons/calender_split_bg.png';
 import Moment from 'moment';
+import { AppText } from '@components/utils/texts';
+
+const styles = StyleSheet.create({
+  dayWrapper: {
+    height: 32,
+    width: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: Colors.text.white,
+  },
+  imageWrapper: {
+    width: 32,
+    height: 32,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+});
 
 const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
-  const checkAndRedirect = (date) => {
-    groupTrips.forEach((trip) => {
-      if (getDate(trip.date).format('YYYY-MM-DD') === date) {
-        handleDayPress(date);
-      }
-    });
-  };
-
-  const markedDates = {};
   let tripDate = Moment().format('YYYY-MM-DD');
   let selectedDate = '';
-  let tripColor = '';
   let currentDateAdded = false;
+  const tripDates = groupTrips.map(groupTrip => `${getDate(groupTrip.date).format('YYYY-MM-DD')}${groupTrip.type.charAt(0)}`);
+  const uniqueTripDates = new Set(tripDates);
+  const offers = [...uniqueTripDates].filter(date => date.charAt(date.length - 1) === 'o').map(offerDate => offerDate.substring(0, offerDate.length - 1));
+  const wanted = [...uniqueTripDates].filter(date => date.charAt(date.length - 1) === 'w').map(wantedDate => wantedDate.substring(0, wantedDate.length - 1));
+  const withoutTripType = [...uniqueTripDates].map(ttd => ttd.substring(0, ttd.length - 1));
+  const uniqueWithoutTripType = new Set(withoutTripType);
+  const checkCount = (item) => {
+    let count = 0;
+    withoutTripType.forEach((tDate) => {
+      if (item === tDate) { count++; }
+    });
+    return count;
+  };
+  const dateObject = {};
+  uniqueWithoutTripType.forEach((ttttd) => {
+    dateObject[ttttd] = checkCount(ttttd);
+  });
+
+  const markedDates = [...uniqueWithoutTripType];
 
   groupTrips.forEach((trip) => {
     selectedDate = getDate(trip.date);
@@ -29,9 +60,6 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
       currentDateAdded = true;
       tripDate = selectedDate.format('YYYY-MM-DD');
     }
-
-    tripColor = (trip.type === FEED_TYPE_WANTED) ? Colors.background.blue : Colors.background.pink;
-    markedDates[selectedDate.format('YYYY-MM-DD')] = { startingDay: true, textColor: 'white', color: selectedDate.isBefore() ? Colors.background.gray : tripColor, endingDay: true };
   });
 
 
@@ -40,22 +68,61 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
       <Calendar
         firstDay={1}
         displayLoadingIndicator={loading}
-        markingType={'period'}
         current={tripDate}
-        markedDates={Object.keys(markedDates).length > 0 ? markedDates : null}
-        onDayPress={day => checkAndRedirect(day.dateString)}
-        theme={{
-          'stylesheet.day.period': {
-            base: {
-              width: 34,
-              height: 34,
-              alignItems: 'center',
-            },
-            todayText: {
-              fontWeight: '500',
-              color: Colors.text.blue,
-            },
-          },
+        dayComponent={({ date, state }) => {
+          const renderDays = () => {
+            if (markedDates.includes(date.dateString)) {
+              if (dateObject[date.dateString] > 1) {
+                if (dateObject[date.dateString]) {
+                  return (
+                    getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ?
+                      <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: Colors.background.gray }]}>
+                        <AppText style={styles.dayText}>
+                          {date.day}
+                        </AppText>
+                      </View> :
+                      <View style={[styles.dayWrapper, { borderRadius: 16 }]}>
+                        <Image
+                          style={styles.imageWrapper}
+                          source={CalendarSplit}
+                        />
+                        <AppText style={styles.dayText}>
+                          {date.day}
+                        </AppText>
+                      </View>
+                  );
+                }
+              }
+
+              if (offers.includes(date.dateString)) {
+                return (
+                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.blue }]}>
+                    <AppText style={styles.dayText}>
+                      {date.day}
+                    </AppText>
+                  </View>);
+              }
+
+              if (wanted.includes(date.dateString)) {
+                return (
+                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.pink }]}>
+                    <AppText style={styles.dayText}>
+                      {date.day}
+                    </AppText>
+                  </View>);
+              }
+            } else {
+              return (
+                <View style={styles.dayWrapper}>
+                  <AppText style={[styles.dayText, { color: state === 'disabled' ? Colors.text.gray : Colors.text.black, opacity: state === 'disabled' ? 0.5 : 1 }]}>{date.day}</AppText>
+                </View>
+              );
+            }
+          };
+          return (
+            <TouchableOpacity onPress={() => handleDayPress(date.dateString)} disabled={!markedDates.includes(date.dateString)}>
+              {renderDays()}
+            </TouchableOpacity>);
         }}
       />
     </View>

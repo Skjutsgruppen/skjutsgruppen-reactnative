@@ -375,14 +375,16 @@ class AreaMap extends PureComponent {
     const { __typename } = group;
     const { pressShareLocation } = navigation.state.params;
 
-    if (loading || locationSharedToSpecificResource.loading) return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
+    if (loading || locationSharedToSpecificResource.loading) {
+      return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
+    }
 
     return (
       <View style={styles.container}>
         <Navigation
           arrowBackIcon
           onPressBack={this.handleBack}
-          onPressFilter={() => this.setState({ filterOpen: true })}
+          onPressFilter={this.onFilterChange}
         />
         <View style={[styles.myLocationIconWrapper, { bottom: this.state.myLocationIconBottom }]}>
           <TouchableHighlight

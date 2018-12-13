@@ -11,7 +11,6 @@ import { withNavigation } from 'react-navigation';
 import moment from 'moment';
 import { withGroup, withGroupTrips, withGroupParticipantIds } from '@services/apollo/group';
 import { withLocationSharedToSpecificResource, withStopSpecific } from '@services/apollo/share';
-import Filter from '@components/feed/filter';
 import TripMarker from '@components/map/roundMarker';
 import ShareLocation from '@components/common/shareLocation';
 import { compose } from 'react-apollo';
@@ -23,8 +22,8 @@ import ConfirmModal from '@components/common/confirmModal';
 import TouchableHighlight from '@components/touchableHighlight';
 import Colors from '@theme/colors';
 import MyLocationIcon from '@assets/icons/ic_my_location.png';
-import { trans } from '../lang/i18n';
 import Loading from '@components/common/loading';
+import { trans } from '../lang/i18n';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -224,7 +223,7 @@ class RouteMap extends PureComponent {
 
   onFilterChange = (type) => {
     if (type !== this.state.filterType) {
-      this.setState({ filterType: type, filterOpen: false, loading: true }, this.fetchTripsByType);
+      this.setState({ filterType: type, filterOpen: false }, this.fetchTripsByType);
     }
   }
 
@@ -306,8 +305,7 @@ class RouteMap extends PureComponent {
     try {
       refetch({ filter: filterType, active: true }).then(({ data }) => {
         this.setState({ trips: data.groupTrips });
-      })
-        .catch(err => this.setState({ error: err, loading: false }));
+      }).catch((err) => { this.setState({ error: err, loading: false }); });
     } catch (err) {
       this.setState({ error: err, loading: false });
     }
@@ -521,14 +519,16 @@ class RouteMap extends PureComponent {
     const { __typename } = info;
     const { pressShareLocation } = navigation.state.params;
 
-    if (loading || locationSharedToSpecificResource.loading) return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
+    if (loading || locationSharedToSpecificResource.loading) {
+      return <Loading style={{ ...StyleSheet.absoluteFillObject }} />;
+    }
 
     return (
       <View style={styles.container}>
         <Navigation
           arrowBackIcon
           onPressBack={this.handleBack}
-          onPressFilter={() => this.setState({ filterOpen: true })}
+          onPressFilter={this.onFilterChange}
           showMenu={__typename !== FEEDABLE_TRIP}
         />
         <View style={[styles.myLocationIconWrapper, { bottom: this.state.myLocationIconBottom }]}>
@@ -568,16 +568,6 @@ class RouteMap extends PureComponent {
             />
           }
         </MapView>
-        {__typename !== FEEDABLE_TRIP
-          &&
-          <Filter
-            map
-            selected={this.state.filterType}
-            onPress={this.onFilterChange}
-            showModal={this.state.filterOpen}
-            onCloseModal={() => this.setState({ filterOpen: false })}
-          />
-        }
         {this.isMember() &&
           <ShareLocationWithData
             locationSharedToSpecificResource={locationSharedToSpecificResource}
