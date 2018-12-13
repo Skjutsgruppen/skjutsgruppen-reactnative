@@ -11,9 +11,9 @@ class Scheduler {
   getTimeForLocationSharing = date => getDate(date).subtract(SHARE_LOCATION_MINUTE, 'minute').valueOf();
 
   getTimeForExperienceSharing = (duration, date) => {
-    if (duration > 0) {
-      return getDate(date).add((duration / 2), 'second').valueOf();
-    }
+    // if (duration > 0) {
+    //   return getDate(date).add((duration / 2), 'second').valueOf();
+    // }
 
     return getDate(date).add(SHARE_EXPERIENCE_DEFAULT_MINUTE, 'minute').valueOf();
   }

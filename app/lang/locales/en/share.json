@@ -3,7 +3,7 @@
   "share_trip": "I want to share trip {{tripStart}} - {{tripEnd}} ({{url}}) with you",
   "share_experience": "I want to share an experience with you between {{tripStart}} - {{tripEnd}} ({{url}}).",
   "failed_to_share": "Sorry! The {{type}} could not be shared.",
-  "share_location": "I'm ridesharing from {{tripStart}} to {{tripEnd}} ({{url}}).",
+  "share_location": "I'm ridesharing from {{tripStart}} to {{tripEnd}} ( {{url}} )",
   "select_at_least_one_participant": "You must select at least one participants.",
   "select_at_least_one_option": "You must select at least one option.",
   "allow_sms_permission": "Please allow SMS permission to send SMS.",

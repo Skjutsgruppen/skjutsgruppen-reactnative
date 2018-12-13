@@ -297,7 +297,7 @@ class Share extends Component {
     this.setState({ connectTwitterModal: false });
   }
 
-  getSmsText = () => {
+  getSmsText = async () => {
     const { detail, type } = this.props;
 
     const { name, TripStart, TripEnd, id, Trip, direction } = detail;
@@ -322,12 +322,13 @@ class Share extends Component {
       }
 
       if (type === FEEDABLE_LOCATION) {
+        const url = await Clipboard.getString();
         smsBody = trans(
           'share.share_location',
           {
             tripStart: TripStart.name || direction,
             tripEnd: TripEnd.name || direction,
-            url: Clipboard.getString(),
+            url,
           },
         );
       }
@@ -380,7 +381,7 @@ class Share extends Component {
         // if (tripParticipants.length > 0 || friends.length > 0) {
         const obj = { ...location, users: tripParticipants.concat(friends) };
         startTrackingLocation();
-        shareLocation(obj).then(async ({ data }) => {
+        await shareLocation(obj).then(async ({ data }) => {
           const { shareLocation: sharedLocation } = data;
           if (sharedLocation && sharedLocation.Location) {
             Clipboard.setString(data.shareLocation.Location.url);
@@ -416,7 +417,7 @@ class Share extends Component {
       }
 
       if (contacts.length > 0) {
-        const smsBody = this.getSmsText();
+        const smsBody = await this.getSmsText();
 
         if (type === FEEDABLE_GROUP && isAdmin) {
           storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });

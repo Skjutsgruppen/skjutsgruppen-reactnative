@@ -247,7 +247,7 @@ class Offer extends Component {
             stops: group.Stops.length < 0 ? [] :
               group.Stops.map(stop => ({
                 name: stop.name,
-                coordinates: group.TripEnd.coordinates,
+                coordinates: stop.coordinates,
                 countryCode: group.TripEnd.countryCode,
               })),
             isReturning: true,
