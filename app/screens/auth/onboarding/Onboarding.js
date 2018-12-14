@@ -117,8 +117,8 @@ class Onboarding extends Component {
         >
           {activeStep !== totalSteps && <Heading size={16} fontVariation="bold" color={Colors.text.pink}>{trans('add.step', { activeStep })}{' '}</Heading>}
           {activeStep !== totalSteps && trans('add.out_of', { value: totalSteps })}
-          {activeStep === totalSteps && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>}
-          {/* {activeStep === totalSteps && <Heading size={16} fontVariation="bold">{trans('onboarding.all_done')}</Heading>} */}
+          {/* {activeStep === totalSteps && <Heading size={16} fontVariation="bold">, {trans('add.well_done')}</Heading>} */}
+          {activeStep === totalSteps && <Heading size={16} fontVariation="bold">{trans('onboarding.all_done')}</Heading>}
         </Heading>
       </View>
     );

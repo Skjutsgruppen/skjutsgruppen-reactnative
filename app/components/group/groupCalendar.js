@@ -71,6 +71,15 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
         current={tripDate}
         dayComponent={({ date, state }) => {
           const renderDays = () => {
+            if (state === 'disabled') {
+              return (
+                <View style={styles.dayWrapper}>
+                  <AppText style={[styles.dayText, { color: Colors.text.gray, opacity: 0.5 }]}>
+                    {date.day}
+                  </AppText>
+                </View>
+              );
+            }
             if (markedDates.includes(date.dateString)) {
               if (dateObject[date.dateString] > 1) {
                 if (dateObject[date.dateString]) {
@@ -96,7 +105,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
 
               if (offers.includes(date.dateString)) {
                 return (
-                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.blue }]}>
+                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.pink }]}>
                     <AppText style={styles.dayText}>
                       {date.day}
                     </AppText>
@@ -105,7 +114,7 @@ const GroupCalendar = ({ groupTrips, handleDayPress, loading }) => {
 
               if (wanted.includes(date.dateString)) {
                 return (
-                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.pink }]}>
+                  <View style={[styles.dayWrapper, { borderRadius: 16, backgroundColor: getDate(date.dateString).isBefore(getDate().format('YYYY-MM-DD')) ? Colors.background.gray : Colors.background.blue }]}>
                     <AppText style={styles.dayText}>
                       {date.day}
                     </AppText>
