@@ -540,7 +540,6 @@ class Feed extends Component {
 
   renderFeed() {
     const { feeds } = this.props;
-    console.log(feeds);
     const { filterType } = this.state;
     let noResultText = trans('feed.no_rides_have_been_created_yet');
 
