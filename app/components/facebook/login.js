@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Alert, StyleSheet, View, Modal } from 'react-native';
+import { Alert, StyleSheet, View, Text, Modal } from 'react-native';
 import PropTypes from 'prop-types';
+import { LoginManager } from 'react-native-fbsdk';
 import { userRegister, withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
 import { withSocialConnect } from '@services/apollo/social';
 import { connect } from 'react-redux';
@@ -9,25 +10,45 @@ import firebase from 'react-native-firebase';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
 import Connect from '@components/facebook/facebookConnect';
-import { Loading } from '@components/common';
+import { Loading, RoundedButton } from '@components/common';
 import { withNavigation, NavigationActions } from 'react-navigation';
 import { withContactSync } from '@services/apollo/contact';
 import { withStoreAppToken } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
+import { trans } from '@lang/i18n';
+import { AppText } from '@components/utils/texts';
 import { Colors } from '@theme';
 
 const styles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  button: {
+    width: '100%',
+    marginTop: 16,
+  },
   backdrop: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.64)',
   },
   modalContent: {
     padding: 20,
+    margin: 20,
     borderRadius: 12,
     backgroundColor: Colors.background.fullWhite,
     elevation: 5,
+    overflow: 'hidden',
+  },
+  or: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: Colors.text.blue,
+    textAlign: 'center',
+    marginVertical: 16,
   },
 });
 
@@ -35,11 +56,18 @@ const styles = StyleSheet.create({
 class FBLogin extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { loading: false, showModal: false };
+    this.state = { loading: false, showModal: false, noFBEmail: false };
   }
 
   onLogin = async (fb) => {
     const { profile, auth: { accessToken } } = fb.fbUser;
+
+    if (!profile.email || profile.email === '') {
+      LoginManager.logOut();
+      this.setState({ noFBEmail: true });
+      return;
+    }
+
     const {
       setLogin,
       navigation,
@@ -271,18 +299,61 @@ class FBLogin extends PureComponent {
       >
         <View style={styles.backdrop}>
           <View style={styles.modalContent}>
-            <Loading />
+            <View style={styles.modalContentBody}>
+              <Loading />
+            </View>
           </View>
         </View>
       </Modal>
     );
   }
 
+  renderNoFBEailModal = () => (
+    <Modal
+      transparent
+      animationType={'fade'}
+      visible={this.state.noFBEmail}
+      onRequestClose={() => { this.setState({ noFBEmail: false }); }}
+    >
+      <View style={styles.backdrop}>
+        <View style={styles.modalContent}>
+          <AppText style={styles.text}>
+            {trans('onboarding.no_fb_email')}
+          </AppText>
+          <AppText style={styles.text}>
+            {trans('onboarding.in_order_to_participate_the_movement')}
+          </AppText>
+          <AppText style={styles.text}>
+            {trans('onboarding.update_fb_email_or_sign_up_the_long_way')}
+          </AppText>
+          <AppText style={styles.or}>Or</AppText>
+          <View>
+            <RoundedButton
+              onPress={this.props.signupLongWay}
+              style={styles.button}
+              bgColor={Colors.background.pink}
+            >
+              Sign up the long way
+            </RoundedButton>
+            <RoundedButton
+              onPress={() => { this.setState({ noFBEmail: false }); }}
+              style={styles.button}
+              bgColor={Colors.background.gray}
+            >
+              {trans('global.cancel')}
+            </RoundedButton>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  )
+
   render() {
     return (
       <View>
         <Connect buttonType={this.props.signup ? 'signup' : 'login'} onLogin={this.onLogin} />
         {this.renderModal()}
+        {this.renderNoFBEailModal()}
       </View>
     );
   }
@@ -298,12 +369,14 @@ FBLogin.propTypes = {
   updateProfile: PropTypes.func.isRequired,
   socialConnect: PropTypes.func.isRequired,
   signup: PropTypes.bool,
+  signupLongWay: PropTypes.func,
   storeAppToken: PropTypes.func.isRequired,
   regeneratePhoneVerification: PropTypes.func.isRequired,
 };
 
 FBLogin.defaultProps = {
   signup: false,
+  signupLongWay: () => {},
 };
 
 const mapDispatchToProps = dispatch => ({

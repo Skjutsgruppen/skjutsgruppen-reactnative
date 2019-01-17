@@ -137,6 +137,7 @@ subscription {
           id
           firstName
           avatar
+          isSupporter
         }
         feedable
         GardenInfo {
@@ -285,6 +286,7 @@ query getFeed($offset: Int, $limit: Int, $filter:FeedFilter) {
         id
         firstName
         avatar
+        isSupporter
       }
       feedable
       GardenInfo {

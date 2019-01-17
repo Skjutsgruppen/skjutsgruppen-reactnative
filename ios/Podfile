@@ -48,12 +48,10 @@ target 'Skjutsgruppen' do
   pod 'Google-Maps-iOS-Utils' # Remove this line if you don't want to support GoogleMaps on iOS
 #  pod 'GooglePlaces'
 #  pod 'GooglePlacePicker
-
-#braintree
-  pod 'BraintreeDropIn'
-
   pod 'ReactNativeFabric', :path => '../node_modules/react-native-fabric'
 
+# Add new pods below this line
+  pod 'RNIap', :path => '../node_modules/react-native-iap'
 end
 
 post_install do |installer|

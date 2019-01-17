@@ -45,5 +45,7 @@
   "open_recommended": "Open (recommended)",
   "closed": "Closed",
   "rides_published_in_closed_group_still": "Please note that rides published in a closed group still will be searchable and joinable for everyone in the movement.",
-  "be_supporter_to_add_photo_in_trip": "You have to be a supporter to add a photo in a trip."
+  "be_supporter_to_add_photo_in_trip": "You have to be a supporter to add a photo in a trip.",
+  "no_route_found": "No route could be found between the start and destination. Please try again with more specific locations.",
+  "try_again": "Something went wrong! Please try again."
 }

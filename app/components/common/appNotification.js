@@ -50,7 +50,9 @@ const AppNotification = ({ image, name, message, style, handleClose, type }) => 
         {imgIcon}
         <View style={{ flex: 1 }}>
           {name !== '' && <AppText color={Colors.text.white} fontVariation="bold">{name}</AppText>}
-          <AppText color={Colors.text.white}>{message}</AppText>
+          {
+            message !== '' && message && <AppText color={Colors.text.white}>{message}</AppText>
+          }
         </View>
       </View>
       <TouchableOpacity onPress={handleClose} style={styles.icon}>
@@ -68,7 +70,7 @@ AppNotification.propTypes = {
   type: PropTypes.string,
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.string,
   style: ViewPropTypes.style,
   handleClose: PropTypes.func,
 };
@@ -77,6 +79,7 @@ AppNotification.defaultProps = {
   type: 'image',
   image: '',
   name: '',
+  message: null,
   style: {},
   handleClose: () => { },
 };

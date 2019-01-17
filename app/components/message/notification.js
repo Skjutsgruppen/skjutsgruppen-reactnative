@@ -94,6 +94,7 @@ class NewNotification extends PureComponent {
 
   renderNotification = () => {
     const { notifications, filters } = this.props;
+    console.log(notifications, this.props, '================');
 
     return (
       <DataList

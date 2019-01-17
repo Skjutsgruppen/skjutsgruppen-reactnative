@@ -248,7 +248,7 @@ class Item extends PureComponent {
               {showPin && this.renderPinPic()}
               {experience && this.renderExperiencePic(experience, noAvatarAction)}
               {showWelcome && this.renderWelcomePic()}
-              {!experience && !showPin && !showWelcome && this.renderPic(photo, userId)}
+              {!experience && !showPin && !showWelcome && this.renderPic(photo)}
             </View>
             <View style={styles.textContent}>
               {
@@ -554,7 +554,7 @@ class Item extends PureComponent {
     return this.item({
       userId: User.id,
       user: `${User.firstName}`,
-      photo: [Notifiable.photo || Notifiable.mapPhoto],
+      photo: [{ imageURI: User.avatar, isSupporter: User.isSupporter }],
       text: `${Notifiable.TripStart.name || UcFirst(Notifiable.direction)} - ${Notifiable.TripEnd.name || UcFirst(Notifiable.direction)}`,
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
@@ -595,7 +595,7 @@ class Item extends PureComponent {
     return this.item({
       userId: User.id,
       user: `${User.firstName}`,
-      photo: [Notifiable.photo || Notifiable.mapPhoto],
+      photo: [{ imageURI: Notifiable.photo || Notifiable.mapPhoto, isSupporter: User.isSupporter }],
       text: `${Notifiable.name}`,
       date: createdAt,
       onPress: () => this.redirect(id, ids, route, params),
@@ -849,6 +849,8 @@ class Item extends PureComponent {
     }
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
+      console.log(notification, '+++++++++++++++++++');
+
       message = this.friendRequestAccepted(notification);
     }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
@@ -70,7 +70,7 @@ const HowItWorks = ({ user }) => (
       </AppText>
     </View>
     <AppText style={{ lineHeight: 26, marginTop: 48 }}>
-      {trans('profile.your_support_is_payed_via')}
+      {Platform.OS === 'ios' ? trans('profile.your_support_is_payed_via_ios') : trans('profile.your_support_is_payed_via_android')}
     </AppText>
   </View>
 );

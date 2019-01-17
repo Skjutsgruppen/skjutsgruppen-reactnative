@@ -101,5 +101,8 @@
   "enter_phone_number_to_view_email": "Please enter your phone number to get hint of the email associated with the number.",
   "no_email_access_contact_support": "No longer have access to the email address. Send us an email at support@skjutsgruppen.nu to change your password.",
   "welcome": "Welcome",
-  "all_done": "All done!"
+  "all_done": "All done!",
+  "no_fb_email": "Seems like there is no email address associated with your Facebook account.",
+  "in_order_to_participate_the_movement": "In order to participate in this movement, you need to verify yourself with your email id.",
+  "update_fb_email_or_sign_up_the_long_way": "So if you still want to sign up with your Facebook account, please update your email address in your facebook account and try again or you could always sign up from The long way option below."
 }

@@ -36,8 +36,8 @@ class Costs extends Component {
   }
 
   render() {
-    const { supporter, showCostTitle, gardenInfo, navigation } = this.props;
-
+    const { supporter, showCostTitle, gardenInfo, navigation, showDescription, showReadMore } = this.props;
+    console.log("garden info", gardenInfo);
     if (!gardenInfo.data) return null;
 
     return (
@@ -59,19 +59,21 @@ class Costs extends Component {
         <CostCard title={trans('profile.project_manager')} coveredPercentage={gardenInfo.data.projectManager} totalCost="10000" />
         <View style={styles.readMore}>
           {
-            !supporter && (
+            showDescription && (
               <AppText style={{ lineHeight: 26 }}>
                 {trans('profile.we_will_fill_up_one_bar_at_the_time')}
               </AppText>
             )
           }
-          <RoundedButton
-            onPress={() => (showCostTitle ? navigation.navigate('SupportReadMore') : navigation.navigate('YourSupport'))}
-            bgColor={Colors.background.pink}
-            style={styles.button}
-          >
-            {trans('profile.read_more')}
-          </RoundedButton>
+          { showReadMore &&
+            <RoundedButton
+              onPress={() => (showCostTitle ? navigation.navigate('SupportReadMore') : navigation.navigate('YourSupport'))}
+              bgColor={Colors.background.pink}
+              style={styles.button}
+            >
+              {trans('profile.read_more')}
+            </RoundedButton>
+          }
         </View>
       </View>
     );
@@ -92,6 +94,8 @@ Costs.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  showDescription: PropTypes.bool,
+  showReadMore: PropTypes.bool,
 };
 
 Costs.defaultProps = {
@@ -104,6 +108,8 @@ Costs.defaultProps = {
       projectManager: 0,
     },
   },
+  showDescription: true,
+  showReadMore: true,
 };
 
 export default compose(withGardenInfo, withNavigation)(Costs);

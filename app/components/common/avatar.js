@@ -42,12 +42,13 @@ const Avatar = ({
     width: size,
     borderRadius: size / 2,
     backgroundColor: Colors.background.lightGray,
+    overflow: 'hidden',
   };
   const avatarStyle = {
     height: '100%',
     width: '100%',
     resizeMode: 'cover',
-    borderRadius: size / 2,
+    // borderRadius: size / 2,
   };
 
   const leafSize = parseInt(size * 0.3, 0);

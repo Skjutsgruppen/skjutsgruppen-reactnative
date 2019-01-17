@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { getDirectionURL } from '@helpers/location';
 import { RoundedButton } from '@components/common';
 import PlaceInput from '@components/search/place/placeInput';
 import Colors from '@theme/colors';
@@ -78,6 +79,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: '5%',
   },
+  routeError: {
+    marginHorizontal: 20,
+    marginTop: 16,
+    backgroundColor: 'rgba(255,0,0,0.05)',
+    borderColor: 'rgba(255,0,0,0.2)',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 12,
+  },
+  errorText: {
+    color: 'rgba(0,0,0,0.45)',
+    fontSize: 14,
+  },
   button: {
     width: 200,
     alignSelf: 'center',
@@ -112,6 +126,7 @@ class Route extends PureComponent {
       currentLocationSelected: '',
       directionFrom: '',
       directionTo: '',
+      error: null,
     };
   }
 
@@ -140,18 +155,30 @@ class Route extends PureComponent {
     });
   }
 
-  onNext = () => {
-    const { onNext } = this.props;
+  onNext = async () => {
+    this.setState({ error: null });
     const state = this.state;
-    let stops = [];
 
-    if (state.stops.length > 0) {
-      stops = state.stops.filter(k => k.coordinates && k.coordinates.length)
-        .map(({ name, countryCode, coordinates }) => ({ name, countryCode, coordinates }));
+    const { start, end, directionFrom, directionTo } = state;
+
+    if ((directionFrom && directionFrom !== '') || (directionTo && directionTo !== '')) {
+      this.proceedWithRouteInfo();
+      return;
     }
 
-    const value = { ...state, ...{ stops } };
-    onNext(value);
+    try {
+      const response = await fetch(getDirectionURL(start, end));
+      const direction = await response.json();
+      if (direction.status === 'OK') {
+        this.proceedWithRouteInfo();
+      } else if (direction.status === 'ZERO_RESULTS') {
+        this.setState({ error: trans('add.no_route_found') });
+      } else {
+        this.setState({ error: trans('add.try_again') });
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   onChangeText = (i, { place }) => {
@@ -190,6 +217,21 @@ class Route extends PureComponent {
   };
 
 
+  proceedWithRouteInfo = () => {
+    const { onNext } = this.props;
+    const state = this.state;
+    let stops = [];
+    if (state.stops.length > 0) {
+      stops = state.stops.filter(k => k.coordinates && k.coordinates.length)
+        .map(({ name, countryCode, coordinates }) => ({ name, countryCode, coordinates }));
+    }
+
+
+    const value = { ...state, ...{ stops } };
+    onNext(value);
+  }
+
+
   handleReturnChange = (isReturning) => {
     this.setState({ isReturning });
   };
@@ -220,6 +262,7 @@ class Route extends PureComponent {
       hideReturnTripOption,
       directionFrom,
       directionTo,
+      error,
     } = this.state;
 
     return (
@@ -276,6 +319,15 @@ class Route extends PureComponent {
             </View>
             <AppText size={15} style={styles.returnInfo}>{trans('add.if_yes_you_will_get_to_make_new_card')}</AppText>
           </View>
+        }
+        {
+          error && error !== '' && (
+            <View style={styles.routeError}>
+              <AppText style={styles.errorText}>
+                {error}
+              </AppText>
+            </View>
+          )
         }
         <RoundedButton
           onPress={this.onNext}

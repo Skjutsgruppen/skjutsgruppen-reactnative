@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform, PermissionsAndroid, AlertIOS } from 'react-native';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
+import Contacts from 'react-native-contacts';
+import OpenSettings from 'react-native-open-settings';
+import { compose } from 'react-apollo';
+
+import { withContactSync } from '@services/apollo/contact';
+import AuthService from '@services/auth';
 import { Colors } from '@theme';
 import { Heading } from '@components/utils/texts';
 import Agreement from '@components/onBoarding/agreement';
@@ -41,6 +47,7 @@ class Onboarding extends Component {
     this.state = {
       activeStep: 1,
       totalSteps: 10,
+      askContactPermission: false,
     };
   }
 
@@ -88,7 +95,68 @@ class Onboarding extends Component {
   //   this.setState({ activeStep: 10 });
   // }
 
-  onSyncContacts = () => {
+  onSyncContacts = async () => {
+    const { syncContacts } = this.props;
+    try {
+      if (Platform === 'android' || Platform.OS === 'android') {
+        const permissions =
+          await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+
+        if (!permissions) {
+          const response =
+            await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+          if (response && response === 'granted') {
+            syncContacts();
+          }
+          this.setState({ contactPermission: !(response === 'denied' || response === 'never_ask_again'), contactPermissionResponse: response });
+        }
+      } else {
+        Contacts.checkPermission(async (err, permission) => {
+          const iosPermission = await AuthService.getContactPermission();
+
+          if (permission === 'authorized' && (iosPermission === null)) {
+            await syncContacts();
+            await AuthService.setContactPermission('synced');
+          }
+
+          if (err || permission !== 'authorized') {
+            Contacts.requestPermission((contactErr, res) => {
+              if (contactErr) {
+                if (Platform === 'ios' || Platform.OS === 'ios') {
+                  // Crashlytics.recordError(contactErr);
+                }
+              }
+              if (res === 'authorized') {
+                syncContacts();
+              }
+              // console.warn(err, res);
+              this.setState({ contactPermission: false, contactPermissionResponse: permission });
+            });
+            if (permission === 'denied') {
+              AlertIOS.alert(
+                'Contacts Permission',
+                trans('onboarding.contact_permission'),
+                [
+                  {
+                    text: 'Open Settings',
+                    onPress: () => OpenSettings.openSettings(),
+                  },
+                  {
+                    text: 'Never ask again',
+                    onPress: async () => { await AuthService.setContactPermission('denied'); },
+                  },
+                ],
+              );
+            }
+          } else {
+            this.setState({ contactPermission: true, contactPermissionResponse: permission });
+          }
+        });
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
     this.setState({ activeStep: 10 });
     // const { navigation } = this.props;
     // navigation.replace('Tab', { askContactPermission: false });
@@ -185,4 +253,4 @@ Onboarding.propTypes = {
   }).isRequired,
 };
 
-export default withNavigation(Onboarding);
+export default compose(withContactSync, withNavigation)(Onboarding);
