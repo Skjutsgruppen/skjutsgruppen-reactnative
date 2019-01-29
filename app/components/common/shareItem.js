@@ -43,6 +43,7 @@ const ShareItem = ({
   (
     <TouchableHighlight onPress={onPress}>
       <View style={[styles.shareItem, style]}>
+        {imageURI &&
         <View style={styles.imageContainer}>
           {
             isStatic ? (
@@ -52,6 +53,7 @@ const ShareItem = ({
             )
           }
         </View>
+        }
         <AppText style={{ flex: 1, marginRight: 16 }}>{label}</AppText>
         <Radio
           active={selected}

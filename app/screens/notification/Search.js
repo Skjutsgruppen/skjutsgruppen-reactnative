@@ -114,7 +114,15 @@ class MessageSearch extends PureComponent {
         <View style={styles.content}>
           {
             this.state.searchQuery.length > 0 &&
-            <SearchList navigation={this.props.navigation} keyword={this.state.searchQuery} />
+            <SearchList
+              navigation={this.props.navigation}
+              queryString={this.state.searchQuery}
+              keyword={this.state.searchQuery}
+              applyQueryString
+              limit={null}
+              offset={0}
+              filterByName
+            />
           }
         </View>
       </Wrapper>

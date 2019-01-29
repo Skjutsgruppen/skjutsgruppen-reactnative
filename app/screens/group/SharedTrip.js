@@ -3,15 +3,15 @@ import { View, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '@theme/colors';
 import { trans } from '@lang/i18n';
-import { withGroupTrips } from '@services/apollo/group';
+import { withGroupTrips, withGroupTripCalendar } from '@services/apollo/group';
 import SharedTripList from '@components/group/sharedTrip/sharedTripList';
 import GroupCalendar from '@components/group/groupCalendar';
 import ToolBar from '@components/utils/toolbar';
 import { Wrapper } from '@components/common';
 import { AppText } from '@components/utils/texts';
 
-const GroupTrip = withGroupTrips(SharedTripList);
-const Calendar = withGroupTrips(GroupCalendar);
+const GroupTrip = withGroupTripCalendar(SharedTripList);
+const Calendar = withGroupTripCalendar(GroupCalendar);
 
 const styles = StyleSheet.create({
   groupCalendarContent: {
@@ -82,7 +82,7 @@ class SharedTrip extends Component {
     return (
       <Wrapper>
         <ToolBar title={date} transparent={false} />
-        <GroupTrip id={id} navigation={navigation} />
+        <GroupTrip currentDate={date} id={id} navigation={navigation} />
         <TouchableOpacity
           style={styles.iconWrapper}
           onPress={() => this.handleShowCalender(true)}
@@ -97,7 +97,7 @@ class SharedTrip extends Component {
             onRequestClose={() => this.setState({ showCalendar: false })}
             visible={this.state.showCalendar}
           >
-            <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)' }}>
               <View style={styles.groupCalendarContent}>
                 <Calendar
                   firstDay={1}
@@ -106,8 +106,8 @@ class SharedTrip extends Component {
                   theme={{
                     'stylesheet.day.period': {
                       base: {
-                        width: 34,
-                        height: 34,
+                        width: 50,
+                        height: 50,
                         alignItems: 'center',
                       },
                       todayText: {

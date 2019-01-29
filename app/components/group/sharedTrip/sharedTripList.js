@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, SectionList } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, SectionList, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import ListItem from '@components/profile/listItem';
 import { getDate } from '@config';
@@ -9,61 +9,139 @@ import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   sectionHeader: {
+    height: 66,
     color: Colors.text.blue,
     paddingHorizontal: 20,
     paddingTop: 30,
-    marginTop: 30,
-    marginBottom: 8,
+    paddingBottom: 16,
     borderTopWidth: 1,
     borderTopColor: Colors.border.lightGray,
   },
 });
 
-const SharedTripList = ({ groupTrips, navigation }) => {
-  const trips = [];
-  let date = '';
-  const tripDates = [];
 
-  groupTrips.forEach((trip) => {
-    date = getDate(trip.date).format('YYYY-MM-DD');
+class SharedTripList extends Component {
+  state = {
+    tripDates: [],
+    tripsByDate: [],
+  }
 
-    if (!tripDates.includes(date)) {
-      tripDates.push(date);
-      trips.push({ title: date, data: [trip] });
-    } else {
-      trips[tripDates.indexOf(date)].data.push(trip);
+  componentWillMount() {
+    const { groupTripCalendar } = this.props;
+    const tripsByDate = [];
+    let date = '';
+    const tripDates = [];
+
+    groupTripCalendar.forEach((trip) => {
+      date = getDate(trip.date).format('YYYY-MM-DD');
+
+      if (!tripDates.includes(date)) {
+        tripDates.push(date);
+        tripsByDate.push({ title: date, data: [trip] });
+      } else {
+        tripsByDate[tripDates.indexOf(date)].data.push(trip);
+      }
+    });
+
+    this.setState({
+      tripDates,
+      tripsByDate,
+    });
+  }
+
+  componentDidUpdate() {
+    const { tripsByDate } = this.state;
+    const { currentDate } = this.props;
+    let currentDateIndex = 0;
+    let timeout = 800;
+    const tripsCount = tripsByDate.length;
+
+    if (tripsCount > 100 && tripsCount < 200) {
+      timeout = 1000;
+    } else if (tripsCount > 200 && tripsCount < 300) {
+      timeout = 1200;
+    } else if (tripsCount > 300 && tripsCount < 400) {
+      timeout = 1400;
+    } else if (tripsCount > 400 && tripsCount < 500) {
+      timeout = 1600;
+    } else if (tripsCount > 500) {
+      timeout = 2000;
     }
-  });
 
-  return (
-    <SectionList
-      sections={trips}
-      renderItem={
-        ({ item }) => (
-          <ListItem
-            trip={item}
-            onPress={() => navigation.navigate('TripDetail', { id: item.id })}
-            onExperiencePress={() => { }}
-            showIndicator
-            indicatorColor={item.type === FEED_TYPE_OFFER ?
-              Colors.background.pink : Colors.background.blue}
-            seats={item.seats}
-          />)
-      }
-      keyExtractor={(item, index) => index}
-      renderSectionHeader={
-        ({ section }) => <AppText style={styles.sectionHeader}>{section.title}</AppText>
-      }
-      ref={(section) => { this.sectionListRef = section; }}
-    />
-  );
-};
+    tripsByDate.reduce((acc, trip, index) => {
+      if (trip.title === currentDate) currentDateIndex = index;
+      return null;
+    });
+
+    const viewPosition = currentDateIndex >= (tripsByDate.length - 3) ? 0.8 : 0;
+
+    if (this.sectionListRef && Platform.OS === 'ios') {
+      setTimeout(() => {
+        this.sectionListRef.scrollToLocation({
+          animated: true,
+          sectionIndex: currentDateIndex,
+          itemIndex: -1,
+          viewPosition,
+        });
+      },
+      timeout,
+      );
+    }
+  }
+
+  getCurrentDateIndex = () => {
+    const { tripDates } = this.state;
+    const { currentDate } = this.props;
+    return tripDates.indexOf(currentDate);
+  }
+
+  render() {
+    const { navigation } = this.props;
+    const { tripsByDate } = this.state;
+    return (
+      <SectionList
+        initialNumToRender={500}
+        sections={tripsByDate}
+        renderItem={
+          ({ item }) => {
+            const date = getDate(item.date).format('YYYY-MM-DD');
+            return (
+              <View style={{ backgroundColor: this.props.currentDate === date ? '#e8f3fd' : Colors.background.mutedBlue }}>
+                <ListItem
+                  trip={item}
+                  onPress={() => navigation.navigate('TripDetail', { id: item.id })}
+                  onExperiencePress={() => { }}
+                  showIndicator
+                  indicatorColor={item.type === FEED_TYPE_OFFER ?
+                    Colors.background.pink : Colors.background.blue}
+                  seats={item.seats}
+                />
+              </View>
+            );
+          }
+        }
+        keyExtractor={(item, index) => index}
+        renderSectionHeader={
+          ({ section }) => (
+            <View style={{ backgroundColor: this.props.currentDate === section.title ? '#e8f3fd' : Colors.background.mutedBlue }}>
+              <AppText style={styles.sectionHeader}>{section.title}</AppText>
+            </View>
+          )
+        }
+        ref={(section) => { this.sectionListRef = section; }}
+        getItemLayout={(data, index) => (
+          { length: 66, offset: 66 * index, index }
+        )}
+      />
+    );
+  }
+}
 
 SharedTripList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  groupTrips: PropTypes.arrayOf(
+  groupTripCalendar: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       User: PropTypes.shape({
@@ -82,10 +160,11 @@ SharedTripList.propTypes = {
       seats: PropTypes.number,
     }).isRequired,
   ).isRequired,
+  currentDate: PropTypes.string.isRequired,
 };
 
 SharedTripList.defaultProps = {
-  groupTrips: {
+  groupTripCalendar: {
     TripStart: {
       name: '',
     },

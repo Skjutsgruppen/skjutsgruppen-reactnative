@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f9fc',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    overflow: 'hidden',
     ...Platform.select({
       ios: {
         shadowOffset: { width: 0, height: -2 },
@@ -787,7 +788,7 @@ class TripDetail extends Component {
         onRequestClose={() => this.setState({ recurringRidesModalVisible: false })}
         visible={this.state.recurringRidesModalVisible}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)' }}>
           <View style={styles.returnModalContent}>
             <Calendar
               firstDay={1}
@@ -796,6 +797,15 @@ class TripDetail extends Component {
               markingType={'period'}
               hideExtraDays
               onDayPress={day => this.redirectToSelectedTripDate(day)}
+              style={{
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderColor: Colors.border.lightGray,
+                borderBottomColor: 'transparent',
+                borderLeftColor: 'transparent',
+                borderRightColor: 'transparent',
+                borderBottomWidth: 0,
+              }}
               theme={{
                 'stylesheet.day.period': {
                   base: {
@@ -836,12 +846,12 @@ class TripDetail extends Component {
 
     return (
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent
         onRequestClose={() => this.setState({ returnRidesModalVisible: false })}
         visible={this.state.returnRidesModalVisible}
       >
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.75)' }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.55)' }}>
           <View style={styles.returnModalContent}>
             <ScrollView>
               <ReturnRides
@@ -1330,7 +1340,7 @@ class TripDetail extends Component {
 
   renderTrip() {
     const { notifierOffset, trip } = this.state;
-    const title = `${trip.TripStart.name}-${trip.TripEnd.name}`;
+    const title = `${trip.TripStart.name ? trip.TripStart.name : trip.direction} - ${trip.TripEnd.name}`;
 
     return (
       <View style={{ flex: 1 }}>

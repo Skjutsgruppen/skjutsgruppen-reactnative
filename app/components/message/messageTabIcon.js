@@ -61,12 +61,15 @@ class MessageTabIcon extends Component {
           Animated.timing(animationFirst, {
             toValue: 1,
             duration: 1500,
+            useNativeDriver: true,
           }),
           Animated.timing(animationSecond, {
             toValue: 1,
             duration: 1500,
+            useNativeDriver: true,
           }),
-        ]),
+        ],
+      ),
     ).start();
   }
   render() {

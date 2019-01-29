@@ -1109,8 +1109,8 @@ export const withGroupMembers = graphql(GROUP_MEMBRES_QUERY, {
 });
 
 export const GROUPS_QUERY = gql`
-query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean){
-  groups(userId:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString) {
+query groups($id:Int, $limit: Int, $offset: Int, $queryString: String, $applyQueryString: Boolean, $filterByName: Boolean){
+  groups(userId:$id, limit: $limit, offset: $offset, queryString: $queryString, applyQueryString: $applyQueryString, filterByName: $filterByName) {
     rows{
       id
       outreach
@@ -1169,9 +1169,10 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
     limit = PER_FETCH_LIMIT,
     applyQueryString = false,
     queryString = null,
+    filterByName = false,
   }) =>
     ({
-      variables: { id, offset, limit, applyQueryString, queryString },
+      variables: { id, offset, limit, applyQueryString, queryString, filterByName },
       fetchPolicy: 'cache-and-network',
     }),
   props: (
@@ -1296,6 +1297,70 @@ export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
     }),
     props: ({ data: { loading, groupTrips = [], refetch, networkStatus, error } }) => ({
       loading, groupTrips, refetch, networkStatus, error,
+    }),
+  },
+);
+
+const GROUP_TRIP_CALENDAR_QUERY = gql`
+  query groupTripCalendar($id: Int){
+    groupTripCalendar(groupId: $id){
+      id 
+      type 
+      description 
+      seats 
+      User {
+        id
+        firstName
+        avatar
+        isSupporter
+        deleted
+        relation {
+          path{
+            id
+            firstName
+            avatar
+            deleted
+            isSupporter
+          }
+          areFriends
+        }
+      }
+      direction
+      TripStart {
+        name
+        coordinates
+      }
+      TripEnd {
+        name
+        coordinates
+      }
+      Stops {
+        name
+        coordinates
+      }
+      date
+      time
+      photo
+      mapPhoto
+      totalFeeds
+      isParticipant
+      seats
+      muted
+      unreadNotificationCount
+      url
+      isBlocked
+    }
+  }
+`;
+
+export const withGroupTripCalendar = graphql(GROUP_TRIP_CALENDAR_QUERY,
+  {
+    options: ({ id }) => ({
+      fetchPolicy: 'cache-and-network',
+      variables: { id },
+    }),
+    props: ({ data: { loading, groupTripCalendar = [], refetch, networkStatus, error } }) => ({
+      loading, groupTripCalendar, refetch, networkStatus, error,
     }),
   },
 );
