@@ -20,8 +20,8 @@ import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import ErrorIcon from '@assets/icons/ic_warning.png';
-import SendSMS from 'react-native-sms';
 import FBShare from '@services/facebook/share';
+import sms from '@components/utils/smsHelper';
 
 const styles = StyleSheet.create({
   progress: {
@@ -237,25 +237,7 @@ class Group extends Component {
             const { contacts } = share;
             const { name, id } = res.data.group;
             const smsBody = trans('share.share_group', { name, url: `${APP_URL}/g/${id}` });
-            if (Platform.OS === 'android') {
-              const permission = await PermissionsAndroid
-                .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-              if (!permission) {
-                const status = await PermissionsAndroid
-                  .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-                if (status === 'granted') {
-                  this.sendSMS(smsBody, contacts);
-                } else {
-                  Alert.alert(trans('share.allow_sms_permission'));
-                }
-              } else {
-                this.sendSMS(smsBody, contacts);
-              }
-            } else {
-              this.sendSMS(smsBody, contacts);
-            }
+            sms(smsBody, contacts);
           }
 
           if (share.social && share.social.length > 0 && share.social.includes('Facebook')) {
@@ -268,14 +250,6 @@ class Group extends Component {
     } catch (err) {
       this.setState({ loading: false, error: getToast(err) });
     }
-  }
-
-  sendSMS = (smsBody, contacts) => {
-    SendSMS.send({
-      body: smsBody,
-      recipients: contacts,
-      successTypes: ['sent', 'queued'],
-    }, () => { });
   }
 
   renderFinish() {

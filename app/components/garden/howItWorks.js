@@ -8,7 +8,7 @@ import { AppText, Title, Heading } from '@components/utils/texts';
 import Colors from '@theme/colors';
 import Avatar from '@components/common/avatar';
 import WateringCan from '@assets/icons/ic_watering_can.png';
-import AddPhoto from '@assets/icons/ic_add_photo.png';
+import AddPhoto from '@assets/icons/ic_add_photo_app.png';
 import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({

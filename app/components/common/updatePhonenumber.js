@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 import AuthAction from '@redux/actions/auth';
 import AuthService from '@services/auth/auth';
-import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import {
   withPhoneVerified,
@@ -27,6 +26,7 @@ import firebase from 'react-native-firebase';
 import { LoginManager } from 'react-native-fbsdk';
 import { resetLocalStorage } from '@services/apollo/dataSync';
 import { withRemoveAppToken } from '@services/apollo/profile';
+import sms from '@components/utils/smsHelper';
 
 const styles = StyleSheet.create({
   paddedSection: {
@@ -144,23 +144,7 @@ class UpdatePhonenumber extends Component {
     setTimeout(() => {
       this.setState({ loading: false, timeout: true });
     }, 60000 * 30);
-
-    if (Platform.OS === 'android') {
-      const permission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-      if (!permission) {
-        const status = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-        if (status === 'granted') {
-          this.setState({ permission: true });
-          this.sendSMS();
-        } else {
-          this.setState({ permission: false });
-        }
-      } else {
-        this.sendSMS();
-      }
-    } else {
-      this.sendSMS();
-    }
+    this.sendSMS();
   }
 
   setPolling() {
@@ -201,12 +185,7 @@ class UpdatePhonenumber extends Component {
   sendSMS = () => {
     const { code } = this.state;
     Clipboard.setString(code);
-
-    SendSMS.send({
-      body: code,
-      recipients: [SMS_NUMBER],
-      successTypes: ['sent', 'queued'],
-    }, () => { });
+    sms(code, [SMS_NUMBER]);
   };
 
   updateUser = () => {

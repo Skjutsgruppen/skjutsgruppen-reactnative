@@ -25,6 +25,7 @@ import { NavigationActions } from 'react-navigation';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
 import { AppText } from '@components/utils/texts';
+import sms from '@components/utils/smsHelper';
 
 const styles = StyleSheet.create({
   text: {
@@ -414,36 +415,13 @@ class EditProfile extends Component {
   }
 
   verifiyPhoneNumber = async () => {
-    if (Platform.OS === 'android') {
-      const permission = await PermissionsAndroid
-        .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-      if (!permission) {
-        const status = await PermissionsAndroid
-          .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-        if (status === 'granted') {
-          this.sendSMS();
-        } else {
-          Alert.alert(trans('share.allow_sms_permission'));
-        }
-      } else {
-        this.sendSMS();
-      }
-    } else {
-      this.sendSMS();
-    }
+    this.sendSMS();
   }
 
   sendSMS = () => {
     const { phoneVerificationCode } = this.state;
     Clipboard.setString(phoneVerificationCode);
-
-    SendSMS.send({
-      body: phoneVerificationCode,
-      recipients: [SMS_NUMBER],
-      successTypes: ['sent', 'queued'],
-    }, () => { });
+    sms(phoneVerificationCode, [SMS_NUMBER]);
   }
 
   renderEmailVerificationButton = () => {
