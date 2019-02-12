@@ -22,9 +22,9 @@ import _reverse from 'lodash/reverse';
 import ToolBar from '@components/utils/toolbar';
 import { trans } from '@lang/i18n';
 import { Heading } from '@components/utils/texts';
-import SendSMS from 'react-native-sms';
 import { APP_URL } from '@config';
 import FBShare from '@services/facebook/share';
+import sms from '@components/utils/smsHelper';
 
 const styles = StyleSheet.create({
   progress: {
@@ -326,26 +326,7 @@ class Ask extends Component {
           const smsBody = trans('share.share_trip',
             { tripStart: TripStart.name || direction, tripEnd: TripEnd.name || direction, url: `${APP_URL}/t/${id}` },
           );
-
-          if (Platform.OS === 'android') {
-            const permission = await PermissionsAndroid
-              .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-            if (!permission) {
-              const status = await PermissionsAndroid
-                .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-              if (status === 'granted') {
-                this.sendSMS(smsBody, contacts);
-              } else {
-                Alert.alert(trans('share.allow_sms_permission'));
-              }
-            } else {
-              this.sendSMS(smsBody, contacts);
-            }
-          } else {
-            this.sendSMS(smsBody, contacts);
-          }
+          sms(smsBody, contacts);
         }
 
         if (share.social && share.social.includes('Facebook')) {
@@ -357,14 +338,6 @@ class Ask extends Component {
     } catch (error) {
       console.warn(error);
     }
-  }
-
-  sendSMS = (smsBody, contacts) => {
-    SendSMS.send({
-      body: smsBody,
-      recipients: contacts,
-      successTypes: ['sent', 'queued'],
-    }, () => { });
   }
 
   convertToGMT = (date, time) => Moment(`${date} ${time}`).tz(getTimezone()).utc().format('YYYY-MM-DD HH:mm');

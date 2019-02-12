@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, Platform, PermissionsAndroid, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Colors } from '@theme';
 import { compose } from 'react-apollo';
@@ -10,11 +10,11 @@ import { withNavigation } from 'react-navigation';
 import { withUnlimitedFriends } from '@services/apollo/friend';
 import { withContactFriends } from '@services/apollo/contact';
 import FriendList from '@components/friend/selectable';
-import SendSMS from 'react-native-sms';
 import { trans } from '@lang/i18n';
 import Toast from '@components/toast';
 import { getToast } from '@config/toast';
 import { AppText } from '@components/utils/texts';
+import sms from '@components/utils/smsHelper';
 
 const styles = StyleSheet.create({
   footer: {
@@ -124,25 +124,7 @@ class AddParticipant extends Component {
         if (selectedContacts.length > 0) {
           storeUnregisteredParticipants({ groupId: group.id, phoneNumbers: selectedContacts })
             .then(async () => {
-              if (Platform.OS === 'android') {
-                const permission = await PermissionsAndroid
-                  .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-                if (!permission) {
-                  const status = await PermissionsAndroid
-                    .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-                  if (status === 'granted') {
-                    this.send(group.name, selectedContacts);
-                  } else {
-                    Alert.alert(trans('share.allow_sms_permission'));
-                  }
-                } else {
-                  this.send(group.name, selectedContacts);
-                }
-              } else {
-                this.send(group.name, selectedContacts);
-              }
+              sms(`I would like to invite you to ${group.name} group`, selectedContacts);
             }).catch(() => this.setState({ loading: false, confirmModalVisibility: false }));
         }
         navigation.goBack();
@@ -176,24 +158,6 @@ class AddParticipant extends Component {
     const obj = {};
     obj[type] = data;
     this.setState(obj);
-  }
-
-  send = (name, selectedContacts) => {
-    if (Platform.OS === 'android') {
-      this.sendSms(name, selectedContacts);
-    } else {
-      setTimeout(() => {
-        this.sendSms(name, selectedContacts);
-      }, 1000);
-    }
-  }
-
-  sendSms = (name, selectedContacts) => {
-    SendSMS.send({
-      body: `I would like to invite you to ${name} group`,
-      recipients: selectedContacts,
-      successTypes: ['sent', 'queued'],
-    }, () => { });
   }
 
   renderButton = () => (

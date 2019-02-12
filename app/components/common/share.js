@@ -15,7 +15,6 @@ import SectionLabel from '@components/add/sectionLabel';
 import ShareItem from '@components/common/shareItem';
 import WithFilteredGroups from '@components/group/withFilteredGroups';
 import { FEEDABLE_TRIP, FEEDABLE_GROUP, FEEDABLE_EXPERIENCE, FEEDABLE_LOCATION, GROUP_FEED_TYPE_SHARE, GROUP_SHARED } from '@config/constant';
-import SendSMS from 'react-native-sms';
 import { withShare, withShareLocation } from '@services/apollo/share';
 import DataList from '@components/dataList';
 import LoadMore from '@components/message/loadMore';
@@ -23,6 +22,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import { Heading, AppText } from '@components/utils/texts';
 import { APP_URL } from '@config';
 import FBShare from '@services/facebook/share';
+import sms from '@components/utils/smsHelper';
 
 const FilteredGroups = withMyGroups(WithFilteredGroups);
 
@@ -426,26 +426,7 @@ class Share extends Component {
         if (type === FEEDABLE_GROUP && isAdmin) {
           storeUnregisteredParticipants({ groupId: id, phoneNumbers: contacts });
         }
-
-        if (Platform.OS === 'android') {
-          const permission = await PermissionsAndroid
-            .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-          if (!permission) {
-            const status = await PermissionsAndroid
-              .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-            if (status === 'granted') {
-              this.sendSMS(smsBody, contacts);
-            } else {
-              Alert.alert(trans('share.allow_sms_permission'));
-            }
-          } else {
-            this.sendSMS(smsBody, contacts);
-          }
-        } else {
-          setTimeout(() => this.sendSMS(smsBody, contacts), 1000);
-        }
+        sms(smsBody, contacts);
       }
 
       this.onClose();
@@ -458,14 +439,6 @@ class Share extends Component {
 
       this.setState({ error: trans('share.failed_to_share', { type: shareType }), loading: false });
     }
-  }
-
-  sendSMS = (body, recipients) => {
-    SendSMS.send({
-      body,
-      recipients,
-      successTypes: ['sent', 'queued'],
-    }, () => { });
   }
 
   hasOption = (type, key) => {

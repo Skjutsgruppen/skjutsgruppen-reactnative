@@ -11,9 +11,9 @@ import AuthService from '@services/auth';
 import AuthAction from '@redux/actions/auth';
 import Toast from '@components/toast';
 import Colors from '@theme/colors';
-import SendSMS from 'react-native-sms';
 import { SMS_NUMBER } from '@config';
 import { trans } from '@lang/i18n';
+import sms from '@components/utils/smsHelper';
 import CustomButton from '../../components/common/customButton';
 
 const styles = StyleSheet.create({
@@ -93,36 +93,13 @@ class ChangePhoneNumber extends Component {
   }
 
   onVerifyPhone = async () => {
-    if (Platform.OS === 'android') {
-      const permission = await PermissionsAndroid
-        .check(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-      if (!permission) {
-        const status = await PermissionsAndroid
-          .request(PermissionsAndroid.PERMISSIONS.READ_SMS);
-
-        if (status === 'granted') {
-          this.sendSMS();
-        } else {
-          Alert.alert(trans('share.allow_sms_permission'));
-        }
-      } else {
-        this.sendSMS();
-      }
-    } else {
-      this.sendSMS();
-    }
+    this.sendSMS();
   }
 
   sendSMS = () => {
     const { code } = this.state;
     Clipboard.setString(code);
-
-    SendSMS.send({
-      body: code,
-      recipients: [SMS_NUMBER],
-      successTypes: ['sent', 'queued'],
-    }, () => { });
+    sms(code, [SMS_NUMBER]);
   }
 
   goBack = () => {

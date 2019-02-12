@@ -28,7 +28,6 @@ import com.magus.fblogin.FacebookLoginPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
-import nu.skjutsgruppen.skjutsgruppen.braintree.BraintreePaymentPackage;
 import com.smixx.fabric.FabricPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.twitter.sdk.android.Twitter;
@@ -78,7 +77,6 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
                     new TwitterReactPackage(),
                     new GeoLocationPackage(),
                     new FBSDKPackage(mCallbackManager),
-                    new BraintreePaymentPackage(),
                     new RNFirebaseNotificationsPackage(),
                     new RNFirebaseMessagingPackage()
             );
