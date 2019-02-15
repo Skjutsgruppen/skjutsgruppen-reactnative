@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Platform, BackHandler } from 'react-native';
-import { RoundedButton, Loading, AppNotification } from '@components/common';
+import { View, ScrollView, StyleSheet, Image, Platform, BackHandler } from 'react-native';
+import { AppNotification, RoundedButton, Loading } from '@components/common';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
 import { OPEN_GROUP } from '@config/constant';
@@ -11,8 +11,8 @@ import { trans } from '@lang/i18n';
 import PropTypes from 'prop-types';
 import { withEmbed } from '@services/apollo/share';
 import { compose } from 'react-apollo';
-import ErrorIcon from '@assets/icons/ic_warning.png';
 import SuccessIcon from '@assets/icons/ic_checked_green.png';
+import ErrorIcon from '@assets/icons/ic_warning.png';
 
 const styles = StyleSheet.create({
   mainTitle: {
@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   },
   embedContainer: {
     alignItems: 'center',
+    paddingBottom: 24,
   },
   embedImages: {
     width: '100%',
@@ -40,7 +41,14 @@ const styles = StyleSheet.create({
     maxWidth: 360,
   },
   buttonWrapper: {
-    padding: 16,
+    marginHorizontal: 24,
+    marginTop: 48,
+    marginBottom: 36,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: Colors.background.pink,
+    alignItems: 'center',
+    justifyContent: 'center',
     ...Platform.select({
       ios: {
         shadowOffset: { width: 0, height: -2 },
@@ -51,17 +59,12 @@ const styles = StyleSheet.create({
         elevation: 10,
       },
     }),
-    alignItems: 'center',
   },
   embedDescription: {
     lineHeight: 30,
   },
   button: {
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    marginHorizontal: 24,
-    marginTop: 30,
-    marginBottom: 20,
   },
   embedNotification: {
     lineHeight: 26,
@@ -75,9 +78,7 @@ class EmbedGroup extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-    };
+    this.state = { loading: false, appNotificationShown: false, success: null };
   }
 
   componentDidMount() {
@@ -90,6 +91,12 @@ class EmbedGroup extends Component {
     return true;
   }
 
+  onCloseAppNotification = () => {
+    this.setState({
+      appNotificationShown: false,
+    });
+  }
+
   onEmbed = () => {
     const { embed, navigation } = this.props;
     const { id } = navigation.state.params;
@@ -97,8 +104,8 @@ class EmbedGroup extends Component {
     if (id) {
       this.setState({ loading: true });
       embed({ groupId: id })
-        .then(() => this.setState({ loading: false }))
-        .catch((err) => { console.log(err); this.setState({ loading: false }); });
+        .then(() => this.setState({ loading: false, appNotificationShown: true, success: true }))
+        .catch((err) => { console.warn(err); this.setState({ loading: false, appNotificationShown: true, success: false }); });
     }
   }
 
@@ -109,7 +116,7 @@ class EmbedGroup extends Component {
           <AppText size={16} style={styles.embedDescription} centered>{trans('group.get_the_html_code')}</AppText>
           <View style={styles.buttonWrapper}>
             {this.state.loading ?
-              <Loading /> :
+              <Loading color="#fff" size="small" /> :
               <RoundedButton
                 bgColor={Colors.background.pink}
                 style={styles.button}
@@ -134,23 +141,40 @@ class EmbedGroup extends Component {
   }
 
   render() {
+    const { appNotificationShown, success } = this.state;
+    const notificationIcon = success ? SuccessIcon : ErrorIcon;
+    const notificationTitle = success ? trans('detail.email_sent') : trans('global.email_not_sent');
+    const notificationMessage = success ? trans('detail.check_your_inbox') : trans('global.please_try_again');
     return (
-      <View>
+      <View style={{ flex: 1 }}>
+        {
+          appNotificationShown && (
+            <AppNotification
+              image={notificationIcon}
+              type="icon"
+              name={notificationTitle}
+              message={notificationMessage}
+              handleClose={this.onCloseAppNotification}
+            />
+          )
+        }
         <ToolBar title={trans('group.embed_this_group')} />
-        <Heading
-          size={24}
-          style={styles.mainTitle}
-          fontVariation="bold"
-          color={Colors.text.pink}
-        > {trans('group.wherever_you_want')}
-        </Heading>
-        <View style={styles.embedContainer}>
-          <View style={styles.embedImages}>
-            <Image source={EmbedWeb} style={{ marginRight: 36 }} />
-            <Image source={EmbedMobile} />
+        <ScrollView style={{ flex: 1 }}>
+          <Heading
+            size={24}
+            style={styles.mainTitle}
+            fontVariation="bold"
+            color={Colors.text.pink}
+          > {trans('group.wherever_you_want')}
+          </Heading>
+          <View style={styles.embedContainer}>
+            <View style={styles.embedImages}>
+              <Image source={EmbedWeb} style={{ marginRight: 36 }} />
+              <Image source={EmbedMobile} />
+            </View>
+            {this.renderEmbedContent()}
           </View>
-          {this.renderEmbedContent()}
-        </View>
+        </ScrollView>
       </View>
     );
   }

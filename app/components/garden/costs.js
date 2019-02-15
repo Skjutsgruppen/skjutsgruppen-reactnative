@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 import { withNavigation } from 'react-navigation';
@@ -36,12 +36,11 @@ class Costs extends Component {
   }
 
   render() {
-    const { supporter, showCostTitle, gardenInfo, navigation, showDescription, showReadMore } = this.props;
-    console.log("garden info", gardenInfo);
+    const { showCostTitle, gardenInfo, navigation, showDescription, showReadMore, wrapperStyle } = this.props;
     if (!gardenInfo.data) return null;
 
     return (
-      <View style={styles.wrapper}>
+      <View style={[styles.wrapper, wrapperStyle]}>
         {showCostTitle &&
           <View>
             <Title
@@ -81,7 +80,6 @@ class Costs extends Component {
 }
 
 Costs.propTypes = {
-  supporter: PropTypes.bool,
   showCostTitle: PropTypes.bool,
   gardenInfo: PropTypes.shape({
     data: PropTypes.shape({
@@ -96,6 +94,7 @@ Costs.propTypes = {
   }).isRequired,
   showDescription: PropTypes.bool,
   showReadMore: PropTypes.bool,
+  wrapperStyle: ViewPropTypes.style,
 };
 
 Costs.defaultProps = {
@@ -110,6 +109,7 @@ Costs.defaultProps = {
   },
   showDescription: true,
   showReadMore: true,
+  wrapperStyle: {},
 };
 
 export default compose(withGardenInfo, withNavigation)(Costs);

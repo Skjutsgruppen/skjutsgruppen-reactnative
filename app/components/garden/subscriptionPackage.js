@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Modal, Alert, Platform } from 'react-native';
+import { StyleSheet, View, Modal } from 'react-native';
 import PropTypes from 'prop-types';
+import { compose } from 'react-apollo';
 
-import { RoundedButton, Loading } from '@components/common';
+import { RoundedButton } from '@components/common';
 import Colors from '@theme/colors';
 import { Heading, Title } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
-import { unsubscribePayment, showPayment } from '@services/support/purchase';
-import { withSupport } from '@services/apollo/support';
+import { withSupport, withMySupport } from '@services/apollo/support';
+import PackageDetail from '@components/garden/packageDetail';
 
 const styles = StyleSheet.create({
   center: {
@@ -41,94 +42,41 @@ const styles = StyleSheet.create({
 
 class Package extends Component {
   state = {
-    modalVisibility: false,
-    loading: false,
-  }
+    detailView: false,
+  };
 
-  onSupportPress = () => {
-    const { currentlySupporting } = this.props;
-
-    if (currentlySupporting) {
-      Alert.alert(
-        null,
-        trans('profile.currently_subscribed'),
-        [
-          {
-            text: trans('profile.unsubscribe_now'),
-            onPress: () => unsubscribePayment(currentlySupporting),
-          },
-          { text: trans('global.cancel'), style: 'cancel' },
-        ],
-      );
-    } else {
-      // this.handleModalVisibility(true);
-      this.onSupportSubscribe();
-    }
-  }
-
-  onSupportSubscribe = () => {
-    const { support, planId, showAppNotification } = this.props;
-    this.setState({ loading: true, statusMessage: '', modalVisibility: true });
-    showPayment(planId, (error, purchaseDetail) => {
-      if (error) {
-        this.setState(
-          { loading: false },
-          showAppNotification(true, trans('profile.subscribe_failed')),
-        );
-        return;
-      }
-
-      support({ planId,
-        transactionId: purchaseDetail.transactionId,
-        receipt: purchaseDetail.transactionReceipt,
-        originalTransactionId: purchaseDetail.originalTransactionIdentifier ?
-          purchaseDetail.originalTransactionIdentifier : purchaseDetail.transactionId,
-        device: Platform.OS })
-        .then(() => {
-          this.setState(
-            { loading: false },
-            showAppNotification(false, trans('profile.subscribed_success')),
-          );
-        })
-        .catch(() => {
-          this.setState(
-            { loading: false },
-            showAppNotification(true, trans('profile.subscribe_failed')),
-          );
-        });
-    });
-  }
-
-  handleModalVisibility = visible => this.setState({ modalVisibility: visible });
+  handleDetailView = (visible) => { this.setState({ detailView: visible }); };
 
   render() {
-    const { loading } = this.state;
+    const { detailView } = this.state;
     const {
-      noBackgroud,
+      planId,
+      noBackground,
       elevation,
       info,
-      title,
-      amountPerMonth,
+      amount,
+      isHelpMore,
+      durationLabel,
     } = this.props;
 
     let transparentStyle = {};
-    transparentStyle = noBackgroud && { backgroundColor: 'transparent' };
+    transparentStyle = noBackground && { backgroundColor: 'transparent' };
     return (
       <View style={[
-        styles.wrapper, { elevation }, { shadowOpacity: noBackgroud ? 0 : 0.1 }, transparentStyle,
+        styles.wrapper, { elevation }, { shadowOpacity: noBackground ? 0 : 0.1 }, transparentStyle,
       ]}
       >
         <View style={styles.content}>
           <View style={styles.flexRow}>
             <RoundedButton
               bgColor={Colors.text.pink}
-              onPress={this.onSupportPress}
+              onPress={() => { this.handleDetailView(true); }}
               style={{ maxWidth: 200 }}
             >
-              {title}
+              {`${trans('profile.support')} ${durationLabel}`}
             </RoundedButton>
             <View style={{ marginLeft: 12 }}>
-              <Heading centered color={Colors.text.yellowGreen}>{amountPerMonth}kr</Heading>
+              <Heading centered color={Colors.text.yellowGreen}>{amount}kr</Heading>
             </View>
           </View>
           {
@@ -137,8 +85,17 @@ class Package extends Component {
             </Title>
           }
         </View>
-        <Modal transparent visible={loading} >
-          <Loading style={styles.center} />
+        <Modal visible={detailView} onRequestClose={() => { this.handleDetailView(true); }} animationType="slide">
+          <PackageDetail
+            onBack={() => { this.handleDetailView(false); }}
+            planId={planId}
+            amount={amount}
+            durationLabel={durationLabel}
+            pageTitle={isHelpMore ? trans('profile.logo_and_brand') : trans('profile.you_are_awesome')}
+            featureText={isHelpMore ? trans('profile.you_get') : trans('profile.besides_helping_your_movement')}
+            headingText={isHelpMore ? trans('profile.show_your_logo_and_brand_in_the_app', { amount, durationLabel }) : trans('profile.support_us_with', { amount, durationLabel })}
+            helpMore={isHelpMore}
+          />
         </Modal>
       </View>
     );
@@ -146,21 +103,19 @@ class Package extends Component {
 }
 
 Package.propTypes = {
-  noBackgroud: PropTypes.bool,
-  elevation: PropTypes.number.isRequired,
-  amountPerMonth: PropTypes.string.isRequired,
-  info: PropTypes.string,
   planId: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  currentlySupporting: PropTypes.string,
-  support: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  showAppNotification: PropTypes.func.isRequired,
+  noBackground: PropTypes.bool,
+  elevation: PropTypes.number.isRequired,
+  amount: PropTypes.string.isRequired,
+  info: PropTypes.string,
+  isHelpMore: PropTypes.bool,
+  durationLabel: PropTypes.string.isRequired,
 };
 
 Package.defaultProps = {
-  noBackgroud: false,
+  noBackground: false,
   info: null,
-  currentlySupporting: null,
+  isHelpMore: false,
 };
 
-export default withSupport(Package);
+export default compose(withSupport, withMySupport)(Package);

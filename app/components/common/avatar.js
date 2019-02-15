@@ -35,6 +35,7 @@ const Avatar = ({
   imageStyle,
   onPress,
   isSupporter,
+  radius,
   ...props
 }) => {
   const wrapperStyle = {
@@ -47,7 +48,7 @@ const Avatar = ({
     height: '100%',
     width: '100%',
     resizeMode: 'cover',
-    borderRadius: size / 2,
+    borderRadius: radius || size / 2,
   };
 
   const leafSize = parseInt(size * 0.3, 0);
@@ -95,6 +96,7 @@ Avatar.propTypes = {
   showIndicator: PropTypes.bool,
   indicatorColor: PropTypes.string,
   imageStyle: ViewPropTypes.style,
+  radius: PropTypes.number,
 };
 
 Avatar.defaultProps = {
@@ -106,6 +108,7 @@ Avatar.defaultProps = {
   onPress: () => { },
   showIndicator: false,
   indicatorColor: 'transparent',
+  radius: null,
 };
 
 export default Avatar;

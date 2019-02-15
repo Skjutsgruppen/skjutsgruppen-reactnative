@@ -56,7 +56,7 @@ import Search from '@screens/tab/search';
 import Garden from '@screens/tab/garden';
 import YourSupport from '@screens/garden/yourSupport';
 import SupportReadMore from '@screens/garden/ReadMore';
-import PackageDetail from '@screens/garden/packageDetail';
+import PackageDetail from '@components/garden/packageDetail';
 
 import Report from '@screens/modal/Report';
 

@@ -139,5 +139,19 @@
   "choose_your_preferred_language": "Choose your preferred language:",
   "auto_renewed_every_year": "Total of {{krona}}kr, auto-renewed every year. Stop when ever you want.",
   "auto_renewal": "Auto renewal",
-  "as_you_can_see_all_of_are_right_now_co_creating": "As you can see are all of are right now co-creating this app. If you find something wrong you can add this to our Trello and you can also help improve the code on our Github"
+  "as_you_can_see_all_of_are_right_now_co_creating": "As you can see are all of are right now co-creating this app. If you find something wrong you can add this to our Trello and you can also help improve the code on our Github",
+  "logo_and_brand": "Logo and brand",
+  "you_get": "You get:",
+  "besides_helping_your_movement": "Besides helping your movement and being awesome you also get:",
+  "show_your_logo_and_brand_in_the_app": "Show your logo and brand in the app for one year for {{amount}} kr",
+  "support_us_with": "Support us with {{amount}} kr for one month",
+  "one_year": "one year",
+  "six_months": "six months",
+  "one_month": "one month",
+  "a_leaf_next_to_your_profile_picture": "A leaf next to your profile picture.",
+  "the_ability_to_add_photos_to_your_rides": "The ability to add photos to your rides.",
+  "the_ability_to_add_your_logo_to_your_rides": "The ability to add your logo to your rides.",
+  "further_conditions_that_regulate_your_use": "Further conditions that regulate your use of the app is found in",
+  "auto_renewed_stop_when_ever_you_want": "Auto-renewed. Stop when ever you want.",
+  "support": "Support"
 }

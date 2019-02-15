@@ -68,6 +68,7 @@ import Scheduler from '@services/firebase/scheduler';
 import GeoLocation from '@services/location/geoLocation';
 
 import ReturnIconPink from '@assets/icons/ic_return.png';
+import SuccessIcon from '@assets/icons/ic_checked_green.png';
 import ReturnIconBlue from '@assets/icons/ic_return_blue.png';
 import CalendarIcon from '@assets/icons/ic_calender.png';
 import { getTripDetails } from '@services/apollo/dataSync';
@@ -322,6 +323,10 @@ class TripDetail extends Component {
       showShareModal: false,
       notification: false,
       notifierOffset: 0,
+      notificationMessage: '',
+      embedNotification: false,
+      embededNotificationTitle: '',
+      embededNotificaitonMessage: '',
       showReturnRides: false,
       showRecurringRides: false,
       showSuggestedRides: false,
@@ -400,6 +405,8 @@ class TripDetail extends Component {
           notifier,
           notification: true,
           notifierOffset: 75,
+          embedNotification: false,
+          embededNotificaitonMessage: '',
         });
       } else {
         this.setState({ trip, loading });
@@ -479,8 +486,12 @@ class TripDetail extends Component {
   };
 
   onCloseNotification = () => {
-    this.setState({ notification: false, notifierOffset: 0 });
-  };
+    this.setState({ notification: false, notifierOffset: 0, notificationMessage: '' });
+  }
+
+  onCloseEmbedNotification = () => {
+    this.setState({ embedNotification: false, notifierOffset: 0, embedNotificationMessage: '' });
+  }
 
   onMute = (unit, type = null) => {
     this.actionSheet.hide();
@@ -580,12 +591,6 @@ class TripDetail extends Component {
     setTimeout(() => {
       navigation.navigate('EmbedTrip', { type: embed.type, id });
     }, 200);
-    // setTimeout(() => {
-    //   embed({ tripId: id })
-    //     .then(() => {
-    //       this.setState({ showActionOption: false });
-    //     });
-    // }, 200);
   };
 
   setReturnRidesModalVisibility = (show) => {
@@ -601,8 +606,10 @@ class TripDetail extends Component {
   };
 
   setConfirmModalVisibility = (show) => {
-    this.setState({ confirmModalVisibility: show, showActionOption: false });
-  };
+    this.actionSheet.hide();
+    setTimeout(() => { this.setState({ confirmModalVisibility: show, showActionOption: false }); }, 600);
+    // this.setState({ confirmModalVisibility: show, showActionOption: false });
+  }
 
   showActionModal = () => {
     // this.setState({ showActionOption: visible });
@@ -1154,39 +1161,21 @@ class TripDetail extends Component {
 
   renderActionSheet = () => {
     const { trip } = this.state;
-    const { navigation } = this.props;
+    const { user, navigation } = this.props;
     const color = this.canCreateExperience() ? '#007AFF' : 'gray';
 
-    const notParticipate = [
-      <TouchableOpacity
-        activeOpacity={0.95}
-        onPress={() => {
-          this.actionSheet.hide();
-          navigation.navigate('Experience', { trip });
-        }}
-        disabled={!this.canCreateExperience()}
-        style={[
-          actionSheetMenu.actionItem,
-          { borderTopLeftRadius: 12, borderTopRightRadius: 12 },
-        ]}
-      >
-        <Text style={[actionSheetMenu.actionLabel, { color }]}>
-          {trans('detail.create_your_experience')}
-        </Text>
-      </TouchableOpacity>,
-      <TouchableOpacity
-        activeOpacity={0.95}
-        onPress={this.onReport}
-        style={[
-          actionSheetMenu.actionItem,
-          { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
-        ]}
-      >
-        <Text style={actionSheetMenu.actionLabel}>
-          {trans('detail.report_this_ride')}
-        </Text>
-      </TouchableOpacity>,
-    ];
+    const experience = (<TouchableOpacity
+      activeOpacity={0.95}
+      onPress={() => {
+        if (!this.canCreateExperience()) return;
+        this.actionSheet.hide();
+        navigation.navigate('Experience', { trip });
+      }}
+      style={[actionSheetMenu.actionItem, { borderTopLeftRadius: 12, borderTopRightRadius: 12 }]}
+    >
+      <Text style={[actionSheetMenu.actionLabel, { color }]}>{trans('detail.create_your_experience')}</Text>
+    </TouchableOpacity>);
+
     const mute = [
       <TouchableOpacity
         activeOpacity={0.95}
@@ -1216,6 +1205,7 @@ class TripDetail extends Component {
         </Text>
       </TouchableOpacity>,
     ];
+
     const unmute = [
       <TouchableOpacity
         activeOpacity={0.95}
@@ -1227,7 +1217,27 @@ class TripDetail extends Component {
         </Text>
       </TouchableOpacity>,
     ];
+
     const muteActions = trip.muted ? unmute : mute;
+
+    const ownTripActions = user.id !== trip.User.id ? (
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={this.onReport}
+        style={[actionSheetMenu.actionItem, { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.report_this_ride')}</Text>
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setConfirmModalVisibility(true)}
+        style={[actionSheetMenu.actionItem, { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={[actionSheetMenu.actionLabel]}>{trans('detail.delete_this_ride')}</Text>
+      </TouchableOpacity>
+    );
+
     const participate = [
       <TouchableOpacity
         activeOpacity={0.95}
@@ -1249,11 +1259,10 @@ class TripDetail extends Component {
           {trans('detail.embed_with_html')}
         </Text>
       </TouchableOpacity>,
+      ownTripActions,
     ];
 
-    const options = this.canCreateExperience()
-      ? [notParticipate[0], ...participate, notParticipate[1], 'Cancel']
-      : [...notParticipate, 'Cancel'];
+    const options = trip.isParticipant ? [experience, ...participate, 'Cancel'] : [experience, ownTripActions, 'Cancel'];
     return (
       <ActionSheet
         ref={(sheet) => {
@@ -1371,6 +1380,24 @@ class TripDetail extends Component {
     return null;
   };
 
+  renderEmbedNotification = () => {
+    const { embedNotification, embededNotificationTitle, embededNotificaitonMessage } = this.state;
+
+    if (embedNotification) {
+      return (
+        <AppNotification
+          image={SuccessIcon}
+          type="icon"
+          name={embededNotificationTitle}
+          message={embededNotificaitonMessage}
+          handleClose={this.onCloseEmbedNotification}
+        />
+      );
+    }
+
+    return null;
+  }
+
   renderCommentBox = () => {
     const { trip, loading } = this.state;
 
@@ -1480,15 +1507,12 @@ class TripDetail extends Component {
   };
 
   renderTrip() {
-    const { notifierOffset, trip } = this.state;
-    const title = `${
-      trip.TripStart.name ? trip.TripStart.name : trip.direction
-    } - ${trip.TripEnd.name}`;
+    const { trip } = this.state;
+    const title = `${trip.TripStart.name ? trip.TripStart.name : trip.direction} - ${trip.TripEnd.name}`;
 
     return (
       <View style={{ flex: 1 }}>
-        {this.renderAppNotification()}
-        <TripToolBar title={title} transparent offset={notifierOffset} />
+        <TripToolBar title={title} transparent />
         {this.state.showReturnRides && this.returnRideModal()}
         {this.state.showRecurringRides && this.recurringRidesModal()}
         <TripFeed
@@ -1517,6 +1541,8 @@ class TripDetail extends Component {
 
     return (
       <Wrapper>
+        {this.renderAppNotification()}
+        {this.renderEmbedNotification()}
         {!trip.isDeleted && !trip.isBlocked && this.renderTrip()}
         {this.renderDeletedModal()}
         {this.renderTripNotAvailable()}

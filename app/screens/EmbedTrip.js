@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Platform, BackHandler } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Platform, BackHandler } from 'react-native';
 import { RoundedButton, Loading, AppNotification } from '@components/common';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
-import { OPEN_GROUP } from '@config/constant';
 import { Heading, AppText } from '@components/utils/texts';
 import EmbedMobile from '@assets/icons/embed_mobile.png';
 import EmbedWeb from '@assets/icons/embed_web.png';
@@ -14,7 +13,6 @@ import { compose } from 'react-apollo';
 import ErrorIcon from '@assets/icons/ic_warning.png';
 import SuccessIcon from '@assets/icons/ic_checked_green.png';
 
-
 const styles = StyleSheet.create({
   mainTitle: {
     marginTop: 45,
@@ -22,6 +20,7 @@ const styles = StyleSheet.create({
   },
   embedContainer: {
     alignItems: 'center',
+    paddingBottom: 24,
   },
   embedImages: {
     width: '100%',
@@ -42,7 +41,14 @@ const styles = StyleSheet.create({
     maxWidth: 360,
   },
   buttonWrapper: {
-    padding: 16,
+    marginHorizontal: 24,
+    marginTop: 48,
+    marginBottom: 36,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: Colors.background.pink,
+    alignItems: 'center',
+    justifyContent: 'center',
     ...Platform.select({
       ios: {
         shadowOffset: { width: 0, height: -2 },
@@ -53,17 +59,12 @@ const styles = StyleSheet.create({
         elevation: 10,
       },
     }),
-    alignItems: 'center',
   },
   embedDescription: {
     lineHeight: 30,
   },
   button: {
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    marginHorizontal: 24,
-    marginTop: 30,
-    marginBottom: 20,
   },
   embedNotification: {
     lineHeight: 26,
@@ -102,7 +103,7 @@ class EmbedGroup extends Component {
       this.setState({ loading: true });
       embed({ tripId: id })
         .then(() => this.setState({ loading: false, error: false, notification: true }))
-        .catch((err) => { console.log(err); this.setState({ loading: false, error: true, notification: true }); });
+        .catch(() => { this.setState({ loading: false, error: true, notification: true }); });
     }
   }
 
@@ -116,7 +117,7 @@ class EmbedGroup extends Component {
       <AppText size={16} style={styles.embedDescription} centered>{trans('trip.get_the_html_code')}</AppText>
       <View style={styles.buttonWrapper}>
         {this.state.loading ?
-          <Loading /> :
+          <Loading color="#fff" size="small" /> :
           <RoundedButton
             bgColor={Colors.background.pink}
             style={styles.button}
@@ -132,30 +133,34 @@ class EmbedGroup extends Component {
 
   render() {
     const { notification, error } = this.state;
-    const notificationMessage = error ? 'Email was not sent' : 'Email sent successfully';
+    const notificationTitle = error ? trans('global.email_not_sent') : trans('detail.email_sent');
+    const notificationMessage = error ? trans('global.please_try_again') : trans('detail.check_your_inbox');
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {notification && <AppNotification
           image={error ? ErrorIcon : SuccessIcon}
           type="icon"
+          name={notificationTitle}
           message={notificationMessage}
           handleClose={this.onCloseNotification}
         />}
         <ToolBar title={trans('trip.embed_this_trip')} />
-        <Heading
-          size={24}
-          style={styles.mainTitle}
-          fontVariation="bold"
-          color={Colors.text.pink}
-        > {trans('group.wherever_you_want')}
-        </Heading>
-        <View style={styles.embedContainer}>
-          <View style={styles.embedImages}>
-            <Image source={EmbedWeb} style={{ marginRight: 36 }} />
-            <Image source={EmbedMobile} />
+        <ScrollView style={{ flex: 1 }}>
+          <Heading
+            size={24}
+            style={styles.mainTitle}
+            fontVariation="bold"
+            color={Colors.text.pink}
+          > {trans('group.wherever_you_want')}
+          </Heading>
+          <View style={styles.embedContainer}>
+            <View style={styles.embedImages}>
+              <Image source={EmbedWeb} style={{ marginRight: 36 }} />
+              <Image source={EmbedMobile} />
+            </View>
+            {this.renderEmbedContent()}
           </View>
-          {this.renderEmbedContent()}
-        </View>
+        </ScrollView>
       </View>
     );
   }

@@ -19,7 +19,6 @@
 		04547714212E72A200A301CD /* fabric.secret in Resources */ = {isa = PBXBuildFile; fileRef = 04547713212E72A200A301CD /* fabric.secret */; };
 		045AC28D20D36E6200DEAA5A /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 045AC28C20D36E6200DEAA5A /* Utilities.m */; };
 		045C2D0620BE946500A6CFC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045C2D0520BE946500A6CFC5 /* StoreKit.framework */; };
-		0498C2CD211175CB00CCEAE3 /* AvenirLTStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0498C2CC211173D000CCEAE3 /* AvenirLTStd-Black.otf */; };
 		04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DFC484DBCBA420A94155A3C /* SFUIText-Regular.ttf */; };
 		05B1B2D493D543F6B4576E10 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7056FC2971A64D0595315A33 /* EvilIcons.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -56,7 +55,6 @@
 		73BC2E894D504376BB665232 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25E7E579E7F5455498552E45 /* SimpleLineIcons.ttf */; };
 		7B88C97DD55D4EC5986C88C4 /* SFUIText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		8FEA62B1574446B8A9F1BBA2 /* SFUIDisplay-Semi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3B4AD4037394B15B1F285A9 /* SFUIDisplay-Semi-Bold.ttf */; };
 		9286F760F61745A19EEEF499 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C00192AEA23445FAA09B6AF /* Entypo.ttf */; };
 		956622CF24A04E609EF945CE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */; };
 		964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EEE321C8F146089BB8413E /* libBVLinearGradient.a */; };
@@ -506,7 +504,6 @@
 		045AC28C20D36E6200DEAA5A /* Utilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
 		045AC38120D3A04200DEAA5A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		045C2D0520BE946500A6CFC5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		0498C2CC211173D000CCEAE3 /* AvenirLTStd-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AvenirLTStd-Black.otf"; path = "../android/app/src/main/assets/fonts/AvenirLTStd-Black.otf"; sourceTree = "<group>"; };
 		04B22EA920D643F700CDA964 /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		06527C20DEF14B0D95964E9E /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		07F722DDBA524220949127BA /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
@@ -570,7 +567,6 @@
 		BCF7C40CC9284742BB6D862E /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C135225297084723854B2D48 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		C3AF3304049E452F94BFE893 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		C3B4AD4037394B15B1F285A9 /* SFUIDisplay-Semi-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIDisplay-Semi-Bold.ttf"; path = "../assets/fonts/SFUIDisplay-Semi-Bold.ttf"; sourceTree = "<group>"; };
 		C8AB19B1A1DB40CBB2637437 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		CC7FB6AC8B0D4A3B98AB0D03 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		CD06BDD5AE734B6C8643FD9B /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
@@ -1058,11 +1054,9 @@
 				25E7E579E7F5455498552E45 /* SimpleLineIcons.ttf */,
 				D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */,
 				319522A7925E4A4E874D0D69 /* SFUIDisplay-Bold.ttf */,
-				0498C2CC211173D000CCEAE3 /* AvenirLTStd-Black.otf */,
 				FF7A7FB2859C4DB2A00EC1AB /* SFUIDisplay-Regular.ttf */,
 				12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */,
 				2DFC484DBCBA420A94155A3C /* SFUIText-Regular.ttf */,
-				C3B4AD4037394B15B1F285A9 /* SFUIDisplay-Semi-Bold.ttf */,
 				AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */,
 				A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */,
 				88C652C62E7743B9B785D65C /* AvenirLTStd-Black.otf */,
@@ -1749,7 +1743,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0498C2CD211175CB00CCEAE3 /* AvenirLTStd-Black.otf in Resources */,
 				A0CFED7B2088B8BD00558AA7 /* SFUIText-SemiBold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
@@ -1772,7 +1765,6 @@
 				D7638FF680604004A0F16138 /* SFUIText-Bold.ttf in Resources */,
 				04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */,
 				045476D8212E725000A301CD /* fabric.apikey in Resources */,
-				8FEA62B1574446B8A9F1BBA2 /* SFUIDisplay-Semi-Bold.ttf in Resources */,
 				7B88C97DD55D4EC5986C88C4 /* SFUIText-RegularItalic.ttf in Resources */,
 				F1690559CD6E4428A2AC2192 /* AvenirLTStd-Black.otf in Resources */,
 			);
@@ -2015,7 +2007,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos10.1;
+				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skjutsgruppen.app/Skjutsgruppen";
 			};
 			name = Debug;
@@ -2063,7 +2055,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos10.1;
+				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skjutsgruppen.app/Skjutsgruppen";
 			};
 			name = Release;

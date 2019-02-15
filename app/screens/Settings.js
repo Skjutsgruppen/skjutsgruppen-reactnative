@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import ActionSheet from 'react-native-actionsheet';
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
 import { Wrapper } from '@components/common';
 import actionSheetMenu from '@components/common/actionSheetMenu';
 import { Colors } from '@theme';
@@ -125,6 +125,7 @@ class Settings extends Component {
     const { navigation } = this.props;
 
     this.setState({ language });
+    this.LanguageActionSheet.hide();
     LangService.setLanguage(language)
       .then(() => {
         I18n.locale = language;
@@ -232,15 +233,34 @@ class Settings extends Component {
       </TouchableOpacity>,
       trans('global.cancel'),
     ];
+    const optionLang = [
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setLanguage(0)}
+        style={actionSheetMenu.actionItem}
+      >
+        <Text style={actionSheetMenu.actionLabel}>English</Text>
+      </TouchableOpacity>,
+      <TouchableOpacity
+        activeOpacity={0.95}
+        onPress={() => this.setLanguage(1)}
+        style={[actionSheetMenu.actionItem,
+          { borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }]}
+      >
+        <Text style={actionSheetMenu.actionLabel}>Swedish</Text>
+      </TouchableOpacity>,
+      trans('global.cancel'),
+    ];
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
         <ActionSheet
           ref={(sheet) => { this.LanguageActionSheet = sheet; }}
           title={trans('profile.choose_your_preferred_language')}
-          options={['English', 'Swedish', 'Cancel']}
-          cancelButtonIndex={2}
-          onPress={(index) => { this.setLanguage(index); }}
+          options={optionLang}
+          cancelButtonIndex={optionLang.length - 1}
+          onPress={() => { }}
+          styles={actionSheetMenu}
         />
         <ActionSheet
           ref={(sheet) => { this.NotificationActionSheet = sheet; }}

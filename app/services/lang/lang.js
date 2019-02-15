@@ -15,7 +15,6 @@ class Lang {
 
   async getLanguage() {
     const currentLang = await this.session.get(this.langKey);
-    console.log(currentLang);
 
     if (currentLang && currentLang !== '') return currentLang;
 

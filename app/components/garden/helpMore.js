@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import PropTypes from 'prop-types';
 
 import { AppText, Title, Heading } from '@components/utils/texts';
 import Package from '@components/garden/subscriptionPackage';
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HelpMore = ({ currentlySupporting, showAppNotification }) => (
+const HelpMore = () => (
   <View style={[styles.wrapper, { elevation: 22 }]}>
     <View style={{ paddingBottom: 30, paddingTop: 50, paddingHorizontal: 30 }}>
       <View style={styles.flexRow}>
@@ -39,45 +38,31 @@ const HelpMore = ({ currentlySupporting, showAppNotification }) => (
       </AppText>
     </View>
     <Package
-      noBackgroud
+      noBackground
       elevation={0}
-      durationLabel={trans('profile.support_one_year')}
-      amount="589kr"
+      amount="589"
       planId={'589_kr_per_year_garden'}
       info={trans('profile.auto_renewed_every_year', { krona: 589 })}
-      title="Support a year"
-      currentlySupporting={currentlySupporting}
-      amountPerMonth="589"
-      showAppNotification={showAppNotification}
+      isHelpMore
+      durationLabel={trans('profile.one_year')}
     />
     <Package
       elevation={20}
-      durationLabel={trans('profile.support_one_year')}
-      amount="1749kr"
+      amount="1749"
       planId={'1749_kr_per_year_garden'}
       info={trans('profile.auto_renewed_every_year', { krona: 1749 })}
-      title="Support a year"
-      currentlySupporting={currentlySupporting}
-      amountPerMonth="1749"
-      showAppNotification={showAppNotification}
+      isHelpMore
+      durationLabel={trans('profile.one_year')}
     />
     <Package
       elevation={21}
-      durationLabel={trans('profile.support_one_year')}
-      amount="2995kr"
-      planId={'2995__kr_per_six_months'}
+      amount="2995"
+      planId={'2995_kr_per_six_months_garden'}
       info={trans('profile.auto_renewed_every_six_month', { krona: 2995 })}
-      title="Support six month"
-      currentlySupporting={currentlySupporting}
-      amountPerMonth="2995"
-      showAppNotification={showAppNotification}
+      isHelpMore
+      durationLabel={trans('profile.six_months')}
     />
   </View>
 );
-
-HelpMore.propTypes = {
-  currentlySupporting: PropTypes.func.isRequired,
-  showAppNotification: PropTypes.bool.isRequired,
-};
 
 export default HelpMore;

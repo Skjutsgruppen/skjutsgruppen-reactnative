@@ -769,6 +769,7 @@ class Item extends PureComponent {
           isSupporter={isSupporter}
           imageURI={imageURI}
           style={styles.avatar}
+          radius={24}
         />
       </View>
     );
@@ -849,8 +850,6 @@ class Item extends PureComponent {
     }
 
     if (notification.Notifications[0].type === NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED) {
-      console.log(notification, '+++++++++++++++++++');
-
       message = this.friendRequestAccepted(notification);
     }
 
