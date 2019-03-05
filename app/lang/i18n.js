@@ -54,7 +54,7 @@ I18n.translations = {
     suggestion: suggestionEn,
     onboarding: onboardingEn,
   },
-  se: {
+  sv: {
     feed: feedSe,
     add: addSe,
     global: globalSe,
