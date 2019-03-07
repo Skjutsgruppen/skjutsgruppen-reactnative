@@ -1,4 +1,3 @@
-
 import I18n from 'react-native-i18n';
 import LangService from '@services/lang';
 
@@ -17,6 +16,7 @@ import {
   share as shareEn,
   suggestion as suggestionEn,
   onboarding as onboardingEn,
+  trip as tripEn,
 } from '@lang/locales/en';
 import {
   feed as feedSe,
@@ -33,6 +33,7 @@ import {
   share as shareSe,
   suggestion as suggestionSe,
   onboarding as onboardingSe,
+  trip as tripSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -53,6 +54,7 @@ I18n.translations = {
     share: shareEn,
     suggestion: suggestionEn,
     onboarding: onboardingEn,
+    trip: tripEn,
   },
   se: {
     feed: feedSe,
@@ -69,6 +71,7 @@ I18n.translations = {
     share: shareSe,
     suggestion: suggestionSe,
     onboarding: onboardingSe,
+    trip: tripSe,
   },
 };
 

@@ -14,6 +14,7 @@ import { compose } from 'react-apollo';
 import ErrorIcon from '@assets/icons/ic_warning.png';
 import SuccessIcon from '@assets/icons/ic_checked_green.png';
 
+
 const styles = StyleSheet.create({
   mainTitle: {
     marginTop: 45,
@@ -31,11 +32,12 @@ const styles = StyleSheet.create({
     marginBottom: 38,
   },
   embedContentWrapper: {
-    maxWidth: 374,
+    maxWidth: 360,
+    paddingHorizontal: 40,
   },
-  openGroup: {
-    paddingHorizontal: 55,
-  },
+  // openGroup: {
+  //   paddingHorizontal: 55,
+  // },
   closeGroup: {
     maxWidth: 360,
   },
@@ -77,6 +79,8 @@ class EmbedGroup extends Component {
     super(props);
     this.state = {
       loading: false,
+      error: false,
+      notification: false,
     };
   }
 
@@ -96,47 +100,48 @@ class EmbedGroup extends Component {
 
     if (id) {
       this.setState({ loading: true });
-      embed({ groupId: id })
-        .then(() => this.setState({ loading: false }))
-        .catch((err) => { console.log(err); this.setState({ loading: false }); });
+      embed({ tripId: id })
+        .then(() => this.setState({ loading: false, error: false, notification: true }))
+        .catch((err) => { console.log(err); this.setState({ loading: false, error: true, notification: true }); });
     }
   }
 
-  renderEmbedContent = () => {
-    if (this.props.navigation.state.params.type === OPEN_GROUP) {
-      return (
-        <View style={[styles.embedContentWrapper, styles.openGroup]}>
-          <AppText size={16} style={styles.embedDescription} centered>{trans('group.get_the_html_code')}</AppText>
-          <View style={styles.buttonWrapper}>
-            {this.state.loading ?
-              <Loading /> :
-              <RoundedButton
-                bgColor={Colors.background.pink}
-                style={styles.button}
-                onPress={() => this.onEmbed()}
-              >
-                {trans('group.email_the_code')}
-              </RoundedButton>
-            }
-          </View>
-          <AppText centered size={16} color={Colors.text.darkGray} style={styles.embedNotification}>{trans('group.enablers_of_the_group')}</AppText>
-        </View>
-      );
-    }
+  onCloseNotification = () => {
+    this.setState({ notification: false });
+  }
 
-    return (
-      <View style={[styles.embedContentWrapper, styles.closeGroup]}>
-        <AppText size={16} style={styles.embedDescription} centered>{trans('group.participants_in_open_groups')}</AppText>
-        <AppText size={16} style={[styles.embedDescription, { marginTop: 26 }]} centered>{trans('group.this_is_a_closed_group')}</AppText>
-        <AppText size={16} style={[styles.embedDescription, { paddingHorizontal: 10 }]} centered >{trans('group.the_settings_need_to_be_changed')}</AppText>
+
+  renderEmbedContent = () => (
+    <View style={styles.embedContentWrapper}>
+      <AppText size={16} style={styles.embedDescription} centered>{trans('trip.get_the_html_code')}</AppText>
+      <View style={styles.buttonWrapper}>
+        {this.state.loading ?
+          <Loading /> :
+          <RoundedButton
+            bgColor={Colors.background.pink}
+            style={styles.button}
+            onPress={() => this.onEmbed()}
+          >
+            {trans('group.email_the_code')}
+          </RoundedButton>
+        }
       </View>
-    );
-  }
+      <AppText centered size={16} color={Colors.text.darkGray} style={styles.embedNotification}>{trans('trip.creator_of_ride')}</AppText>
+    </View>
+  )
 
   render() {
+    const { notification, error } = this.state;
+    const notificationMessage = error ? 'Email was not sent' : 'Email sent successfully';
     return (
       <View>
-        <ToolBar title={trans('group.embed_this_group')} />
+        {notification && <AppNotification
+          image={error ? ErrorIcon : SuccessIcon}
+          type="icon"
+          message={notificationMessage}
+          handleClose={this.onCloseNotification}
+        />}
+        <ToolBar title={trans('trip.embed_this_trip')} />
         <Heading
           size={24}
           style={styles.mainTitle}
