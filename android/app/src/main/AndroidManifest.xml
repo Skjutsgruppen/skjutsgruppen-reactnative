@@ -20,10 +20,6 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
-
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -87,7 +83,7 @@
             android:value="@string/FB_ID" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${FABRIC_API_KEY}" />
+            android:value="b0952dc47e19b024e7d091319b728ec982138914" />
 
         <service android:name="GeoLocationService" />
 

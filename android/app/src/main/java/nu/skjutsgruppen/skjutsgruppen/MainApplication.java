@@ -30,8 +30,10 @@ import com.rnfs.RNFSPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.smixx.fabric.FabricPackage;
 import com.tkporter.sendsms.SendSMSPackage;
-import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -101,7 +103,12 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     public void onCreate() {
         super.onCreate();
         TwitterAuthConfig authConfig = new TwitterAuthConfig(BuildConfig.TWITTER_CONSUMER_KEY, BuildConfig.TWITTER_CONSUMER_SECRET);
+        TwitterConfig twitterConfig = new TwitterConfig.Builder(this)
+                .twitterAuthConfig(authConfig)
+                .debug(BuildConfig.DEBUG)
+                .build();
         SoLoader.init(this, /* native exopackage */ false);
-        Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
+        Fabric.with(this, new Crashlytics());
+        Twitter.initialize(twitterConfig);
     }
 }
