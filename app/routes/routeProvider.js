@@ -67,6 +67,7 @@ import MembershipRequest from '@screens/group/MembershipRequest';
 import Participants from '@screens/group/Participants';
 import AddParticipant from '@screens/group/AddParticipant';
 import EditGroup from '@screens/group/EditGroup';
+import EmbedTrip from '@screens/EmbedTrip';
 
 const TabRoutes = {
   Feed: {
@@ -138,6 +139,7 @@ export const Routes = {
   GroupsInCounty: { screen: GroupsInCounty },
   SearchResult: { screen: SearchResult },
   EmbedGroup: { screen: EmbedGroup },
+  EmbedTrip: { screen: EmbedTrip },
 
   Welcome: { screen: Welcome },
   WelcomeTwo: { screen: WelcomeTwo },
