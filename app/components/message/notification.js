@@ -17,6 +17,7 @@ import { LoginManager } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import { resetLocalStorage } from '@services/apollo/dataSync';
 import { NOT_AUTHORIZED_ERROR, JWT_MALFORMED_ERROR } from '@config/constant';
+import { Placeholder } from '@components/common';
 
 const styles = StyleSheet.create({
   section: {
@@ -94,7 +95,9 @@ class NewNotification extends PureComponent {
 
   renderNotification = () => {
     const { notifications, filters } = this.props;
-    console.log(notifications, this.props, '================');
+    if (notifications.loading) {
+      return <Placeholder count={3} wrapperStyle={{ padding: 20 }} />;
+    }
 
     return (
       <DataList
