@@ -44,7 +44,9 @@ const AvailableLanguages = {
   'en-ZA': 'English',
   'en-NP': 'English',
   se: 'Swedish',
+  sv: 'Swedish',
   'sv-SE': 'Swedish',
+  'sv-NP': 'Swedish',
 };
 
 class Settings extends Component {
@@ -115,7 +117,7 @@ class Settings extends Component {
     if (index === 0) {
       language = 'en';
     } else if (index === 1) {
-      language = 'se';
+      language = 'sv';
     }
 
     if (language === '' || language === this.state.language) return;
@@ -233,13 +235,13 @@ class Settings extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
-        { /* <ActionSheet
+        <ActionSheet
           ref={(sheet) => { this.LanguageActionSheet = sheet; }}
           title={trans('profile.choose_your_preferred_language')}
           options={['English', 'Swedish', 'Cancel']}
           cancelButtonIndex={2}
           onPress={(index) => { this.setLanguage(index); }}
-        /> */ }
+        />
         <ActionSheet
           ref={(sheet) => { this.NotificationActionSheet = sheet; }}
           title={trans('profile.notification')}
@@ -259,7 +261,7 @@ class Settings extends Component {
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           {this.renderNotification()}
           {this.renderEmailNotification()}
-          {/* this.renderLanguage() */}
+          { this.renderLanguage() }
         </ScrollView>
       </Wrapper>
     );

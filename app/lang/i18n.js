@@ -56,7 +56,7 @@ I18n.translations = {
     onboarding: onboardingEn,
     trip: tripEn,
   },
-  se: {
+  sv: {
     feed: feedSe,
     add: addSe,
     global: globalSe,
