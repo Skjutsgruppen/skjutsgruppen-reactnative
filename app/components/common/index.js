@@ -31,6 +31,7 @@ import ConfirmModal from '@components/common/confirmModal';
 import GhostButton from '@components/common/ghostButton';
 import InfoModal from '@components/common/infoModal';
 import SocialMediaLinkModal from '@components/common/socialMediaLinkModal';
+import Placeholder from '@components/common/placeholder';
 
 export {
   Loading,
@@ -66,4 +67,5 @@ export {
   GhostButton,
   InfoModal,
   SocialMediaLinkModal,
+  Placeholder,
 };
