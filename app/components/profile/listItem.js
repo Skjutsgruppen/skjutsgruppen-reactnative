@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingHorizontal: 20,
     justifyContent: 'space-between',
+    height: 80,
   },
   item: {
     flex: 1,
