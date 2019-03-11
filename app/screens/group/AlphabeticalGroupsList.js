@@ -19,12 +19,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 4,
     paddingHorizontal: 24,
+    height: 100,
   },
   loadingWrapper: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
+    backgroundColor: '#fff',
   },
 });
 
@@ -35,37 +36,49 @@ class AlphabeticalGroupsList extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       alphabeticalGroups: [],
       loadingState: false,
       sectionLoadMoreArray: [],
+      totalCount: 0,
     };
   }
 
-  componentWillReceiveProps({ alphabetisedGroups, loading }) {
+  componentWillReceiveProps({ alphabetisedGroups, loading, navigation }) {
     let alphabeticalGroups = [];
-
     if (!loading) {
       this.setState({ loadingState: true });
-
-      alphabeticalGroups = alphabetisedGroups.map(row => ({
-        count: row.Groups.count,
-        data: row.Groups.rows,
-        title: row.alphabet,
-      }));
-
-      this.setState({ alphabeticalGroups, loadingState: false });
+      let totalCount = 0;
+      alphabeticalGroups = alphabetisedGroups.map((row) => {
+        totalCount += row.Groups.rows.length + 2;
+        return ({
+          count: row.Groups.count,
+          data: row.Groups.rows,
+          title: row.alphabet,
+        });
+      });
+      this.setState({ alphabeticalGroups, loadingState: true, totalCount });
+      setTimeout(() => {
+        this.sectionList.scrollToLocation({
+          sectionIndex: navigation.state.params.sectionIndex,
+          itemIndex: -1,
+        });
+        this.setState({ loadingState: false });
+      }, 500);
     }
   }
 
-  sectionFooter = ({ section }) => {
-    const { loadingState } = this.state;
-
-    if (loadingState) return null;
-
-    return (<AlphabeticalGroupsLoadMore section={section} />);
+  getItemLayout = (data, index) => {
+    const height = 100;
+    // console.log(index);
+    return {
+      length: height,
+      offset: height * index,
+      index,
+    };
   }
+
+  sectionFooter = ({ section }) => (<AlphabeticalGroupsLoadMore section={section} />);
 
   redirect = (type, { id }) => {
     const { navigation } = this.props;
@@ -76,32 +89,25 @@ class AlphabeticalGroupsList extends Component {
   }
 
   renderAlphabetisedGroupsList = () => {
-    const { loading } = this.props;
-    const { alphabeticalGroups, loadingState } = this.state;
-
-    if (loading) {
-      return (<View style={styles.loadingWrapper}><Loading /></View>);
-    }
-
-    if (loadingState) {
-      return null;
-    }
-
+    const { alphabeticalGroups, totalCount } = this.state;
     return (
       <SectionList
-        renderItem={({ item }) => (
-          item.isBlocked ?
+        ref={(ref) => { this.sectionList = ref; }}
+        renderItem={data => (
+          data.item.isBlocked ?
             null :
             <GroupsItem
-              key={item.id}
-              group={item}
+              key={data.item.id}
+              group={data.item}
               onPress={this.redirect}
-            />)
-        }
+            />
+        )}
         keyExtractor={(item, index) => index}
         sections={alphabeticalGroups}
         renderSectionHeader={item => <Heading fontVariation="bold" style={styles.listHeader}>{item.section.title}</Heading>}
         renderSectionFooter={item => this.sectionFooter(item)}
+        initialNumToRender={totalCount}
+        getItemLayout={this.getItemLayout}
         stickySectionHeadersEnabled
         onEndReachedThreshold={300}
         legacyImplementation
@@ -110,10 +116,13 @@ class AlphabeticalGroupsList extends Component {
   }
 
   render() {
+    const { loading } = this.props;
+    const { loadingState } = this.state;
     return (
       <Wrapper>
         <ToolBar title={trans('group.alphabetical_order')} />
         {this.renderAlphabetisedGroupsList()}
+        { (loading || loadingState) && <View style={styles.loadingWrapper}><Loading /></View>}
       </Wrapper>
     );
   }
@@ -125,10 +134,12 @@ AlphabeticalGroupsList.propTypes = {
   }).isRequired,
   loading: PropTypes.bool.isRequired,
   alphabetisedGroups: PropTypes.arrayOf(PropTypes.shape()),
+  sectionIndex: PropTypes.number,
 };
 
 AlphabeticalGroupsList.defaultProps = {
   alphabetisedGroups: [],
+  sectionIndex: 0,
 };
 
 export default compose(

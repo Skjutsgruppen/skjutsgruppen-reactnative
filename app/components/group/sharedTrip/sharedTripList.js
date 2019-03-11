@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, SectionList, View, Platform } from 'react-native';
+import { StyleSheet, SectionList, View } from 'react-native';
 import PropTypes from 'prop-types';
 import ListItem from '@components/profile/listItem';
 import { getDate } from '@config';
@@ -31,7 +31,6 @@ class SharedTripList extends Component {
     const tripsByDate = [];
     let date = '';
     const tripDates = [];
-
     groupTripCalendar.forEach((trip) => {
       date = getDate(trip.date).format('YYYY-MM-DD');
 
@@ -42,7 +41,6 @@ class SharedTripList extends Component {
         tripsByDate[tripDates.indexOf(date)].data.push(trip);
       }
     });
-
     this.setState({
       tripDates,
       tripsByDate,
@@ -53,39 +51,18 @@ class SharedTripList extends Component {
     const { tripsByDate } = this.state;
     const { currentDate } = this.props;
     let currentDateIndex = 0;
-    let timeout = 800;
-    const tripsCount = tripsByDate.length;
-
-    if (tripsCount > 100 && tripsCount < 200) {
-      timeout = 1000;
-    } else if (tripsCount > 200 && tripsCount < 300) {
-      timeout = 1200;
-    } else if (tripsCount > 300 && tripsCount < 400) {
-      timeout = 1400;
-    } else if (tripsCount > 400 && tripsCount < 500) {
-      timeout = 1600;
-    } else if (tripsCount > 500) {
-      timeout = 2000;
-    }
 
     tripsByDate.reduce((acc, trip, index) => {
       if (trip.title === currentDate) currentDateIndex = index;
       return null;
     });
 
-    const viewPosition = currentDateIndex >= (tripsByDate.length - 3) ? 0.8 : 0;
-
-    if (this.sectionListRef && Platform.OS === 'ios') {
-      setTimeout(() => {
-        this.sectionListRef.scrollToLocation({
-          animated: true,
-          sectionIndex: currentDateIndex,
-          itemIndex: -1,
-          viewPosition,
-        });
-      },
-      timeout,
-      );
+    if (this.sectionListRef) {
+      this.sectionListRef.scrollToLocation({
+        animated: true,
+        sectionIndex: currentDateIndex,
+        itemIndex: -1,
+      });
     }
   }
 
@@ -95,12 +72,29 @@ class SharedTripList extends Component {
     return tripDates.indexOf(currentDate);
   }
 
+  calculateOffset = (data, index) => {
+    let position = 0;
+    let sectionIndex = 0;
+    let offset = 0;
+    while (position < index) {
+      position += 1; // for header
+      offset += 66; // for header
+      position += data[sectionIndex].data.length; // for items
+      offset += data[sectionIndex].data.length * 80; // for items
+      position += 1; // for footer. to stop loop
+      sectionIndex += 1;
+    }
+    return (
+      { length: 66, offset, index }
+    );
+  }
+
   render() {
-    const { navigation } = this.props;
+    const { navigation, groupTripCalendar } = this.props;
     const { tripsByDate } = this.state;
     return (
       <SectionList
-        initialNumToRender={500}
+        initialNumToRender={groupTripCalendar.length + (tripsByDate.length * 2)}
         sections={tripsByDate}
         renderItem={
           ({ item }) => {
@@ -128,10 +122,9 @@ class SharedTripList extends Component {
             </View>
           )
         }
+        renderSectionFooter={null}
         ref={(section) => { this.sectionListRef = section; }}
-        getItemLayout={(data, index) => (
-          { length: 66, offset: 66 * index, index }
-        )}
+        getItemLayout={this.calculateOffset}
       />
     );
   }

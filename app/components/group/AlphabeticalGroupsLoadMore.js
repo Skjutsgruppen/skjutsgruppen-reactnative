@@ -67,7 +67,7 @@ class AlphabeticalGroupsLoadMore extends Component {
     }
 
     if (loading) {
-      return (<Loading />);
+      return (<Loading style={{ height: 100, alignItems: 'center', justifyContent: 'center' }} />);
     }
 
     return (<LoadMore onPress={() => this.fetchMore()} remainingCount={remaining} />);

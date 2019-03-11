@@ -7,7 +7,7 @@ import { AppText } from '@components/utils/texts';
 
 const styles = StyleSheet.create({
   more: {
-    height: 80,
+    height: 100,
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
