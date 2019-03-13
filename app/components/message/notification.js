@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { withNotification } from '@services/apollo/notification';
 import { compose } from 'react-apollo';
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class NewNotification extends PureComponent {
+class NewNotification extends Component {
   componentWillMount() {
     const { subscribeToNotification, user, filters, notifications } = this.props;
 
@@ -102,6 +102,7 @@ class NewNotification extends PureComponent {
     return (
       <DataList
         data={notifications}
+        extraData={notifications}
         renderItem={({ item }) => (
           item.Notifiable ?
             <MesssageItem

@@ -70,7 +70,9 @@ const ConfirmModal = ({
         {
           !loading &&
           <View>
-            <AppText style={styles.message}>{message}</AppText>
+            {
+              message && <AppText style={styles.message}>{message}</AppText>
+            }
             <View style={styles.actions}>
               <GhostButton
                 label={confirmLabel}
@@ -98,7 +100,7 @@ ConfirmModal.propTypes = {
   loading: PropTypes.bool.isRequired,
   style: ViewPropTypes.style,
   visible: PropTypes.bool,
-  message: PropTypes.node.isRequired,
+  message: PropTypes.node,
   onRequestClose: PropTypes.func.isRequired,
   confirmLabel: PropTypes.string.isRequired,
   denyLabel: PropTypes.string.isRequired,
@@ -117,7 +119,7 @@ ConfirmModal.defaultProps = {
   confirmLabel: 'Ok',
   denyLabel: 'Cancel',
   cancelable: true,
-
+  message: null,
 };
 
 export default ConfirmModal;

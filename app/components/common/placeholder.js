@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import { View, Animated, StyleSheet, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -46,10 +46,12 @@ class Placeholder extends Component {
         Animated.timing(this.state.animValue, {
           duration: 800,
           toValue: 1,
+          useNativeDriver: true,
         }),
         Animated.timing(this.state.animValue, {
           duration: 800,
           toValue: 0,
+          useNativeDriver: true,
         }),
       ]), {
         iterations: -1,
@@ -59,7 +61,8 @@ class Placeholder extends Component {
 
   render() {
     const { count, color, wrapperStyle } = this.props;
-    const rows = [...Array(count).keys()];
+
+    const rows = Array.from({ length: count }, (x, i) => i);
 
     const opacity = this.state.animValue.interpolate({
       inputRange: [0, 1],
@@ -90,7 +93,7 @@ class Placeholder extends Component {
 Placeholder.propTypes = {
   count: PropTypes.number,
   color: PropTypes.string,
-  wrapperStyle: View.propTypes.style,
+  wrapperStyle: ViewPropTypes.style,
 };
 
 Placeholder.defaultProps = {

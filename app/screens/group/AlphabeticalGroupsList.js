@@ -103,6 +103,8 @@ class AlphabeticalGroupsList extends Component {
         renderSectionHeader={item => <Heading fontVariation="bold" style={styles.listHeader}>{item.section.title}</Heading>}
         renderSectionFooter={item => this.sectionFooter(item)}
         stickySectionHeadersEnabled
+        onEndReachedThreshold={300}
+        legacyImplementation
       />
     );
   }

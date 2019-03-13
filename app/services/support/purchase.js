@@ -29,8 +29,9 @@ export async function getLatestSubscription(callback) {
   try {
     await RNIap.prepare();
     const subscriptionList = await RNIap.getAvailablePurchases();
+
     if (subscriptionList.length === 0) {
-      callback(null, {});
+      callback(null, null);
     } else {
       const latestSubscription = [].concat(subscriptionList).sort((first, second) =>
         second.transactionDate - first.transactionDate)[0];
@@ -46,4 +47,23 @@ export async function getLatestSubscription(callback) {
   } finally {
     await RNIap.endConnection();
   }
+}
+
+export async function isSubscriptionActive() {
+  let currentSubscription;
+  if (Platform.OS === 'android') {
+    try {
+      await RNIap.prepare();
+      const subscriptionList = await RNIap.getAvailablePurchases();
+      if (subscriptionList.length > 0) {
+        currentSubscription = subscriptionList[0].productId;
+      }
+    } catch (error) {
+      currentSubscription = 'error';
+      console.warn(error);
+    } finally {
+      await RNIap.endConnection();
+    }
+  }
+  return currentSubscription;
 }

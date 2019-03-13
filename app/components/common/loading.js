@@ -8,20 +8,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-const Loading = ({ style, size }) => (
+const Loading = ({ style, size, color }) => (
   <View style={[styles.wrapper, style]}>
-    <Loader size={size} color="#00aeef" />
+    <Loader size={size} color={color} />
   </View>
 );
 
 Loading.propTypes = {
   style: Loader.propTypes.style,
-  size: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
 };
 
 Loading.defaultProps = {
   style: {},
   size: 'large',
+  color: '#00aeef',
 };
 
 export default Loading;

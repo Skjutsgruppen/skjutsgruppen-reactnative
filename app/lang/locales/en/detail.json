@@ -69,5 +69,7 @@
   "you_are_friends_of_friends": "You are friends of friends!",
   "you_are_friends": "You are friends!",
   "share_this_group": "Share this group",
-  "trip_not_available": "The trip is not available."
+  "trip_not_available": "The trip is not available.",
+  "email_sent": "Email sent",
+  "check_your_inbox": "Please check your inbox."
 }

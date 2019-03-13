@@ -367,8 +367,10 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
               exists = true;
               updateActiveRides(newNotification.Notifiable);
             } else {
-              newRows = prev.notifications.rows.map((row) => {
+              let foundIndex = null;
+              const initialRows = prev.notifications.rows.map((row, index) => {
                 if (row.Notifiable.id === newNotification.Notifiable.id) {
+                  foundIndex = index;
                   const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
                   const ids = row.ids.concat(newNotification.ids);
                   let found = false;
@@ -390,14 +392,25 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 
                 return row;
               });
+
+              if (foundIndex) {
+                newRows = [
+                  initialRows[foundIndex],
+                  ...initialRows.filter((row, index) => index !== foundIndex),
+                ];
+              } else {
+                newRows = initialRows;
+              }
             }
           } else if (newNotification.notifiable === 'Group') {
             if (newNotification.Notifiable.muted) {
               exists = true;
               updateActiveGroups(newNotification.Notifiable);
             } else {
-              newRows = prev.notifications.rows.map((row) => {
+              let foundIndex = null;
+              const initialRows = prev.notifications.rows.map((row, index) => {
                 if (row.Notifiable.id === newNotification.Notifiable.id) {
+                  foundIndex = index;
                   const Notifiers = row.Notifiers.concat(newNotification.Notifiers);
                   const ids = row.ids.concat(newNotification.ids);
                   let found = false;
@@ -419,6 +432,15 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
 
                 return row;
               });
+
+              if (foundIndex) {
+                newRows = [
+                  initialRows[foundIndex],
+                  ...initialRows.filter((row, index) => index !== foundIndex),
+                ];
+              } else {
+                newRows = initialRows;
+              }
             }
           } else if (newNotification.notifiable === 'Experience') {
             if (newNotification.Notifiable.Trip.muted) {
@@ -440,11 +462,13 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
             }
           }
 
+
           if (exists) {
             return {
               notifications: {
                 ...prev.notifications,
-                ...{ rows: newRows, count: prev.notifications.count },
+                rows: newRows,
+                count: prev.notifications.count,
               },
             };
           }
@@ -454,7 +478,8 @@ export const withNotification = graphql(NOTIFICATION_QUERY, {
           return {
             notifications: {
               ...prev.notifications,
-              ...{ rows: newRows, count: prev.notifications.count + 1 },
+              rows: newRows,
+              count: prev.notifications.count + 1,
             },
           };
         },

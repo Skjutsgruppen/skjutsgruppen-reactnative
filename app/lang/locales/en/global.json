@@ -78,5 +78,7 @@
   "gps_turned_off_android": "Your GPS is turned off. Turn on your GPS goto settings",
   "open_settings": "Open Settings",
   "max_file_size_8_mb": "Max file size is 8 MB",
-  "tweet_to":"Tweet to @{{twitterUsername}}"
+  "tweet_to":"Tweet to @{{twitterUsername}}",
+  "email_not_sent": "Email not sent",
+  "please_try_again": "Please try again."
 }

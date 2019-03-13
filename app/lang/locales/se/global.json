@@ -74,5 +74,7 @@
   "open_settings": "Open Settings",
   "max_file_size_8_mb": "Max file size is 8 MB",
   "gps_turned_off_ios": "Your GPS is turned off. Please turn it on from Settings -> Privacy -> Location Services.",
-  "gps_turned_off_android": "Your GPS is turned off. Turn on your GPS goto settings"
+  "gps_turned_off_android": "Your GPS is turned off. Turn on your GPS goto settings",
+  "email_not_sent": "Email not sent",
+  "please_try_again": "Please try again."
 }

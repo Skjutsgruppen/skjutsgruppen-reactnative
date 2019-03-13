@@ -17,7 +17,7 @@ import AuthAction from '@redux/actions/auth';
 import { withRemoveAppToken, withAccount } from '@services/apollo/profile';
 import { getDeviceId } from '@helpers/device';
 import { trans } from '@lang/i18n';
-import { AppText, Title } from '@components/utils/texts';
+import { AppText } from '@components/utils/texts';
 import Package from '@components/garden/subscriptionPackage';
 import Header from '@components/garden/header';
 import HelpMore from '@components/garden/helpMore';
@@ -26,9 +26,7 @@ import Costs from '@components/garden/costs';
 import { withMySupport, verifyLatestSupport } from '@services/apollo/support';
 import GithubIcon from '@assets/icons/ic_github.png';
 import OpenAPIIcon from '@assets/icons/ic_open_api.png';
-import { ConfirmModal, AppNotification } from '@components/common';
-import ErrorIcon from '@assets/icons/ic_warning.png';
-import SuccessIcon from '@assets/icons/ic_checked_green.png';
+import { ConfirmModal } from '@components/common';
 import { getLatestSubscription } from '@services/support/purchase';
 
 const styles = StyleSheet.create({
@@ -61,8 +59,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   linkContent: {
-    padding: 30,
-    marginBottom: 32,
+    paddingHorizontal: 30,
+    paddingTop: 30,
+    paddingBottom: 20,
   },
   miniDivider: {
     height: 1,
@@ -96,7 +95,6 @@ class Garden extends Component {
     this.scrollView = null;
     this.state = {
       subscribing: false,
-      showAppNotification: false,
       alertMessage: '',
       error: false,
     };
@@ -113,7 +111,7 @@ class Garden extends Component {
 
     subscribeToUpdatedProfile({ id: data.profile.id });
     getLatestSubscription((error, latestSubscription) => {
-      if (error) {
+      if (error || !latestSubscription) {
         console.warn(error);
         return;
       }
@@ -172,47 +170,19 @@ class Garden extends Component {
 
   render() {
     const { data, mySupport } = this.props;
-    const { subscribing, showAppNotification, alertMessage, error } = this.state;
+    const { subscribing } = this.state;
 
     if (!data.profile) return null;
 
-    // to test in app purchase
     const supporter = data.profile.isSupporter || false;
-    const isAdmin = data.profile.isAdmin || false;
-    // const headingLabel = supporter ? trans('profile.you_are_awesome')
-    //   : isAdmin? trans('profile.this_app_is_a_self_sustaining_garden') ;
-    // const infoLabel = supporter ? trans('profile.right_now_you_support')
-    //   : trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
 
-    // const headingLabel = supporter ? trans('profile.you_are_awesome')
-    //   : trans('profile.this_app_will_soon_be_a_self_sustaining_garden');
-    // const infoLabel = supporter ? trans('profile.right_now_you_support')
-    //   : trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
-
-    let headingLabel;
-    let infoLabel;
-    if (isAdmin) {
-      headingLabel = supporter ? trans('profile.this_app_is_a_self_sustaining_garden') :
-        trans('profile.this_app_is_a_self_sustaining_garden');
-      infoLabel = supporter ? trans('profile.right_now_you_support') :
-        trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
-    } else {
-      headingLabel = trans('profile.this_app_will_soon_be_a_self_sustaining_garden');
-      infoLabel = trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
-    }
+    const headingLabel = supporter ? trans('profile.you_are_awesome') :
+      trans('profile.this_app_is_a_self_sustaining_garden');
+    const infoLabel = supporter ? trans('profile.right_now_you_support') :
+      trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
 
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
-        {
-          showAppNotification && (
-            <AppNotification
-              name={alertMessage}
-              type="icon"
-              image={error ? ErrorIcon : SuccessIcon}
-              handleClose={() => this.setState({ showAppNotification: false })}
-            />
-          )
-        }
         <ScrollView ref={(ref) => { this.scrollView = ref; }} showsVerticalScrollIndicator={false}>
           <Header
             showTitle={!supporter}
@@ -221,70 +191,61 @@ class Garden extends Component {
             infoLabel={infoLabel}
             user={data.profile}
           />
-          { !isAdmin &&
-            <View style={styles.linkContent}>
-              <TouchableOpacity onPress={() => this.openLink(trans('feed.trello_url'))}>
-                <AppText
-                  size={26}
-                  fontVariation="semibold"
-                  color={Colors.text.blue}
-                >
-                  {trans('profile.go_to_trello')}
-                </AppText>
-              </TouchableOpacity>
-              <View style={styles.miniDivider} />
-              <TouchableOpacity onPress={() => this.openLink(trans('feed.github_url'))}>
-                <AppText
-                  fontVariation="semibold"
-                  size={26}
-                  color={Colors.text.blue}
-                  style={{ marginBottom: 48 }}
-                >
-                  {trans('profile.go_to_github')}
-                </AppText>
-              </TouchableOpacity>
-              <Title size={23} color={Colors.text.gray} style={{ lineHeight: 36 }}>
-                {trans('profile.we_are_currently_also_building')}
-              </Title>
-            </View>
+          {
+            !supporter && (
+              <View style={styles.linkContent}>
+                <TouchableOpacity onPress={() => this.openLink(trans('feed.trello_url'))}>
+                  <AppText
+                    size={26}
+                    fontVariation="semibold"
+                    color={Colors.text.blue}
+                  >
+                    {trans('profile.go_to_trello')}
+                  </AppText>
+                </TouchableOpacity>
+                <View style={styles.miniDivider} />
+                <TouchableOpacity onPress={() => this.openLink(trans('feed.github_url'))}>
+                  <AppText
+                    fontVariation="semibold"
+                    size={26}
+                    color={Colors.text.blue}
+                  >
+                    {trans('profile.go_to_github')}
+                  </AppText>
+                </TouchableOpacity>
+                {/* <Title size={23} color={Colors.text.gray} style={{ lineHeight: 36 }}>
+                  {trans('profile.we_are_currently_also_building')}
+                </Title> */}
+              </View>
+            )
           }
-          {!supporter && isAdmin &&
+          {!supporter &&
             <View>
               <Package
-                noBackgroud
+                noBackground
                 elevation={0}
                 planId={'10_kr_per_month'}
                 info={trans('profile.total_of_10_auto_renewed_every_month')}
-                title="Support a month"
-                currentlySupporting={mySupport.data.currentSubscriptionPlan}
-                amountPerMonth="10"
-                showAppNotification={(err, message) => {
-                  this.setState({ showAppNotification: true, error: err, alertMessage: message });
-                }}
+                amount="10"
+                durationLabel={trans('profile.one_month')}
               />
               <Package
                 elevation={20}
                 planId={'29_kr_per_month_garden'}
-                title="Support a month"
                 info={trans('profile.total_of_29_auto_renewed_every_month')}
-                currentlySupporting={mySupport.data.currentSubscriptionPlan}
-                amountPerMonth="29"
-                showAppNotification={(err, message) => {
-                  this.setState({ showAppNotification: true, error: err, alertMessage: message });
-                }}
+                amount="29"
+                durationLabel={trans('profile.one_month')}
               />
-              <HelpMore
-                currentlySupporting={mySupport.data.currentSubscriptionPlan}
-                showAppNotification={(err, message) => {
-                  this.setState({ showAppNotification: true, error: err, alertMessage: message });
-                }}
-              />
+              <HelpMore />
               <HowItWorks />
             </View>
           }
-          {isAdmin &&
-            <Costs supporter={supporter} showCostTitle={!supporter} showDescription={false} />
-          }
+          <Costs
+            supporter={supporter}
+            showCostTitle={!supporter}
+            showDescription={false}
+            wrapperStyle={{ paddingTop: supporter ? 0 : 50 }}
+          />
           <ProfileAction
             onPress={() => this.openLink(trans('feed.github_url'))}
             title={trans('profile.we_are_open_source')}
@@ -301,8 +262,11 @@ class Garden extends Component {
             label={trans('profile.build_get_statistics_and_more')}
             icon={OpenAPIIcon}
           />
-          <ProfileAction label={trans('profile.about_the_movement')} />
           <ProfileAction label={trans('profile.international_ridesharingday')} /> */}
+          <ProfileAction
+            label={trans('profile.about_the_movement')}
+            onPress={() => this.openLink('https://docs.google.com/document/d/1WZECcrD_Qw9dYoLA-uSr8cxCluRjtNKP0gzVXFaxieg/edit?usp=sharing')}
+          />
           <ProfileAction
             label={trans('profile.your_profile')}
             onPress={() => this.redirect('Profile')}
@@ -334,6 +298,7 @@ class Garden extends Component {
           cancelable={false}
           onConfirm={() => {}}
           onDeny={() => {}}
+          onRequestClose={() => {}}
         />
       </LinearGradient>
     );
@@ -358,7 +323,10 @@ Garden.propTypes = {
   removeAppToken: PropTypes.func.isRequired,
   subscribeToUpdatedProfile: PropTypes.func.isRequired,
   verifySupport: PropTypes.func.isRequired,
-  mySupport: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  mySupport: PropTypes.shape({
+    currentSubscriptionPlan: PropTypes.string,
+    subscriptions: PropTypes.array,
+  }).isRequired,
 };
 
 Garden.defaultProps = {

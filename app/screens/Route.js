@@ -161,6 +161,7 @@ class RouteMap extends PureComponent {
     locationSharedToSpecificResource }) {
     const sharedLocations = locationSharedToSpecificResource.data ?
       locationSharedToSpecificResource.data.filter(location => location.locationCoordinates) : [];
+
     const { __typename } = navigation.state.params.info;
     let info = {};
 
@@ -515,6 +516,7 @@ class RouteMap extends PureComponent {
       waypoints,
       info,
       myPosition,
+      stops,
       fetchingPosition } = this.state;
     const { __typename } = info;
     const { pressShareLocation } = navigation.state.params;
@@ -559,7 +561,9 @@ class RouteMap extends PureComponent {
           }
           {this.renderTrips()}
           {this.renderLiveLocations()}
-          {this.renderStops()}
+          {
+            (stops && stops.length > 0) && this.renderStops()
+          }
           {(waypoints.length > 0) &&
             <MapView.Polyline
               strokeWidth={5}

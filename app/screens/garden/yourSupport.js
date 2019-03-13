@@ -12,13 +12,11 @@ import Package from '@components/garden/subscriptionPackage';
 import HelpMore from '@components/garden/helpMore';
 import HowItWorks from '@components/garden/howItWorks';
 import Costs from '@components/garden/costs';
-import ErrorIcon from '@assets/icons/ic_warning.png';
-import SuccessIcon from '@assets/icons/ic_checked_green.png';
 import { withMySupport, withCancelSupportSubscription } from '@services/apollo/support';
 import { withAccount } from '@services/apollo/profile';
 import { trans } from '@lang/i18n';
 import CrossIcon from '@assets/icons/ic_cross.png';
-import { ConfirmModal, AppNotification } from '@components/common';
+import { ConfirmModal } from '@components/common';
 import { unsubscribePayment } from '@services/support/purchase';
 
 const styles = StyleSheet.create({
@@ -54,9 +52,6 @@ class YourSupport extends Component {
 
     this.state = {
       subscribing: false,
-      showAppNotification: false,
-      alertMessage: '',
-      error: false,
       showConfirmCancel: false,
       subscriptionId: null,
     };
@@ -137,7 +132,7 @@ class YourSupport extends Component {
 
   render() {
     const { mySupport, data } = this.props;
-    const { subscribing, showAppNotification, alertMessage, showConfirmCancel, error } = this.state;
+    const { subscribing, showConfirmCancel } = this.state;
 
     if (!mySupport.data || !data.profile) return null;
 
@@ -145,16 +140,6 @@ class YourSupport extends Component {
 
     return (
       <Wrapper>
-        {
-          showAppNotification && !subscribing && (
-            <AppNotification
-              name={alertMessage}
-              type="icon"
-              image={error ? ErrorIcon : SuccessIcon}
-              handleClose={() => this.setState({ showAppNotification: false })}
-            />
-          )
-        }
         <ToolBar title={trans('profile.your_support')} fontVariation="bold" />
         <ScrollView>
           <Header
@@ -185,37 +170,24 @@ class YourSupport extends Component {
             </Title>
           </View>
           <Package
-            noBackgroud
+            noBackground
             elevation={0}
-            durationLabel={trans('profile.support_one_month')}
-            amount="10kr"
+            durationLabel={trans('profile.one_month')}
+            amount="10"
             planId={'10_kr_per_month'}
             info={trans('profile.total_of_10_auto_renewed_every_month')}
-            title="Support a month"
             currentlySupporting={mySupport.data.currentSubscriptionPlan}
-            amountPerMonth="10"
-            showAppNotification={(err, message) => {
-              this.setState({ showAppNotification: true, error: err, alertMessage: message });
-            }}
           />
           <Package
             elevation={20}
-            durationLabel={trans('profile.support_one_month')}
-            amount="29kr"
+            durationLabel={trans('profile.one_month')}
+            amount="29"
             planId={'29_kr_per_month_garden'}
-            title="Support a month"
             info={trans('profile.total_of_29_auto_renewed_every_month')}
             currentlySupporting={mySupport.data.currentSubscriptionPlan}
-            amountPerMonth="29"
-            showAppNotification={(err, message) => {
-              this.setState({ showAppNotification: true, error: err, alertMessage: message });
-            }}
           />
           <HelpMore
             currentlySupporting={mySupport.data.currentSubscriptionPlan}
-            showAppNotification={(err, message) => {
-              this.setState({ showAppNotification: true, error: err, alertMessage: message });
-            }}
           />
           <HowItWorks />
           <Costs supporter={supporter} />
@@ -226,6 +198,7 @@ class YourSupport extends Component {
           cancelable={false}
           onConfirm={() => {}}
           onDeny={() => {}}
+          onRequestClose={() => {}}
         />
         <ConfirmModal
           loading={false}
