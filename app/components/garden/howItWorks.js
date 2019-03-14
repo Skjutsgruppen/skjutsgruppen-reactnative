@@ -55,10 +55,10 @@ const HowItWorks = ({ user }) => (
     </View>
     <View style={styles.row}>
       <View style={styles.iconWrapper}>
-        <Avatar size={62} isSupporter={user.isSupporter} imageURI={user.avatar} />
+        <Avatar size={62} isSupporter imageURI={user.avatar} />
       </View>
       <AppText style={styles.text}>
-        {trans('profile.all_the_costs_are_transparent')}
+        {trans('profile.supporters_get_a_leaf')}
       </AppText>
     </View>
     <View style={styles.row}>
@@ -66,7 +66,7 @@ const HowItWorks = ({ user }) => (
         <Image source={AddPhoto} style={{ resizeMode: 'contain' }} />
       </View>
       <AppText style={styles.text}>
-        {trans('profile.all_the_costs_are_transparent')}
+        {trans('profile.supporters_can_add_photos')}
       </AppText>
     </View>
     <AppText style={{ lineHeight: 26, marginTop: 48 }}>

@@ -53,7 +53,17 @@ const styles = StyleSheet.create({
 });
 
 const navigate = (navigation) => {
-  navigation.navigate('SupportReadMore');
+  navigation.navigate('Garden');
+};
+
+const getProgressBar = (garden) => {
+  if (garden.server < 100) {
+    return (<CostCard title={trans('profile.server_cost')} coveredPercentage={garden.server} totalCost="19,299" />);
+  }
+  if (garden.programmer < 100) {
+    return (<CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="100,000" />);
+  }
+  return (<CostCard title={trans('profile.project_manager')} coveredPercentage={garden.projectManager} totalCost="430,000" />);
 };
 
 const Supporter = ({ garden, user, navigation }) => (
@@ -72,9 +82,7 @@ const Supporter = ({ garden, user, navigation }) => (
       </AppText>
     </View>
     <View style={styles.suppoterCostCard}>
-      <CostCard title={trans('profile.server_cost')} coveredPercentage={garden.server} totalCost="2400" />
-      <CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="18000" />
-      <CostCard title={trans('profile.project_manager')} coveredPercentage={garden.projectManager} totalCost="10000" />
+      {getProgressBar(garden)}
     </View>
     <View style={styles.buttonComponent}>
       <RoundedButton

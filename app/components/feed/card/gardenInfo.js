@@ -66,9 +66,9 @@ const Supporter = ({ garden, navigation }) => (
       </Heading>
     </View>
     <View style={styles.suppoterCostCard}>
-      <CostCard title={trans('profile.server_cost')} coveredPercentage={garden.server} totalCost="2400" />
-      <CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="18000" />
-      <CostCard title={trans('profile.project_manager')} coveredPercentage={garden.projectManager} totalCost="10000" />
+      <CostCard title={trans('profile.server_cost')} coveredPercentage={garden.server} totalCost="19,299" />
+      <CostCard title={trans('profile.a_programmer')} coveredPercentage={garden.programmer} totalCost="100,000" />
+      <CostCard title={trans('profile.project_manager')} coveredPercentage={garden.projectManager} totalCost="430,000" />
     </View>
     <View style={styles.buttonComponent}>
       <RoundedButton

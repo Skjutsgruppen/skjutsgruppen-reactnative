@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Modal } from 'react-native';
+import { StyleSheet, View, Modal, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'react-apollo';
 
@@ -37,6 +37,40 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
+  },
+  crown: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: -10,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  crownOne: {
+    height: 14,
+    borderRadius: 4,
+    width: 4,
+    top: 4,
+    backgroundColor: Colors.background.yellow,
+    transform: [
+      { rotate: '-45deg' },
+    ],
+  },
+  crownTwo: {
+    height: 14,
+    borderRadius: 4,
+    width: 4,
+    top: -2,
+    backgroundColor: Colors.background.yellow,
+  },
+  crownThree: {
+    height: 14,
+    borderRadius: 4,
+    width: 4,
+    top: 4,
+    backgroundColor: Colors.background.yellow,
+    transform: [
+      { rotate: '45deg' },
+    ],
   },
 });
 
@@ -76,7 +110,16 @@ class Package extends Component {
               {`${trans('profile.support')} ${durationLabel}`}
             </RoundedButton>
             <View style={{ marginLeft: 12 }}>
-              <Heading centered color={Colors.text.yellowGreen}>{amount}kr</Heading>
+              <View>
+                { planId === '10_kr_per_month' &&
+                  <View style={styles.crown}>
+                    <View style={styles.crownOne} />
+                    <View style={styles.crownTwo} />
+                    <View style={styles.crownThree} />
+                  </View>
+                }
+              </View>
+              <Heading centered color={Colors.text.yellowGreen}>{amount} kr</Heading>
             </View>
           </View>
           {

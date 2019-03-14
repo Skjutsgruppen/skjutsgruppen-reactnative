@@ -53,9 +53,9 @@ class Costs extends Component {
             </Heading>
           </View>
         }
-        <CostCard title={trans('profile.server_cost')} coveredPercentage={gardenInfo.data.server} totalCost="2400" />
-        <CostCard title={trans('profile.a_programmer')} coveredPercentage={gardenInfo.data.programmer} totalCost="18000" />
-        <CostCard title={trans('profile.project_manager')} coveredPercentage={gardenInfo.data.projectManager} totalCost="10000" />
+        <CostCard title={trans('profile.server_cost')} coveredPercentage={gardenInfo.data.server} totalCost="19,299" />
+        <CostCard title={trans('profile.a_programmer')} coveredPercentage={gardenInfo.data.programmer} totalCost="100,000" />
+        <CostCard title={trans('profile.project_manager')} coveredPercentage={gardenInfo.data.projectManager} totalCost="430,000" />
         <View style={styles.readMore}>
           {
             showDescription && (

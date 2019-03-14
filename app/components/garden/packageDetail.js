@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Platform, Linking, Image, Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { compose } from 'react-apollo';
 
 import { unsubscribePayment, showPayment, isSubscriptionActive } from '@services/support/purchase';
@@ -10,8 +11,8 @@ import { Heading, Title, AppText } from '@components/utils/texts';
 import Wrapper from '@components/common/wrapper';
 import ToolBar from '@components/utils/toolbar';
 import { AppNotification, RoundedButton, Loading } from '@components/common';
+import Avatar from '@components/common/avatar';
 import { trans } from '@lang/i18n';
-import SupporterAvatar from '@assets/supporter_avatar.png';
 import AddPhoto from '@assets/icons/ic_add_photo_app.png';
 import LogoCard from '@assets/tiny_card.png';
 import ErrorIcon from '@assets/icons/ic_warning.png';
@@ -181,6 +182,7 @@ class PackageDetail extends Component {
       headingText,
       featureText,
       durationLabel: duration,
+      user,
     } = this.props;
     const { loading, error, appNotificationVisibility } = this.state;
 
@@ -209,7 +211,7 @@ class PackageDetail extends Component {
           </Title>
           <View style={[styles.row, styles.features]}>
             <View style={styles.thumbnail}>
-              <Image source={SupporterAvatar} />
+              <Avatar size={62} isSupporter imageURI={user.avatar} />
             </View>
             <AppText style={{ flex: 1 }}>{trans('profile.a_leaf_next_to_your_profile_picture')}</AppText>
           </View>
@@ -230,6 +232,8 @@ class PackageDetail extends Component {
             )
           }
           <View style={styles.divider} />
+          <AppText style={styles.description} color={Colors.text.darkGray}>
+            {trans(Platform.OS === 'ios' ? 'profile.your_support_is_payed_via_ios' : 'profile.your_support_is_payed_via_android')}</AppText>
           <AppText style={styles.description} color={Colors.text.darkGray}>
             {trans('profile.package_description', { amount: `${amount} kr`, duration, store: Platform.OS === 'ios' ? 'iTunes' : 'Play Store' })}</AppText>
           <AppText
@@ -277,10 +281,13 @@ PackageDetail.propTypes = {
       subscriptions: PropTypes.array,
     },
   }).isRequired,
+  user: PropTypes.shape().isRequired,
 };
 
 PackageDetail.defaultProps = {
   pageTitle: '',
 };
 
-export default compose(withSupport, withMySupport)(PackageDetail);
+const mapStateToProps = state => ({ user: state.auth.user });
+
+export default compose(connect(mapStateToProps), withSupport, withMySupport)(PackageDetail);

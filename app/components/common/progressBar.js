@@ -39,7 +39,7 @@ class ProgressBar extends PureComponent {
       this.state.widthAnim,
       {
         toValue: 1,
-        duration: 350,
+        duration: 560,
         easing: Easing.easeInEaseOut,
         delay: 200,
       },
@@ -48,7 +48,7 @@ class ProgressBar extends PureComponent {
 
   componentWillUpdate() {
     const config = {
-      duration: 350,
+      duration: 560,
       update: {
         type: 'easeInEaseOut',
       },
