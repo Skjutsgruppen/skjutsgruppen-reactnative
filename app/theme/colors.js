@@ -31,6 +31,7 @@ const text = {
   purple: '#a27ba8',
   black: '#141414',
   darkGray: '#707070',
+  darkerGray: '#141414',
   gray: '#898989',
   brightPurple: '#9e049e',
   lightGray: '#dddee3',
