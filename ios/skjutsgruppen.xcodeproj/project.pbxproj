@@ -13,6 +13,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* SkjutsgruppenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SkjutsgruppenTests.m */; };
+		041236F8223A47FE00321199 /* SFUIDisplay-Semi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 041236BF223A47FE00321199 /* SFUIDisplay-Semi-Bold.ttf */; };
 		0453629420DD0B890031241F /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0453625B20DD0B730031241F /* libART.a */; };
 		045476D8212E725000A301CD /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 045476D7212E725000A301CD /* fabric.apikey */; };
 		04547712212E727700A301CD /* fabric.secret in Resources */ = {isa = PBXBuildFile; fileRef = 04547711212E727700A301CD /* fabric.secret */; };
@@ -72,6 +73,7 @@
 		CD475B1E603E4E349884F5E8 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D451A2F1E7244BEEAF2BD14C /* Ionicons.ttf */; };
 		D7638FF680604004A0F16138 /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */; };
 		DBD102003E414728B4450B1F /* libSendSMS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29AF3B7B2AEC4D3294661D92 /* libSendSMS.a */; };
+		E5D550099A5242669FF097CF /* SFUIDisplay-Semi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA5369D794F84A0585516F5F /* SFUIDisplay-Semi-Bold.ttf */; };
 		EA76B759739440E787D89AB7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C135225297084723854B2D48 /* FontAwesome.ttf */; };
 		ED4A81B246C3430A8BD5FF3C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCF7C40CC9284742BB6D862E /* Octicons.ttf */; };
 		F1690559CD6E4428A2AC2192 /* AvenirLTStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88C652C62E7743B9B785D65C /* AvenirLTStd-Black.otf */; };
@@ -496,6 +498,7 @@
 		00E356EE1AD99517003FC87E /* SkjutsgruppenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkjutsgruppenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* SkjutsgruppenTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkjutsgruppenTests.m; sourceTree = "<group>"; };
+		041236BF223A47FE00321199 /* SFUIDisplay-Semi-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SFUIDisplay-Semi-Bold.ttf"; path = "../assets/fonts/SFUIDisplay-Semi-Bold.ttf"; sourceTree = "<group>"; };
 		0453625520DD0B730031241F /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		045476D7212E725000A301CD /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		04547711212E727700A301CD /* fabric.secret */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.secret; sourceTree = "<group>"; };
@@ -561,6 +564,7 @@
 		A4B4BA137C0C4A50A14C7877 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = "SFUIText-SemiBold.ttf"; path = "../assets/fonts/SFUIText-SemiBold.ttf"; sourceTree = "<group>"; };
 		AA0ED3F963284A07ACBD2D60 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		AA5369D794F84A0585516F5F /* SFUIDisplay-Semi-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIDisplay-Semi-Bold.ttf"; path = "../assets/fonts/SFUIDisplay-Semi-Bold.ttf"; sourceTree = "<group>"; };
 		AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = "SFUIText-RegularItalic.ttf"; path = "../assets/fonts/SFUIText-RegularItalic.ttf"; sourceTree = "<group>"; };
 		B0E34D7FC2FF13AA2C2A4347 /* libPods-Skjutsgruppen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Skjutsgruppen.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB43CD007E9F48B4955C5A06 /* libTPSTwitterModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libTPSTwitterModule.a; sourceTree = "<group>"; };
@@ -1053,6 +1057,7 @@
 				BCF7C40CC9284742BB6D862E /* Octicons.ttf */,
 				25E7E579E7F5455498552E45 /* SimpleLineIcons.ttf */,
 				D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */,
+				041236BF223A47FE00321199 /* SFUIDisplay-Semi-Bold.ttf */,
 				319522A7925E4A4E874D0D69 /* SFUIDisplay-Bold.ttf */,
 				FF7A7FB2859C4DB2A00EC1AB /* SFUIDisplay-Regular.ttf */,
 				12EDC330D015410DB26D3B3F /* SFUIText-Bold.ttf */,
@@ -1060,6 +1065,7 @@
 				AB69B69B067840EFA9AF6CC3 /* SFUIText-RegularItalic.ttf */,
 				A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */,
 				88C652C62E7743B9B785D65C /* AvenirLTStd-Black.otf */,
+				AA5369D794F84A0585516F5F /* SFUIDisplay-Semi-Bold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1767,6 +1773,8 @@
 				045476D8212E725000A301CD /* fabric.apikey in Resources */,
 				7B88C97DD55D4EC5986C88C4 /* SFUIText-RegularItalic.ttf in Resources */,
 				F1690559CD6E4428A2AC2192 /* AvenirLTStd-Black.otf in Resources */,
+				E5D550099A5242669FF097CF /* SFUIDisplay-Semi-Bold.ttf in Resources */,
+				041236F8223A47FE00321199 /* SFUIDisplay-Semi-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
