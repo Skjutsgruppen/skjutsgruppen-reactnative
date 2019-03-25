@@ -47,5 +47,8 @@
   "rides_published_in_closed_group_still": "Notera att samåkningar som publiceras i en stängd grupp ändå kommer att vara sökbara och möjliga att delta i för alla i rörelsen.",
   "be_supporter_to_add_photo_in_trip": "You have to be a supporter to add a photo in a trip.",
   "no_route_found": "No route could be found between the start and destination. Please try again with more specific locations.",
-  "try_again": "Something went wrong! Please try again."
+  "try_again": "Something went wrong! Please try again.",
+  "support_the_garden_to_add_a_photo": "Support the garden to add a photo",
+  "you_dont_have_to_though": "You don't have to though",
+  "continue_without_photo": "Continue without photo"
 }

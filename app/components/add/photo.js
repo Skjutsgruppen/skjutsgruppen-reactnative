@@ -5,10 +5,17 @@ import {
   Image,
   Platform,
   Alert,
+  Modal,
+  Text,
 } from 'react-native';
+// import { compose } from 'react-apollo';
+
+import { withNavigation } from 'react-navigation';
 
 import ImagePicker from 'react-native-image-picker';
 import PropTypes from 'prop-types';
+
+import { AppText } from '@components/utils/texts';
 
 import Colors from '@theme/colors';
 
@@ -16,8 +23,13 @@ import TouchableHighlight from '@components/touchableHighlight';
 
 import AddPhotoIconPink from '@assets/icons/ic_add_pink.png';
 import AddPhotoIconBlue from '@assets/icons/ic_add_blue.png';
+import Curves from '@assets/ic_wavy_header.png';
+
 import CameraIcon from '@assets/icons/ic_camera_add.png';
 import { trans } from '@lang/i18n';
+import { green, hidden } from 'ansi-colors';
+import { RoundedButton } from '../common';
+
 
 const imageSize = 180;
 
@@ -26,6 +38,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     marginVertical: '10%',
+  },
+  supporterModalWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  supporterModalCard: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    paddingBottom: 60,
+    paddingTop: 120,
+    elevation: 2,
+    overflow: 'hidden',
+  },
+  curves: {
+    position: 'absolute',
+    top: 0,
+    marginTop: -20,
+  },
+  button: {
+    width: 200,
+    marginBottom: 0,
+  },
+  seperator: {
+    backgroundColor: 'rgb(229,229,229)',
+    height: 1,
+    width: 124,
+    marginTop: 54,
+    marginBottom: 46,
   },
   cameraWrapper: {
     height: imageSize,
@@ -93,6 +137,7 @@ class Camera extends Component {
     super(props);
     this.state = {
       imageSource: null,
+      showSupporterModal: false,
     };
     this.imagePickerDisplayed = false;
   }
@@ -104,10 +149,24 @@ class Camera extends Component {
     }
   }
 
+  setModalVisible(visible) {
+    this.setState({ showSupporterModal: visible });
+  }
+
+  handleNagivation = (visible) => {
+    const { navigation } = this.props;
+    this.setState({ showSupporterModal: visible });
+    navigation.navigate('Garden');
+  }
+
   removePhoto = () => {
     this.setState({ imageSource: null });
     this.props.onSelect({ data: '' });
     this.imagePickerDisplayed = false;
+  }
+
+  showSupporter = () => {
+    this.setState({ showSupporterModal: true });
   }
 
   selectOrRemove = () => {
@@ -115,7 +174,7 @@ class Camera extends Component {
     const { imageSource } = this.state;
 
     if (!canAddPhoto) {
-      Alert.alert(trans('add.be_supporter_to_add_photo_in_trip'));
+      this.showSupporter();
       return;
     }
 
@@ -177,7 +236,7 @@ class Camera extends Component {
 
   render() {
     const { iconColor } = this.props;
-    const { imageSource } = this.state;
+    const { imageSource, showSupporterModal } = this.state;
     let icon = AddPhotoIconPink;
 
     if (iconColor === 'blue') {
@@ -186,6 +245,43 @@ class Camera extends Component {
 
     return (
       <View style={styles.container}>
+        <View>
+          <Modal
+            animationType="slide"
+            transparent
+            visible={showSupporterModal}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}
+          >
+            <View style={[styles.supporterModalWrapper, { backgroundColor: 'rgba(255, 255, 255, 0.6)' }]}>
+              <View style={styles.supporterModalCard}>
+                <Image source={Curves} style={styles.curves} />
+                <AppText color={Colors.text.pink} size={26} fontVariation="bold" style={{ marginBottom: 48 }}>
+                  {trans('add.support_the_garden_to_add_a_photo')}
+                </AppText>
+                <RoundedButton
+                  onPress={() => this.handleNagivation(!showSupporterModal)}
+                  bgColor={Colors.background.pink}
+                  style={styles.button}
+                >
+                  {trans('feed.read_more')}
+                </RoundedButton>
+                <View style={styles.seperator} />
+                <AppText style={{ marginBottom: 30 }}>{trans('add.you_dont_have_to_though')} :-)</AppText>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setModalVisible(!showSupporterModal);
+                  }}
+                >
+                  <AppText color={Colors.text.blue}>
+                    {trans('add.continue_without_photo')}
+                  </AppText>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Modal>
+        </View>
         <View style={styles.imageContainer}>
           {this.renderPhoto()}
           <View style={styles.addWrapper}>
@@ -206,6 +302,9 @@ class Camera extends Component {
 }
 
 Camera.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
   onSelect: PropTypes.func.isRequired,
   defaultPhoto: PropTypes.string,
   iconColor: PropTypes.string,
@@ -218,4 +317,4 @@ Camera.defaultProps = {
   canAddPhoto: true,
 };
 
-export default Camera;
+export default withNavigation(Camera);
