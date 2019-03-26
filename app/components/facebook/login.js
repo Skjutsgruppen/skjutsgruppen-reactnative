@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Alert, StyleSheet, View, Text, Modal } from 'react-native';
+import { Alert, StyleSheet, View, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import { LoginManager } from 'react-native-fbsdk';
 import { userRegister, withUpdateProfile, withRegeneratePhoneVerification } from '@services/apollo/auth';
@@ -61,7 +61,6 @@ class FBLogin extends PureComponent {
 
   onLogin = async (fb) => {
     const { profile, auth: { accessToken } } = fb.fbUser;
-
     if (!profile.email || profile.email === '') {
       LoginManager.logOut();
       this.setState({ noFBEmail: true });
@@ -103,6 +102,14 @@ class FBLogin extends PureComponent {
         navigation.replace('Registration');
 
         return;
+      }
+
+      if (!userById.firstName || !userById.lastName) {
+        try {
+          this.updateUser(fb.fbUser.profile);
+        } catch (error) {
+          console.warn(error);
+        }
       }
 
       if (!userById.user.phoneVerified) {
@@ -159,6 +166,16 @@ class FBLogin extends PureComponent {
       this.setState({ showModal: false });
       this.signupWithFacebook(() => this.register(fb.fbUser));
     }
+  }
+
+  updateUser = async ({ first_name, last_name }) => {
+    const { updateProfile, updateUser } = this.props;
+    const response = await updateProfile({
+      firstName: first_name,
+      lastName: last_name,
+    });
+    const { token, User } = response.data.updateUser;
+    return updateUser({ token, user: User });
   }
 
   connect = async ({ profile, accessToken, fb }) => {
@@ -264,8 +281,9 @@ class FBLogin extends PureComponent {
         fbToken,
         agreementRead: true,
         agreementAccepted: true,
+        firstName,
+        lastName,
       });
-
       await setRegister({
         token: response.data.updateUser.token,
         user: { ...response.data.updateUser.User, ...{ firstName, lastName } },
@@ -389,6 +407,8 @@ const mapDispatchToProps = dispatch => ({
   setLogin: ({ user, token }) => AuthService.setAuth({ user, token })
     .then(() => dispatch(AuthAction.login({ user, token })))
     .catch(error => console.warn(error)),
+  updateUser: ({ user, token }) => AuthService.setUser(user)
+    .then(() => dispatch(AuthAction.login({ user, token }))),
 });
 
 export default compose(

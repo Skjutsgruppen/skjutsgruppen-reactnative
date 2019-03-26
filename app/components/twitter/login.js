@@ -76,6 +76,14 @@ class TwitterLogin extends PureComponent {
         return;
       }
 
+      if (!userById.firstName || !userById.lastName) {
+        try {
+          this.updateUser(profile);
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+
       if (!userById.user.phoneVerified) {
         await setLogin(twitter.userById);
         navigation.replace('Onboarding', { activeStep: 8 });
@@ -121,6 +129,16 @@ class TwitterLogin extends PureComponent {
       this.setState({ showModal: false });
       this.signUpWithTwitter(() => this.register(twitter.twitterUser));
     }
+  }
+
+  updateUser = async ({ first_name, last_name }) => {
+    const { updateProfile, updateUser } = this.props;
+    const response = await updateProfile({
+      firstName: first_name,
+      lastName: last_name,
+    });
+    const { token, User } = response.data.updateUser;
+    return updateUser({ token, user: User });
   }
 
   connect = async ({ profile, authToken, authTokenSecret, twitter }) => {
@@ -222,7 +240,6 @@ class TwitterLogin extends PureComponent {
       return;
     }
     const { register, setRegister, updateProfile, navigation } = this.props;
-
     try {
       const { data } = await register({
         email: profile.email,

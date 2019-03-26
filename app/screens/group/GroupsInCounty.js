@@ -145,13 +145,12 @@ class GroupsListByCounty extends Component {
     if (groupsByCounty.length < 1) {
       return null;
     }
-
     return (
       <SectionList
         ListHeaderComponent={this.header}
         ListFooterComponent={() => <View style={{ height: 50 }} />}
         renderItem={({ item }) => (
-          item.isBlocked ?
+          item == null || item.isBlocked ?
             null :
             <GroupsItem
               key={item.id}
