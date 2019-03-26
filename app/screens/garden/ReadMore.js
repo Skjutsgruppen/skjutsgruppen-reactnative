@@ -200,10 +200,10 @@ class ReadMore extends Component {
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 30 }}>
                   Breakdown
                 </Title>
-                <AppText size={16} style={{ marginBottom: 6 }}>
-                  Saraly - 25 000 SEK /month
+                <AppText size={16} style={{ marginBottom: 4 }}>
+                  Salary - 25 000 SEK /month
                 </AppText>
-                <AppText size={16} style={{ lineHeight: 28, marginBottom: 6 }}>
+                <AppText size={16} style={{ lineHeight: 26, marginBottom: 6 }}>
                   General payroll tax, staff insurance, pension - 10 000 SEK/month
                 </AppText>
                 <AppText size={16} style={{ marginBottom: 30 }}>

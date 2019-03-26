@@ -110,7 +110,6 @@ class AlphabeticalGroupsList extends Component {
         getItemLayout={this.getItemLayout}
         stickySectionHeadersEnabled
         onEndReachedThreshold={300}
-        legacyImplementation
       />
     );
   }

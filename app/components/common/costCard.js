@@ -22,7 +22,7 @@ const CostCard = ({ title, coveredPercentage, totalCost, wrapperStyle }) => (
     <View style={styles.info}>
       <View>
         <Heading size={18} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6 }}>{title}</Heading>
-        <Title size={15} color={Colors.text.gray}>{`${coveredPercentage}% of ${totalCost} €/${trans('profile.year')}`}</Title>
+        <Title size={15} color={Colors.text.gray}>{`${coveredPercentage}% of ${totalCost} SEK/${trans('profile.year')}`}</Title>
       </View>
       <View>
         <Heading

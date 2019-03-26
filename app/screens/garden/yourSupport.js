@@ -76,9 +76,9 @@ class YourSupport extends Component {
     const { mySupport } = this.props;
 
     if (!(mySupport.data && mySupport.data.subscriptions)) return null;
-
+    console.log('========= my subscriptions ======= ', mySupport.data.subscriptions);
     return (
-      mySupport.data.subscriptions.map(subscription => (
+      mySupport.data.subscriptions.map((subscription, index) => (
         <View key={subscription.id}>
           <View style={styles.flexRow}>
             <View>
@@ -125,6 +125,13 @@ class YourSupport extends Component {
               <View style={[styles.horizontalDivider, { marginTop: 0 }]} />
             </View>
           }
+          {
+            !subscription.active && ((mySupport.data.subscriptions.length - 1) === index) &&
+            <View>
+              <View style={[styles.horizontalDivider, { marginBottom: 12 }]} />
+              <View style={[styles.horizontalDivider, { marginTop: 0 }]} />
+            </View>
+          }
         </View>
       ))
     );
@@ -152,11 +159,11 @@ class YourSupport extends Component {
           <View style={{ paddingHorizontal: 30, paddingBottom: 30 }}>
             {this.renderSubscriptions()}
             <Heading size={16} color={Colors.text.yellowGreen}>{trans('profile.total')}</Heading>
-            <View style={styles.flexRow}>
+            <View style={[{ marginTop: 24 }, styles.flexRow]}>
               <Title color={Colors.text.gray}>{trans('profile.total_supported')}</Title>
               <Heading size={16} color={Colors.text.yellowGreen}>{mySupport.data.total} kr</Heading>
             </View>
-            <Title color={Colors.text.gray} fontVariation="italic" style={styles.text}>
+            <Title color={Colors.text.gray} fontVariation="italic" style={[{ fontStyle: 'italic' }, styles.text]}>
               {trans('profile.your_total_support_so_far')}
             </Title>
             <View style={styles.horizontalDivider} />

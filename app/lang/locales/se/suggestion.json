@@ -1,6 +1,6 @@
 {
-  "suggest_a_ride": "FÖRESLÅ EN SAMÅKNING",
-  "no_suggested_ride": "Inga förslag för den här samåkningen",
-  "go_back": "Tillbaka",
-  "suggest": "Föreslå"
+  "suggest_a_ride": "SUGGEST A RIDE",
+  "no_suggested_ride": "No any suggestion found for the trip.",
+  "go_back": "Go Back",
+  "suggest": "Suggest"
 }

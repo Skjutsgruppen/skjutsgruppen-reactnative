@@ -179,7 +179,7 @@ class Garden extends Component {
     const headingLabel = supporter ? trans('profile.you_are_awesome') :
       trans('profile.this_app_is_a_self_sustaining_garden');
     const infoLabel = supporter ? trans('profile.right_now_you_support') :
-      trans('profile.as_you_can_see_all_of_are_right_now_co_creating');
+      trans('profile.all_of_us_who_use_the_app_helps_to_work_with_money');
 
     return (
       <LinearGradient style={{ flex: 1 }} colors={Gradients.white}>
@@ -191,7 +191,7 @@ class Garden extends Component {
             infoLabel={infoLabel}
             user={data.profile}
           />
-          {
+          {/* {
             !supporter && (
               <View style={styles.linkContent}>
                 <TouchableOpacity onPress={() => this.openLink(trans('feed.trello_url'))}>
@@ -215,10 +215,10 @@ class Garden extends Component {
                 </TouchableOpacity>
                 {/* <Title size={23} color={Colors.text.gray} style={{ lineHeight: 36 }}>
                   {trans('profile.we_are_currently_also_building')}
-                </Title> */}
+                </Title>
               </View>
             )
-          }
+          } */ }
           {!supporter &&
             <View>
               <Package
@@ -243,7 +243,7 @@ class Garden extends Component {
           <Costs
             supporter={supporter}
             showCostTitle={!supporter}
-            showDescription={false}
+            showDescription={!supporter}
             wrapperStyle={{ paddingTop: supporter ? 0 : 50 }}
           />
           <ProfileAction
