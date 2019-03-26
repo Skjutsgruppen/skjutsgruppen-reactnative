@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@components/utils/texts';
 import Colors from '@theme/colors';
 import { withMyTrips } from '@services/apollo/trip';
+import { withNotification } from '@services/apollo/notification';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'react-apollo';
@@ -12,6 +13,7 @@ import ActiveRideItem from '@components/message/ActiveRideItem';
 import LoadMore from '@components/message/loadMore';
 import DataList from '@components/dataList';
 import { trans } from '@lang/i18n';
+import { Placeholder } from '@components/common';
 
 const styles = StyleSheet.create({
   section: {
@@ -47,7 +49,10 @@ class Ride extends Component {
   isActiveRide = trip => (Moment(trip.date).isAfter());
 
   renderList = () => {
-    const { trips } = this.props;
+    const { notifications, trips } = this.props;
+    if (notifications.loading) {
+      return <Placeholder count={3} wrapperStyle={{ padding: 20 }} />;
+    }
 
     return (
       <DataList
@@ -77,9 +82,9 @@ class Ride extends Component {
   }
 
   render() {
-    const { trips } = this.props;
+    const { trips, notifications } = this.props;
 
-    if (trips.count < 1) return null;
+    if (trips.count < 1 || notifications.count < 1) return null;
 
     return (
       <View style={styles.section}>
@@ -99,6 +104,12 @@ Ride.propTypes = {
     error: PropTypes.object,
     refetch: PropTypes.func,
   }).isRequired,
+  notifications: PropTypes.shape({
+    refetch: PropTypes.func.isRequired,
+    rows: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.numeric,
+    error: PropTypes.object,
+  }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
@@ -107,4 +118,4 @@ Ride.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withMyTrips, withNavigation, connect(mapStateToProps))(Ride);
+export default compose(withMyTrips, withNotification, withNavigation, connect(mapStateToProps))(Ride);

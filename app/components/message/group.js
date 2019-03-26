@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@components/utils/texts';
 import Colors from '@theme/colors';
 import { withMyGroups } from '@services/apollo/group';
+import { withNotification } from '@services/apollo/notification';
 import PropTypes from 'prop-types';
 import { trans } from '@lang/i18n';
 import { withNavigation } from 'react-navigation';
@@ -11,6 +12,7 @@ import { connect } from 'react-redux';
 import ActiveGroupItem from '@components/message/ActiveGroupItem';
 import LoadMore from '@components/message/loadMore';
 import DataList from '@components/dataList';
+import { Placeholder } from '@components/common';
 
 const styles = StyleSheet.create({
   section: {
@@ -43,7 +45,10 @@ class Group extends PureComponent {
   }
 
   renderList = () => {
-    const { groups } = this.props;
+    const { notifications, groups } = this.props;
+    if (notifications.loading) {
+      return <Placeholder count={3} wrapperStyle={{ padding: 20 }} />;
+    }
 
     return (
       <DataList
@@ -73,9 +78,8 @@ class Group extends PureComponent {
   }
 
   render() {
-    const { groups } = this.props;
-
-    if (groups.count < 1) return null;
+    const { notifications, groups } = this.props;
+    if (groups.count < 1 || notifications.count < 1) return null;
 
     return (
       <View style={styles.section}>
@@ -94,6 +98,12 @@ Group.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.object).isRequired,
     loading: PropTypes.bool.isRequired,
   }).isRequired,
+  notifications: PropTypes.shape({
+    refetch: PropTypes.func.isRequired,
+    rows: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.numeric,
+    error: PropTypes.object,
+  }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
@@ -102,4 +112,4 @@ Group.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withMyGroups, withNavigation, connect(mapStateToProps))(Group);
+export default compose(withMyGroups, withNotification, withNavigation, connect(mapStateToProps))(Group);
