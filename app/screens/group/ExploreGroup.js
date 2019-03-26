@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { withExploreGroup, withNearByGroups } from '@services/apollo/group';
+import { withExploreGroup, withNearByGroups, withInitialAlphabetGroup } from '@services/apollo/group';
 import { withCounties } from '@services/apollo/location';
 import { Wrapper, Loading } from '@components/common';
 import TouchableHighlight from '@components/touchableHighlight';
@@ -25,8 +25,8 @@ import CloseByGroupsMapWindow from '@components/group/closeByGroupsMapWindow';
 import TabBar from '@components/common/tabBar';
 import { AppText, Heading } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
-
 import IconSearch from '@assets/icons/ic_search.png';
+import { compose } from 'react-apollo';
 
 const NearByGroupsMapWindow = withNearByGroups(CloseByGroupsMapWindow);
 
@@ -138,7 +138,6 @@ class ExploreGroup extends PureComponent {
         await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
       }
     } catch (err) {
-      console.warn(err);
     }
     this.currentLocation();
   }
@@ -151,10 +150,9 @@ class ExploreGroup extends PureComponent {
     this.setState({ isOpen: false });
   }
 
-  onPress = (type, details = {}) => {
+  onPress = (type, details = {}, sectionIndex = 0) => {
     const { navigation } = this.props;
     const { id } = details;
-
     if (type === 'profile') {
       navigation.navigate('Profile', { profileId: id });
     }
@@ -168,7 +166,7 @@ class ExploreGroup extends PureComponent {
     }
 
     if (type === 'AlphabeticalGroups') {
-      navigation.navigate('AlphabeticalGroupsList');
+      navigation.navigate('AlphabeticalGroupsList', { sectionIndex });
     }
     this.onClose();
   }
@@ -276,11 +274,20 @@ class ExploreGroup extends PureComponent {
     );
   }
 
-  render() {
-    const alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'];
-    const { totalGroupsCount } = this.state;
-    let index = 0;
+  renderAlphabetList = () => {
+    const { alphabetisedGroups } = this.props;
+    return alphabetisedGroups.map((alphabet, index) =>
+      (<Alphabet
+        key={alphabet.alphabet}
+        onPress={() => this.onPress('AlphabeticalGroups', {}, index)}
+        letter={alphabet.alphabet}
+      />),
+    );
+  }
 
+  render() {
+    const { totalGroupsCount } = this.state;
+    // let index = 0;
     return (
       <Wrapper>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -313,16 +320,7 @@ class ExploreGroup extends PureComponent {
           <Heading style={styles.sectionTitle}>{trans('group.alphabetic_order')}</Heading>
           <View style={styles.section}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {alphabets.map((alphabet) => {
-                index += 1;
-                return (
-                  <Alphabet
-                    key={index}
-                    onPress={() => this.onPress('AlphabeticalGroups')}
-                    letter={alphabet}
-                  />
-                );
-              })}
+              { this.renderAlphabetList() }
             </ScrollView>
           </View>
         </ScrollView>
@@ -339,6 +337,13 @@ ExploreGroup.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   counties: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  alphabetisedGroups: PropTypes.arrayOf(PropTypes.shape({
+    alphabet: PropTypes.string,
+  })),
 };
 
-export default withCounties(ExploreGroup);
+ExploreGroup.defaultProps = {
+  alphabetisedGroups: [],
+};
+
+export default compose(withCounties, withInitialAlphabetGroup)(ExploreGroup);

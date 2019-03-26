@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    height: 100,
   },
   lightText: {
     color: Colors.text.gray,

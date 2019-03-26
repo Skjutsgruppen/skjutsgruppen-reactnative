@@ -1768,6 +1768,26 @@ export const withDeleteGroup = graphql(DELETE_GROUP_QUERY, {
     }),
 });
 
+const INITIAL_ALPHABET_GROUP_QUERY = gql`
+query alphabetisedGroups{
+  alphabetisedGroups{
+    alphabet
+  }
+}
+`;
+
+export const withInitialAlphabetGroup = graphql(INITIAL_ALPHABET_GROUP_QUERY, {
+  options: () => ({
+    fetchPolicy: 'cache-and-network',
+  }),
+  props: ({ data: { alphabetisedGroups } }) => {
+    console.log('=========== withInitialAlphabetGroup===== ', alphabetisedGroups);
+    return ({
+      alphabetisedGroups,
+    });
+  },
+});
+
 const ALPHABETISED_GROUPS_QUERY = gql`
 query alphabetisedGroups{
   alphabetisedGroups{
