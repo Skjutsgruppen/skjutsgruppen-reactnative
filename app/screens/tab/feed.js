@@ -31,7 +31,7 @@ import {
 import { withGetExperiences } from '@services/apollo/experience';
 import List from '@components/experience/list';
 import DataList from '@components/dataList';
-import CoCreateModal from '@components/coCreateModal';
+// import CoCreateModal from '@components/coCreateModal';
 import Contacts from 'react-native-contacts';
 import OpenSettings from 'react-native-open-settings';
 import { withContactSync } from '@services/apollo/contact';
@@ -130,7 +130,7 @@ class Feed extends Component {
       currentLocation: false,
       totalExperiences: 0,
       loading: false,
-      showCoCreateModal: true,
+      // showCoCreateModal: true,
     });
 
     this.feedList = null;
@@ -584,13 +584,13 @@ class Feed extends Component {
     </TouchableOpacity>
   );
 
-  renderCoCreateModal = () => {
-    const { showCoCreateModal } = this.state;
-    return (<CoCreateModal
-      visible={showCoCreateModal}
-      toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
-    />);
-  }
+  // renderCoCreateModal = () => {
+  //   const { showCoCreateModal } = this.state;
+  //   return (<CoCreateModal
+  //     visible={showCoCreateModal}
+  //     toggleCoCreateModalVisibility={(value) => { this.setState({ showCoCreateModal: value }); }}
+  //   />);
+  // }
 
   render() {
     return (
@@ -608,7 +608,10 @@ class Feed extends Component {
           showModal={this.state.filterOpen}
           onCloseModal={() => this.setFilterVisibility(false)}
         /> */}
-        {this.renderCoCreateModal()}
+        { /*
+          this.renderCoCreateModal()
+        */
+        }
       </Wrapper>
     );
   }
