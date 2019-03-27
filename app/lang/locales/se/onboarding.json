@@ -97,7 +97,7 @@
   "sms_permission": "Please allow SMS permission to send sms and verify your phone number.",
   "forgot_email": "I forgot my email",
   "phone_number_email": "The phone number is associated with email {{email}}",
-  "phone_number_email_not_found": "Sorry! could not find user associated with the phone number.",
+  "phone_number_email_not_found": "Sorry! could not find participant associated with the phone number.",
   "enter_phone_number_to_view_email": "Please enter your phone number to get hint of the email associated with the number.",
   "no_email_access_contact_support": "No longer have access to the email address. Send us an email at support@skjutsgruppen.nu to change your password.",
   "welcome": "Welcome",
