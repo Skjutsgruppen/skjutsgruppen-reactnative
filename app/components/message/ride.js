@@ -84,7 +84,7 @@ class Ride extends Component {
   render() {
     const { trips, notifications } = this.props;
 
-    if (trips.count < 1 || notifications.count < 1) return null;
+    if (trips.count < 1) return null;
 
     return (
       <View style={styles.section}>
