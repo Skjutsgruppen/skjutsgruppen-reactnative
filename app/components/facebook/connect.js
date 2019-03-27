@@ -56,7 +56,6 @@ class Connect extends PureComponent {
     let userById = {};
     let hasEmail = true;
     let hasID = true;
-
     try {
       const { data } = await this.props.getUserByEmail(fbUser.profile.email);
       if (data.getUserByEmail) {
@@ -89,7 +88,6 @@ class Connect extends PureComponent {
   buttonView = () => {
     const { buttonType } = this.props;
     const { fbUser } = this.state;
-
     if (buttonType === 'login') {
       return (<FBLoginView
         label={'Sign in with Facebook'}
