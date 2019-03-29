@@ -133,7 +133,7 @@ class NewNotification extends Component {
 
   render() {
     const { notifications, filters } = this.props;
-    if (notifications.count < 1) return null;
+    if (notifications.count < 1 && !notifications.loading) return null;
 
     return (
       <View style={styles.section}>

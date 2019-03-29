@@ -79,7 +79,7 @@ class Group extends PureComponent {
 
   render() {
     const { groups } = this.props;
-    if (groups.count < 1) return null;
+    if (groups.count < 1 && !groups.loading) return null;
 
     return (
       <View style={styles.section}>
