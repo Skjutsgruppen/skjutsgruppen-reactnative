@@ -45,8 +45,8 @@ class Group extends PureComponent {
   }
 
   renderList = () => {
-    const { notifications, groups } = this.props;
-    if (notifications.loading) {
+    const { groups } = this.props;
+    if (groups.loading) {
       return <Placeholder count={3} wrapperStyle={{ padding: 20 }} />;
     }
 
@@ -78,8 +78,8 @@ class Group extends PureComponent {
   }
 
   render() {
-    const { notifications, groups } = this.props;
-    if (groups.count < 1 || notifications.count < 1) return null;
+    const { groups } = this.props;
+    if (groups.count < 1) return null;
 
     return (
       <View style={styles.section}>
@@ -112,4 +112,8 @@ Group.propTypes = {
 
 const mapStateToProps = state => ({ user: state.auth.user });
 
-export default compose(withMyGroups, withNotification, withNavigation, connect(mapStateToProps))(Group);
+export default compose(
+  withMyGroups,
+  withNotification,
+  withNavigation,
+  connect(mapStateToProps))(Group);
