@@ -817,17 +817,19 @@ export const withTrip = graphql(FIND_TRIP_QUERY, {
     refetch,
     networkStatus,
     error,
-    subscribeToTrip: id => subscribeToMore({
-      document: TRIP_SUBSCRIPTION,
-      variables: { id },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-
-        return { trip: subscriptionData.data.tripUpdated };
-      },
-    }),
+    subscribeToTrip: (id) => {
+      if (trip.isDeleted) return null;
+      return subscribeToMore({
+        document: TRIP_SUBSCRIPTION,
+        variables: { id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) {
+            return prev;
+          }
+          return { trip: subscriptionData.data.tripUpdated };
+        },
+      });
+    },
   }),
 });
 
@@ -1415,7 +1417,6 @@ export const withTripFeed = graphql(TRIP_FEED_QUERY, {
     let rows = [];
     let count = 0;
     const { error, fetchMore, feeds, loading, networkStatus, subscribeToMore, refetch } = data;
-
     if (feeds) {
       rows = feeds.rows.slice(0).reverse();
       count = feeds.count;

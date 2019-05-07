@@ -562,17 +562,19 @@ class TripDetail extends Component {
     const {
       trip: { id },
     } = this.state;
+    // this.navigateOnDelete();
+    // return;
     this.setState({ loading: true });
 
     deleteTrip({ id })
       .then(() => {
         this.setConfirmModalVisibility(false);
-        this.setState({ loading: false, retry: false, deletedModal: true });
-        this.navigateOnDelete();
         Scheduler.removeSpecificScheduledNotification(id);
         if (this.state.trip.Location && this.state.trip.Location.id) {
           GeoLocation.stopListeningToLocationUpdate('Trip', id);
         }
+        this.setState({ loading: false, retry: false, deletedModal: true });
+        this.navigateOnDelete();
       })
       .catch((error) => {
         this.setState({ loading: false, retry: error });
@@ -606,7 +608,7 @@ class TripDetail extends Component {
   };
 
   setConfirmModalVisibility = (show) => {
-    this.actionSheet.hide();
+    if (this.actionSheet != null) this.actionSheet.hide();
     setTimeout(() => { this.setState({ confirmModalVisibility: show, showActionOption: false }); }, 600);
     // this.setState({ confirmModalVisibility: show, showActionOption: false });
   }
@@ -1509,7 +1511,6 @@ class TripDetail extends Component {
   renderTrip() {
     const { trip } = this.state;
     const title = `${trip.TripStart.name ? trip.TripStart.name : trip.direction} - ${trip.TripEnd.name}`;
-
     return (
       <View style={{ flex: 1 }}>
         <TripToolBar title={title} transparent />

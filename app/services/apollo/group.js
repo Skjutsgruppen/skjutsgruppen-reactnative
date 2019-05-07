@@ -1781,7 +1781,6 @@ export const withInitialAlphabetGroup = graphql(INITIAL_ALPHABET_GROUP_QUERY, {
     fetchPolicy: 'cache-and-network',
   }),
   props: ({ data: { alphabetisedGroups } }) => {
-    console.log('=========== withInitialAlphabetGroup===== ', alphabetisedGroups);
     return ({
       alphabetisedGroups,
     });

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:fabric.secret">
+   </FileRef>
+   <FileRef
       location = "group:skjutsgruppen.xcodeproj">
    </FileRef>
    <FileRef

@@ -16,9 +16,9 @@
 		0423C632224B4D0200B94B29 /* fabric.secret in Resources */ = {isa = PBXBuildFile; fileRef = 0423C631224B4D0200B94B29 /* fabric.secret */; };
 		0423C66C224B4D0E00B94B29 /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 0423C66B224B4D0E00B94B29 /* fabric.apikey */; };
 		0453629420DD0B890031241F /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0453625B20DD0B730031241F /* libART.a */; };
-		045476D8212E725000A301CD /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 045476D7212E725000A301CD /* fabric.apikey */; };
 		045AC28D20D36E6200DEAA5A /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 045AC28C20D36E6200DEAA5A /* Utilities.m */; };
 		045C2D0620BE946500A6CFC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045C2D0520BE946500A6CFC5 /* StoreKit.framework */; };
+		04EE296522701ECD00553AAC /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 04EE296422701ECD00553AAC /* fabric.apikey */; };
 		04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DFC484DBCBA420A94155A3C /* SFUIText-Regular.ttf */; };
 		05B1B2D493D543F6B4576E10 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7056FC2971A64D0595315A33 /* EvilIcons.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -500,12 +500,12 @@
 		0423C631224B4D0200B94B29 /* fabric.secret */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.secret; sourceTree = "<group>"; };
 		0423C66B224B4D0E00B94B29 /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		0453625520DD0B730031241F /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
-		045476D7212E725000A301CD /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		045AC28B20D36E6200DEAA5A /* Utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		045AC28C20D36E6200DEAA5A /* Utilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
 		045AC38120D3A04200DEAA5A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		045C2D0520BE946500A6CFC5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		04B22EA920D643F700CDA964 /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		04EE296422701ECD00553AAC /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		06527C20DEF14B0D95964E9E /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		07F722DDBA524220949127BA /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		099D4A438991A3EABE417013 /* Pods-Skjutsgruppen.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skjutsgruppen.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skjutsgruppen/Pods-Skjutsgruppen.release.xcconfig"; sourceTree = "<group>"; };
@@ -925,7 +925,7 @@
 			isa = PBXGroup;
 			children = (
 				0423C631224B4D0200B94B29 /* fabric.secret */,
-				045476D7212E725000A301CD /* fabric.apikey */,
+				04EE296422701ECD00553AAC /* fabric.apikey */,
 				0423C66B224B4D0E00B94B29 /* fabric.apikey */,
 				13B07FAE1A68108700A75B9A /* Skjutsgruppen */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -1753,6 +1753,7 @@
 				9286F760F61745A19EEEF499 /* Entypo.ttf in Resources */,
 				05B1B2D493D543F6B4576E10 /* EvilIcons.ttf in Resources */,
 				AA5AEB07D34D4BC587AEBD60 /* Feather.ttf in Resources */,
+				04EE296522701ECD00553AAC /* fabric.apikey in Resources */,
 				0423C66C224B4D0E00B94B29 /* fabric.apikey in Resources */,
 				EA76B759739440E787D89AB7 /* FontAwesome.ttf in Resources */,
 				A0F4DA142091A2F400E7CE8F /* GoogleService-Info.plist in Resources */,
@@ -1767,7 +1768,6 @@
 				2FF8189F90FE47CABEBFA7B2 /* SFUIDisplay-Regular.ttf in Resources */,
 				D7638FF680604004A0F16138 /* SFUIText-Bold.ttf in Resources */,
 				04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */,
-				045476D8212E725000A301CD /* fabric.apikey in Resources */,
 				7B88C97DD55D4EC5986C88C4 /* SFUIText-RegularItalic.ttf in Resources */,
 				F1690559CD6E4428A2AC2192 /* AvenirLTStd-Black.otf in Resources */,
 				E5D550099A5242669FF097CF /* SFUIDisplay-Semi-Bold.ttf in Resources */,
