@@ -76,7 +76,6 @@ class YourSupport extends Component {
     const { mySupport } = this.props;
 
     if (!(mySupport.data && mySupport.data.subscriptions)) return null;
-    console.log('========= my subscriptions ======= ', mySupport.data.subscriptions);
     return (
       mySupport.data.subscriptions.map((subscription, index) => (
         <View key={subscription.id}>

@@ -70,7 +70,6 @@ class AlphabeticalGroupsList extends Component {
 
   getItemLayout = (data, index) => {
     const height = 100;
-    // console.log(index);
     return {
       length: height,
       offset: height * index,
