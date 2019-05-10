@@ -1,5 +1,6 @@
 import Session from '@services/storage/session';
 import DeviceInfo from 'react-native-device-info';
+import Moment from 'react-moment';
 
 class Lang {
   constructor() {

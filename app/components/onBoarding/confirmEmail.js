@@ -154,7 +154,7 @@ class ConfirmEmail extends Component {
             returnKeyType="send"
             onSubmitEditing={this.onSubmit}
             autoCapitalize="none"
-            placeholder="Fill in your e-mail"
+            placeholder={trans('onboarding.fill_in_your_email')}
           />
           <View style={{ marginHorizontal: 30 }}>
             {this.renderButton()}

@@ -403,7 +403,7 @@ class Registration extends Component {
         <View style={styles.registerButtonWrapper}>
           <Radio
             active={agreementAccepted}
-            label="I give the consent to registering my personal information."
+            label={trans("onboarding.i_give_consent")}
             onPress={this.onRegistrationCheck}
           />
           {this.renderButton()}

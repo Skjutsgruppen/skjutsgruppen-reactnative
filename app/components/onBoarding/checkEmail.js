@@ -162,7 +162,7 @@ class CheckEmail extends Component {
       <AppText
         style={styles.resendVerification}
         onPress={this.resendVerificationCode}
-      >Resend Verification Code</AppText>
+      >{trans('onboarding.resend_verification_code')}</AppText>
     );
   }
 

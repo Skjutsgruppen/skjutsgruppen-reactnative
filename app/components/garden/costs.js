@@ -47,9 +47,9 @@ class Costs extends Component {
               size={15}
               color={Colors.text.blue}
               style={{ marginBottom: 16 }}
-            >OUR COSTS</Title>
+            >{trans('profile.our_costs')}</Title>
             <Heading size={26} color={Colors.text.pink} style={{ lineHeight: 36 }}>
-              The money goes to:
+              {trans('profile.money_goes_to')}
             </Heading>
           </View>
         }

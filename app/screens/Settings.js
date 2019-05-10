@@ -257,10 +257,9 @@ class Settings extends Component {
         <ActionSheet
           ref={(sheet) => { this.LanguageActionSheet = sheet; }}
           title={trans('profile.choose_your_preferred_language')}
-          options={optionLang}
-          cancelButtonIndex={optionLang.length - 1}
-          onPress={() => { }}
-          styles={actionSheetMenu}
+          options={['English', 'Swedish', 'Cancel']}
+          cancelButtonIndex={2}
+          onPress={(index) => { this.setLanguage(index); }}
         />
         <ActionSheet
           ref={(sheet) => { this.NotificationActionSheet = sheet; }}

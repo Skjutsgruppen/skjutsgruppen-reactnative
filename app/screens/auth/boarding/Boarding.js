@@ -6,6 +6,7 @@ import { Colors } from '@theme';
 import { Title, AppText } from '@components/utils/texts';
 import { RoundedButton } from '@components/common';
 import { withNavigation } from 'react-navigation';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -42,13 +43,13 @@ const styles = StyleSheet.create({
 const Boarding = ({ navigation }) => (
   <View style={styles.wrapper}>
     <Title centered size={24} color={Colors.text.gray} style={styles.title}>
-      Lets get started!
+      {trans('onboarding.lets_get_started')}
     </Title>
     <RoundedButton
       bgColor={Colors.background.pink}
       onPress={() => navigation.navigate('Onboarding')}
       style={styles.button}
-    >New participant</RoundedButton>
+    >{trans('onboarding.new_participant')}</RoundedButton>
     <View style={styles.separator}>
       <View style={styles.separatorLine} />
       <AppText fontVariation="semibold" style={styles.separatorText}>OR</AppText>
@@ -57,7 +58,7 @@ const Boarding = ({ navigation }) => (
       bgColor={Colors.background.blue}
       onPress={() => navigation.navigate('LoginMethod')}
       style={styles.button}
-    >Login</RoundedButton>
+    >{trans('onboarding.login')}</RoundedButton>
   </View>
 );
 

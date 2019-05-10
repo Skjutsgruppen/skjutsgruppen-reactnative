@@ -13,6 +13,7 @@ import share from '@lang/locales/se/share.json';
 import suggestion from '@lang/locales/se/suggestion.json';
 import onboarding from '@lang/locales/se/onboarding.json';
 import trip from '@lang/locales/se/trip.json';
+import notification from '@lang/locales/se/notification.json';
 
 export {
   feed,
@@ -30,4 +31,5 @@ export {
   suggestion,
   onboarding,
   trip,
+  notification,
 };

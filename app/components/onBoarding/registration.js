@@ -197,7 +197,7 @@ class Registration extends Component {
         <View style={styles.registerButtonWrapper}>
           <Radio
             active={registrationChecked}
-            label="I give the consent to registering my personal information."
+            label={trans("onboarding.i_give_consent")}
             onPress={this.onRegistrationCheck}
           />
           <RoundedButton

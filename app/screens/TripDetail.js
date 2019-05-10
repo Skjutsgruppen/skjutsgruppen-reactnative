@@ -742,7 +742,7 @@ class TripDetail extends Component {
           {icon}
           <AppText color={Colors.text.gray}>
             <AppText color={Colors.text.gray} fontVariation="bold">
-              {trans('detail.return_ride')}
+              {`${trans('detail.return')} `}
             </AppText>
             <Date format="MMM DD, YYYY, HH:mm">{trip.ReturnTrip[0].date}</Date>
           </AppText>
@@ -863,6 +863,8 @@ class TripDetail extends Component {
         };
       });
     }
+
+    console.log('trupdetail =========== ', tripDate, '====== ', selectedDate, ' ===== ',markedDates);
 
     return (
       <Modal
@@ -1046,7 +1048,7 @@ class TripDetail extends Component {
                     })
                   }
                 >
-                  {`${trip.Group.name.trim()}.`}
+                  {` ${trip.Group.name.trim()}.`}
                 </AppText>
                 <AppText
                   color={Colors.text.blue}
