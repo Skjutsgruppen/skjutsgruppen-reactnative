@@ -245,16 +245,18 @@ class Group extends Component {
           }
 
           this.setState({ loading: false, group: res.data.group, error: '' });
-        })
-        .catch(err => this.setState({ loading: false, error: getToast(err) }));
+        }).catch((err) => {
+          console.warn(err);
+          this.setState({ loading: false, error: getToast(err) });
+        });
     } catch (err) {
+      console.warn(err);
       this.setState({ loading: false, error: getToast(err) });
     }
   }
 
   renderFinish() {
     const { loading, error, group } = this.state;
-
     if (loading) {
       return (
         <View style={{ marginTop: 100 }}>
@@ -262,11 +264,12 @@ class Group extends Component {
         </View>
       );
     }
+    console.log('render finish ===== ', error);
 
     if (error !== '') {
       return (
         <View style={{ marginTop: 100, marginHorizontal: '20%' }}>
-          <CustomButton onPress={this.createGroup} bgColor={Colors.background.darkCyan}>
+          <CustomButton onPress={() => this.setState({ loading: true }, this.createGroup)} bgColor={Colors.background.darkCyan}>
             {trans('global.try_again')}
           </CustomButton>
         </View>
