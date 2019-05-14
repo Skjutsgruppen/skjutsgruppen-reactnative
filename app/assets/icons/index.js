@@ -12,6 +12,7 @@ import ChevronDownGreen from '@assets/icons/icon_chevron_down_green.png';
 import ChevronDown from '@assets/icons/icon_chevron_down.png';
 import ChevronLeft from '@assets/icons/icon_chevron_left.png';
 import ChevronRight from '@assets/icons/icon_chevron_right.png';
+import ClusterMarker from '@assets/icons/icon_cluster_map_bg.png';
 import Copy from '@assets/icons/icon_copy.png';
 import EnvelopOpen from '@assets/icons/icon_envelop_open.png';
 import Facebook from '@assets/icons/icon_facebook.png';
@@ -60,6 +61,7 @@ const Icons = {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ClusterMarker,
   Copy,
   EnvelopOpen,
   Facebook,

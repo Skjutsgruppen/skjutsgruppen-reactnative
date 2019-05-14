@@ -577,7 +577,6 @@ class SearchResult extends Component {
     const fetchDate = this.getFetchDate();
 
     if (dateSelected && publicTransportSelected) {
-
       return false;
     }
 
@@ -692,6 +691,7 @@ class SearchResult extends Component {
 
   goBack = () => {
     const { navigation, fromObj, toObj, direction, dateSelected } = this.props;
+    console.log(toObj, direction, fromObj);
     const { filters } = this.state;
     let { dates } = this.props;
 

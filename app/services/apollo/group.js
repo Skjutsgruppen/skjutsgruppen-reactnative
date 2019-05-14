@@ -1939,6 +1939,7 @@ query nearByGroups($from: [Float]!,
       TripStart {
         name
         coordinates
+        countryCode
       }
       TripEnd {
         name

@@ -20,6 +20,12 @@ const styles = StyleSheet.create({
     shadowColor: Colors.background.black,
     shadowOpacity: 1,
   },
+  clusterMarker: {
+    height: 68,
+    width: 68,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   markerBg: {
     width: 68,
     height: 68,
@@ -111,7 +117,7 @@ class Marker extends PureComponent {
   }
 
   render() {
-    const { onPress, coordinate, image, children, count, current, tripType } = this.props;
+    const { onPress, coordinate, image, children, count, current, tripType, clustered } = this.props;
     const { animValue } = this.state;
 
     const opacity = animValue.interpolate({
@@ -158,21 +164,37 @@ class Marker extends PureComponent {
         coordinate={coordinate}
         centerOffset={{ x: 0, y: -34 }}
       >
-        <View style={{ height: 68, width: 68 }}>
-          <Image
-            style={styles.markerBg}
-            source={require('@assets/icons/icon_map_bg.png')}
-            onLayout={() => this.setState({ bgRender: 3 })}
-            key={`${this.state.bgRender}`}
-          />
-          <Image
-            style={[styles.profilePic]}
-            source={{ uri: image }}
-            onLayout={() => this.setState({ initialRender: 4 })}
-            key={`${this.state.profileRender}`}
-          />
-        </View>
-        <View style={styles.dot} />
+        {clustered === 0 ?
+          <View style={{ height: 68, width: 68 }}>
+            <Image
+              style={styles.markerBg}
+              source={require('@assets/icons/icon_map_bg.png')}
+              onLayout={() => this.setState({ bgRender: 3 })}
+              key={`${this.state.bgRender}`}
+            />
+            <Image
+              style={[styles.profilePic]}
+              source={{ uri: image }}
+              onLayout={() => this.setState({ initialRender: 4 })}
+              key={`${this.state.profileRender}`}
+            />
+          </View>
+          :
+          <View style={styles.clusterMarker}>
+            <Image
+              style={[styles.markerBg, { shadowOpacity: 0 }]}
+              source={require('@assets/icons/icon_cluster_map_bg.png')}
+              onLayout={() => this.setState({ bgRender: 3 })}
+              key={`${this.state.bgRender}`}
+            />
+            <AppText style={{ color: Colors.text.white }}>{clustered}</AppText>
+          </View>
+        }
+        { clustered === 0 ?
+          <View style={styles.dot} />
+          :
+          <View style={[styles.dot, { backgroundColor: '#56575C', shadowOpacity: 0, marginTop: -6 }]} />
+        }
         <View style={[
           styles.seatCountWrapper,
           tripType === FEED_TYPE_OFFER ? styles.pinkBg : {},
@@ -198,6 +220,7 @@ Marker.propTypes = {
   count: PropTypes.number,
   current: PropTypes.bool,
   tripType: PropTypes.string,
+  clustered: PropTypes.number,
 };
 
 Marker.defaultProps = {
@@ -206,6 +229,7 @@ Marker.defaultProps = {
   tripType: null,
   count: null,
   image: '',
+  clustered: 0,
 };
 
 export default Marker;

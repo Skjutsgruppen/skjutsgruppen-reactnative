@@ -17,7 +17,7 @@ const Search = ({ navigation }) => {
   let offset = 0;
   const publicTransportSelected = filters.includes(FEED_TYPE_PUBLIC_TRANSPORT);
   const timezone = getTimezone();
-  
+
   if (dates.length < 1) {
     dateSelected = false;
     if (publicTransportSelected && to.name !== '' && from.name !== '') {
