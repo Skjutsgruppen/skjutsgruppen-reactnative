@@ -169,6 +169,10 @@ query account {
     emailNotification
     twitterUsername
     isAdmin
+    groupInfo {
+      totalGroup
+      noEnablerInGroup
+    }
   }
 }`;
 
@@ -209,8 +213,8 @@ const CONVERSATION_QUERY = gql`
         description
         seats
         User {
-          id 
-          firstName 
+          id
+          firstName
           avatar
           isSupporter
           deleted
@@ -253,8 +257,8 @@ const CONVERSATION_QUERY = gql`
           publishedStatus
           userStatus
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             isSupporter
             deleted
@@ -337,4 +341,3 @@ export const withRemoveAppToken = graphql(REMOVE_APP_TOKEN_QUERY, {
     removeAppToken: deviceId => mutate({ variables: { deviceId } }),
   }),
 });
-

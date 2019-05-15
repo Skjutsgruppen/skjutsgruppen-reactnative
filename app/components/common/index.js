@@ -28,6 +28,7 @@ import ModalAction from '@components/common/modalAction';
 import SearchBar from '@components/common/searchBar';
 import ListSearchBar from '@components/common/ListSearchBar';
 import ConfirmModal from '@components/common/confirmModal';
+import DeleteMovementModal from '@components/common/deleteMovementModal';
 import GhostButton from '@components/common/ghostButton';
 import InfoModal from '@components/common/infoModal';
 import SocialMediaLinkModal from '@components/common/socialMediaLinkModal';
@@ -64,6 +65,7 @@ export {
   SearchBar,
   ListSearchBar,
   ConfirmModal,
+  DeleteMovementModal,
   GhostButton,
   InfoModal,
   SocialMediaLinkModal,

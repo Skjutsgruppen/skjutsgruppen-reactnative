@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RoundedButton = ({ children, style, onPress, bgColor, textColor, icon, ...props }) => (
+const RoundedButton = ({ children, style, onPress, bgColor, textColor, icon, textStyle, ...props }) => (
   <View style={[styles.wrapper, style]}>
     <TouchableHighlight
       onPress={onPress}
@@ -49,6 +49,7 @@ const RoundedButton = ({ children, style, onPress, bgColor, textColor, icon, ...
           fontVariation="bold"
           style={[
             styles.label,
+            textStyle,
             { color: textColor },
           ]}
         >{children}</Title>
@@ -71,6 +72,7 @@ RoundedButton.defaultProps = {
   bgColor: '#333',
   textColor: '#fff',
   icon: null,
+  textStyle: {},
 };
 
 export default RoundedButton;
