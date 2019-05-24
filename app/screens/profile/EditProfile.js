@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard, PermissionsAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Wrapper, Loading, ConfirmModal } from '@components/common';
+import { Wrapper, Loading, DeleteMovementModal, ConfirmModal } from '@components/common';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
@@ -140,6 +140,8 @@ class EditProfile extends Component {
       phoneVerificationCode: null,
       modalVisibility: false,
       errorMsg: '',
+      groupCount: '',
+      enablersCount: '',
     };
   }
 
@@ -180,10 +182,10 @@ class EditProfile extends Component {
 
   componentWillReceiveProps({ data }) {
     const { loading, profile } = data;
-    const { email, phoneNumber, totalFriends, newEmail, newPhoneNumber } = profile;
+    const { email, phoneNumber, totalFriends, newEmail, newPhoneNumber, groupInfo } = profile;
 
     if (!loading) {
-      this.setState({ email, phoneNumber, totalFriends, newEmail, newPhoneNumber });
+      this.setState({ email, phoneNumber, totalFriends, newEmail, newPhoneNumber, enablersCount: groupInfo.noEnablerInGroup, groupCount: groupInfo.totalGroup });
     }
   }
 
@@ -572,6 +574,38 @@ class EditProfile extends Component {
   }
 
   renderModal = () => {
+    const { modalVisibility, loading, error, groupCount } = this.state;
+
+    const message = (
+      <View>
+        <AppText size={16} fontVariation="bold" centered style={{ marginBottom: 10 }} color={Colors.text.pink}>
+          {trans('profile.you_are_deleting_yourself_from_the_movement')}
+        </AppText>
+        <AppText size={14} style={{ marginBottom: 10 }}>
+          {trans('profile.you_can_no_longer_be_the_enabler_of_groups', { groupCount })}
+        </AppText>
+        <AppText size={14}>
+          {trans('profile.if_you_want_to_pass_on_the_position_of_being_an_enabler')}
+        </AppText>
+      </View>
+    );
+
+    return (
+      <DeleteMovementModal
+        loading={loading}
+        visible={modalVisibility}
+        onRequestClose={() => this.setConfirmModalVisibility(false)}
+        message={message}
+        confirmLabel={error !== null ? trans('global.retry') : trans('global.delete_me_my_groups_and_all_my_data')}
+        denyLabel={trans('global.cancel')}
+        onConfirm={this.deleteAccount}
+        onDeny={() => this.setConfirmModalVisibility(false)}
+        confrimTextColor={Colors.text.blue}
+      />
+    );
+  }
+
+  renderNoEnablerModal = () => {
     const { modalVisibility, loading, error } = this.state;
     const message = (
       <AppText>
@@ -586,7 +620,7 @@ class EditProfile extends Component {
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
         confirmLabel={error !== null ? trans('global.retry') : trans('global.yes')}
-        denyLabel={trans('global.no')}
+        denyLabel={trans('global.cancel')}
         onConfirm={this.deleteAccount}
         onDeny={() => this.setConfirmModalVisibility(false)}
         confrimTextColor={Colors.text.blue}
@@ -605,6 +639,7 @@ class EditProfile extends Component {
       totalFriends,
       newEmail,
       error,
+      enablersCount,
     } = this.state;
 
     const profilePicture = uploadedImage || { uri: profileImage };
@@ -688,7 +723,7 @@ class EditProfile extends Component {
               style={styles.text}
             >{trans('profile.delete_yourself_from_this_movement')}</AppText>
           </TouchableOpacity>
-          {this.renderModal()}
+          { enablersCount && enablersCount > 0 ? this.renderModal() : this.renderNoEnablerModal()}
         </ScrollView>
       </Wrapper>
     );

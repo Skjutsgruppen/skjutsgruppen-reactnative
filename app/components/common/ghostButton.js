@@ -14,10 +14,14 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 20,
   },
+  wrapper: {
+    overflow: 'hidden',
+    flex: 1,
+  },
 });
 
-const GhostButton = ({ style, label, color, onPress }) => (
-  <View style={{ overflow: 'hidden', flex: 1 }}>
+const GhostButton = ({ style, label, color, onPress, containerStyle }) => (
+  <View style={[styles.wrapper, containerStyle]}>
     <TouchableHighlight
       onPress={onPress}
       style={[styles.button, style]}
@@ -37,6 +41,7 @@ GhostButton.propTypes = {
 GhostButton.defaultProps = {
   style: {},
   color: null,
+  containerStyle: {},
 };
 
 export default GhostButton;

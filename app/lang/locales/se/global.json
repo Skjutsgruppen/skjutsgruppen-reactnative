@@ -80,5 +80,6 @@
   "max_file_size_8_mb": "Max file size is 8 MB",
   "tweet_to":"Tweet to @{{twitterUsername}}",
   "email_not_sent": "Email not sent",
-  "please_try_again": "Please try again."
+  "please_try_again": "Please try again.",
+  "delete_me_my_groups_and_all_my_data": "Delete me, my groups and all my data."
 }
