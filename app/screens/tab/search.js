@@ -219,11 +219,11 @@ class Search extends Component {
           return obj;
         }, {});
       }
-
+      // this.setState({ from: place, directionFrom: direction });
       this.setState({
         from: fromObj,
         to: toObj,
-        directionFrom: !fromObj.name ? direction : null,
+        directionFrom: !fromObj.name ? direction : '',
         directionTo: !toObj.name ? direction : null,
         filters,
         direction,
@@ -323,8 +323,8 @@ class Search extends Component {
 
   render() {
     const { filters, dates, directionFrom, directionTo } = this.state;
-    const selectedDate = dates && dates.length > 0 ? Moment(dates[0]).format('YYYY-MM-DD HH:mm') : null;
 
+    const selectedDate = dates && dates.length > 0 ? Moment(dates[0]).format('YYYY-MM-DD HH:mm') : null;
     return (
       <View style={styles.wrapper}>
         <ScrollView

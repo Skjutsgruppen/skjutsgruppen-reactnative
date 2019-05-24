@@ -363,7 +363,6 @@ class GooglePlacesAutocomplete extends Component {
 
   render() {
     const { direction, currentLocation } = this.props;
-
     return (
       <Wrapper>
         {this.renderTextInput()}

@@ -62,7 +62,7 @@ class CloseByGroupsMapWindow extends Component {
               return null;
             }}
             coordinate={coordinate}
-            image={group.photo}
+            image={group.photo || ''}
           />
         );
       });
@@ -92,11 +92,20 @@ class CloseByGroupsMapWindow extends Component {
   render() {
     const { origin, loading } = this.props;
 
+    const { latitude, longitude } = origin;
+
+    const INIT_REGION = {
+      latitude,
+      longitude,
+      latitudeDelta: 0.06,
+      longitudeDelta: 0.06,
+    };
+
     if (loading) { return null; }
     return (
       <View style={styles.wrapper}>
         <MapView
-          initialRegion={origin}
+          initialRegion={INIT_REGION}
           style={StyleSheet.absoluteFill}
           ref={(c) => { this.mapView = c; }}
           cacheEnabled
