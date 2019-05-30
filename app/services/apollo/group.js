@@ -726,7 +726,7 @@ query groupFeed( $offset: Int, $limit: Int, $groupId: Int! ){
             }
             direction
             date
-          } 
+          }
         }
       }
     }
@@ -903,16 +903,16 @@ subscription groupFeed($groupId: Int!){
           userStatus
           isBlocked
           User {
-            id 
-            firstName 
+            id
+            firstName
             avatar
             deleted
             isSupporter
-          }     
+          }
           Participants {
             User {
-              id 
-              firstName 
+              id
+              firstName
               avatar
               deleted
               isSupporter
@@ -931,7 +931,7 @@ subscription groupFeed($groupId: Int!){
             }
             direction
             date
-          } 
+          }
         }
       }
     }
@@ -1240,10 +1240,10 @@ export const withMyGroups = graphql(GROUPS_QUERY, {
 const GROUP_TRIPS_QUERY = gql`
   query groupTrips($id: Int, $filter: TripTypeEnum, $active: Boolean){
     groupTrips(groupId: $id, filter: $filter, active: $active){
-      id 
-      type 
-      description 
-      seats 
+      id
+      type
+      description
+      seats
       User {
         id
         firstName
@@ -1304,10 +1304,10 @@ export const withGroupTrips = graphql(GROUP_TRIPS_QUERY,
 const GROUP_TRIP_CALENDAR_QUERY = gql`
   query groupTripCalendar($id: Int){
     groupTripCalendar(groupId: $id){
-      id 
-      type 
-      description 
-      seats 
+      id
+      type
+      description
+      seats
       User {
         id
         firstName
@@ -1780,11 +1780,9 @@ export const withInitialAlphabetGroup = graphql(INITIAL_ALPHABET_GROUP_QUERY, {
   options: () => ({
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { alphabetisedGroups } }) => {
-    return ({
-      alphabetisedGroups,
-    });
-  },
+  props: ({ data: { alphabetisedGroups } }) => ({
+    alphabetisedGroups,
+  }),
 });
 
 const ALPHABETISED_GROUPS_QUERY = gql`
@@ -1822,6 +1820,13 @@ query alphabetisedGroups{
         country
         county
         municipality
+        Enablers {
+          id
+          firstName
+          avatar
+          deleted
+          isSupporter
+        }
         locality
         membershipStatus
         totalParticipants
@@ -1879,6 +1884,13 @@ mutation alphabetisedGroup ($startCharacter: String!, $limit: Int, $offset: Int)
       country
       county
       municipality
+      Enablers {
+        id
+        firstName
+        avatar
+        deleted
+        isSupporter
+      }
       locality
       membershipStatus
       totalParticipants

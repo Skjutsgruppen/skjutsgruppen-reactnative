@@ -7,6 +7,8 @@ import {
   Alert,
   Modal,
   Text,
+  ImageEditor,
+  ImageStore,
 } from 'react-native';
 // import { compose } from 'react-apollo';
 
@@ -207,13 +209,18 @@ class Camera extends Component {
       } else {
         let source;
         const { onSelect } = this.props;
-        onSelect(response);
+        // onSelect(response);
         if (Platform.OS === 'android') {
           source = { uri: response.uri, isStatic: true };
         } else {
           source = { uri: response.uri.replace('file://', ''), isStatic: true };
         }
-        this.setState({ imageSource: source });
+        ImageEditor.cropImage(source, { offset: { x: 0, y: 0 }, size: { width: 700, height: 600 } }, (uri) => {
+          this.setState({ imageSource: source });
+          ImageStore.getBase64ForTag(uri, (value) => {
+            onSelect({ data: value, uri });
+          }, error => console.warn(error));
+        }, err => console.log(err, 'error'));
       }
     });
   }

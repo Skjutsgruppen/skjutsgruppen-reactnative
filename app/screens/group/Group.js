@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert, Platform, PermissionsAndroid } from 'react-native';
+import { View, StyleSheet, Clipboard, BackHandler, Keyboard, Alert, Platform, PermissionsAndroid, ImageStore } from 'react-native';
 import Stretch from '@components/group/stretch';
 import About from '@components/group/about';
 import OpenClosed from '@components/group/openClosed';
@@ -82,6 +82,7 @@ class Group extends Component {
         name: '',
         description: '',
         photo: '',
+        uri: '',
       },
       type: OPEN_GROUP,
       share: {},
@@ -229,6 +230,7 @@ class Group extends Component {
         route.direction,
       )
         .then(async (res) => {
+          ImageStore.removeImageForTag(about.uri);
           if (share.clipboard.indexOf('copy_to_clip') > -1) {
             Clipboard.setString(res.data.group.url);
           }

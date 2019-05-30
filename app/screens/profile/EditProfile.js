@@ -641,7 +641,6 @@ class EditProfile extends Component {
       error,
       enablersCount,
     } = this.state;
-
     const profilePicture = uploadedImage || { uri: profileImage };
 
     return (

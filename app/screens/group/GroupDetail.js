@@ -126,6 +126,7 @@ class GroupDetail extends Component {
 
   renderGroup = () => {
     const { group } = this.state;
+    console.log(group, '==========inside render', group);
     const { navigation } = this.props;
     const { notifier, notificationMessage } = navigation.state.params;
 
@@ -163,7 +164,9 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {!group.isDeleted && !group.isBlocked && this.renderGroup()}
+        {console.log(group)}
+        {console.log(!group.isDeleted && !group.isBlocked && this.renderGroup())}
+        {this.renderGroup()}
         {this.renderDeletedModal()}
         {this.renderGroupNotAvailable()}
       </View>
@@ -198,6 +201,7 @@ const mapStateToProps = state => ({ nav: state.nav });
 const GroupWithDetail = compose(connect(mapStateToProps), withGroup)(GroupDetail);
 
 const GroupScreen = ({ navigation }) => {
+  console.log('groupscreen ==== ', navigation.state.params);
   const { id } = navigation.state.params;
   return (<GroupWithDetail id={id} navigation={navigation} />);
 };
