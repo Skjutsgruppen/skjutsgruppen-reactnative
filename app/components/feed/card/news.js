@@ -161,6 +161,7 @@ const News = ({ news: { title, photo } }) => (
       <ImageBackground
         source={{ uri: photo }}
         style={{ width: '100%', height: cardHeight, borderRadius: 12 }}
+        resizeMode="cover"
       >
         <View style={styles.content}>
           <TouchableHighlight

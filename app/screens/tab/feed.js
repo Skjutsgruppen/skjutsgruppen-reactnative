@@ -599,7 +599,7 @@ class Feed extends Component {
         <Supporter />
         */ }
         <Circle animatable />
-        {/* <NewsCard isStatic title="Wednesday we celebrated our 10th anniversarry" /> */}
+        { /* <NewsCard title="Wednesday we celebrated our 10th anniversarry" /> */}
         {this.renderFeed()}
         {this.renderShareModal()}
         {/* <Filter

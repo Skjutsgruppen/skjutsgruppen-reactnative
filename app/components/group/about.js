@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Modal, Platform, TextInput } from 'react-native';
+import { StyleSheet, View, Modal, Platform, TextInput, ImageEditor } from 'react-native';
 import Colors from '@theme/colors';
 import { RoundedButton } from '@components/common';
 import AddPhoto from '@components/add/photo';
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 class About extends Component {
   constructor(props) {
     super(props);
-    this.state = { name: '', description: '', photo: '' };
+    this.state = { name: '', description: '', photo: '', uri: '' };
   }
 
   componentWillMount() {
@@ -121,8 +121,12 @@ class About extends Component {
       <View>
         <AddPhoto
           defaultPhoto={this.state.photo}
-          onSelect={res => this.setState({ photo: res.data })}
+          onSelect={(res) => {
+            this.setState({ photo: res.data, uri: res.uri });
+          }
+          }
         />
+        {console.log(this.state.photo)}
         <SectionLabel label={trans('add.name_of_the_group')} color={Colors.text.pink} />
         <GroupInput
           value={this.state.name}

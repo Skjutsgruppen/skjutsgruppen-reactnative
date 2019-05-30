@@ -14,7 +14,7 @@ target 'Skjutsgruppen' do
 
   rn_path = '../node_modules/react-native'
   rn_maps_path = '../node_modules/react-native-maps'
-  
+
 
   pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
   pod 'React', path: rn_path, subspecs: [
@@ -36,7 +36,7 @@ target 'Skjutsgruppen' do
   pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
   pod 'GLog', :podspec => "#{rn_path}/third-party-podspecs/GLog.podspec"
   pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
-  
+
   pod 'react-native-maps', path: rn_maps_path
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
@@ -71,7 +71,7 @@ post_install do |installer|
         # "Multiple commands produce ... libyoga.a"
 
         targets_to_ignore = %w(React yoga)
-        
+
         if targets_to_ignore.include? target.name
             target.remove_from_project
         end
