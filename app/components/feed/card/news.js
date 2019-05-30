@@ -155,23 +155,23 @@ const styles = StyleSheet.create({
 //   );
 // };
 
-const News = ({ news: { title, photo } }) => (
+const News = ({ news, onPress }) => (
   <View style={styles.wrapper}>
     <View style={styles.imgWrapper}>
       <ImageBackground
-        source={{ uri: photo }}
+        source={{ uri: news.photo }}
         style={{ width: '100%', height: cardHeight, borderRadius: 12 }}
         resizeMode="cover"
       >
         <View style={styles.content}>
           <TouchableHighlight
-            onPress={() => { }}
+            onPress={() => onPress(FEEDABLE_NEWS, news)}
             style={styles.flex1}
           >
             <View style={styles.flex1}>
               <AppText color={Colors.text.white} style={styles.label}>{trans('feed.news')}</AppText>
               <View style={styles.titleContainer}>
-                <Heading size={48} color={Colors.text.white} centered>{title}</Heading>
+                <Heading size={48} color={Colors.text.white} centered>{news.title}</Heading>
               </View>
             </View>
           </TouchableHighlight>

@@ -13,11 +13,11 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* SkjutsgruppenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SkjutsgruppenTests.m */; };
+		0416691122A15080003E1C7E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0416691022A15080003E1C7E /* libBVLinearGradient.a */; };
 		0423C632224B4D0200B94B29 /* fabric.secret in Resources */ = {isa = PBXBuildFile; fileRef = 0423C631224B4D0200B94B29 /* fabric.secret */; };
 		0423C66C224B4D0E00B94B29 /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 0423C66B224B4D0E00B94B29 /* fabric.apikey */; };
 		0453629420DD0B890031241F /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0453625B20DD0B730031241F /* libART.a */; };
 		045AC28D20D36E6200DEAA5A /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 045AC28C20D36E6200DEAA5A /* Utilities.m */; };
-		045BF4CB229299D50066E07B /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67EDBDBB202B110700381935 /* libBVLinearGradient.a */; };
 		045C2D0620BE946500A6CFC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045C2D0520BE946500A6CFC5 /* StoreKit.framework */; };
 		04EE296522701ECD00553AAC /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 04EE296422701ECD00553AAC /* fabric.apikey */; };
 		04F3DC7AAB6F40EBB6EB22DC /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DFC484DBCBA420A94155A3C /* SFUIText-Regular.ttf */; };
@@ -497,6 +497,7 @@
 		00E356EE1AD99517003FC87E /* SkjutsgruppenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkjutsgruppenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* SkjutsgruppenTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkjutsgruppenTests.m; sourceTree = "<group>"; };
+		0416691022A15080003E1C7E /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0423C631224B4D0200B94B29 /* fabric.secret */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.secret; sourceTree = "<group>"; };
 		0423C66B224B4D0E00B94B29 /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		0453625520DD0B730031241F /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
@@ -596,7 +597,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				045BF4CB229299D50066E07B /* libBVLinearGradient.a in Frameworks */,
+				0416691122A15080003E1C7E /* libBVLinearGradient.a in Frameworks */,
 				0453629420DD0B890031241F /* libART.a in Frameworks */,
 				67A3C3DD202C72DD00FCB038 /* libReactNativeConfig.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -833,6 +834,7 @@
 		67A3C3DC202C72DD00FCB038 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0416691022A15080003E1C7E /* libBVLinearGradient.a */,
 				045AC38120D3A04200DEAA5A /* Twitter.framework */,
 				045C2D0520BE946500A6CFC5 /* StoreKit.framework */,
 				E7714828208EFF1A005087A4 /* libFBSDKLoginKit.a */,
@@ -1865,12 +1867,14 @@
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterKitResources.bundle",
+				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterShareExtensionUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterKitResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterShareExtensionUIResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

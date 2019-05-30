@@ -70,8 +70,9 @@ class PushNotification extends Component {
   }
 
   scheduleLocalNotification = (data) => {
-    const payload = JSON.parse(data);
+    console.log('=====================', data);
     if (data && !data.logout) {
+      const payload = JSON.parse(data);
       Scheduler.schedule(payload);
     }
   }

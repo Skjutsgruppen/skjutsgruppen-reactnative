@@ -51,6 +51,7 @@ target 'Skjutsgruppen' do
   pod 'ReactNativeFabric', :path => '../node_modules/react-native-fabric'
 
 # Add new pods below this line
+
   pod 'RNIap', :path => '../node_modules/react-native-iap'
 end
 
