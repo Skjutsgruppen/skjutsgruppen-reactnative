@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   deleteWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 300,
+    height: 550,
     paddingHorizontal: 24,
   },
 });
@@ -69,7 +69,7 @@ const DeleteMovementModal = ({
             <RoundedButton
               bgColor={Colors.background.pink}
               onPress={onConfirm}
-              textStyle={{ fontSize: 14 }}
+              textStyle={{ fontSize: 20 }}
               textColor={Colors.text.white}
             >
               {confirmLabel}
@@ -79,7 +79,7 @@ const DeleteMovementModal = ({
               <GhostButton
                 label={denyLabel}
                 onPress={onDeny}
-                color={denyTextColor}
+                color={Colors.text.black}
                 containerStyle={{ justifyContent: 'center', alignItems: 'center' }}
                 style={{ justifyContent: 'flex-start' }}
               />

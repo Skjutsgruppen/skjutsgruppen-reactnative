@@ -320,13 +320,13 @@ export const withStoreAppToken = graphql(STORE_APP_TOKEN_QUERY, {
 });
 
 const DELETE_ACCOUNT_QUERY = gql`
-mutation deleteAccount($id: Int) {
-  deleteAccount(id: $id)
+mutation deleteAccount($id: Int, $isDelete: Boolean) {
+  deleteAccount(id: $id, isDelete: $isDelete)
 }`;
 
 export const withDeleteAccount = graphql(DELETE_ACCOUNT_QUERY, {
   props: ({ mutate }) => ({
-    deleteAccount: (id = null) => mutate({ variables: { id } }),
+    deleteAccount: (selected, id = null) => mutate({ variables: { id, isDelete: selected } }),
   }),
 });
 
