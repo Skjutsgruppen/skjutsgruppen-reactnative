@@ -8,6 +8,7 @@ import ScheduledNotification from '@services/firebase/scheduleNotification';
 import Scheduler from '@services/firebase/scheduler';
 import firebase from 'react-native-firebase';
 import { Platform } from 'react-native';
+import { trans } from '@lang/i18n';
 
 class PushNotification extends Component {
   async componentDidMount() {
@@ -51,7 +52,6 @@ class PushNotification extends Component {
 
   showLocalNotification = (message) => {
     const { _body, _title, _data: { screen, id } } = message;
-
     const notification = new firebase.notifications.Notification()
       .setNotificationId(new Date().valueOf().toString())
       .setTitle(_title)

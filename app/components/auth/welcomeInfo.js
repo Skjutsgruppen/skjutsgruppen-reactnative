@@ -7,6 +7,7 @@ import { Title } from '@components/utils/texts';
 import { withNavigation } from 'react-navigation';
 import Logo from '@assets/logo.png';
 import MapImage from '@assets/onboarding_map.png';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -44,7 +45,7 @@ const WelcomeInfo = ({ navigation }) => (
         <View style={styles.content}>
           <Image source={Logo} style={styles.logo} />
           <Title centered size={24} color={Colors.text.gray} style={styles.info}>
-            Welcome to the non-profit ridesharing movement Skjutsgruppen
+            { trans('onboarding.welcome_to_skjutsgruppen') }
           </Title>
           <Image source={MapImage} style={styles.map} />
         </View>

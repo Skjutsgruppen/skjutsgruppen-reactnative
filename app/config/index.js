@@ -8,7 +8,10 @@ const WS_API_URL = Config.WS_API_URL;
 const SMS_NUMBER = Config.SMS_NUMBER;
 const APP_URL = `http://${Config.APP_URL}`;
 
-const getDate = date => Moment.utc(date).tz(getTimezone());
+const getDate = (date) => {
+  Moment.locale('en');
+  return Moment.utc(date).tz(getTimezone());
+};
 
 const utcDate = date => Moment(date).utc();
 

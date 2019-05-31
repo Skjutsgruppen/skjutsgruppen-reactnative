@@ -17,6 +17,7 @@ import {
   suggestion as suggestionEn,
   onboarding as onboardingEn,
   trip as tripEn,
+  notification as notificationEn,
 } from '@lang/locales/en';
 import {
   feed as feedSe,
@@ -34,6 +35,7 @@ import {
   suggestion as suggestionSe,
   onboarding as onboardingSe,
   trip as tripSe,
+  notification as notificationSe,
 } from '@lang/locales/se';
 
 I18n.fallbacks = true;
@@ -55,6 +57,7 @@ I18n.translations = {
     suggestion: suggestionEn,
     onboarding: onboardingEn,
     trip: tripEn,
+    notification: notificationEn,
   },
   sv: {
     feed: feedSe,
@@ -72,6 +75,7 @@ I18n.translations = {
     suggestion: suggestionSe,
     onboarding: onboardingSe,
     trip: tripSe,
+    notification: notificationSe,
   },
 };
 

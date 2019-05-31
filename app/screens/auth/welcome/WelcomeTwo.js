@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   image: {
+    flex: 1,
     maxWidth: '100%',
     maxHeight: '55%',
     resizeMode: 'contain',

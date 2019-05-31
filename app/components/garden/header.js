@@ -6,6 +6,7 @@ import { Title, Heading } from '@components/utils/texts';
 import Colors from '@theme/colors';
 import Avatar from '@components/common/avatar';
 import Curves from '@assets/curves_green.png';
+import { trans } from '@lang/i18n';
 
 const styles = StyleSheet.create({
   curves: {
@@ -36,7 +37,7 @@ const Header = ({ showTitle, showAvatar, headingLabel, infoLabel, user }) => (
     <Image source={Curves} style={styles.curves} />
     <View style={styles.content}>
       {
-        showTitle && <Title size={15} color={Colors.text.blue} style={{ marginVertical: 16 }}>{'TOGETHER'.toLocaleUpperCase()}</Title>
+        showTitle && <Title size={15} color={Colors.text.blue} style={{ marginVertical: 16 }}>{trans('profile.together').toLocaleUpperCase()}</Title>
       }
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Heading

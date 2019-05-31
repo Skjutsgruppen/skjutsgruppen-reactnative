@@ -171,7 +171,7 @@ class SuggestedRidesList extends Component {
         <Toast message={this.state.error} type="error" />
         <TextInput
           multiline={false}
-          placeholder="Write"
+          placeholder={trans('suggestion.comment')}
           placeholderTextColor={Colors.text.black}
           underlineColorAndroid="transparent"
           style={styles.input}

@@ -104,5 +104,11 @@
   "all_done": "All done!",
   "no_fb_email": "Seems like there is no email address associated with your Facebook account.",
   "in_order_to_participate_the_movement": "In order to participate in this movement, you need to verify yourself with your email id.",
-  "update_fb_email_or_sign_up_the_long_way": "So if you still want to sign up with your Facebook account, please update your email address in your facebook account and try again or you could always sign up from The long way option below."
+  "update_fb_email_or_sign_up_the_long_way": "So if you still want to sign up with your Facebook account, please update your email address in your facebook account and try again or you could always sign up from The long way option below.",
+  "welcome_to_skjutsgruppen": "Welcome to the non-profit ridesharing movement Skjutsgruppen",
+  "lets_get_started": "Lets get started!",
+  "new_participant": "New participant",
+  "i_give_consent": "I give the consent to registering my personal information.",
+  "fill_in_your_email": "Fill in your e-mail",
+  "resend_verification_code": "Resend Verification Code"
 }
