@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity, TextInput, Alert, Image, Platform, Clipboard, PermissionsAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Wrapper, Loading, DeleteMovementModal, ConfirmModal } from '@components/common';
+import Radio from '@components/add/radio';
 import { connect } from 'react-redux';
 import ToolBar from '@components/utils/toolbar';
 import { Colors } from '@theme';
@@ -142,6 +143,7 @@ class EditProfile extends Component {
       errorMsg: '',
       groupCount: '',
       enablersCount: '',
+      selected: false,
     };
   }
 
@@ -273,10 +275,11 @@ class EditProfile extends Component {
 
   deleteAccount = () => {
     const { deleteAccount, logout, removeAppToken } = this.props;
-
+    const { selected } = this.state;
     this.setState({ loading: true }, () => {
       removeAppToken(getDeviceId()).then(() => {
-        deleteAccount()
+        console.log('---------------- ', selected)
+        deleteAccount(selected)
           .then(() => this.setConfirmModalVisibility(false))
           .then(async () => {
             await firebase.notifications().cancelAllNotifications();
@@ -573,20 +576,51 @@ class EditProfile extends Component {
     );
   }
 
+  handleCheckState = () => {
+    const { selected } = this.state;
+    this.setState({
+      selected: !selected,
+    });
+  }
+
   renderModal = () => {
-    const { modalVisibility, loading, error, groupCount } = this.state;
+    const { modalVisibility, loading, error, groupCount, selected } = this.state;
 
     const message = (
       <View>
-        <AppText size={16} fontVariation="bold" centered style={{ marginBottom: 10 }} color={Colors.text.pink}>
+        <AppText size={16} fontVariation="bold" centered style={{ marginBottom: 20, lineHeight: 24 }} color={Colors.text.blue}>
           {trans('profile.you_are_deleting_yourself_from_the_movement')}
         </AppText>
         <AppText size={14} style={{ marginBottom: 10 }}>
-          {trans('profile.you_can_no_longer_be_the_enabler_of_groups', { groupCount })}
+          {trans('profile.you_can_no_longer_be_the_enabler_of_groups')}
+          <AppText size={14} fontVariation="bold">
+            { groupCount > 1 ? trans('profile.group_counts', { groupCount }) : trans('profile.group_count', { groupCount })}</AppText>
+          <AppText size={14}> {trans('profile.in_the_movement')}</AppText>
         </AppText>
-        <AppText size={14}>
-          {trans('profile.if_you_want_to_pass_on_the_position_of_being_an_enabler')}
+        <AppText size={14} style={{ marginBottom: 20 }}>
+          {trans('profile.three_ways_to_proceed')}
         </AppText>
+        <AppText size={14} style={{ marginBottom: 20, lineHeight: 20 }}>
+          1) {trans('profile.go_to_the_settings')}
+        </AppText>
+        <AppText size={14} style={{ marginBottom: 20, lineHeight: 20 }}>
+          2) {trans('profile.select_the_option_below_to_let')}
+        </AppText>
+        <AppText size={14} style={{ marginBottom: 30, lineHeight: 20 }}>
+          3) <AppText size={14} fontVariation="bold">{trans('profile.donot_select_the_option')}</AppText> {trans('profile.below_to_delete_all')}
+        </AppText>
+
+        <View style={{ flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 20 }}>
+          <Radio
+            active={selected}
+            onPress={this.handleCheckState}
+            color="pink"
+            style={{ marginRight: 20 }}
+          />
+          <AppText size={14} style={{ lineHeight: 24 }}>
+            {trans('profile.let_other_participants_take_over')}
+          </AppText>
+        </View>
       </View>
     );
 
@@ -596,7 +630,7 @@ class EditProfile extends Component {
         visible={modalVisibility}
         onRequestClose={() => this.setConfirmModalVisibility(false)}
         message={message}
-        confirmLabel={error !== null ? trans('global.retry') : trans('global.delete_me_my_groups_and_all_my_data')}
+        confirmLabel={error !== null ? trans('global.retry') : trans('profile.delete_me')}
         denyLabel={trans('global.cancel')}
         onConfirm={this.deleteAccount}
         onDeny={() => this.setConfirmModalVisibility(false)}
@@ -646,7 +680,6 @@ class EditProfile extends Component {
     return (
       <Wrapper bgColor={Colors.background.mutedBlue}>
         <ToolBar />
-        <Toast message={error} type="error" />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: 50 }}>
           <View style={[styles.nameSection]}>
             <TouchableOpacity style={styles.imageWrapper} onPress={this.selectPhotoTapped}>
