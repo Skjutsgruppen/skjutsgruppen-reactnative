@@ -420,6 +420,9 @@ class Search extends Component {
               </View>
             </View>
             <DateTimePicker
+              titleIOS={trans('search.pick_a_date')}
+              confirmTextIOS={trans('search.confirm')}
+              cancelTextIOS={trans('search.cancel')}
               mode="datetime"
               is24Hour
               isVisible={this.state.modalVisible}

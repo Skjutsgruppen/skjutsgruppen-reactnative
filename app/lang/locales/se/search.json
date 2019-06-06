@@ -26,5 +26,8 @@
   "ride_that_is_asked_for": "Samåkning som bes om",
   "or_explore_existing_group": "Eller upptäck befintliga grupper",
   "either_from_of_to_is_required": "Du måste fylla i antingen Från eller Till",
-  "public_transport_message": "Information om kollektivtrafiken kan variera. Läs mer om din resa på resrobot.se"
+  "public_transport_message": "Information om kollektivtrafiken kan variera. Läs mer om din resa på resrobot.se",
+  "pick_a_date": "Välj datum och tid",
+  "confirm": "Bekräfta",
+  "cancel": "Avbryt"
 }

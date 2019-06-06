@@ -52,7 +52,7 @@ const Boarding = ({ navigation }) => (
     >{trans('onboarding.new_participant')}</RoundedButton>
     <View style={styles.separator}>
       <View style={styles.separatorLine} />
-      <AppText fontVariation="semibold" style={styles.separatorText}>OR</AppText>
+      <AppText fontVariation="semibold" style={styles.separatorText}>{trans('onboarding.or')}</AppText>
     </View>
     <RoundedButton
       bgColor={Colors.background.blue}

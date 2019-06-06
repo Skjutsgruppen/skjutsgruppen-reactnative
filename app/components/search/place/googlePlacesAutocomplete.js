@@ -25,6 +25,7 @@ import { AppText } from '@components/utils/texts';
 import { trans } from '@lang/i18n';
 import TouchableHighlight from '@components/touchableHighlight';
 import CrossIcon from '@assets/icons/ic_cross.png';
+import I18n from 'react-native-i18n';
 
 const defaultStyles = {
   container: {
@@ -241,9 +242,10 @@ class GooglePlacesAutocomplete extends Component {
 
   requestPlace = (text) => {
     this.abortRequests();
+    console.log('===== location list request ======= ', getPlaceSuggestURL(text, I18n.locale));
 
     this.sendHttpRequest({
-      url: getPlaceSuggestURL(text),
+      url: getPlaceSuggestURL(text, I18n.locale),
       onSuccess: (response) => {
         if (typeof response.predictions !== 'undefined') {
           if (this.isComponentMounted === true) {

@@ -26,5 +26,8 @@
   "ride_that_is_asked_for": "Ride that is asked for",
   "or_explore_existing_group": "Or explore existing group.",
   "either_from_of_to_is_required": "Either From or To is required.",
-  "public_transport_message": "Public transportation information may vary. Read more about your trip on resrobot.se"
+  "public_transport_message": "Public transportation information may vary. Read more about your trip on resrobot.se",
+  "pick_a_date": "Pick a Date",
+  "confirm": "Confirm",
+  "cancel": "Cancel"
 }
