@@ -57,7 +57,6 @@ class Description extends PureComponent {
           defaultPhoto={photo}
           canAddPhoto={user.isSupporter}
         />
-        {console.log(this.state.photo)}
         <CommentBox
           label={trans('add.comment')}
           onChangeText={text => this.setState({ text })}

@@ -30,5 +30,12 @@
   "github_url": "https://github.com/skjutsgruppen",
   "filters": "Filters",
   "just_supported_our_self_sustaining_garden": "just supported our self-sustaining garden!",
-  "one_of_the_things_we_are_supporting": "One of the things we're supporting:"
+  "one_of_the_things_we_are_supporting": "One of the things we're supporting:",
+  "cancel": "Cancel",
+  "minute": "minute",
+  "minutes": "minutes",
+  "hour": "hour",
+  "hours": "hours",
+  "day": "day",
+  "days": "days"
 }

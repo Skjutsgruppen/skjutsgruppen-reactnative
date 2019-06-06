@@ -712,7 +712,7 @@ class EditProfile extends Component {
           <View style={styles.row}>
             <View>
               <AppText style={styles.text}>
-                {trans('profile.facebook')} - <AppText fontVariation="bold">{facebookLinked ? 'connected' : 'not connected'}</AppText>
+                {trans('profile.facebook')} - <AppText fontVariation="bold">{trans(facebookLinked ? 'profile.connected' : 'profile.not_conencted')}</AppText>
               </AppText>
               <AppText color={Colors.text.gray} style={styles.text}>
                 {trans('profile.visible_for_other_participants')}

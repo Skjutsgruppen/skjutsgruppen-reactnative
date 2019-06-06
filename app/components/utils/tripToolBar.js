@@ -11,6 +11,7 @@ import TouchableHighlight from '@components/touchableHighlight';
 import { Heading } from '@components/utils/texts';
 
 import Icon from '@assets/icons/ic_back_toolbar.png';
+import ShareIcon from '@assets/icons/ic_share.png';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -53,14 +54,13 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48,
     borderRadius: 24,
-    overflow: 'hidden',
   },
   icon: {
     height: 48,
     width: 48,
     borderRadius: 24,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.background.fullWhite,
   },
   shareIcon: {
@@ -98,7 +98,7 @@ class TripToolBar extends PureComponent {
       <View style={styles.iconWrapper}>
         <TouchableHighlight onPress={() => this.backHandler()} style={styles.button}>
           <Animated.View style={[styles.icon, { elevation }]}>
-            <Image source={Icon} />
+            <Image resizeMode="contain" style={{ width: 24, marginLeft: -2 }} source={Icon} />
           </Animated.View>
         </TouchableHighlight>
       </View>

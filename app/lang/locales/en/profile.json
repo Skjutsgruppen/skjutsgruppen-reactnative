@@ -207,5 +207,9 @@
   "google_fees": "Applies if you support through Google. First year you support us Google gets 30 %, second year Google gets 15 %.",
   "amount_after_fees": "This means that if you support 10 kr we get 5.60 kr first year and 6.80 kr second year you support.",
   "excess_money": "Excess money",
-  "excess_money_description": "If and when all the bars are filled up and more money are coming in to the garden the excess money is handled transparantly be the non-profit association. Read more about the association and the movement here:"
+  "excess_money_description": "If and when all the bars are filled up and more money are coming in to the garden the excess money is handled transparantly be the non-profit association. Read more about the association and the movement here:",
+  "friend_request": "Friend Request",
+  "cancel_friend_request": "Cancel Friend Request",
+  "connected": "connected",
+  "not_conencted": "not connected"
 }

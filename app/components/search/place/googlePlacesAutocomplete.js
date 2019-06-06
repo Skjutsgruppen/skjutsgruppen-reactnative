@@ -242,7 +242,6 @@ class GooglePlacesAutocomplete extends Component {
 
   requestPlace = (text) => {
     this.abortRequests();
-    console.log('===== location list request ======= ', getPlaceSuggestURL(text, I18n.locale));
 
     this.sendHttpRequest({
       url: getPlaceSuggestURL(text, I18n.locale),

@@ -24,11 +24,11 @@ const linkScript = function() {
   var attachEvent = function(elem, event, callback)
   {
       event = event.replace(/^on/g, '');
-     
+
       if ( 'addEventListener' in window ) {
-          elem.addEventListener(event, callback, false);            
+          elem.addEventListener(event, callback, false);
       } else if ( 'attachEvent' in window ) {
-          elem.attachEvent('on'+event, callback);            
+          elem.attachEvent('on'+event, callback);
       } else {
           var registered = elem['on' + event];
           elem['on' + event] = registered ? function(e) {
@@ -36,7 +36,7 @@ const linkScript = function() {
               callback(e);
           } : callback;
       }
-      
+
       return elem;
   };
   var all_links = document.querySelectorAll('a[href]');
@@ -44,7 +44,6 @@ const linkScript = function() {
       for ( var i in all_links ) {
           if ( all_links.hasOwnProperty(i) ) {
               attachEvent(all_links[i], 'onclick', function(e){
-                alert(e.target);
                   if (new RegExp( '^https?:\/\/' + location.host, 'gi' ).test( this.href ) || new RegExp( '^http?:\/\/' + location.host, 'gi' ).test( this.href ) ) {
                     e.preventDefault();
                     window.postMessage(JSON.stringify({
@@ -53,7 +52,7 @@ const linkScript = function() {
                     return;
                   }
                   e.preventDefault();
-               
+
               });
           }
       }
@@ -79,15 +78,15 @@ export default class AutoHeightWebView extends Component {
   }
 
   _onMessage(e) {
-    console.log('====== onMessage ======', e.nativeEvent.data);
+    // console.log('====== onMessage ======', e.nativeEvent.data);
     let data = e.nativeEvent.data;
     if(!data) return;
     data = JSON.parse(data)
-    console.log('data ===== ',data);
-    console.log('url ===== ', data.external_url_open)
+    // console.log('data ===== ',data);
+    // console.log('url ===== ', data.external_url_open)
     if(data.external_url_open){
       this.props.openLink(data.external_url_open);
-      return; 
+      return;
     }
     this.setState({
       webViewHeight: parseInt(e.nativeEvent.data)
@@ -105,11 +104,11 @@ export default class AutoHeightWebView extends Component {
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-  
+
     const androidScript = 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
     '(' + String(linkScript) + ')();' +
     '(' + String(injectedScript) + ')();';
-    
+
     const iosScript = '(' + String(injectedScript) + ')();' + 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');';
     return (
       <WebView
@@ -119,8 +118,9 @@ export default class AutoHeightWebView extends Component {
         onMessage={this._onMessage}
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
+        scrollEnabled={true}
         {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
+        style={[{width: _w - 48}, this.props.style, {height: _h}]}
       />
     )
   }

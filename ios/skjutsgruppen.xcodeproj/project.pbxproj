@@ -13,10 +13,8 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* SkjutsgruppenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SkjutsgruppenTests.m */; };
-		0416691122A15080003E1C7E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0416691022A15080003E1C7E /* libBVLinearGradient.a */; };
 		0423C632224B4D0200B94B29 /* fabric.secret in Resources */ = {isa = PBXBuildFile; fileRef = 0423C631224B4D0200B94B29 /* fabric.secret */; };
 		0423C66C224B4D0E00B94B29 /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 0423C66B224B4D0E00B94B29 /* fabric.apikey */; };
-		0453629420DD0B890031241F /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0453625B20DD0B730031241F /* libART.a */; };
 		045AC28D20D36E6200DEAA5A /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 045AC28C20D36E6200DEAA5A /* Utilities.m */; };
 		045C2D0620BE946500A6CFC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045C2D0520BE946500A6CFC5 /* StoreKit.framework */; };
 		04EE296522701ECD00553AAC /* fabric.apikey in Resources */ = {isa = PBXBuildFile; fileRef = 04EE296422701ECD00553AAC /* fabric.apikey */; };
@@ -505,6 +503,7 @@
 		045AC28C20D36E6200DEAA5A /* Utilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
 		045AC38120D3A04200DEAA5A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		045C2D0520BE946500A6CFC5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		0472366522AE4BCA00B93141 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		04B22EA920D643F700CDA964 /* sv-SE */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sv-SE"; path = "sv-SE.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		04EE296422701ECD00553AAC /* fabric.apikey */ = {isa = PBXFileReference; lastKnownFileType = text; path = fabric.apikey; sourceTree = "<group>"; };
 		06527C20DEF14B0D95964E9E /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
@@ -597,8 +596,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0416691122A15080003E1C7E /* libBVLinearGradient.a in Frameworks */,
-				0453629420DD0B890031241F /* libART.a in Frameworks */,
 				67A3C3DD202C72DD00FCB038 /* libReactNativeConfig.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -834,6 +831,7 @@
 		67A3C3DC202C72DD00FCB038 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0472366522AE4BCA00B93141 /* libBVLinearGradient.a */,
 				0416691022A15080003E1C7E /* libBVLinearGradient.a */,
 				045AC38120D3A04200DEAA5A /* Twitter.framework */,
 				045C2D0520BE946500A6CFC5 /* StoreKit.framework */,

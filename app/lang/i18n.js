@@ -1,5 +1,6 @@
 import I18n from 'react-native-i18n';
 import LangService from '@services/lang';
+import { LocaleConfig } from 'react-native-calendars';
 
 import {
   feed as feedEn,
@@ -83,6 +84,7 @@ async function loadLocal() {
   const lang = await LangService.getLanguage();
   if (lang) {
     I18n.locale = lang;
+    LocaleConfig.defaultLocale = lang;
   }
 }
 

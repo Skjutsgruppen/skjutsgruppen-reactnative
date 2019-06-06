@@ -214,7 +214,7 @@ class FOF extends PureComponent {
   bundledName = (row) => {
     const name = row.map((user, index) => {
       const { navigation } = this.props;
-      let separator = ' and ';
+      let separator = ` ${trans('global._and_')} `;
       if (index < (row.length - 2)) {
         separator = ', ';
       }
@@ -235,7 +235,7 @@ class FOF extends PureComponent {
       ]);
     });
 
-    return ([name, ' who knows ']);
+    return ([name, ` ${trans('global.who_knows')} `]);
   }
 
   detail = () => {
@@ -257,7 +257,7 @@ class FOF extends PureComponent {
     return (
       <View style={{ paddingHorizontal: 24 }}>
         <AppText style={[{ marginTop: 12 }, expanded ? { minHeight: 32 } : { height: 0 }]}>
-          You know {relation.path.map(this.bundledName)}
+          {trans('global.you_know')} {relation.path.map(this.bundledName)}
           <AppText
             fontVariation="semibold"
             color={Colors.text.blue}

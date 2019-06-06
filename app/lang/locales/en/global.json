@@ -81,5 +81,7 @@
   "tweet_to":"Tweet to @{{twitterUsername}}",
   "email_not_sent": "Email not sent",
   "please_try_again": "Please try again.",
-  "delete_me_my_groups_and_all_my_data": "Delete me, my groups and all my data."
+  "delete_me_my_groups_and_all_my_data": "Delete me, my groups and all my data.",
+  "who_knows": "who knows",
+  "you_know": "You know"
 }

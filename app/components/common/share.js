@@ -543,7 +543,7 @@ class Share extends Component {
 
     return (
       <View style={styles.list}>
-        <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{'Groups'.toUpperCase()}</AppText>
+        <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>{trans('global.groups').toUpperCase()}</AppText>
         <DataList
           keyboardShouldPersistTaps="always"
           data={groups}
@@ -604,7 +604,7 @@ class Share extends Component {
               render={groups => (
                 <View>
                   <AppText size={12} color={Colors.text.blue} style={styles.shareCategoryTitle}>
-                    {'Groups'.toUpperCase()}
+                    {trans('global.groups').toUpperCase()}
                   </AppText>
                   {groups.map(group => (
                     <ShareItem
@@ -625,7 +625,7 @@ class Share extends Component {
           {
             (friendsListSearch.length > 0 || contactsListSearch.length > 0) && <View>
               <AppText size={12} color={Colors.text.blue} style={[styles.shareCategoryTitle, { marginTop: 24 }]}>
-                {'Your Friends'.toUpperCase()}
+                {trans('global.your_friends').toUpperCase()}
               </AppText>
               <FriendList
                 loading={friends.loading}

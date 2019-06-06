@@ -378,7 +378,7 @@ class Profile extends Component {
           bgColor={Colors.background.red}
           onPress={this.cancelRequest}
         >
-          Cancel friend request
+          {trans('profile.cancel_friend_request')}
         </RoundedButton>
       );
     }
@@ -389,7 +389,7 @@ class Profile extends Component {
         bgColor={Colors.background.pink}
         onPress={this.sendRequest}
       >
-        Friend request
+        {trans('profile.friend_request')}
       </RoundedButton>
     );
   }
