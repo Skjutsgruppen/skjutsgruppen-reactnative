@@ -261,10 +261,10 @@ class Camera extends Component {
               Alert.alert('Modal has been closed.');
             }}
           >
-            <View style={[styles.supporterModalWrapper, { backgroundColor: 'rgba(255, 255, 255, 0.6)' }]}>
+            <View style={[styles.supporterModalWrapper, { backgroundColor: 'rgba(0, 0, 0, 0.6)' }]}>
               <View style={styles.supporterModalCard}>
                 <Image source={Curves} style={styles.curves} />
-                <AppText color={Colors.text.pink} size={26} fontVariation="bold" style={{ marginBottom: 48 }}>
+                <AppText color={Colors.text.pink} size={26} centered fontVariation="bold" style={{ marginBottom: 48, lineHeight: 44 }}>
                   {trans('add.support_the_garden_to_add_a_photo')}
                 </AppText>
                 <RoundedButton

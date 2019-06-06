@@ -159,10 +159,11 @@ class Feed extends Component {
 
     this.messageListener = firebase.messaging().onMessage((message) => {
       const { _data: { custom_notification: customNotification } } = message;
-      const payload = JSON.parse(customNotification);
-
-      if (payload && payload.logout) {
-        this.logoutActions();
+      if (customNotification) {
+        const payload = JSON.parse(customNotification);
+        if (payload && payload.logout) {
+          this.logoutActions();
+        }
       }
     });
   }
@@ -240,11 +241,20 @@ class Feed extends Component {
     }
 
     if (type === FEEDABLE_NEWS) {
-      navigation.navigate('NewsDetail', { news: details });
+      this.onNewsPressed(details);
     }
 
     if (type === FEEDABLE_EXPERIENCE) {
       navigation.navigate('ExperienceDetail', { id });
+    }
+  }
+
+  onNewsPressed = (news) => {
+    const { navigation } = this.props;
+    if (news.body && news.body !== '') {
+      navigation.navigate('NewsDetail', { news });
+    } else if (news.links && news.links !== '') {
+      Linking.openURL(news.links);
     }
   }
 

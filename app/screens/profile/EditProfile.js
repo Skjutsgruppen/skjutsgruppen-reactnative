@@ -278,7 +278,6 @@ class EditProfile extends Component {
     const { selected } = this.state;
     this.setState({ loading: true }, () => {
       removeAppToken(getDeviceId()).then(() => {
-        console.log('---------------- ', selected)
         deleteAccount(selected)
           .then(() => this.setConfirmModalVisibility(false))
           .then(async () => {

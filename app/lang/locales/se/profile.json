@@ -176,6 +176,6 @@
   "together": "Together",
   "money_goes_to": "The money goes to:",
   "you_are_deleting_yourself_from_the_movement": "You are deleting yourself from the movement",
-  "you_can_no_longer_be_the_enabler_of_groups": "You can no longer be the enabler of {{groupCount}} groups in the movement.",
+  "you_can_no_longer_be_the_enabler_of_groups": "You can no longer be the enabler of ",
   "if_you_want_to_pass_on_the_position_of_being_an_enabler": " If you want to pass on the position of being an enabler to another paticipant go to the profile and assign the position to another participant."
 }
