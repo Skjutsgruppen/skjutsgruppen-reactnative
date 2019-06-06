@@ -48,7 +48,7 @@
   "be_supporter_to_add_photo_in_trip": "Du behöver stödja den självförsörjande trädgården för att kunna lägga till ett foto.",
   "no_route_found": "Vi fann ingen sträcka mellan startplats och slutdestination. Testa igen med mer specifika platser.",
   "try_again": "Någonting gick fel. Testa igen.",
-  "support_the_garden_to_add_a_photo": "Support the garden to add a photo",
-  "you_dont_have_to_though": "You don't have to though",
-  "continue_without_photo": "Continue without photo"
+  "support_the_garden_to_add_a_photo": "Stöd trädgården för att lägga till ett foto",
+  "you_dont_have_to_though": "Men du behöver inte göra det",
+  "continue_without_photo": "Fortsätt utan foto"
 }

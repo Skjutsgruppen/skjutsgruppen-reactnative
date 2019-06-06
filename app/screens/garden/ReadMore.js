@@ -107,71 +107,71 @@ class ReadMore extends Component {
             </View>
             <View style={[styles.spaced, styles.nonProfitWrapper]}>
               <Title fontVariation="bold" color={Colors.text.pink}>
-                The non-profit assocation
+                {trans('profile.the_non_profit_association')}
               </Title>
               <AppText style={[styles.spaced, { lineHeight: 28 }]} color={Colors.text.darkerGray}>
-                As an garant for your support of the movement being handled fair we have a non-profit assocation who is a juridicial person in Sweden.
+                {trans('profile.as_an_grant_for_your_support')}
               </AppText>
               <AppText style={[styles.spaced, { lineHeight: 28 }]}>
-                The key here is that this form guarantees transparancy and money will never be missused.
+                {trans('profile.the_key_here')}
               </AppText>
               <AppText style={[styles.spaced, { lineHeight: 28, marginBottom: 20 }]}>
-                But we don’t stop there, we always show you exactly where your support goes, right here in the app. Click “Our movement” to read about the association and the movement, or scroll down to see the costs.
+                {trans('profile.but_we_dont_stop_there')}
               </AppText>
               <RoundedButton
                 bgColor={Colors.background.pink}
                 onPress={() => this.openLink('https://docs.google.com/document/d/1WZECcrD_Qw9dYoLA-uSr8cxCluRjtNKP0gzVXFaxieg/edit?usp=sharing')}
                 style={[styles.spaced, styles.movementButton]}
               >
-                Our movement
+                {trans('profile.our_movement')}
               </RoundedButton>
             </View>
             <View style={styles.breakdownWrapper}>
               <View>
                 <AppText size={24} fontVariation="bold" color={Colors.text.darkGray} style={{ marginBottom: 6 }}>
-                Breakdown
+                  {trans('profile.breakdown')}
                 </AppText>
                 <AppText size={24} color={Colors.text.gray} style={{ lineHeight: 36 }}>
-                of all the costs and where the money goes
+                  {trans('profile.of_all_cost')}
                 </AppText>
               </View>
               <View style={[styles.divider, { marginVertical: 40 }]} />
               <View style={styles.server}>
-                <BreakdownCostCard title="Server, domains and more" coveredPercentage={gardenInfo.data.server} totalCost="19 299" />
+                <BreakdownCostCard title={trans('profile.server_domain_more')} coveredPercentage={gardenInfo.data.server} totalCost="19 299" />
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 20 }}>
-                  Why do we need this?
+                  {trans('profile.why_need_this')}
                 </Title>
                 <AppText size={16} style={{ lineHeight: 28 }}>
-                  To run this app we need to have a server. A server is where we store for instance the photos and rides you are publishing.  For people to find the movement we also need domains. A domain is an adress on the internet. Lastly we pay Apple an yearly fee and Sendgrid for sending e-mails.
+                  {trans('profile.server_need_description')}
                 </AppText>
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 24 }}>
-                  Breakdown
+                  {trans('profile.breakdown')}
                 </Title>
                 <AppText size={16} style={{ marginBottom: 6 }}>
-                    Server one year - 15 500 SEK
+                  {trans('profile.server_one_year_cost')}
                 </AppText>
                 <AppText size={16} style={{ marginBottom: 6 }}>
-                    Domains one year - 1600 SEK
+                  {trans('profile.domain_one_year_cost')}
                 </AppText>
                 <AppText size={16} style={{ marginBottom: 6 }}>
-                  Apple Devoloper fee (yearly) - 999 SEK
+                  {trans('profile.apple_developer_year_cost')}
                 </AppText>
                 <AppText size={16} style={{ marginBottom: 34 }}>
-                  Sendgrid (yearly) - 1200 SEK
+                  {trans('profile.send_grid_year_cost')}
                 </AppText>
                 <AppText>
-                  <AppText fontVariation="bold" >Total: </AppText>19 299 SEK /year
+                  <AppText fontVariation="bold" >{trans('profile.total')} : </AppText>19 299 SEK /{trans('profile.year')}
                 </AppText>
               </View>
               <View style={[styles.horizontalDivider, { marginBottom: 12 }]} />
               <View style={[styles.horizontalDivider, { marginTop: -4 }]} />
               <View style={styles.programming}>
-                <BreakdownCostCard title="Programming" coveredPercentage={gardenInfo.data.programmer} totalCost="100 000" />
+                <BreakdownCostCard title={trans('profile.a_programmer')} coveredPercentage={gardenInfo.data.programmer} totalCost="100 000" />
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 20 }}>
-                  Why do we need this?
+                  {trans('profile.why_need_this')}
                 </Title>
                 <AppText size={16} style={{ lineHeight: 28 }}>
-                  We combine being an open source project where everybody can help out with the programming, with from time to time pay programmers to help us out. We keep issues in the open source project that you can provide to if you want:
+                  {trans('profile.programming_need_description')}
                 </AppText>
                 <TouchableOpacity onPress={() => this.openLink('https://github.com/Skjutsgruppen')}>
                   <View>
@@ -181,70 +181,70 @@ class ReadMore extends Component {
                   </View>
                 </TouchableOpacity>
                 <AppText size={16} style={{ lineHeight: 28, marginBottom: 30 }}>
-                  The project manager (see below) manages the smaller issues. On the yearly meeting of the non-profit association we decide on larger issues if needed (like when we decided together to make this app).
+                  {trans('profile.pragramming_need_manager_description')}
                 </AppText>
                 <AppText>
-                  <AppText fontVariation="bold" >Total: </AppText>100 000 SEK /year
+                  <AppText fontVariation="bold" >{trans('profile.total')}: </AppText>100 000 SEK /{trans('profile.year')}
                 </AppText>
               </View>
               <View style={[styles.horizontalDivider, { marginBottom: 12 }]} />
               <View style={[styles.horizontalDivider, { marginTop: -4 }]} />
               <View style={styles.projectManager}>
-                <BreakdownCostCard title="Project Manager" coveredPercentage={gardenInfo.data.projectManager} totalCost="430 000" />
+                <BreakdownCostCard title={trans('profile.project_manager')} coveredPercentage={gardenInfo.data.projectManager} totalCost="430 000" />
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 20 }}>
-                  Why do we need this?
+                  {trans('profile.why_need_this')}
                 </Title>
                 <AppText size={16} style={{ lineHeight: 28 }}>
-                  Having a paid project manager is like having a gardener. The project manager takes care of small to big things surrounding the app, like managing the programming we talked about above, answering e-mails or represent all of our interests when needed. We aim to have a paid project manager half time (20 hours/week).
+                  {trans('profile.project_manager_need_description')}
                 </AppText>
                 <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6, marginTop: 30 }}>
-                  Breakdown
+                  {trans('profile.breakdown')}
                 </Title>
                 <AppText size={16} style={{ marginBottom: 4 }}>
-                  Salary - 25 000 SEK /month
+                  {trans('profile.pm_salary_monthly')}
                 </AppText>
                 <AppText size={16} style={{ lineHeight: 26, marginBottom: 6 }}>
-                  General payroll tax, staff insurance, pension - 10 000 SEK/month
+                  {trans('profile.pm_other_costs_monthly')}
                 </AppText>
                 <AppText size={16} style={{ marginBottom: 30 }}>
-                  Vacation cost - 7000 SEK/year
+                  {trans('profile.pm_vacation_cost')}
                 </AppText>
                 <AppText style={{ lineHeight: 28 }}>
-                  <AppText fontVariation="bold" >Total: </AppText>This amounts to a yearly costs of 427 000 SEK, which we round up to 430 00 SEK since some of the costs may vary (like insurance).
+                  <AppText fontVariation="bold" >{trans('profile.total')}: </AppText>{trans('profile.pm_total_cost')}
                 </AppText>
               </View>
               <View style={[styles.horizontalDivider, { marginBottom: 12 }]} />
               <View style={[styles.horizontalDivider, { marginTop: -4 }]} />
               <View style={styles.fees}>
                 <Title size={24} fontVariation="bold" color={Colors.text.pink} style={{ marginTop: 10, marginBottom: 30 }}>
-                  Fees
+                  {trans('profile.fees')}
                 </Title>
                 <AppText size={16} style={{ lineHeight: 28, marginBottom: 30 }}>
-                  There’s a fee on everything we collect here in the self-sustaining garden.
+                  {trans('profile.fees_description_1')}
                 </AppText>
                 <AppText style={{ lineHeight: 28 }}>
-                  The bars reflect the money we get after the fees are detracted.
+                  {trans('profile.fees_description_2')}
                 </AppText>
                 <View style={styles.applePercent}>
                   <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6 }}>
-                    % to Apple
+                    {trans('profile.percent_to_apple')}
                   </Title>
                   <AppText size={16} style={{ lineHeight: 28, marginBottom: 30 }}>
-                    Applies if you support through Apple. First year you support us Apple gets 30 %, second year Apple gets 15 %.
+                    {trans('profile.apple_fees')}
                   </AppText>
                   <AppText style={{ lineHeight: 28 }}>
-                    This means that if you support 10 kr we get x kr first year and x kr second year you support.
+                    {trans('profile.amount_after_fees')}
                   </AppText>
                 </View>
                 <View>
                   <Title size={16} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 6 }}>
-                  % to Google
+                    {trans('profile.percent_to_google')}
                   </Title>
                   <AppText size={16} style={{ lineHeight: 28, marginBottom: 30 }}>
-                    Applies if you support through Google. First year you support us Google gets 30 %, second year Google gets 15 %.
+                    {trans('profile.google_fees')}
                   </AppText>
                   <AppText style={{ lineHeight: 28 }}>
-                    This means that if you support 10 kr we get x kr first year and x kr second year you support.
+                    {trans('profile.amount_after_fees')}
                   </AppText>
                 </View>
               </View>
@@ -253,17 +253,17 @@ class ReadMore extends Component {
 
               <View>
                 <Title size={24} fontVariation="bold" color={Colors.text.pink} style={{ marginBottom: 30, marginTop: 10 }}>
-                  Excess money
+                  {trans('profile.excess_money')}
                 </Title>
                 <AppText size={16} style={{ lineHeight: 28, marginBottom: 18 }}>
-                  If and when all the bars are filled up and more money are coming in to the garden the excess money is handled transparantly be the non-profit association. Read more about the association and the movement here:
+                  {trans('profile.excess_money_description')}
                 </AppText>
                 <RoundedButton
                   bgColor={Colors.background.pink}
                   onPress={() => this.openLink('https://docs.google.com/document/d/1WZECcrD_Qw9dYoLA-uSr8cxCluRjtNKP0gzVXFaxieg/edit?usp=sharing')}
                   style={[styles.spaced, styles.movementButton]}
                 >
-                Our movement
+                  {trans('profile.our_movement')}
                 </RoundedButton>
               </View>
             </View>

@@ -164,8 +164,8 @@ class GroupDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {console.log(group)}
-        {console.log(!group.isDeleted && !group.isBlocked && this.renderGroup())}
+        {/* {console.log(group)} */}
+        {/* {console.log(!group.isDeleted && !group.isBlocked && this.renderGroup())} */}
         {this.renderGroup()}
         {this.renderDeletedModal()}
         {this.renderGroupNotAvailable()}

@@ -23,7 +23,7 @@
   "retry": "Försök igen",
   "yes": "Ja",
   "no": "Nej",
-  "no_comments_yet": "Här samtalar ni om hur ni ska samåka genom att skriva kommentarer. Ingen har kommentaret än. \nÖppna transparenta samtal som alla kan delta i är kärnan av Skjutsgruppen. På detta sätt ökar vi både säkerheten och kommer närmare varandra.\nTryck på “Kommentera här” i rutan nedan för att kommentera.\nTryck på de tre prickarna till vänster i samma ruta för att få fram fler alternativ. Exempelvis kan du dela din position till vänner och familj och skapa en “Erfarenhet” tillsammans med dem du samåker med. En “Erfarenhet” är ett foto ni tar tillsammans under samåkningen som sedan läggs till era profiler och visar att ni har erfarenhet av att samåka.",
+  "no_comments_yet": "Här samtalar ni om hur ni ska samåka genom att skriva kommentarer. Ingen har kommentaret än. \n\nÖppna transparenta samtal som alla kan delta i är kärnan av Skjutsgruppen. På detta sätt ökar vi både säkerheten och kommer närmare varandra.\n\nTryck på “Kommentera här” i rutan nedan för att kommentera.\n\nTryck på de tre prickarna till vänster i samma ruta för att få fram fler alternativ. Exempelvis kan du dela din position till vänner och familj och skapa en “Erfarenhet” tillsammans med dem du samåker med. En “Erfarenhet” är ett foto ni tar tillsammans under samåkningen som sedan läggs till era profiler och visar att ni har erfarenhet av att samåka.",
   "close": "Stäng",
   "your_movement": "Din rörelse",
   "from": "Från",
@@ -79,7 +79,7 @@
   "open_settings": "Öppna inställningar",
   "max_file_size_8_mb": "Största filstorlek är 8 MB",
   "tweet_to":"Twittra till @{{twitterUsername}}",
-  "email_not_sent": "Email not sent",
-  "please_try_again": "Please try again.",
-  "delete_me_my_groups_and_all_my_data": "Delete me, my groups and all my data."
+  "email_not_sent": "E-post skickades inte",
+  "please_try_again": "Försök igen.",
+  "delete_me_my_groups_and_all_my_data": "Radera mig, mina grupper och all min data."
 }

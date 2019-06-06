@@ -145,7 +145,7 @@ class PackageDetail extends Component {
               )
             }
             <AppText style={styles.description} color={Colors.text.darkGray}>
-              {trans('profile.package_description_ios', { amount, duration })}
+              {/* {trans('profile.package_description_ios', { amount, duration })} */}
               <AppText color={Colors.text.blue} onPress={() => this.redirect('https://skjutsgruppen.nu/privacy-policy')}>{trans('profile.privacy_policy')}</AppText>
               <AppText> {trans('global._and_')} </AppText>
               <AppText color={Colors.text.blue} onPress={() => this.redirect('https://skjutsgruppen.nu/participant-agreement')}>{trans('profile.participant_agreement')}</AppText>
