@@ -1,5 +1,5 @@
 import Config from 'react-native-config';
-import Moment from 'moment';
+import Moment from 'moment-timezone';
 import { getTimezone } from '@helpers/device';
 
 const API_URL = Config.API_URL;

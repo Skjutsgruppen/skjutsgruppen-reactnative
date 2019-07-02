@@ -126,7 +126,6 @@ class About extends Component {
           }
           }
         />
-        {console.log(this.state.photo)}
         <SectionLabel label={trans('add.name_of_the_group')} color={Colors.text.pink} />
         <GroupInput
           value={this.state.name}

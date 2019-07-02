@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
 import { AppText } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
 import Colors from '@theme/colors';
+import { getTimezone } from '@helpers/device';
 
 const styles = StyleSheet.create({
   input: {
@@ -42,6 +43,7 @@ class TimePicker extends Component {
         <DateTimePicker
           mode="time"
           is24Hour
+          // onDateChange={date => console.log(date)}
           datePickerModeAndroid="spinner"
           isVisible={this.state.isDateTimePickerVisible}
           onConfirm={this.handleDatePicked}

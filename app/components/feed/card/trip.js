@@ -117,6 +117,19 @@ class Trip extends Component {
     });
   };
 
+  getUnitDay = (duration, unit) => {
+    if (unit === 'days') {
+      return duration === 1 ? 'day' : 'days';
+    }
+    if (unit === 'hours') {
+      return duration === 1 ? 'hour' : 'hours';
+    }
+    if (unit === 'years') {
+      return duration === 1 ? 'year' : 'years';
+    }
+    return unit;
+  }
+
   render() {
     const { trip, onPress, onSharePress, shouldHandleRecurring } = this.props;
 
@@ -184,7 +197,7 @@ class Trip extends Component {
                       >
                         {trip.flexibilityInfo.type === FLEXIBILITY_EARLIER_TYPE ? ' -' : ' +'}
                         {trip.flexibilityInfo.duration}
-                        {trip.flexibilityInfo.unit}
+                        {trans(`feed.${this.getUnitDay(trip.flexibilityInfo.duration, trip.flexibilityInfo.unit)}`)}
                       </AppText>
                     }
                   </AppText>

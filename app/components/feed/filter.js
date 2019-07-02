@@ -162,7 +162,7 @@ const Filter = ({ onPress, map }) => {
     </TouchableOpacity>,
   ];
 
-  const options = map ? [...withMap, 'Cancel'] : [...withoutMap, 'Cancel'];
+  const options = map ? [...withMap, trans('feed.cancel')] : [...withoutMap, trans('feed.cancel')];
 
   return (
     <View style={styles.menuIconWrapper}>

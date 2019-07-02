@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
 //     borderRadius: 12,
 //   },
 // };
+
 class TripDetail extends Component {
   constructor(props) {
     super(props);
@@ -782,9 +783,7 @@ class TripDetail extends Component {
       >
         <Image source={CalendarIcon} style={styles.btnIcon} />
         <AppText color={Colors.text.gray}>
-          {trip.ReturnTrip.length > 0
-            ? trans('detail.recurring')
-            : trans('detail.recurring_ride')}
+          {trans('detail.recurring')}
         </AppText>
       </TouchableOpacity>
     );
@@ -864,8 +863,6 @@ class TripDetail extends Component {
       });
     }
 
-    console.log('trupdetail =========== ', tripDate, '====== ', selectedDate, ' ===== ',markedDates);
-
     return (
       <Modal
         animationType="fade"
@@ -928,6 +925,19 @@ class TripDetail extends Component {
     navigation.popToTop();
     navigation.replace('Tab');
   };
+
+  getUnitDay = (duration, unit) => {
+    if (unit === 'days') {
+      return duration === 1 ? 'day' : 'days';
+    }
+    if (unit === 'hours') {
+      return duration === 1 ? 'hour' : 'hours';
+    }
+    if (unit === 'years') {
+      return duration === 1 ? 'year' : 'years';
+    }
+    return unit;
+  }
 
   returnRideModal = () => {
     const { trip } = this.state;
@@ -1015,7 +1025,7 @@ class TripDetail extends Component {
                 ? ' -'
                 : ' +'}
               {trip.flexibilityInfo.duration}
-              {trip.flexibilityInfo.unit}
+              {trans(`feed.${this.getUnitDay(trip.flexibilityInfo.duration, trip.flexibilityInfo.unit)}`)}
             </AppText>
           )}
         </AppText>

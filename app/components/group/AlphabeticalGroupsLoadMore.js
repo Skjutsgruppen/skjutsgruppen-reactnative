@@ -35,7 +35,6 @@ class AlphabeticalGroupsLoadMore extends Component {
     const { navigation } = this.props;
 
     if (type === 'group') {
-      console.log('alphatisedGroup click');
       navigation.navigate('GroupDetail', { id });
     }
   }

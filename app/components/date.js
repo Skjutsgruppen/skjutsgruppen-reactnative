@@ -3,6 +3,7 @@ import Moment from 'react-moment';
 import moment from 'moment/min/moment-with-locales';
 import 'moment/locale/sv';
 import { Text } from 'react-native';
+import momentTZ from 'moment-timezone';
 import 'moment-timezone';
 import { getTimezone } from '@helpers/device';
 import PropTypes from 'prop-types';
@@ -28,7 +29,9 @@ export const isBeforeAWeek = dateTime => moment(new Date(dateTime)).isBefore(mom
 
 export const isDifferentYear = dateTime => (moment(new Date(dateTime)).format('YYYY') !== moment().format('YYYY'));
 
-export const isFuture = dateTime => moment.tz(dateTime, getTimezone()).isAfter(moment());
+export const isFuture = (dateTime) => {
+  return moment(dateTime).isAfter(moment());
+}
 
 const DateView = ({ children, format, calendarTime, ...rest }) => {
   let autoFormat = 'MMM Do';
@@ -55,13 +58,11 @@ const DateView = ({ children, format, calendarTime, ...rest }) => {
 
   if (defaultFormat && I18n.locale === 'sv') {
     defaultFormat = changeFormat(defaultFormat);
-    console.log(defaultFormat);
   }
 
   // Moment.globalLocale = lang;
-
   return (
-    <Moment locale={I18n.locale} fromNow format={defaultFormat} {...rest} tz={getTimezone()}>
+    <Moment locale={I18n.locale} fromNow format={defaultFormat} {...rest}>
       {new Date(children)}
     </Moment>
   );

@@ -81,5 +81,7 @@
   "tweet_to":"Twittra till @{{twitterUsername}}",
   "email_not_sent": "E-post skickades inte",
   "please_try_again": "Försök igen.",
-  "delete_me_my_groups_and_all_my_data": "Radera mig, mina grupper och all min data."
+  "delete_me_my_groups_and_all_my_data": "Radera mig, mina grupper och all min data.",
+  "who_knows": "som känner",
+  "you_know": "Du känner"
 }

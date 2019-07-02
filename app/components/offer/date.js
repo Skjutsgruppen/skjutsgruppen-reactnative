@@ -119,7 +119,6 @@ class Date extends Component {
     const state = this.state;
     const markedDates = { ...state.markedDates };
     const days = [];
-
     Object.keys(markedDates).forEach((day) => {
       days.push(day);
     });
@@ -256,7 +255,9 @@ class Date extends Component {
         <SectionLabel color={isOffer ? Colors.text.pink : Colors.text.blue} label={trans('add.time')} />
         <TimePicker
           defaultTime={time}
-          onChange={value => this.setState({ time: value })}
+          onChange={(value) => {
+            this.setState({ time: value });
+          }}
         />
         <View style={styles.radioRow}>
           <Radio

@@ -8,7 +8,7 @@ import { AppText, Heading } from '@components/utils/texts';
 import TouchableHighlight from '@components/touchableHighlight';
 import Footer from '@components/feed/card/newsFooter';
 
-const cardHeight = 484;
+const cardHeight = 485;
 
 const styles = StyleSheet.create({
   flex1: {
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        // shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.15,
         shadowRadius: 4,
@@ -46,14 +46,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.15)',
   },
   label: {
-    margin: 20,
+    margin: 30,
+    fontSize: 12,
   },
   titleContainer: {
-    paddingVertical: 16,
+    marginVertical: 20,
     marginHorizontal: 32,
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   img: {
     width: '100%',
@@ -169,9 +169,9 @@ const News = ({ news, onPress }) => (
             style={styles.flex1}
           >
             <View style={styles.flex1}>
-              <AppText color={Colors.text.white} style={styles.label}>{trans('feed.news')}</AppText>
+              <AppText color={Colors.text.white} style={styles.label}>{trans('feed.news').toUpperCase()}</AppText>
               <View style={styles.titleContainer}>
-                <Heading size={48} color={Colors.text.white} centered>{news.title}</Heading>
+                <Heading size={50} color={Colors.text.white} centered>{news.title}</Heading>
               </View>
             </View>
           </TouchableHighlight>

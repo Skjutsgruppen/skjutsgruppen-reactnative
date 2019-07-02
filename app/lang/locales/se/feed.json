@@ -1,8 +1,8 @@
 {
   "hi": "Hej",
   "everything": "Allt",
-  "offered_rides": "Erbjudna samåkningar",
-  "rides_that_are_asked_for": "Ber om samåkning",
+  "offered_rides": "Erbjuder",
+  "rides_that_are_asked_for": "Ber om",
   "close_to_you": "Nära dig",
   "news": "Nyheter",
   "experience": "Erfarenhet",
@@ -10,7 +10,7 @@
   "offers": "erbjuder",
   "seat": "plats",
   "seats": "platser",
-  "asks_for_a_ride": "ber om samåkning",
+  "asks_for_a_ride": "ber om skjuts",
   "asking_for_ride": "BER OM",
   "offering_a_ride": "ERBJUDER",
   "created_a_group": "la till en grupp",
@@ -30,5 +30,12 @@
   "github_url": "https://github.com/skjutsgruppen",
   "filters": "Filter",
   "just_supported_our_self_sustaining_garden": "stödjer nu vår självförsörjande trädgård!",
-  "one_of_the_things_we_are_supporting": "En av sakerna vi stödjer: "
+  "one_of_the_things_we_are_supporting": "En av sakerna vi stödjer: ",
+  "cancel": "Tillbaka",
+  "minute": "minute",
+  "minutes": "Minuter",
+  "hour": "timme",
+  "hours": "Timmar",
+  "day": "dag",
+  "days": "Dagar"
 }

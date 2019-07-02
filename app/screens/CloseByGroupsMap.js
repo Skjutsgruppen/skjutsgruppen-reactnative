@@ -46,7 +46,6 @@ class CloseByGroupsMapView extends Component {
   fetchMoreGroups = debounce(({ latitudeDelta, latitude, longitude }) => {
     const { from } = this.props;
     const diameter = Math.round(this.deltaToKm(latitudeDelta));
-    console.log('======= ', diameter, this.currentDiameter);
 
     if (diameter < this.currentDiameter) return;
     this.currentDiameter = diameter;

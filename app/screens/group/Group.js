@@ -266,7 +266,6 @@ class Group extends Component {
         </View>
       );
     }
-    console.log('render finish ===== ', error);
 
     if (error !== '') {
       return (
