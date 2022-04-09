@@ -17,7 +17,7 @@
   "dependencies": {
     "apollo-client": "1.9.2",
     "graphql-tag": "2.4.2",
-    "moment": "2.20.0",
+    "moment": "2.29.2",
     "moment-timezone": "0.5.14",
     "prop-types": "15.5.10",
     "react": "16.0.0",
