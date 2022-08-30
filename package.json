@@ -18,7 +18,7 @@
     "apollo-client": "1.9.2",
     "graphql-tag": "2.4.2",
     "moment": "2.20.0",
-    "moment-timezone": "0.5.14",
+    "moment-timezone": "0.5.35",
     "prop-types": "15.5.10",
     "react": "16.0.0",
     "react-apollo": "1.4.15",
